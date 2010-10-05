@@ -205,7 +205,8 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'password'       => Axis::config()->db->password,
             'dbname'         => Axis::config()->db->dbname,
             'driver_options' => array(
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
+                //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
+                1002 => 'SET NAMES UTF8'
             )
         ));
 

@@ -1,19 +1,19 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
@@ -34,8 +34,8 @@ require $root . '/app/etc/config.php';
  * set optimal directory order for __autoload  function
  */
 set_include_path(
-    $config['system']['path'] . '/library'  . PATH_SEPARATOR 
-  . $config['system']['path'] . '/app/code' . PATH_SEPARATOR 
+    $config['system']['path'] . '/library'  . PATH_SEPARATOR
+  . $config['system']['path'] . '/app/code' . PATH_SEPARATOR
   . get_include_path()
 );
 
@@ -62,12 +62,13 @@ $db = Zend_Db::factory('Pdo_Mysql', array(
     'password'  => $config->db->password,
     'dbname'    => $config->db->dbname,
     'driver_options'=> array(
-        PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
+        //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
+        1002 => 'SET NAMES UTF8'
     )
 ));
 
 Zend_Db_Table_Abstract::setDefaultAdapter($db);
-//Axis_Config::setDefaultDbAdapter($db); 
+//Axis_Config::setDefaultDbAdapter($db);
 
 /*
  * Init cache system
