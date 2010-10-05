@@ -14,3 +14,4 @@ var/minify/*
 var/sessions/*
 var/templates/*
 .project
+.settings
