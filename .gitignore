@@ -1,5 +1,16 @@
 app/etc/config.php
 library/Zend
 js/ext-3.2.1
-
+media/cache/*
+media/category/*
+media/import/*
+media/manufacturer/*
+media/product/*
+var/cache/*
+var/export/*
+var/index/*
+var/logs/*
+var/minify/*
+var/sessions/*
+var/templates/*
 .project
