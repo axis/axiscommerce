@@ -1,0 +1,14 @@
+<form action="<?php echo $this->href('/locale/currency/change') ?>" 
+      method="post"
+      id="currency-form">
+<div>
+<?php echo $this->formSelect(
+    'currency-code', 
+    $this->box->getData('currencyCode'), 
+    array(
+        'onchange' => "document.getElementById('currency-form').submit();"
+    ), 
+    $this->box->getData('currency')
+);?>
+</div>
+</form>

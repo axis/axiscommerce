@@ -1,0 +1,79 @@
+SetEnv APPLICATION_ENV development
+
+<IfModule mod_rewrite.c>
+##################################
+## Enable rewrites
+    RewriteEngine on
+#    RewriteBase /axis/
+    RewriteRule ^min\.php min.php [L]
+    RewriteRule !\.(js|ico|swf|gif|jpg|png|css|xml|txt)$ index.php [L]
+
+</IfModule>
+
+<IfModule mod_php5.c>
+##################################
+## Disable magic quotes
+    php_value magic_quotes_gpc off
+
+##################################
+## Description
+#    php_flag zlib.output_compression on
+
+</IfModule>
+
+<IfModule mod_headers.c>
+##################################
+## Client side caching
+
+#   <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+#       Header set Cache-Control "public"
+#       Header set Expires "Thu, 15 Apr 2012 20:00:00 GMT"
+#   </FilesMatch>
+    
+</IfModule>
+
+<IfModule mod_deflate.c>
+##################################
+## Compress output before sending
+## http://httpd.apache.org/docs/2.0/mod/mod_deflate.html
+# Add filter
+#    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+    
+# Netscape 4.x has some problems...
+#    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    
+# Netscape 4.06-4.08 have some more problems
+#    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    
+# MSIE masquerades as Netscape, but it is fine
+#    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    
+# NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48
+# the above regex won't work. You can use the following
+# workaround to get the desired effect:
+#    BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+    
+# Don't compress images
+#    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+    
+# Make sure proxies don't deliver the wrong content
+#    Header append Vary User-Agent env=!dont-vary
+    
+</IfModule>
+
+##################################
+## Allow access by default
+
+    Order allow,deny
+    Allow from all
+
+##################################
+## http://developer.yahoo.com/performance/rules.html#etags
+
+#    FileETag none
+
+## Default charset parameter to be added when a response content-type is text/plain or text/html
+## http://httpd.apache.org/docs/2.0/mod/core.html#AddDefaultCharset
+
+    AddDefaultCharset Off
+    #AddDefaultCharset utf-8

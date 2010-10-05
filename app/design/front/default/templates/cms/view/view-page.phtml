@@ -1,0 +1,33 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<div class="page-content box">
+<?php echo $this->page['content']; ?>
+</div>
+
+
+<?php 
+if (isset($this->page['comment'])): ?> 
+    <h4 class="comment-header"><?php echo $this->translate('cms')->__('Comments')?></h4>
+    <ul id="page-comment-list" class="no-bullet no-indent">
+    <?php 
+    foreach ($this->page['comment'] as $comment) : ?>
+    <li>
+        <div class="page-comment">
+            <h4 class="comment-author"><?php echo $this->escape($comment['author']); ?></h4>
+            <p class="comment-date"><?php echo $comment['created_on']; ?></p>
+            <div class="comment-text">
+                <?php echo $this->escape($comment['content']); ?>
+            </div>
+        </div>
+    </li>
+<?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+
+<?php if ($this->page['is_commented']): ?>
+    <h2><?php echo $this->translate('cms')->__('Leave your comment')?></h2>
+    <?php echo $this->formComment->render($this) ?>
+    <script type="text/javascript">
+    $('#' + '<?php echo $this->formComment->getAttrib('id') ?>').validate();
+    </script>
+<?php endif ?>

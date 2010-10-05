@@ -1,0 +1,8 @@
+<div class="box tab <?php echo $this->box->getData('class'); ?>">
+    <div class="head">
+        <span><?php echo $this->translate()->__($this->box->getData('title')); ?></span>
+    </div>
+    <div class="content">
+    <?php echo $this->render($this->box->getData('template'));?>
+    </div>
+</div>

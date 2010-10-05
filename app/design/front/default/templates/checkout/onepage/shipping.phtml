@@ -1,0 +1,51 @@
+<?php echo $this->message() ?>
+
+<?php if (!count($this->shippingMethods['methods'])) : ?>
+
+<p><?php echo $this->translate('checkout')->__('We can not deliver the goods at the listed address.')?></p>
+
+<?php else : ?>
+
+<ol>
+<?php foreach ($this->shippingMethods['methods'] as $methodCode => $method) : ?>
+    <?php 
+    if(!count($method)) :
+        continue;
+    endif;
+    ?>
+    <li class="shipping-method">
+        <h5 class="shipping-method-title">
+            <?php echo Axis_Shipping::getMethod($methodCode)->getTitle() ?>
+        </h5>
+        <ol class="shipping-types">
+        <?php foreach ($method as $type) : ?>
+            <li class="shipping-type">
+                <h5 class="shipping-method-type-title">
+                    <input type="radio" name="method" value="<?php echo $type['id'];?>"
+                        <?php echo $type['id'] == $this->shippingMethods['currentMethodCode'] ? 'checked="1"' : ''; ?>
+                        id="shippingMethod-<?php echo $type['id'];?>"
+                        class="shipping-method-radio"
+                    /> <label for="shippingMethod-<?php echo $type['id'];?>">
+                        <?php echo $this->currency($type['price'])?>
+                        <?php echo $type['title']; ?>
+                    </label>
+                </h5>
+                <?php echo $this->shippingForm($type['id'], 'form')?>
+            </li>
+        <?php endforeach; ?>
+        </ol>
+    </li>
+<?php endforeach; ?>
+</ol>
+<script type="text/javascript">
+$(document).ready(function() {
+   $('#extra-fields-' + $('.shipping-method-radio[@type=radio]:checked').val()).parent().show();
+   $('.shipping-method-radio').change(function() {
+       $('.shipping-type-additional').hide();
+       var methodId = $(this).val();
+       $('#extra-fields-' + methodId).parent().show();
+   })
+});
+</script>
+    
+<?php endif; ?>

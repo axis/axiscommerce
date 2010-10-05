@@ -1,0 +1,30 @@
+<?php 
+$this->headScript()->appendFile('/js/axis/admin/cache.js'); 
+$this->setButtons(array(
+    array(
+        'title' => $this->translate('admin')->__('Back'),
+        'onclick' => 'history.back()',
+        'class' => 'alt-button'
+    ),
+    array(
+        'title' => $this->translate('admin')->__('Disable all'),
+        'onclick' => "save('disable')",
+        'class' => 'alt-button'
+    ),
+    array(
+        'title' => $this->translate('admin')->__('Enable all'),
+        'onclick' => "save('enable')",
+        'class' => 'button'
+    ),
+    array(
+        'title' => $this->translate('admin')->__('Update search indexes'),
+        'onclick' => "window.location = Axis.getUrl('catalog_index/update-search-index/'); return false;",
+        'class' => 'button'
+    ),
+    array(
+        'title' => $this->translate('admin')->__('Clear all'),
+        'onclick' => 'clearAll()',
+        'class' => 'alt-button'
+    )
+));
+?>

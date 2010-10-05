@@ -1,0 +1,32 @@
+<?php if (count($this->box->getData('languages'))): ?>
+    <?php if ($this->box->mode == 'list') : ?>
+    
+    <ul class="language-list no-bullet no-indent">
+        <?php foreach ($this->box->getData('languages') as $code => $language): ?>
+        <li><a href="<?php echo $this->href('locale/index/change/lang/') . $code ?>"
+            class="<?php echo $code ?>"
+            ><?php echo $language ?></a>
+        </li>
+        <?php endforeach ?>
+    </ul>
+    
+    <?php else: ?>
+    
+    <form action="<?php echo $this->href('/locale/index/change') ?>" 
+          method="post"
+          id="locale-form">
+    <div>
+        <label for="lang" class="label"><?php echo $this->translate('locale')->__('Language') ?></label>
+    <?php echo $this->formSelect(
+        'lang', 
+        Axis_Locale::getLocale()->toString(), 
+        array(
+            'onchange' => "document.getElementById('locale-form').submit();"
+        ), 
+        $this->box->getData('languages')
+    ) ?>
+    </div>
+    </form>
+    
+    <?php endif ?>
+<?php endif ?>

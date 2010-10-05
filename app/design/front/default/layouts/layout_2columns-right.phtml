@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <?php echo $this->render('html/html_head.phtml') ?>
+    </head>
+    <body class="<?php echo $this->bodyClass() ?>">
+        <?php echo $this->layout()->afterBodyBegin ?>
+        <div class="wrapper">
+            
+            <?php echo $this->render('html/header_topbar.phtml') ?>
+            
+            <div class="header-container">
+                <div class="header">
+                    <?php echo $this->render('html/header.phtml') ?>
+                </div>
+            </div>
+            
+            <?php echo $this->crumbs() ?>
+            
+            <div class="middle-container-wrapper">
+                <div class="middle-container">
+                    <div class="middle layout-2columns-right">
+                        <?php echo $this->layout()->beforeContent ?>
+                        <div class="col-main">
+                            <?php echo $this->message() ?>
+                            <?php echo $this->layout()->content ?>
+                        </div>
+                        <div class="col-right side-col">
+                            <?php echo $this->layout()->right ?>
+                        </div>
+                        <?php echo $this->layout()->afterContent ?>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-container">
+                <div class="footer">
+                    <?php echo $this->render('html/footer.phtml') ?>
+                </div>
+            </div>
+                
+        </div>
+        <?php echo $this->layout()->beforeBodyEnd ?>
+    </body>
+</html>

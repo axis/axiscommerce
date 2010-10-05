@@ -1,0 +1,52 @@
+<?php if ($this->box->getData('identity')):?>
+<ul class="no-bullet no-indent">
+    <li class="link-account"><a href="<?php echo $this->href('account', true) ?>"
+        title="<?php echo $this->translate('account')->__('My Account')?>"
+        ><?php echo $this->translate('account')->__('My Account')?></a>
+    </li>
+    <li class="link-change-info"><a href="<?php echo $this->href('account/info/change', true) ?>"
+        title="<?php echo $this->translate('account')->__('Change Info')?>"
+        ><?php echo $this->translate('account')->__('Change Info')?></a>
+    </li>
+    <li class="link-address-book"><a href="<?php echo $this->href('account/address-book', true) ?>"
+        title="<?php echo $this->translate('account')->__('Address Book')?>"
+        ><?php echo $this->translate('account')->__('Address Book')?></a>
+    </li>
+    <li class="link-orders"><a href="<?php echo $this->href('account/order', true) ?>"
+        title="<?php echo $this->translate('account')->__('My Orders')?>"
+        ><?php echo $this->translate('account')->__('My Orders')?></a>
+    </li>
+    <li class="link-wishlist"><a href="<?php echo $this->href('account/wishlist', true) ?>"
+        title="<?php echo $this->translate('account')->__('My Wishlist')?>"
+        ><?php echo $this->translate('account')->__('My Wishlist')?></a>
+    </li>
+    <?php if (Axis::single('core/module')->getByCode('Axis_Tag')->isInstalled()) : ?>
+        <li class="link-tags"><a href="<?php echo $this->href('account/tag', true) ?>"
+            title="<?php echo $this->translate('account')->__('My Tags')?>"
+            ><?php echo $this->translate('account')->__('My Tags')?></a>
+        </li>
+    <?php endif;?>
+    <li class="link-logout"><a href="<?php echo $this->href('account/auth/logout', true) ?>"
+        title="<?php echo $this->translate('account')->__('Logout')?>"
+        ><?php echo $this->translate('account')->__('Logout')?></a>
+    </li>
+</ul>
+<?php else : ?>
+<form method="post" id="form-login-box" action="<?php echo $this->href('account/auth/login', true) ?>">
+    <div>
+        <dl>
+            <dt><label for="username"><?php echo $this->translate('account')->__('Email')?></label></dt>
+            <dd><input type="text" name="username" class="required email input-text"/></dd>
+            <dt><label for="password"><?php echo $this->translate('account')->__('Password')?></label></dt>
+            <dd><input type="password" name="password" class="required input-text"/></dd>
+        </dl>
+        <?php echo $this->button($this->translate('account')->__('Login'), array(
+            'class' => 'button btn-login',
+            'type' => 'submit'
+        ), 'button') ?>
+    </div>
+</form>
+<script type="text/javascript">
+$("#form-login-box").validate();
+</script>
+<?php endif ?>

@@ -1,0 +1,25 @@
+<?php if (count($this->product['modifiers'])) : ?>
+<div class="product-modifiers">
+    <dl class="product-modifiers-list">
+    <?php foreach ($this->product['modifiers'] as $option) : ?>
+        <?php $option['price'] = $this->product['price'] ?>
+        <dt>
+            <label for="modifier-<?php echo $this->escape($option['id']) ?>">
+            <?php if (!empty($option['description'])) : ?> 
+                <acronym title="<?php echo $this->escape($option['description']) ?>"
+                    ><?php echo $this->escape($option['name']) ?></acronym>
+            <?php else: ?>
+                <?php echo $this->escape($option['name']) ?>
+            <?php endif; ?>
+            </label>
+        </dt>
+        <dd>
+            <?php
+               $modifier = $this->modifier($option);
+               echo $modifier ? $modifier : $this->translate('catalog')->__('Empty');
+            ?>
+        </dd>
+    <?php endforeach; ?>
+    </dl>
+</div>
+<?php endif; ?>

@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?php echo $this->t($this->pageTitle) ?></title>
+        <link rel="icon" href="<?php echo $this->baseUrl?>/images/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="<?php echo $this->baseUrl?>/images/favicon.ico" type="image/x-icon" />
+        <link href="<?php echo $this->baseUrl?>/css/reset.css" rel="stylesheet" type="text/css"/>
+        <link href="<?php echo $this->baseUrl?>/css/style.css" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="<?php echo str_replace('/install', '', $this->baseUrl)?>/js/jquery/jquery-1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl ?>/js/Installer.js"></script>
+        <script type="text/javascript">
+            var baseUrl = '<?php echo $this->baseUrl ?>';
+        </script>
+    </head>
+    <body>
+        <noscript><div class="noscript-notice"><p><strong><?php echo $this->t('Please enable JavaScript in your browser.') ?></strong></p></div></noscript>
+        <div class="wrapper">
+            
+            <div class="header-container">
+                <div class="header">
+                    <div id="logo">
+                        <a href="<?php echo $this->baseUrl?>"><img src="<?php echo $this->baseUrl?>/images/logo.gif" alt="Axiscommerce"/></a>
+                    </div>
+                    <p class="locale">
+                        <label for="interface_locale"><?php echo $this->t('Language') ?>:</label>
+                        <?php echo $this->formSelect('interface_locale', 
+                            Axis_Install_Model_Locale::getLocale()->toString(), 
+                            array(
+                                'onchange'=> "window.location.href = baseUrl + '/index/change-locale/new_locale/' + this.value"
+                            ), 
+                            Axis_Install_Model_Locale::getAvailableLocales()
+                        ); ?>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="middle-container-wrapper">
+                <div class="middle-container">
+                    <div class="middle layout-2columns-left">
+                        <div class="col-main">
+                            <?php echo $this->message() ?>
+                            <h1><?php echo $this->t($this->pageTitle) ?></h1>
+                            <?php echo $this->layout()->content ?>
+                        </div>
+                        
+                        <div class="col-left side-col">
+                            <div class="box installation-process">
+                                <div class="head"><span class="title"><?php echo $this->t('Installation Process') ?></span></div>
+                                <div class="content">
+                                    <?php echo $this->progress(); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-container">
+                <div class="footer">
+                    <p class="legality">
+                        <?php echo $this->t('Copyright &copy; 2010, Axis, Inc. All Rights Reserved')?>
+                    </p>
+                    <p class="bug-report"><?php echo $this->t(
+                        "Report any %s you've found", 
+                        "<a href='http://code.google.com/p/axiscommerce/issues/entry' 
+                            title='" . $this->t('Report') . "'
+                            onclick='window.open(this.href);return false;'>" . $this->t('Bugs or Issues') . 
+                        "</a>") ?>
+                    </p>
+                </div>
+            </div>
+            
+        </div>
+    </body>
+</html>

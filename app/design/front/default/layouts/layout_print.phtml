@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title><?php echo $this->meta()->getTitle() ?></title>
+    <meta name="description" content="<?php echo $this->escape($this->meta()->getDescription()) ?>" />
+    <meta name="keywords" content="<?php echo $this->escape($this->meta()->getKeywords()) ?>" />
+    <meta name="robots" content="<?php echo $this->escape($this->meta()->getRobots()) ?>" />
+    <link rel="icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
+    
+    {{headStyle}}
+    {{headLink}}
+    <script type="text/javascript">
+    var Axis = {
+        baseUrl: '<?php echo $this->baseUrl ?>', 
+        langUrl: '<?php echo Axis_Locale::getLanguageUrl() ?>'
+    };
+    </script>
+    {{headScript}}
+    
+    <?php $this->headLink()
+        ->setProxy('axis_core')
+        ->appendStylesheet('stylesheet.css')
+        ->appendStylesheet('print.css', 'print')
+        ->appendStylesheet('custom.css') ?>
+
+    <?php $this->headScript()
+        ->setProxy('axis_core')
+        ->appendFile('js/jquery/jquery-1.3.2.min.js')
+        ->appendFile('js/jquery/jquery.validate.min.js')
+        ->appendFile('js/axis/core/script.js')
+        ->appendFile('/js/axis/core/messageStack.js') ?>
+
+    <?php $this->addFilter('Placeholder') ?>
+</head>
+<body class="page-popup page-print <?php echo $this->bodyClass() ?>">
+<div>
+    <div class="print-head">
+        <h1 id="logo">
+            <?php echo $this->image('logo_print.gif');?>
+        </h1>
+    </div>
+    <?php echo $this->layout()->content;?>
+    <div class="button-set">
+        <?php echo $this->button($this->translate('core')->__('Close Window'), array(
+            'onclick' => 'window.close();',
+            'class' => 'button btn-close-window'
+        ), 'button') ?>
+    </div>
+</div>
+</body>
+</html>

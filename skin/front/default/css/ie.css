@@ -1,0 +1,11 @@
+* html .button span, * html .alt-button span { float: left; /* IE6 fix */ }
+button.button, button.alt-button { overflow: visible; /* extra padding fix for ie7,ie6 */ }
+
+.side-col .box { background: url(../images/ie/box.gif) no-repeat -263px 100%; padding-bottom: 10px; border: none; }
+.side-col .box .head { background: url(../images/ie/box.gif) no-repeat -263px 0; }
+.side-col .content { background: #ededed; border: 1px solid #dfdfdf; border-width: 0 1px; padding-bottom: 2px; }
+
+.core-index-index .layout-2columns-right .side-col .box,
+.core-index-index .layout-2columns-left .side-col .box { background: url(../images/ie/box.gif) no-repeat 0 100%; padding-bottom: 10px; border: none; }
+.core-index-index .layout-2columns-right .side-col .box .head,
+.core-index-index .layout-2columns-left .side-col .box .head { background: url(../images/ie/box.gif) no-repeat 0 0; }

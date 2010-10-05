@@ -1,0 +1,16 @@
+<div class="box <?php echo $this->box->getData('class'); ?>">
+    <div class="head">
+        <span class="title">
+            <?php $title = $this->translate()->__($this->box->title);
+            if (null !== $this->box->getData('url')) :
+                echo '<a href="' . $this->href($this->box->getData('url')) . '">' . $title . '</a>';
+            else:
+                echo $title;
+            endif;
+            ?>
+        </span>
+    </div>
+    <div class="content">
+    <?php echo $this->render($this->box->getData('template'));?>
+    </div>
+</div>

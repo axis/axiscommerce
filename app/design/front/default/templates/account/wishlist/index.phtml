@@ -1,0 +1,90 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<?php if (count($this->wishlist)) : ?>
+<form method="post" action="<?php echo $this->href('/account/wishlist/update', true);?>">
+<table id="wishlist-table" class="data-table">
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('account')->__('Product'); ?></th>
+            <th><?php echo $this->translate('account')->__('Comment'); ?></th>
+            <th><?php echo $this->translate('account')->__('Added on'); ?></th>
+            <th><?php echo $this->translate('account')->__('Action'); ?></th>
+        </tr>
+    </thead>
+    <tfoot>
+    <tr>
+        <td colspan="4" align="right">
+            <?php echo $this->button($this->translate('account')->__('Update'), array(
+                'class' => 'alt-button btn-update',
+                'type' => 'submit'
+            ), 'button') ?>
+        </td>
+    </tr>
+    </tfoot>
+    <tbody>
+    <?php foreach ($this->wishlist as &$wl):
+        $productUrl = $this->href('/' . $this->catalogUrl . '/' . $wl['product']['key_word']);
+    ?>
+    <tr>
+        <td class="product-image">
+            <?php
+            $product = $wl['product'];
+            $imagePath = isset($product['images'][$product['image_thumbnail']]) ?
+                $product['images'][$product['image_thumbnail']]['path'] : '';
+            $imageTitle = isset($product['images'][$product['image_thumbnail']]) ?
+                $product['images'][$product['image_thumbnail']]['title'] : '';
+            ?>
+            <a href="<?php echo $productUrl;?>"
+               class="product-image"
+               title="<?php echo $this->escape($imageTitle) ?>"
+            >
+            <?php echo $this->imager('/product' . $imagePath, array(
+                'width'  => Axis::config()->image->product->widthThumbnail, 
+                'height' => Axis::config()->image->product->heightThumbnail,
+                'seo' => $wl['product']['image_seo_name'],
+                'alt' => $this->escape($imageTitle)
+            ));?>
+            </a>
+            <h4 class="product-name"><a href="<?php echo $this->escape($productUrl);?>"
+                title="<?php echo $wl['product']['name'] ?>"
+                ><?php echo $wl['product']['name'] ?></a></h4>
+            
+            <?php echo $this->price($wl['product']['price'],
+                !empty($wl['product']['discount_price']) ?
+                    $wl['product']['discount_price'] : false
+            ) ?>
+            
+        </td>
+        <td class="comment"><?php echo $this->formTextarea(
+            'comment['.$wl['id'].']', 
+            $wl['wish_comment'],
+            array('cols' => 25, 'rows' => 5)
+        ); ?></td>
+        <td class="date"><?php echo $wl['created_on']; ?></td>
+        <td class="links">
+            <ul>
+                <li><a href="<?php echo $this->href('/checkout/cart/add/productId/' . $wl['product_id'], true); ?>/clean-wishlist/1"
+                    title="<?php echo $this->translate('account')->__('Move To Cart')?>"
+                    ><?php echo $this->translate('account')->__('Move To Cart')?></a>
+                </li>
+                <li><a href="<?php echo $this->href('/checkout/cart/add/productId/' . $wl['product_id'], true); ?>"
+                    title="<?php echo $this->translate('account')->__('Copy To Cart')?>"
+                    ><?php echo $this->translate('account')->__('Copy To Cart')?></a>
+                </li>
+                <li><a href="<?php echo $this->href('/account/wishlist/remove/id/' . $wl['id'], true);?>"
+                    title="<?php echo $this->translate('account')->__('Remove')?>"
+                    ><?php echo $this->translate('account')->__('Remove')?></a>
+                </li>
+            </ul>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<script type="text/javascript">
+    decorateTable('wishlist-table');
+</script>
+</form>
+<?php else: ?>
+    <p class="empty-query"><?php echo Axis::translate('catalog')->__('No products found') ?></p>
+<?php endif; ?>

@@ -1,0 +1,31 @@
+<?php echo $this->translate('core')->__('Dear') . ', ';
+    if ($this->firstname && $this->lastname) {
+        echo $this->firstname . ' ' . $this->lastname;
+    } else {
+        echo $this->translate('core')->__('customer');
+    }
+?> 
+<?php echo $this->translate('core')->__('Welcome to') . ' ' . $this->site ?> 
+<?php echo $this->translate('core')->__('To log in when visiting our site just click')?> 
+<?php echo $this->translate('core')->__('Login') . ': ' . $this->href('/account/auth', true)?>
+
+<?php echo $this->translate('core')->__('Use the following values when prompted to log in'); ?>:
+<?php echo $this->translate('core')->__('E-mail')?>: <?php echo $this->customer['email'] ?>  
+<?php echo $this->translate('core')->__('Password')?>: <?php echo $this->customer['password'] ?> 
+
+<?php echo $this->translate('core')->__('When you log in to your account, you will be able to do the following');?> : 
+    -<?php echo $this->translate('core')->__('Proceed through checkout faster when making a purchase');?> 
+    -<?php echo $this->translate('core')->__('Check the status of orders');?> 
+    -<?php echo $this->translate('core')->__('View last orders');?>
+    -<?php echo $this->translate('core')->__('Make changes to your account information');?> 
+    -<?php echo $this->translate('core')->__('Change your password');?> 
+    
+<?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toPhpString('Y') ?> <?php echo $this->site ?>
+<?php echo $this->translate('core')->__("Powered by %s v. %s", "Axis", Axis::app()->getVersion()) ?>
+  
+<?php echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.') ?> 
+<?php echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to')
+    . '  ' . $this->from ?> 
+  
+<?php echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.')?>  
+<?php echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.')?>

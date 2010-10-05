@@ -1,0 +1,19 @@
+<form method="post" id="form-login" action="<?php echo $this->href('/account/auth/login', true) ?>">
+<dl> 
+    <dt><label for="username"><?php echo $this->translate('account')->__('Email')?></label></dt>
+    <dd><input type="text" name="username" class="input-text required email"/></dd>
+    <dt><label for="password"><?php echo $this->translate('account')->__('Password')?></label></dt>
+    <dd><input type="password" name="password" class="input-text required"/></dd>
+</dl>
+<a href="#" onclick="toggle_signup(); return false;"><?php echo $this->translate('account')->__('Signup')?></a>
+<a href="<?php echo $this->href('/account/forgot/register', true) ?>" rel="nofollow">
+    <?php echo $this->translate('account')->__('Forgot Your Password?')?>
+</a> 
+<?php echo $this->button($this->translate('account')->__('Login'), array(
+    'class' => 'button btn-login',
+    'type' => 'submit'
+), 'button') ?>
+</form>
+<script type="text/javascript">
+$("#form-login").validate();
+</script>

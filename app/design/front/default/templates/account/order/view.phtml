@@ -1,0 +1,108 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<div class="col3-set">
+    <div class="billing-address address col-1">
+        <div class="head">
+            <h4 class="address-title">
+                <?php echo $this->translate('account')->__('Billing Address');?>
+            </h4>
+        </div>
+        <address>
+                <?php echo $this->address($this->order['billing']); ?>
+        </address>
+        <div class="foot">
+            <h5><?php echo $this->translate('account')->__('Payment Method'); ?>:</h5>
+            <p><?php echo $this->order['payment_method']; ?></p>
+            <?php  echo $this->paymentForm($this->order['payment_method_code'], 'view')?>
+        </div>
+    </div>
+
+    <div class="shipping-address address col-2">
+        <div class="head">
+            <h4 class="address-title">
+                <?php echo $this->translate('account')->__('Delivery Address'); ?>
+            </h4>
+        </div>
+        <address>
+                <?php echo $this->address($this->order['delivery']); ?>
+        </address>
+        <div class="foot">
+            <h5><?php echo $this->translate('account')->__('Shipping Method');?>:</h5>
+            <p><?php echo $this->order['shipping_method']; ?></p>
+            <?php echo $this->shippingForm($this->order['shipping_method_code'], 'view')?>
+        </div>
+    </div>
+</div>
+
+<table id="shopping-cart-table" class="data-table">
+<thead>
+<tr>
+    <th><?php echo $this->translate('account')->__('Product')?></th>
+    <th><?php echo $this->translate('account')->__('Attributes')?></th>
+    <th><?php echo $this->translate('account')->__('Price')?></th>
+    <th><?php echo $this->translate('account')->__('Quantity')?></th>
+    <th><?php echo $this->translate('account')->__('Final price')?></th>
+</tr>
+</thead>
+<tfoot>
+<tr>
+    <td colspan="100" class="a-right">
+        <?php /*
+        <form method="post" action="<?php echo $this->href('checkout/cart/reorder/orderId/' . $this->order['id'], true); ?>">
+            <div>
+                <?php echo $this->button($this->translate('account')->__('Reorder'), array(
+                    'class' => 'button btn-reorder',
+                    'type' => 'submit'
+                ), 'button') ?>
+            </div>
+        </form>
+        */ ?>
+
+        <form method="post" action="<?php echo $this->href('account/order/print/orderId/' . $this->order['id'], true);?>">
+            <div>
+                <?php echo $this->button($this->translate('account')->__('Print'), array(
+                    'class' => 'button btn-print',
+                    'type' => 'submit',
+                    'onclick' => "window.open('" . $this->href('account/order/print/orderId/' . $this->order['id'], true) . "', 'print_order'); return false;"
+                ), 'button') ?>
+            </div>
+        </form>
+    </td>
+</tr>
+</tfoot>
+
+<?php foreach ($this->order['products'] as $itemId => &$product) : ?>
+<tr valign="top">
+    <td>
+        <?php echo $product['name'];?>
+     </td>
+     <td>
+        <?php if (!empty($product['attributes'])) {
+            foreach ($product['attributes'] as $attr) { ?>
+
+            <div><small><?php
+                echo $attr['product_option'] . ': ' . $attr['product_option_value'];
+            ?> </small></div>
+        <?php }} ?>
+    </td>
+    <td><?php echo $this->currency($product['final_price']);?></td>
+    <td class="a-center"><?php echo $product['quantity']?></td>
+    <td><?php echo $this->currency($product['quantity'] * $product['final_price']);?></td>
+</tr>
+<?php endforeach; ?>
+
+<?php foreach ($this->order['totals'] as $total) : ?>
+<tr>
+    <td colspan="4" class="a-right"><?php echo $total['title']?>:&nbsp;</td>
+    <td ><?php echo $this->currency($total['value'])?></td>
+</tr>
+<?php endforeach; ?>
+
+<tr>
+    <td colspan="4" class="a-right"><?php echo $this->translate('account')->__('Total')?>:&nbsp;</td>
+    <td><?php echo $this->currency($this->order['order_total'])?></td>
+</tr>
+</table>
+<script type="text/javascript">
+    decorateTable('shopping-cart-table');
+</script>

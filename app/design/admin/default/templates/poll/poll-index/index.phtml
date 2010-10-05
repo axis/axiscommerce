@@ -1,0 +1,17 @@
+<script type="text/javascript">
+    var sites = <?php echo Zend_Json_Encoder::encode($this->sitesList);?>;
+    Axis.pages = <?php echo Zend_Json::encode($this->pages) ?>;
+</script>
+
+<?php
+//plugins
+
+$this->headScript()->appendFile('/js/ext-ux/multiselect/ComboSelect.js');
+$this->headScript()->appendFile('/js/jquery/jquery.selectboxes.js');
+
+//gui
+$this->headScript()->appendFile('/js/axis/admin/poll/poll.js');
+$this->headScript()->appendFile('/js/axis/admin/poll/grid.js');
+$this->headScript()->appendFile('/js/axis/admin/poll/windowResult.js');
+$this->headScript()->appendFile('/js/axis/admin/poll/windowEdit.js');
+?>

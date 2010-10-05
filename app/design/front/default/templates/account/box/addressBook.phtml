@@ -1,0 +1,22 @@
+<div class="col2-set">
+    <div class="address col-1">
+        <h5 class="address-title">
+            <?php echo $this->translate('account')->__('Primary Billing Address'); ?>    
+        </h5>
+        <address>
+            <?php echo !$this->box->hasData('billing') ? 
+                $this->translate('account')->__('No primary address found')
+                    : $this->address($this->box->getData('billing')); ?>
+        </address>
+    </div>
+    <div class="address col-2">
+        <h5 class="address-title">
+            <?php echo $this->translate('account')->__('Primary Delivery Address'); ?>    
+        </h5>
+        <address>
+            <?php echo !$this->box->hasData('delivery')? 
+                $this->translate('account')->__('No primary address found')
+                    : $this->address($this->box->getData('delivery')); ?>
+        </address>
+    </div>
+</div>

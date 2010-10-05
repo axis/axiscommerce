@@ -1,0 +1,40 @@
+ul#axis-tabs a {
+	color: #7d7d7d;
+	float: left;
+	width: 178px;
+	height: 27px;
+	text-indent: 20px;
+	text-decoration: none;
+}
+
+ul#axis-tabs a:hover {
+	text-decoration: none;
+	background: #fff url(../images/tab-left-hover.gif) no-repeat left top;
+}
+ul#axis-tabs a.active {
+	background: #fff url(../images/tab-left-active.gif) no-repeat left top;
+}
+ul#axis-tabs a.active:hover { /*IE6 fix*/
+	background: #fff url(../images/tab-left-active.gif) no-repeat left top;
+}
+ul#axis-tabs li a {
+	padding-top: 7px;
+}
+ul#axis-tabs {
+	width: 178px;
+	overflow: hidden;
+	display: block;
+	float: left;
+}
+ul#axis-tabs, ul#axis-tabs * {
+	font-size: 12px;
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+ul#axis-tabs li {
+	background: #fff url(../images/tab-left.gif) no-repeat left top;
+	display: block;
+	float: left;
+	width: 178px;
+}

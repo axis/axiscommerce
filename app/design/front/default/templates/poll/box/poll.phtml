@@ -1,0 +1,87 @@
+<?php if (!$this->box->getData('status')) : ?>
+<script type="text/javascript">
+function validatePollBox(form) {
+    var options = $('input.poll_vote', form);
+    for( i in options ) {
+        if(true == options[i].checked) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function sendForm(form) {
+    if (validatePollBox(form)) {
+          
+        $.ajax({
+            type: "POST",
+            url : Axis.baseUrl + Axis.langUrl + '/poll/index/save',
+            data: $('#form-poll').serialize(),
+            success: function(response){
+                $('#poll-box-wrap').html(response.content);
+            },
+            dataType: 'json'
+        });
+    }
+    return false;
+}
+
+</script>
+<div id="poll-box-wrap">
+    <form id="form-poll" onsubmit="return sendForm(this);" method="post" action="<?php echo $this->href('poll/index/save') ?>">
+        <div>
+            <h4><?php echo $this->box->getData('question/question'); ?></h4>
+            <?php echo $this->formHidden('questionId[]', $this->box->getData('question/id')); ?>
+            <ol>
+            <?php foreach ($this->box->getData('answers') as $answer) : ?>
+                <li>
+                <?php if ($this->box->hasData('question/type') && $this->box->getData('question/type')) : ?>
+                    <?php echo $this->formCheckbox('vote[]', $answer['id'], array('class' => 'poll_vote', 'id' => 'vote-' . $answer['id'])) ?>
+                    <label for="vote-<?php echo $answer['id'] ?>"><?php echo $answer['answer'];?></label> 
+                <?php else : ?>
+                    <input id="vote-<?php echo $answer['id'] ?>" name="vote[]" type="radio" value="<?php echo $answer['id'];?>" class="poll_vote" />
+                    <label for="vote-<?php echo $answer['id'] ?>"><?php echo $answer['answer'];?></label> 
+                <?php endif;?>
+                </li>
+            <?php endforeach; ?>
+            </ol>
+            <div class="actions">
+                <a href="<?php echo $this->href('poll/index/index/showResult/1/questionId/' . $this->box->getData('question/id'))?>">
+                    <?php echo $this->translate('poll')->__('View Results');?>
+                </a>
+                <?php echo $this->button($this->translate('poll')->__('Vote'), array(
+                    'class' => 'button btn-vote f-right',
+                    'type' => 'submit'
+                ), 'button') ?>
+            </div>
+        </div>
+    </form>
+</div>
+<?php else : ?>
+    <?php echo $this->message()?>
+    <h4><?php echo $this->box->getData('question/question'); ?></h4>
+    <ul class="chart-list no-bullet no-indent">
+    <?php  foreach ($this->box->getData('answers') as $answer) : ?>
+        <li>
+            <p><?php echo $answer['answer'];?></p>
+            <p class="chart-list-bar"><?php
+                $percent = false;
+                $count = 0;
+                if ($this->box->hasData('results/' . $answer['id'])) :
+                    $count = $this->box->getData('results/' . $answer['id'] . '/cnt');
+                    $percent = round($count * 100 / $this->box->getData('totalCount'), 2);
+                endif;?>
+                <span class="count"><?php
+                    echo $count;?> (<?php echo $percent ? $percent : 0;?>%)
+                </span>
+                <span class="index-wrapper">
+                    <span style="width: <?php
+                        echo $percent ? $percent . '%' : '1px'?>;" class="index">
+                        <?php echo $this->translate('poll')->__('overall')?>
+                    </span>
+                </span>
+            </p>
+        </li>
+    <?php endforeach; ?>
+</ul>
+<?php endif;?>

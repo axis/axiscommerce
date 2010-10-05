@@ -1,0 +1,12 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<form method="post" id="form-forgot" action="<?php echo $this->href('/account/forgot/register', true) ?>">
+<div>
+    <label for="username">Email:</label>
+    <?php echo $this->formText('username'); ?>
+    <?php echo $this->button($this->translate('account')->__('Submit'), array(
+        'class' => 'button btn-forgot-password-register',
+        'type' => 'submit'
+    ), 'button') ?>
+</div>
+</form>

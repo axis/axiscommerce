@@ -1,0 +1,15 @@
+<?php
+    $payment = Axis::single('checkout/checkout')->payment();
+    $shortPath = 'payment' . str_replace('_', '/', strtolower($payment->getCode()))
+        . '/process.phtml';
+
+    if (is_readable(
+            $this->path . '/app/design/front/' . $this->templateName . '/templates/' .
+            $shortPath 
+        )) {
+        
+        echo $this->render($shortPath, null, true);
+        $payment->clear();
+        die;
+    }
+?>

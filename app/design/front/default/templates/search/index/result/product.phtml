@@ -1,0 +1,41 @@
+<li class="product-item">
+    <?php $productUrl = $this->href(
+        '/' . $this->catalogUrl . '/' . $this->product['url']
+    );?>
+    <div class="product-media">
+        <a href="<?php echo $productUrl;?>"
+            title="<?php echo $this->product['image_title'] ?>"
+            class="product-image"
+        ><?php echo $this->imager('/product' . $this->product['image'], array(
+            'width'  => $this->config()->image->product->widthSmall,
+            'height' => $this->config()->image->product->heightSmall,
+            'alt' => $this->escape($this->product['image_title'])
+        ));
+        ?></a>
+    </div>
+    <div class="product-content">
+
+        <h4>
+            <a href="<?php echo $productUrl;?>" 
+                class="product-name" 
+                title="<?php echo $this->product['name'];?>"
+            ><?php echo $this->product['nameHighlight'];?>
+            </a>
+        </h4>
+
+        <div class="product-description">
+            <?php
+            if (!empty($this->product['contents'])) :
+                echo $this->product['contents'];
+            endif;
+            ?>
+        </div>
+        <div class="product-url">
+            <a href="<?php echo $productUrl;?>" 
+                class="product-name" 
+                title="<?php echo $this->product['name'];?>"
+            ><?php echo $this->href($this->catalogUrl . '/' . $this->product['urlHighlight']);?>
+            </a>
+        </div>
+    </div>
+</li>

@@ -1,0 +1,37 @@
+<?php echo $this->message() ?>
+
+<?php if (!count($this->paymentMethods['methods'])) : ?>
+
+<p><?php echo $this->translate('checkout')->__('We can not accept payment from this billing address.')?></p>
+
+<?php else : ?>
+
+<ol>
+<?php foreach ($this->paymentMethods['methods'] as $method) : ?>
+    <li class="payment-method">
+        <h5 class="payment-method-title">
+            <input type="radio" name="method" value="<?php echo $method['code'] ?>"
+                id="paymentMethod-<?php echo $method['code'] ?>"
+                class="payment-method-radio"
+                <?php echo $method['code'] == $this->paymentMethods['currentMethodCode'] ? 'checked="1"' : ''; ?> 
+            /> 
+            <label for="paymentMethod-<?php echo $method['code'] ?>">
+                <?php echo $method['title'] ?>
+            </label>
+        </h5>
+        <?php echo $this->paymentForm($method['code'], 'form')?>
+    </li>
+<?php endforeach; ?>
+</ol>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#extra-fields-' + $('.payment-method-radio[@type=radio]:checked').val()).parent().show();
+    $('.payment-method-radio').change(function() {
+        $('.payment-additional').hide();
+        var methodId = $(this).val();
+        $('#extra-fields-' + methodId).parent().show();
+    })
+});
+</script>
+
+<?php endif; ?>

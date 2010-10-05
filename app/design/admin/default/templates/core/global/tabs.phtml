@@ -1,0 +1,15 @@
+<ul id="axis-tabs">
+
+<?php foreach ($this->tabs as $tab) : ?>
+
+    <li><a href="#" id="<?php echo $tab['id'];?>"
+    ><?php echo $this->escape($tab['title']); ?></a></li>
+
+<?php endforeach; ?>
+
+</ul>
+<script type="text/javascript">
+    Ext.onReady(function(){
+        var tabs = new pdTabs('axis-tabs');
+    });
+</script>

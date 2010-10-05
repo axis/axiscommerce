@@ -1,0 +1,19 @@
+<?php if (!$this->box->getData('identity')) : ?>
+<li class="link-login"><a rel="nofollow" href="<?php echo $this->href('/account/auth', true);?>"
+    title="<?php echo $this->translate('account')->__('Sign In / Create Account')?>"
+    ><?php echo $this->translate('account')->__('Sign In / Create Account')?></a>
+</li>
+<?php else : ?>
+<li class="link-account"><a href="<?php echo $this->href('/account', true);?>"
+    title="<?php echo $this->translate('account')->__('My Account')?>"
+    ><?php echo $this->translate('account')->__('My Account')?></a>
+</li>
+<li class="link-wishlist"><a href="<?php echo $this->href('/account/wishlist', true) ?>"
+    title="<?php echo $this->translate('account')->__('My Wishlist')?>"
+    ><?php echo $this->translate('account')->__('My Wishlist')?></a>
+</li>
+<li class="link-logout"><a href="<?php echo $this->href('/account/auth/logout', true) ?>"
+    title="<?php echo $this->translate('account')->__('Logout')?>"
+    ><?php echo $this->translate('account')->__('Logout')?></a>
+</li>
+<?php endif; ?>

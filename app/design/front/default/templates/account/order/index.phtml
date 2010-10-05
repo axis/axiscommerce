@@ -1,0 +1,38 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<?php if (count($this->orders)): ?>
+<table id="myorders-table" class="data-table">
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('account')->__('Id')?></th>
+            <th><?php echo $this->translate('core')->__('Date')?></th>
+            <th><?php echo $this->translate('core')->__('Shipping')?></th>
+            <th><?php echo $this->translate('sales')->__('Order Total')?></th>
+            <th><?php echo $this->translate('sales')->__('Order Status')?></th>
+            <th><?php echo $this->translate('account')->__('Actions')?></th>
+        </tr>
+    </thead>
+    <?php foreach ($this->orders as $order):?>
+    <tr valign="top">
+        <td><?php echo $this->escape($order['number']) ?></td>
+        <td><?php echo $this->escape($order['date_purchased_on']) ?></td>
+        <td><?php echo $this->escape($order['delivery_firstname'] . ' ' . $order['delivery_lastname']) ?></td>
+        <td><?php echo $this->currency($order['order_total']); ?></td>
+        <td><?php echo $this->escape($order['order_status_name']); ?></td>
+        <td>
+            <a href="<?php echo $this->href('/account/order/view/orderId/' . $order['id'], true);?>"
+                title="<?php echo $this->translate('account')->__('View')?>"
+                ><?php echo $this->translate('account')->__('View')?>
+            </a>
+            <?php /* <a href="<?php echo $this->href('/checkout/cart/reorder/orderId/' . $order['id'], true); ?>"
+                >Reorder</a> */ ?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+<script type="text/javascript">
+    decorateTable('myorders-table');
+</script>
+<?php else: ?>
+    <p class="empty-query"><?php echo Axis::translate('sales')->__('No orders found') ?></p>
+<?php endif; ?>

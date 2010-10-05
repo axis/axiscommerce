@@ -1,0 +1,58 @@
+<?php 
+$this->headScript()->appendFile('/js/ext-ux/multiselect/ComboSelect.js');
+
+$this->headScript()->appendFile('/js/axis/admin/sitemap/sitemap.js');
+?>
+<script type="text/javascript">
+
+var gridSitemap, siteMapId;
+<?php if ($this->sitemapId) : ?>
+   sitemapId = <?php echo $this->sitemapId?>;
+<?php endif; ?>
+
+var sites = <?php echo Zend_Json_Encoder::encode($this->sitesList);?>;
+var engines = <?php echo Zend_Json_Encoder::encode($this->engines);?>; // @todo 
+</script>
+
+<div id="sitemap" style="display:none;">
+    <form id="sitemap-form" action="">
+        <fieldset style="padding: 10px; border: 0px;">
+            <label style="float:left; width:25%;margin-right:5%">
+                <?php echo $this->translate('core')->__('Name')?>
+            </label>
+            <input id="sitemap-form-filename" type="text" name="filename" style="float:left; width:65%;" />
+            <br clear="all" style="margin-bottom:15px" />
+            <label style="float:left; width:25%;margin-right:5%">
+                <?php echo $this->translate('core')->__('Sites')?>
+            </label>
+            <?php echo $this->formSelect('site_ids', null, array(
+                'id' => 'sitemap-form-site',
+                'style' => 'float:left;width:65%;'
+            ), $this->sites) ?>
+            <br clear="all" style="margin-bottom:15px" />
+            <label style="float:left; width:25%;margin-right:5%">
+                <?php echo $this->translate('sitemap')->__('Engines')?>
+            </label>
+            <select multiple="multiple" id="sitemap-form-engine" name="engine_ids[]" style="float:left;width:65%;">
+            <?php foreach ($this->engines as $engine) { ?>
+            <option  value="<?php echo $engine['id'];?>"><?php echo $engine['name'];?></option>
+            <?php } ?>
+            </select>
+        </fieldset>
+    </form>
+</div>
+
+<div id="result" style="display:none; background-color: rgb(255, 255, 255);">
+    <?php foreach ($this->engines as $engine) { ?>
+    
+        <fieldset style="padding: 10px; border: 0px;">
+            <h2 class="green-header"> <?php echo $engine['name'];?>
+                <?php echo $this->translate('sitemap')->__('Results')?>
+            </h2>
+            <div id="result-<?php echo $engine['name'];?>" style="padding: 10px; border: 0px;">
+                <?php echo $this->translate('sitemap')->__('Not used')?>
+            </div>
+        </fieldset>
+    
+    <?php } ?>
+</div>

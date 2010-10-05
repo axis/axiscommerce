@@ -1,0 +1,30 @@
+<form class="form-search" action="<?php echo $this->href('search/result') ?>">
+<div>
+    <input class="input-text required" type="text" name="q" value="<?php echo $this->query ?>"/>
+    <?php echo $this->button($this->translate('search')->__('Search'), array(
+        'class' => 'button btn-search',
+        'type' => 'submit'
+    ), 'button') ?>
+</div>
+</form>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $blankLabel = "<?php echo$this->translate('search')->__('Search entire store...') ?>";
+    $('.form-search .input-text')
+        .blur(function() {
+            if (this.value == '') {
+                this.value = $blankLabel;
+            }
+        })
+        .focus(function() {
+            if (this.value == $blankLabel) {
+                this.value = '';
+            }
+        })
+        
+    if ($('.form-search .input-text').attr('value') == '') {
+        $('.form-search .input-text').attr('value', $blankLabel);
+    }
+})
+</script>

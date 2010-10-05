@@ -1,0 +1,74 @@
+<?php if (count($this->modules)) : ?>
+<ul class="installation-mode">
+<li><input type="radio" name="mode" id="standard" checked="checked"/><label for="standard"><?php echo $this->t('Standard setup') ?></label></li>
+<li><input type="radio" name="mode" id="advanced"/><label for="advanced"><?php echo $this->t('Advanced setup') ?></label></li>
+</ul>
+<form class="module-wrapper" id="form-modules" style="display: none" action="<?php echo $this->baseUrl?>/index/save-modules">
+    <ul class="module-container">
+    <li class="module select-all module-header">
+        <?php 
+        echo $this->formCheckbox("modules[all]");
+        echo $this->formLabel('modules-all', 'Module name');
+        echo '<span class="module-category">Category</span>';
+        ?>
+    </li>
+    <?php
+    $tabs = array();
+    $tabs['all'] = 1; $i = 0;
+    foreach ($this->modules as $code => $values) :
+        $class = substr(strtolower($values['package']), strpos($values['package'], '_') + 1);
+        if (!isset($tabs[$class])) {
+            $tabs[$class] = 0;
+        } else {
+            $tabs[$class]++;
+        }
+        $checkboxOptions = array();
+        if ($values['required']) {
+            $class .= ' required active';
+            $checkboxOptions = array(
+                'checked' => 'checked',
+                'disabled' => 'disabled'
+            );
+        } else {
+            $class .= ' active';
+            $checkboxOptions = array(
+                'checked' => 'checked'
+            );
+        }
+        
+        echo "<li class='module all {$class}'>";
+        echo $this->formCheckbox("modules[$code]", null, $checkboxOptions);
+        echo $this->formLabel('modules-' . $code, $values['name']);
+        echo '<span class="module-category">' . substr($values['package'], 0, strpos($values['package'], '_')) . '</span>';
+        echo '</li>';
+    endforeach; ?>
+    </ul>
+    
+    <ul class="module-filter">
+        <li id="hide-required" class="active"><?php echo $this->t('Hide required') ?></li>
+    <?php 
+    foreach (array_keys(array_filter($tabs)) as $title) :
+        if ($title == 'all') :
+            continue;
+        endif;
+        echo '<li id="hide-' . $title . '" class="active">' . $this->t('Hide ' . $title) .  '</li>';
+    endforeach; ?>
+    </ul>
+</form>
+<div class="button-set">
+    <?php echo $this->button($this->t('Back'), array(
+        'onclick' => "window.location='" . $this->baseUrl . "/index/step-user'; return false;",
+        'class' => 'alt-button',
+        'type' => 'button'
+    )) ?>
+    <?php echo $this->button($this->t('Install'), array(
+        'type' => 'submit',
+        'id' => 'submit'
+    )) ?>
+</div>
+<script type="text/javascript">
+    $('.module-container').initModules('<?php echo implode(',', array_keys(array_filter($tabs))) ?>', '<?php echo $this->t("Installing. Please wait...") ?>');
+</script>
+<?php else : ?>
+<p><?php echo $this->t('No modules found') ?></p>
+<?php endif; ?>

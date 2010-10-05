@@ -1,0 +1,10 @@
+<?php if($this->payment->hasCreditCard()) : ?>
+    <?php $cc = $this->payment->getCreditCard()?>
+    <?php echo $this->translate('checkout')->__("Credit Card Type");?> : <?php echo $cc->getCcType()?> <br />
+    <?php echo $this->translate('checkout')->__("Card Owner\'s Name");?> : <?php echo $cc->getCcOwner()?> <br />
+    <?php echo $this->translate('checkout')->__("Card Number");?> : <?php echo substr($cc->getCcNumber(), 0, 4) .
+        str_repeat('X', (strlen($cc->getCcNumber()) - 8)) . substr($cc->getCcNumber(), -4)?> <br />
+    <?php echo $this->translate('checkout')->__("Expiration Date");?> : <?php echo $cc->getCcExpiresMonth() . '/' . $cc->getCcExpiresYear()?> <br />
+    <?php $cvv = $cc->getCcCvv() ?>
+    <?php if (!empty($cvv)) : echo $this->translate('checkout')->__("Cvv"); ?> : <?php echo $cc->getCcCvv()?> <br /> <?php endif;?>
+<?php endif; ?>

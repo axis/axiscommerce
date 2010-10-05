@@ -1,0 +1,14 @@
+<?php $this->headScript()->appendFile('/js/axis/checkout/creditCard.js') ?>
+<?php echo $this->title($this->pageTitle) ?>
+
+<form class="axis-form" method="post" action="<?php echo $this->href('/checkout/wizard/set-payment-method', true);?>">
+<div>
+    <?php echo $this->render('checkout/onepage/payment.phtml'); ?>
+    <div class="actions">
+        <?php echo $this->button($this->translate('checkout')->__('Continue'), array(
+            'class' => 'button btn-continue',
+            'type' => 'submit'
+        ), 'button') ?>
+    </div>
+</div>
+</form>

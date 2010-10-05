@@ -1,0 +1,72 @@
+<table class="paging-bar">
+<tr>
+    <td class="a-left">
+    <?php if ($this->paging['limit'] == $this->paging['count']): ?>
+       <strong><?php echo $this->paging['count'] ?> <?php echo $this->translate('catalog')->__('Item(s)')?></strong>
+    <?php else:
+    $_current = ($this->paging['page'] - 1) * $this->paging['limit'] + 1;
+    ?>
+        <strong><?php echo $this->translate('catalog')->__('Item(s)')?> <?php echo $_current ?> to <?php echo ($_current + count($this->products) - 1) ?> of <?php echo $this->paging['count'] ?></strong>
+    <?php endif ?>
+    </td>
+
+    <!-- Pages -->
+    <td class="a-center">
+        <?php echo $this->pagination($this->paging, 'hurl') ?>
+    </td>
+
+    <td class="a-right">
+        <?php echo $this->translate('catalog')->__('Show per page'); ?>
+        <?php echo $this->formSelect(
+            'limit',
+            $this->hurl(array('limit' => $this->paging['limit'], 'page' => null)),
+            array('onchange' => 'window.location = this.value', 'id' => 'limit' . rand(1000,9999)),
+            $this->paging['perPage']
+        );
+        ?>
+    </td>
+</tr>
+</table>
+
+<table class="view-bar">
+<tr>
+    <td class="a-left" colspan="2">
+        <?php echo $this->translate('catalog')->__('View mode')?>:
+        <?php if ($this->mode == 'list'): ?>
+            <a rel="nofollow" href="<?php echo $this->hurl(array(
+                'mode' => 'grid'
+            )); ?>"><?php echo $this->translate('catalog')->__('Grid')?></a>
+            <span><?php echo $this->translate('catalog')->__('List')?></span>
+        <?php else: ?>
+            <span><?php echo $this->translate('catalog')->__('Grid')?></span>
+            <a rel="nofollow" href="<?php echo $this->hurl(array(
+                'mode' => 'list'
+            )); ?>"><?php echo $this->translate('catalog')->__('List')?></a>
+        <?php endif; ?>
+    </td>
+    <td class="a-right">
+        <?php echo $this->translate('catalog')->__('Sort by') ?>
+        <?php echo $this->formSelect(
+            'order',
+            $this->hurl(array('order' => $this->paging['order'], 'page' => null)),
+            array(
+                'onchange' => 'window.location = this.value',
+                'id' => 'order' . rand(1000,9999),
+                'class' => 'sort-by'
+            ),
+            $this->paging['sortBy']
+        );
+        $dir = strtolower($this->paging['dir']);
+        $title = $dir == 'desc' ? $this->translate('catalog')->__('Sort ascending') : $this->translate('catalog')->__('Sort descending');
+        ?>
+        <a href="<?php echo $this->hurl(array('dir' => $dir == 'desc' ? 'asc' : 'desc')) ?>"
+            class="listing-sort-order sort-<?php echo $dir ?>"
+            title="<?php echo $title ?>"
+            rel="nofollow"
+            ><?php echo $this->image(
+                'sort_' . $dir . '_arrow.gif',
+                "title='{$title}' alt='{$title}'"
+            ) ?></a>
+    </td>
+</tr>
+</table>

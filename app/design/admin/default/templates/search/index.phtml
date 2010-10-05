@@ -1,0 +1,46 @@
+<?php
+//plugins
+$this->headScript()->appendFile('/js/ext-ux/grid/GridSearch.js');
+
+//gui
+$this->headScript()->appendFile('/js/axis/admin/search.js');
+?>
+<script type="text/javascript" >
+    var gridSearch;
+    <?php if ($this->customerId) : ?>
+        var customerId = <?php echo $this->customerId?>;
+    <?php endif; ?>
+    <?php if ($this->searchId) : ?>
+        var searchId = <?php echo $this->searchId?>;
+    <?php endif;?>
+    var today = '<?php echo Axis_Date::now()->getStartDay()->toPhpString('Y-m-d'); ?>';
+    var countToday = <?php echo (isset($this->today)) ? $this->today : 0 ;?>;
+    var week = '<?php echo Axis_Date::now()->getStartWeek()->toPhpString('Y-m-d'); ?>';
+    var countWeek = <?php echo (isset($this->lastweek)) ? $this->lastweek : 0 ;?>;
+    var month = '<?php echo Axis_Date::now()->getStartMonth()->toPhpString('Y-m-d'); ?>';
+    var countMonth = <?php echo (isset($this->lastmonth)) ? $this->lastmonth : 0 ;?>;
+    var countNull = <?php echo (isset($this->nullresult)) ? $this->nullresult : 0 ;?>;
+</script>
+
+<div class="x-hidden">
+    <div id="custom-info"  style="text-align: right;">
+        <a href="#" onclick="setFilterDate('created_at', 'gt', <?php echo Axis_Date::now()->getStartDay()->toPhpString('Y-m-d'); ?>, true);"
+        ><?php echo $this->translate('search')->__('Searches today')?> :<?php echo $this->today;?></a><br />
+
+        <a href="#" onclick="setFilterDate('created_at', 'gt', <?php echo Axis_Date::now()->getStartWeek()->toPhpString('Y-m-d'); ?>, true);"
+        ><?php echo $this->translate('search')->__('Searches last week')?>:<?php echo $this->lastweek;?></a><br />
+
+        <a href="#" onclick="setFilterDate('created_at', 'gt', <?php echo Axis_Date::now()->getStartMonth()->toPhpString('Y-m-d'); ?>, true);"
+        ><?php echo $this->translate('search')->__('Searches last month')?><?php echo $this->lastmonth; ?></a><br />
+
+        <a href="#" onclick="setFilterNumeric('num_results', 'eq', 0, true);"
+        ><?php echo $this->translate('search')->__('Searches with null result')?>:<?php echo $this->nullresult;?></a><br />
+
+        <a href="#" onclick="resetFilters();"><?php echo $this->translate('search')->__('All result');?></a><br />
+
+        <!--<b>Searches today</b>: <?php echo $this->today;?><br/>
+        <b>Searches last week</b>: <?php echo $this->lastweek;?><br/>
+        <b>Searches last month</b>: <?php echo $this->lastmonth; ?><br/>
+        <b>Searches with null result</b>: <?php echo $this->nullresult;?><br/>-->
+    </div>
+</div>

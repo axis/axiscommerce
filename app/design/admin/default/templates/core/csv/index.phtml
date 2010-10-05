@@ -1,0 +1,16 @@
+<?php $this->headScript()
+    ->appendFile('js/ext-ux/multiselect/ComboSelect.js')
+    ->appendFile('js/ext-axis/src/widgets/form/ComboSelect.js')
+    ->appendFile('js/axis/admin/csv/grid.js')
+    ->appendFile('js/axis/admin/csv/window.js');
+
+$this->setButtons(array(
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Back'),
+        'onclick' => 'history.back()',
+        'class' => 'alt-button'
+    )
+));
+echo $this->formSelect('sites', null, null, Axis_Collect_Site::collect());
+echo $this->formSelect('language', null, null, Axis_Collect_Language::collect());
+?>

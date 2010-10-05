@@ -1,0 +1,12 @@
+<?php 
+$this->headScript()->appendFile('/js/ext-ux/grid/GridSearch.js');
+$this->headScript()->appendFile('/js/axis/admin/pages.js');
+
+$this->setButtons(array(
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Back'),
+        'onclick' => 'history.back()',
+        'class' => 'alt-button'
+    )
+));
+?>

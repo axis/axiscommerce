@@ -1,0 +1,114 @@
+<?php
+$this->setButtons(array(
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Back'),
+        'onclick' => 'history.back()',
+        'class' => 'alt-button'
+    )
+));
+
+$this->headScript()->appendFile('/js/axis/admin/community/customerCombo.js');
+$this->headScript()->appendFile('/js/axis/admin/community/productCombo.js');
+$this->headScript()->appendFile('/js/axis/admin/community/statusCombo.js');
+$this->headScript()->appendFile('/js/axis/admin/community/resizableTextarea.js');
+$this->headScript()->appendFile('/js/axis/admin/community/review/window.js');
+$this->headScript()->appendFile('/js/axis/admin/community/review/grid.js');
+?>
+<script type="text/javascript">
+var ratingCombo = new Ext.form.ComboBox({
+    store: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5],
+    triggerAction: 'all',
+    id: 'rating_combo',
+    emptyText: 'Select mark'.l(),
+    renderTo: Ext.getCmp('form'),
+    hidden: true,
+    editable: false
+})
+<?php 
+$ratings = Axis::single('community/review_rating')->getList();
+
+$combos = "
+var ratingFieldSet = new Ext.form.FieldSet({
+    title: 'Ratings'.l(),
+    autoHeight: true,
+    collapsible: true,
+    id: 'rating_fieldset'";
+if (count($ratings)) {
+$combos .= ",\nitems: [\n";
+foreach ($ratings as $rating) {
+    $combos .= "Ext.getCmp('rating_combo').cloneConfig({
+        fieldLabel: '$rating[title]',
+        id: '$rating[name]',
+        name: 'rating[$rating[id]]',
+        hidden: false,
+        anchor: '95%'
+    }),\n";
+}
+$combos = substr($combos, 0, -2);
+$combos .= "\n]";
+} else {
+    $combos .= ",\nhidden: true";
+}
+echo $combos . "\n});\n";
+?>
+
+function fillForm(row){
+    Ext.getCmp('form').getForm().setValues({
+    <?php
+        $fields = "";
+        foreach ($ratings as $rating) {
+            $fields .= "'rating[$rating[id]]': row.get('rating_$rating[id]'),\n";
+        }
+        echo $fields;
+    ?>
+        id:          row.get('id'),
+        customer_id: row.get('customer_id'),
+        product_id:  row.get('product_id'),
+        status:      row.get('status'),
+        author:      row.get('author'),
+        title:       row.get('title'),
+        summary:     row.get('summary'),
+        pros:        row.get('pros'),
+        cons:        row.get('cons')
+    });
+}
+
+var review_object = Ext.data.Record.create([
+    <?php
+        $fields = "";
+        foreach ($ratings as $rating) {
+            $fields .= "{name: 'rating_$rating[id]', type:'float', mapping:'ratings.$rating[name].mark'},\n";
+        }
+        echo $fields;
+    ?>
+    {name: 'id', type: 'int'},
+    {name: 'product_id', type: 'int'},
+    {name: 'product_name', type: 'string'},
+    {name: 'customer_id', type: 'int'},
+    {name: 'customer_email_address', type: 'string'},
+    {name: 'author', type: 'string'},
+    {name: 'title', type: 'string'},
+    {name: 'date_created', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+    {name: 'pros', type: 'string'},
+    {name: 'cons', type: 'string'},
+    {name: 'summary', type: 'string'},
+    {name: 'status', type: 'string'}
+]);
+var expander = new Ext.grid.RowExpander({
+    enableCaching: false,
+    tpl : new Ext.Template(
+        '<div style="margin: 0px 0px 0px 45px; padding: 0px 0px 5px;">',
+        <?php 
+            $fields = "";
+            foreach ($ratings as $rating) {
+                $fields .= "'<div class=\"rating\"><span class=\"rating-title\">$rating[title]</span> {rating_$rating[id]}</div>',\n";
+            }
+            echo $fields;
+        ?>
+        '<br clear="all"/><div><b>Pros:</b> {pros}</div>',
+        '<div><b>Cons:</b> {cons}</div><br/>',
+        '<div><b>Summary:</b> {summary}</div>',
+        '</div>'
+    )
+});
+</script>

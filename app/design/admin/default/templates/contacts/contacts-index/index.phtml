@@ -1,0 +1,26 @@
+<?php $this->headScript()->appendFile('/js/axis/admin/contacts/contact-us.js'); ?>
+
+<div id="tpl-message" class="x-hidden">
+<table width="100%" cellpadding="3" class="axis-table">
+    <tr valign="top">
+      <td><strong><?php echo $this->translate('contacts')->__('from')?>:</strong></td>
+      <td width="100%">{from}</td>
+    </tr>
+    <tr valign="top">
+      <td><strong><?php echo $this->translate('contacts')->__('subject')?>:</strong></td>
+      <td>{subject}</td>
+    </tr>
+    <tr valign="top">
+      <td><strong><?php echo $this->translate('contacts')->__('message')?>:</strong></td>
+      <td>{message}</td>
+    </tr>
+    <tr valign="top">
+      <td> <strong><?php echo $this->translate('contacts')->__('custom fields')?>:</strong></td>
+      <td>{custom}</td>
+    </tr>
+    <tr valign="top">
+      <td><strong><?php echo $this->translate('contacts')->__('Date&amp;Time')?>:</strong></td>
+      <td>{datetime}</td>
+    </tr>
+</table>
+</div>

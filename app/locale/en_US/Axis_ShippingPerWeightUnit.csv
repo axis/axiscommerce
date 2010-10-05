@@ -1,0 +1,6 @@
+"Per Weight Unit Flat Rate","Per Weight Unit Flat Rate"
+"Handling Fee","Handling Fee"
+"Shipping Cost per Unit","Shipping Cost per Unit"
+"Per Weight Unit","Per Weight Unit"
+"",""
+"NOTE: When using this Shipping Module be sure to check the Tare settings in the Shipping/Packaging and set the Largest Weight high enough to handle the price, such as 5000.00 and the adjust the settings on Small and Large packages which will add to the price as well.The shipping cost will be used to determin shipping charges based on: Product Quantity * Units (products_weight) * Cost per Unit - in an order that uses this shipping method.","NOTE: When using this Shipping Module be sure to check the Tare settings in the Shipping/Packaging and set the Largest Weight high enough to handle the price, such as 5000.00 and the adjust the settings on Small and Large packages which will add to the price as well.The shipping cost will be used to determin shipping charges based on: Product Quantity * Units (products_weight) * Cost per Unit - in an order that uses this shipping method."

@@ -1,0 +1,26 @@
+<?php if (count($this->product['properties'])) : ?>
+<div class="product-properties">
+    <dl class="product-properties-list">
+    <?php foreach ($this->product['properties'] as $property) :
+        if (!$property['visible']): continue; endif;
+     ?>
+        <dt>
+            <label>
+            <?php if (!empty($property['description'])) : ?> 
+                <acronym title="<?php echo $this->escape($property['description']) ?>"
+                    ><?php echo $this->escape($property['name']) ?></acronym>
+            <?php else: ?>
+                <?php echo $this->escape($property['name']) ?>
+            <?php endif; ?>
+            </label>
+        </dt>
+        <dd>
+            <?php
+               $value =  $this->escape($property['value']);
+               echo $value ? $value :$this->translate('catalog')->__('empty');
+            ?>
+        </dd>
+    <?php endforeach ?>
+    </dl>
+</div>
+<?php endif ?>

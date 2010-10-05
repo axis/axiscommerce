@@ -1,0 +1,10 @@
+<?php 
+$this->headScript()
+    ->setProxy('axis_core')
+    ->appendFile('js/axis/core/tabMaker.js') ?>
+
+<script type="text/javascript">
+$(document).ready(function($){
+    $(document).makeTabs();
+})
+</script>

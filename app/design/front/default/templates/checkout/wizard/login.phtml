@@ -1,0 +1,21 @@
+<?php echo $this->title($this->pageTitle) ?>
+<div class="col2-set">
+    <div class="col-1">
+        <?php echo $this->render('checkout/wizard/form-guest.phtml');?>
+    </div>
+    <div class="col-2">
+        <?php $this->headScript()->appendFile('/js/axis/account/auth.js');
+        echo $this->render('account/auth/form-login.phtml');
+        ?>
+    </div>
+</div>
+<div id="block-signup" style="display: none;">
+    <h3 class="heading"><?php echo $this->translate('account')->__('Signup')?></h3>
+    <?php echo $this->formSignup->render($this); ?>
+</div>
+
+<script type="text/javascript">
+$('document').ready(function($){
+   $('#returnUrl').val('<?php echo $this->nextPage; ?>');
+});
+</script>

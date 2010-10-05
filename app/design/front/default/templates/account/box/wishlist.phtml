@@ -1,0 +1,69 @@
+<table id="wishlist-table" class="data-table">
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('account')->__('Product'); ?></th>
+            <th><?php echo $this->translate('account')->__('Price'); ?></th>
+            <th><?php echo $this->translate('account')->__('Comment'); ?></th>
+            <th><?php echo $this->translate('account')->__('Added on'); ?></th>
+            <th><?php echo $this->translate('account')->__('Action'); ?></th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <td colspan="5" align="right">
+                <?php echo $this->button($this->translate('account')->__('View All'), array(
+                    'class' => 'button f-right',
+                    'href' => $this->href('/account/wishlist', true)
+                )) ?>
+            </td>
+        </tr>
+    </tfoot>
+<?php
+$index = 0; 
+foreach ($this->box->getData('wishlist') as $wl):
+    $index++;
+    if ($index > 5) { break; }
+    $productUrl = $this->hurl(array(
+        'product' => array('value' => $wl['product_id'], 'seo' => $wl['product']['key_word']),
+        'controller' => 'catalog',
+        'action' => 'product'
+    ), false, true);
+    ?>
+    
+    <tr>
+        <td class="name">
+            <h4 class="product-name"><a href="<?php echo $this->escape($productUrl);?>"
+                title="<?php echo $wl['product']['name'] ?>"
+                ><?php echo $wl['product']['name'] ?></a></h4>
+        </td>    
+        <td class="price"> 
+            <?php echo $this->price($wl['product']['price'],
+                !empty($wl['product']['discount_price']) ?
+                    $wl['product']['discount_price'] : false
+            ) ?>
+        </td>
+        <td class="comment"><?php echo $wl['wish_comment'];?></td>
+        <td class="date"><?php echo $wl['created_on']; ?></td>
+        <td class="links">
+            <ul class="no-bullet no-indent">
+                <li><a href="<?php echo $this->href('/checkout/cart/add/productId/' . $wl['product_id'], true); ?>/clean-wishlist/1"
+                    title="<?php echo $this->translate('account')->__('Move To Cart')?>"
+                    ><?php echo $this->translate('account')->__('Move To Cart')?></a>
+                </li>
+                <li><a href="<?php echo $this->href('/checkout/cart/add/productId/' . $wl['product_id'], true); ?>"
+                    title="<?php echo $this->translate('account')->__('Copy To Cart')?>"
+                    ><?php echo $this->translate('account')->__('Copy To Cart')?></a>
+                </li>
+                <li><a href="<?php echo $this->href('/account/wishlist/remove/id/' . $wl['id'], true);?>"
+                    title="<?php echo $this->translate('account')->__('Remove')?>"
+                    ><?php echo $this->translate('account')->__('Remove')?></a>
+                </li>
+            </ul>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>
+
+<script type="text/javascript">
+    decorateTable('wishlist-table');
+</script>

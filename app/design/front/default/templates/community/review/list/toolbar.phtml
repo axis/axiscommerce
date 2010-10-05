@@ -1,0 +1,59 @@
+<?php 
+if ($this->paging['limit'] == 'all'):
+    $this->paging['pages'] = 0;
+else:
+    $this->paging['pages'] = ceil($this->paging['count'] / $this->paging['limit']);
+endif;
+$_current = ($this->paging['page'] - 1) * $this->paging['limit'] + 1;
+?>
+<div class="review-paging-toolbar">
+<span class="review-count">
+    <?php echo $this->translate('community')->__("Review(s) %d to %d of %d", 
+        $_current, 
+        $_current + count($this->data['reviews']) - 1, 
+        $this->paging['count']
+    ) ?>
+</span>
+<?php echo $this->pagination($this->paging) ?>
+</div>
+
+<div class="review-sort-toolbar <?php echo $this->comparable ? 'comparable' : '' ?>">
+    <div class="review-per-page">
+        <?php
+        $pagingLimit = $this->paging['limit'];
+        $select = $this->formSelect(
+            'limit',
+            $this->url(array('limit' => $pagingLimit, 'page' => null)),
+            array('onchange' => 'window.location = this.value', 'id' => 'limit' . rand(1000,9999)),
+            $this->paging['perPage']
+        );
+        echo $this->translate('community')->__('Show %s reviews per page', $select);
+        ?>
+    </div>
+    <div class="review-sort-by">
+        <?php echo $this->translate('community')->__('Sort by');?>:
+        <?php echo $this->formSelect(
+            'order',
+            $this->url(array('order' => $this->paging['order'])),
+            array('onchange' => 'window.location = this.value', 'id' => 'order' . rand(1000,9999)),
+            $this->paging['sortBy']
+        );
+        $dir = strtolower($this->paging['dir']);
+        $title = $dir == 'asc' ? $this->translate('community')->__('Sort ascending') : $this->translate('community')->__('Sort descending');
+        ?>
+        <a href="<?php echo $this->url(array('dir' => $dir)) ?>"
+            title="<?php echo $title ?>"
+            rel="nofollow"
+            >
+            <?php echo $this->image(
+                'sort_' . ($dir == 'asc' ? 'desc' : 'asc') . '_arrow.gif',
+                "title='{$title}' alt='{$title}'"
+            ) ?>
+        </a>
+    </div>
+    <?php echo $this->button($this->translate('community')->__('Compare selected'), array(
+        'class' => 'button btn-compare',
+        'type' => 'submit',
+        'onclick' => "$('#form-compare').submit()"
+    ), 'button') ?>
+</div>

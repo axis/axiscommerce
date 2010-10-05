@@ -1,0 +1,16 @@
+<?php 
+$this->headScript()->appendFile('/js/ext-ux/grid/GridSearch.js'); 
+$this->headScript()->appendFile('/js/axis/admin/configuration.js'); 
+?>
+<select name="site_id" id="site_id">
+    <option value="0"><?php echo $this->translate('admin')->__('Global')?></option>
+    <?php foreach ($this->sites as $id => $name) : ?>
+        <option value="<?php echo $id?>"><?php echo $name ?></option>
+    <?php endforeach; ?>
+</select>
+<table cellpadding="0" cellspacing="0" width="100%" id="ext-cmp-layout">
+<tr valign="top">
+    <td><div id="configuration-tree" class="sidebox"></div></td>
+    <td><div id="configuration-grid" style="margin-left: -2px;"></div></td>
+</tr>
+</table>

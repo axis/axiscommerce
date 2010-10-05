@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title><?php echo $this->escape($this->pageTitle);?> : AxisAdministrator</title>
+        <link rel="icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
+        <link rel="shortcut icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
+
+        {{headStyle}}
+        {{headLink}}
+        <script type="text/javascript">
+        var Axis = {
+            baseUrl     : "<?php echo $this->baseUrl ?>",
+            secureUrl   : "<?php echo Axis::config('core/backend/ssl') ? $this->secureUrl : $this->baseUrl ?>",
+            adminUrl    : '<?php echo $this->adminUrl ?>',
+            skinUrl     : '<?php echo $this->skinUrl() ?>',
+            locale      : '<?php echo Axis_Locale::getLocale()->toString() ?>',
+            language    : '<?php echo Axis_Locale::getLanguageId() ?>',
+            languages   : <?php echo Zend_Json_Encoder::encode(Axis_Collect_Language::collect()) ?>,
+            locales     : <?php echo Zend_Json_Encoder::encode(
+                Axis::single('locale/language')->select()->fetchAssoc()
+            ) ?>
+        };
+        </script>
+        {{headScript}}
+        <script type="text/javascript">
+        Ext.namespace('Axis');
+        Ext.BLANK_IMAGE_URL = Axis.secureUrl + '/js/ext-3.2.1/resources/images/default/s.gif';
+        </script>
+
+        <?php
+        $this->headLink()
+            ->setProxy('axis_core')
+            ->offsetSetStylesheet(-100, 'layout.css')
+            ->offsetSetStylesheet(-98, 'navigation.css')
+            ->offsetSetStylesheet(-96, 'elements.css')
+            ->offsetSetStylesheet(-94, 'tabs.css')
+            ->offsetSetStylesheet(-92, 'js/ext-3.2.1/resources/css/ext-all.css')
+            ->offsetSetStylesheet(-90, 'js/ext-3.2.1/resources/css/xtheme-gray.css')
+            ->offsetSetStylesheet(-88, 'js/ext-3.2.1/examples/ux/css/ux-all.css')
+            ->offsetSetStylesheet(-86, 'js/ext-ux/grid/RowActions.css')
+            ->offsetSetStylesheet(-84, 'js/ext-ux/maximbg.treegrid/css/TreeGrid.css')
+            ->offsetSetStylesheet(-82, 'js/ext-axis/resources/css/ext-axis-all.css')
+            ->offsetSetStylesheet(-80, 'js/jquery/datepicker/ui.datepicker.css');
+
+        $this->headScript()
+            ->setProxy('axis_core')
+            ->offsetSetFile(-100, 'js/jquery/jquery-1.4.min.js')
+            ->offsetSetFile(-98, 'js/ext-3.2.1/adapter/jquery/ext-jquery-adapter.js')
+            ->offsetSetFile(-96, 'js/ext-3.2.1/ext-all-debug.js')
+            ->offsetSetFile(-94, 'js/ext-3.2.1/examples/ux/ux-all-debug.js')
+            ->offsetSetFile(-92, 'js/axis/admin/core/script.js')
+            ->offsetSetFile(-90, 'js/axis/admin/core/ajax.js')
+            ->offsetSetFile(-78, 'js/axis/admin/core/translate.js');
+
+        $this->headScript()
+            ->setProxy('axis_core')
+            ->offsetSetFile(-70, 'js/ext-ux/maximbg.treegrid/source/NS.js')
+            ->offsetSetFile(-68, 'js/ext-ux/maximbg.treegrid/source/AbstractTreeStore.js')
+            ->offsetSetFile(-66, 'js/ext-ux/maximbg.treegrid/source/AdjacencyListStore.js')
+            ->offsetSetFile(-64, 'js/ext-ux/grid/RowActions.js');
+
+        //$this->headScript()->appendFile('js/ext-axis/ext-axis-all.js');
+        $this->headScript()
+            ->setProxy('axis_extjs')
+            ->offsetSetFile(-50, 'js/ext-axis/src/core/core/Axis-more.js')
+            ->offsetSetFile(-48, 'js/ext-axis/src/dd/GridRow.js')
+            ->offsetSetFile(-46, 'js/ext-axis/src/data/NestedSetStore.js')
+            ->offsetSetFile(-44, 'js/ext-axis/src/widgets/PagingToolbar.js')
+            ->offsetSetFile(-42, 'js/ext-axis/src/widgets/Panel.js')
+            ->offsetSetFile(-40, 'js/ext-axis/src/widgets/Window.js')
+            ->offsetSetFile(-38, 'js/ext-axis/src/widgets/form/BasicForm.js')
+            ->offsetSetFile(-36, 'js/ext-axis/src/widgets/form/Form.js')
+            ->offsetSetFile(-34, 'js/ext-axis/src/widgets/form/Field.js')
+            ->offsetSetFile(-33, 'js/ext-axis/src/widgets/form/DateField.js')
+            ->offsetSetFile(-32, 'js/ext-axis/src/widgets/form/HtmlEditor.js')
+            ->offsetSetFile(-30, 'js/ext-axis/src/widgets/form/LanguageSet.js')
+            ->offsetSetFile(-28, 'js/ext-axis/src/widgets/grid/NestedView.js')
+            ->offsetSetFile(-26, 'js/ext-axis/src/widgets/grid/GridPanel.js')
+            ->offsetSetFile(-24, 'js/ext-axis/src/widgets/grid/EditorGrid.js')
+            ->offsetSetFile(-22, 'js/ext-axis/src/widgets/grid/GridTree.js')
+            ->offsetSetFile(-20, 'js/ext-axis/src/widgets/grid/CheckColumn.js')
+            ->offsetSetFile(-18, 'js/ext-axis/src/widgets/grid/RadioColumn.js')
+            ->offsetSetFile(-16, 'js/ext-axis/src/widgets/DelayedLoader.js');
+
+        $locale = Axis_Locale::getLocale()->toString();
+
+        $this->headScript()->offsetSetFile(-75, 'js/axis/admin/translation/'. $locale .'/core.js');
+
+        if ('uk_UA' === $locale) {
+            $this->headScript()->appendFile('js/ext-3.2.1/src/locale/ext-lang-ukr.js');
+        } elseif (file_exists('js/ext-3.2.1/src/locale/ext-lang-' . $locale . '.js')) {
+            $this->headScript()->appendFile(
+                'js/ext-3.2.1/src/locale/ext-lang-' . $locale . '.js'
+            );
+        } elseif (file_exists('js/ext-3.2.1/src/locale/ext-lang-' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
+            $this->headScript()->appendFile(
+                'js/ext-3.2.1/src/locale/ext-lang-' . Axis_Locale::getLocale()->getLanguage() . '.js'
+            );
+        }
+        ?>
+
+        <?php $this->addFilter('Placeholder') ?>
+    </head>
+    <body>
+        <div class="header-container">
+            <div class="header">
+                <a href="<?php echo $this->href('index')?>" id="logo">
+                    <?php echo $this->image('logo.gif', 'alt="' . Axis::config()->core->company->name . '"'); ?>
+                </a>
+                <?php echo $this->box('admin/greeting')->toHtml() ?>
+            </div>
+        </div>
+
+        <div class="navigation-container">
+            <div class="navigation">
+                <?php echo $this->menu() ?>
+            </div>
+        </div>
+
+        <div class="middle-container">
+            <div class="middle <?php echo $this->columnMode ? $this->columnMode : 'one-column' ?>">
+                <div class="page-head">
+                    <h3 class="left green-header">
+                        <?php echo $this->pageTitle;?>
+                    </h3>
+                    <?php echo $this->buttons(); ?>
+                </div>
+
+                <div class="columns-container">
+                    <div class="col-main">
+                        <div id="inside-box">
+                        <?php echo $this->message() ?>
+                        <?php echo $this->layout()->content;?>
+                        </div>
+                    </div>
+                    <?php if ($this->columnMode): ?>
+                        <div class="col-left">
+                            <?php echo $this->tabs ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer-container">
+            <div class="footer">
+                <p class="legality">Copyright &copy; <?php echo Axis_Date::now()->toPhpString('Y') ?> Axis |</p>
+                <p class="locale">
+                    <?php echo $this->translate('admin')->__('Interface locale') ?>:
+                    <?php $currentLocaleCode = Axis_Locale::getLocale()->toString();
+                    echo $this->formSelect('interface_locale', $currentLocaleCode, null, Axis_Locale::getAdminLocales());
+                    ?>
+                </p>
+                <p class="bugs"><?php echo $this->translate('core')->__("Report any %s you've found", "<a href='http://code.google.com/p/axiscommerce/issues/entry' onclick='window.open(this.href); return false;' title='" . $this->translate('core')->__('Report') . "'>" . $this->translate('core')->__('Bugs or Issues') . "</a>") ?></p>
+                <p class="powered"><?php echo $this->translate('core')->__("Powered by %s v. %s", "<a href='http://www.axiscommerce.com' onclick='window.open(this.href); return false;' title='Axis'>Axis</a>", Axis::app()->getVersion()) ?></p>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+        $('#interface_locale').change(function() {
+            window.location.href = Axis.getUrl('/locale_language/change/new_locale/' + this.value);
+        });
+        </script>
+    </body>
+</html>

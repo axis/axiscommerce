@@ -1,0 +1,36 @@
+<form id="form-assign" class="x-hidden" action="">
+    <table>
+        <tr>
+            <td><?php echo $this->translate('admin')->__('Country')?>:</td>
+            <td><?php echo $this->formSelect(
+                    'country', null, array('onchange' => 'updateZones();'), $this->countries
+                 ); ?></td>
+        </tr>
+        <tr>
+            <td><?php echo $this->translate('admin')->__('Zone')?>:</td>
+            <td><?php echo $this->formSelect('zone', null, null, array('0' => 'All')); ?></td>
+        </tr>
+    </table>
+</form>
+
+<script type="text/javascript">
+var countryZones = <?php echo Zend_Json_Encoder::encode($this->countryZones);?>;
+
+function updateZones()
+{
+    var country_id = $('#country').attr('value');
+    // clean
+    var options = $('#zone')[0].options;
+    while (options.length > 1) {
+        options[options.length - 1] = null;
+    }
+    if (!countryZones[country_id])
+        return false;
+    for (var i = 0, n = countryZones[country_id].length; i < n; i++) {
+        var zone = countryZones[country_id][i];
+        options[options.length] = new Option(zone.name, zone.id);
+    }
+    return true;
+}
+</script>
+<?php $this->headScript()->appendFile('/js/axis/admin/location/zone-definition.js'); ?>

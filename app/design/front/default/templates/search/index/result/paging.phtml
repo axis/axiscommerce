@@ -1,0 +1,44 @@
+<?php
+$_pages = ceil($this->paging['count'] / $this->paging['limit']);
+$this->paging['pages'] = $_pages;
+?>
+<table class="paging-bar">
+<tr>
+    <td class="a-left">
+    <?php if ($this->paging['limit'] == $this->paging['count']): ?>
+       <strong><?php echo $this->paging['count'] ?> <?php echo $this->translate('search')->__('Item(s)')?></strong>
+    <?php else:
+    $_current = ($this->paging['page'] - 1) * $this->paging['limit'] + 1;
+    ?>
+        <strong><?php echo $this->translate('search')->__('Item(s)')?> <?php echo $_current ?> to <?php echo ($_current + count($this->products) - 1) ?> of <?php echo $this->paging['count'] ?></strong>
+    <?php endif ?>
+    </td>
+
+    <!-- Pages -->
+    <td class="a-center">
+    <?php echo $this->pagination($this->paging) ?>
+    </td>
+
+    <td class="a-right">
+
+        <?php
+            $pagingLimit = $this->paging['limit'];
+            if ($this->paging['limit'] === $this->paging['count']) {
+                $pagingLimit = 'all';
+            }
+            echo $this->translate('search')->__('Show per page')?>
+            <?php echo $this->formSelect(
+                'limit',
+                $this->url(array(
+                    'limit' => $pagingLimit, 'page' => null, 'q' => $this->query
+                )),
+                array(
+                    'onchange' => 'window.location = this.value',
+                    'id' => 'order' . rand(1000,9999)
+                ),
+                $this->paging['perPage']
+            );
+            ?>
+    </td>
+</tr>
+</table>

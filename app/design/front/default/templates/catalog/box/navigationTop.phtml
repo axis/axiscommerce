@@ -1,0 +1,11 @@
+<ul class="navigation">
+    <li class="level0 nav-home">
+        <a href="<?php echo $this->href('/') ?>">
+            <span><?php echo $this->translate('core')->__('Home') ?></span>
+        </a>
+    </li>
+    <?php if ($this->box->hasData('items')) : ?>
+        <?php echo $this->navigation($this->box->getData('items')) ?>
+    <?php endif ?>
+    <?php echo $this->box('cms/block')->setStaticBlock('menu')->toHtml() ?>
+</ul>

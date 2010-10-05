@@ -1,0 +1,13 @@
+<?php foreach ($this->buttons as $button) : ?>
+
+<a href="<?php echo $button['href']; ?>"
+    class="<?php echo $button['class']; ?> right"
+    onclick="<?php echo $button['onclick']; ?>"
+   <?php if (isset($button['id'])) : ?>
+   
+    id="<?php echo $button['id'];?>"
+   
+   <?php endif; ?>
+><span><?php echo $this->escape($button['title']); ?></span></a>
+
+<?php endforeach; ?>

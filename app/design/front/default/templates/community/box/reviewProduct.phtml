@@ -1,0 +1,75 @@
+<?php if (count($this->box->getData('reviews'))): ?>
+<a class="f-right" href="#form-review">
+    <?php echo $this->translate('community')->__('Write review') ?>
+</a><br/>
+<a class="f-right" href="<?php echo $this->href("review/product/{$this->product['human_url']}") ?>">
+    <?php echo $this->translate('community')->__('View all');?>
+</a>
+<?php echo $this->translate('community')->__("%s reviews of %s", count($this->box->getData('reviews')), $this->box->getData('count')) ?>
+<ol class="review-product-list">
+<?php foreach ($this->box->getData('reviews') as $review) : 
+
+if (empty($review['customer_id'])):
+    $author = empty($review['author']) ? 'Guest' : $review['author'];
+else:
+    $authorUrl = $this->href("review/customer/id/{$review['customer_id']}");
+    $authorTitle = $this->translate('community')->__("View all reviews written by %s", $review['author']);
+    $author = "<a href='" . $authorUrl . "' title='" . $authorTitle . "' class='review-author'>{$review['author']}</a>";
+endif;
+
+?>
+<li class="review" id="review_<?php echo $review['id'] ?>">
+    <div class="review-info">
+        <h5 class="review-title">
+            <a href="<?php echo $this->href("review/detail/id/{$review['id']}") ?>" 
+                title="<?php echo $this->translate('community')->__('Read review') ?>"
+                ><?php echo $review['title'] ?></a></h5>
+        <span class="review-date">
+            <small><?php echo $this->translate('community')->__("Reviewed on %s by %s", 
+                $review['date_created'], 
+                $author
+            ) ?></small></span>
+        <p class="review-pros">
+            <strong><?php echo $this->translate('community')->__("Pros") ?>: </strong>
+            <?php echo nl2br($this->escape($review['pros'])) ?></p>
+        <p class="review-cons">
+            <strong><?php echo $this->translate('community')->__("Cons") ?>: </strong>
+            <?php echo nl2br($this->escape($review['cons'])) ?></p>
+        <p class="review-summary">
+            <strong><?php echo $this->translate('community')->__("Summary") ?>: </strong>
+            <?php echo nl2br($this->escape($review['summary'])) ?></p>
+    </div>
+    <?php if (isset($review['ratings'])): ?>
+        <?php echo $this->ratings($review['ratings'], 
+            $this->href("review/detail/id/{$review['id']}"), 
+            false
+        ) ?>
+    <?php endif ?>
+</li>
+<?php endforeach; ?>
+</ol>
+<?php else:
+    echo $this->translate('community')->__('There are no reviews for this product yet');
+endif;?>
+
+<div class="review-write">
+    <div class="head"><span class="title"><?php echo $this->translate('community')->__("Write your review") ?></span></div>
+    <div class="content">
+        <?php 
+        $form = new Axis_Community_Model_Form_Review(array(
+            'productId' => $this->box->getData('productId')
+        ));
+        echo $form->render($this);
+        
+        if (!Axis::single('community/review')->canAdd()) : ?>
+        <a href="<?php echo $this->href('review/login') ?>"
+            rel="nofollow"
+            title="<?php echo $this->translate('community')->__("Log in to write a review") ?>"
+        ><span><?php echo $this->translate('community')->__("Log in to write a review") ?></span></a>
+        <?php endif ?>
+        <script type="text/javascript">
+            $("#form-review").validate();
+            $('#form-review .review-rating').ratings();
+        </script>
+    </div>
+</div>

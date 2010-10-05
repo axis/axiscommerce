@@ -1,0 +1,21 @@
+<?php
+$this->headScript()->appendFile('/js/axis/admin/discount/discount.js');
+?>
+<?php $this->setButtons(array(
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Back'),
+        'onclick' => 'history.back();',
+        'class' => 'alt-button'
+    )
+));?>
+<select id="tbar-display-mode" name="tbar-display-mode">
+    <option value="all">
+        <?php echo $this->translate('discount')->__('Show All');?>
+    </option>
+    <option selected="selected" value="without-special">
+        <?php echo $this->translate('discount')->__('Show without Special ');?>
+    </option>
+    <option value="only-special">
+        <?php echo $this->translate('discount')->__('Show only Special')?>
+    </option>
+</select>

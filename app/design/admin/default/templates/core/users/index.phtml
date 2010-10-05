@@ -1,0 +1,10 @@
+<?php 
+echo $this->formSelect('roles-list', null, array('style' => 'display:none;'), $this->roles);
+$this->headScript()->appendFile('/js/axis/admin/users.js');
+?>
+
+<script type="text/javascript">
+Ext.onReady(function(){
+    var rolesList = Ext.decode('<?php echo $this->jsonRoles?>')
+});
+</script>

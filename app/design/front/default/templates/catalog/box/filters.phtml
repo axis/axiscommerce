@@ -1,0 +1,99 @@
+<ul id="filters">
+<?php $hurl = Axis_HumanUri::getInstance(); ?>
+
+<?php if ($hurl->hasParam('price')) : ?>
+<li class="filter-box selected-filter">
+    <a href="<?php echo $this->hurl(array('price' => null)); ?>"
+    class="remove"
+    title="<?php echo $this->translate('catalog')->__('Remove filter') ?>"><?php echo $this->translate('catalog')->__('Remove filter') ?></a>
+    <span class="filter-name"><?php echo $this->translate('catalog')->__('Price')?>:</span> <?php
+        list($from, $to) =  explode(',', $hurl->getParam('price'));
+        echo $this->currency($from)
+            . ' - '
+            . $this->currency($to);
+    ?>
+</li>
+<?php endif; ?>
+
+<?php if ($hurl->hasParam('manufacturer')) : ?>
+<li class="filter-box selected-filter">
+    <a href="<?php echo $this->hurl(array('manufacturer' => null)); ?>"
+    class="remove"
+    title="<?php echo $this->translate('catalog')->__('Remove filter') ?>"><?php echo $this->translate('catalog')->__('Remove filter') ?></a>
+    <span class="filter-name"><?php echo $this->translate('catalog')->__('Manufacturer')?>:</span> <?php
+        echo $hurl->getParam('manufacturer/title', $hurl->getParamSeo('manufacturer')); ?>
+</li>
+<?php endif; ?>
+
+<?php if ($hurl->hasParam('attributes')) :
+    foreach ($hurl->getParam('attributes') as $optionId => $item) : ?>
+    <li class="filter-box selected-filter">
+    <a href="<?php echo $this->hurl(array('attributes'=> array($optionId => null))); ?>"
+    class="remove"
+    title="<?php echo $this->translate('catalog')->__('Remove filter') ?>"><?php echo $this->translate('catalog')->__('Remove filter') ?></a>
+    <span class="filter-name"><?php echo $item['option_name']?>:</span> <?php echo $item['value_name'];?>
+    </li>
+    <?php
+    endforeach;
+endif; ?>
+
+<?php if ($this->box->hasData('filters/price/groups')) : ?>
+<li class="filter-box" id="filter-price">
+    <h3 class="filter-name"><?php echo $this->translate('catalog')->__('Price')?></h3>
+    <ul>
+<?php
+$priceSubstract = $this->box->getData('filters/price/roundTo');
+foreach ($this->box->getData('filters/price/groups') as $price) :
+    $priceFrom = $price['price_group'];
+    $priceTo = $price['price_group'] + $priceSubstract - 0.01;
+    echo  '<li><a rel="nofollow" href="' . $this->hurl(array(
+       'price' => $priceFrom . ',' . $priceTo,
+       'page' => ''
+    )) . '">'
+        . $this->currency($priceFrom) . ' - ' . $this->currency($priceTo)
+        . '</a> (' . $price['cnt'] . ')</li>';
+endforeach; ?>
+    </ul>
+</li>
+<?php endif; ?>
+
+<?php if ($this->box->hasData('filters/manufacturer')) : ?>
+<li class="filter-box" id="filter-manufacturer">
+    <h3 class="filter-name"><?php echo $this->translate('catalog')->__('Manufacturer')?></h3>
+    <ul>
+<?php
+foreach ($this->box->getData('filters/manufacturer') as $item) :
+    echo  '<li><a rel="nofollow" href="' . $this->hurl(array(
+           'manufacturer' => array(
+              'value' => $item['manufacturer_id'],
+              'seo' => $item['manufacturer_url']
+           ), 'page' => ''))
+        . '">'
+        . $this->escape($item['manufacturer_title'])
+        . '</a> (' . $item['cnt'] . ')</li>';
+endforeach; ?>
+    </ul>
+</li>
+<?php endif; ?>
+
+<?php if ($this->box->hasData('filters/attributes')) :
+echo '<li class="filter-box" id="filter-attributes">
+    <h3 class="filter-name">' . $this->translate('catalog')->__('Attributes') . '</h3><ul>';
+    foreach ($this->box->getData('filters/attributes') as $optionId => $values) :
+        echo '<li><h4 class="filter-name">' . $values[0]['option_name'] . '</h4><ul>';
+        foreach ($values as $value) :
+            echo '<li><a rel="nofollow" href="' . $this->hurl(array(
+                'attributes' => array(
+                    "$optionId" => array(
+                       'value' => $value['option_value_id'],
+                       'seo' => $value['option_name'] . '=' . $value['value_name']
+                    )
+                ),
+                'page' => ''
+            )) . '">' . $value['value_name'] . '</a> (' . $value['cnt'] . ')</li>';
+        endforeach;
+        echo '</ul></li>';
+    endforeach;
+echo '</ul></li>';
+endif; ?>
+</ul>

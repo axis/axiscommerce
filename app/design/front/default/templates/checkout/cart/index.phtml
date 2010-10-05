@@ -1,0 +1,117 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<?php if (!count($this->scProducts)): ?>
+    <p class="empty-query"><?php echo $this->translate('checkout')->__('Your shopping cart is empty') ?></p>
+<?php else: ?>
+
+<form method="post" action="<?php echo $this->href('/checkout/cart/update', true);?>">
+<table id="shopping-cart-table" class="data-table">
+<thead>
+<tr class="thead">
+    <th><?php echo $this->translate('checkout')->__('Image') ?></th>
+    <th><?php echo $this->translate('checkout')->__('Product') ?></th>
+    <th><?php echo $this->translate('checkout')->__('Price') ?></th>
+    <th><?php echo $this->translate('checkout')->__('Attributes')?></th>
+    <th><?php echo $this->translate('checkout')->__('Quantity')?></th>
+    <th><?php echo $this->translate('checkout')->__('Final price')?></th>
+    <th><?php echo $this->translate('checkout')->__('Remove')?></th>
+</tr>
+</thead>
+<tfoot>
+    <tr>
+        <td class="a-right" colspan="100">
+            <?php echo $this->button($this->translate('checkout')->__('Continue shopping'), array(
+                'class' => 'alt-button btn-continue-shopping',
+                'href' => $this->lastUrl
+            )) ?>
+            <?php echo $this->button($this->translate('checkout')->__('Update'), array(
+                'class' => 'button btn-update',
+                'type' => 'submit'
+            ), 'button') ?>
+        </td>
+    </tr>
+</tfoot>
+
+<?php foreach ($this->scProducts as $itemId => &$product) : 
+$productUrl = $this->hurl(array(
+    'product' => array('value' => $itemId, 'seo' => $product['key_word']),
+    'controller' => 'catalog',
+    'action' => 'product'
+), false, true)
+?>
+
+<tr>
+    <td class="product-image">
+        <?php
+        $imagePath = isset($product['images'][$product['image_thumbnail']]) ?
+            $product['images'][$product['image_thumbnail']]['path'] : '';
+        $imageTitle = isset($product['images'][$product['image_thumbnail']]) ?
+            $product['images'][$product['image_thumbnail']]['title'] : '';
+        ?>
+        <a href="<?php echo $productUrl ?>" 
+            title="<?php echo $this->escape($imageTitle) ?>"
+        ><?php echo $this->imager('/product' . $imagePath, array(
+            'width'  => 50, 
+            'height' => 50, 
+            'alt' => $this->escape($imageTitle), 
+            'seo' => $product['image_seo_name'],
+            'disableWatermark' => true
+        ));?>
+        </a>
+    </td>
+    <td class="product-name">
+        <a href="<?php echo $productUrl ?>" title="<?php echo $this->escape($product['name']) ?>"
+            ><?php echo $product['name'];?>
+        </a>
+    </td>
+    <td class="product-price"><div class="price-box"><?php echo $this->currency($product['final_price']);?></div></td>
+    <td class="product-attributes">
+    <?php if (count($product['attributes'])) : ?>
+    <ul class="no-bullet no-indent">
+    <?php foreach ($product['attributes'] as $attribute) { ?>
+    <li><?php 
+        echo $attribute['product_option'] . ': ' . $this->escape($attribute['product_option_value']);
+    ?></li>
+    <?php } ?>
+    </ul>
+    <?php endif; ?>
+    </td>
+    <td class="product-quantity"><?php 
+       echo $this->formText(
+           "quantity[$itemId]", 
+           $product['decimal'] ? $product['quantity'] : (int)$product['quantity'],
+           array('size' => '2')
+       );?></td>
+    <td class="product-sum">
+        <div class="price-box">
+            <?php echo $this->currency($product['quantity'] * $product['final_price']);?>
+        </div>
+    </td>
+    <td>
+        <a href="<?php echo $this->href('/checkout/cart/remove/scItemId/' . $itemId, true);?>"
+            class="product-remove" title="<?php echo $this->translate('checkout')->__('Remove item') ;?>"
+            ><?php echo $this->image('bullet-delete.gif', 'alt="'.$this->translate('checkout')->__('Remove item').'"');?></a>
+    </td>
+</tr>
+
+<?php endforeach; ?>
+</table>
+
+<script type="text/javascript">
+    decorateTable('shopping-cart-table');
+</script>
+
+<?php if (count($this->scProducts)): ?>
+
+    <div class="checkout-box a-right">
+        <p class="cart-total"><?php echo $this->translate('checkout')->__('Total')?>:<?php echo $this->currency($this->scTotal);?></p>
+        <?php echo $this->button($this->translate('checkout')->__('Proceed to Checkout'), array(
+            'class' => 'button btn-checkout',
+            'href' => $this->href('checkout/onepage', true)
+        )) ?>
+    </div>
+    
+<?php endif ?>
+</form>
+
+<?php endif ?>

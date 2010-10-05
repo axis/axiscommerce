@@ -1,0 +1,23 @@
+<ul class="list-compare">
+<?php foreach ($this->box->getData('items') as $prodId => $product):
+    $url = $this->hurl(array(
+        'module' => 'Axis_Catalog',
+        'product' => array('value' => $prodId, 'seo' => $product['key_word']),
+        'controller' => 'index',
+        'action' => 'product'
+    ), false, true);
+?>
+    <li>
+        <h4 class="product-name"><a href="<?php echo $url;?>"
+            title="<?php echo $this->escape($product['name']) ?>"
+            ><?php echo $this->escape($product['name']);?></a></h4> 
+        <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/remove/product/') . $prodId ?>"
+            class="compare-remove" title="<?php echo $this->translate('catalog')->__('Remove item') ;?>"
+            ><?php echo $this->image('bullet-delete.gif', 'alt="'.$this->translate('catalog')->__('Remove item').'"');?></a>
+    </li>
+<?php endforeach ?>
+</ul>
+<?php echo $this->button($this->translate('catalog')->__('Compare'), array(
+    'class' => 'alt-button btn-compare',
+    'href' => $this->href($this->catalogUrl . '/product-compare')
+)) ?>

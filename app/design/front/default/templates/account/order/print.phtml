@@ -1,0 +1,104 @@
+<h3><?php echo $this->translate('sales')->__('Order') ?> # <?php echo $this->order['number']?></h3>
+<p><?php echo $this->translate('sales')->__('Order Date') ?>: <?php
+echo Axis_Date::timestamp(strtotime($this->order['date_purchased_on']))
+    ->toPhpString("D M j Y");
+?>
+</p>
+
+<div class="col2-set margin-bottom-10">
+    <div class="col-1 billing-address address">
+        <div class="head">
+            <h4 class="address-title"><?php echo $this->translate('account')->__('Billing Address');?>
+            </h4>
+        </div>
+        <address>
+            <?php echo $this->address($this->order['billing']); ?>
+        </address>
+        <div class="foot">
+            <h5><?php echo $this->translate('account')->__('Payment Method'); ?>:</h5> 
+            <p><?php echo $this->order['payment_method']; ?></p>
+            <?php  echo $this->paymentForm($this->order['payment_method_code'], 'view')?>
+        </div>
+    </div>
+    
+    <div class="col-2 shipping-address address">
+        <div class="head">
+            <h4 class="address-title"><?php echo $this->translate('account')->__('Delivery Address'); ?>
+            </h4>
+        </div>
+        <address>
+            <?php echo $this->address($this->order['delivery']); ?>
+        </address>
+        <div class="foot">
+            <h5><?php echo $this->translate('account')->__('Shipping Method');?>:</h5>
+            <p><?php echo $this->order['shipping_method']; ?></p>
+            <?php echo $this->shippingForm($this->order['shipping_method_code'], 'view')?>
+        </div>
+    </div>
+</div>
+<br clear="all" />
+
+<?php
+// show order comments
+?>
+
+<!-- Products List -->
+<h4><?php echo $this->translate('account')->__('Items Ordered')?></h4>
+<table class="data-table" id="shopping-cart-table">
+<thead>
+<tr>
+    <th><?php echo $this->translate('account')->__('Product')?></th>
+    <th><?php echo $this->translate('account')->__('SKU')?></th>
+    <th><?php echo $this->translate('account')->__('Price')?></th>
+    <th><?php echo $this->translate('account')->__('Quantity')?></th>
+    <th><?php echo $this->translate('account')->__('Subtotal')?></th>
+</tr>
+</thead>
+
+<?php foreach ($this->order['products'] as $itemId => &$product) : ?>
+
+<tr valign="top">
+    <td>
+        <?php echo $product['name'];?>
+        
+        <?php if (!empty($product['attributes'])) :?> 
+            <div class="attributes">
+               <?php foreach ($product['attributes'] as $attr) : ?>
+                <p>    
+                    <small>
+                        <?php echo $attr['product_option'] . ': ' . $attr['product_option_value'];?>
+                    </small>
+                </p>
+            <?php endforeach ?>
+            </div>
+        <?php endif; ?>
+    </td>
+    <td>
+        <?php echo  $product['sku'];?>
+    </td>
+    <td><?php echo $this->currency($product['final_price']);?></td>
+    <td class="a-center"><?php echo $product['quantity']?></td>
+    <td><?php echo $this->currency($product['quantity'] * $product['final_price']);?></td>
+</tr>
+
+<?php endforeach; ?>
+
+<!-- Totals List -->
+<?php foreach ($this->order['totals'] as $total) : ?>
+
+    <tr>
+        <td colspan="4" class="a-right"><?php echo $total['title']?>:&nbsp;</td>
+        <td ><?php echo $this->currency($total['value'])?></td>
+    </tr>
+
+<?php endforeach; ?>
+<!-- Totals List End -->
+
+<tr>
+    <td colspan="4" class="a-right"><?php echo $this->translate('account')->__('Total')?>:&nbsp;</td>
+    <td><?php echo $this->currency($this->order['order_total'])?></td>
+</tr>
+
+</table>
+<script type="text/javascript">window.print();</script>
+<!-- Products List End -->

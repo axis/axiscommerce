@@ -1,0 +1,18 @@
+<div <?php if (null == $this->attribute) echo 'id="condition-attribute-template"'; ?> >
+    <label><?php echo $this->translate('discount')->__("Attribute")?></label>
+    <div class="col2">
+        <select name="condition[attribute][optionId][]" class="attribute-option" onchange="attributesOnChange(this)">
+        <?php foreach ($this->attributes as $optionId  => $optionSet) : ?>
+            <option value=<?php echo '"' . $optionId . '"' . ($optionId == $this->attribute['optionId'] ? ' selected="1"' : '');?>'><?php echo $optionSet['name']?></option>";
+        <?php endforeach; ?>
+        </select>
+        <select  name="condition[attribute][optionValueId][]">
+        <?php if (null != $this->attribute) :?>
+        <?php foreach ($this->attributes[$this->attribute['optionId']]['option'] as $optionValueId => $optionName) : ?>
+            <option value=<?php echo '"' . $optionValueId . '"' . ($optionValueId == $this->attribute['optionValueId'] ? ' selected="1"' : '');?>'><?php echo $optionName?></option>";
+        <?php endforeach; ?>
+        <?php endif;?>
+        </select>
+    </div>
+    <input type="button" class="delete-img" value="" onclick="deleteCondition(this)" />
+</div>

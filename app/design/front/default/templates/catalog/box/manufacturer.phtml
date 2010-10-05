@@ -1,0 +1,19 @@
+<?php if (count($this->box->getData('manufacturers'))) : ?>
+<ul class="no-bullet">
+<?php foreach ($this->box->getData('manufacturers') as $manufacturer) :
+    $url = $this->hurl(array(
+        'controller' => 'catalog',
+        'action' => 'view',
+        'manufacturer' => array(
+            'value' => $manufacturer['id'], 
+            'seo' => $manufacturer['url']
+        )
+    ), false, true);
+?>
+    <li><a href="<?php echo $url;?>"
+        title="<?php echo $this->escape($manufacturer['title']) ?>"
+        rel="nofollow"
+    ><?php echo $this->escape($manufacturer['title']);?></a></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>

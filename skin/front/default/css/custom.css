@@ -1,0 +1,23 @@
+.core-index-index .nav-home a,
+.contacts-index-index .nav-contacts a { color: #fff !important; }
+.core-index-index .nav-home > a,
+.contacts-index-index .nav-contacts > a { color: #fff !important; background: url(../images/nav.gif) no-repeat 0 -109px !important; }
+.core-index-index .nav-home > a span,
+.contacts-index-index .nav-contacts > a span { background-position: 100% -131px !important; }
+
+.box-about-us { padding: 0 7px !important; }
+
+.tabs-home .listing-highlight td { width: 330px; border: none;
+    background: url(../images/vline_dashed_grey.gif) repeat-y 100% 0; }
+.tabs-home .listing-highlight .product-image { float: left; }
+.tabs-home .listing-highlight .product-info { float: right; padding: 0; width: 160px; }
+
+.core-index-index .box-featured { padding: 7px 20px; margin: 0; }
+.core-index-index .box-featured td { border: none; }
+
+.core-index-index .layout-2columns-right .side-col,
+.core-index-index .layout-2columns-left .side-col { width: 262px; }
+.core-index-index .layout-2columns-right .col-main,
+.core-index-index .layout-2columns-left .col-main { width: 679px }
+.core-index-index .layout-2columns-right .product-listing-table td,
+.core-index-index .layout-2columns-left .product-listing-table td { width: 215px; }

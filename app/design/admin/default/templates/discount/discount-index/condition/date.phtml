@@ -1,0 +1,18 @@
+<div <?php if (null == $this->dateValue) echo 'id="condition-date-template"'; ?>>
+    <label><?php echo $this->translate('discount')->__("Date")?></label>
+    <div class="col2">
+        <select name="condition[date][e-type][]">
+        <?php foreach (Axis_Discount_Model_Discount::getDateConditionTypes() as $value => $caption) {
+            echo "<option value='$value'"
+                . ($value == $this->dateEqualType ? ' selected="1"' : '')
+                . ">$caption</option>";
+        } ?>
+        </select>
+        <?php echo $this->formText(
+            'condition[date][value][]',
+            $this->dateValue,
+            array('class' => 'date-picker')
+        ); ?>
+    </div>
+    <input type="button" class="delete-img" value="" onclick="deleteCondition(this)" />
+</div>

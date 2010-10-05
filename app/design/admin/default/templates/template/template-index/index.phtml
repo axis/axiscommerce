@@ -1,0 +1,36 @@
+<script type="text/javascript">
+Ext.namespace('Axis', 'Axis.Template', 'Axis.Template.Box');
+Axis.pages = <?php echo Zend_Json::encode($this->pages) ?>;
+Axis.Template.Box.classes = <?php echo Zend_Json::encode($this->boxClasses) ?>;
+</script>
+<?php
+$this->headScript()
+    ->appendFile('js/ext-ux/multiselect/ComboSelect.js')
+    ->appendFile('js/ext-axis/src/widgets/form/ComboSelect.js')
+    ->appendFile('js/ext-ux/grid/GridSearch.js')
+    ->appendFile('js/axis/admin/template/box.js') 
+    ->appendFile('js/axis/admin/template/layout.js') 
+    ->appendFile('js/axis/admin/template/template.js')
+    
+    //->appendFile('js/axis/admin/template/box/grid.js')
+    //->appendFile('js/axis/admin/template/box/window.js')
+    ; 
+
+$this->setButtons(array(
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Back'),
+        'onclick' => 'history.back()',
+        'class' => 'alt-button'
+    ),
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Create template'),
+        'class' => 'button',
+        'onclick' => "Axis.Template.Template.create()"
+    ),
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Import template'),
+        'class' => 'button',
+        'onclick' => "Axis.Template.Template.startImport()"
+    )
+));
+?>

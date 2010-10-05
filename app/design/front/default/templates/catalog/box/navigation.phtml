@@ -1,0 +1,7 @@
+<?php if ($this->box->hasData('items')): ?>
+    <ul class="navigation">
+        <?php echo $this->navigation($this->box->getData('items')) ?>
+    </ul>
+<?php else :
+    echo $this->translate('catalog')->__("No categories found");
+endif ?>

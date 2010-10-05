@@ -1,0 +1,11 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<?php echo $this->form->render($this); ?>
+
+<script type="text/javascript">
+var Zones = <?php echo Zend_Json_Encoder::encode($this->form->getZones()); ?>;
+$('#' + '<?php echo $this->form->getAttrib('id') ?>').validate();
+</script>
+<?php $this->headScript()
+    ->appendFile('js/jquery/jquery.selectboxes.js')
+    ->appendFile('js/axis/account/newAddress.js') ?>

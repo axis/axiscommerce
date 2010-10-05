@@ -1,0 +1,15 @@
+<?php echo $this->tags($this->box->getData('tags')) ?>
+<form method="post" id="form-tags" action="<?php echo $this->href('/account/tag/add/productId/' . $this->product['id'], true) ?>">
+<div>
+    <?php echo $this->button($this->translate('tag')->__('Add Tags'), array(
+        'class' => 'button btn-add-tags',
+        'type' => 'submit'
+    ), 'button') ?>
+    <input type="text" name="tags" class="required input-text"/>
+    <small><?php echo $this->translate('tag')->__('Add multiple tags separated by commas') ?></small>
+</div>
+</form>
+
+<script type="text/javascript">
+$('#form-tags').validate();
+</script>

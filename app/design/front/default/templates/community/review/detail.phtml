@@ -1,0 +1,58 @@
+<?php echo $this->title($this->pageTitle) ?>
+<?php if (count($this->review)): $review = $this->review; ?>
+<div class="review-detail">
+<?php
+$productUrl = $this->hurl(array(
+    'product' => array('value' => $review['product_id'], 'seo' => $review['product_key_word']),
+    'controller' => 'catalog',
+    'action' => 'product'
+), false, true);
+
+if (empty($review['customer_id'])):
+    $author = empty($review['author']) ? 'Guest' : $review['author'];
+else:
+    $authorUrl = $this->href("review/customer/id/{$review['customer_id']}");
+    $authorTitle = $this->translate('community')->__("View all reviews written by %s", $review['author']);
+    $author = "<a href='" . $authorUrl . "' title='" . $authorTitle . "' class='review-author'>{$review['author']}</a>";
+endif;
+
+?>
+<div class="review">
+    <div class="product-image">
+        <a href="<?php echo $productUrl;?>" 
+            title="<?php echo $this->escape($review['product_image_title']) ?>"
+        ><?php
+            echo $this->imager('/product' . $review['product_image_thumbnail'], array(
+                'width'  => $this->config()->image->product->widthSmall,
+                'height' => $this->config()->image->product->heightSmall,
+                'alt' => $this->escape($review['product_image_title']),
+                'seo' => $review['product_image_seo_name']
+            ));
+        ?></a>
+        <?php if (isset($this->average_ratings[$review['product_id']])): ?>
+            <?php echo $this->ratings($this->average_ratings[$review['product_id']], $this->href("review/product/{$review['product_key_word']}")) ?>
+        <?php endif ?>
+    </div>
+    <div class="review-info">
+        <a href="<?php echo $productUrl ?>"
+            class="product-name"
+            title="<?php echo $this->translate('community')->__("Read about %s", $review['product_name']) ?>"
+        ><?php echo $review['product_name'] ?></a>
+        <a href="<?php echo $this->href("review/product/{$review['product_key_word']}") ?>"
+            title="<?php echo $this->translate('community')->__("View all reviews for %s", $review['product_name']) ?>"
+        ><small><?php echo $this->translate('community')->__("View all reviews") ?></small></a>
+        <span class="review-date"><small><?php echo $this->translate('community')->__("Reviewed on %s by %s", $review['date_created'], $author) ?></small></span>
+        <h5 class="review-title"><?php echo $review['title'] ?></h5>
+        <?php if (isset($review['ratings'])): ?>
+            <?php echo $this->ratings($review['ratings'], '#') ?>
+        <?php endif ?>
+        <p class="review-pros"><strong><?php echo $this->translate('community')->__("Pros") . ': ' ?></strong><?php echo nl2br($this->escape($review['pros'])) ?></p>
+        <p class="review-cons"><strong><?php echo $this->translate('community')->__("Cons") . ': ' ?></strong><?php echo nl2br($this->escape($review['cons'])) ?></p>
+        <p class="review-summary"><strong><?php echo $this->translate('community')->__("Summary") . ': ' ?></strong><?php echo nl2br($this->escape($review['summary'])) ?></p>
+    </div>
+</div>
+</div>
+<?php 
+else:
+    echo $this->translate('community')->__("Review not found");
+endif;

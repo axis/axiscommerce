@@ -1,0 +1,37 @@
+<table class="two-columns dashed-border">
+<?php 
+$i = 0;
+$columnCount = 2;
+foreach ($this->orders as $order) :
+?>
+    <?php if ($i%$columnCount==0) : ?>
+       <tr>
+    <?php endif; ?>
+        <td>
+            <div class="a-right">
+                <div class="tranparent-text"><?php echo $order['id']; ?></div>
+            </div>
+            <?php if ($this->addressType == 'billing') {
+                echo $this->address($order['billing']); 
+            } else {
+                echo $this->address($order['delivery']);
+            } ?>
+            
+        </td>
+    <?php $i++; 
+    
+    if ($i%$columnCount==0) : ?>
+       </tr>
+    <?php endif;
+
+endforeach;
+
+if ($i % $columnCount != 0) :
+    for($i; $i % $columnCount; $i++): ?>
+        <td class="empty-cell">&nbsp;</td>
+    <?php 
+    endfor;?>
+    </tr>
+<?php endif; ?>
+
+</table>

@@ -1,0 +1,24 @@
+<?php $this->headScript()->appendFile('/js/axis/admin/import/locale.js') ?>
+<?php $this->headScript()->appendFile('/js/axis/admin/import/options.js') ?>
+<?php $this->headScript()->appendFile('/js/axis/admin/import/grid.js') ?>
+<?php $this->headScript()->appendFile('/js/axis/admin/import/window.js') ?>
+<?php
+$this->setButtons(array(
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Back'),
+        'onclick' => 'history.back()',
+        'class' => 'alt-button'
+    )
+));
+echo $this->formSelect('sites', null, null, Axis_Collect_Site::collect());
+?>
+<script type="text/javascript">
+var axis_languages = [
+<?php $js = "";
+foreach ($this->languages as $id => $name) {
+    $js .= "{'id':'$id', 'name':'$name'},";
+}
+echo substr($js, 0, -1);
+?>
+];
+</script>

@@ -1,0 +1,7 @@
+<script type="text/javascript">
+    var dsCountry;
+    var zones = <?php echo Zend_Json_Encoder::encode($this->zones);?>;
+    var tax_classes = <?php echo Zend_Json_Encoder::encode($this->taxClasses);?>;
+    var customer_groups = <?php echo Zend_Json_Encoder::encode($this->customerGroups);?>;
+</script>
+<?php $this->headScript()->appendFile('/js/axis/admin/tax/tax-rate.js'); ?>

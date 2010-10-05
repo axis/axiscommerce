@@ -1,0 +1,33 @@
+<div class="box base-mini box-cms-navigation">
+    <div class="head">
+        <span class="title">
+            <?php if (count($this->box->categories)) : ?>
+                <a href="<?php echo $this->href('pages') ?>"><?php echo $this->translate('cms')->__($this->box->title);?></a>
+            <?php else : ?>
+                <?php echo $this->translate('cms')->__($this->box->title);?>
+            <?php endif; ?>
+        </span>
+    </div>
+    <div class="content">
+        <ul class="cms-page-list no-bullet no-indent">
+            <?php foreach ($this->box->getData('categories') as $cat) : ?>
+            <li class="icon-folder">
+                <a href="<?php echo $this->url(array(
+                    'cat' => $cat['link']), 
+                    'cms_category', true); ?>"
+                ><?php echo ($cat['title'] == '' ? $cat['link'] : $cat['title']); ?>
+                </a>
+            </li>
+            <?php endforeach; ?>
+            <?php foreach ($this->box->getData('pages') as $page) : ?>
+            <li class="icon-page">
+                <a href="<?php echo $this->url(array(                                    
+                    'page' => $page['link']
+                    ), 'cms_page', true); ?>"
+                ><?php echo ($page['title'] == '' ? $page['link'] : $page['title']); ?>
+                </a>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>

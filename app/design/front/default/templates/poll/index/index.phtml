@@ -1,0 +1,62 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<?php if (!$this->status) : ?>
+<div>
+    <form onsubmit="return validatePoll();" id="form-poll" method="post"
+          action="<?php echo $this->href('/poll/index/save') ?>">
+        <div>
+            <h5><?php  echo $this->question['question']; ?></h5>
+            <?php echo $this->formHidden('questionId[]', $question['id']); ?>
+            <table cellspacing="2">
+                <tbody>
+                <?php foreach ($this->answers as $answer) : ?>
+                    <tr>
+                      <td>
+                          <input name="vote[]" type="<?php echo ($this->question['type'])? 'checkbox' : 'radio'?>" value="<?php echo $answer['id'];?>" class="poll_vote" />
+                      </td>
+                      <td>
+                          <label ><?php echo $answer['answer'];?></label> 
+                      </td>
+                    </tr>
+                <?php endforeach; ?>
+               </tbody>
+           </table>
+           <?php echo $this->button($this->translate('poll')->__('Vote'), array(
+                'class' => 'button btn-vote',
+                'type' => 'submit'
+            ), 'button') ?>
+        </div>
+    </form>
+</div>
+<?php else : ?>
+<div class="section">
+    <div>
+    <h3><?php echo $this->question['question']; ?></h3>
+        <ul class="chartlist">
+        <?php  foreach ($this->answers as $answer) : ?>
+            <li>
+                <a href="#"><?php echo $answer['answer'];?></a> 
+                <span class="count"><?php echo isset($this->results[$answer['id']]) ?
+                    $this->results[$answer['id']]['cnt'] : 0;?> (<?php echo isset($this->results[$answer['id']]) ? 
+                   round(( $this->results[$answer['id']]['cnt']*100)/$this->totalCount, 2) : 0;?>%)</span>
+                <span style="width: <?php echo isset($this->results[$answer['id']]) ? 
+                   round(( $this->results[$answer['id']]['cnt']*100)/$this->totalCount, 2) : 0;?>%;" class="index"></span>
+            </li>
+        <?php endforeach; ?>
+        </ul>
+    </div>
+</div>
+<?php endif;?>
+<script type="text/javascript">
+    function validatePoll()
+    {
+        var options = $('input.poll_vote');
+        for( i in options ) {
+            if(true == options[i].checked) {
+                return true;
+            }
+        }
+        return false;
+        
+    }
+</script>

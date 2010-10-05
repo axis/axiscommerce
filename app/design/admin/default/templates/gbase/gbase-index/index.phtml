@@ -1,0 +1,46 @@
+<div id="lightbox-info"
+     style="position: absolute;
+            visibility: hidden;
+            left: 215px;
+            top: 127px; 
+            width: 300px; 
+            height: 18px; 
+            background: #fff;"
+></div>
+
+<?php echo $this->error; ?>
+
+<?php
+$this->setButtons(array(
+    array(
+        'title' => Axis::translate('Axis_Admin')->__('Back'),
+        'onclick' => 'history.back()',
+        'class' => 'alt-button'
+    ),
+    array(
+        'title' => 'Revoke Token',
+        'class' => 'alt-button',
+        'onclick' => "Ext.Ajax.request({
+            url: '{$this->href('/gbase_index/revoke-token')}',
+            method: 'get',
+            callback: function() {
+                window.location = '{$this->href('/gbase_index')}';
+            }
+        })"
+    )
+));
+
+echo $this->formSelect('language', null, null, Axis_Collect_Language::collect());
+echo $this->formSelect('gCountry', null, null, $this->gCountries);
+echo $this->formSelect('targetCountry', null, null, $this->gCountries);
+echo $this->formSelect('currency', null, null, $this->currencies);
+?>
+<script type="text/javascript">
+    var localGrid, gbaseGrid, siteId;
+</script>
+
+<?php $this->headScript()->appendFile('/js/axis/admin/gbase/categoryTree.js')?>
+<?php $this->headScript()->appendFile('/js/axis/admin/gbase/localGrid.js')?>
+<?php $this->headScript()->appendFile('/js/axis/admin/gbase/gbaseGrid.js')?>
+<?php $this->headScript()->appendFile('/js/axis/admin/gbase/productTabs.js')?>
+<?php $this->headScript()->appendFile('/js/axis/admin/gbase/panel.js')?>

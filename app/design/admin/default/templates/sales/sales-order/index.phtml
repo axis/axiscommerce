@@ -1,0 +1,74 @@
+<script type="text/javascript">
+
+var sites = <?php echo Zend_Json::encode(Axis_Collect_Site::collect())?>;
+var orderStatuses = <?php echo Zend_Json::encode($this->orderStatuses)?>;
+
+var statusOrder = new Array();
+for (var i = 0; i < orderStatuses.length; i++) {
+    statusOrder.push([orderStatuses[i].status_id, orderStatuses[i].status_name]);
+}
+var statusSites = new Array();
+for (id in sites) {
+    statusSites.push([id, sites[id]]);
+}
+
+var totalsConfig = {
+//            subtotal    : true,
+    shipping    : <?php echo (true === Axis::config('orderTotal/shipping/enabled'))     ? 'true' : 'false'?>,
+    tax         : <?php echo (true === Axis::config('orderTotal/tax/enabled'))          ? 'true' : 'false'?>,
+    shippingTax : <?php echo (true === Axis::config('orderTotal/shipping_tax/enabled')) ? 'true' : 'false'?>
+
+};
+Ext.onReady(function() {
+    <?php if ($this->orderId) : ?>
+    Order.load(<?php echo $this->orderId ?>);
+    <?php endif; ?>
+});
+</script>
+<?php
+
+//plugins
+$this->headScript()->appendFile('/js/ext-ux/grid/GridSearch.js');
+$this->headScript()->appendFile('/js/ext-ux/data/calcRecord.js');
+
+$this->headScript()->appendFile('/js/axis/admin/sales/order/order.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/grid.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/panel.js');
+
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/myRow.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/boxGeneral.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/boxCustomer.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/boxBilling.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/boxDelivery.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/grid/window.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/grid.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/boxStatusInfo.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/boxSubtotalInfo.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/boxPaymentMethod.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo/boxShippingMethod.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/orderInfo.js');
+
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel/statusHistory.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form/panel.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window/form.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order/window.js');
+
+
+
+$this->headScript()->appendFile('/js/ext-ux/form/field/inlineField.js');
+
+$this->headLink()->appendStylesheet('/js/ext-ux/form/field/inlineField.css');
+
+?>
+
+<div id="ext-panel"></div>
+
+<div class="x-hidden">
+    <form id="print-form" method="post" action="<?php echo $this->href('sales_order/print')?>">
+       <input type="hidden" id="print-form-data" name="data">
+       <input type="hidden" id="print-invoice" name="invoice">
+       <input type="hidden" id="print-packingslip" name="packingslip">
+       <input type="hidden" id="print-label" name="label">
+       <input type="hidden" id="print-label-address-type" name="addressType">
+    </form>
+</div>

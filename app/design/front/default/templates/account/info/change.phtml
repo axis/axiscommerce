@@ -1,0 +1,40 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<?php
+$this->headScript()->appendFile('/js/jquery/datepicker/ui.datepicker.js');
+$this->headLink()->appendStylesheet('/js/jquery/datepicker/ui.datepicker.css');
+
+echo $this->form->render($this); 
+?>
+
+<script type="text/javascript">
+function togglePasswordForm(status) {
+    $('#change_password_toggle').attr('checked', status);
+    if (status) {
+        $('#fieldset-change_password').show();
+        $('#fieldset-change_password input').removeAttr('disabled');
+    } else {
+        $('#fieldset-change_password').hide();
+        $('#fieldset-change_password input').attr('disabled', 'disabled');
+    }
+}
+
+$("#form-info").validate({
+    rules: {
+        password: {
+            required: true
+        },
+        password_confirm: {
+            required: true,
+            equalTo: '#password'
+        }
+    }
+});
+
+$(document).ready(function($){
+    if ($('#fieldset-change_password .errors').length) {
+        togglePasswordForm(1);
+    }
+    $('.input-date').datepicker({ dateFormat: 'yy-mm-dd'});
+});
+</script>

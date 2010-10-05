@@ -1,0 +1,20 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<a href="<?php echo $this->hurl(array(
+    'product' => array('value' => $this->productId, 'seo' => $this->hurl),
+    'controller' => 'catalog',
+    'action' => 'product'
+), false, true) ?>">Back to the product info</a>
+
+<?php echo $this->formReview->render($this) ?>
+
+<?php if (!Axis::single('community/review')->canAdd()) : ?>
+<a href="<?php echo $this->href('review/login') ?>"
+    rel="nofollow"
+    title="<?php echo $this->translate('community')->__("Log in to write a review") ?>"
+><span><?php echo $this->translate('community')->__("Log in to write a review") ?></span></a>
+<?php endif ?>
+<script type="text/javascript">
+    $("#form-review").validate();
+    $('#form-review .review-rating').ratings();
+</script>

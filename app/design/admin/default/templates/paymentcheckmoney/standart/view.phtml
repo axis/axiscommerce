@@ -1,0 +1,6 @@
+<dl class="form">
+    <dt><?php echo $this->translate('checkout')->__("Make Check payable to")?></dt>
+    <dd><?php echo $this->payment->config('sendCheckTo') ?></dd>
+    <dt><?php echo $this->translate('checkout')->__("Send Check to")?></dt>
+    <dd><?php echo $this->payment->config('payTo') ?></dd>
+</dl>

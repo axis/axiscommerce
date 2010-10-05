@@ -1,0 +1,100 @@
+<script type="text/javascript">
+function validatePoll(element) {
+    var options = $('input.poll-vote', element);
+    for(var i in options) {
+        if(true == options[i].checked) {
+            return true;
+        }
+    }
+    return false;
+}
+</script>
+<?php echo $this->title($this->pageTitle) ?>
+
+<?php if (count($this->questions) == 1) {?>
+    <a rel="nofollow" href="<?php echo $this->href('/poll');?>">
+        <?php echo $this->translate('poll')->__('All Polls')?>
+    </a>
+<?php } ?>
+
+<?php if (count($this->questions)) : $i = 0; $columnCount = 2; ?>
+    <?php foreach ($this->questions as $question) :
+        
+        if ($i++%$columnCount == 0) : ?>
+            <ul class="grid-row poll-listing">
+        <?php endif; ?>
+        <?php 
+        echo '<li class="entry poll-entry">';
+        
+        if (!$question['status']) : /* if question is active for voting */ ?>
+            <form onsubmit="return validatePoll(this);"
+                  method="post" 
+                  action="<?php echo $this->href('/poll/index/save') ?>"
+            ><div>
+                <h5><?php  echo $question['question']; ?></h5>
+                <?php echo $this->formHidden('questionId[]', $question['id']); ?> 
+                <ol class="poll-answers">
+                <?php foreach ($question['answer'] as $answer) : ?>
+                    <li>
+                        <input id="vote-<?php echo $answer['id'];?>" 
+                               name="vote[]" 
+                               type="<?php echo ($question['type'])? 'checkbox' : 'radio'?>" 
+                               value="<?php echo $answer['id'];?>"
+                               class="poll-vote" 
+                        />
+                        <label for="vote-<?php echo $answer['id'];?>">
+                            <?php echo $answer['answer'];?>
+                        </label> 
+                    </li>
+                <?php endforeach; ?>
+                </ol>
+                <div class="actions">
+                    <a href="<?php echo $this->href('poll/index/index/showResult/1/questionId/' . $question['id'])?>">
+                        <?php echo $this->translate('poll')->__('View Results');?>
+                    </a>
+                    <?php echo $this->button($this->translate('poll')->__('Vote'), array(
+                        'class' => 'button btn-vote f-right',
+                        'type' => 'submit'
+                    ), 'button') ?>
+                </div>
+            </div></form>
+        <?php else : /* if (!$question['status']) */ ?>
+            <h5><?php echo $question['question']; ?></h5>
+            
+            <ul class="chart-list">
+            <?php foreach ($question['answer'] as $answer) : ?>
+                <li>
+                    <p><?php echo $answer['answer'];?></p>
+                    <p class="chart-list-bar"><?php
+                        $percent = false;
+                        $count = 0;
+                        if (isset($question['results'][$answer['id']])) :
+                            $count = $question['results'][$answer['id']]['cnt'];
+                            $percent = round($count * 100 / $question['totalCount'], 2);
+                        endif;
+
+                        ?><span class="count"><?php
+                            echo $count;?> (<?php echo $percent ? $percent : 0;?>%)
+                        </span>
+                        <span class="index-wrapper">
+                            <span style="width: <?php
+                                echo $percent ? $percent . '%' : '1px'?>;" class="index">
+                                <?php echo $this->translate('poll')->__('overall')?>
+                            </span>
+                        </span>
+                    </p>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+            
+        <?php endif;?>
+        
+        <?php echo '</li>'; ?>
+        
+        <?php if ($i%$columnCount == 0) : ?>
+            </ul>
+        <?php endif;?> 
+    
+    <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

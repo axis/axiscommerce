@@ -1,0 +1,46 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<form method="post" id="form-login" action="<?php echo $this->href('/account/auth/login', true) ?>">
+<div class="col2-set login-box">
+    <div class="col-1">
+        <div class="content">
+            <h4><?php echo $this->translate('account')->__("New Customers")?></h4>
+            <p><?php echo $this->translate('account')->__("By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.")?></p>
+        </div>
+        <div class="button-set">
+            <a class="create-account"
+                href="<?php echo $this->href('/account/auth/register', true) ?>"
+                rel="nofollow"
+                ><?php echo $this->translate('account')->__('Create an Account')?>
+            </a>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="content">
+            <h4><?php echo $this->translate('account')->__("Registered Customers")?></h4>
+            <p><?php echo $this->translate('account')->__("If you have an account with us, please log in.")?></p>
+            <dl> 
+                <dt><label for="username"><?php echo $this->translate('account')->__('Email')?></label></dt>
+                <dd><input type="text" id="username" name="username" class="input-text required email"/></dd>
+                <dt><label for="password"><?php echo $this->translate('account')->__('Password')?></label></dt>
+                <dd><input type="password" id="password" name="password" class="input-text required"/></dd>
+            </dl>
+        </div>
+        <div class="button-set">
+            <a class="f-left forgot-password"
+                href="<?php echo $this->href('/account/forgot/register', true) ?>"
+                rel="nofollow"
+                >
+                <?php echo $this->translate('account')->__('Forgot Your Password?')?>
+            </a>
+            <?php echo $this->button($this->translate('account')->__('Login'), array(
+                'class' => 'button btn-login',
+                'type' => 'submit'
+            ), 'button') ?>
+        </div>
+    </div>
+</div>
+</form>
+<script type="text/javascript">
+$("#form-login").validate();
+</script>

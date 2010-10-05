@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="robots" content="NOINDEX,NOFOLLOW" />
+    <link rel="icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <title><?php echo $this->translate('admin')->__('Login to Axis administrator panel') ?></title>
+    {{headStyle}}
+    {{headLink}}
+    {{headScript}}
+    <?php $this->headLink()->appendStylesheet('auth.css') ?>
+    <?php $this->addFilter('Placeholder') ?>
+</head>
+<body>
+    <div class="login-window">
+        <div class="head"><h2>Login</h2><p class="powered">Powered by Axis</p></div>
+        <div class="content">
+            <?php echo $this->message(); ?>
+            <form class="form-login axis-form" action="<?php echo $this->href('/auth/login');?>" method="post">
+                <p>
+                <label for="username"><?php echo $this->translate('admin')->__('Username')?></label>
+                <input class="input-text required" type="text" id="username" name="username" tabindex="1"/>
+                </p>
+                <p>
+                <label for="password"><?php echo $this->translate('admin')->__('Password')?></label>
+                <input class="input-text required" type="password" id="password" name="password" />
+                </p>
+                <p><a href="<?php echo $this->href('/forgot/register');?>"><?php echo $this->translate('admin')->__('Forgot your password?')?></a></p>
+                <button type="submit" class="button btn-submit"><span>Login</span></button>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.onload = function() { document.getElementById('username').focus(); }
+    </script>
+</body>
+</html>

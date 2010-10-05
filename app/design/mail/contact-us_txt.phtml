@@ -1,0 +1,15 @@
+<?php echo $this->translate('core')->__($this->text) ?> 
+ 
+<?php if (!empty($this->custom_info)) { ?>
+<?php echo $this->translate('core')->__('Custom Info') ?> : <?php echo $this->translate('core')->__($this->custom_info) ?> 
+<?php } ?>
+ 
+<?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toPhpString('Y'); ?> <?php echo $this->site ?>
+<?php echo $this->translate('core')->__("Powered by %s v. %s", "Axis", Axis::app()->getVersion()) ?>
+  
+<?php echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.') ?> 
+<?php echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to')
+    . '  ' . $this->from ?> 
+  
+<?php echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.')?>  
+<?php echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.')?>

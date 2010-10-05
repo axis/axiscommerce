@@ -1,0 +1,10 @@
+<html>
+    <body><?php echo $this->translate('PaymentPaypal')->__('You will be redirected to PayPal in a few seconds.')?>
+        <form action="<?php echo Axis::single('checkout/checkout')->payment()->config()->url ?>" id="paypal_standard_checkout" name="paypal_standard_checkout" method="POST">
+            <?php foreach (Axis::single('checkout/checkout')->payment()->getStorage()->formFields as $field => $value) :?>
+            <input id="<?php echo $field?>" name="<?php echo $field?>" value="<?php echo $value?>" type="hidden"/>
+            <?php endforeach;?>
+        </form>
+        <script type="text/javascript">document.getElementById("paypal_standard_checkout").submit();</script>
+    </body>
+</html>

@@ -1,0 +1,158 @@
+<?php
+//$this->headScript()->appendFile('/js/jquery/jquery.template.js');
+$this->headScript()
+    ->appendFile('js/jquery/jquery.selectboxes.js')
+    ->appendFile('js/axis/checkout/one-page.js')
+    ->appendFile('js/axis/checkout/creditCard.js');
+?>
+
+<script type="text/javascript">
+Zones = <?php echo Zend_Json_Encoder::encode($this->formAddress->getZones()); ?>;
+$(document).ready(function() {
+    Customer.logged = <?php echo Axis::getCustomerId() ? 'true' : 'false';?>;
+
+    Address.formId  = '<?php echo $this->formAddress->getAttrib('id'); ?>';
+    Address.countryZones();
+    <?php if (Axis::getCustomerId()) : ?>
+        $('#' + Address.formId).submit(Address.submit);
+    <?php endif;?>
+    $('#address_cancel').click(Address.cancel);
+
+    $('#co-accordion div.step').hide();
+    Checkout.Step.start();
+});
+</script>
+
+<?php echo $this->title($this->pageTitle) ?>
+
+<div id="checkout-accordion">
+
+    <h3 class="checkout-step-title <?php
+        if (Axis::getCustomerId()) echo 'no-display';?>" id="title-login">
+        <?php echo $this->translate('checkout')->__("Login/Register")?>
+    </h3>
+    <div id='step-login' class="step">
+        <div class="col2-set">
+            <div class="col-1">
+                <?php echo $this->render('checkout/onepage/form-guest.phtml');?>
+            </div>
+            <div class="col-2">
+                <?php echo $this->render('checkout/onepage/form-login.phtml');?>
+            </div>
+        </div>
+    </div>
+
+    <div id="step-address-book" style="display:none;">
+        <h3 class="title no-display" id="title-address-book">
+            <?php echo $this->translate('checkout')->__('Create/Edit Address')?>
+        </h3>
+        <div id="block-form-new-address">
+            <?php if (Axis::getCustomerId()) : ?>
+            <?php echo $this->formAddress->render($this); ?>
+            <script type="text/javascript">
+                $('#form-new-address').validate();
+            </script>
+            <?php endif;?>
+        </div>
+    </div>
+    
+    <h3 class="checkout-step-title" id="title-billing-address">
+        <?php echo $this->translate('checkout')->__('Billing Address')?>
+    </h3>
+    <div id='step-billing-address' class="step">
+        <div id="billing-radios">
+            <div id="billing-address"></div>
+        </div>
+        <!--<div class="a-right ship-to-same"> <?php // invalid logic for this block ?>
+            <input type="hidden" value="0" name="use_as_delivery"/>
+            <input id="use_as_delivery" class="input-checkbox"
+                   type="checkbox" value="1" name="use_as_delivery"/>
+            <label class="optional" for="use_as_delivery">
+                <?php echo $this->translate('checkout')->__('Ship to same address');?>
+            </label>
+        </div>-->
+        <div class="block-button-continue">
+            <?php echo $this->button($this->translate('checkout')->__('Create New Address'), array(
+                'class' => 'alt-button btn-create-address',
+                'href' => 'javascript:void(0)',
+                'onclick' => 'Address.create();'
+            )) ?>
+            
+            <div class="loading-bar">
+                <span><?php echo $this->translate('checkout')->__('loading...')?></span>
+            </div>
+            <?php echo $this->button($this->translate('checkout')->__('Continue'), array(
+                'class' => 'button btn-continue',
+                'type' => 'button',
+                'onclick' => "Checkout.Billing.setAddress(this);"
+            ), 'button') ?>
+        </div>
+    </div>
+    
+    <h3 class="checkout-step-title" id="title-delivery-address">
+        <?php echo $this->translate('checkout')->__('Delivery Address')?>
+    </h3>
+    <div id='step-delivery-address' class="step">
+        <div id="delivery-radios">
+            <div id="delivery-address"></div>
+        </div>
+        <div class="block-button-continue">
+            <?php echo $this->button($this->translate('checkout')->__('Create New Address'), array(
+                'class' => 'alt-button btn-create-address',
+                'href' => 'javascript:void(0)',
+                'onclick' => 'Address.create();'
+            )) ?>
+            <div class="loading-bar">
+                <span><?php echo $this->translate('checkout')->__('loading...')?></span>
+            </div>
+            <?php echo $this->button($this->translate('checkout')->__('Continue'), array(
+                'class' => 'button btn-continue',
+                'type' => 'button',
+                'onclick' => "Checkout.Shipping.setAddress(this);"
+            ), 'button') ?>
+        </div>
+    </div>
+
+    <h3 class="checkout-step-title" id="title-shipping">
+        <?php echo $this->translate('checkout')->__('Shipping Method')?>
+    </h3>
+    <div id="step-shipping" class="step">
+       <div id="block-shippingMethod"></div>
+       <div class="block-button-continue">
+           <div class="loading-bar">
+               <span><?php echo $this->translate('checkout')->__('loading...')?></span>
+           </div>
+           <?php echo $this->button($this->translate('checkout')->__('Continue'), array(
+                'class' => 'button btn-continue',
+                'type' => 'button',
+                'onclick' => "Checkout.Shipping.setMethod(this);"
+            ), 'button') ?>
+       </div>
+    </div>
+
+    <h3 class="checkout-step-title" id="title-payment">
+        <?php echo $this->translate('checkout')->__('Payment Method')?>
+    </h3>
+    <div id="step-payment" class="step">
+        <form id="form-paymentMethod" action="">
+            <div id="block-paymentMethod"></div>
+        </form>
+       <div class="block-button-continue">
+           <div class="loading-bar">
+               <span><?php echo $this->translate('checkout')->__('loading...')?></span>
+           </div>
+           <?php echo $this->button($this->translate('checkout')->__('Continue'), array(
+                'class' => 'button btn-continue',
+                'type' => 'button',
+                'onclick' => "Checkout.Billing.setMethod(this);"
+            ), 'button') ?>
+       </div>
+    </div>
+
+    <h3 class="checkout-step-title" id="title-confirmation">
+       <?php echo $this->translate('checkout')->__('Confirmation')?>
+    </h3>
+    <div id='step-confirmation' class="step">
+        <div id="block-confirmation"></div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+<?php
+// plugins
+$this->headLink()->appendStylesheet('js/ext-ux/multiselect/multiselect.css');
+$this->headScript()->appendFile('js/ext-ux/multiselect/MultiSelect.js');
+$this->headScript()->appendFile('js/ext-ux/multiselect/DDView.js');
+
+// gui
+$this->headScript()->appendFile('js/axis/admin/customer/index/customer.js')
+    ->appendFile('js/axis/admin/customer/index/customer/combos.js')
+    ->appendFile('js/axis/admin/customer/index/customer/grid.js')
+    ->appendFile('js/axis/admin/customer/index/panel.js')
+    ->appendFile('js/axis/admin/customer/index/customer/addressWindow.js')
+    ->appendFile('js/axis/admin/customer/index/customer/tabs/general.js')
+    ->appendFile('js/axis/admin/customer/index/customer/tabs/customFields.js')
+    ->appendFile('js/axis/admin/customer/index/customer/tabs/address.js')
+    ->appendFile('js/axis/admin/customer/index/customer/tabs/order.js')
+    ->appendFile('js/axis/admin/customer/index/customer/tabs/shoppingCart.js')
+    ->appendFile('js/axis/admin/customer/index/customer/tabs/wishlist.js')
+    ->offsetSetFile(10000, 'js/axis/admin/customer/index/customer/window.js')
+    ;
+
+// should be added automatically by modular admin layout system
+if (in_array('Axis_Tag', array_keys(Axis::app()->getModules()))) {
+    $this->headScript()->offsetSetFile(500, 'js/axis/admin/tag/customer_index/tabs/tag.js');
+}
+if (in_array('Axis_Community', array_keys(Axis::app()->getModules()))) {
+    $this->headScript()->offsetSetFile(510, 'js/axis/admin/community/customer_index/tabs/review.js');
+}
+?>
+
+<script type="text/javascript">
+var customerGroups = [
+    <?php
+    $str = '';
+    foreach (Axis_Collect_CustomerGroup::collect() as $id => $name) {
+        $str .= "[$id, '$name'],\n";
+    }
+
+    echo substr($str, 0, -2);
+    ?>
+];
+var sites = [
+    <?php
+    $str = '';
+    foreach (Axis_Collect_Site::collect() as $id => $name) {
+        $str .= "[$id, '$name'],\n";
+    }
+
+    echo substr($str, 0, -2);
+    ?>
+];
+var customFormFields = [
+<?php
+    $fi = "";
+    $readerFields = '';
+    foreach ($this->userForm as $fs) {
+        $fi .=
+        "{
+            xtype: 'fieldset',
+            title: '{$fs['title']}',
+            autoHeight: true,
+            collapsible: true,
+            hidden: " . ($fs['is_active'] ? 'false' : 'true') . ",
+            collapsed: " . ($fs['is_active'] ? 'false' : 'true') . ",
+            " . $this->fieldsetItems($fs, $this->valueSet) ."
+            defaults: {width: 300}
+        },\n";
+        foreach ($fs['fields'] as $fld) {
+            $readerFields .= "{name: 'custom_fields[field_" . $fld['id'] . "]', mapping: 'custom_fields.field_" . $fld['id'] . "'},\n";
+        }
+    }
+    echo substr($fi, 0, -2);
+?>];
+var customFormReader = [
+    <?php echo substr($readerFields, 0, -2); ?>
+];
+
+<?php if ($this->customerId) : ?>
+Ext.onReady(function() {
+    Customer.load(<?php echo $this->customerId ?>);
+})
+<?php endif; ?>
+</script>

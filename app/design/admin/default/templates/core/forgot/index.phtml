@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="robots" content="NOINDEX,NOFOLLOW" />
+    <link rel="icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <title><?php echo $this->translate('admin')->__("Change %s's password: Axis administrator panel", $this->username) ?></title>
+    <link href="<?php echo $this->skinUrl('css/auth.css') ?>" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <div class="login-window">
+        <div class="head"><h2><?php echo $this->translate('admin')->__("Change %s's password", $this->username) ?></h2><p class="powered">Powered by Axis</p></div>
+        <div class="content">
+            <?php echo $this->message(); ?>
+            <form class="form-forgot-confirm axis-form" action="<?php echo $this->href('/forgot/confirm');?>" method="post">
+                <input type="hidden" id="hash" value="<?php echo $this->hash ?>" name="hash"/>
+                <input type="hidden" id="username" value="<?php echo $this->username ?>" name="username"/>
+                <p>
+                    <label for="password"><?php echo $this->translate('admin')->__('New password') ?></label>
+                    <input class="input-text required" type="password" id="password" name="password"/>
+                </p>
+                <p>
+                    <label for="password_confirm"><?php echo $this->translate('admin')->__('Confirm new password') ?></label>
+                    <input class="input-text required" type="password" id="password_confirm" name="password_confirm"/>
+                </p>
+                <p><a href="<?php echo $this->href('/');?>"><?php echo $this->translate('admin')->__('Go to login page')?></a></p>
+                <button class="button btn-submit" type="submit"><span><?php echo $this->translate('admin')->__('Change') ?></span></button>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.onload = function() { document.getElementById('password').focus(); }
+    </script>
+</body>
+</html>

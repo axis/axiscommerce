@@ -1,0 +1,31 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<form method="post" action="<?php echo $this->href('/account/forgot/confirm', true);?>" id="form-forgot-confirm">
+<dl class="zend_form">
+    <dd>
+        <input type="hidden" id="hash" value="<?php echo $this->hash; ?>" name="hash"/>
+        <fieldset id="fieldset-login"><legend><?php echo $this->translate('account')->__('Change password')?></legend>
+            <dl>
+                <dt>
+                    <label class="required" for="password"><?php echo $this->translate('account')->__('New password')?><span class="required">*</span>:</label>
+                </dt>
+                <dd>
+                    <input type="password" value="" id="password" name="password"/>
+                </dd>
+                <dt>
+                    <label class="optional" for="password_confirm"><?php echo $this->translate('account')->__('Confirm new password')?><span class="required">*</span>:</label>
+                </dt>
+                <dd>
+                    <input type="password" value="" id="password_confirm" name="password_confirm"/>
+                </dd>
+            </dl>
+        </fieldset>
+    </dd>
+    <dd>
+        <?php echo $this->button($this->translate('account')->__('Submit'), array(
+            'class' => 'button btn-forgot-password-confirm',
+            'type' => 'submit'
+        ), 'button') ?>
+    </dd>
+</dl>
+</form>

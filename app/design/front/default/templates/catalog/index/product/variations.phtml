@@ -1,0 +1,29 @@
+<?php if (count($this->product['optionsLabels'])) : ?>
+<div class="product-variations">
+    <dl class="product-variations-list">
+    <?php foreach ($this->product['optionsLabels'] as $optionId => $option) : ?>
+        <dt>
+            <label for="option-<?php echo $this->escape($optionId) ?>">
+            <?php if (!empty($option['description'])) : ?> 
+                <acronym title="<?php echo $this->escape($option['description']) ?>"
+                    ><?php echo $this->escape($option['name']) ?></acronym>
+            <?php else: ?>
+                <?php echo $this->escape($option['name']) ?>
+            <?php endif; ?>
+            </label>
+        </dt>
+        <dd>
+             <select name="attribute[<?php echo $this->escape($optionId);?>]"
+                 id="option-<?php echo $this->escape($optionId) ?>"
+                 class="sub-price"
+             >
+                 <option value="0"><?php echo $this->translate('catalog')->__('Choose option') ?></option>
+                 <?php foreach ($this->product['optionsAssign'][$optionId] as $valueLabelsId) : ?>
+                 <option value="<?php echo $valueLabelsId ?>"><?php echo $this->product['valuesLabels'][$valueLabelsId] ?></option>
+                 <?php endforeach; ?>
+             </select>
+        </dd>
+    <?php endforeach; ?>
+    </dl>
+</div>
+<?php endif; ?>

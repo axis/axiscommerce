@@ -1,0 +1,32 @@
+<div class="addto-box">
+    <?php if ($this->product['stock']['is_saleable']) : ?>
+    <div class="addto-cart">
+        <?php echo $this->translate('catalog')->__('Quantity')?>: 
+        <input type="text" name="quantity" 
+            value="<?php echo $this->product['stock']['min_qty_allowed'] > 0 ? $this->product['stock']['min_qty_allowed'] : 1 ?>"
+            size="2" class="input-text"
+        />
+        <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(
+            'class' => 'alt-button btn-add-to-cart',
+            'type' => 'submit'
+        ), 'button') ?>
+    </div>
+    <?php else : ?>
+    <div class="out-of-stock"><?php echo $this->translate('catalog')->__('Out of stock') ?></div>
+    <?php endif; ?>
+    <ul>
+        <li>
+            <a class="add-to-wishlist" 
+                href="<?php echo $this->href('account/wishlist/add/id/' . $this->product['id'], true);?>"
+                rel="nofollow"
+                ><?php echo $this->translate('catalog')->__('Add to Wishlist') ?></a>
+        </li>
+        <li>
+            <a class="add-to-compare" 
+                href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/') . $this->product['id']?>"
+                rel="nofollow">
+                <span><?php echo $this->translate('catalog')->__('Add to Сompare') ?></span>
+            </a>
+        </li>
+    </ul>
+</div>

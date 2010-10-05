@@ -1,0 +1,29 @@
+#nav { font-size: 1em; }
+#nav a {display: block; text-decoration: none; }
+#nav span { font: bold 1em Verdana, Geneva, Arial, Helvetica, sans-serif;  color: #c3cdd4; cursor: default; padding: 10px 10px 10px 8px; display: block; }
+#nav a span { cursor: pointer; }
+#nav span:hover { text-decoration: none; color: #fff; }
+#nav li { float: left; position: relative; color: #c3cdd4; z-index: 10; }
+#nav li:hover { z-index: 20; }
+#nav li:hover > ul { display: block; z-index: 20; }
+
+#nav ul { border: 1px solid #5d7993; background: #fff; top: 33px; left: 1px; position: absolute; z-index: 10; display: none; }
+
+/*root  level*/
+#nav li a {  }
+#nav li span { background: url(../images/nav.gif) no-repeat 100% -33px; }
+#nav li.submenu > span { padding-right: 19px; background-position: 100% 5px; }
+#nav li.submenu:hover > span { background-position: 100% -71px; }
+
+/*second level*/
+#nav ul li { width: 15em; background: #f0f3f5 url(../images/menudiv.gif) repeat-x 0 0; padding-top: 1px; text-align: left; }
+#nav ul li:first-child { background-image: none; padding-top: 0; }
+#nav ul li a { text-transform: capitalize; text-decoration: none; font-weight: normal; }
+#nav ul li span { padding: 7px 5px; color: #083346; background-color: #f0f3f5; background-position: -1000px -1000px; }
+#nav ul li:hover > span,
+#nav ul li span:hover { color: #083346; background-color: #fff; }
+#nav ul li.submenu > span { background-position: 100% -112px; }
+#nav ul li.submenu > a:hover {  }
+
+/* third level */
+#nav ul ul { top: 4px; left: 70px; }

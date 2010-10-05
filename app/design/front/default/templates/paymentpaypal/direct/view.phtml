@@ -1,0 +1,14 @@
+<?php if($cc = Axis::single('PaymentCreditCard/Standard_Order')->find($this->order['id'])->current()) : 
+    
+    $cc = $cc->toArray();
+    $crypt = Axis_Crypt::factory();
+    $ccNumber = $crypt->decrypt($cc['cc_number']);
+    $ccNumber = str_repeat('X', (strlen($ccNumber) - 4)). substr($ccNumber, -4) ?>
+    <br/>
+    <?php echo $this->translate('checkout')->__("Credit Card Type");?> : <?php echo $crypt->decrypt($cc['cc_type'])?> <br />
+    <?php echo $this->translate('checkout')->__("Card Owner's Name");?> : <?php echo $crypt->decrypt($cc['cc_owner'])?> <br />
+    <?php echo $this->translate('checkout')->__("Card Number");?> : <?php echo $ccNumber?> <br />
+    <?php echo $this->translate('checkout')->__("Expiration Date");?> : <?php echo $crypt->decrypt($cc['cc_expires'])?> <br />
+    <?php if (!empty($cc['cc_cvv'])) : echo $this->translate('checkout')->__("Cvv");?> :
+        <?php echo $crypt->decrypt($cc['cc_cvv'])?> <br /><?php endif;?>
+<?php endif; ?>

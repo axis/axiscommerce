@@ -1,0 +1,15 @@
+ul#nav li ul li a {
+	display: block;
+}
+ul#nav li ul li a:hover {
+	color: #000;
+	background: #f1f1f1 !important;
+}
+#form-discount legend {
+  display: none;
+}
+#product-conditions-block fieldset h3 {
+	font-size: 13px;
+	color: #666;
+	font-weight: bold;
+}

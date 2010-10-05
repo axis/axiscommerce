@@ -1,0 +1,55 @@
+<?php if (count($this->box->getData('orders'))) : ?>
+<table width="100%" id="myorders-table" class="data-table">
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('sales')->__('Id')?></th>
+            <th><?php echo $this->translate('sales')->__('Date')?></th>
+            <th><?php echo $this->translate('sales')->__('Shipping')?></th>
+            <th><?php echo $this->translate('sales')->__('Order Total')?></th>
+            <th><?php echo $this->translate('sales')->__('Order Status')?></th>
+            <th><?php echo $this->translate('sales')->__('Actions')?></th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php
+    $index = 0;
+    foreach ($this->box->getData('orders') as $order):
+    $index++;
+    if ($index > 5) break;
+    ?>
+
+    <tr valign="top">
+        <td>
+            <?php echo $this->escape($order['id']); ?>
+        </td>
+        <td>
+            <?php echo $this->escape($order['date_purchased_on']); ?>
+        </td>
+        <td>
+            <?php echo $this->escape($order['delivery_firstname'] . ' ' . $order['delivery_lastname']); ?>
+        </td>
+        <td>
+            <?php echo $this->currency($order['order_total']); ?>
+        </td>
+        <td>
+            <?php echo $this->escape($order['order_status_name']); ?>
+        </td>
+        <td>
+            <a href="<?php echo $this->href('/account/order/view/orderId/' . $order['id'], true);?>"
+                ><?php echo $this->translate('sales')->__('View')?></a>
+            <?php /* <a href="<?php echo $this->href('checkout/cart/reorder/orderId/' . $order['id'], true); ?>"
+                >Reorder</a> */ ?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="6" align="right">
+            <a href="<?php echo $this->href('/account/order/index', true) ?>"
+                ><?php echo $this->translate('sales')->__('View All')?></a>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+<?php endif; ?>

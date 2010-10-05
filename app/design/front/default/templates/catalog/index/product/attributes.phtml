@@ -1,0 +1,44 @@
+<?php echo $this->render('index/product/proporties.phtml') ?>
+
+<?php echo $this->render('index/product/modifiers.phtml') ?>
+
+<?php echo $this->render('index/product/variations.phtml') ?>
+
+<?php $hasAttr = count($this->product['optionsAssign']) || 
+                 count($this->product['modifiers']) ||
+                 count($this->product['variationsAssign']) ?>
+
+<?php if ($hasAttr): ?>
+
+<script type="text/javascript"><!--
+var prices = <?php echo Zend_Json_Encoder::encode($this->product['price']) ?>;
+var variationOptions = {
+    assigns : <?php echo Zend_Json_Encoder::encode($this->product['variationsAssign']); ?>,
+    options : <?php echo Zend_Json_Encoder::encode($this->product['optionsAssign']); ?>,
+    optionsLabels : <?php echo Zend_Json_Encoder::encode($this->product['optionsLabels']); ?>,
+    valuesLabels : <?php echo Zend_Json_Encoder::encode($this->product['valuesLabels']); ?>,
+    textSelect : '<?php echo $this->translate('catalog')->__('Choose option')?>'
+};
+
+<?php if (isset($this->product['discount_rules'])) : ?>
+var discountRules = <?php echo Zend_Json_Encoder::encode($this->product['discount_rules']) ?>;
+var discount = <?php echo $this->product['price_discount']?>;
+<?php endif ?>
+
+$(document).ready(function() {
+    Product.Attributes.init(prices, {
+        'container': '.product-page-details',
+        'oldPriceTemplate': '<?php echo '<p class="old-price"><span class="label">'
+            . $this->translate('catalog')->__("Regular price") . ':</span><span class="price"></span></p>'?>',
+        'specialPriceTemplate': '<?php echo '<p class="special-price"><span class="label">'
+            . $this->translate('catalog')->__("Special price") . ':</span><span class="price"></span></p>'?>',
+        'savePriceTemplate': '<?php echo '<p class="save-price"><span class="label">'
+            . $this->translate('catalog')->__("You save") . ':</span><span class="price"></span></p>'?>',
+        'regularPriceTemplate': '<?php echo '<p class="regular-price"><span class="label">'
+            . $this->translate('catalog')->__("Price") . ':</span><span class="price"></span></p>'?>'
+    });
+
+});
+--></script>
+
+<?php endif ?>

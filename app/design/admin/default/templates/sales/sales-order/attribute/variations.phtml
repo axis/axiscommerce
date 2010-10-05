@@ -1,0 +1,34 @@
+<?php
+$variations = $this->product['variationsAssign'];
+$optionLabels = $this->product['optionsLabels'];
+$valueLabels = $this->product['valuesLabels'];
+if (count($variations)) :
+?>
+    <div class="product-variations">
+        <select id="varaition[id]" name="varaition[id]">
+            <option selected="selected" value="0"></option>
+            <?php foreach ($variations as $variationId => $options) :
+                $variationPriceRule = $this->product['price']['variation'][$variationId];
+          ?><option value="<?php echo $variationId?>"><?php
+
+                $delimiter = ', '; $i = 0; $conutOptions = count($options);
+                foreach ($options as $optionId => $valueId) {
+                    $i++;
+                    if ($i === $conutOptions) {
+                        $delimiter = '';
+                    }
+                    echo $optionLabels[$optionId]['name'] . ' : ' . $valueLabels[$valueId] . $delimiter;
+
+                }
+                if(0 != $variationPriceRule['difference']) {
+                    echo ' ' . ( $variationPriceRule['difference'] > 0 ? '+' : '-') . ' ' .
+                        Axis::single('locale/currency')->toCurrency(
+                            $variationPriceRule['difference']
+                        );
+                    }
+                ?></option>
+            <?php endforeach;?>
+        </select>
+
+    </div>
+<?php endif; ?>

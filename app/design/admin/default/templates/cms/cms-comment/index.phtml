@@ -1,0 +1,40 @@
+<?php 
+// gui
+$this->headScript()->appendFile('/js/axis/admin/cms/comment/toolbar.js');
+$this->headScript()->appendFile('/js/axis/admin/cms/comment/tree.js');
+$this->headScript()->appendFile('/js/axis/admin/cms/comment/grid.js');
+$this->headScript()->appendFile('/js/axis/admin/cms/comment/editor.js');
+$this->headScript()->appendFile('/js/axis/admin/cms/comment/imageWindow.js');
+$this->headScript()->appendFile('/js/axis/admin/cms/comment/panel.js');
+
+echo $this->formSelect('status-combo', null, null, $this->status); 
+?>
+
+<script type="text/javascript">
+var statuses = <?php echo Zend_Json_Encoder::encode($this->status); ?>;
+var status = new Array();
+for (var i = 0; i < statuses.length; i++) {
+    status[i] = new Array();
+    status[i] = [i, statuses[i]];
+}
+
+var menuStatus = [
+<?php
+    $i = 0;
+    $menu = "";
+    foreach ($this->status as $value) {
+        $menu .= "{
+            text: '$value',
+            cls: 'x-btn-text-icon',
+            handler: function() {
+                setStatus($i);
+            }
+        },\n"; 
+        $i++;
+    }
+    echo substr($menu, 0, -2);
+?>];
+
+var commentGrid, commentWindow, commentTree, comment, page, imageWindow;
+</script>
+

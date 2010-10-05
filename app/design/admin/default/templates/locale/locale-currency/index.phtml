@@ -1,0 +1,20 @@
+<?php 
+echo $this->formSelect('currency-display', null, null, Axis_Locale_Model_Currency::getDisplayOptions());
+echo $this->formSelect('currency-position', null, null, Axis_Locale_Model_Currency::getPositionOptions());
+echo $this->formSelect('currency', null, null, Axis_Collect_ZendCurrency::collect());
+echo $this->formSelect('locale', null, null, Axis_Collect_ZendLocale::collect());
+?>
+
+<script type="text/javascript">
+function renderDisplay(value){
+    var values = Ext.decode('<?php echo Zend_Json::encode(Axis_Locale_Model_Currency::getDisplayOptions());?>');
+    return values[value] ? values[value] : 'Default';  
+};
+    
+function renderPosition(value){
+    var values = Ext.decode('<?php echo Zend_Json::encode(Axis_Locale_Model_Currency::getPositionOptions());?>');
+    return values[value] ? values[value] : 'Default';  
+};
+</script>
+
+<?php $this->headScript()->appendFile('/js/axis/admin/locale/currency.js'); ?>

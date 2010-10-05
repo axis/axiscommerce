@@ -1,0 +1,22 @@
+<?php 
+//plugins
+$this->headScript()->appendFile('/js/ext-ux/multiselect/DDView.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order-status.js');
+$this->headScript()->appendFile('/js/axis/admin/sales/order-status-window.js'); ?>
+
+<script type="text/javascript">
+var orderStatusChild;
+//field titles
+var fieldTitle = [
+<?php
+$js = "";
+foreach (Axis_Collect_Language::collect() as $langId => $language) {
+    $js .= "{name: 'status_name[" . $langId . "]',";
+    $js .= "fieldLabel: '" . $language . "',";
+    $js .= "xtype: 'textfield',";
+    $js .= "anchor: '98%'},";
+}
+echo substr($js, 0, -1);
+?>
+];
+</script>

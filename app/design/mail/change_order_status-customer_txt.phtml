@@ -1,0 +1,26 @@
+<?php echo $this->translate('core')->__('Dear') . ', ';
+    if ($this->firstname && $this->lastname) {
+        echo $this->firstname . ' ' . $this->lastname;
+    } else {
+        echo $this->translate('core')->__('customer');
+    }
+?> 
+<?php echo $this->translate('core')->__('Your order (#%s) status has been changed to %s', $this->order['number'], $this->status) ?>
+<?php if(!empty($this->comments)) {?>
+        <?php echo $this->translate('core')->__('Comments') ?> :    
+        <?php echo $this->comments ?>
+<?php } ?>  
+<?php echo $this->translate('core')->__('You can check the status of your order by logging into your account')?>: 
+<?php echo $this->href('/account/order', true);?>
+<?php echo $this->translate('core')->__('Your order custom info')?> : <?php echo $this->href('/account/order/view/orderId/' . $this->order['id'], true);?>
+ 
+  
+<?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toString('Y'); ?> <?php echo $this->site ?> 
+<?php echo $this->translate('core')->__("Powered by %s v. %s", "Axis", Axis::app()->getVersion()) ?>
+  
+<?php echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.') ?> 
+<?php echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to')
+    . '  ' . $this->from ?> 
+  
+<?php echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.')?>  
+<?php echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.')?>

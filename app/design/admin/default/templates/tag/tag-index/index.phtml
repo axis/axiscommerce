@@ -1,0 +1,45 @@
+<?php 
+//plugins
+$this->headScript()->appendFile('/js/ext-ux/grid/GridSearch.js');
+
+//gui
+$this->headScript()->appendFile('/js/axis/admin/tag/tag.js');
+?>
+<script type="text/javascript">
+
+<?php if ($this->tagId) : ?>
+    var tagId = <?php echo $this->tagId?>;
+<?php endif; ?>
+
+var gridTag;
+
+var menuStatus = [
+<?php
+    $i = 1;
+    $menu = "";
+    foreach (Axis_Tag_Model_Customer::getStatuses() as $value) {
+        $menu .= "{
+            text: '$value',
+            cls: 'x-btn-text-icon',
+            handler: function() {
+                setStatus($i);
+            }
+        },\n"; 
+        $i++;
+    }
+    echo substr($menu, 0, -2);
+?>];
+
+var statuses = Ext.decode('<?php echo Zend_Json::encode(Axis_Tag_Model_Customer::getStatuses());?>');
+</script>
+
+<?php
+$this->setButtons(array(array(
+    'title' => Axis::translate('Axis_Admin')->__('Back'),
+    'onclick' => 'history.back()',
+    'class' => 'alt-button'
+)));
+
+echo $this->formSelect('status-combo', null, null, Axis_Tag_Model_Customer::getStatuses()); 
+
+?>

@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <?php echo $this->render('html/html_head.phtml') ?>
+    </head>
+    <body class="<?php echo $this->bodyClass() ?>">
+        <?php echo $this->layout()->afterBodyBegin ?>
+        <div class="wrapper">
+                
+            <div class="header-container">
+                <div class="header">
+                    <div id="logo">
+                        <a href="<?php echo $this->href('/') ?>"
+                        ><?php echo $this->image('logo.gif') ?></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="middle-container-wrapper">
+                <div class="middle-container">
+                    <div class="middle layout-1column">
+                        <div class="col-main">
+                            
+                            <?php echo $this->message() ?>
+                            
+                            <?php echo $this->title($this->pageTitle) ?>
+                            
+                            <?php if ($this->error): ?>
+                            <div class="exception-trace-wrapper">
+                                <div class="exception-trace">
+                                    <pre><?php echo $this->error ?></pre>
+                                </div>
+                            </div>
+                            <?php else: ?>
+                            <ul class="disc">                                <li><?php echo $this->translate('core')->__(
+                                    'The server encountered an internal error or misconfiguration and was unable to complete your request.'
+                                ) ?></li>                                <li><?php echo $this->translate('core')->__(
+                                    'More information about this error may be available in the server error log.'
+                                ) ?></li>                            </ul>
+                            <?php endif ?>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-container">
+                <div class="footer">
+                    <p class="legality">
+                        <?php echo $this->translate('core')->__('Copyright &copy; 2008, Axis, Inc. All Rights Reserved')?></p>
+                    <p class="bug-report">Report any
+                        <a title="Report" href="http://code.google.com/p/axiscommerce/issues/entry"
+                            >Bugs or Issues</a>
+                        you've found</p>
+                </div>
+            </div>
+                
+        </div>
+        <?php echo $this->layout()->beforeBodyEnd ?>
+    </body>
+</html>

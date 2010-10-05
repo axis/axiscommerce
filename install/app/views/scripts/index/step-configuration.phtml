@@ -1,0 +1,110 @@
+<form id="form-db" action="<?php echo $this->baseUrl?>/index/save-configuration" method="post">
+    <fieldset class="group-select">
+        <legend><span><?php echo $this->t('Database connection')?></span></legend>
+        <h4 class="legend"><?php echo $this->t('Database connection')?></h4>
+        <dl>
+            <dt>
+                <label for="host" ><?php echo $this->t('Database Server')?><span class="required">*</span>:</label>
+            </dt>
+            <dd>
+                <?php echo $this->formText('host', empty($this->db['host']) ? 'localhost' : $this->db['host']) ?>
+                <small><?php echo $this->t('The address of the database server in the form of a hostname or IP address')?></small>
+            </dd>
+            <dt>
+                <label for="database"><?php echo $this->t('Database Name')?><span class="required">*</span>:</label>
+            </dt>
+            <dd>
+                <?php echo $this->formText('database', empty($this->db['dbname']) ? 'axis' : $this->db['dbname']) ?>
+                <small><?php echo $this->t('The name of the database to hold the data in')?></small>
+            </dd>
+            <dt>
+                <label for="prefix"><?php echo $this->t('Table prefix')?>:</label>
+            </dt>
+            <dd>
+                <?php echo $this->formText('prefix', $this->db['prefix']) ?>
+            </dd>
+            <dt>
+                <label for="username"><?php echo $this->t('Username')?><span class="required">*</span>:</label>
+            </dt>
+            <dd>
+                <?php echo $this->formText('username', empty($this->db['username']) ? 'root' : $this->db['username']) ?>
+                <small><?php echo $this->t('The username used to connect to the database server')?></small>
+            </dd>
+            <dt>
+                <label for="password"><?php echo $this->t('Password')?>:</label>
+            </dt>
+            <dd>
+                <?php echo $this->formPassword('password') ?>
+                <small><?php echo $this->t('The password that is used together with the username to connect to the database server')?></small>
+            </dd>
+        </dl>
+    </fieldset>
+    
+    <fieldset class="group-select">
+        <legend><span><?php echo $this->t('Web access options')?></span></legend>
+        <h4 class="legend"><?php echo $this->t('Web access options')?></h4>
+        <dl>
+            <dt>
+                <label for="base_url"><?php echo $this->t('Base Url')?><span class="required">*</span>:</label>
+            </dt>
+            <dd>
+                <?php echo $this->formText('base_url', $this->store['base_url'], array('size' => 50)) ?>
+                <small><?php echo $this->t('Frontend Url')?></small>
+            </dd>
+            <dt>
+                <label for="admin_url"><?php echo $this->t('Admin Path')?><span class="required">*</span>:</label>
+            </dt>
+            <dd>
+                <?php echo $this->formText('admin_url', $this->store['admin_url'], array('size' => 50)) ?>
+                <small><?php echo $this->t('Administrative panel path')?></small>
+            </dd>
+            <?php if (!function_exists('apache_get_modules') || in_array('mod_ssl', apache_get_modules())) : ?>
+            <dd>
+                <?php
+                    $params = array(
+                        'onchange' => "$('#secure_url').parent().toggle(); $('#secure_url_label').parent().toggle();"
+                    );
+                    if (true == $this->store['use_ssl']) {
+                        $params['checked'] = 'checked';
+                    }
+                 ?>
+                <?php echo $this->formCheckbox('enable_ssl', true, $params) ?>
+                <label for="enable_ssl"><?php echo $this->t('Use Secure URLs (SSL)')?></label>
+            </dd>
+            <dt style="display: <?php echo isset($params['checked']) ? 'block' : 'none' ?>">
+                <label id="secure_url_label" for="secure_url"><?php echo $this->t('Secure Url')?>:</label>
+            </dt>
+            <dd style="display: <?php echo isset($params['checked']) ? 'block' : 'none' ?>">
+                <?php echo $this->formText('secure_url', $this->store['secure_url'], array('size' => 50)) ?>
+                <small><?php echo $this->t('Site secure url')?></small>
+            </dd>
+            <?php endif; ?>
+            
+        </dl>
+    </fieldset>
+    
+    <fieldset class="group-select">
+        <legend><span><?php echo $this->t('Store configuration')?></span></legend>
+        <h4 class="legend"><?php echo $this->t('Store configuration')?></h4>
+        <dl>
+            <dt>
+                <label for="crypt_key"><?php echo $this->t('Encription Key')?><span class="required">*</span>:</label>
+            </dt>
+            <dd>
+                <?php echo $this->formText('crypt_key', $this->store['crypt_key'], array('size' => 50)) ?>
+                <small><?php echo $this->t('Key that will be used to encrypt private data like passwords, usernames, credit cards etc.')?></small>
+            </dd>
+        </dl>    
+    </fieldset>
+
+<div class="button-set">
+    <?php echo $this->button($this->t('Back'), array(
+        'onclick' => "window.location='" . $this->baseUrl . "/index/step-localization'; return false;",
+        'class' => 'alt-button',
+        'type' => 'button'
+    )) ?>
+    <?php echo $this->button($this->t('Continue'), array(
+        'type' => 'submit'
+    )) ?>
+</div>
+</form>

@@ -1,0 +1,10 @@
+<form action="<?php echo $this->baseUrl?>/index/step-requirements">
+    <fieldset>
+        <textarea rows="25" cols="90"><?php echo $this->escape($this->license); ?></textarea><br />
+        <div class="button-set">
+            <?php echo $this->button($this->t('Accept and Continue'), array(
+                'type' => 'submit'
+            )) ?>
+        </div>
+    </fieldset>
+</form>

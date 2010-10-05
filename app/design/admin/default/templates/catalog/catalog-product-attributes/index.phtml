@@ -1,0 +1,11 @@
+<?php
+$this->setButtons(array(array(
+    'title' => Axis::translate('Axis_Admin')->__('Back'),
+    'onclick' => 'history.back();',
+    'class' => 'alt-button'
+)));
+?>
+<?php $this->headScript()->appendFile('/js/axis/admin/catalog/catalog-product-attribute/attribute.js'); ?>
+<?php $this->headScript()->appendFile('/js/axis/admin/catalog/catalog-product-attribute/grid.js'); ?>
+<?php $this->headScript()->appendFile('/js/axis/admin/catalog/catalog-product-attribute/window.js'); ?>
+<?php $this->headScript()->appendFile('/js/axis/admin/catalog/catalog-product-attribute/panel.js'); ?>

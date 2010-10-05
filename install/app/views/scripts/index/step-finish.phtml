@@ -1,0 +1,23 @@
+<?php if (!isset($this->permitInstallation)) : ?>
+    <p>You should not be here</p>
+<?php endif; ?>
+<ul class="disc">
+    <li>
+        <?php echo $this->t(
+            "Go to %s", 
+            "<a href='" . $this->frontend . "' 
+                onclick='window.open(this.href);return false;'>" . $this->t('Frontend') . 
+            "</a>") ?>
+    <li>
+        <?php echo $this->t(
+            "Go to %s", 
+            "<a href='" . $this->backend . "' 
+                onclick='window.open(this.href);return false;'>" . $this->t('Backend') . 
+            "</a>") ?>
+        <ul class="disc">
+            <li><?php echo $this->t('Username') ?>: <?php echo $this->user_login; ?></li>
+            <li><?php echo $this->t('Password') ?>: <?php echo $this->user_password; ?></li>
+        </ul>
+    </li>
+    <li><?php echo $this->t('Crypt key') ?>: <?php echo $this->crypt_key; ?></li>
+</ul>

@@ -1,0 +1,23 @@
+<?php echo $this->title($this->pageTitle) ?>
+
+<div class="register-box">
+<?php echo $this->formSignup->render($this) ?>
+</div>
+<script type="text/javascript">
+$("#form-signup").validate({
+    rules: {
+        password: {
+            required: true
+        },
+        password_confirm: {
+            required: true,
+            equalTo: '#password'
+        }
+    },
+    messages: {
+        password_confirm: {
+            equalTo: "<?php echo $this->translate('core')->__('Please repeat the same password') ?>"
+        }
+    }
+});
+</script>

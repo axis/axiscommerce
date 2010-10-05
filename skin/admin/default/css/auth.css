@@ -1,0 +1,80 @@
+body { background: #083346; margin:0; padding: 0; font: 12px Tahoma, Verdana, Helvetica, sans-serif; }
+a { text-decoration: underline; color: #285d86; }
+a:hover { text-decoration: none; }
+a img { border: none; }
+p { margin: 0.8em 0; }
+
+.login-window { margin: 150px auto 0; width: 445px; background: #fff; }
+.login-window .head { background: #d1e0e3; padding: 10px 10px 9px; overflow: hidden; zoom: 1; border-bottom: 1px solid #c7cbcc; }
+.login-window .head h2 { font: normal 1.4em Arial, Helvetica, sans-serif; color: #009550; padding-left: 17px; background: url(../images/icon_login.gif) no-repeat 0 50%; float: left; margin: 0; }
+.login-window .head .powered { color: #7e9cbc; float: right; line-height: 20px; margin: 0; }
+.login-window .content { background: url(../images/middle_bg.gif) repeat-x 0 0; padding: 10px 15px 20px; border-top: 1px solid #fff; }
+
+.axis-form { display: block; width: 80%; margin: 0 auto; text-align: center; }
+.axis-form label { float: left; width: 120px; line-height: 25px; color: #7f7f7f; text-align: left; }
+.axis-form .input-text { border: 1px solid #b4b4b4; padding: 5px 3px; width: 200px; }
+.axis-form .input-text:focus { border-left-color: #777; border-top-color: #777; }
+.axis-form .btn-submit { margin-top: 5px; }
+
+/* messagestack */
+#messages {
+    width:100%; 
+    overflow:hidden;
+    zoom: 1;
+}
+#messages ul {
+    list-style: none;
+    margin: 0 0 5px;
+    border-style: solid;
+    border-width: 1px;
+    background-repeat: no-repeat;
+    padding: 8px;
+    font-size: .95em;
+    font-weight: bold;
+    border-color: #999;
+    background-color: #fdfdfd;
+}
+ul.error-msg, 
+ul.notice-msg,
+ul.success-msg {
+    background-position: 10px 7px;
+    padding: 8px 8px 8px 32px !important;
+}
+ul.error-msg {
+    color:#df280a;
+    border-color:#f16048 !important;
+    background-color:#faebe7 !important;
+    background-image:url(../images/icons/delete.png);
+}
+ul.notice-msg {
+    color:#3d6611;
+    border-color:#fcd344 !important;
+    background-color:#fafaec !important;
+    background-image:url(../images/icons/notice.png);
+}
+ul.success-msg {
+    color:#3d6611;
+    border-color:#446423 !important;
+    background-color:#eff5ea !important;
+    background-image:url(../images/icons/accept.png);
+}
+
+/*buttons*/
+.alt-button, .button {
+    position: relative;
+    margin: 0px 2px; 
+    text-decoration: none;
+    border: 1px solid #1c67a1;
+    padding: 5px 10px;
+    cursor: pointer;
+    background: #005d89 url(../images/btn_bg.gif) repeat-x 0 0;
+}
+.alt-button  { background-image: url(../images/btn_alt_bg.gif); background-color: #939393; border-color: #848c8e; }
+.alt-button span, .button span {
+    font-size: 12px;
+    font-weight: bold;
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+}

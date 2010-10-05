@@ -1,0 +1,4 @@
+<?php $this->headScript()->appendFile('/js/axis/admin/location/zone.js') ?>
+<script type="text/javascript">
+    var countries = <?php echo Zend_Json_Encoder::encode($this->countries) ?>;
+</script>

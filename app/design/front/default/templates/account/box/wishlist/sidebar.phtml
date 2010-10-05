@@ -1,0 +1,17 @@
+<ul>
+<?php
+$index = 0; 
+foreach ($this->box->getData('wishlist') as $wl):
+    $productUrl = $this->hurl(array(
+        'product' => array('value' => $wl['product_id'], 'seo' => $wl['product']['key_word']),
+        'controller' => 'catalog',
+        'action' => 'product'
+    ), false, true);
+    if (++$index > 5) { break; }
+    ?>
+    <li>
+        <h4 class="product-name"><a href="<?php echo $productUrl ?>"
+            ><?php echo $wl['product']['name'] ?></a></h4>
+    </li>
+<?php endforeach; ?>
+</ul>

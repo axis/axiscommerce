@@ -1,0 +1,53 @@
+<?php echo $this->message() ?>
+
+<?php if (count($this->addressList)) : ?>
+<table class="table">
+<?php 
+$i = 0;
+$columnCount = 3;
+foreach ($this->addressList as $address) : ?>
+
+    <?php if ($i % $columnCount == 0): ?>
+        <tr>
+    <?php endif; ?>
+
+    <td>
+        <div class="address">
+            <h5 class="address-title">
+                <input type="radio" name="<?php echo $this->escape($this->addressType) ?>-id"
+                    value="<?php echo $address->id ?>"
+                    id="address-<?php echo $this->escape($this->addressType) ?>-<?php echo $address->id ?>"
+                    <?php echo ($this->selectedAddressId == $address->id) ? 'checked="true"' : '' ?>
+                />
+                <label for="address-<?php echo $this->escape($this->addressType) ?>-<?php echo $address->id ?>">
+                     <?php echo $this->translate('checkout')->__('Use this address')?>
+                </label>
+            </h5>
+            <address>
+               <?php echo $this->address($address); ?>
+            </address>
+            <a href="#"
+               onclick="Address.edit(<?php echo $address->id ?>); return false;"
+               class="address-edit"
+               ><?php echo $this->translate('checkout')->__('edit')?>
+            </a>
+        </div>
+    </td>
+    <?php $i++;
+    
+    if ($i%$columnCount == 0): ?>
+        </tr>
+    <?php endif;
+    
+endforeach; 
+
+if ($i % $columnCount != 0) :
+    for($i; $i % $columnCount; $i++): ?>
+        <td>&nbsp;</td>
+    <?php 
+    endfor;?>
+    </tr>
+<?php endif; ?>
+
+</table>
+<?php endif; ?>

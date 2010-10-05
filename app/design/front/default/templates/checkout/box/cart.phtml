@@ -1,0 +1,45 @@
+<?php if (count($this->box->getItems())): ?>
+    <ul class="cart-items-list">
+    <?php foreach ($this->box->getItems() as $itemId => $product): ?>
+        <li>
+        <div class="details">
+            <a href="<?php echo $this->href('/checkout/cart/remove/scItemId/' . $product['id'], true) ?>"
+                class="product-remove" title="<?php echo $this->translate('checkout')->__('Remove item') ;?>"
+                ><?php echo $this->image('bullet-delete.gif', 'alt="'.$this->translate('checkout')->__('Remove item').'"');?></a>
+            <a href="<?php echo $this->href('/' . $this->catalogUrl . '/' . $product['key_word']) ?>"
+                class="product-name"><?php echo $product['name'];?></a>
+            <p class="product-price"><?php echo $this->currency($product['final_price'] * $product['quantity']);?></p>
+            
+            <?php if (isset($product['attributes']) && count($product['attributes'])): ?>
+            <div class="excerpt">
+                <div class="excerpt-full">
+                    <dl class="attributes-list">
+                    <?php foreach ($product['attributes'] as $attribute) : ?>
+                        <dt><?php echo $attribute['product_option'] ?></dt>
+                        <dd><?php echo $attribute['product_option_value'] ?></dd>
+                    <?php endforeach ?>
+                    </dl>
+                </div>
+                <span class="label-info"><?php echo $this->translate('checkout')->__('Details') ?></span>
+            </div>
+            <?php endif ?>
+            
+            <p class="product-quantity"><?php
+            echo $this->translate('checkout')->__('%s item(s)', $product['decimal'] ? $product['quantity'] : (int)$product['quantity']);?> 
+            </p>
+        </div>  
+        </li>
+    <?php endforeach ?>
+    </ul> 
+
+<div class="box-cart-total">
+    <p class="cart-total-text"><?php echo $this->translate('checkout')->__('End Price') . ': ' 
+        . $this->currency($this->box->getSum());?></p>
+    <?php echo $this->button($this->translate('checkout')->__('Checkout'), array(
+        'class' => 'cart-checkout button',
+        'href' => $this->href('/checkout/onepage', true)
+    )) ?>
+</div>
+<?php else : ?>
+    <span class="empty-cart"><?php echo $this->translate('checkout')->__('Cart is empty')?></span>
+<?php endif ?>

@@ -1,0 +1,7 @@
+<div <?php if (null == $this->prodIdValue) echo 'id="condition-prodId-template"'; ?>>
+    <label><?php echo $this->translate('discount')->__("Product")?></label>
+    <div class="col2">
+        <?php echo $this->formText('condition[productId][]', $this->prodIdValue); ?>
+    </div>
+    <input type="button" class="delete-img" value="" onclick="deleteCondition(this)" />
+</div>
