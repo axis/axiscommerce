@@ -47,6 +47,10 @@ class Axis_Install_Model_Installer
             do {
                 $retry = false;
                 try {
+                    // skip commented queries
+                    if (0 === strpos($stmt, '--') || 0 === strpos($stmt, '/*')) {
+                        continue;
+                    }
                     Axis::db()->query($stmt);
                 } catch (Exception $e) {
                     if ($e->getMessage() == 'SQLSTATE[HY000]: General error: 2013 Lost connection to MySQL server during query'

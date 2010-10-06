@@ -42,13 +42,7 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
           `is_active` tinyint(1) default NULL,
           `name` varchar(128) default NULL,
           PRIMARY KEY  (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=3;
-
-        INSERT INTO `{$installer->getTable('cms_block')}`
-        (`id`, `content`, `is_active`, `name`) VALUES
-        (1, '<noscript><div class=\"noscript-notice\"><p><strong>{{helper_t(Please enable JavaScript in your browser.)}}</strong></p></div></noscript>', 1 , 'noscript_notice'),
-        (2, '<div class=\"demo-notice\">{{helper_t(Please notice! This is a demo store. Any order placed will not be processed.)}}</div>', 1, 'demo_notice'),
-        (3, '<p class=\"legality\">&copy; 2008-2010 <a href=\"http://www.axiscommerce.com\">Axis</a> {{helper_t(Demo Store. All rights reserved.)}}</p>', 1, 'copyright');
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('cms_category')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('cms_category')}` (
@@ -58,15 +52,11 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
           `site_id` smallint(5) unsigned default NULL,
           `name` varchar(128) NOT NULL,
           PRIMARY KEY  USING BTREE (`id`),
-          KEY `fk_cms_category_cms_category` (`parent_id`),
-          KEY `FK_cms_category_site_id` (`site_id`),
-          CONSTRAINT `FK_cms_category_site_id` FOREIGN KEY (`site_id`) REFERENCES `{$installer->getTable('core_site')}` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-          CONSTRAINT `fk_cms_category_cms_category` FOREIGN KEY (`parent_id`) REFERENCES `{$installer->getTable('cms_category')}` (`id`) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=3;
-
-        INSERT INTO `{$installer->getTable('cms_category')}` (`id`, `is_active`, `parent_id`, `site_id`, `name`) VALUES
-          (1, 1, NULL, 1, 'General'),
-          (2, 1, NULL, 1, 'about-us');
+          KEY `FK_CMS_CATEGORY_CMS_CATEGORY` (`parent_id`),
+          KEY `FK_CMS_CATEGORY_SITE_ID` (`site_id`),
+          CONSTRAINT `FK_CMS_CATEGORY_SITE_ID` FOREIGN KEY (`site_id`) REFERENCES `{$installer->getTable('core_site')}` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+          CONSTRAINT `FK_CMS_CATEGORY_CMS_CATEGORY` FOREIGN KEY (`parent_id`) REFERENCES `{$installer->getTable('cms_category')}` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('cms_category_content')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('cms_category_content')}` (
@@ -79,14 +69,10 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
           `meta_description` text,
           `meta_title` varchar(128) default NULL,
           PRIMARY KEY  USING BTREE (`language_id`,`cms_category_id`),
-          KEY `fk_cms_category_title_cms_category` (`cms_category_id`),
-          CONSTRAINT `FK_cms_category_content_language` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-          CONSTRAINT `fk_cms_category_title_cms_category` FOREIGN KEY (`cms_category_id`) REFERENCES `{$installer->getTable('cms_category')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          KEY `FK_CMS_CATEGORY_TITLE_CMS_CATEGORY` (`cms_category_id`),
+          CONSTRAINT `FK_CMS_CATEGORY_CONTENT_LANGUAGE` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+          CONSTRAINT `FK_CMS_CATEGORY_TITLE_CMS_CATEGORY` FOREIGN KEY (`cms_category_id`) REFERENCES `{$installer->getTable('cms_category')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        INSERT INTO `{$installer->getTable('cms_category_content')}` (`cms_category_id`, `language_id`, `title`, `description`, `link`, `meta_keyword`, `meta_description`, `meta_title`) VALUES
-          (1, 1, '', 'description', 'general', '', '', 'general'),
-          (2, 1, 'About us', 'about our company', 'about-us', '', '', '');
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('cms_page')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('cms_page')}` (
@@ -100,14 +86,6 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
           PRIMARY KEY  (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
-        INSERT INTO `{$installer->getTable('cms_page')}` (`id`, `is_active`, `layout`, `comment`, `access`, `name`, `show_in_box`) VALUES
-          (1, 1, 'default_2columns-left', 1, NULL, 'Privacy policy', 1),
-          (2, 1, 'default_1column', 1, NULL, 'Shipping and returns', 1),
-          (3, 1, 'default_2columns-right', 1, NULL, 'Terms of Use', 1),
-          (4, 1, 'default_2columns-left', 1, NULL, 'General', 0),
-          (5, 1, 'template testing_2columns-left', 0, NULL, 'company-history', 0),
-          (6, 1, 'default_2columns-left', 1, NULL, 'careers', 0);
-
         -- DROP TABLE IF EXISTS `{$installer->getTable('cms_page_content')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('cms_page_content')}` (
           `cms_page_id` int(10) unsigned NOT NULL,
@@ -119,37 +97,21 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
           `meta_description` text,
           `meta_title` varchar(128) default NULL,
           PRIMARY KEY  USING BTREE (`language_id`,`cms_page_id`),
-          KEY `FK_cms_page_content_cms_page` (`cms_page_id`),
-          CONSTRAINT `FK_cms_page_content_language` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-          CONSTRAINT `FK_cms_page_content_cms_page` FOREIGN KEY (`cms_page_id`) REFERENCES `{$installer->getTable('cms_page')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          KEY `FK_CMS_PAGE_CONTENT_CMS_PAGE` (`cms_page_id`),
+          CONSTRAINT `FK_CMS_PAGE_CONTENT_LANGUAGE` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+          CONSTRAINT `FK_CMS_PAGE_CONTENT_CMS_PAGE` FOREIGN KEY (`cms_page_id`) REFERENCES `{$installer->getTable('cms_page')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        INSERT INTO `{$installer->getTable('cms_page_content')}` (`cms_page_id`, `language_id`, `link`, `title`, `content`, `meta_keyword`, `meta_description`, `meta_title`) VALUES
-          (1, 1, 'privacy', 'Privacy policy', '<div class=\"col2-set\">\n    <div class=\"col-1\">asd, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna.\nFusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem.\nMorbi adipiscing. Aenean eu mi. Praesent erat lectus, fringilla non, condimentum ut, semper vitae, lectus. Ut vulputate. Vivamus purus velit, semper nec, dignissim vel, faucibus nec, felis. Cras posuere. Curabitur dignissim convallis lorem. Aenean bibendum auctor justo. Nulla nec diam vel justo rutrum tempor. Suspendisse nec tortor a eros laoreet rutrum. In sapien.\n</div>\n<div class=\"col-2\">\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis\nProin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque.</div>\n</div>', 'privacy', 'description of privacy policy page', 'Privacy policy'),
-          (2, 1, 'shipping', 'Shipping and returns', 'Praesent vestibulum iaculis eros. Donec porta odio in tortor. Proin nulla nunc, ornare eu, rhoncus non, laoreet quis, sem. Praesent dictum, sapien a fermentum adipiscing, erat mauris dignissim nisi, <span style=\"background-color: rgb(153, 204, 0);\">nec placerat lorem quam id est.<br><br><span style=\"background-color: rgb(192, 192, 192);\">Nullam ut libero. Fusce libero magna, iaculis ac, tempus nec, posuere id, felis. Nulla suscipit augue in sapien. Nullam congue convallis dolor. Cras gravida felis vel nulla. Etiam pulvinar sem in nisi ornare mattis. Proin tempus.</span></span><span style=\"background-color: rgb(192, 192, 192);\"> </span><br><br>Phasellus tincidunt mattis nunc. Fusce lorem. Sed consequat. Nulla ac purus. Donec vel nibh. Aliquam in sapien. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In eget quam.', '', '', ''),
-          (3, 1, 'terms-of-use', 'Terms of use', '{{static_intro}}<br>\n<p>\nIt is a long established fact that a reader will be distracted by the\nreadable content of a page when looking at its layout. The point of\nusing  is that it has a more-or-less normal distribution of\nletters, as opposed to using \"Content here, content here\", making it\nlook like readable English.</p>&nbsp;{{static_google_banner}}\n<br>\n<p>\nMany desktop publishing packages and web\npage editors now use Lorem Ipsum as their default model text, and a\nsearch for \"lorem ipsum\" will uncover many web sites still in their\ninfancy. Various versions have evolved over the years, sometimes by\naccident, sometimes on purpose (injected humour and the like).\n</p>\n{{static_name_new}}', '', '', ''),
-          (4, 1, 'general', NULL, '', '', '', ''),
-          (5, 1, 'company-history', 'Company history', '<div class=\"col3-set\">\n    <div class=\"col-1\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna.\nFusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem.\n</div>\n  <div class=\"col-2\">\nMorbi adipiscing. Aenean eu mi. Praesent erat lectus, fringilla non, condimentum ut, semper vitae, lectus. Ut vulputate. Vivamus purus velit, semper nec, dignissim vel, faucibus nec, felis. Cras posuere. Curabitur dignissim convallis lorem. Aenean bibendum auctor justo. Nulla nec diam vel justo rutrum tempor. Suspendisse nec tortor a eros laoreet rutrum. In sapien.\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis. </div>\n<div class=\"col-3\">Proin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque.</div>\n</div>', 'Company, about, history', '', 'Company history'),
-          (6, 1, 'careers', 'Careers at our store', '<div class=\"col2-set\" style=\"margin-bottom: 7px;\">\n <div class=\"col-1\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna. </div>\n <div class=\"col-2\">Fusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem. </div>\n</div>\n<div>\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis. Proin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque. \n</div>', '', '', '');
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('cms_page_category')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('cms_page_category')}` (
           `cms_category_id` int(10) unsigned NOT NULL,
           `cms_page_id` int(10) unsigned NOT NULL,
           PRIMARY KEY  (`cms_category_id`,`cms_page_id`),
-          KEY `fk_cms_page_to_category_cms_category` (`cms_category_id`),
-          KEY `fk_cms_page_to_category_cms_page` (`cms_page_id`),
-          CONSTRAINT `fk_cms_page_to_category_cms_category` FOREIGN KEY (`cms_category_id`) REFERENCES `{$installer->getTable('cms_category')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-          CONSTRAINT `fk_cms_page_to_category_cms_page` FOREIGN KEY (`cms_page_id`) REFERENCES `{$installer->getTable('cms_page')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          KEY `FK_CMS_PAGE_TO_CATEGORY_CMS_CATEGORY` (`cms_category_id`),
+          KEY `FK_CMS_PAGE_TO_CATEGORY_CMS_PAGE` (`cms_page_id`),
+          CONSTRAINT `FK_CMS_PAGE_TO_CATEGORY_CMS_CATEGORY` FOREIGN KEY (`cms_category_id`) REFERENCES `{$installer->getTable('cms_category')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+          CONSTRAINT `FK_CMS_PAGE_TO_CATEGORY_CMS_PAGE` FOREIGN KEY (`cms_page_id`) REFERENCES `{$installer->getTable('cms_page')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        INSERT INTO `{$installer->getTable('cms_page_category')}` (`cms_category_id`, `cms_page_id`) VALUES
-          (1, 1),
-          (1, 2),
-          (1, 3),
-          (1, 4),
-          (2, 5),
-          (2, 6);
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('cms_page_comment')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('cms_page_comment')}` (
@@ -162,11 +124,171 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
           `status` tinyint(3) unsigned default NULL,
           `email` varchar(128) default NULL,
           PRIMARY KEY  USING BTREE (`id`),
-          KEY `fk_cms_page_comment_cms_page` (`cms_page_id`),
-          CONSTRAINT `fk_cms_page_comment_cms_page` FOREIGN KEY (`cms_page_id`) REFERENCES `{$installer->getTable('cms_page')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          KEY `FK_CMS_PAGE_COMMENT_CMS_PAGE` (`cms_page_id`),
+          CONSTRAINT `FK_CMS_PAGE_COMMENT_CMS_PAGE` FOREIGN KEY (`cms_page_id`) REFERENCES `{$installer->getTable('cms_page')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
         ");
+
+        //blocks
+        $mBlock = Axis::model('cms/block');
+        $mBlock->insert(array(
+            'content'   => '<noscript><div class="noscript-notice"><p><strong>{{helper_t(Please enable JavaScript in your browser.)}}</strong></p></div></noscript>',
+            'is_active' => 1,
+            'name'      => 'noscript_notice'
+        ));
+        $mBlock->insert(array(
+            'content'   => '<div class="demo-notice">{{helper_t(Please notice! This is a demo store. Any order placed will not be processed.)}}</div>',
+            'is_active' => 1,
+            'name'      => 'demo_notice'
+        ));
+        $mBlock->insert(array(
+            'content'   => '<p class="legality">&copy; 2008-2010 <a href="http://www.axiscommerce.com">Axis</a> {{helper_t(Demo Store. All rights reserved.)}}</p>',
+            'is_active' => 1,
+            'name'      => 'copyright'
+        ));
+
+        // pages
+        $mPage = Axis::model('cms/page');
+        $privacyPageId = $mPage->insert(array(
+            'is_active'     => 1,
+            'layout'        => 'default_2columns-left',
+            'comment'       => 1,
+            'name'          => 'privacy-policy',
+            'show_in_box'   => 1
+        ));
+        $shippingPageId = $mPage->insert(array(
+            'is_active'     => 1,
+            'layout'        => 'default_1column',
+            'comment'       => 1,
+            'name'          => 'shipping-and-returns',
+            'show_in_box'   => 1
+        ));
+        $termsPageId = $mPage->insert(array(
+            'is_active'     => 1,
+            'layout'        => 'default_2columns-right',
+            'comment'       => 1,
+            'name'          => 'terms-of-use',
+            'show_in_box'   => 1
+        ));
+        $historyPageId = $mPage->insert(array(
+            'is_active'     => 1,
+            'layout'        => 'default_2columns-left',
+            'comment'       => 0,
+            'name'          => 'company_history',
+            'show_in_box'   => 0
+        ));
+        $careersPageId = $mPage->insert(array(
+            'is_active'     => 1,
+            'layout'        => 'default_2columns-left',
+            'comment'       => 0,
+            'name'          => 'careers',
+            'show_in_box'   => 0
+        ));
+
+        // categories
+        $mCategory = Axis::model('cms/category');
+        $generalCatId = $mCategory->insert(array(
+            'is_active' => 1,
+            'parent_id' => new Zend_Db_Expr('NULL'),
+            'site_id'   => Axis::getSiteId(),
+            'name'      => 'General'
+        ));
+        $aboutCatId = $mCategory->insert(array(
+            'is_active' => 1,
+            'parent_id' => new Zend_Db_Expr('NULL'),
+            'site_id'   => Axis::getSiteId(),
+            'name'      => 'about-us'
+        ));
+
+        // page to category relations
+        $mPageCategory = Axis::model('cms/page_category');
+        $mPageCategory->insert(array(
+            'cms_category_id'   => $generalCatId,
+            'cms_page_id'       => $privacyPageId
+        ));
+        $mPageCategory->insert(array(
+            'cms_category_id'   => $generalCatId,
+            'cms_page_id'       => $shippingPageId
+        ));
+        $mPageCategory->insert(array(
+            'cms_category_id'   => $generalCatId,
+            'cms_page_id'       => $termsPageId
+        ));
+        $mPageCategory->insert(array(
+            'cms_category_id'   => $generalCatId,
+            'cms_page_id'       => $historyPageId
+        ));
+        $mPageCategory->insert(array(
+            'cms_category_id'   => $aboutCatId,
+            'cms_page_id'       => $careersPageId
+        ));
+
+        // content
+        $mCategoryContent   = Axis::model('cms/category_content');
+        $mPageContent       = Axis::model('cms/page_content');
+        foreach (Axis_Collect_Language::collect() as $langId => $langName) {
+            $mPageContent->insert(array(
+                'cms_page_id'   => $privacyPageId,
+                'language_id'   => $langId,
+                'link'          => 'privacy',
+                'title'         => 'Privacy policy',
+                'content'       => "<div class=\"col2-set\">\n    <div class=\"col-1\">asd, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna.\nFusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem.\nMorbi adipiscing. Aenean eu mi. Praesent erat lectus, fringilla non, condimentum ut, semper vitae, lectus. Ut vulputate. Vivamus purus velit, semper nec, dignissim vel, faucibus nec, felis. Cras posuere. Curabitur dignissim convallis lorem. Aenean bibendum auctor justo. Nulla nec diam vel justo rutrum tempor. Suspendisse nec tortor a eros laoreet rutrum. In sapien.\n</div>\n<div class=\"col-2\">\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis\nProin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque.</div>\n</div>",
+                'meta_description' => 'description of privacy policy page',
+                'meta_keyword'  => 'privacy',
+                'meta_title'    => 'Privacy policy'
+            ));
+            $mPageContent->insert(array(
+                'cms_page_id'   => $shippingPageId,
+                'language_id'   => $langId,
+                'link'          => 'shipping',
+                'title'         => 'Shipping and returns',
+                'content'       => "Praesent vestibulum iaculis eros. Donec porta odio in tortor. Proin nulla nunc, ornare eu, rhoncus non, laoreet quis, sem. Praesent dictum, sapien a fermentum adipiscing, erat mauris dignissim nisi, <span style=\"background-color: rgb(153, 204, 0);\">nec placerat lorem quam id est.<br><br><span style=\"background-color: rgb(192, 192, 192);\">Nullam ut libero. Fusce libero magna, iaculis ac, tempus nec, posuere id, felis. Nulla suscipit augue in sapien. Nullam congue convallis dolor. Cras gravida felis vel nulla. Etiam pulvinar sem in nisi ornare mattis. Proin tempus.</span></span><span style=\"background-color: rgb(192, 192, 192);\"> </span><br><br>Phasellus tincidunt mattis nunc. Fusce lorem. Sed consequat. Nulla ac purus. Donec vel nibh. Aliquam in sapien. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In eget quam.",
+                'meta_description' => '',
+                'meta_keyword'  => '',
+                'meta_title'    => 'Shipping and Returns'
+            ));
+            $mPageContent->insert(array(
+                'cms_page_id'   => $termsPageId,
+                'language_id'   => $langId,
+                'link'          => 'terms-of-use',
+                'title'         => 'Terms of use',
+                'content'       => "{{static_intro}}<br>\n<p>\nIt is a long established fact that a reader will be distracted by the\nreadable content of a page when looking at its layout. The point of\nusing  is that it has a more-or-less normal distribution of\nletters, as opposed to using \"Content here, content here\", making it\nlook like readable English.</p>&nbsp;{{static_google_banner}}\n<br>\n<p>\nMany desktop publishing packages and web\npage editors now use Lorem Ipsum as their default model text, and a\nsearch for \"lorem ipsum\" will uncover many web sites still in their\ninfancy. Various versions have evolved over the years, sometimes by\naccident, sometimes on purpose (injected humour and the like).\n</p>\n{{static_name_new}}",
+                'meta_description' => '',
+                'meta_keyword'  => '',
+                'meta_title'    => 'Terms of Use'
+            ));
+            $mPageContent->insert(array(
+                'cms_page_id'   => $historyPageId,
+                'language_id'   => $langId,
+                'link'          => 'company-history',
+                'title'         => 'Company history',
+                'content'       => "<div class=\"col3-set\">\n    <div class=\"col-1\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna.\nFusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem.\n</div>\n  <div class=\"col-2\">\nMorbi adipiscing. Aenean eu mi. Praesent erat lectus, fringilla non, condimentum ut, semper vitae, lectus. Ut vulputate. Vivamus purus velit, semper nec, dignissim vel, faucibus nec, felis. Cras posuere. Curabitur dignissim convallis lorem. Aenean bibendum auctor justo. Nulla nec diam vel justo rutrum tempor. Suspendisse nec tortor a eros laoreet rutrum. In sapien.\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis. </div>\n<div class=\"col-3\">Proin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque.</div>\n</div>",
+                'meta_description' => '',
+                'meta_keyword'  => 'Company, about, history',
+                'meta_title'    => 'Company history'
+            ));
+            $mPageContent->insert(array(
+                'cms_page_id'   => $careersPageId,
+                'language_id'   => $langId,
+                'link'          => 'careers',
+                'title'         => 'Careers at our store',
+                'content'       => "<div class=\"col2-set\" style=\"margin-bottom: 7px;\">\n <div class=\"col-1\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna. </div>\n <div class=\"col-2\">Fusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem. </div>\n</div>\n<div>\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis. Proin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque. \n</div>",
+                'meta_description' => '',
+                'meta_keyword'  => '',
+                'meta_title'    => 'Careers at our store'
+            ));
+            $mCategoryContent->insert(array(
+                'cms_category_id'   => $generalCatId,
+                'language_id'       => $langId,
+                'link'              => 'general'
+            ));
+            $mCategoryContent->insert(array(
+                'cms_category_id'   => $aboutCatId,
+                'language_id'       => $langId,
+                'link'              => 'about-us'
+            ));
+        }
 
         Axis::single('admin/acl_resource')
             ->add('admin/cms', 'CMS')
