@@ -129,8 +129,7 @@ class Axis_View_Helper_Meta
 
                 break;
                 case 'site name':
-                    $row = Axis::single('core/site')
-                        ->find(Axis::getSiteId())->current();
+                    $row = Axis::getSite();
                     if ($row) {
                         $titleArray[] = $row->name;
                     }

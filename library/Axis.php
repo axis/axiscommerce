@@ -32,12 +32,6 @@
 class Axis
 {
     /**
-     * @static
-     * @var int
-     */
-    private static $_siteId = 0;
-
-    /**
      * Retrieve parent application instance
      *
      * @static
@@ -49,15 +43,12 @@ class Axis
     }
 
     /**
-     * Return current site id
-     *
-     * @static
-     * @return int
+     * Return current site
+     * @return Axis_DB_Table_Row
      */
-    public static function getSiteId()
+    public static function getSite()
     {
-        if (!self::$_siteId) {
-
+        if (!Zend_Registry::isRegistered('core/current_site')) {
             $host  = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
             $sheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== "off") ? 'https' : 'http';
             $port  = (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80);
@@ -68,16 +59,27 @@ class Axis
                 $uri .= ':' . $port;
             }
 
-            if ($site = self::single('core/site')->getByUrl($uri)) {
-                self::$_siteId = $site->id;
-            } elseif (!self::$_siteId = self::single('core/site')->select('id')->fetchOne()) {
+            $mSite = self::single('core/site');
+            if (!($site = $mSite->getByUrl($uri)) && !($site = $mSite->fetchRow())) {
                 throw new Axis_Exception(
                     Axis_Translate::getInstance('core')->__(
                         "There is no site linked with url %s" , $uri
                 ));
             }
+            Zend_Registry::set('core/current_site', $site);
         }
-        return self::$_siteId;
+        return Zend_Registry::get('core/current_site');
+    }
+
+    /**
+     * Return current site id
+     *
+     * @static
+     * @return int
+     */
+    public static function getSiteId()
+    {
+        return self::getSite()->id;
     }
 
     /**

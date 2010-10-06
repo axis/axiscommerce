@@ -59,7 +59,7 @@ class Axis_Search_Model_Lucene
             $encoding = array_shift($params);
         }
         if (null === $indexPath) {
-            $site = Axis::single('core/site')->find(Axis::getSiteId())->current();
+            $site = Axis::getSite();
             $site = str_replace(
                 array('http://', 'https://'), '',
                 urlencode($site->name . '_'. $site->id)

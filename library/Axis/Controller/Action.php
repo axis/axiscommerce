@@ -108,7 +108,8 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
              . $request->getHttpHost()
              . $request->getRequestUri();
 
-        $site = Axis::single('core/site')->getByUrl($currentUrl);
+//        $site = Axis::single('core/site')->getByUrl($currentUrl);
+        $site = Axis::getSite();
 
         $view->baseUrl      = $site ? $site->base : Zend_Controller_Front::getInstance()->getBaseUrl();
         $view->secureUrl    = $site ? $site->secure : $view->baseUrl;
