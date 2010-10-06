@@ -12,6 +12,7 @@ $this->headScript()
     ->appendFile('js/ext-axis/src/widgets/form/ImageUploadField.js');
 
 $this->headScript()
+    ->setProxy('axis_catalog')
     ->appendFile('js/axis/admin/catalog/index/category.js')
     ->appendFile('js/axis/admin/catalog/index/category/grid.js')
     ->appendFile('js/axis/admin/catalog/index/category/window.js')
@@ -30,7 +31,9 @@ $this->headScript()
     ->appendFile('js/axis/admin/catalog/index/product/tabs/property.js')
     ->appendFile('js/axis/admin/catalog/index/product/tabs/attribute.js')
     ->appendFile('js/axis/admin/catalog/index/product/tabs/variation.js')
-    ->appendFile('js/axis/admin/catalog/index/product/tabs/category.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/category.js');
+
+$this->headScript()
     ->offsetSetFile(10000, 'js/axis/admin/catalog/index/product/window.js');
 
 // should be added automatically by modular admin layout system
