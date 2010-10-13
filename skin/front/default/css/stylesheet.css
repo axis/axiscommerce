@@ -373,7 +373,7 @@ dl.attributes-list dd { padding-left: 10px; }
 .side-col .navigation {}
 .side-col .navigation a { display: block; padding: 3px 5px; background-repeat: no-repeat; background-position: 98% 70%; }
 .side-col .navigation a span { color: #333; }
-.side-col .navigation li.parent > a { background-image: url(../images/bullet-submenu-level1.gif); }
+.side-col .navigation li.parent > a {  }
 .side-col .navigation li.active > a { text-decoration: underline !important; }
 
 .side-col .navigation ul { position: absolute; top: 13px; left: -10000px; padding: 0; width: 15em; border: 1px outset #ccc; }
