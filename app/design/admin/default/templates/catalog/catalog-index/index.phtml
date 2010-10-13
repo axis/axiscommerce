@@ -69,6 +69,7 @@ var manufacturers = [
 <?php
 $json = "{'id': null, 'name': 'None'.l()},\n";
 foreach (Axis_Collect_Manufacturer::collect() as $id => $name) :
+    $name = addslashes($name);
     $json .= "{'id': $id, 'name': '$name'},\n";
 endforeach;
 echo substr($json, 0, -2);
@@ -79,6 +80,7 @@ var taxClasses = [
 <?php
 $json = "{'id': null, 'name': 'None'.l()},\n";
 foreach (Axis_Collect_TaxClass::collect() as $id => $name) :
+    $name = addslashes($name);
     $json .= "{'id': $id, 'name': '$name'},\n";
 endforeach;
 echo substr($json, 0, -2);
@@ -94,5 +96,3 @@ Ext.onReady(function() {
 <?php endif; ?>
 
 </script>
-
-<div id="ext-panel"></div>

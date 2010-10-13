@@ -16,6 +16,7 @@ echo $this->formSelect('sites', null, null, Axis_Collect_Site::collect());
 var axis_languages = [
 <?php $js = "";
 foreach ($this->languages as $id => $name) {
+    $name = addslashes($name);
     $js .= "{'id':'$id', 'name':'$name'},";
 }
 echo substr($js, 0, -1);

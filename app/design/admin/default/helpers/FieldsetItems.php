@@ -34,25 +34,27 @@ class Axis_View_Helper_FieldsetItems
 {
     private $_valueset;
     private $_fieldLabel;
-    
+
     public function __construct()
     {
         $this->_fieldLabel = 'field_label' . Axis_Locale::getLanguageId();
     }
-    
+
     private function _getValues($set) {
-        //global $valueset;
         $vf = '[';
         if ($set && $this->_valueset[$set]['values']) {
             foreach ($this->_valueset[$set]['values'] as $value){
-                $vf .= "['$value[id]', '$value[label1]'],";
+                $label = empty($value['label' . Axis_Locale::getLanguageId()]) ?
+                    '' : addslashes($value['label' . Axis_Locale::getLanguageId()]);
+
+                $vf .= "['$value[id]', '$label'],";
             };
         }
         $vf = substr($vf, -1) == ',' ? substr($vf, 0, -1) : $vf;
         $vf .= ']';
         return $vf;
     }
-    
+
     private function _getAdditionalProp($type, $field) {
         switch ($type) {
             case 'multiselect':
@@ -78,7 +80,7 @@ class Axis_View_Helper_FieldsetItems
                 return ''; 
         }
     }
-    
+
     private function _getFieldType($type, $validator) {
         if ($validator == 'Date') return "datefield', format: 'Y-m-d";
         switch($type) {
@@ -92,7 +94,7 @@ class Axis_View_Helper_FieldsetItems
                 return 'textfield';
         }
     }
-    
+
     public function fieldsetItems($fieldset, $valueset) {
         $this->_valueset = $valueset;
         $disabled = !$fieldset['is_active'];
@@ -103,7 +105,7 @@ class Axis_View_Helper_FieldsetItems
                 $fieldType = $this->_getFieldType($field['field_type'], $field['validator']);
                 $json .= 
                     "{
-                      fieldLabel: '". (isset($field[$this->_fieldLabel]) ? $field[$this->_fieldLabel] : '') . "',
+                      fieldLabel: '". (isset($field[$this->_fieldLabel]) ? addslashes($field[$this->_fieldLabel]) : '') . "',
                       xtype: '" . $fieldType . "',
                       allowBlank: " . ($field['required'] ? 'false' : 'true') . ",
                       " . ($disabled ? 'disabled: true' : 'disabled:' .( $field['is_active'] ? 'false' : 'true')) . ",

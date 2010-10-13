@@ -30,6 +30,7 @@ $this->setButtons(array(
         $catTab = "";
         $catReader ="";
         foreach (Axis_Collect_Language::collect() as $languageId => $lang) {
+            $lang = addslashes($lang);
             $catReader .= "'title_$languageId',
                            'link_$languageId',
                            'description_$languageId',
@@ -99,6 +100,7 @@ $this->setButtons(array(
         $pageTab="";
         $pageReader="";
         foreach (Axis_Collect_Language::collect() as $languageId => $lang) {
+            $lang = addslashes($lang);
             $pageReader .= "'title_$languageId',
                             'link_$languageId',
                             'content_$languageId',
@@ -185,6 +187,7 @@ $this->setButtons(array(
     <?php
         $menu = "";
         foreach (Axis_Collect_Layout::collect() as $name => $value) {
+            $value = addslashes($value);
             $menu .= "{
                 text: '$value',
                 handler: function() {

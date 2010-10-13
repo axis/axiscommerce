@@ -23,6 +23,7 @@ var menuStatus = [
     $i = 0;
     $menu = "";
     foreach ($this->status as $value) {
+        $value = addslashes($value);
         $menu .= "{
             text: '$value',
             cls: 'x-btn-text-icon',

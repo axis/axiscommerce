@@ -36,6 +36,7 @@ var ratingFieldSet = new Ext.form.FieldSet({
 if (count($ratings)) {
 $combos .= ",\nitems: [\n";
 foreach ($ratings as $rating) {
+    $rating['title'] = addslashes($rating['title']);
     $combos .= "Ext.getCmp('rating_combo').cloneConfig({
         fieldLabel: '$rating[title]',
         id: '$rating[name]',

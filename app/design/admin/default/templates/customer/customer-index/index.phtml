@@ -33,6 +33,7 @@ var customerGroups = [
     <?php
     $str = '';
     foreach (Axis_Collect_CustomerGroup::collect() as $id => $name) {
+        $name = addslashes($name);
         $str .= "[$id, '$name'],\n";
     }
 
@@ -43,6 +44,7 @@ var sites = [
     <?php
     $str = '';
     foreach (Axis_Collect_Site::collect() as $id => $name) {
+        $name = addslashes($name);
         $str .= "[$id, '$name'],\n";
     }
 

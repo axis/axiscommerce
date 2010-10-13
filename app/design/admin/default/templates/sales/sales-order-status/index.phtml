@@ -11,6 +11,7 @@ var fieldTitle = [
 <?php
 $js = "";
 foreach (Axis_Collect_Language::collect() as $langId => $language) {
+    $language = addslashes($language);
     $js .= "{name: 'status_name[" . $langId . "]',";
     $js .= "fieldLabel: '" . $language . "',";
     $js .= "xtype: 'textfield',";
