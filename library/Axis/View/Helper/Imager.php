@@ -59,7 +59,7 @@ class Axis_View_Helper_Imager
         if (isset($config['getUrl'])) {
             return $this->view->resourceUrl . $this->view->basePath . $src;
         }
-        unset($config['seo'], $config['width'], $config['height'], $config['disableWatermark']);
+        unset($config['seo'], $config['disableWatermark']);
         if (empty($this->view->resourceUrl) || strpos($src, $this->view->resourceUrl) === 0) {
             $config['src'] = $src;
         } else {
