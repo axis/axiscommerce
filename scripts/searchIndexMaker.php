@@ -59,9 +59,7 @@ foreach ($sites as $site) {
         $log->info('Starting up');
 
         if (@preg_match('/\pL/u', 'a') != 1) {
-            $log->error("PCRE unicode support is turned off.\n");
-            echo "PCRE unicode support is turned off.\n";
-            exit(1);
+            $log->err("PCRE unicode support is turned off.\n");
         }
         Zend_Search_Lucene_Search_QueryParser::setDefaultEncoding('utf-8');
         Zend_Search_Lucene_Analysis_Analyzer::setDefault(
@@ -76,8 +74,8 @@ foreach ($sites as $site) {
                 $index = Zend_Search_Lucene::create($indexLocale);
                 $log->info("Created new index in $indexLocale");
             } catch(Zend_Search_Lucene_Exception $e) {
-                $log->error("Failed opening or creating index in $indexLocale");
-                $log->error($e->getMessage());
+                $log->err("Failed opening or creating index in $indexLocale");
+                $log->err($e->getMessage());
                 echo "Unable to open or create index: {$e->getMessage()}";
                 exit(1);
             }
