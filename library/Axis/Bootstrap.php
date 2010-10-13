@@ -175,8 +175,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         } elseif(!is_writable($cacheDir)) {
             chmod($cacheDir, 0777);
         }
-        Zend_Session::start();
-        Zend_Session::setOptions(array(
+        Zend_Session::start(array(
             'cookie_lifetime' => 864000, // 10 days
             'name' => 'axisid',
             'strict' => 'off',
