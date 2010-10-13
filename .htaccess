@@ -77,3 +77,15 @@ SetEnv APPLICATION_ENV development
 
     AddDefaultCharset Off
     #AddDefaultCharset utf-8
+    
+## To redirect all users to the site WITH the 'www.' prefix,
+## (http://example.com/... will be redirected to http://www.example.com/...)
+## adapt and uncomment the following:
+#   RewriteCond %{HTTP_HOST} ^example\.com$ [NC]
+#   RewriteRule ^(.*)$ http://www.example.com/$1 [L,R=301]
+
+## To redirect all users to the site WITHOUT the 'www.' prefix,
+## (http://www.example.com/... will be redirected to http://example.com/...)
+## uncomment and adapt the following:
+#   RewriteCond %{HTTP_HOST} ^www\.example\.com$ [NC]
+#   RewriteRule ^(.*)$ http://example.com/$1 [L,R=301]
