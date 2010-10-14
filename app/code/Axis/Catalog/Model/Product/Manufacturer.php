@@ -49,10 +49,11 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
                 'cpm.id = cpmt.manufacturer_id AND language_id = 1',
                 '*'
             )
-            ->joinLeft('catalog_hurl',
+            ->joinInner('catalog_hurl',
                 "ch.key_type = 'm' AND ch.key_id = cpm.id",
                 array('url' => 'key_word')
             )
+            ->where('ch.site_id = ?', Axis::getSiteId())
             ->order('cpmt.title ASC')
             ->fetchAll();
     }
