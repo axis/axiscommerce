@@ -234,25 +234,23 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     }
 
     /**
-     *
      * @param string $url
-     * @param int $siteId
-     * @return int
+     * @param int $siteId [optional]
+     * @return Axis_Catalog_Model_Category_Row
      */
-    public function getIdByUrl($url, $siteId)
+    public function getByUrl($url, $siteId = null)
     {
-
-        return $this->select('id')
+        if (null === $siteId) {
+            $siteId = Axis::getSiteId();
+        }
+        return $this->fetchRow($this->select('*')
             ->joinInner(
                 'catalog_hurl',
-                "ch.key_id = cc.id AND ch.key_type = 'c'",
-                'key_word'
+                "ch.key_id = cc.id AND ch.key_type = 'c'"
             )
             ->where('ch.key_word = ?', $url)
             ->where('ch.site_id = ?', $siteId)
-            ->fetchOne()
-            ;
-
+        );
     }
 
     /**
@@ -270,7 +268,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
             $this->select()
                 ->where('site_id = ?', $siteId)
                 ->where('lvl = 0')
-            );
+        );
     }
 
     public function getRootCategories()

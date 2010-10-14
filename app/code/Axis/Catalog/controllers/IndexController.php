@@ -86,7 +86,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             ));
         }
 
-        Zend_Registry::set('catalog/current_category', $this->view->category);
+        Zend_Registry::set('catalog/current_category', $categoryRow);
 
         return $this->view->category;
     }
@@ -236,7 +236,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             return $this->_forward('not-found', 'Error', 'Axis_Core');
         }
 
-        $categoryId = null;
+        $refCategory = false;
         if ($referer = $this->getRequest()->getServer('HTTP_REFERER')) {
             preg_match(
                 '/' . $this->view->catalogUrl . '\/(.[^\/]+)\//',
@@ -244,18 +244,17 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
                 $categoryUrl
             );
             if (isset($categoryUrl[1])) {
-                $categoryId = Axis::single('catalog/category')
-                    ->cache($categoryUrl/*, Axis::getCustomerId()*/)
-                    ->getIdByUrl($categoryUrl[1], Axis::getSiteId());
+                $refCategory = Axis::single('catalog/category')->getByUrl($categoryUrl[1]);
             }
         }
 
-        if (is_numeric($categoryId)) {
-            $pathItems = $product->getParentItems($categoryId);
+        if ($refCategory) {
+            $pathItems = $product->getParentItems($refCategory->id);
         } else {
             $pathItems = $product->getParentItems();
         }
 
+        $lastItem = false;
         foreach ($pathItems as $item) {
             if ($item['status'] != 'enabled') {
                 return $this->_forward('not-found', 'Error', 'Axis_Core');
@@ -269,11 +268,19 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
                     )
                 ), false, true)
             );
-            Zend_Registry::set('catalog/current_category', $item['id']);
+            $lastItem = $item;
         }
 
         $product->incViewed();
-        Zend_Registry::set('catalog/current_product', $productId);
+
+        $category = $refCategory;
+        if ($lastItem && $refCategory->id != $lastItem['id']) {
+            $category = Axis::single('catalog/category')
+                ->find($lastItem['id'])
+                ->current();
+        }
+        Zend_Registry::set('catalog/current_category', $category);
+        Zend_Registry::set('catalog/current_product', $product);
 
         $data = $product->toArray();
         $data['images'] = Axis::single('catalog/product_image')
@@ -307,10 +314,8 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             ->cache($productId)
             ->getRulesByProductId($productId);
 
-        $data['price']['format'] = Axis::single('locale/currency')
-            ->getFormat();
+        $data['price']['format'] = Axis::single('locale/currency')->getFormat();
 
-//        Zend_Debug::dump($data);
         $this->view->product = $data;
 
         $this->view->crumbs()->add($data['description']['name']);
@@ -326,8 +331,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         $this->view->meta()
             ->setTitle($metaTitle, 'product', $productId)
             ->setDescription($metaDescription)
-            ->setKeywords($data['description']['meta_keyword'])
-        ;
+            ->setKeywords($data['description']['meta_keyword']);
 
         Axis::dispatch('catalog_product_view', array(
             'product' => $product

@@ -685,8 +685,8 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
 
                 $catData = array(
                     'status' => 'enabled',
-                    'modified_on' => Axis_Date::now()->toSQLString(),
-                    'created_on' => Axis_Date::now()->toSQLString()
+                    'modified_on'   => Axis_Date::now()->toSQLString(),
+                    'created_on'    => Axis_Date::now()->toSQLString()
                 );
 
                 foreach ($paths as $path) {
@@ -696,42 +696,45 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
                         $i = 0;
                         $categoryId = 0;
 
-                        $root_id = Axis::single('catalog/category')
-                            ->select()
-                            ->where('site_id = ?', $siteId)
-                            ->where('lvl = 0')
-                            ->fetchOne();
+                        $rootCategory = Axis::single('catalog/category')->getRoot($siteId);
 
                         foreach ($path as $catUrl) {
-                            if (!$categoryId = $modelCategory->getIdByUrl($catUrl, $siteId)) {
+                            if (!$category = $modelCategory->getByUrl($catUrl, $siteId)) {
                                 if ($i == 0) {
-                                    $categoryId = $modelCategory->insertItem($catData, $root_id);
+                                    $categoryId = $modelCategory->insertItem(
+                                        $catData,
+                                        $rootCategory->id
+                                    );
                                 } else {
                                     $categoryId = $modelCategory->insertItem(
                                         $catData,
-                                        $modelCategory->getIdByUrl($path[$i-1], $siteId)
+                                        $modelCategory
+                                            ->getByUrl($path[$i-1], $siteId)
+                                            ->id
                                     );
                                 }
                                 // description
                                 foreach ($languages as $langId) {
                                     Axis::single('catalog/category_description')->save(array(
-                                        'category_id' => $categoryId,
-                                        'language_id' => $langId,
-                                        'name' => $catUrl,
-                                        'description' => '',
-                                        'meta_title' => $catUrl,
-                                        'meta_description' => '',
-                                        'meta_keyword' => $catUrl
+                                        'category_id'       => $categoryId,
+                                        'language_id'       => $langId,
+                                        'name'              => $catUrl,
+                                        'description'       => '',
+                                        'meta_title'        => $catUrl,
+                                        'meta_description'  => '',
+                                        'meta_keyword'      => $catUrl
                                     ));
                                 }
 
                                 // human url
                                 Axis::single('catalog/hurl')->save(array(
-                                    'key_word' => $catUrl,
-                                    'site_id' => $siteId,
-                                    'key_type' => 'c',
-                                    'key_id' => $categoryId
+                                    'key_word'  => $catUrl,
+                                    'site_id'   => $siteId,
+                                    'key_type'  => 'c',
+                                    'key_id'    => $categoryId
                                 ));
+                            } else {
+                                $categoryId = $category->id;
                             }
                             $i++;
                         }

@@ -46,9 +46,7 @@ class Axis_View_Helper_Navigation
             $this->_activeCategories = array();
             if (Zend_Registry::isRegistered('catalog/current_category')) {
                 $this->_activeCategories = array_keys(
-                    Axis::single('catalog/category')
-                        ->find(Zend_Registry::get('catalog/current_category'))
-                        ->current()
+                    Zend_Registry::get('catalog/current_category')
                         ->cache()
                         ->getParentItems()
                 );
