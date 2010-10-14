@@ -712,6 +712,9 @@ ul.success-msg {
 
 .disabled { color: #999; }
 
+/* grid with image */
+.x-grid-image-preview img { width: 40px; height: 40px; }
+
 /* variations, sales_order */
 .product-attributes { padding: 5px; clear: both; overflow: hidden; zoom: 1; margin-left:40px;}
 .product-attribute { margin-bottom: 5px; clear: both; }
@@ -737,27 +740,15 @@ ul.success-msg {
 .box-expander .expander-row { clear: both; margin: 0 0 4px; }
 .box-expander label { float: left; width: 120px; font-weight: bold; }
 
-.x-toolbar-nobackground .x-toolbar {
-    background: none;
-    border: none;
-}
+.x-toolbar-nobackground .x-toolbar { background: none; border: none; }
 
-.x-btn-opacity {
-    opacity: 0.4;
-}
+.x-btn-opacity { opacity: 0.4; }
+.x-btn-opacity.x-btn-over { opacity: 1; }
 
-.x-btn-opacity.x-btn-over{
-    opacity: 1;
-}
-/* Catalog */
+/* orders */
 .product-properties,
 .product-modifiers,
-.product-variations {
-/*  padding: 10px;
-    background: #f4f4f4;
-    border: 1px solid #eee;
-*/    margin-bottom: 1em;
-}
+.product-variations { margin-bottom: 1em; }
 
 .product-properties textarea,
 .product-modifiers textarea,

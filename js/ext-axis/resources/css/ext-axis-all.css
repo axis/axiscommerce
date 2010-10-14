@@ -1,3 +1,4 @@
+/* langset */
 .x-form-lang-trigger {
     background-position: 50% 50%;
     background-repeat: no-repeat;
@@ -27,6 +28,7 @@
     border: none;
 }
 
+/* draggable grid */
 .x-grid-drag-insert-above {
     border-top: 2px dotted #000 !important;
     margin-top: -1px;
@@ -46,13 +48,16 @@
     padding-left: 5px;
 }
 
+/* required form field */
 .x-form-field-required {
     color: #cb0e0a;
 }
+/* tabs with error */
 .x-tab-strip .error span.x-tab-strip-text {
     color: #cb0e0a;
 }
 
+/* image upload field */
 .x-form-image-upload-field-wrap {
     float: left;
 }
@@ -63,6 +68,10 @@
 .x-form-image-upload-field-wrap .x-form-file-preview {
     float: left;
     margin-right: 3px;
+}
+.x-form-image-upload-field-wrap .x-form-file-preview img {
+    width: 22px;
+    height: 22px;
 }
 .x-form-image-upload-field-wrap .x-form-image-upload-text {
     float: left;

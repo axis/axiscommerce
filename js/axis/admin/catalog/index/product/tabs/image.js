@@ -48,7 +48,7 @@ var ImageGrid = {
 };
 
 Ext.onReady(function() {
-    
+
     var imageReader = [
         {name: 'id', type: 'int'},
         {name: 'path'},
@@ -59,7 +59,7 @@ Ext.onReady(function() {
         {name: 'remove', type: 'int'}
     ];
     var imageTitles = [];
-    
+
     for (var id in Axis.languages) {
         imageReader.push(
             {name: 'title_' + id}
@@ -72,7 +72,7 @@ Ext.onReady(function() {
             header: 'Title ({language})'.l('core', Axis.languages[id])
         });
     }
-    
+
     var imageStore = new Ext.data.Store({
         mode: 'local',
         pruneModifiedRecords: true,
@@ -81,38 +81,38 @@ Ext.onReady(function() {
             fields: imageReader
         })
     });
-    
+
     var imageThumbnail = new Axis.grid.RadioColumn({
         dataIndex: 'is_thumbnail',
         header: 'Thumbnail'.l(),
         width: 60
     });
-    
+
     var imageListing = new Axis.grid.RadioColumn({
         dataIndex: 'is_listing',
         header: 'Listing'.l(),
         width: 60
     });
-    
+
     var imageBase = new Axis.grid.RadioColumn({
         dataIndex: 'is_base',
         header: 'Base'.l(),
         width: 60
     });
-    
+
     var imageDelete = new Axis.grid.CheckColumn({
         dataIndex: 'remove',
         header: 'Delete'.l(),
         width: 60
     });
-    
+
     var imageCols = [{
         dataIndex: 'path',
         header: 'Image'.l(),
         renderer: function(v) {
             return String.format(
-                '<a href="{0}" target="_blank" title="{1}">' +
-                    '<img src="{0}" alt="{1}" width="40" height="40"/>' +
+                '<a href="{0}" target="_blank" title="{1}" class="x-grid-image-preview">' +
+                    '<img src="{0}" alt="{1}"/>' +
                 '</a>',
                 Product.imageRoot + v,
                 v
@@ -138,7 +138,7 @@ Ext.onReady(function() {
     for (var i = 0, limit = imageTitles.length; i < limit; i++) {
         imageCols.splice(i + 1, 0, imageTitles[i]);
     }
-    
+
     var fields = [
         {name:'id', type:'text', system:true},
         {name:'shortName', type:'text', system:true},
@@ -160,13 +160,13 @@ Ext.onReady(function() {
         {name:'timeStart', type:'int', system:true},
         {name:'pctComplete', type:'int', system:true}
     ];
-    
+
     var uploaderStore = new Ext.data.SimpleStore({
         id: 0,
         fields: fields,
         data: []
     });
-    
+
     var fileUploader = new Axis.FileUploader({
         enableProgress: false,
         events: [],
@@ -181,7 +181,7 @@ Ext.onReady(function() {
                     if (uploader.store.data.items[0].get('state') != 'done') {
                         return;
                     }
-                    
+
                     var record = new imageStore.recordType({
                         path: uploader.store.data.items[0].get('file'),
                         sort_order: 50,
@@ -198,15 +198,15 @@ Ext.onReady(function() {
                         imageStore.modified.push(record);
                     }
                     record.markDirty();
-                    
+
                     imageStore.insert(0, record);
-                    
+
                     ProductWindow.imageGrid.startEditing(0, 1);
                 }
             }
         }
     });
-    
+
     var fileUploadField = new Ext.form.FileUploadField({
         buttonCfg: {
             icon: Axis.skinUrl + '/images/icons/add.png',
@@ -223,20 +223,20 @@ Ext.onReady(function() {
                 }, this.fileInput.id);
                 rec.commit();
                 fileUploader.store.add(rec);
-                
+
                 fileUploader.upload();
-                
+
                 this.createFileInput();
                 this.bindListeners();
             }
         }
     });
-    
+
     var imageBrowser = new Axis.ImageBrowser({
         rootPath: 'media/product',
         rootText: 'product'
     });
-    
+
     ImageGrid.el = ProductWindow.imageGrid = new Axis.grid.EditorGridPanel({
         //autoExpandColumn: 'title',
         border: false,
@@ -265,7 +265,7 @@ Ext.onReady(function() {
             text: 'Choose from uploaded'.l()
         }]
     });
-    
+
     imageBrowser.on('okpress', function(records) {
         Ext.each(records, function(r) {
             var record = new imageStore.recordType({
@@ -288,8 +288,8 @@ Ext.onReady(function() {
             ProductWindow.imageGrid.startEditing(0, 1);
         });
     });
-    
+
     ProductWindow.addTab(ImageGrid.el, 50);
     ProductWindow.dataObjects.push(ImageGrid);
-    
+
 });

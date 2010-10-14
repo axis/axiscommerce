@@ -32,9 +32,9 @@ Axis.form.ImageUploadField = Ext.extend(Ext.form.TextField, {
 
     cls: 'x-form-field-image-upload',
 
-    previewHeight: 22,
+    previewHeight: null,
 
-    previewWidth: 22,
+    previewWidth: null,
 
     uploadText: 'Upload'.l(),
 
@@ -159,11 +159,17 @@ Axis.form.ImageUploadField = Ext.extend(Ext.form.TextField, {
             tag: 'a',
             target: '_blank'
         });
+        var style = '';
+        if (this.previewWidth) {
+            style += 'width: ' + this.previewWidth + 'px;';
+        }
+        if (this.previewHeight) {
+            style += 'height: ' + this.previewHeight + 'px;';
+        }
         this.imagePreview = this.imagePreviewLink.createChild({
-            height: this.previewHeight,
             tag: 'img',
             src: this.blankImage,
-            width: this.previewWidth
+            style: style
         });
     },
 
