@@ -58,6 +58,7 @@ class Axis
 
                 $uri .= ':' . $port;
             }
+            $uri .= (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
 
             $mSite = self::single('core/site');
             if (!($site = $mSite->getByUrl($uri)) && !($site = $mSite->fetchRow())) {

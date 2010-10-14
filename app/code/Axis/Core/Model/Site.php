@@ -63,7 +63,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table
      */
     public function getByUrl($url)
     {
-        $sites  = $this->fetchAll();
+        $sites  = $this->fetchAll(null, 'length(base) DESC'); // order for correct site detection
         $scheme = 'https://';
         $base   = 'secure';
         if (0 !== strpos($url, $scheme)) {
@@ -82,9 +82,21 @@ class Axis_Core_Model_Site extends Axis_Db_Table
                 if (empty($site->base) || empty($site->secure)) {
                     continue;
                 }
-                if (0 === strpos($url, $site->base)
-                    || 0 === strpos($url, $site->secure)) {
-
+                $baseMath    = (0 === strpos($url, $site->base));
+                $secureMatch = (0 === strpos($url, $site->secure));
+                if ($baseMath || $secureMatch) {
+                    // check for similar urls:
+                    // example.com/axis vs example.com/axis2
+                    // example.com/axis vs example.com/axis/axis
+                    $matchedUrl = $baseMath ? $site->base : $site->secure;
+                    $matchedUrlLegth = strlen($matchedUrl);
+                    if ($matchedUrlLegth > strlen($url)) {
+                        continue;
+                    }
+                    $requestUri = substr($url, $matchedUrlLegth);
+                    if (!empty($requestUri) && $requestUri[0] !== '/') {
+                        continue;
+                    }
                     return $site;
                 }
             }
