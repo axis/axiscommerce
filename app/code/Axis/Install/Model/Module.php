@@ -40,7 +40,7 @@ class Axis_Install_Model_Module
      */
     public static function getModules()
     {
-        $code_path = ECART_ROOT . '/app/code';
+        $code_path = AXIS_ROOT . '/app/code';
         try {
             $code_dir = new DirectoryIterator($code_path);
         } catch (Exception $e) {

@@ -40,7 +40,7 @@ class Axis_Application extends Zend_Application
      */
     public static function isInstalled()
     {
-        return file_exists(ECART_ROOT . '/app/etc/config.php');
+        return file_exists(AXIS_ROOT . '/app/etc/config.php');
     }
 
     /**
@@ -118,7 +118,7 @@ class Axis_Application extends Zend_Application
     public function getNamespaces()
     {
         $namespaces = array();
-        $codePath = ECART_ROOT . '/app/code';
+        $codePath = AXIS_ROOT . '/app/code';
         try {
             $codeDir = new DirectoryIterator($codePath);
         } catch (Exception $e) {

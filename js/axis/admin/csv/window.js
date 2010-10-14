@@ -72,7 +72,7 @@ Ext.onReady(function(){
         xtype: 'textfield',
         name: 'general[file_path]',
         allowBlank: true,
-        qtipText: 'Path Relative to ECART_ROOT'.l(),
+        qtipText: 'Path Relative to AXIS_ROOT'.l(),
         initialValue: 'var/export',
         maxLength: 255
     }, {

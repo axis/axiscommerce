@@ -70,7 +70,7 @@ class Axis_View_Helper_HeadScript extends Zend_View_Helper_HeadScript
      * Search algorithm:
      *  - from current template
      *  - from default template
-     *  - from ECART_ROOT
+     *  - from AXIS_ROOT
      *
      * @param string $css
      * @param bool $absolute [optional]

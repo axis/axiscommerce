@@ -162,14 +162,14 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initConfig()
     {
         $this->bootstrap('Application');
-        require_once ECART_ROOT . '/app/etc/config.php';
+        require_once AXIS_ROOT . '/app/etc/config.php';
         Zend_Registry::set('config', new Axis_Config($config, true));
         return Axis::config();
     }
 
     protected function _initSession()
     {
-        $cacheDir = ECART_ROOT . '/var/sessions';
+        $cacheDir = AXIS_ROOT . '/var/sessions';
         if (!is_readable($cacheDir)) {
             mkdir($cacheDir, 0777);
         } elseif(!is_writable($cacheDir)) {

@@ -82,9 +82,9 @@ class Axis_Log_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')
             ->add('log', 'Log', null, null, array('translation_module' => 'Axis_Log'))
             ->add('log/main/enabled', 'Log/General/Enabled', 1, 'bool')
-            ->add('log/main/php', 'Php log', '/var/logs/php.log', 'string', 'Path relative to ECART_ROOT')
-            ->add('log/main/payment', 'Payment log', '/var/logs/payment.log', 'string', 'Path relative to ECART_ROOT')
-            ->add('log/main/shipping', 'Shipping log', '/var/logs/shipping.log', 'string', 'Path relative to ECART_ROOT');
+            ->add('log/main/php', 'Php log', '/var/logs/php.log', 'string', 'Path relative to AXIS_ROOT')
+            ->add('log/main/payment', 'Payment log', '/var/logs/payment.log', 'string', 'Path relative to AXIS_ROOT')
+            ->add('log/main/shipping', 'Shipping log', '/var/logs/shipping.log', 'string', 'Path relative to AXIS_ROOT');
 
         Axis::single('admin/menu')
             ->add('Catalog', null, 20, 'Axis_Catalog')

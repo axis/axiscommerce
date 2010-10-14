@@ -387,7 +387,7 @@ class IndexController extends Zend_Controller_Action
             SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0);
         ");
 
-        unlink(ECART_ROOT . '/app/etc/config.php');
+        unlink(AXIS_ROOT . '/app/etc/config.php');
 
         if (!headers_sent()) {
             $host  = $_SERVER['HTTP_HOST'];

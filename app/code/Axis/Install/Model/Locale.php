@@ -78,7 +78,7 @@ class Axis_Install_Model_Locale
      */
     public static function getAvailableLocales()
     {
-        $path = ECART_ROOT . '/app/locale/';
+        $path = AXIS_ROOT . '/app/locale/';
 
         try {
             $localeDir = new DirectoryIterator($path);

@@ -439,7 +439,7 @@ class Axis_Install_Model_Wizard
     public function applyTemplate()
     {
         Axis::single('core/template')->importTemplateFromXmlFile(
-            ECART_ROOT
+            AXIS_ROOT
              . '/app/code/Axis/Install/etc/'
              . 'default.xml'
         );
@@ -450,7 +450,7 @@ class Axis_Install_Model_Wizard
     {
         try {
             $logger = new Zend_Log(new Zend_Log_Writer_Stream(
-                ECART_ROOT . '/var/logs/installation.log'
+                AXIS_ROOT . '/var/logs/installation.log'
             ));
             $logger->log($message, Zend_Log::DEBUG);
         } catch (Exception $e) {

@@ -23,7 +23,7 @@
  * @license     GNU Public License V3.0
  */
 
-define('ECART_ROOT', realpath('../'));
+define('AXIS_ROOT', realpath('../'));
 
 set_include_path(
   realpath('../app/code') . PATH_SEPARATOR
@@ -53,7 +53,7 @@ $displayErrors = (int)(APPLICATION_ENV !== 'development');
 
 $bootstrapConfig = array(
     'bootstrap' => array(
-        'path' => ECART_ROOT . '/library/Axis/Bootstrap/Install.php',
+        'path' => AXIS_ROOT . '/library/Axis/Bootstrap/Install.php',
         'class' => 'Axis_Bootstrap_Install'
     ),
     'phpSettings' => array(
@@ -64,7 +64,7 @@ $bootstrapConfig = array(
 
 $application = new Axis_Application(APPLICATION_ENV, $bootstrapConfig);
 
-if (is_readable(ECART_ROOT . '/app/etc/config.php')) {
+if (is_readable(AXIS_ROOT . '/app/etc/config.php')) {
     $application->bootstrap('DbAdapter');
 }
 $application->bootstrap(array('Loader', 'View', 'Session', 'FrontController'));

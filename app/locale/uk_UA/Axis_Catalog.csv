@@ -189,7 +189,7 @@
 "Animation speed, ms","Швидкість анімації, мс"
 "Select none, if you wish to disable this event","Виберіть none, якщо бажаєте відключити"
 "Default listing type","Тип списка продуктів по-замовчуванню"
-"Image cache path, relative to ECART_ROOT","Шлях до кешу зображень відносно ECART_ROOT"
+"Image cache path, relative to AXIS_ROOT","Шлях до кешу зображень відносно AXIS_ROOT"
 "Enable image cache","Увімкнути кешування зображень"
 "Path relative to the skin images folder: catalog/watermark.png","Шлях відносно папки малюнків активного шаблону: catalog/watermark.png"
 "Values [0 - 100]","Значення [0 - 100]"

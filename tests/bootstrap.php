@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
-define('ECART_ROOT', realpath(dirname('../')));
+define('AXIS_ROOT', realpath(dirname('../')));
 
 define('TESTS_PATH', realpath(dirname(__FILE__)));
 set_include_path(
@@ -50,7 +50,7 @@ Axis::$siteId = $config['system']['siteId'];
 
 $bootstrapConfig = array(
     'bootstrap' => array(
-        'path' => ECART_ROOT . '/library/Axis/Bootstrap/Test.php',
+        'path' => AXIS_ROOT . '/library/Axis/Bootstrap/Test.php',
         'class' => 'Axis_Bootstrap_Test'
     ),
     'phpSettings' => array(

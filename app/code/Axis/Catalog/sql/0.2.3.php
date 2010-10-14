@@ -375,7 +375,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('catalog/lightzoom/switchImageTrigger', 'Switch image trigger', 'click', 'select', 'Select none, if you wish to disable this event', array('config_options' => 'none,click,mouseenter,dblclick'))
 
             ->add('image', 'Images', null, null, array('translation_module' => 'Axis_Catalog'))
-            ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'string', 'Image cache path, relative to ECART_ROOT')
+            ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'string', 'Image cache path, relative to AXIS_ROOT')
             ->add('image/product/cache', 'Images/Product Images/Cache', 1, 'bool', 'Enable image cache')
             ->add('image/product/widthLarge', 'Large width', 0)
             ->add('image/product/heightLarge', 'Large height', 0)

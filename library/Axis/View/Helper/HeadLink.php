@@ -62,7 +62,7 @@ class Axis_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
      * Search algorithm:
      *  - from current template
      *  - from default template
-     *  - from ECART_ROOT
+     *  - from AXIS_ROOT
      *
      * @param string $css
      * @param bool $absolute [optional]

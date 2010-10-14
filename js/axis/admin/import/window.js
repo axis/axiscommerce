@@ -96,7 +96,7 @@ Ext.onReady(function(){
             anchor:'',
             autoEl:{
                 tag:'div',
-                html: 'Please place all images under ECART_ROOT/media/import/ with writable permission to all files including sub folders.'.l()
+                html: 'Please place all images under AXIS_ROOT/media/import/ with writable permission to all files including sub folders.'.l()
             }
         }]
     });

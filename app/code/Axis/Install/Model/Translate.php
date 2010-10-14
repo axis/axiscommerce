@@ -81,10 +81,10 @@ class Axis_Install_Model_Translate
      */
     protected function _getFileName($locale)
     {
-        if (!is_readable(ECART_ROOT . '/app/locale/' . $locale . '/Axis_Install.csv')) {
+        if (!is_readable(AXIS_ROOT . '/app/locale/' . $locale . '/Axis_Install.csv')) {
             $locale = 'en_US';
         }
-        return ECART_ROOT . '/app/locale/' . $locale . '/Axis_Install.csv';
+        return AXIS_ROOT . '/app/locale/' . $locale . '/Axis_Install.csv';
     }
 
     /**

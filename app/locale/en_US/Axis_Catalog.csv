@@ -189,7 +189,7 @@
 "Animation speed, ms","Animation speed, ms"
 "Select none, if you wish to disable this event","Select none, if you wish to disable this event"
 "Default listing type","Default listing type"
-"Image cache path, relative to ECART_ROOT","Image cache path, relative to ECART_ROOT"
+"Image cache path, relative to AXIS_ROOT","Image cache path, relative to AXIS_ROOT"
 "Enable image cache","Enable image cache"
 "Path relative to the skin images folder: catalog/watermark.png","Path relative to the skin images folder: catalog/watermark.png"
 "Values [0 - 100]","Values [0 - 100]"
