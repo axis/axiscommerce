@@ -32,12 +32,11 @@
  */
 class Axis_View_Helper_SkinUrl
 {
-    
     public function skinUrl($src = null, $absolute = true)
     {
         $baseUrl = $absolute ? $this->view->resourceUrl : Zend_Controller_Front::getInstance()->getBaseUrl();
         $skinUrl = $baseUrl . '/skin/' . $this->view->area . '/' . $this->view->templateName;
-        
+
         if (null === $src) {
             return $skinUrl;
         }
@@ -45,8 +44,7 @@ class Axis_View_Helper_SkinUrl
         if (is_readable($this->view->skinPath . '/' . $src)) {
             return $skinUrl . '/' .  ltrim($src, '/');
         }
-        $baseUrl = $relativePath ? 
-            Zend_Controller_Front::getInstance()->getBaseUrl() : $this->view->baseUrl;
+
         return $baseUrl . '/skin/'
              . $this->view->area
              . '/' . $this->view->defaultTemplate
