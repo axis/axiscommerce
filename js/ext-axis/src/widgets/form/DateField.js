@@ -67,9 +67,7 @@ Ext.form.DateField.override({
         if (Ext.isDate(date)) {
             return date.dateFormat(this.valueFormat);
         } else {
-            return Ext.util.Format.date(
-                Date.parseDate(this.value, this.format), this.valueFormat
-            );
+            return date;
         }
     },
     
