@@ -1261,6 +1261,7 @@ a.review-stars { outline: none; }
     width: 256px;
     height: 438px;
     text-indent: -9999px;
+    z-index: 999;
 }
 .Cvv-close{
     background: url(../images/cvv-close.gif) left top no-repeat;

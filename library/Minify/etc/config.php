@@ -42,7 +42,7 @@ $min_enableBuilder = true;
 //$min_cachePath = 'c:\\WINDOWS\\Temp';
 //$min_cachePath = '/tmp';
 //$min_cachePath = preg_replace('/^\\d+;/', '', session_save_path());
-$min_cachePath = ECART_ROOT . '/var/minify';
+$min_cachePath = AXIS_ROOT . '/var/minify';
 
 /**
  * Leave an empty string to use PHP's $_SERVER['DOCUMENT_ROOT'].
