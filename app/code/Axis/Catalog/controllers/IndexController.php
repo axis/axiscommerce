@@ -254,7 +254,6 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             $pathItems = $product->getParentItems();
         }
 
-        $lastItem = false;
         foreach ($pathItems as $item) {
             if ($item['status'] != 'enabled') {
                 return $this->_forward('not-found', 'Error', 'Axis_Core');
@@ -272,15 +271,18 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         }
 
         $product->incViewed();
-
-        $category = $refCategory;
-        if ($lastItem && $refCategory->id != $lastItem['id']) {
-            $category = Axis::single('catalog/category')
-                ->find($lastItem['id'])
-                ->current();
-        }
-        Zend_Registry::set('catalog/current_category', $category);
         Zend_Registry::set('catalog/current_product', $product);
+        
+        if (count($pathItems)) {
+            if ($refCategory && $refCategory->id == $lastItem['id']) {
+                $category = $refCategory;
+            } else {
+                $category = Axis::single('catalog/category')
+                    ->find($lastItem['id'])
+                    ->current();
+            }
+            Zend_Registry::set('catalog/current_category', $category);
+        }
 
         $data = $product->toArray();
         $data['images'] = Axis::single('catalog/product_image')
