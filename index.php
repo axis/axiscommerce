@@ -24,7 +24,7 @@
  * @license     GNU Public License V3.0
  */
 
-define('ECART_ROOT', realpath(dirname(__FILE__)));
+define('AXIS_ROOT', realpath(dirname(__FILE__)));
 
 if (!file_exists('./app/etc/config.php')) {
     if (!headers_sent()) {

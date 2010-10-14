@@ -7,8 +7,8 @@
  * @package Minify
  */
 
-define('ECART_ROOT', realpath(dirname(__FILE__)));
-define('MINIFY_MIN_DIR', ECART_ROOT . '/library/Minify');
+define('AXIS_ROOT', realpath(dirname(__FILE__)));
+define('MINIFY_MIN_DIR', AXIS_ROOT . '/library/Minify');
 
 // load config
 require MINIFY_MIN_DIR . '/etc/config.php';
