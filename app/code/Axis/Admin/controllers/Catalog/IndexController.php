@@ -75,9 +75,8 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
         //$modelProduct  = Axis::single('catalog/product');
         $filters = array('available_only' => false);
         if ($category instanceof Axis_Db_Table_Row) {
-            if ($category->lvl == 0) {
-                $filters['site_ids'] = $this->_getParam('siteId');
-            } else {
+            $filters['site_ids'] = $this->_getParam('siteId', Axis::getSiteId());
+            if ($category->lvl != 0) {
                 $filters['category_ids'] = $category->id;
             }
         } else {
