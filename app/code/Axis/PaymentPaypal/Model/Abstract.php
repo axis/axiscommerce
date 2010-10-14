@@ -106,12 +106,12 @@ abstract class Axis_PaymentPaypal_Model_Abstract extends Axis_Method_Payment_Mod
             }
             
             $optionsLI["L_AMT$k"] = $product['final_price'];
-            $optionsLI["L_TAXAMT$k"] = $product['tax'];
+            //$optionsLI["L_TAXAMT$k"] = $product['tax'];
             
             // track one-time charges
             if (isset($product['onetime_charges']) && $product['onetime_charges'] != 0) {
                 $onetimeSum += $product['onetime_charges'];
-                $onetimeTax += $product['tax'];
+                //$onetimeTax += $product['tax'];
             }
             
             // Replace & and = with * if found.

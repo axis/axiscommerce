@@ -6,7 +6,8 @@
     <?php echo $this->translate('checkout')->__("Credit Card Type");?> : <?php echo $crypt->decrypt($cc['cc_type'])?> <br />
     <?php echo $this->translate('checkout')->__("Card Owner's Name");?> : <?php echo $crypt->decrypt($cc['cc_owner'])?> <br />
     <?php echo $this->translate('checkout')->__("Card Number");?> : <?php echo $ccNumber?> <br />
-    <?php echo $this->translate('checkout')->__("Expiration Date");?> : <?php echo $crypt->decrypt($cc['cc_expires'])?> <br />
+    <?php echo $this->translate('checkout')->__("Expiration Date");?> : <?php echo $crypt->decrypt($cc['cc_expires_month']) . '/' . $crypt->decrypt($cc['cc_expires_year']) ?> <br />
     <?php if (!empty($cc['cc_cvv'])) : echo $this->translate('checkout')->__("Cvv");?> :
-        <?php echo $crypt->decrypt($cc['cc_cvv'])?> <br /><?php endif;?>
+        <?php echo $crypt->decrypt($cc['cc_cvv'])?> <br />
+    <?php endif;?>
 <?php endif; ?>
