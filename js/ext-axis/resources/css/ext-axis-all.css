@@ -9,77 +9,35 @@
     top: 0;
     width: 20px;
 }
-.x-form-htmleditor-element .x-form-lang-trigger {
-    right: 0;
-}
-.x-form-lang-trigger:hover {
-    background-color: #eaeaea;
-}
-.x-form-lang-menu .x-menu-item-icon {
-    height: auto;
-    width: auto;
-    margin-top: 2px;
-}
-.x-form-langset-item {
-    overflow: hidden !important;
-}
-.x-form-langset-item div.x-form-invalid {
-    background: none;
-    border: none;
-}
+.x-form-htmleditor-element .x-form-lang-trigger { right: 0; }
+.x-form-lang-trigger:hover { background-color: #eaeaea; }
+.x-form-lang-menu .x-menu-item-icon { height: auto; width: auto; margin-top: 2px; }
+.x-form-langset-item { overflow: hidden !important; }
+.x-form-langset-item div.x-form-invalid { background: none; border: none; }
 
 /* draggable grid */
-.x-grid-drag-insert-above {
-    border-top: 2px dotted #000 !important;
-    margin-top: -1px;
-}
-.x-grid-drag-insert-below {
-    border-bottom: 2px dotted #000 !important;
-    margin-bottom: -1px;
-}
-.x-grid-drag-append {
-    background: #eee !important;
-}
-.x-grid-drag-append .x-grid3-cell-inner {
-    text-decoration: underline;
-}
+.x-grid-drag-insert-above { border-top: 2px dotted #000 !important; margin-top: -1px; }
+.x-grid-drag-insert-below { border-bottom: 2px dotted #000 !important; margin-bottom: -1px; }
+.x-grid-drag-append { background: #eee !important; }
+.x-grid-drag-append .x-grid3-cell-inner { text-decoration: underline; }
 .ux-maximgb-treegrid-level .x-grid3-cell-first .x-grid3-cell-inner {
     /* group summary plugin override */
     padding-left: 5px;
 }
 
 /* required form field */
-.x-form-field-required {
-    color: #cb0e0a;
-}
+.x-form-field-required { color: #cb0e0a; }
 /* tabs with error */
-.x-tab-strip .error span.x-tab-strip-text {
-    color: #cb0e0a;
-}
+.x-tab-strip .error span.x-tab-strip-text { color: #cb0e0a; }
 
 /* image upload field */
-.x-form-image-upload-field-wrap {
-    float: left;
-}
-.x-form-image-upload-field-wrap .x-form-file-wrap {
-    float: left;
-    overflow: hidden;
-}
-.x-form-image-upload-field-wrap .x-form-file-preview {
-    float: left;
-    margin-right: 3px;
-}
-.x-form-image-upload-field-wrap .x-form-file-preview img {
-    width: 22px;
-    height: 22px;
-}
-.x-form-image-upload-field-wrap .x-form-image-upload-text {
-    float: left;
-}
-.x-form-image-upload-field-wrap .x-btn {
-    display: inline;
-    margin-left: 3px;
-    float: left;
-}
-.x-form-image-upload-field-wrap .x-form-file-upload {
-}
+.x-form-image-upload-field-wrap { float: left; }
+.x-form-image-upload-field-wrap .x-form-file-wrap { float: left; overflow: hidden; }
+.x-form-image-upload-field-wrap .x-form-file-preview { float: left; margin-right: 3px; }
+.x-form-image-upload-field-wrap .x-form-file-preview img { width: 22px; height: 22px; }
+.x-form-image-upload-field-wrap .x-form-image-upload-text { float: left; }
+.x-form-image-upload-field-wrap .x-btn { display: inline; margin-left: 3px; float: left; }
+.x-form-image-upload-field-wrap .x-form-file-upload {}
+
+/* override invalid ext-ux style */
+.x-grid3-cell-first .x-grid3-cell-inner { padding-left: 0; }
