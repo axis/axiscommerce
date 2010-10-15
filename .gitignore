@@ -15,3 +15,5 @@ var/sessions/*
 var/templates/*
 .project
 .settings
+nbproject/
+
