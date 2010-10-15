@@ -23,7 +23,6 @@
  * @license     GNU Public License V3.0
  */
 
-
 class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.7';
@@ -81,8 +80,8 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             `ip_address` varchar(96) default NULL,
             `site_id` smallint(5) unsigned NOT NULL,
             PRIMARY KEY  (`id`),
-            KEY `INDEX_SALES_ORDER` (`order_status_id`,`id`,`customer_id`) USING BTREE,
-            KEY `INDEX_SALES_ORDER_DATE` (`date_purchased_on`) USING BTREE
+            KEY `INDEX_SALES_ORDER` USING BTREE(`order_status_id`,`id`,`customer_id`),
+            KEY `INDEX_SALES_ORDER_DATE` USING BTREE (`date_purchased_on`)
         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('sales_order_creditcard')}`;

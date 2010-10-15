@@ -23,7 +23,6 @@
  * @license     GNU Public License V3.0
  */
 
-
 class Axis_PaymentCreditCard_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.1';
@@ -52,12 +51,6 @@ class Axis_PaymentCreditCard_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abs
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
-        $installer->run("
-            DROP TABLE IF EXISTS `{$installer->getTable('payment_creditcard_standard_order')}`;
-        ");
-
         Axis::single('core/config_value')->remove('payment/CreditCard_Standard');
         Axis::single('core/config_field')->remove('payment/CreditCard_Standard');
     }

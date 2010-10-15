@@ -23,7 +23,6 @@
  * @license     GNU Public License V3.0
  */
 
-
 class Axis_Checkout_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.2';
@@ -41,8 +40,8 @@ class Axis_Checkout_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
           `customer_id` int(10) unsigned DEFAULT NULL,
           `site_id` smallint(5) unsigned NOT NULL,
           PRIMARY KEY (`id`),
-          KEY `INDEX_CHECKOUT_CART_CUSTOMER` (`customer_id`) USING BTREE,
-          KEY `INDEX_CHECKOUT_CART_SITE` (`site_id`) USING BTREE,
+          KEY `INDEX_CHECKOUT_CART_CUSTOMER` USING BTREE (`customer_id`),
+          KEY `INDEX_CHECKOUT_CART_SITE` USING BTREE (`site_id`),
           CONSTRAINT `FK_CHECKOUT_CART_CUSTOMER` FOREIGN KEY (`customer_id`) REFERENCES `{$installer->getTable('account_customer')}` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 

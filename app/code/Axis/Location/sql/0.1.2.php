@@ -23,7 +23,6 @@
  * @license     GNU Public License V3.0
  */
 
-
 class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.2';
@@ -60,7 +59,7 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             PRIMARY KEY  (`id`),
             KEY `LOCATION_COUNTRY_ISO2` (`iso_code_2`),
             KEY `LOCATION_COUNTRY_ISO3` (`iso_code_3`),
-            KEY `LOCATION_COUNTRY_FORMAT` (`address_format_id`) USING BTREE,
+            KEY `LOCATION_COUNTRY_FORMAT` USING BTREE (`address_format_id`),
             CONSTRAINT `FK_LOCATION_COUNTRY_FORMAT` FOREIGN KEY (`address_format_id`)
                 REFERENCES `{$installer->getTable('location_address_format')}` (`id`) ON UPDATE CASCADE
         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=243 ;

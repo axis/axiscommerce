@@ -23,7 +23,6 @@
  * @license     GNU Public License V3.0
  */
 
-
 class Axis_Poll_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.1';
@@ -41,7 +40,7 @@ class Axis_Poll_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
           `language_id` smallint(5) unsigned NOT NULL,
           `question_id` mediumint(8) unsigned NOT NULL,
           `answer` varchar(255) DEFAULT NULL,
-          PRIMARY KEY (`id`,`language_id`) USING BTREE,
+          PRIMARY KEY USING BTREE (`id`,`language_id`),
           KEY `FK_POLL_ANSWER_LANGUAGE` (`language_id`),
           KEY `FK_POLL_ANSWER_QUESTION` (`question_id`),
           CONSTRAINT `FK_POLL_ANSWER_LANGUAGE` FOREIGN KEY (`language_id`)
