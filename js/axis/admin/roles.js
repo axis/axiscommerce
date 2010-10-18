@@ -24,11 +24,14 @@ Ext.namespace('Axis', 'Axis.Role');
 Ext.onReady(function(){
     var Role = {
 
+        id: null,
+
         load: function(node, e) {
             if (node.id == '0') {
                 Ext.getCmp('remove-role-button').disable();
                 return;
             }
+            Role.id = node.id;
             Ext.getCmp('save-role-button').enable();
             Ext.getCmp('remove-role-button').enable();
             Ext.Ajax.request({
@@ -93,12 +96,12 @@ Ext.onReady(function(){
         },
 
         save: function() {
-            if ($('#roleId').val() == '') {
+            if (Role.id == null) {
                 alert('Select role for edit');
                 return;
             }
             Ext.Ajax.request({
-                url: Axis.getUrl('roles/save'),
+                url: Axis.getUrl('roles/save/roleId/') + Role.id,
                 form: 'form-role'
             });
         },
@@ -237,7 +240,7 @@ Ext.onReady(function(){
     var rolesPanel = new Ext.Panel({
         autoScroll: true,
         maskDisabled: true,
-        contentEl: 'role-info-table',
+        contentEl: 'form-role',
         collapsible: true,
         header: false,
         region: 'center',
