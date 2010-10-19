@@ -107,7 +107,7 @@ class Axis
      */
     public static function single($class, $arguments = array())
     {
-        $class = self::_getClass($class);
+        $class = self::getClass($class);
 
         if (!Zend_Registry::isRegistered($class)) {
             $instance = new $class($arguments);
@@ -126,7 +126,7 @@ class Axis
      */
     public static function model($model, $arguments = array())
     {
-        $class = self::_getClass($model, 'model');
+        $class = self::getClass($model);
 
         return new $class($arguments);
     }
@@ -139,24 +139,25 @@ class Axis
      * @param string $type
      * @return string
      */
-    private static function _getClass($name, $type = 'model')
+    public static function getClass($name, $type = 'Model')
     {
-        $parts  = explode('/', $name);
-        $countParts = count($parts);
-        if (3 === $countParts) {
-            $namespace = ucfirst($parts[0]);
-            $module   = ucfirst($parts[1]);
-            $class    = ucfirst($parts[2]);
-        } elseif (2 === $countParts) {
-            $namespace = 'Axis';
-            $module   = ucfirst($parts[0]);
-            $class    = ucfirst($parts[1]);
-        } else {
+        $parts = explode('/', $name);
+
+        if (1 === count($parts)) {
             return $name;
         }
-        $type  = ucfirst($type);
-        $class = str_replace(' ', '_', ucwords(str_replace('_', ' ', $class)));
-        return $namespace . '_' . $module . '_' . $type . '_' . $class;
+
+        if (strstr($parts[0], '_')) {
+            list($namespace, $module) = explode('_', $parts[0]);
+            $namespace = ucfirst($namespace);
+        } else {
+            $namespace = 'Axis';
+            $module   = $parts[0];
+        }
+        $module = ucfirst($module);
+        $name   = str_replace(' ', '_', ucwords(str_replace('_', ' ', $parts[1])));
+
+        return $namespace . '_' . $module . '_' . $type . '_' . $name;
     }
 
     /**

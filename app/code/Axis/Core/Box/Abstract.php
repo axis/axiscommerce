@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Box
@@ -63,16 +63,16 @@ abstract class Axis_Core_Box_Abstract
      * @var bool
      */
     protected $_isAllowed = true;
-    
+
     /**
      * Temporary container for array of called boxes.
      * Used for possibility to render box in box, without
      * loss 'box' variable at the view point
-     * 
+     *
      * @var array
      */
     private $_stack = array();
-    
+
     /**
      * @static
      * @param Zend_View $view
@@ -81,7 +81,7 @@ abstract class Axis_Core_Box_Abstract
     {
         self::$view = $view;
     }
-    
+
     public function __construct($config = array())
     {
         if (null === self::$view) {
@@ -96,23 +96,23 @@ abstract class Axis_Core_Box_Abstract
         $this->updateData($config, true);
         $this->init();
     }
-    
+
     public function toHtml()
     {
-        if (!$this->_isAllowed 
+        if (!$this->_isAllowed
             || false === $this->initData()
             || !$this->hasContent() ) {
-            
+
             return '';
         }
-        
+
         if (empty($this->_data['template'])) {
             $templateName = $this->getData('boxName');
             $templateName[0] = strtolower($templateName[0]);
             $this->setData('template', strtolower($this->getData('boxModule'))
                 . '/box/' . $templateName . '.phtml');
         }
-        
+
         self::$view->box = $this;
         if (!Zend_Registry::isRegistered('axis_box/stack')) {
             Zend_Registry::set('axis_box/stack', array($this));
@@ -121,7 +121,7 @@ abstract class Axis_Core_Box_Abstract
             $this->_stack[] = $this;
             Zend_Registry::set('axis_box/stack', $this->_stack);
         }
-        
+
         if (!empty($this->_data['tabContainer'])) {
             $result = self::$view->render('core/box/tab.phtml');
         } elseif ($this->getData('disableWrapper')) {
@@ -129,7 +129,7 @@ abstract class Axis_Core_Box_Abstract
         } else {
             $result = self::$view->render('core/box/box.phtml');
         }
-        
+
         $this->_stack = Zend_Registry::get('axis_box/stack');
         array_pop($this->_stack);
         Zend_Registry::set('axis_box/stack', $this->_stack);
@@ -138,11 +138,11 @@ abstract class Axis_Core_Box_Abstract
         } else {
             unset(self::$view->box);
         }
-        
+
         return $result;
     }
-    
-    public function getData($key = null, $default = null) 
+
+    public function getData($key = null, $default = null)
     {
         if (null === $key) {
             return $this->_data;
@@ -159,10 +159,10 @@ abstract class Axis_Core_Box_Abstract
         }
         return isset($this->_data[$key]) ? $this->_data[$key] : $default;
     }
-    
+
     /**
      * Add key => value pair to data array
-     * 
+     *
      * @param string $key
      * @param mixed $value
      * @return Axis_Core_Box_Abstract Provides fluent interface
@@ -172,7 +172,7 @@ abstract class Axis_Core_Box_Abstract
         $this->_data[$key] = $value;
         return $this;
     }
-    
+
     public function updateData(array $data, $reset = false)
     {
         if ($reset) {
@@ -199,7 +199,7 @@ abstract class Axis_Core_Box_Abstract
         }
         return $this;
     }
-    
+
     public function hasData($key)
     {
         if (strstr($key, '/')) {
@@ -215,24 +215,24 @@ abstract class Axis_Core_Box_Abstract
             return isset($this->_data[$key]);
         }
     }
-    
+
     public function __get($key)
     {
         return $this->getData($key);
     }
-    
+
     public function __set($key, $value)
     {
         $this->_data[$key] = $value;
     }
-    
+
     public function __call($name, $arguments)
     {
         $key = substr($name, 3);
         $key[0] = strtolower($key[0]);
         switch (substr($name, 0, 3)) {
             case 'has':
-            	return $this->hasData($key);
+                return $this->hasData($key);
             case 'get':
                 return $this->getData($key);
             case 'set':
@@ -243,7 +243,7 @@ abstract class Axis_Core_Box_Abstract
             "Call to undefined method '%s'", get_class($this) . '::' . $name
         ));
     }
-    
+
     public function init() {}
 
     /**
