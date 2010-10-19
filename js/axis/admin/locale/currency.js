@@ -58,7 +58,7 @@ Ext.onReady(function() {
             Ext.getCmp('form_currency').getForm().submit({
                 url: Axis.getUrl('locale_currency/save'),
                 success: function(form, response) {
-                    form.reset();
+                    form.clear();
                     window.hide();
                     ds.reload();
                 }

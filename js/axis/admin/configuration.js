@@ -44,7 +44,7 @@ Ext.onReady(function() {
             addFieldWindow.show();
             var node = tree.getSelectionModel().getSelectedNode();
             if (node && typeof node.id === 'string') {
-                formNewField.getForm().reset();
+                formNewField.getForm().clear();
                 formNewField.getForm().setValues({
                    'path': node.id + '/new_branch'
                 })

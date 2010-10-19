@@ -29,7 +29,7 @@ Ext.onReady(function(){
         create: function () {
             orderStatusChild.removeAll();
             Ext.getCmp('windowOrder').show();
-//            Ext.getCmp('formOrder').getForm().reset();
+//            Ext.getCmp('formOrder').getForm().clear();
         },
         
         getSelectedId: function() {

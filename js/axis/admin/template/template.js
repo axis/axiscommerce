@@ -33,11 +33,11 @@ Ext.onReady(function() {
             Axis.Template.Layout.loadGrid(node.id);
         },
         create: function() {
-            templateForm.getForm().reset();
+            templateForm.getForm().clear();
             templateWin.show();
         },
         edit: function() {
-            templateForm.getForm().reset();
+            templateForm.getForm().clear();
             if (tree.getSelectionModel().getSelectedNode() && tree.getSelectionModel().getSelectedNode().isSelected()) {
                 var templateId = tree.getSelectionModel().getSelectedNode().id;
                 templateForm.getForm().load({
@@ -81,7 +81,7 @@ Ext.onReady(function() {
             });
         },
         startImport: function() {
-            importForm.getForm().reset();
+            importForm.getForm().clear();
             importWin.show();
         },
         importT: function() {

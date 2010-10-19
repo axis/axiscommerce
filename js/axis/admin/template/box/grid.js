@@ -157,7 +157,7 @@ function editBlock() {
     if (!block) return;
     currentBlock = block.id;
 
-    blockForm.getForm().reset();
+    blockForm.getForm().clear();
     blockWindow.show();
     blockForm.getForm().load({
         url:  Axis.getUrl('cms_block/get-block-data'),
@@ -167,6 +167,6 @@ function editBlock() {
 
 function createBlock() {
     currentBlock = 'new';
-    form.getForm().reset();
+    form.getForm().clear();
     window.show();
 }

@@ -290,7 +290,7 @@ function setDraft(draft) {
 function ajaxUpdate(items, clearSession){
     
     if (clearSession) {
-        Ext.getCmp('extProgressBar').reset();
+        Ext.getCmp('extProgressBar').clear();
         Ext.getCmp('extProgressBar').updateText('Initializing...');
         Ext.get('lightbox-info').show();
     }
@@ -323,7 +323,7 @@ function ajaxUpdate(items, clearSession){
 function ajaxDelete(items, clearSession){
     
     if (clearSession) {
-        Ext.getCmp('extProgressBar').reset();
+        Ext.getCmp('extProgressBar').clear();
         Ext.getCmp('extProgressBar').updateText('Initializing...');
         Ext.get('lightbox-info').show();
     }
@@ -356,7 +356,7 @@ function ajaxDelete(items, clearSession){
 function ajaxSetDraft(params, clearSession){
     
     if (clearSession) {
-        Ext.getCmp('extProgressBar').reset();
+        Ext.getCmp('extProgressBar').clear();
         Ext.getCmp('extProgressBar').updateText('Initializing...');
         Ext.get('lightbox-info').show();
     }

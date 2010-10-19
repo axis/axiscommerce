@@ -184,7 +184,7 @@ function editCategory() {
     getNodeParams(parentNode);
 
     category = node.id;
-    categoryForm.getForm().reset();
+    categoryForm.getForm().clear();
     categoryWindow.show();
     categoryForm.getForm().load({
         url: Axis.getUrl('cms_index/get-category/catId/') + category,

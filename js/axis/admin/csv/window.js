@@ -308,7 +308,7 @@ Ext.onReady(function(){
         form.doLayout();
     })
     window.on('hide', function(){
-        form.getForm().reset();
+        form.getForm().clear();
         var processTab = Ext.getCmp('process');
         processTab.disable();
     })

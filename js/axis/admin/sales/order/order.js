@@ -58,7 +58,7 @@ Ext.onReady(function(){
                 return false;
             }
             Order.activeId = id;
-//            Order.form.getForm().reset();
+//            Order.form.getForm().clear();
             var form = Order.form.getForm();
             form.clear();
 //            console.log(Order.form.getForm().clear);

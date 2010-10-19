@@ -181,7 +181,7 @@ Ext.onReady(function() {
     });
 
     CustomerWindow.el.on('hide', function() {
-        CustomerWindow.form.getForm().reset();
+        CustomerWindow.form.getForm().clear();
     });
 
 //    Customer.load(1);

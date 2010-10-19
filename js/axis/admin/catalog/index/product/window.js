@@ -175,8 +175,4 @@ Ext.onReady(function() {
             handler: ProductWindow.hide
         }]
     });
-
-    ProductWindow.el.on('hide', function() {
-        ProductWindow.form.getForm().reset();
-    });
 });

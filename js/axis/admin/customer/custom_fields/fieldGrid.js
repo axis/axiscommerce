@@ -165,7 +165,7 @@ Ext.onReady(function(){
             cls: 'x-btn-text-icon',
             handler : function(){
                 Ext.getCmp('fieldEditWindow').show();
-                Ext.getCmp('fieldForm').getForm().reset();
+                Ext.getCmp('fieldForm').getForm().clear();
                 fillForm(null, true);
             }
         }, {
@@ -242,7 +242,7 @@ Ext.onReady(function(){
         
     grid.on('rowdblclick', function(grid, index, e){
         Ext.getCmp('fieldEditWindow').show();
-        Ext.getCmp('fieldForm').getForm().reset();
+        Ext.getCmp('fieldForm').getForm().clear();
         fillForm(grid.store.getAt(index));
     })
 })
@@ -254,6 +254,6 @@ function editField(){
         return;
         
     Ext.getCmp('fieldEditWindow').show();
-    Ext.getCmp('fieldForm').getForm().reset();
+    Ext.getCmp('fieldForm').getForm().clear();
     fillForm(selected); //see index.phtml
 }

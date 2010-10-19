@@ -319,7 +319,7 @@ function editPage() {
     page = pageGrid.getSelectionModel().getSelected();
     if (!page) return;
     page = page.id;
-    pageForm.getForm().reset();
+    pageForm.getForm().clear();
     pageWindow.show();
     pageForm.getForm().load({
         url: Axis.getUrl('cms_index/get-page-data'),
