@@ -62,6 +62,7 @@ class Axis_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
      * Search algorithm:
      *  - from current template
      *  - from default template
+     *  - from fallback template
      *  - from AXIS_ROOT
      *
      * @param string $css
@@ -74,16 +75,22 @@ class Axis_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
             return $css;
         }
 
-        $file = '/skin/' . $this->view->area . '/'
-            . $this->view->templateName . '/css/' . $css;
-
-        if (!is_readable($this->view->path . $file)) {
-            $file = '/skin/' . $this->view->area
-                  . '/default/css/' . $css;
+        $fallbackList = array_unique(
+            array($this->view->templateName, $this->view->defaultTemplate, 'fallback')
+        );
+        $find = false;
+        foreach ($fallbackList as $fallback) {
+            $file = '/skin/' . $this->view->area . '/' . $fallback . '/css/' . $css;
+            if (is_readable($this->view->path . $file)) {
+                $find = true;
+                break;
+            }
         }
-        if (!is_readable($this->view->path . $file)) {
+
+        if (!$find) {
             $file = $css;
         }
+
         $baseUrl = $absolute ?
             $this->view->resourceUrl : Zend_Controller_Front::getInstance()->getBaseUrl();
 
