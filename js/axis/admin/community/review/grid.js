@@ -180,7 +180,7 @@ Ext.onReady(function(){
     
     var tries = 0;
     function loadEditForm(row) {
-        Ext.getCmp('form').getForm().reset();
+        Ext.getCmp('form').getForm().clear();
         Ext.getCmp('product_combo').store.load({
             params: {
                 id: row.get('product_id')

@@ -18,19 +18,19 @@
  */
 
 var CategoryWindow = {
-    
+
     el: null,
-    
+
     form: null,
-    
+
     close: function() {
         CategoryWindow.hide();
     },
-    
+
     hide: function() {
         CategoryWindow.el.hide();
     },
-    
+
     save: function(closeWindow) {
         CategoryWindow.form.getForm().submit({
             url: Axis.getUrl('catalog_category/save'),
@@ -52,17 +52,17 @@ var CategoryWindow = {
             }
         });
     },
-    
+
     show: function() {
         CategoryWindow.el.show();
     }
-    
+
 };
 
 Ext.onReady(function() {
-    
+
     Ext.form.Field.prototype.msgTarget = 'qtip';
-    
+
     var reader = [
         {name: 'status'},
         {name: 'key_word'},
@@ -83,7 +83,7 @@ Ext.onReady(function() {
             {name: 'image[listing][title][' + id + ']', mapping: 'image_listing_title_' + id}
         );
     }
-    
+
     CategoryWindow.form = new Axis.FormPanel({
         id: 'form-category',
         bodyStyle: {
@@ -256,7 +256,7 @@ Ext.onReady(function() {
             }]
         }]
     });
-    
+
     CategoryWindow.el = new Axis.Window({
         id: 'window-category',
         items: [CategoryWindow.form],
@@ -279,9 +279,5 @@ Ext.onReady(function() {
             text: 'Cancel'.l(),
             handler: CategoryWindow.hide
         }]
-    });
-    
-    CategoryWindow.el.on('hide', function() {
-        CategoryWindow.form.getForm().reset();
     });
 });

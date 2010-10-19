@@ -242,7 +242,7 @@ function createComment() {
         return alert('Select page in left tree panel'.l());
     }
     comment = 'new';
-    commentForm.getForm().reset();
+    commentForm.getForm().clear();
     commentWindow.show();
     commentWindow.setTitle('Add'.l());
 }

@@ -158,7 +158,7 @@ Ext.onReady(function(){
     });
 
     windowOrder.on('hide', function(){
-        Ext.getCmp('formOrder').getForm().reset();
+        Ext.getCmp('formOrder').getForm().clear();
     });
     
     Ext.getCmp('add-order-status-from').on('change', function(evt, elem, o) {

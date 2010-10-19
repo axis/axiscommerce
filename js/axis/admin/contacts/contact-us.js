@@ -84,7 +84,7 @@ Ext.onReady(function(){
             if (!cId) {
                  return false;
             }
-            formMail.getForm().reset();
+            formMail.getForm().clear();
             Contact.window.show();
             
             var mail    = grid.getSelectionModel().getSelected().data['email'];
@@ -265,7 +265,7 @@ Ext.onReady(function(){
          },
                   
          addDepartment: function () { 
-             formDepart.getForm().reset();  
+             formDepart.getForm().clear();  
              Dep.id = 0;
              winDepart.show();
          },

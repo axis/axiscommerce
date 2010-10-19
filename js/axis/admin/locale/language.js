@@ -32,7 +32,7 @@ Ext.onReady(function(){
         
         create: function() {
             window.show();
-            Ext.getCmp('form_language').getForm().reset();
+            Ext.getCmp('form_language').getForm().clear();
         },
         
         edit: function(row) {
@@ -48,7 +48,7 @@ Ext.onReady(function(){
             Ext.getCmp('form_language').getForm().submit({
                 url: Axis.getUrl('locale_language/save'),
                 success: function(form, response) {
-                    form.reset();
+                    form.clear();
                     window.hide();
                     ds.reload();
                 }

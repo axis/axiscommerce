@@ -151,7 +151,7 @@ function exportItems(recursive){
 function ajaxExportBranch(params, clearSession){
     
     if (clearSession) {
-        Ext.getCmp('extProgressBar').reset();
+        Ext.getCmp('extProgressBar').clear();
         Ext.getCmp('extProgressBar').updateText('Initializing...');
         Ext.get('lightbox-info').show();
     }

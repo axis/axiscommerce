@@ -27,7 +27,7 @@ Ext.onReady(function (){
     Ext.QuickTips.init();  
     var sitemap = {
         addnew: function () {
-            jQuery('#sitemap-form')[0].reset();
+            jQuery('#sitemap-form')[0].clear();
             sitemapId = -1;
             getWindow().show();
             jQuery('#sitemap').show();

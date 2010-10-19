@@ -99,30 +99,23 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $view->moduleName = $module;
 
         $view->path = $systemPath;
-        $view->skinPath = $systemPath
-                        . '/skin/'
-                        . $area . '/'
-                        . $template['name'];
+        $view->skinPath = $systemPath . '/skin/' . $area . '/' . $template['name'];
 
         $currentUrl = $request->getScheme() . '://'
              . $request->getHttpHost()
              . $request->getRequestUri();
 
-//        $site = Axis::single('core/site')->getByUrl($currentUrl);
         $site = Axis::getSite();
 
-        $view->baseUrl      = $site ? $site->base : Zend_Controller_Front::getInstance()->getBaseUrl();
+        $view->baseUrl      = $site ?
+            $site->base : Zend_Controller_Front::getInstance()->getBaseUrl();
         $view->secureUrl    = $site ? $site->secure : $view->baseUrl;
         $view->resourceUrl  = (0 === strpos($currentUrl, $view->secureUrl)) ?
             $view->secureUrl : $view->baseUrl;
         $view->catalogUrl   = Axis::config('catalog/main/route');
-        //$view->skinUrl      = $view->resourceUrl . '/skin/' . $area . '/' . $template['name'];
 
         //@todo every template shoud have own defaults
         $view->defaultTemplate = 'default';
-
-        /* for use in ->render('../[script.php]')  */
-        //$view->setLfiProtection(false);
 
         //Initialize Zend_View stack
         $module = $this->_getScriptsPath($area);
@@ -130,26 +123,22 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
         $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
 
-        if ($template['name'] !== $view->defaultTemplate) {
-            $templatePath = $systemPath
-                          . '/app/design/'
-                          . $area . '/'
-                          . $view->defaultTemplate;
-
-            $view->addHelperPath($templatePath . '/helpers', 'Axis_View_Helper');
-            $view->addScriptPath($templatePath . '/templates');
-            $view->addScriptPath($templatePath . '/templates/' . $module);
-            $view->addScriptPath($templatePath . '/layouts');
+        $fallbackList = array_unique(
+            array('fallback', $view->defaultTemplate, $template['name'])
+        );
+        foreach ($fallbackList as $fallback) {
+            $templatePath = $systemPath . '/app/design/' . $area . '/' . $fallback;
+            if (is_readable($templatePath . '/helpers')) {
+                $view->addHelperPath($templatePath . '/helpers', 'Axis_View_Helper');
+            }
+            if (is_readable($templatePath . '/templates')) {
+                $view->addScriptPath($templatePath . '/templates');
+                $view->addScriptPath($templatePath . '/templates/' . $module);
+            }
+            if ($template['name'] != $fallback && is_readable($templatePath . '/layouts')) {
+                $view->addScriptPath($templatePath . '/layouts');
+            }
         }
-
-        $templatePath = $systemPath
-                      . '/app/design/'
-                      . $area . '/'
-                      . $template['name'];
-
-        $view->addHelperPath($templatePath . '/helpers', 'Axis_View_Helper');
-        $view->addScriptPath($templatePath . '/templates');
-        $view->addScriptPath($templatePath . '/templates/' . $module);
 
         //for compatibility
         $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');

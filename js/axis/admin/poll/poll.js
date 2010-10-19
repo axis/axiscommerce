@@ -121,7 +121,7 @@ Ext.onReady(function () {
                 Ext.getCmp('window-question').setTitle('Edit Question');
                 Ext.getCmp('window-question').show();
 //
-                Ext.getCmp('form-question').getForm().reset();
+                Ext.getCmp('form-question').getForm().clear();
                 Ext.getCmp('form-question').getForm().load({
                     url: Axis.getUrl('poll_index/get-question'),
                     params : {questionId : questionId},
@@ -166,7 +166,7 @@ Ext.onReady(function () {
                     params: {'deleteAnswerIds[]': deleteAnswerIds},
                     success: function(form, response) {
                         Ext.getCmp('window-question').hide();
-                        form.reset();
+                        form.clear();
                         Ext.getCmp('grid-poll').getStore().reload();
                     }
                 });
@@ -228,7 +228,7 @@ Ext.onReady(function () {
                 _clearAnswers();
                 Ext.getCmp('window-question').setTitle('Edit Question');
                 Ext.getCmp('window-question').show();
-                Ext.getCmp('form-question').getForm().reset();
+                Ext.getCmp('form-question').getForm().clear();
             }
 
         }//end return
