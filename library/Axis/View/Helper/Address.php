@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Helper
@@ -50,9 +50,9 @@ class Axis_View_Helper_Address
 //        '{{if fax}}F: {{fax}}EOL{{/if}}'
 //        ;
         $address = $address->toArray();
-        $formatAddressId = isset($address['address_format_id']) ?
+        $formatAddressId = !empty($address['address_format_id']) ?
             $address['address_format_id'] :
-                Axis::config('core/store/addressFormat', 1);
+                Axis::config('locale/main/addressFormat');
 
         $rowAddressFormat = Axis::single('location/address_format')
             ->find($formatAddressId)
@@ -98,7 +98,7 @@ class Axis_View_Helper_Address
         }
         return $template;
     }
-    
+
     public function setView($view)
     {
         $this->view = $view;

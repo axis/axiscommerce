@@ -400,7 +400,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         // no strtolower to support non-latin urls
         $url = str_replace(
             array('\\', '/', ' '),
-            Axis::config('catalog/product/hurldelimiter', '-'),
+            Axis::config('catalog/product/hurldelimiter'),
             $url
         );
 

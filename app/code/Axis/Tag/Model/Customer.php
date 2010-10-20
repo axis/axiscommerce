@@ -369,9 +369,9 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
     public function getDefaultStatus()
     {
         if (null === Axis::getCustomerId()) {
-            return Axis::config('tag/main/guest_status', self::STATUS_PENDING);
+            return Axis::config('tag/main/guest_status');
         }
-        return Axis::config('tag/main/customer_status', self::STATUS_APPROVED);
+        return Axis::config('tag/main/customer_status');
 
     }
 }
