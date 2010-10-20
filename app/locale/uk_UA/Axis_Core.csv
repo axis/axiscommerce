@@ -294,3 +294,4 @@
 "Check values, which you want to see on page title","Відмітьте значення, які ви хочете бачити на заголовку сторінки"
 "Mail Transport (smtp or sendmail)","Mail Transport (smtp or sendmail)"
 "%d record(s) was saved successfully","%d запис(ів) було успішно збережено"
+"Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section","Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section"
