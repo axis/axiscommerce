@@ -399,30 +399,27 @@ dl.attributes-list dd { padding-left: 10px; }
     border-radius: 10px;
     background: #f6f6f6 url(../images/box.gif) repeat-x 0 0; }
 .side-col .head { padding: 6px 7px; }
-.side-col .title { padding: 1px 0 1px 22px; background: url(../images/common.gif) no-repeat -10000px -10000px; }
+.side-col .title { padding: 1px 0 1px 0; background: url(../images/common.gif) no-repeat -10000px -10000px; }
 .side-col .content { padding: 3px 10px 10px; }
 .side-col .content .content { border: none; padding: 0; background: none; }
 
 .side-col .box .actions { padding: 4px; }
 
-.side-col .box-category .title  { padding-left: 0; }
-.side-col .box-bestseller .title  { background-position: -274px -61px; }
-.side-col .box-popular .title { background-position: -274px -61px; }
+.side-col .box-bestseller .title  { background-position: -274px -61px; padding-left: 22px; }
+.side-col .box-popular .title { background-position: -274px -61px; padding-left: 22px; }
 .side-col .box-popular .product-name { padding-left: 15px;
     background: url(../images/common.gif) no-repeat -184px -234px; }
-.side-col .box-wishlist .title { background-position: -73px -367px; }
-.side-col .box-tag .title { background-position: -57px -383px; }
-.side-col .box-shopping-cart .title { background-position: -257px -80px; }
-.side-col .box-poll .title  { background-position: -241px -99px; }
-.side-col .box-compare .title { background-position: -225px -116px; }
-.side-col .box-currency .title { background-position: -165px -256px; }
-.side-col .box-filter .title  { background-position: -149px -273px; }
-.side-col .box-manufacturer .title  { padding-left: 0; }
-.side-col .box-account .title  { background-position: -91px -348px }
-.side-col .box-special .title  { background-position: -40px -403px; }
-.side-col .box-featured .title  { background-position: -25px -421px; }
-.side-col .box-new .title  { background-position: -9px -439px; }
-.side-col .box-cms-navigation .title  { padding-left: 0; }
+.side-col .box-wishlist .title { background-position: -73px -367px; padding-left: 22px; }
+.side-col .box-tag .title { background-position: -57px -383px; padding-left: 22px; }
+.side-col .box-shopping-cart .title { background-position: -257px -80px; padding-left: 22px; }
+.side-col .box-poll .title  { background-position: -241px -99px; padding-left: 22px; }
+.side-col .box-compare .title { background-position: -225px -116px; padding-left: 22px; }
+.side-col .box-currency .title { background-position: -165px -256px; padding-left: 22px; }
+.side-col .box-filter .title  { background-position: -149px -273px; padding-left: 22px; }
+.side-col .box-account .title  { background-position: -91px -348px; padding-left: 22px; }
+.side-col .box-special .title  { background-position: -40px -403px; padding-left: 22px; }
+.side-col .box-featured .title  { background-position: -25px -421px; padding-left: 22px; }
+.side-col .box-new .title  { background-position: -9px -439px; padding-left: 22px; }
 .side-col .box-cms-navigation li { padding-left: 18px; background: url(../images/common.gif) no-repeat -10000px -10000px; }
 .side-col .box-cms-navigation .icon-folder { background-position: -136px -292px; }
 .side-col .box-cms-navigation .icon-page { background-position: -119px -311px; }
