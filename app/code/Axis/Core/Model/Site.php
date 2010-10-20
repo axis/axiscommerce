@@ -108,13 +108,9 @@ class Axis_Core_Model_Site extends Axis_Db_Table
      * @param mixed (int|bool) $siteId[optional]
      * @return array
      */
-    public function getCompanyInfo($siteId = false)
+    public function getCompanyInfo($siteId = null)
     {
-        if (!$siteId) {
-            $siteId = Axis::getSiteId();
-        }
-        Axis::config()->setSiteId($siteId);
-        $company  = Axis::config()->core->company->toArray();
+        $company = Axis::config('core/company', $siteId)->toArray();
         //@todo Use Axis_Object
         return array(
             'email'     => Axis_Collect_MailBoxes::getName($company['administratorEmail']),

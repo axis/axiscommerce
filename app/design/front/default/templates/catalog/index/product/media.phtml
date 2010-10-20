@@ -1,10 +1,10 @@
 <?php
-$widthLarge = $this->config('image/product/widthLarge', 0);
-$heightLarge = $this->config('image/product/heightLarge', 0);
-$widthMedium = $this->config('image/product/widthMedium', 250);
-$heightMedium = $this->config('image/product/heightMedium', 250);
-$widthThumbnail = $this->config('image/product/widthThumbnail', 40);
-$heightThumbnail = $this->config('image/product/heightThumbnail', 40);
+$widthLarge = $this->config('image/product/widthLarge');
+$heightLarge = $this->config('image/product/heightLarge');
+$widthMedium = $this->config('image/product/widthMedium');
+$heightMedium = $this->config('image/product/heightMedium');
+$widthThumbnail = $this->config('image/product/widthThumbnail');
+$heightThumbnail = $this->config('image/product/heightThumbnail');
 
 $imagePath = isset($this->product['images'][$this->product['image_base']]) ?
     $this->product['images'][$this->product['image_base']]['path'] : '';
@@ -69,34 +69,34 @@ $imageTitle = isset($this->product['images'][$this->product['image_base']]) ?
 <?php endif ?>
 
 <script type="text/javascript">
-$(document).ready(function() {    
+$(document).ready(function() {
     $('.lightzoom').lightzoom({
-        zoom_stage_width: <?php echo $this->config('catalog/lightzoom/zoomStageWidth', 250) ?>,
-        zoom_stage_height: <?php echo $this->config('catalog/lightzoom/zoomStageHeight', 250) ?>,
-        zoom_stage_position: '<?php echo $this->config('catalog/lightzoom/zoomStagePosition', 'right') ?>',
-        zoom_stage_offset_x: <?php echo $this->config('catalog/lightzoom/zoomStageOffsetX', 10) ?>,
-        zoom_stage_offset_y: <?php echo $this->config('catalog/lightzoom/zoomStageOffsetY', 0) ?>,
+        zoom_stage_width: <?php echo $this->config('catalog/lightzoom/zoomStageWidth') ?>,
+        zoom_stage_height: <?php echo $this->config('catalog/lightzoom/zoomStageHeight') ?>,
+        zoom_stage_position: '<?php echo $this->config('catalog/lightzoom/zoomStagePosition') ?>',
+        zoom_stage_offset_x: <?php echo $this->config('catalog/lightzoom/zoomStageOffsetX') ?>,
+        zoom_stage_offset_y: <?php echo $this->config('catalog/lightzoom/zoomStageOffsetY') ?>,
         zoom_source_width: <?php echo $widthMedium ?>,
         zoom_source_height: <?php echo $heightMedium ?>,
-        zoom_lens_opacity: <?php echo $this->config('catalog/lightzoom/zoomLensOpacity', 0.7) ?>,
-        zoom_cursor: '<?php echo $this->config('catalog/lightzoom/zoomCursor', 'crosshair') ?>',
-        zoom_on_trigger: '<?php echo $this->config('catalog/lightzoom/zoomOnTrigger', 'mouseenter') ?>',
-        zoom_off_trigger: '<?php echo $this->config('catalog/lightzoom/zoomOffTrigger', 'mouseleave') ?>',
-        
+        zoom_lens_opacity: <?php echo $this->config('catalog/lightzoom/zoomLensOpacity') ?>,
+        zoom_cursor: '<?php echo $this->config('catalog/lightzoom/zoomCursor') ?>',
+        zoom_on_trigger: '<?php echo $this->config('catalog/lightzoom/zoomOnTrigger') ?>',
+        zoom_off_trigger: '<?php echo $this->config('catalog/lightzoom/zoomOffTrigger') ?>',
+
         lightbox_collection: '.more-views-list a',
-        lightbox_trigger: '<?php echo $this->config('catalog/lightzoom/lightboxTrigger', 'click') ?>',
-        lightbox_resize_speed: <?php echo $this->config('catalog/lightzoom/lightboxResizeSpeed', 800) ?>,
-        lightbox_fade_speed: <?php echo $this->config('catalog/lightzoom/lightboxFadeSpeed', 300) ?>,
-        lightbox_mask_opacity: <?php echo $this->config('catalog/lightzoom/lightboxMaskOpacity', 0.8) ?>,
+        lightbox_trigger: '<?php echo $this->config('catalog/lightzoom/lightboxTrigger') ?>',
+        lightbox_resize_speed: <?php echo $this->config('catalog/lightzoom/lightboxResizeSpeed') ?>,
+        lightbox_fade_speed: <?php echo $this->config('catalog/lightzoom/lightboxFadeSpeed') ?>,
+        lightbox_mask_opacity: <?php echo $this->config('catalog/lightzoom/lightboxMaskOpacity') ?>,
         lightbox_label_begin: '<?php echo $this->translate('catalog')->__('Begin') ?>',
         lightbox_label_prev: '<?php echo $this->translate('catalog')->__('Prev') ?>',
         lightbox_label_next: '<?php echo $this->translate('catalog')->__('Next') ?>',
         lightbox_label_end: '<?php echo $this->translate('catalog')->__('End') ?>',
         lightbox_label_close: '<?php echo $this->translate('catalog')->__('Close') ?>',
         lightbox_label_title: '<?php echo $this->translate('catalog')->__('Image %s of %s') ?>',
-        
-        switch_image_trigger: '<?php echo $this->config('catalog/lightzoom/switchImageTrigger', 'click') ?>',
-        
+
+        switch_image_trigger: '<?php echo $this->config('catalog/lightzoom/switchImageTrigger') ?>',
+
         message_loading: '<?php echo $this->translate('catalog')->__('Loading') ?>',
         message_loading_error: '<?php echo $this->translate('catalog')->__('Loading error') ?>'
     });
