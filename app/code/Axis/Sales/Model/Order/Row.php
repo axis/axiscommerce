@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Sales
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Sales
  * @subpackage  Model
@@ -42,9 +42,9 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
      */
     public function setStatus($statusId, $comments = '', $notifyCustomer = false)
     {
-        if (is_string($statusId) 
+        if (is_string($statusId)
             && in_array($statusId, array_values(Axis_Collect_OrderStatus::collect()))) {
-                
+
             $status = $statusId;
             $statusId = Axis::single('sales/order_status')->getIdByName($status);
         } else {
@@ -63,9 +63,9 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             ));
             return false;
         }
-        
+
         $retMethod = Axis::single('sales/order_status_run')->$status($this);
-        
+
         if (!$retMethod) {
             $status = 'failed';
             Axis::single('sales/order_status_run')->failed($this);
@@ -76,10 +76,10 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
                 $comments .= ' ' . implode('.', $messageGroup);
             }
         }
-        
+
         $this->order_status_id = $statusId;
         $this->save();
-        
+
         /* save Status History */
         $this->addComment($comments, $notifyCustomer, $statusId);
 
@@ -96,11 +96,11 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         }
         return $retMethod;
     }
-    
+
     /**
      * Add comment to order(not change order status)
      * Fluent interface
-     * @param $comment string 
+     * @param $comment string
      * @param $notify bool
      * @param $statusId int
      * @return this
@@ -120,10 +120,10 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             'notified' => (int) $notify,
             'comments' => $comment
         ));
-        
+
         return $this;
     }
-    
+
     /**
      * Notify customer
      * @return unknown_type
@@ -141,9 +141,9 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         $status = $status['status_name'];
         $to = $customer->toArray();
         $to = $to['email'];
-        
+
         $mail = new Axis_Mail();
-        
+
         $mail->setConfig(array(
             'event'   => 'change_order_status-customer',
             'subject' => 'Your order change status notify',
@@ -175,7 +175,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             ->fetchAll()
         ;
     }
-    
+
     public function getProducts()
     {
         return $this->getTable()->getProducts($this->id);
@@ -196,12 +196,12 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
     {
         return $this->getTable()->getShipping($this->id);
     }
-    
+
     public function getTax()
     {
         return $this->getTable()->getTax($this->id);
     }
-    
+
     public function getShippingTax()
     {
         return $this->getTable()->getShippingTax($this->id);
@@ -211,7 +211,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
     {
         return $this->getTax() + $this->getShippingTax();
     }
-    
+
     public function getSubtotal()
     {
         return $this->getTable()->getSubtotal($this->id);
@@ -260,14 +260,14 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             ->setZone($zone)
             ->setPostcode($this->billing_postcode)
             ->setCountry($country)
-           
+
             ->setPhone($this->billing_phone)
             ->setFax($this->billing_fax)
             ->setAddressFormat($this->billing_address_format_id)
             ->setCustomerId($this->customer_id)
             ->setTaxId(/*@todo*/)
             ;
-         
+
         return $billing;
     }
 
@@ -282,11 +282,11 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         $country = Axis::single('location/country')->fetchRow(
             $this->getAdapter()->quoteInto('name = ?', $this->delivery_country)
         )->toArray();
-        
+
         $zone = $this->delivery_state ? Axis::single('location/zone')->fetchRow(
             $this->getAdapter()->quoteInto('name = ?', $this->delivery_state)
         )->toArray() : NULL;
-        
+
         $delivery->setFirstname($this->delivery_firstname)
             ->setLastname($this->delivery_lastname)
             ->setCompany($this->delivery_company)
@@ -301,7 +301,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             ->setAddressFormat($this->delivery_address_format_id)
             ->setCustomerId($this->customer_id)
             ->setTaxId(/*@todo*/);
-            
+
         return $delivery;
     }
 
@@ -333,9 +333,9 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         if (null === $this->number) {
             $this->number = md5(time());
             $id = parent::save();
-            $prefix = Axis::config('sales/order/order_number_pattern_prefix', '');
-            $numberPattern = Axis::config('sales/order/order_number_pattern', '');
-            
+            $prefix = Axis::config('sales/order/order_number_pattern_prefix');
+            $numberPattern = Axis::config('sales/order/order_number_pattern');
+
             $this->number = $prefix . (strlen($numberPattern) > strlen($id) ?
                 substr($numberPattern, 0, strlen($numberPattern) - strlen($id)) . $id : $id);
         }

@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Locale
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Locale
  * @author      Axis Core Team <core@axiscommerce.com>
@@ -34,7 +34,7 @@ class Axis_Locale
     const DEFAULT_LOCALE    = 'en_US';
     const DEFAULT_CURRENCY  = 'USD';
     const DEFAULT_TIMEZONE  = 'America/Los_Angeles';
-    
+
     /**
      * Set locale and language if possible
      *
@@ -44,11 +44,11 @@ class Axis_Locale
     public static function setLocale($locale = 'auto')
     {
         $nsMain = Axis::session();
-        
+
         if (!strstr($locale, '_')) {
             $locale = self::_getLocaleFromLanguageCode($locale);
         }
-        
+
         if (Zend_Registry::isRegistered('Zend_Locale')) {
             $currentLocale = Zend_Registry::get('Zend_Locale');
             $currentLocale->setLocale($locale);
@@ -61,17 +61,17 @@ class Axis_Locale
             Zend_Locale::setCache(Axis::cache());
             Zend_Registry::set('Zend_Locale', $currentLocale);
         }
-        
+
         if (Zend_Registry::isRegistered('area')
             && Zend_Registry::get('area') == 'admin') {
 
             $nsMain->locale = $locale;
         }
-        
+
         $row = Axis::single('locale/language')->fetchRow(Axis::db()->quoteInto(
             'code = ?', $currentLocale->getLanguage()
         ));
-        
+
         if ($row) {
             $nsMain->language = $row->id;
         } else {
@@ -79,27 +79,27 @@ class Axis_Locale
         }
         self::setTimezone();
     }
-    
+
     /**
      * Retrieve first suitable locale with language
      *
      * @static
-     * @param string $code Language ISO code 
+     * @param string $code Language ISO code
      * @return string Locale ISO code
      */
     private static function _getLocaleFromLanguageCode($code)
     {
         $localeList = self::getLocaleList(true);
-        
+
         foreach ($localeList as $locale) {
             if (strstr($locale, $code)) {
                 return $locale;
             }
         }
-        
+
         return self::DEFAULT_LOCALE;
     }
-    
+
     /**
      * Retrieve locale object
      *
@@ -123,7 +123,7 @@ class Axis_Locale
         }
         return Zend_Registry::get('Zend_Locale');
     }
-    
+
     /**
      * Retrieve default locale from config
      *
@@ -131,10 +131,10 @@ class Axis_Locale
      * @return string Locale ISO code
      */
     public static function getDefaultLocale()
-    {   
-        return Axis::config('locale/main/locale', self::DEFAULT_LOCALE);
+    {
+        return Axis::config('locale/main/locale');
     }
-    
+
     /**
      * Returns a list of all known locales, or all installed locales
      *
@@ -148,7 +148,7 @@ class Axis_Locale
         }
         return Axis::single('locale/language')->getLocaleList();
     }
-    
+
     /**
      * Retrieve languageId from session;
      *
@@ -162,7 +162,7 @@ class Axis_Locale
         }
         return Axis::session()->language;
     }
-    
+
     /**
      * Retrieve part of url, responsible for locale
      *
@@ -171,20 +171,20 @@ class Axis_Locale
      */
     public static function getLanguageUrl()
     {
-        
+
         $language = self::getLocale()->getLanguage();
         $locale = self::getLocale()->toString();
-        
+
         if ($locale == self::getDefaultLocale()) {
             return '';
         }
         if ($locale == self::_getLocaleFromLanguageCode($language)) {
             return '/' . $language;
         }
-        
+
         return '/' . $locale;
     }
-    
+
     /**
      * get default store timezone
      *
@@ -195,24 +195,24 @@ class Axis_Locale
     {
         return Axis::config('locale/main/timezone');
     }
-    
+
     /**
      * get timezone
      *
      * @static
-     * @return string  
+     * @return string
      */
     public static function getTimezone()
     {
         return date_default_timezone_get();
     }
-    
-    /** 
+
+    /**
      * set timezone
      *
      * @static
      * @param mixed void|string
-     * @return bool  
+     * @return bool
      */
     public static function setTimezone($timezone = null)
     {
@@ -224,7 +224,7 @@ class Axis_Locale
         }
         return @date_default_timezone_set(self::DEFAULT_TIMEZONE);
     }
-    
+
     /**
      * Retrieve the list of available admin intrerface tranlations
      *
@@ -235,23 +235,23 @@ class Axis_Locale
     {
         if (!$locales = Axis::cache()->load('locales_list')) {
             $path = Axis::config()->system->path . '/app/locale';
-            
+
             try {
                 $locales_dir = new DirectoryIterator($path);
             } catch (Exception $e) {
                 throw new Axis_Exception("Directory $path not readable");
             }
-            
+
             $locale = Axis_Locale::getLocale();
             $locales = array();
-            
+
             foreach ($locales_dir as $localeDir) {
                 $localeCode = $localeDir->getFilename();
                 if ($localeCode[0] == '.' || !strstr($localeCode, '_')) {
                     continue;
                 }
                 list($language, $country) = explode('_', $localeCode, 2);
-                
+
                 $language = $locale->getTranslation($language, 'language', $localeCode);
                 $country = $locale->getTranslation($country, 'country', $localeCode);
                 if (!$language) {
