@@ -51,16 +51,16 @@ class Axis_Mail extends Zend_Mail
         $this->view->setLfiProtection(false);
 
         $this->view->addScriptPath(
-            Axis::config()->system->path . '/app/design/mail'
+            Axis::config('system/path') . '/app/design/mail'
         );
         $this->view->addHelperPath(
-            Axis::config()->system->path . '/library/Axis/View/Helper',
+            Axis::config('system/path') . '/library/Axis/View/Helper',
             'Axis_View_Helper'
         );
 
         $this->view->area         = Zend_Registry::get('area');
-        $this->view->path         = Axis::config()->system->path;
-        $this->view->baseUrl      = Axis::config()->system->baseurl;
+        $this->view->path         = Axis::config('system/path');
+        $this->view->baseUrl      = Axis::config('system/baseurl');
         $template                 = Axis_Layout::getTemplate();
         $this->view->templateName = $template['name'];
         $sites                    = Axis_Collect_Site::collect();

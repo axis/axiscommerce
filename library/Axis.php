@@ -169,7 +169,7 @@ class Axis
      * @param string $default[optional] default value to return
      * @return object Axis_Config|mixed
      */
-    public static function config($name = null, $default = null)
+    public static function config($name = null, $siteId = null, $default = null)
     {
         if (!Zend_Registry::isRegistered('config')) {
             throw new Axis_Exception(
@@ -179,7 +179,7 @@ class Axis
             );
         }
         if (null !== $name) {
-            return Zend_Registry::get('config')->get($name, $default);
+            return Zend_Registry::get('config')->get($name, $siteId, $default);
         }
         return Zend_Registry::get('config');
     }
