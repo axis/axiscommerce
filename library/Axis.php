@@ -269,19 +269,9 @@ class Axis
     public static function translate($name = 'Axis_Core')
     {
         if (false === strpos($name, '_')) {
-            $parts  = explode('/', $name);
-            if (1 < count($parts)) {
-                $namespace = $parts[0];
-                $module    = $parts[1];
-            } else {
-                $namespace = 'Axis';
-                $module    = $parts[0];
-            }
-            $name = $namespace . '_' . $module;
+            $name = 'Axis' . '_' . $name;
         }
-        $name = str_replace(
-            ' ', '_', ucwords(str_replace('_', ' ', $name))
-        );
+        $name = str_replace(' ', '_', ucwords(str_replace('_', ' ', $name)));
         return Axis_Translate::getInstance($name);
     }
 }
