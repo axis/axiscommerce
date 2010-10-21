@@ -15,17 +15,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 Ext.form.BasicForm.override({
-    
+
     trackResetOnLoad: true,
-    
+
     invalidTabs: [],
-    
+
     isValid : function(){
         var valid = true;
         var invalidPanels = [];
@@ -54,7 +54,7 @@ Ext.form.BasicForm.override({
                 // modification end
             }
         }, this);
-        
+
         // modification begin
         // @todo change logic: check current tab, if clear - next step by step (no need to check all of them)
         // collect panels to activate and mark tabPanels to skip
@@ -66,7 +66,7 @@ Ext.form.BasicForm.override({
                 tabPanel.panelToActivate = invalidPanels[i];
             }
         }
-        
+
         // activate panels with errors
         for (var i = 0, len = invalidPanels.length; i < len; i++) {
             var tabPanel = invalidPanels[i].findParentByType('tabpanel');
@@ -75,7 +75,7 @@ Ext.form.BasicForm.override({
             }
             tabPanel.setActiveTab(tabPanel.items.indexOf(tabPanel.panelToActivate));
         }
-        
+
         // remove custom variables
         for (var i = 0, len = invalidPanels.length; i < len; i++) {
             var tabPanel = invalidPanels[i].findParentByType('tabpanel');
@@ -83,10 +83,10 @@ Ext.form.BasicForm.override({
             delete tabPanel.panelToActivate;
         }
         // modificaton end
-        
+
         return valid;
     },
-    
+
     findField : function(id) {
         var field = this.items.get(id);
 
@@ -129,14 +129,17 @@ Ext.form.BasicForm.override({
         this.resetErrorTabs();
         return this;
     },
-    
+
     clear: function() {
         clearField = function(f) {
             if ('compositefield' === f.xtype && f.items.each) {
                 f.items.each(clearField);
             }
-            if (f.setValue) {
-                f.setValue(undefined !== f.initialValue ? f.initialValue : '');
+            var value = (undefined !== f.initialValue ? f.initialValue : '');
+            if (f.setRawValue) {
+                f.setRawValue(value);
+            } else {
+                f.value = value;
             }
         };
 
@@ -145,14 +148,15 @@ Ext.form.BasicForm.override({
         this.resetErrorTabs();
         return this;
     },
-    
+
     resetErrorTabs: function() {
         for (var i = 0, limit = this.invalidTabs.length; i < limit; i++) {
             this.invalidTabs[i].removeClass('error');
         }
     },
-    
-    setValues : function(values){
+
+    setValues: function(values) {
+        this.resetErrorTabs();
         if(Ext.isArray(values)){ // array of objects
             for(var i = 0, len = values.length; i < len; i++){
                 var v = values[i];

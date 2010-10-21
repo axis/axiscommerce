@@ -487,8 +487,59 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
      * @method setRawValue
      * @hide
      */
-    setRawValue: Ext.emptyFn
+    setRawValue: function() {
+        if (this.rendered) {
+            this.onSetRawValue.apply(this, arguments);
+        } else {
+            if (!this.value) {
+                this.value = {};
+            }
+            if (arguments.length < 2) {
+                var args = arguments;
+                this.eachItem(function(item) {
+                    this.value[item.name] = args[0];
+                });
+            } else {
+                this.value[arguments[0]] = arguments[1];
+            }
+        }
+        return this;
+    },
 
+    onSetRawValue: function(id, value) {
+        if (arguments.length == 1) {
+            if (Ext.isArray(id)) {
+                // an array of boolean values
+                Ext.each(id, function(val, idx) {
+                    var item = this.items.itemAt(idx);
+                    if (item) {
+                        item.setRawValue(val);
+                    }
+                }, this);
+            } else if (Ext.isObject(id)) {
+                // set of name/value pairs
+                for (var i in id) {
+                    var f = this.getField(i);
+                    if (f) {
+                        f.setRawValue(id[i]);
+                    }
+                }
+            } else {
+                this.setRawValueForItem(id);
+            }
+        } else {
+            var f = this.getField(id);
+            if (f) {
+                f.setRawValue(value);
+            }
+        }
+    },
+
+    setRawValueForItem: function(val) {
+        this.eachItem(function(item) {
+            item.setRawValue(val);
+        });
+    }
 });
 
 Ext.reg('langset', Axis.form.LanguageSet);
