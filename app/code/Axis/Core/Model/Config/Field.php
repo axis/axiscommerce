@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Model
@@ -41,7 +41,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
      * @param int $siteId[optional]
      * @return array
      */
-    public function getFieldsByKey($key, $siteId = 1) 
+    public function getFieldsByKey($key, $siteId = 1)
     {
         $hasCache =  (bool) Zend_Registry::isRegistered('cache') ?
             Axis::cache() instanceof Zend_Cache_Core : false;
@@ -68,10 +68,10 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         }
         return $fields;
     }
-    
+
     /**
      * Insert or update config field
-     * 
+     *
      * @param array $data
      * @return bool
      */
@@ -87,23 +87,23 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         if ($data['config_options'] == '') {
             $data['config_options'] = new Zend_Db_Expr('NULL');
         }
-        
+
         $data['lvl'] = count(explode('/', $data['path']));
-        
+
         if ($data['lvl'] <= 2) {
             $data['config_type'] = '';
         }
-        
+
         $row = $this->fetchRow(
             $this->getAdapter()->quoteInto(
                 'path = ?', $data['path']
             )
         );
-        
+
         if (null === $row) {
             $row = $this->createRow($data);
         } else {
-            $row->setFromArray($data);  
+            $row->setFromArray($data);
         }
         $row->save();
         Axis::message()->addSuccess(
@@ -112,7 +112,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         ));
         return true;
     }
-    
+
     /**
      * Removes config field, and all of it childrens
      * Provide fluent interface
@@ -122,13 +122,14 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
     public function remove($path)
     {
         $this->delete("path LIKE '{$path}%'");
+        Axis::single('core/config_value')->remove($path);
         return $this;
     }
-    
+
     /**
-     * Add config field row, and config value, 
+     * Add config field row, and config value,
      * if $data['path'] has third level of config
-     * 
+     *
      * @param string path 'root'|'root/branch/config_field'
      * @param string title 'root'|'root/branch/config_field'
      * @param string $value Config field value
@@ -151,12 +152,12 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         $configEntries = explode('/', $path);
         $checkBeforeInsert = true;
         $title = explode('/', $title);
-        
+
         if (is_array($description)) {
             $data = $description;
             $description = '';
         }
-        
+
         $row = array('lvl' => 0);
         foreach ($configEntries as $configEntry) {
             if (++$row['lvl'] == 1) {
@@ -164,10 +165,10 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             } else {
                 $row['path'] .= '/' . $configEntry;
             }
-            
+
             $row['title'] = isset($title[$row['lvl']-1]) ?
                 $title[$row['lvl']-1] : $title[0];
-            
+
             $row = array_merge(array(
                 'config_type' => 'string',
                 'description' => '',
@@ -177,13 +178,13 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                 'translation_module' => isset($data['translation_module']) ?
                     $data['translation_module'] : new Zend_Db_Expr('NULL')
             ), $row);
-          
+
             if ($row['lvl'] == 3) {
                 $row['config_type'] = $type;
                 $row['description'] = $description;
                 $row = array_merge($data, $row);
             }
-            
+
             if ($checkBeforeInsert) {
                 if ($rowField = $this->fetchRow(
                         $this->getAdapter()->quoteInto(
@@ -198,7 +199,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             $rowField = $this->createRow($row);
             $rowField->save();
         }
-        
+
         if ($row['lvl'] == 3) {
             $rowValue = Axis::single('core/config_value')->fetchRow(
                 $this->getAdapter()->quoteInto(
@@ -222,7 +223,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             ));
             $rowValue->save();
         }
-        
+
         return $this;
     }
 

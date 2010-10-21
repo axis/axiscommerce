@@ -15,51 +15,51 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
-    
+
     baseCls: 'x-form-langset',
-    
+
     flagsUrl: Axis.secureUrl + '/js/ext-axis/resources/images/flags/',
-    
+
     formId: null,
-    
+
     items: [],
-    
+
     defaultType: 'textfield',
-    
+
     locale: null,
-    
+
     localeMenuId: 'menu-language-select',
-    
+
     resizedItems: [],
-    
+
     tpl: '{self_plain}[{language_id}][{self_nested}]',
-    
+
     tplCls: '{self} {self}-{language_id}',
-    
+
     tplId: '{self}-{language_id}',
-    
+
     tplVars: ['cls', 'dataIndex', 'hiddenName', 'id', 'name'],
-    
+
     /**
      * Disable dynamic validation of the field
      */
     validationEvent: false,
-    
+
     // private
     initComponent: function() {
         Axis.form.LanguageSet.superclass.initComponent.call(this);
-        this.locale = Axis.locale;
+        this.locale = Axis.locales[Axis.language].locale;
         this.formId = this.findParentByType('form').id;
-        
+
         this.items = [];
         var menuItems = [];
-        
+
         for (langId in Axis.locales) {
             // generate language formfields
             var item = {};
@@ -67,7 +67,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             //item.anchor = undefined;
             item.xtype = this.defaultType;
             item.locale = Axis.locales[langId].locale;
-            
+
             for (var i = 0, limit = this.tplVars.length; i < limit; i++) {
                 var v = this.tplVars[i];
                 if (this[v]) {
@@ -89,9 +89,9 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                     });
                 }
             }
-            
+
             this.items.push(item);
-            
+
             // create language select menu
             menuItems.push({
                 icon: this.flagsUrl + this.getCountryCode(Axis.locales[langId].locale) + '.gif',
@@ -103,9 +103,9 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                 scope: this,
                 text: Axis.locales[langId].language
             });
-            
+
         }
-        
+
         if (!Ext.getCmp(this.localeMenuId + '-' + this.formId)) {
             new Ext.menu.Menu({
                 id: this.localeMenuId + '-' + this.formId,
@@ -114,7 +114,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             });
         }
     },
-    
+
     // private
     onRender: function(ct, position) {
         if (!this.el) {
@@ -129,16 +129,16 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                 layout: 'card',
                 renderTo: ct
             };
-            
+
             this.panel = new Ext.Container(panelCfg);
             this.panel.ownerCt = this;
             this.el = this.panel.getEl();
-            
+
             this.el.parent('.x-form-item').addClass('x-form-langset-item');
             if (this.defaultType == 'htmleditor') {
                 this.el.parent('.x-form-element').addClass('x-form-htmleditor-element');
             }
-            
+
             this.flag = this.el.createChild({
                 alt: this.locale,
                 cls: 'x-form-lang-trigger',
@@ -154,20 +154,20 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             this.flag.on('click', function(e, t) {
                 Ext.getCmp(this.localeMenuId + '-' + this.formId).showAt(e.xy);
             }, this);
-            
+
             // webkit fix
             this.setWidth(this.getWidth() - 20);
-            
+
             var fields = this.panel.findBy(function(c) {
                 return c.isFormField;
             }, this);
-            
+
             this.items = new Ext.util.MixedCollection();
             this.items.addAll(fields);
         }
         Axis.form.LanguageSet.superclass.onRender.call(this, ct, position);
     },
-    
+
     afterRender: function() {
         Axis.form.LanguageSet.superclass.afterRender.call(this);
         this.setLocale(this, this.locale);
@@ -175,17 +175,17 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             item.afterMethod('onResize', this.doResize, this);
         });
     },
-    
+
     initValue: function() {
         if (this.value) {
             this.setValue.apply(this, [this.value]);
             this.eachItem(function(item) {
-                item.originalValue = this.value[item.name] ? this.value[item.name] : ''; 
+                item.originalValue = this.value[item.name] ? this.value[item.name] : '';
             });
             delete this.value;
         }
     },
-    
+
     /**
      * @param {String} tpl
      * @param {Object} bind
@@ -198,7 +198,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
         }
         return tpl;
     },
-    
+
     /**
      * @param {String} locale [en_US]
      */
@@ -207,28 +207,28 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
         var menuItemIndex = Ext.getCmp(this.localeMenuId + '-' + this.formId)
             .items
             .findIndex('id', this.localeMenuId + '-' + this.formId + '-' + locale);
-        
+
         if (menuItemIndex == -1) {
             return false;
         }
-        
+
         Ext.each(sets, function(item, index, allItems) {
             this.setLocale(item, locale, menuItemIndex);
         }, this);
     },
-    
+
     // private
     setLocale: function(langset, locale, index) {
         if (undefined === index) {
             var index = Ext.getCmp(langset.localeMenuId + '-' + this.formId)
                 .items
                 .findIndex('id', langset.localeMenuId + '-' + this.formId + '-' + locale);
-            
+
             if (index == -1) {
                 return false;
             }
         }
-        
+
         langset.locale = locale;
         if (langset.rendered) {
             // fileupload fix
@@ -250,9 +250,9 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                                      + '.gif)'
             });
         }
-        
+
     },
-    
+
     // private
     getCountryCode: function(locale) {
         if (locale) {
@@ -266,14 +266,14 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
         }
         return cc;
     },
-    
+
     // private
     getErrors: function() {
         var errors = [];
-        
+
         if (!this.allowBlank) {
             var failedLocales = [];
-            
+
             this.eachItem(function(f) {
                 if (this.rendered) {
                     var value = f.getValue();
@@ -285,7 +285,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                     failedLocales.push(f.locale);
                 }
             });
-            
+
             if (failedLocales.length) {
                 if (-1 === failedLocales.indexOf(this.locale)) {
                     this.setFormLocale(failedLocales[0]);
@@ -293,16 +293,16 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                 errors.push(this.blankText);
             }
         }
-        
+
         return errors;
     },
-    
+
     // private
     isDirty: function(){
         if (this.disabled || !this.rendered) {
             return false;
         }
-        
+
         var dirty = false;
         this.eachItem(function(item) {
             if (item.isDirty()) {
@@ -312,7 +312,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
         });
         return dirty;
     },
-    
+
     // private
     onDisable: function() {
         this.eachItem(function(item) {
@@ -326,7 +326,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             item.enable();
         });
     },
-    
+
     // private
     doLayout: function() {
         //ugly method required to layout hidden items
@@ -335,7 +335,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             this.panel.doLayout();
         }
     },
-    
+
     // private
     doResize: function(w, h) {
         if (typeof w == 'number' && isNaN(this.anchor)) {
@@ -349,13 +349,13 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             this.resizedItems[this.el.id] = true;
         }
     },
-    
+
     // private
     onResize: function(w, h) {
         this.panel.setSize(w, h);
         this.panel.doLayout();
     },
-    
+
     // inherit docs from Field
     reset: function() {
         this.eachItem(function(item) {
@@ -369,11 +369,11 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             this.clearInvalid();
         }).defer(50, this);
     },
-    
+
     focus: function() {
         this.panel.layout.activeItem.focus();
     },
-    
+
     setValue: function() {
         if (this.rendered) {
             this.onSetValue.apply(this, arguments);
@@ -392,7 +392,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
         }
         return this;
     },
-    
+
     onSetValue: function(id, value) {
         if (arguments.length == 1) {
             if (Ext.isArray(id)) {
@@ -421,7 +421,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             }
         }
     },
-    
+
     // private
     beforeDestroy: function() {
         Ext.destroy(this.panel);
@@ -433,13 +433,13 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
         }
         Axis.form.LanguageSet.superclass.beforeDestroy.call(this);
     },
-    
+
     setValueForItem: function(val) {
         this.eachItem(function(item) {
             item.setValue(val);
         });
     },
-    
+
     // private
     getField: function(id){
         var field = null;
@@ -451,7 +451,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
         });
         return field;
     },
-    
+
     /**
      * Gets an array of the values in the set.
      * @return {Object} An object of the values.
@@ -459,24 +459,24 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
     getValue: function() {
         var out = {};
         this.eachItem(function(item) {
-            out[item.name] = this.rendered ? item.getValue() : 
+            out[item.name] = this.rendered ? item.getValue() :
                 this.value[item.name] ? this.value[item.name] : '';
         });
         return out;
     },
-    
+
     // private
     eachItem: function(fn, scope) {
         if (this.items && this.items.each) {
             this.items.each(fn, scope || this);
-        } else if (this.items) { 
-            // this is for getField method, 
+        } else if (this.items) {
+            // this is for getField method,
             // called in setValue (BasicForm) method
             // in case if the field wasn't rendered yet
             Ext.each(this.items, fn, scope || this);
         }
     },
-    
+
     /**
      * @method getRawValue
      * @hide
@@ -488,7 +488,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
      * @hide
      */
     setRawValue: Ext.emptyFn
-    
+
 });
 
 Ext.reg('langset', Axis.form.LanguageSet);

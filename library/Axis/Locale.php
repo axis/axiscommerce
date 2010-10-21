@@ -62,21 +62,34 @@ class Axis_Locale
             Zend_Registry::set('Zend_Locale', $currentLocale);
         }
 
+        $availableLanguages = Axis::single('locale/language')
+            ->select(array('locale', 'id'))
+            ->fetchPairs();
+
         if (Zend_Registry::isRegistered('area')
             && Zend_Registry::get('area') == 'admin') {
 
             $nsMain->locale = $locale;
-        }
-
-        $row = Axis::single('locale/language')->fetchRow(Axis::db()->quoteInto(
-            'code = ?', $currentLocale->getLanguage()
-        ));
-
-        if ($row) {
-            $nsMain->language = $row->id;
+            $defaultLanguage = Axis::config('locale/main/language_admin');
+            if (array_search($defaultLanguage, $availableLanguages)) {
+                $nsMain->language = $defaultLanguage;
+            } else {
+                $nsMain->language = current($availableLanguages);
+            }
         } else {
-            $nsMain->language = Axis::config()->locale->main->language;
+            $localeCode = $currentLocale->toString();
+            if (isset($availableLanguages[$localeCode])) {
+                $nsMain->language = $availableLanguages[$localeCode];
+            } else {
+                $defaultLanguage = Axis::config('locale/main/language_front');
+                if (array_search($defaultLanguage, $availableLanguages)) {
+                    $nsMain->language = $defaultLanguage;
+                } else {
+                    $nsMain->language = current($availableLanguages);
+                }
+            }
         }
+
         self::setTimezone();
     }
 
