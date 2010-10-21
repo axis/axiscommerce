@@ -420,7 +420,8 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
                     $optionText[$refAttr['option_id']]['name'] : '';
             if ($refAttr['option_value_id']) {
                 $refAttr['value_name'] =
-                    $optionValueText[$refAttr['option_value_id']]['name'];
+                    isset($optionValueText[$refAttr['option_value_id']]['name']) ?
+                        $optionValueText[$refAttr['option_value_id']]['name'] : '';
             }
         }
         $result['modifiers'] = array();
