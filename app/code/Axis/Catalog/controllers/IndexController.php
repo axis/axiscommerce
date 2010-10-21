@@ -272,7 +272,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
 
         $product->incViewed();
         Zend_Registry::set('catalog/current_product', $product);
-        
+
         if (count($pathItems)) {
             if ($refCategory && $refCategory->id == $lastItem['id']) {
                 $category = $refCategory;
@@ -293,6 +293,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         $data['description'] = $product->cache($productId)->getDescription();
         $data['properties']  = $product->cache($productId)->getProperties();
         $data['modifiers']   = $product->cache($productId)->getModifiers();
+        $data['manufacturer'] = $product->cache($productId)->getManufacturer();
         foreach ($product->cache()->getVariationAttributesData() as $key => $value) {
             $data[$key] = $value;
         }

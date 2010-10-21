@@ -974,6 +974,28 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     }
 
     /**
+     * @return mixed null|array()
+     */
+    public function getManufacturer($languageId = null)
+    {
+        if (null === $this->manufacturer_id) {
+            return null;
+        }
+        if (null === $languageId) {
+            $languageId = Axis_Locale::getLanguageId();
+        }
+        return Axis::single('catalog/product_manufacturer')->select('*')
+            ->joinLeft('catalog_product_manufacturer_title',
+                'cpm.id = cpmt.manufacturer_id AND cpmt.language_id = ' . $languageId,
+                '*')
+            ->joinLeft('catalog_hurl',
+                "cpm.id = ch.key_id AND ch.key_type = 'm' AND ch.site_id = " . Axis::getSiteId(),
+                'key_word')
+            ->where('cpm.id = ?', $this->manufacturer_id)
+            ->fetchRow();
+    }
+
+    /**
      * @static
      * @param float $price
      * @param float $amount
