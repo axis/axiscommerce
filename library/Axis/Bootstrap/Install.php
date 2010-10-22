@@ -40,7 +40,7 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
         ));
         return $autoloader;
     }
-    
+
     protected function _initView()
     {
         return Zend_Layout::startMvc();
@@ -48,10 +48,59 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
 
     protected function _initSession()
     {
-        Zend_Registry::set(
-            'session', new Zend_Session_Namespace('install', true)
+        $cacheDir = AXIS_ROOT . '/var/sessions';
+        if (!is_readable($cacheDir)) {
+            mkdir($cacheDir, 0777);
+        } elseif (!is_writable($cacheDir)) {
+            chmod($cacheDir, 0777);
+        }
+        Zend_Session::start(array(
+            'cookie_lifetime'   => 864000, // 10 days
+            'name'              => 'axisid',
+            'strict'            => 'off',
+            'save_path'         => $cacheDir
+        ));
+        return Axis::session('install');
+    }
+
+    protected function _initCache()
+    {
+        $frontendOptions = array(
+            'lifetime'                  => 864000,
+            'automatic_serialization'   => true
         );
-        return Zend_Registry::get('session');
+        $cacheDir = AXIS_ROOT . '/var/cache';
+        if (!is_readable($cacheDir)) {
+            mkdir($cacheDir, 0777);
+        } elseif(!is_writable($cacheDir)) {
+            chmod($cacheDir, 0777);
+        }
+        $backendOptions = array(
+            'cache_dir'                 => $cacheDir,
+            'hashed_directory_level'    => 1,
+            'file_name_prefix'          => 'axis_cache',
+            'hashed_directory_umask'    => 0777
+        );
+        Zend_Registry::set('cache', Zend_Cache::factory(
+            'Core', 'Zend_Cache_Backend_File',
+            $frontendOptions,
+            $backendOptions,
+            false,
+            true
+        ));
+
+        return Axis::cache();
+    }
+
+    protected function _initLocale()
+    {
+        $this->bootstrap('Session');
+
+        if (!is_array(Axis::session('install')->locale)
+            || !@date_default_timezone_set(current($this->_session->locale['timezone']))) {
+
+            @date_default_timezone_set('America/Los_Angeles');
+        }
     }
 
     protected function _initFrontController()

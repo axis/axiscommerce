@@ -64,7 +64,7 @@ class Axis_Install_Model_Wizard
 
     private function __construct()
     {
-        $this->_session = Zend_Registry::get('session');
+        $this->_session = Axis::session('install');
         if (!isset($this->_session->step)) {
             $this->_session->step = self::STEP_REQUIREMENTS;
         }
@@ -202,13 +202,13 @@ class Axis_Install_Model_Wizard
             $this->_session->db_password
         );
         if (!$conn) {
-            throw new Axis_Exception(__(
+            throw new Axis_Exception(Axis::translate()->__(
                 "Can't connect to database. Check server name, username or user password"
             ));
         }
 
         if (!mysql_select_db($this->_session->db_dbname, $conn)) {
-            throw new Axis_Exception(__(
+            throw new Axis_Exception(Axis::translate()->__(
                 "Can't select this database, check database name"
             ));
         }
@@ -254,18 +254,18 @@ class Axis_Install_Model_Wizard
     {
         $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $this->_session->store_path = str_replace('\\', '/', realpath('..'));
-        if (null === $this->_session->store_baseUrl) {
+        if (empty($this->_session->store_baseUrl)) {
             $this->_session->store_baseUrl = 'http://' . $_SERVER['HTTP_HOST']
                 . str_replace('/install', '', $baseUrl);
         }
-        if (null === $this->_session->store_secureUrl) {
+        if (empty($this->_session->store_secureUrl)) {
             $this->_session->store_secureUrl = 'https://' . $_SERVER['HTTP_HOST']
                 . str_replace('/install', '', $baseUrl);
         }
-        if (null === $this->_session->store_adminUrl) {
+        if (empty($this->_session->store_adminUrl)) {
             $this->_session->store_adminUrl = 'admin';
         }
-        if (null === $this->_session->store_cryptKey) {
+        if (empty($this->_session->store_cryptKey)) {
             $this->_session->store_cryptKey = md5($this->_generateKey());
         }
         return $this;

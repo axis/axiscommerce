@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Translate
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Translate
  * @author      Axis Core Team <core@axiscommerce.com>
@@ -36,7 +36,7 @@ class Axis_Translate
      * @var Axis_Translate
      */
     private static $_instance;
-    
+
     /**
      * Translators
      *
@@ -69,7 +69,7 @@ class Axis_Translate
              Zend_Translate::setCache(Axis::cache());
         }
     }
-    
+
     /**
      * Return instance of Axis_Translate
      *
@@ -82,7 +82,7 @@ class Axis_Translate
         if (null === self::$_instance) {
             self::$_instance = new self($module);
         } elseif (self::$_module !== $module) {
-            
+
             if (!in_array($module, array_keys(Axis::app()->getModules()))) {
                 throw new Axis_Exception(
                     'Translate error : module ' . $module . ' not exist'
@@ -108,7 +108,7 @@ class Axis_Translate
            ||(!self::$_translators[$module] instanceof Zend_Translate)) {
 
             $filename = $this->_getFileName($this->_locale, $module);
-            
+
             if (!is_readable($filename)) {
                 return null;
             }
@@ -146,17 +146,17 @@ class Axis_Translate
     public function translate(array $args)
     {
         $text = array_shift($args);
-        
+
         if (Axis::config('core/translation/autodetect')
             && (null === $this->getTranslator() // translate file nor exist
                 || !$this->getTranslator()->isTranslated($text, false, $this->_locale))) {
-            
+
             $this->addTranslate($text, self::$_module);
         }
         if (null === $this->getTranslator()) {
             return @vsprintf($text, $args);
         }
-        
+
         if (!count($args)) {
             return $this->getTranslator()->_($text, $this->_locale);
         }
@@ -169,19 +169,19 @@ class Axis_Translate
     /**
      * Translate text
      *
-     * @param array 
+     * @param array
      * @return string
      */
     public function __()
     {
         return $this->translate(func_get_args());
     }
-    
+
     public function getLocale()
     {
         return $this->_locale;
     }
-    
+
     /*
     protected static function _loadTranslation($module, $locale = '')
     {
@@ -255,11 +255,11 @@ class Axis_Translate
         if (null === $locale) {
             $locale = $this->_locale;
         }
-        
+
         $filename = $this->_getFileName($locale, $module);
 
         if (!is_readable($filename)) {
-            
+
             $dir = dirname($filename);
             if (!is_readable($dir)) {
                 mkdir($dir, 0777, true);
@@ -276,19 +276,19 @@ class Axis_Translate
             touch($filename);
             chmod($filename, 0777);
         }
-        
+
         if (!$file = @fopen($filename, 'a')) {
             throw new Axis_Exception(
                 'Error writing translation file \'' . $filename . '\'.'
             );
         }
-        
+
         fwrite($file, '"' . $text . '","' . $text . "\"\n");
         fclose($file);
-        
+
         return true;
     }
-    
+
     /**
      * Returns the set cache
      *
@@ -351,16 +351,4 @@ class Axis_Translate
         }
         return self::$_translators[self::$_module]->clearCache();
     }
-}
-
-/**
- * Translate function
- *
- * @param string
- * @param args array
- * @return string
- */
-function __()
-{
-    return Axis_Translate::getInstance()->translate(func_get_args());
 }

@@ -41,12 +41,12 @@ class Axis_Bootstrap_Test extends Axis_Bootstrap
         ));
         return $autoloader;
     }
-    
+
     protected function _initConfig()
     {
         $this->bootstrap('Loader');
         $config = Zend_Registry::get('config');
-        
+
         Zend_Registry::set('config', new Axis_Config($config, true));
         return Axis::config();
     }
@@ -55,6 +55,6 @@ class Axis_Bootstrap_Test extends Axis_Bootstrap
     {
         $this->bootstrap('Session');
         Zend_Registry::set('area', 'front');
-        Axis_Translate::getInstance();
+        Axis::translate();
     }
 }

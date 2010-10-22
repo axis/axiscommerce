@@ -207,7 +207,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         }
         $this->_langId = Axis_Locale::getLanguageId();
 
-        Axis_Translate::getInstance();
+        Axis::translate();
 
         // setting default meta tags
         $this->view->meta()->setDefaults();

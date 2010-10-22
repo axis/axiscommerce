@@ -31,6 +31,8 @@
  */
 class Axis
 {
+    private static $_translator = null;
+
     /**
      * Retrieve parent application instance
      *
@@ -63,7 +65,7 @@ class Axis
             $mSite = self::single('core/site');
             if (!($site = $mSite->getByUrl($uri)) && !($site = $mSite->fetchRow())) {
                 throw new Axis_Exception(
-                    Axis_Translate::getInstance('core')->__(
+                    Axis::translate('core')->__(
                         "There is no site linked with url %s" , $uri
                 ));
             }
@@ -272,6 +274,14 @@ class Axis
             $name = 'Axis' . '_' . $name;
         }
         $name = str_replace(' ', '_', ucwords(str_replace('_', ' ', $name)));
-        return Axis_Translate::getInstance($name);
+        if (null === self::$_translator) {
+            self::$_translator = Axis_Translate::getInstance($name);
+        }
+        return self::$_translator;
+    }
+
+    public static function setTranslator($translatorInstance)
+    {
+        self::$_translator = $translatorInstance;
     }
 }

@@ -23,7 +23,6 @@
  * @license     GNU Public License V3.0
  */
 
-
 class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.4';
@@ -31,7 +30,11 @@ class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $languageId = Axis::config('locale/main/language');
+        try {
+            $languageId = Axis::config('locale/main/language');
+        } catch (Axis_Exception $e) { // installation
+            $languageId = 1;
+        }
 
         Axis::single('core/config_field')->remove('locale/main/language');
 

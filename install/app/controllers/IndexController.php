@@ -51,10 +51,10 @@ class IndexController extends Zend_Controller_Action
         $this->initView();
         $layout = Zend_Layout::getMvcInstance();
 
-        $this->_session = Zend_Registry::get('session');
+        $this->_session = Axis::session('install');
 
-        $this->view->baseUrl = Zend_Controller_Front::getInstance()
-            ->getBaseUrl();
+        Axis::setTranslator(Axis_Install_Model_Translate::getInstance());
+        $this->view->baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $this->view->addHelperPath('app/views/helpers', 'Axis_View_Helper');
         $this->view->doctype('XHTML1_STRICT');
 
@@ -94,7 +94,9 @@ class IndexController extends Zend_Controller_Action
 
         if (function_exists('apache_get_modules')) {
             if (!in_array('mod_rewrite', apache_get_modules())) {
-                Axis::message()->addError(__('Your server must have mod_rewrite module loaded to go futher'));
+                Axis::message()->addError(Axis::translate('install')->__(
+                    'Your server must have mod_rewrite module loaded to go futher'
+                ));
             }
         }
 
@@ -110,7 +112,9 @@ class IndexController extends Zend_Controller_Action
         foreach ($this->view->requirements as $group) {
             foreach ($group as $item) {
                 if (!$item['success']) {
-                    Axis::message()->addError(__("Server configuration doesn't meet the Axis needs"));
+                    Axis::message()->addError(Axis::translate('install')->__(
+                        "Server configuration doesn't meet the Axis needs"
+                    ));
                     $this->view->isValid = false;
                     break 2;
                 }
@@ -146,6 +150,7 @@ class IndexController extends Zend_Controller_Action
         $additional_locales = $this->_getParam('locale');
         $additional_currencies = $this->_getParam('currency');
 
+        $this->_session->locale = array();
         $this->_session->locale['locale'] = array();
         $this->_session->locale['timezone'] = array();
         $this->_session->locale['currency'] = array();
@@ -191,7 +196,6 @@ class IndexController extends Zend_Controller_Action
             'crypt_key'  => $this->_session->store_cryptKey
         );
 
-
         $this->render('step-configuration');
     }
 
@@ -204,7 +208,9 @@ class IndexController extends Zend_Controller_Action
             || empty($params['base_url'])
             || empty($params['admin_url'])) {
 
-            Axis::message()->addError(__('Fill all required fields please'));
+            Axis::message()->addError(Axis::translate('install')->__(
+                'Fill all required fields please'
+            ));
             $this->_redirect('index/step-configuration');
         }
 
@@ -254,7 +260,9 @@ class IndexController extends Zend_Controller_Action
             empty($params['name']) ||
             empty($params['surname']))
         {
-            Axis::message()->addError(__('Fill all required fields please'));
+            Axis::message()->addError(Axis::translate('install')->__(
+                'Fill all required fields please'
+            ));
             $this->_redirect('index/step-user');
         }
 
@@ -336,7 +344,7 @@ class IndexController extends Zend_Controller_Action
             file_put_contents($this->_getConfigPath(), $content);
         } else {
             throw new Zend_Exception(
-                __("Config file is not writable at %s", $this->_getConfigPath())
+                $this->view->t("Config file is not writable at %s", $this->_getConfigPath())
             );
         }
     }

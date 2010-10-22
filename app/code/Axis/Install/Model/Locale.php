@@ -40,7 +40,7 @@ class Axis_Install_Model_Locale
      */
     public static function setLocale($locale = 'en_US')
     {
-        $session = Zend_Registry::get('session');
+        $session = Axis::session('install');
 
         if (Zend_Registry::isRegistered('Zend_Locale')) {
             $currentLocale = Zend_Registry::get('Zend_Locale');
@@ -60,7 +60,7 @@ class Axis_Install_Model_Locale
      */
     public static function getLocale()
     {
-        $session = Zend_Registry::get('session');
+        $session = Axis::session('install');
 
         if (isset($session->current_locale)) {
             self::setLocale($session->current_locale);

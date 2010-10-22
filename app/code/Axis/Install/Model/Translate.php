@@ -108,9 +108,15 @@ class Axis_Install_Model_Translate
         $text = array_shift($args);
         return @vsprintf($this->getTranslator()->_($text, $this->_locale), $args);
     }
-}
 
-function __()
-{
-    return Axis_Install_Model_Translate::getInstance()->_(func_get_args());
+    /**
+     * Translate text
+     *
+     * @param array
+     * @return string
+     */
+    public function __()
+    {
+        return $this->_(func_get_args());
+    }
 }
