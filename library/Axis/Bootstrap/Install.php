@@ -55,10 +55,10 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
             chmod($cacheDir, 0777);
         }
         Zend_Session::start(array(
-            'cookie_lifetime'   => 864000, // 10 days
-            'name'              => 'axisid',
-            'strict'            => 'off',
-            'save_path'         => $cacheDir
+            'cookie_lifetime' => 864000, // 10 days
+            'name'            => 'axisid',
+            'strict'          => 'off',
+            'save_path'       => $cacheDir
         ));
         return Axis::session('install');
     }
@@ -102,10 +102,18 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
             @date_default_timezone_set('America/Los_Angeles');
         }
     }
+    
+    protected function _initApp()
+    {
+        $this->bootstrap('Session');
+        Zend_Registry::set('area', 'install');
+//        Axis::translate('Axis_Install');
+    }
 
     protected function _initFrontController()
     {
         $front = Zend_Controller_Front::getInstance();
+        $front->throwExceptions(true);
         $front->setParam('noViewRenderer', true);
         $front->setControllerDirectory('app/controllers');
         $front->dispatch();

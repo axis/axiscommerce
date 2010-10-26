@@ -34,13 +34,13 @@ class Axis_View_Helper_T
 {
     /**
      *
-     * @var Zend_Translate
+     * @var Axis_Translate
      */
-    private $_translate;
+    private $_translator;
 
     public function __construct()
     {
-        $this->_translate = Axis::translate();
+        $this->_translator = Axis_Translate::getInstance('Axis_Install');
     }
 
     /**
@@ -49,6 +49,6 @@ class Axis_View_Helper_T
      */
     public function t()
     {
-        return $this->_translate->_(func_get_args());
+        return $this->_translator->translate(func_get_args());
     }
 }

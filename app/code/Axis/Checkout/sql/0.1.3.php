@@ -36,7 +36,7 @@ class Axis_Checkout_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 
         ALTER TABLE `{$installer->getTable('checkout_cart')}`
             ADD CONSTRAINT `FK_CHECKOUT_CART_SITE` FOREIGN KEY `FK_CHECKOUT_CART_SITE` (`site_id`)
-                REFERENCES `core_site` (`id`)
+                REFERENCES `{$installer->getTable('core_site')}` (`id`)
                 ON DELETE CASCADE
                 ON UPDATE CASCADE;
 

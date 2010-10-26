@@ -172,14 +172,14 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $cacheDir = AXIS_ROOT . '/var/sessions';
         if (!is_readable($cacheDir)) {
             mkdir($cacheDir, 0777);
-        } elseif(!is_writable($cacheDir)) {
+        } elseif (!is_writable($cacheDir)) {
             chmod($cacheDir, 0777);
         }
         Zend_Session::start(array(
             'cookie_lifetime' => 864000, // 10 days
-            'name' => 'axisid',
-            'strict' => 'off',
-            'save_path' => $cacheDir
+            'name'            => 'axisid',
+            'strict'          => 'off',
+            'save_path'       => $cacheDir
         ));
         return Axis::session();
     }

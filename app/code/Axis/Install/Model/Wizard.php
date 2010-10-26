@@ -412,8 +412,9 @@ class Axis_Install_Model_Wizard
         $modelModule = Axis::single('core/module');
         if (!count(Axis::db()->fetchAll("SHOW TABLES LIKE '%core_module'"))) {
             $modelModule->getByCode('Axis_Core')->install();
+            $this->_installStore();
             $modelModule->getByCode('Axis_Locale')->install();
-            $this->_installStore()->_installLocale();
+            $this->_installLocale();
         }
 
         foreach ($this->_session->modules as $code) {

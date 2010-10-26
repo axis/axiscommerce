@@ -43,7 +43,27 @@ class Axis_Locale
      */
     public static function setLocale($locale = 'auto')
     {
-        $nsMain = Axis::session();
+
+        if (Zend_Registry::isRegistered('area')
+            && 'install' == Zend_Registry::get('area')) {
+
+            $session = Axis::session('install');
+
+            if (Zend_Registry::isRegistered('Zend_Locale')) {
+                $currentLocale = Zend_Registry::get('Zend_Locale');
+            } else {
+                $currentLocale = new Zend_Locale();
+                Zend_Registry::set('Zend_Locale', $currentLocale);
+            }
+
+            if ($currentLocale->isLocale($locale)) {
+                $currentLocale->setLocale($locale);
+            }
+            $session->current_locale = $locale;
+            return;
+        }
+
+        $session = Axis::session();
 
         if (!strstr($locale, '_')) {
             $locale = self::_getLocaleFromLanguageCode($locale);
@@ -67,25 +87,25 @@ class Axis_Locale
             ->fetchPairs();
 
         if (Zend_Registry::isRegistered('area')
-            && Zend_Registry::get('area') == 'admin') {
+            && 'admin' == Zend_Registry::get('area')) {
 
-            $nsMain->locale = $locale;
+            $session->locale = $locale;
             $defaultLanguage = Axis::config('locale/main/language_admin');
             if (array_search($defaultLanguage, $availableLanguages)) {
-                $nsMain->language = $defaultLanguage;
+                $session->language = $defaultLanguage;
             } else {
-                $nsMain->language = current($availableLanguages);
+                $session->language = current($availableLanguages);
             }
         } else {
             $localeCode = $currentLocale->toString();
             if (isset($availableLanguages[$localeCode])) {
-                $nsMain->language = $availableLanguages[$localeCode];
+                $session->language = $availableLanguages[$localeCode];
             } else {
                 $defaultLanguage = Axis::config('locale/main/language_front');
                 if (array_search($defaultLanguage, $availableLanguages)) {
-                    $nsMain->language = $defaultLanguage;
+                    $session->language = $defaultLanguage;
                 } else {
-                    $nsMain->language = current($availableLanguages);
+                    $session->language = current($availableLanguages);
                 }
             }
         }
@@ -122,15 +142,22 @@ class Axis_Locale
     public static function getLocale()
     {
         if (!Zend_Registry::isRegistered('Zend_Locale')) {
-            if (Zend_Registry::get('area') == 'front'
+
+            if ('front' === Zend_Registry::get('area')
                 && Axis_Controller_Router_Route::hasLocaleInUrl()) {
 
                 self::setLocale(Axis_Controller_Router_Route::getCurrentLocale());
-            } elseif (Zend_Registry::get('area') == 'admin'
+
+            } elseif ('admin' === Zend_Registry::get('area')
                 && isset(Axis::session()->locale)) {
 
                 self::setLocale(Axis::session()->locale);
+            } elseif ('install' === Zend_Registry::get('area')
+                && isset(Axis::session('install')->current_locale)) {
+
+                self::setLocale(Axis::session('install')->current_locale);
             } else {
+
                 self::setLocale(Axis::config('locale/main/locale'));
             }
         }
@@ -151,6 +178,7 @@ class Axis_Locale
     /**
      * Returns a list of all known locales, or all installed locales
      *
+     * @param $installedOnly bool
      * @static
      * @return array
      */
@@ -160,6 +188,30 @@ class Axis_Locale
             return array_keys(Zend_Locale::getLocaleList());
         }
         return Axis::single('locale/language')->getLocaleList();
+    }
+
+    /**
+     * @static
+     * @return array
+     */
+    public static function getInstallLocaleList()
+    {
+        $options = array();
+
+        $locales = Zend_Locale::getLocaleList();
+        $languages = Zend_Locale::getTranslationList('language', self::getLocale());
+        $countries = Zend_Locale::getTranslationList('territory', self::getLocale(), 2);
+
+        foreach ($locales as $code => $is_active) {
+            if (strstr($code, '_')) {
+                $data = explode('_', $code);
+                if (!isset($languages[$data[0]]) || !isset($countries[$data[1]])) {
+                    continue;
+                }
+                $options[$code] = ucfirst($languages[$data[0]]) . ' (' . $countries[$data[1]] . ')';
+            }
+        }
+        return $options;
     }
 
     /**
@@ -283,5 +335,73 @@ class Axis_Locale
             Axis::cache()->save($locales, 'locales_list', array('locales'));
         }
         return $locales;
+    }
+
+    /**
+     * Retrieve array of available translations
+     *
+     * @return array
+     */
+    public static function getAvailableLocales()
+    {
+        $path = AXIS_ROOT . '/app/locale/';
+
+        try {
+            $localeDir = new DirectoryIterator($path);
+        } catch (Exception $e) {
+            throw new Axis_Exception("Directory $path not readable");
+        }
+
+        $currentLocale = self::getLocale();
+        $locales = array();
+
+        foreach ($localeDir as $locale) {
+            if ($locale->isDot() || !$locale->isDir()) {
+                continue;
+            }
+            $localeName = $locale->getFilename();
+            list($language, $country) = explode('_', $localeName, 2);
+
+            $language = $currentLocale->getTranslation($language, 'language', $localeName);
+            $country = $currentLocale->getTranslation($country, 'country', $localeName);
+            if (!$language) {
+                $language = $currentLocale->getTranslation($language, 'language', 'en_US');
+            }
+            if (!$country) {
+                $country = $currentLocale->getTranslation($country, 'country', 'en_US');
+            }
+            $locales[$localeName] = ucfirst($language) . ' (' . $country . ')';
+        }
+        ksort($locales);
+
+        return $locales;
+    }
+
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function getTimeZoneList()
+    {
+        $options = array();
+        $zones = Zend_Locale::getTranslationList('WindowsToTimezone', self::getLocale());
+
+        asort($zones);
+        foreach ($zones as $code => $name) {
+            $name = trim($name);
+            $options[$code] = empty($name) ? $code : $name . ' (' . $code . ')';
+        }
+        return $options;
+    }
+
+    /**
+     * @static
+     * @return array
+     */
+    public static function getCurrencyList()
+    {
+        return Zend_Locale::getTranslationList('NameToCurrency', self::getLocale());
+
     }
 }

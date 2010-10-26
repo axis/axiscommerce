@@ -31,7 +31,6 @@ set_include_path(
   . get_include_path()
 );
 
-@include_once 'Axis/Install/Model/Translate.php';
 
 @include_once 'Zend/Loader/Autoloader.php';
 if (!class_exists('Zend_Loader')) {
@@ -49,7 +48,7 @@ defined('APPLICATION_ENV')
         )
     );
 
-$displayErrors = (int)(APPLICATION_ENV !== 'development');
+$displayErrors = (int)(APPLICATION_ENV === 'development');
 
 $bootstrapConfig = array(
     'bootstrap' => array(
@@ -67,4 +66,6 @@ $application = new Axis_Application(APPLICATION_ENV, $bootstrapConfig);
 if (is_readable(AXIS_ROOT . '/app/etc/config.php')) {
     $application->bootstrap('DbAdapter');
 }
-$application->bootstrap(array('Locale', 'Cache', 'Loader', 'View', 'Session', 'FrontController'));
+$application->bootstrap(array(
+    'Locale', 'Cache', 'Loader', 'View', 'Session', 'App', 'FrontController'
+));
