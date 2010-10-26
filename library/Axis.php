@@ -31,8 +31,6 @@
  */
 class Axis
 {
-    private static $_translator = null;
-
     /**
      * Retrieve parent application instance
      *
@@ -64,6 +62,8 @@ class Axis
 
             $mSite = self::single('core/site');
             if (!($site = $mSite->getByUrl($uri)) && !($site = $mSite->fetchRow())) {
+                Zend_Debug::dump(Axis_FirePhp::callstack());
+                die;
                 throw new Axis_Exception(
                     Axis::translate('core')->__(
                         "There is no site linked with url %s" , $uri
@@ -271,17 +271,9 @@ class Axis
     public static function translate($name = 'Axis_Core')
     {
         if (false === strpos($name, '_')) {
-            $name = 'Axis' . '_' . $name;
+            $name = 'Axis' . '_' . ucfirst($name);
         }
         $name = str_replace(' ', '_', ucwords(str_replace('_', ' ', $name)));
-        if (null === self::$_translator) {
-            self::$_translator = Axis_Translate::getInstance($name);
-        }
-        return self::$_translator;
-    }
-
-    public static function setTranslator($translatorInstance)
-    {
-        self::$_translator = $translatorInstance;
+        return Axis_Translate::getInstance($name);
     }
 }

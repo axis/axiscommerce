@@ -6,17 +6,17 @@
         <li>
             <div class="input-box">
                 <label for="default-locale"><?php echo $this->t('Locale')?>:</label><br/>
-                <?php echo $this->formSelect('default[locale]', 'en_US', null, Axis_Install_Model_Locale::getLocaleList()) ?>
+                <?php echo $this->formSelect('default[locale]', 'en_US', null, Axis_Locale::getInstallLocaleList()) ?>
             </div>
         </li>
         <li>
             <div class="input-box">
                 <label for="default-timezone"><?php echo $this->t('Timezone')?>:</label><br/>
-                <?php echo $this->formSelect('default[timezone]', 'Eastern Standard Time', null, Axis_Install_Model_Locale::getTimeZoneList()) ?>
+                <?php echo $this->formSelect('default[timezone]', 'Eastern Standard Time', null, Axis_Locale::getTimeZoneList()) ?>
             </div>
             <div class="input-box">
                 <label for="default-currency"><?php echo $this->t('Currency')?>:</label><br/>
-                <?php echo $this->formSelect('default[currency]', 'USD',  null, Axis_Install_Model_Locale::getCurrencyList()) ?>
+                <?php echo $this->formSelect('default[currency]', 'USD',  null, Axis_Locale::getCurrencyList()) ?>
             </div>
         </li>
     </ul>

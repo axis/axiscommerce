@@ -53,7 +53,6 @@ class IndexController extends Zend_Controller_Action
 
         $this->_session = Axis::session('install');
 
-        Axis::setTranslator(Axis_Install_Model_Translate::getInstance());
         $this->view->baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $this->view->addHelperPath('app/views/helpers', 'Axis_View_Helper');
         $this->view->doctype('XHTML1_STRICT');
@@ -99,7 +98,6 @@ class IndexController extends Zend_Controller_Action
                 ));
             }
         }
-
         $this->render('step-license');
     }
 
@@ -314,7 +312,7 @@ class IndexController extends Zend_Controller_Action
         $locale = $this->_getParam('new_locale');
 
         if ($locale) {
-            Axis_Install_Model_Locale::setLocale($locale);
+            Axis_Locale::setLocale($locale);
         }
 
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));

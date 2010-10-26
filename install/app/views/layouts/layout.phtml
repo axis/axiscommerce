@@ -25,11 +25,11 @@
                     <p class="locale">
                         <label for="interface_locale"><?php echo $this->t('Language') ?>:</label>
                         <?php echo $this->formSelect('interface_locale', 
-                            Axis_Install_Model_Locale::getLocale()->toString(), 
+                            Axis_Locale::getLocale()->toString(), 
                             array(
                                 'onchange'=> "window.location.href = baseUrl + '/index/change-locale/new_locale/' + this.value"
-                            ), 
-                            Axis_Install_Model_Locale::getAvailableLocales()
+                            ),
+                            Axis_Locale::getAvailableLocales()
                         ); ?>
                     </p>
                 </div>

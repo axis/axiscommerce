@@ -36,7 +36,7 @@ class Axis_View_Helper_Translate
      *
      * @var Axis_Translate
      */
-    protected   $_translate;
+    protected $_translate;
 
     /**
      *  @param  string $module

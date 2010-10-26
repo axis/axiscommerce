@@ -61,11 +61,19 @@ class Axis_Translate
      *
      * @param string $module [optional]
      */
-    public function __construct($module = 'Axis_Core')
+    public function __construct($module = 'Axis_Core', $locale = null)
     {
-        $this->_locale = Axis_Locale::getLocale()->toString();
+        if (null === $locale) {
+            $this->_locale = Axis_Locale::getLocale()->toString();
+        } else {
+            $this->_locale = $locale;
+        }
+
         self::$_module = $module;
-        if (!Axis::config('core/translation/autodetect')) {
+        
+        if ('Axis_Install' !== $module
+            && false == Axis::config('core/translation/autodetect')) {
+
              Zend_Translate::setCache(Axis::cache());
         }
     }
@@ -77,10 +85,10 @@ class Axis_Translate
      * @static
      * @return Axis_Translate
      */
-    public static function getInstance($module = 'Axis_Core')
+    public static function getInstance($module = 'Axis_Core', $locale = null)
     {
         if (null === self::$_instance) {
-            self::$_instance = new self($module);
+            self::$_instance = new self($module, $locale);
         } elseif (self::$_module !== $module) {
 
             if (!in_array($module, array_keys(Axis::app()->getModules()))) {
@@ -132,10 +140,7 @@ class Axis_Translate
      */
     protected function _getFileName($locale, $module)
     {
-        return Axis::config()->system->path
-            . '/app/locale/'
-            . $locale . '/'
-            . $module . '.csv';
+        return AXIS_ROOT . '/app/locale/' . $locale . '/' . $module . '.csv';
     }
 
     /**
@@ -147,8 +152,9 @@ class Axis_Translate
     {
         $text = array_shift($args);
 
-        if (Axis::config('core/translation/autodetect')
-            && (null === $this->getTranslator() // translate file nor exist
+        if ('Axis_Install' !== self::$_module
+            && Axis::config('core/translation/autodetect')
+            && (null === $this->getTranslator() // translate file not exist
                 || !$this->getTranslator()->isTranslated($text, false, $this->_locale))) {
 
             $this->addTranslate($text, self::$_module);
