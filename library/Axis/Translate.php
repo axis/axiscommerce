@@ -61,14 +61,10 @@ class Axis_Translate
      *
      * @param string $module [optional]
      */
-    public function __construct($module = 'Axis_Core', $locale = null)
+    public function __construct($module = 'Axis_Core')
     {
-        if (null === $locale) {
-            $this->_locale = Axis_Locale::getLocale()->toString();
-        } else {
-            $this->_locale = $locale;
-        }
-
+        
+        $this->_locale = Axis_Locale::getLocale()->toString();
         self::$_module = $module;
         
         if ('Axis_Install' !== $module
@@ -85,10 +81,10 @@ class Axis_Translate
      * @static
      * @return Axis_Translate
      */
-    public static function getInstance($module = 'Axis_Core', $locale = null)
+    public static function getInstance($module = 'Axis_Core')
     {
         if (null === self::$_instance) {
-            self::$_instance = new self($module, $locale);
+            self::$_instance = new self($module);
         } elseif (self::$_module !== $module) {
 
             if (!in_array($module, array_keys(Axis::app()->getModules()))) {

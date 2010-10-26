@@ -40,8 +40,7 @@ class Axis_View_Helper_T
 
     public function __construct()
     {
-        $locale = Axis_Locale::getLocale()->toString();
-        $this->_translator = Axis_Translate::getInstance('Axis_Install', $locale);
+        $this->_translator = Axis_Translate::getInstance('Axis_Install');
     }
 
     /**
