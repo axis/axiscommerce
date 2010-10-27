@@ -62,8 +62,6 @@ class Axis
 
             $mSite = self::single('core/site');
             if (!($site = $mSite->getByUrl($uri)) && !($site = $mSite->fetchRow())) {
-                Zend_Debug::dump(Axis_FirePhp::callstack());
-                die;
                 throw new Axis_Exception(
                     Axis::translate('core')->__(
                         "There is no site linked with url %s" , $uri
