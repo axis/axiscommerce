@@ -402,6 +402,5 @@ class Axis_Locale
     public static function getCurrencyList()
     {
         return Zend_Locale::getTranslationList('NameToCurrency', self::getLocale());
-
     }
 }
