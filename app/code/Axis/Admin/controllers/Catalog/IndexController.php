@@ -553,31 +553,55 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     public function moveProductsAction()
     {
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-        $destination = $this->_getParam('destination');
+        $destCategoryId = $this->_getParam('destination');
+        $destSiteId = Axis::single('catalog/category')->find($destCategoryId)
+            ->current()
+            ->site_id;
 
         $processed = array();
+        
+        $modelProductCategory = Axis::single('catalog/product_category');
+        $modelCatalogHurl = Axis::single('catalog/hurl');
         foreach ($data as $product) {
+
+            $productId = $product['product_id'];
+            $keyWord = $modelCatalogHurl->getProductUrl($productId);
             foreach ($product['action'] as $categoryId => $action) {
-                if ($action == 'cut') {
-                    Axis::single('catalog/product_category')->delete(array(
-                        $this->db->quoteInto('product_id = ?', $product['product_id']),
-                        $this->db->quoteInto('category_id = ?', $categoryId)
+                if ('cut' == $action) {
+                    $modelProductCategory->delete(array(
+                        $this->db->quoteInto('category_id = ?', $categoryId),
+                        $this->db->quoteInto('product_id = ?', $productId)
                     ));
+                    // @todo remove all but need only one
+//                    $modelCatalogHurl->delete(
+//                        $this->db->quoteInto("key_type = 'p' AND key_id = ?", $productId)
+//                    );
                 }
             }
 
-            if ($product['product_id'] && empty($processed[$product['product_id']])) {
-                Axis::single('catalog/product_category')->delete(array(
-                    $this->db->quoteInto('category_id = ?', $destination),
-                    $this->db->quoteInto('product_id = ?', $product['product_id'])
-                ));
-                Axis::single('catalog/product_category')->insert(array(
-                    'category_id' => $destination,
-                    'product_id' => $product['product_id']
-                ));
+            if (false === empty($processed[$productId])) {
+                continue;
             }
 
-            $processed[$product['product_id']] = true;
+            //remove if exist
+            $modelProductCategory->delete(array(
+                $this->db->quoteInto('category_id = ?', $destCategoryId),
+                $this->db->quoteInto('product_id = ?', $productId)
+            ));
+            // add
+            $modelProductCategory->insert(array(
+                'category_id' => $destCategoryId,
+                'product_id'  => $productId
+            ));
+
+            $modelCatalogHurl->save(array(
+                'key_word' => $keyWord,
+                'site_id'  => $destSiteId,
+                'key_type' => 'p',
+                'key_id'   => $productId
+            ));
+
+            $processed[$productId] = true;
         }
 
         $this->_helper->json->sendSuccess();
