@@ -177,12 +177,12 @@ abstract class Axis_Core_Box_Abstract
     {
         if ($reset) {
             $this->_data = array_merge($this->_data, array(
-                'title' => $this->_title,
-                'class' => $this->_class,
-                'url' => $this->_url,
+                'title'          => $this->_title,
+                'class'          => $this->_class,
+                'url'            => $this->_url,
                 'disableWrapper' => $this->_disableWrapper,
-                'tabContainer' => $this->_tabContainer,
-                'template' => $this->_template
+                'tabContainer'   => $this->_tabContainer,
+                'template'       => $this->_template
             ));
         }
 

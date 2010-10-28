@@ -42,6 +42,7 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
         return $this->addDescription()
             ->addUrl()
             ->addStock()
+            ->addVariations()
             ->addAttributes();
     }
 
@@ -108,11 +109,11 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
     }
 
     /**
-     * Add variation and attributes data to select object
+     * Add variation data to select object
      *
      * @return Axis_Catalog_Model_Product_Select
      */
-    public function addAttributes()
+    public function addVariations()
     {
         return $this->joinLeft('catalog_product_variation',
             'cp.id = cpv.product_id OR cpv.product_id IS NULL',
@@ -125,8 +126,17 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
                 'variation_weight'      => 'weight',
                 'variation_weight_type' => 'weight_type'
             )
-        )
-        ->joinLeft('catalog_product_attribute',
+        );
+    }
+
+    /**
+     * Add attributes data to select object
+     *
+     * @return Axis_Catalog_Model_Product_Select
+     */
+    public function addAttributes()
+    {
+        return $this->joinLeft('catalog_product_attribute',
             'cp.id = cpa.product_id AND (cpa.variation_id = 0 OR cpa.variation_id = cpv.id)',
             array(
                 'option_id',
