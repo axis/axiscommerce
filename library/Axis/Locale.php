@@ -156,6 +156,9 @@ class Axis_Locale
                 && isset(Axis::session('install')->current_locale)) {
 
                 self::setLocale(Axis::session('install')->current_locale);
+            } elseif ('install' === Zend_Registry::get('area')) {
+
+                self::setLocale(self::DEFAULT_LOCALE);
             } else {
 
                 self::setLocale(Axis::config('locale/main/locale'));
