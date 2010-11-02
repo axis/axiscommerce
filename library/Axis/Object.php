@@ -82,15 +82,14 @@ class Axis_Object implements ArrayAccess
      * @param string $key
      * @return mixed
      */
-    public function & __get($key)
+    public function /*&*/ __get($key)
     {
-//        return $this->getData($key);
-
-        $key = $this->_underscore($key);
-        if (false === isset($this->_data[$key])) {
-            $this->_data[$key] = new self();
-        }
-        return $this->_data[$key];
+        return $this->getData($key);
+//        $key = $this->_underscore($key);
+//        if (false === isset($this->_data[$key])) {
+//            $this->_data[$key] = new self();
+//        }
+//        return $this->_data[$key];
     }
 
      /**
@@ -101,9 +100,9 @@ class Axis_Object implements ArrayAccess
      */
     public function setData($key, $value)
     {
-        if (is_array($value)) {
-            $value = new self($value);
-        }
+//        if (is_array($value)) {
+//            $value = new self($value);
+//        }
         if (empty($value)) {
             return $this;
         }
