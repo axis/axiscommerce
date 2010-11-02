@@ -91,24 +91,6 @@ class Axis_Address extends Axis_Object
     }
 
     /**
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function getData($name = null)
-    {
-        if (null === $name) {
-            return $this->_data;
-        }
-        $name = strtolower(preg_replace(
-            array('/(.)([A-Z])/', '/(.)(\d+)/'), "$1_$2", $name
-        ));
-        if (isset($this->_data[$name])) {
-            return $this->_data[$name];
-        }
-    }
-
-    /**
      * Sets all data from an array.
      *
      * @param  array $data
