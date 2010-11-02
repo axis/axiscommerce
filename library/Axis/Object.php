@@ -53,7 +53,7 @@ class Axis_Object implements ArrayAccess
      * @param string $key
      * @return string
      */
-    protected function _prepareKey($key)
+    protected function _underscore($key)
     {
         return strtolower(preg_replace(
             array('/(.)([A-Z])/', '/(.)(\d+)/'), "$1_$2", $key
@@ -70,7 +70,7 @@ class Axis_Object implements ArrayAccess
         if (null === $key) {
             return $this->_data;
         }
-        $key = $this->_prepareKey($key);
+        $key = $this->_underscore($key);
 
         if (isset($this->_data[$key])) {
             return $this->_data[$key];
@@ -80,53 +80,38 @@ class Axis_Object implements ArrayAccess
     /**
      *
      * @param string $key
+     * @return mixed
+     */
+    public function & __get($key)
+    {
+//        return $this->getData($key);
+
+        $key = $this->_underscore($key);
+        if (false === isset($this->_data[$key])) {
+            $this->_data[$key] = new self();
+        }
+        return $this->_data[$key];
+    }
+
+     /**
+     *
+     * @param string $key
      * @param mixed $value
      * @return Axis_Object Fluent interface
      */
     public function setData($key, $value)
     {
+        if (is_array($value)) {
+            $value = new self($value);
+        }
         if (empty($value)) {
             return $this;
         }
-        //why?????????
-        if ($value instanceof Axis_Object && !count($value->toArray())) {
-            return $this;
-        }
-        //?????????
-        $key = $this->_prepareKey($key);
-//        if (is_array($value)) {
-//            $value = new self($value);
-//        }
+        $key = $this->_underscore($key);
         $this->_data[$key] = $value;
         return $this;
     }
-
-    /**
-     *
-     * @param string $key
-     * @return mixed
-     */
-    public function &__get($key)
-    {
-//        return $this->getData($name);
-
-        $key = $this->_prepareKey($key);
-
-        $return = null;
-        if (!isset($this->_data[$key])) {
-            return $return;
-        }
-
-        if (/*is_scalar*/!is_object($this->_data[$key]))
-        {
-            $return = $this->_data[$key];
-        } else {
-            $return = &$this->_data[$key];
-        }
-
-        return $return;
-    }
-
+    
     /**
      *
      * @param string $name
@@ -174,13 +159,10 @@ class Axis_Object implements ArrayAccess
     public function setFromArray(array $data)
     {
         foreach ($data as $key => $value) {
-            if (empty($value) ||
-                $value instanceof Axis_Object && !count($value->toArray())) {
-                
+            if (empty($value)) {
                 continue;
             }
-//            $this->setData($key, $value);
-            $this->_data[$key] = $value;
+            $this->setData($key, $value);
         }
 
         return $this;
