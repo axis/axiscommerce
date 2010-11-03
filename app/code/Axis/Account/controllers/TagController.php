@@ -95,14 +95,14 @@ class Axis_Account_TagController extends Axis_Account_Controller_Account
      */
     public function removeItemAction()
     {
-        $tableTagProduct = Axis::single('tag/product');
+        $modelTagProduct = Axis::single('tag/product');
 
         $integer = new Zend_Filter_Int();
         $id = $integer->filter($this->_getParam('itemId'));
-        $tableTagProduct->deleteMy($id);
+        $modelTagProduct->deleteMy($id);
 
         $tagId = $integer->filter($this->_getParam('tagId'));
-        $weightTag = $tableTagProduct->weightTag($tagId);
+        $weightTag = $modelTagProduct->weightTag($tagId);
         if (!$weightTag) {
             Axis::single('tag/customer')->find($tagId)
                 ->current()
