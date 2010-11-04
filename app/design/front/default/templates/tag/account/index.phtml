@@ -1,0 +1,10 @@
+<?php
+echo $this->title($this->pageTitle);
+
+$this->meta()->setTitle($this->pageTitle);
+$this->tags()->disableUsageTag();
+
+echo $this->tags($this->tags)->__toString();
+$this->tags()->enableUsageTag();
+$this->tags()->disableWeight();
+?>
