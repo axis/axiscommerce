@@ -83,6 +83,19 @@ class SandboxController extends Axis_Core_Controller_Front
 //        Zend_Debug::dump($o);
 //        die;
 
+        $routes = array('a' => 'Hey', 'b' => 'hey', 'c' => 'My1', 'd' => 'my2');
+        $afterKey = 'k';
+
+        $length = array_search($afterKey, array_keys($routes));
+        if (false !== $length) {
+            $length += 1;
+        }
+
+        $firstPart = array_splice($routes, 0, $length);
+        $firstPart['new_key'] = 'new_value';
+        
+        Zend_Debug::dump($firstPart + $routes);
+
         $this->_prefix = '';
         $where = $where2 = ':where';
         $query = "
