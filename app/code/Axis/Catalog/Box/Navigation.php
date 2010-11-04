@@ -37,17 +37,18 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
     
     public function init()
     {
+        $siteId = Axis::getSiteId();
         $tree = Axis::single('catalog/category')->cache()
-            ->getFlatTree(Axis_Locale::getLanguageId(), Axis::getSiteId(), true);
-        
-        if (!current($tree) || !count(current($tree))) {
+            ->getFlatTree(Axis_Locale::getLanguageId(), $siteId, true);
+
+        if (false === isset($tree[$siteId]) || empty($tree)) {
             return false;
         }
-        $this->setData('items', current($tree));
+        $this->setData('items', $tree[$siteId]);
     }
     
     public function hasContent()
     {
-        return true;//$this->hasData('items');
+        return $this->hasData('items');
     }
 }
