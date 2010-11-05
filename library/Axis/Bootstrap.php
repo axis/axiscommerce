@@ -270,12 +270,13 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Cache');
         $router = new Axis_Controller_Router_Rewrite();
         // include routes files
-        $routes = Axis::app()->getRoutes();
-        foreach ($routes as $route) {
-            include_once($route);
+        $routeFiles = Axis::app()->getRoutes();
+        foreach ($routeFiles as $routeFile) {
+            include_once($routeFile);
         }
 
         $router->removeDefaultRoutes();
+        $router->sortRoutes();
 
         if (!($router instanceof Axis_Controller_Router_Rewrite)) {
             throw new Axis_Exception('Incorrect routes');

@@ -82,7 +82,15 @@ class SandboxController extends Axis_Core_Controller_Front
 //
 //        Zend_Debug::dump($o);
 //        die;
+        $d = array();
+        for ($index = 0; $index < 12; $index++) {
+            $d[$index*10] = $index;
+        }
 
+        $d[15] = '11';
+        $d[12] = '00';
+        Zend_Debug::dump($d);
+        
         $routes = array('a' => 'Hey', 'b' => 'hey', 'c' => 'My1', 'd' => 'my2');
         $afterKey = 'k';
 

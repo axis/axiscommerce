@@ -33,6 +33,14 @@
  */
 class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
 {
+    const PRIORITY_PERIOD = 100;
+
+    /**
+     *
+     * @var array 
+     */
+    protected $_priorities = array();
+
     public function addDefaultRoutes()
     {
         if (!$this->hasRoute('default')) {
@@ -42,5 +50,61 @@ class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
             $compat = new Axis_Controller_Router_Route_Module(array(), $dispatcher, $request);
             $this->_routes = array_merge(array('default' => $compat), $this->_routes);
         }
+    }
+
+    /**
+     * Add route to the route chain
+     *
+     * If route contains method setRequest(), it is initialized with a request object
+     *
+     * @param  string                                 $name       Name of the route
+     * @param  Zend_Controller_Router_Route_Interface $route      Instance of the route
+     * @param  mixed                                  $priority
+     * @return Zend_Controller_Router_Rewrite
+     */
+    public function addRoute($name, Zend_Controller_Router_Route_Interface $route, $priority = null)
+    {
+        if (method_exists($route, 'setRequest')) {
+            $route->setRequest($this->getFrontController()->getRequest());
+        }
+
+        if (null === $priority) {
+            if (empty($this->_priorities)) {
+                $priority = 0;
+            } else {
+                $priority = max(array_keys($this->_priorities)) + self::PRIORITY_PERIOD;
+            }
+        }
+
+        $this->_routes[$name] = $route;
+        $this->_priorities[$priority] = $name;
+
+        return $this;
+    }
+
+    public function sortRoutes()
+    {
+        $priorities = array();
+        $flip = array_flip($this->_priorities);
+        
+        foreach ($this->_priorities as $priority => $name) {
+            if (is_string($priority) && isset($flip[$priority])) {
+                for ($index = 1; $index < self::PRIORITY_PERIOD - 1; $index++) {
+                    $priority = $flip[$priority] + $index;
+                    if (isset($priorities[$priority])) {
+                        continue;
+                    }
+                    break;
+                }
+            }
+            $priorities[$priority] = $name;
+        }
+
+        ksort($priorities);
+        $routes = array();
+        foreach ($priorities as $priority => $name) {
+            $routes[$name] = $this->_routes[$name];
+        }
+        return $this->_routes = $routes;
     }
 }
