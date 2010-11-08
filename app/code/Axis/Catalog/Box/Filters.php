@@ -127,7 +127,8 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
             ->addCommonFilters($filters)
             ->addManufacturer()
             ->group('cpm.id')
-            ->order('cpmt.title');
+            ->order('cpmt.title')
+            ->where('cp.manufacturer_id IS NOT NULL');
 
         $manufacturers = $select->fetchAll();
 
@@ -156,7 +157,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
                     'option_id',
                     'option_value_id'
                 ))
-            ->join('catalog_product_option', 'cpa.option_id = cpo.id') 
+            ->join('catalog_product_option', 'cpa.option_id = cpo.id')
             ->join('catalog_product_option_text',
                 'cpa.option_id = cpot.option_id',
                 array(

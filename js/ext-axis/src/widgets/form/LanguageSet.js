@@ -178,7 +178,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
 
     initValue: function() {
         if (this.value) {
-            this.setValue.apply(this, [this.value]);
+            this.setRawValue.apply(this, [this.value]);
             this.eachItem(function(item) {
                 item.originalValue = this.value[item.name] ? this.value[item.name] : '';
             });
@@ -279,7 +279,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                     var value = f.getValue();
                     f.validate();
                 } else {
-                    var value = this.value[f.name];
+                    var value = this.value ? this.value[f.name] : '';
                 }
                 if (value == '') {
                     failedLocales.push(f.locale);
@@ -538,6 +538,14 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
     setRawValueForItem: function(val) {
         this.eachItem(function(item) {
             item.setRawValue(val);
+        });
+    },
+
+    clearInvalid: function() {
+        this.eachItem(function(item) {
+            if (item.clearInvalid) {
+                item.clearInvalid();
+            }
         });
     }
 });

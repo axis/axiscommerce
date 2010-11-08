@@ -26,7 +26,7 @@ Ext.form.BasicForm.override({
 
     invalidTabs: [],
 
-    isValid : function(){
+    isValid : function() {
         var valid = true;
         var invalidPanels = [];
         var processedPanels = [];
@@ -126,7 +126,7 @@ Ext.form.BasicForm.override({
         this.items.each(function(f){
             f.reset();
         });
-        this.resetErrorTabs();
+        this.resetValidationMessages();
         return this;
     },
 
@@ -136,27 +136,43 @@ Ext.form.BasicForm.override({
                 f.items.each(clearField);
             }
             var value = (undefined !== f.initialValue ? f.initialValue : '');
-            if (f.setRawValue) {
-                f.setRawValue(value);
+            if (f.setValue) {
+                f.setValue(value);
             } else {
                 f.value = value;
+            }
+            if (f.clearInvalid) {
+                f.clearInvalid();
             }
         };
 
         this.items.each(clearField);
 
-        this.resetErrorTabs();
+        this.resetValidationMessages();
         return this;
     },
 
-    resetErrorTabs: function() {
+    resetValidationMessages: function() {
+        this.isValid();
+
+        clearInvalid = function(f) {
+            if ('compositefield' === f.xtype && f.items.each) {
+                f.items.each(clearField);
+            }
+            if (f.clearInvalid) {
+                f.clearInvalid();
+            }
+        };
+
+        this.items.each(clearInvalid);
+
         for (var i = 0, limit = this.invalidTabs.length; i < limit; i++) {
             this.invalidTabs[i].removeClass('error');
         }
     },
 
     setValues: function(values) {
-        this.resetErrorTabs();
+        this.resetValidationMessages();
         if(Ext.isArray(values)){ // array of objects
             for(var i = 0, len = values.length; i < len; i++){
                 var v = values[i];

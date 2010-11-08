@@ -18,11 +18,11 @@
  */
 
 Ext.onReady(function() {
-    
+
     ProductWindow.formFields.push(
         {name: 'key_word', mapping: 'key_word'}
     );
-    
+
     for (var id in Axis.languages) {
         ProductWindow.formFields.push({
             name: 'description[' + id + '][meta_title]',
@@ -38,7 +38,7 @@ Ext.onReady(function() {
             mapping: 'description.lang_' + id + '.image_seo_name'
         });
     }
-    
+
     ProductWindow.addTab({
         title: 'Seo'.l(),
         bodyStyle: 'padding: 10px',
@@ -56,6 +56,7 @@ Ext.onReady(function() {
             },
             items: [{
                 items: [{
+                    allowBlank: false,
                     anchor: '-5',
                     fieldLabel: 'SEO url'.l(),
                     name: 'key_word',
@@ -87,5 +88,5 @@ Ext.onReady(function() {
             xtype: 'langset'
         }]
     }, 20);
-    
+
 });
