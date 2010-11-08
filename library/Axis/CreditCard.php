@@ -33,8 +33,8 @@ class Axis_CreditCard extends Axis_Object
 {
     public function getData($name = null)
     {
-        $crypt = Axis_Crypt::factory();
         if (isset($this->_data[$name])) {
+            $crypt = Axis_Crypt::factory();
             return $crypt->decrypt($this->_data[$name]);
         }
         return null;

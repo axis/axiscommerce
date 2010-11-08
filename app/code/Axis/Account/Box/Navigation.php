@@ -34,9 +34,42 @@ class Axis_Account_Box_Navigation extends Axis_Account_Box_Abstract
 {
     protected $_title = 'Account';
     protected $_class = 'box-account';
-    
+    protected $_items = array();
+
+    public function addItem($shortLink, $title, $cssClass, $sortOrder = null)
+    {
+        if (null === $sortOrder) {
+            if (empty($this->_items)) {
+                $sortOrder = 0;
+            } else {
+                $sortOrder = max(array_keys($this->_items)) + 10;
+            }
+        }
+        $this->_items[$sortOrder] = new Axis_Object(array(
+            'href'     => $shortLink,
+            'title'    => $title,
+            'cssClass' => $cssClass
+        ));
+        
+        return $this;
+    }
+
     public function init()
     {
-        $this->identity = Axis::getCustomerId();
+        if ($this->identity = Axis::getCustomerId()) {
+            //@todo use event 
+            $this->addItem('account', 'My Account', 'link-account')
+                ->addItem('account/info/change', 'Change Info', 'link-change-info')
+                ->addItem('account/address-book', 'Address Book', 'link-address-book')
+                ->addItem('account/order', 'My Orders', 'link-orders')
+                ->addItem('account/wishlist', 'My Wishlist', 'link-wishlist');
+            
+            if (Axis::single('core/module')->getByCode('Axis_Tag')->isInstalled()) {
+                $this->addItem('account/tag', 'My Tags', 'link-tags');
+            }
+            $this->addItem('account/auth/logout', 'Logout', 'link-logout');
+//
+            $this->items = $this->_items;
+        }
     }
 }

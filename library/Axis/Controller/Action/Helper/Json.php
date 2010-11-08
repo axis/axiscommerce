@@ -97,6 +97,11 @@ class Axis_Controller_Action_Helper_Json extends Zend_Controller_Action_Helper_J
      */
     public function sendSuccess($data = array(), $keepLayouts = false)
     {
+        if (is_bool($data)) {
+            return $this->sendJson(
+                array('success' => $data), $keepLayouts, true
+            );
+        }
         $data = array_merge($data, array('success' => true));
         return $this->sendJson($data, $keepLayouts, true);
     }

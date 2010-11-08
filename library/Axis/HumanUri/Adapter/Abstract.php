@@ -67,19 +67,24 @@ abstract class Axis_HumanUri_Adapter_Abstract
     /**
      * Return the request object.
      *
-     * @return null|Zend_Controller_Request_Abstract
+     * @return Zend_Controller_Request_Abstract
      */
     final public function getRequest()
     {
         return $this->_request;
     }
 
+    /**
+     *
+     * @param string $key
+     * @return bool
+     */
     protected function _isAttribute($key)
     {
-        if (false === strpos($key, '_'))
+        if (false === strpos($key, '_')) {
             return false;
-
-        if (current(explode('_', $key)) == 'at') {
+        }
+        if ('at' == current(explode('_', $key))) {
             return true;
         }
         return false;
@@ -131,9 +136,8 @@ abstract class Axis_HumanUri_Adapter_Abstract
                 $result = $result[$key];
             }
             return $result;
-        } else {
-            return $this->hasParam($key) ? $this->_params[$key] : $default;
         }
+        return $this->hasParam($key) ? $this->_params[$key] : $default;
     }
 
     public function setParam($key, $value)

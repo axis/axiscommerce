@@ -38,3 +38,12 @@ $router->addRoute('tag_show-products', new Axis_Controller_Router_Route(
         'action' => 'show-products'
     )
 ));
+
+$router->addRoute('tag_account',
+    new Axis_Controller_Router_Route('account/tag/:action/*', array(
+        'module' => 'Axis_Tag',
+        'controller' => 'account',
+        'action' => 'index'
+    )),
+    'account' // run before 'account' route
+);

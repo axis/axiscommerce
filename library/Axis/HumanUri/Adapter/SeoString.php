@@ -36,16 +36,15 @@ class Axis_HumanUri_Adapter_SeoString extends Axis_HumanUri_Adapter_Abstract
      */
     protected function _init()
     {
-
         $params = array();
         $expectedKeys = $this->getExpectedKeys();
         $attributes = array();
-        foreach ($this->_request->getParams() as $name => $value) {
+        foreach ($this->getRequest()->getParams() as $name => $value) {
             if (in_array($name, $expectedKeys)) {
                 $params[$name]['value'] = $value;
-            } elseif ($this->_isAttribute($name)) {
+            } elseif (true === $this->_isAttribute($name)) {
                 $params[$name]['value'] = $value;
-                list(,$optionId) = explode('_', $name);
+                list(, $optionId) = explode('_', $name);
                 $attributes[$optionId] = $value;
             }
         }

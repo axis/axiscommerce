@@ -1,35 +1,12 @@
 <?php if ($this->box->getData('identity')):?>
 <ul class="no-bullet no-indent">
-    <li class="link-account"><a href="<?php echo $this->href('account', true) ?>"
-        title="<?php echo $this->translate('account')->__('My Account')?>"
-        ><?php echo $this->translate('account')->__('My Account')?></a>
-    </li>
-    <li class="link-change-info"><a href="<?php echo $this->href('account/info/change', true) ?>"
-        title="<?php echo $this->translate('account')->__('Change Info')?>"
-        ><?php echo $this->translate('account')->__('Change Info')?></a>
-    </li>
-    <li class="link-address-book"><a href="<?php echo $this->href('account/address-book', true) ?>"
-        title="<?php echo $this->translate('account')->__('Address Book')?>"
-        ><?php echo $this->translate('account')->__('Address Book')?></a>
-    </li>
-    <li class="link-orders"><a href="<?php echo $this->href('account/order', true) ?>"
-        title="<?php echo $this->translate('account')->__('My Orders')?>"
-        ><?php echo $this->translate('account')->__('My Orders')?></a>
-    </li>
-    <li class="link-wishlist"><a href="<?php echo $this->href('account/wishlist', true) ?>"
-        title="<?php echo $this->translate('account')->__('My Wishlist')?>"
-        ><?php echo $this->translate('account')->__('My Wishlist')?></a>
-    </li>
-    <?php if (Axis::single('core/module')->getByCode('Axis_Tag')->isInstalled()) : ?>
-        <li class="link-tags"><a href="<?php echo $this->href('account/tag', true) ?>"
-            title="<?php echo $this->translate('account')->__('My Tags')?>"
-            ><?php echo $this->translate('account')->__('My Tags')?></a>
+    <?php foreach ($this->box->getItems() as $_item) :
+        $_title = $this->translate('account')->__($_item->getTitle());?>
+        <li class="<?php echo $_item->getCssClass()?>">
+            <a href="<?php echo $this->href($_item->getHref(), true)
+                ?>" title="<?php echo $_title?>"><?php echo $_title?></a>
         </li>
-    <?php endif;?>
-    <li class="link-logout"><a href="<?php echo $this->href('account/auth/logout', true) ?>"
-        title="<?php echo $this->translate('account')->__('Logout')?>"
-        ><?php echo $this->translate('account')->__('Logout')?></a>
-    </li>
+    <?php endforeach;?>
 </ul>
 <?php else : ?>
 <form method="post" id="form-login-box" action="<?php echo $this->href('account/auth/login', true) ?>">

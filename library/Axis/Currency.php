@@ -43,5 +43,4 @@ class Axis_Currency extends Zend_Currency
         parent::__construct($currency, $locale);
         parent::setCache(Axis::cache());
     }
-    
 }
