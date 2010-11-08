@@ -178,7 +178,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
 
     initValue: function() {
         if (this.value) {
-            this.setValue.apply(this, [this.value]);
+            this.setRawValue.apply(this, [this.value]);
             this.eachItem(function(item) {
                 item.originalValue = this.value[item.name] ? this.value[item.name] : '';
             });
