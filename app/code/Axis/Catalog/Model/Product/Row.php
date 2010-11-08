@@ -404,10 +404,12 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
             $url
         );
 
-        if (null === $siteIds) {
+        if (null === $siteIds) { // completely unset link
             $siteIds = array();
         } elseif (!is_array($siteIds)) {
             $siteIds = array($siteIds);
+        } elseif (!count($siteIds)) { // save link on product with no category assignments
+            $siteIds = array(0);
         }
 
         $tableHurl = Axis::single('catalog/hurl');
@@ -704,7 +706,6 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         //$res['to'] = max($difference);
         return $result;
     }
-
 
     /**
      * Высчитывает цену учитывая набор атрибутов и скидку на продукт
