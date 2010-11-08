@@ -35,28 +35,28 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
     {
         $simpleKeys = $this->getSimpleKeys();
         
-        $seoKeys = array();
-        $options = array();
-        foreach ($this->getKeywords() as $key) {
-            if (false === strpos($key, '=')) {
-                $seoKeys[] = $key;
+        $seoParams = array();
+        $attributeParams = array();
+        foreach ($this->getKeywords() as $keyword) {
+
+            if (false === strpos($keyword, '=')) {
+                $seoParams[] = $keyword;
+                continue;
+            } 
+            list($key, $value) = explode('=', $keyword, 2);
+            if (in_array($key, $simpleKeys)) {
+                $this->setParam($key, $value);
             } else {
-                /* проверка на атрибут */
-                $items = explode('=', $key);
-                if (in_array($items[0], $simpleKeys)) { 
-                    $this->_params[$items[0]] = $items[1];
-                } else { // аттрибут
-                    $options[$items[0]] = $items[1];
-                }
+                $attributeParams[$key] = $value;
             }
         }
         
-        if (sizeof($seoKeys)) {
-            $this->_initSeoParams($seoKeys);
+        if (sizeof($seoParams)) {
+            $this->_initSeoParams($seoParams);
         }
         
-        if (sizeof($options)) {
-            $this->_initAttributeParams($options);
+        if (sizeof($attributeParams)) {
+            $this->_initAttributeParams($attributeParams);
         }
     }
     
@@ -65,15 +65,7 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
         $this->_params['attributes'] = Axis::single('catalog/product_option')
             ->getAttributesByKeyword($keywords);
     }
-    
-    public function getKeywords()
-    {
-        $path = urldecode($this->_request->getPathInfo());
-        $keywords = explode('/', trim($path, '/'));
-        array_shift($keywords); //remove root catalog from array
-        return $keywords;
-    }
-    
+
     private function _initSeoParams($keywords)
     {
         if (!sizeof($keywords)) {
@@ -88,9 +80,11 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
             ;
 
         foreach ($rowset as $row) {
+
+            $categoryId = $productId = $manufacturerId = $row['key_id'];
             switch ($row['key_type']) {
                 case 'c':
-                    $this->_params['cat']['value'] = $row['key_id'];
+                    $this->_params['cat']['value'] = $categoryId;
                     if (empty($this->_params['cat']['seo'])) {
                         $this->_params['cat']['seo'] = $row['key_word'];
                     } else {
@@ -98,19 +92,17 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
                     }
                     break;
                 case 'p':
-                    $this->_params['product']['value'] = $row['key_id'];
+                    $this->_params['product']['value'] = $productId;
                     $this->_params['product']['seo'] = $row['key_word'];
-                    $this->_request->setParam(
-                        'product', $this->_params['product']['value']
-                    );
+                    $this->getRequest()->setParam('product', $productId);
                     break;
                 case 'm':
-                    $this->_params['manufacturer']['value'] = $row['key_id'];
+                    $this->_params['manufacturer']['value'] = $manufacturerId;
                     $this->_params['manufacturer']['seo'] = $row['key_word'];
                     $this->_params['manufacturer']['title'] =
                         Axis::single('catalog/product_manufacturer_title')
                             ->select('title')
-                            ->where('manufacturer_id = ?', $row['key_id'])
+                            ->where('manufacturer_id = ?', $manufacturerId)
                             ->where('language_id = ?', Axis_Locale::getLanguageId())
                             ->fetchOne();
                     break;
@@ -118,6 +110,14 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
                     break;
             }
         }
+    }
+
+    public function getKeywords()
+    {
+        $path = urldecode($this->getRequest()->getPathInfo());
+        $keywords = explode('/', trim($path, '/'));
+        array_shift($keywords); //remove root catalog from array
+        return $keywords;
     }
     
     public function url($options = array(), $reset = false)

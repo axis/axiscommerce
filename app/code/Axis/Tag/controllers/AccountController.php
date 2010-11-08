@@ -26,11 +26,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Account
+ * @package     Axis_Tag
  * @subpackage  Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_TagController extends Axis_Account_Controller_Account
+class Axis_Tag_AccountController extends Axis_Account_Controller_Account
 {
     /**
      * Initialize
@@ -54,7 +54,6 @@ class Axis_Account_TagController extends Axis_Account_Controller_Account
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('account')->__('My Tags');
-
         $this->view->tags = Axis::single('tag/customer')->getMyWithWeight();
         $this->view->tags()->enableWeight();
         $this->render();
@@ -95,14 +94,14 @@ class Axis_Account_TagController extends Axis_Account_Controller_Account
      */
     public function removeItemAction()
     {
-        $tableTagProduct = Axis::single('tag/product');
+        $modelTagProduct = Axis::single('tag/product');
 
         $integer = new Zend_Filter_Int();
         $id = $integer->filter($this->_getParam('itemId'));
-        $tableTagProduct->deleteMy($id);
+        $modelTagProduct->deleteMy($id);
 
         $tagId = $integer->filter($this->_getParam('tagId'));
-        $weightTag = $tableTagProduct->weightTag($tagId);
+        $weightTag = $modelTagProduct->weightTag($tagId);
         if (!$weightTag) {
             Axis::single('tag/customer')->find($tagId)
                 ->current()

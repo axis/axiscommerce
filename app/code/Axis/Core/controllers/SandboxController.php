@@ -70,8 +70,40 @@ class SandboxController extends Axis_Core_Controller_Front
         Axis_FirePhp::timeStamp('++++++++++++++++++++++++++++++++++++++++++++');
 
 //        Axis_FirePhp::log("SELECT `cp`.*, `cpc`.`link`, group_concat(`cc`.`name` separator ', ') AS `category_name` FROM `prefix_cms_page` AS `cp` LEFT JOIN `prefix_cms_page_content` AS `cpc` ON cp.id = cpc.cms_page_id AND cpc.language_id = 1 LEFT JOIN `prefix_cms_page_category` AS `cptc` ON cptc.cms_page_id = cp.id LEFT JOIN `prefix_cms_category` AS `cc` ON cc.id = cptc.cms_category_id GROUP BY `cp`.`id`");
+        
+//        $o = new Axis_Object() ;
 //
+//        $o->value1->a = 1;
+//        $o->value2['a'] = 2;
+//        $o->value2['a'] = 3;
+//        $o['value3']['a'] = 2;
+//        $o['value4']->a = 2;
+//        $o['value5']->setA(2);
 //
+//        Zend_Debug::dump($o);
+//        die;
+        $d = array();
+        for ($index = 0; $index < 12; $index++) {
+            $d[$index*10] = $index;
+        }
+
+        $d[15] = '11';
+        $d[12] = '00';
+        Zend_Debug::dump($d);
+        
+        $routes = array('a' => 'Hey', 'b' => 'hey', 'c' => 'My1', 'd' => 'my2');
+        $afterKey = 'k';
+
+        $length = array_search($afterKey, array_keys($routes));
+        if (false !== $length) {
+            $length += 1;
+        }
+
+        $firstPart = array_splice($routes, 0, $length);
+        $firstPart['new_key'] = 'new_value';
+        
+        Zend_Debug::dump($firstPart + $routes);
+
         $this->_prefix = '';
         $where = $where2 = ':where';
         $query = "
@@ -91,7 +123,7 @@ class SandboxController extends Axis_Core_Controller_Front
 
 
         Zend_Debug::dump(
-        Axis::single('catalog/product')->find(34)->current()->getParentItems()
+            Axis::single('catalog/product')->find(34)->current()->getParentItems()
         );
 //        Zend_Debug::dump(Axis::single('location/country')
 //                    ->getIdByName('Ukraine') . Axis::single('location/zone')->getIdByCode(

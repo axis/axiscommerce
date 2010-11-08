@@ -169,7 +169,6 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
             $select->where('cc.id NOT IN (?)', $disabledCategories);
         }
 
-        $select;
         $select = $select->query();
         $tree = array();
 

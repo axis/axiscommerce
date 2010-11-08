@@ -33,6 +33,12 @@
  */
 class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
 {
+    /**
+     *
+     * @var array 
+     */
+    protected $_dependency = array();
+
     public function addDefaultRoutes()
     {
         if (!$this->hasRoute('default')) {
@@ -42,5 +48,52 @@ class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
             $compat = new Axis_Controller_Router_Route_Module(array(), $dispatcher, $request);
             $this->_routes = array_merge(array('default' => $compat), $this->_routes);
         }
+    }
+
+    /**
+     * Add route to the route chain
+     *
+     * If route contains method setRequest(), it is initialized with a request object
+     *
+     * @param  string                                 $name       Name of the route
+     * @param  Zend_Controller_Router_Route_Interface $route      Instance of the route
+     * @param  string                                 $before
+     * @return Zend_Controller_Router_Rewrite
+     */
+    public function addRoute($name, Zend_Controller_Router_Route_Interface $route, $before = null)
+    {
+        if (method_exists($route, 'setRequest')) {
+            $route->setRequest($this->getFrontController()->getRequest());
+        }
+
+        $this->_routes[$name] = $route;
+
+        if (null !== $before) {
+            $this->_dependency[$name] = $before;
+        }
+        return $this;
+    }
+
+    /**
+     * "When your power eclipses mine I will become expendable.
+     *  This is the Rule of Two: one Master and one apprentice.
+     *  When you are ready to claim the mantle of Dark Lord as your own, you must do so by eliminating me."
+     * ― Darth Bane
+     * 
+     * @return array
+     */
+    public function sortRoutes()
+    {
+
+        foreach ($this->_dependency as $afterRoute => $beforeRoute) {
+            $replacement = $this->_routes[$afterRoute];
+            unset($this->_routes[$afterRoute]);
+            $offset = array_search($beforeRoute, array_keys($this->_routes)) + 1;
+
+            $this->_routes = array_slice($this->_routes, 0, $offset, true)
+                + array($afterRoute => $replacement)
+                + array_slice($this->_routes, $offset, NULL, true);
+        }
+        return $this->_routes;
     }
 }
