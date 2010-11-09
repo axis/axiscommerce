@@ -56,7 +56,6 @@ Ext.onReady(function() {
             },
             items: [{
                 items: [{
-                    allowBlank: false,
                     anchor: '-5',
                     fieldLabel: 'SEO url'.l(),
                     name: 'key_word',
