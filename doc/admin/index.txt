@@ -1,0 +1,33 @@
+Axis Administrator Guide
+========================
+v1.0, 2010-10
+:doctype: book
+
+
+[dedication]
+Dedication
+----------
+The optional dedication goes here.
+
+This document is an AsciiDoc multi-part book skeleton containing
+briefly annotated element placeholders plus a couple of example index
+entries and footnotes. Books are normally used to generate DocBook
+markup and the preface, appendix, bibliography, glossary and index
+section titles are significant ('specialsections').
+
+NOTE: Multi-part books differ from all other AsciiDoc document formats
+in that top level sections (dedication, preface, book parts,
+appendices, bibliography, glossary, index) must be level zero headings
+(not level one).
+
+
+[preface]
+Example Preface
+---------------
+The optional book preface goes here at section level zero.
+
+Preface Sub-section
+~~~~~~~~~~~~~~~~~~~
+NOTE: Preface and appendix subsections start out of sequence at level
+2 (level 1 is skipped). This only applies to multi-part book
+documents.

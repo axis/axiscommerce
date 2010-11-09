@@ -1,0 +1,33 @@
+== Catalog
+Catalog is a place where you can create your products.
+
+=== Product catalog
+Product catalog page is devided into two parts. From the left side you can edit
+categories. From the right side you can edit your products.
+
+.Product catalog
+image::images/product_catalog.png[Product catalog]
+
+=== Categories
+Lorem ipsum dolore
+
+Create category
+^^^^^^^^^^^^^^^
+.Create category dialog
+image::images/create_category.png[Create category]
+
+=== Products
+Lorem ipsum dolore.
+
+Create Product
+^^^^^^^^^^^^^^
+Describe how to create product here.
+
+.Create product dialog
+image::images/create_product.png[Create product]
+
+=== Product Attributes
+Describe delete process.
+
+=== Add attributes
+Describe attributes

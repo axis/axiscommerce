@@ -1,0 +1,8 @@
+== Modules
+Here is information about modules.
+
+=== Install new modules
+Lorem ipsum dolore.
+
+=== Update modules
+Lorem ipsum dolore.
