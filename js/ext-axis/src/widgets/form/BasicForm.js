@@ -26,7 +26,10 @@ Ext.form.BasicForm.override({
 
     invalidTabs: [],
 
-    isValid : function() {
+    isValid : function(activateInvalidTab) {
+        if (undefined === activateInvalidTab) {
+            activateInvalidTab = true;
+        }
         var valid = true;
         var invalidPanels = [];
         var processedPanels = [];
@@ -56,31 +59,33 @@ Ext.form.BasicForm.override({
         }, this);
 
         // modification begin
-        // @todo change logic: check current tab, if clear - next step by step (no need to check all of them)
-        // collect panels to activate and mark tabPanels to skip
-        for (var i = 0, len = invalidPanels.length; i < len; i++) {
-            var tabPanel = invalidPanels[i].findParentByType('tabpanel');
-            if (tabPanel.activeTab == invalidPanels[i]) {
-                tabPanel.skipActivation = true;
-            } else if (!tabPanel.panelToActivate) {
-                tabPanel.panelToActivate = invalidPanels[i];
+        if (activateInvalidTab) {
+            // @todo change logic: check current tab, if clear - next step by step (no need to check all of them)
+            // collect panels to activate and mark tabPanels to skip
+            for (var i = 0, len = invalidPanels.length; i < len; i++) {
+                var tabPanel = invalidPanels[i].findParentByType('tabpanel');
+                if (tabPanel.activeTab == invalidPanels[i]) {
+                    tabPanel.skipActivation = true;
+                } else if (!tabPanel.panelToActivate) {
+                    tabPanel.panelToActivate = invalidPanels[i];
+                }
             }
-        }
 
-        // activate panels with errors
-        for (var i = 0, len = invalidPanels.length; i < len; i++) {
-            var tabPanel = invalidPanels[i].findParentByType('tabpanel');
-            if (tabPanel.skipActivation) {
-                continue;
+            // activate panels with errors
+            for (var i = 0, len = invalidPanels.length; i < len; i++) {
+                var tabPanel = invalidPanels[i].findParentByType('tabpanel');
+                if (tabPanel.skipActivation) {
+                    continue;
+                }
+                tabPanel.setActiveTab(tabPanel.items.indexOf(tabPanel.panelToActivate));
             }
-            tabPanel.setActiveTab(tabPanel.items.indexOf(tabPanel.panelToActivate));
-        }
 
-        // remove custom variables
-        for (var i = 0, len = invalidPanels.length; i < len; i++) {
-            var tabPanel = invalidPanels[i].findParentByType('tabpanel');
-            delete tabPanel.skipActivation;
-            delete tabPanel.panelToActivate;
+            // remove custom variables
+            for (var i = 0, len = invalidPanels.length; i < len; i++) {
+                var tabPanel = invalidPanels[i].findParentByType('tabpanel');
+                delete tabPanel.skipActivation;
+                delete tabPanel.panelToActivate;
+            }
         }
         // modificaton end
 
@@ -153,7 +158,7 @@ Ext.form.BasicForm.override({
     },
 
     resetValidationMessages: function() {
-        this.isValid();
+        this.isValid(false);
 
         clearInvalid = function(f) {
             if ('compositefield' === f.xtype && f.items.each) {
