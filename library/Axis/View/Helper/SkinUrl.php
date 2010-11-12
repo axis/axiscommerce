@@ -40,9 +40,12 @@ class Axis_View_Helper_SkinUrl
             return $baseUrl . '/skin/' . $this->view->area . '/' . $this->view->templateName;
         }
 
-        $fallbackList = array_unique(
-            array($this->view->templateName, $this->view->defaultTemplate, 'fallback')
-        );
+        $fallbackList = array_unique(array(
+            $this->view->templateName,
+            /* $this->view->defaultTemplate */
+            'fallback',
+            'default'
+        ));
         foreach ($fallbackList as $fallback) {
             $file = '/skin/' . $this->view->area . '/' . $fallback  . '/' . $src;
             if (is_readable($this->view->path . $file)) {
