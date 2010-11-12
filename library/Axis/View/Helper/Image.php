@@ -38,9 +38,12 @@ class Axis_View_Helper_Image
             $attribute .= ' alt="' . str_replace(' ', '', strtolower($src)) . '"';
         }
 
-        $fallbackList = array_unique(
-            array($this->view->templateName, $this->view->defaultTemplate, 'fallback')
-        );
+        $fallbackList = array_unique(array(
+            $this->view->templateName,
+            /* $this->view->defaultTemplate */
+            'fallback',
+            'default'
+        ));
         foreach ($fallbackList as $fallback) {
             $file = '/skin/' . $this->view->area . '/' . $fallback . '/images/' . $src;
             if (is_readable($this->view->path . $file)) {

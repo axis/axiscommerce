@@ -61,8 +61,8 @@ class Axis_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
     /**
      * Search algorithm:
      *  - from current template
-     *  - from default template
      *  - from fallback template
+     *  - from default template
      *  - from AXIS_ROOT
      *
      * @param string $css
@@ -75,9 +75,12 @@ class Axis_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
             return $css;
         }
 
-        $fallbackList = array_unique(
-            array($this->view->templateName, $this->view->defaultTemplate, 'fallback')
-        );
+        $fallbackList = array_unique(array(
+            $this->view->templateName,
+            /* $this->view->defaultTemplate */
+            'fallback',
+            'default'
+        ));
         $find = false;
         foreach ($fallbackList as $fallback) {
             $file = '/skin/' . $this->view->area . '/' . $fallback . '/css/' . $css;
