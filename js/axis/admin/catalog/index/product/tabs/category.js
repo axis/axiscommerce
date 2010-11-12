@@ -18,41 +18,56 @@
  */
 
 var ProductCategoryGrid = {
-    
+
     el: null,
-    
+
     clearData: function() {
         Ext.Ajax.request({
             url: Axis.getUrl('catalog_category/get-flat-tree'),
             success: function(response) {
-                ProductCategoryGrid.el.store.loadData(Ext.decode(response.responseText).data);
+                var categories = Ext.decode(response.responseText).data;
+                var belongs_to = [];
+                var selected = null;
+                if ((selected = CategoryGrid.el.selModel.getSelected())) {
+                    belongs_to.push(selected.id);
+                    Ext.each(categories, function(item) {
+                        if (selected.id == item.id) {
+                            item.belongs_to = 1;
+                            return false;
+                        }
+                    });
+                }
+                ProductCategoryGrid.loadData({
+                    categories: categories,
+                    belongs_to: belongs_to
+                });
             }
         });
     },
-    
+
     loadData: function(data) {
         // fill categories grid, and expand belongs_to nodes
         ProductCategoryGrid.el.store.loadData(data.categories);
         for (var i = 0, limit = data.belongs_to.length; i < limit; i++) {
             if (!(r = ProductCategoryGrid.el.store.getById(
                         data.belongs_to[i]))) {
-                
+
                 continue;
             }
-            
+
             do {
                 ProductCategoryGrid.el.store.expandNode(r);
             } while ((r = ProductCategoryGrid.el.store.getNodeParent(r)));
         }
     },
-    
+
     getData: function() {
         var records = ProductCategoryGrid.el.store.data.items;
         var data = {
             ids: {},
             site_ids: {}
         };
-        
+
         for (var i = records.length - 1; i >= 0; i--) {
             if (!records[i]['data'].belongs_to) {
                 continue;
@@ -60,16 +75,16 @@ var ProductCategoryGrid = {
             data['ids'][records[i].data['id']] = records[i]['data'].id;
             data['site_ids'][records[i].data['site_id']] = records[i]['data'].site_id;
         }
-        
+
         return {
             'category': data
         };
     }
-    
+
 };
 
 Ext.onReady(function() {
-    
+
     var categoryStore = new Axis.data.NestedSetStore({
         mode: 'local',
         reader: new Ext.data.JsonReader({
@@ -89,13 +104,13 @@ Ext.onReady(function() {
         }),
         rootFieldName: 'site_id'
     });
-    
+
     var categoryBelongsTo = new Axis.grid.CheckColumn({
         dataIndex: 'belongs_to',
         header: 'Belongs to'.l(),
         width: 100
     });
-    
+
     var categoryCols = new Ext.grid.ColumnModel({
         defaults: {
             sortable: false,
@@ -109,13 +124,13 @@ Ext.onReady(function() {
                 if (record.get('status') != 'enabled') {
                     value = '<span class="disabled">' + value + '</span>';
                 }
-                
+
                 meta.attr = 'ext:qtip="ID: ' + record.get('id') + '"';
                 return value;
             }
         }, categoryBelongsTo]
     });
-    
+
     ProductCategoryGrid.el = ProductWindow.categoryGrid = new Axis.grid.GridTree({
         autoExpandColumn: 'name',
         border: false,
@@ -139,8 +154,8 @@ Ext.onReady(function() {
         master_column_id: 'name',
         plugins: [categoryBelongsTo]
     });
-    
+
     ProductWindow.addTab(ProductCategoryGrid.el, 60);
     ProductWindow.dataObjects.push(ProductCategoryGrid);
-    
+
 });
