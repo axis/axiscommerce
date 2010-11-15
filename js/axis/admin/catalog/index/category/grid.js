@@ -15,50 +15,50 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 var CategoryGrid = {
-    
+
     expandedNodeIds: [],
-    
+
     /**
      * @property {Axis.grid.GridTree} el
      */
     el: null,
-    
+
     /**
      * @property {Axis.data.Record} record
      */
     record: null,
-    
+
     collapseAll: function() {
         CategoryGrid.el.store.each(function(r) {
             CategoryGrid.el.store.collapseNode(r);
         })
     },
-    
+
     /**
      * @param {Ext.data.Record} record
      */
     edit: function(record) {
         var category = record || CategoryGrid.el.selModel.getSelected();
-        
+
         if (category.get('lvl') == 0) {
             return false;
         }
-        
+
         Category.load(category.get('id'));
     },
-    
+
     expandAll: function() {
         CategoryGrid.el.store.each(function(r) {
             CategoryGrid.el.store.expandNode(r);
         })
     },
-    
+
     /**
      * Collect expanded nodes
      */
@@ -70,7 +70,7 @@ var CategoryGrid = {
             }
         });
     },
-    
+
     /**
      * @param {Ext.data.Record} record
      * @param {Ext.data.Record} destination
@@ -80,7 +80,7 @@ var CategoryGrid = {
         // nested set can't insert node below: only moveBefore and moveTo are supported
         if (mode == 'below') {
             var nextRow = CategoryGrid.el.store.getAt(CategoryGrid.el.store.indexOf(destination) + 1);
-            
+
             if (!nextRow || nextRow.get('lvl') < destination.get('lvl')) {
                 mode = 'append';
                 destination = CategoryGrid.el.store.getNodeParent(destination);
@@ -102,12 +102,12 @@ var CategoryGrid = {
                 }
             }
         }
-        
+
         // moveType mapping
         moveType = [];
         moveType['append'] = 'moveTo';
         moveType['above'] = 'moveBefore';
-        
+
         Ext.Ajax.request({
             url: Axis.getUrl('catalog_category/move/'),
             method: 'post',
@@ -119,7 +119,7 @@ var CategoryGrid = {
             success: CategoryGrid.reload
         });
     },
-    
+
     /**
      * Add uncategorized row
      * Expand nodes that was expanded before reload
@@ -144,45 +144,45 @@ var CategoryGrid = {
             CategoryGrid.el.store.expandNode(recordToExpand);
         }
     },
-    
+
     /**
      * Reload productGrid
-     * 
+     *
      * @param {Axis.grid.GridTree} grid
      * @param {int} index
      * @param {Ext.EventObject} e
      */
     onRowClick: function(grid, index, e) {
         var el = Ext.get(Ext.lib.Event.getTarget(e));
-        if (el.hasClass('x-grid3-row-checker') 
+        if (el.hasClass('x-grid3-row-checker')
             || el.hasClass('ux-maximgb-treegrid-elbow-active')
             || el.hasClass('ux-row-action-item')) {
-            
+
             return false;
         }
-        
+
         var record = CategoryGrid.el.store.getAt(index);
-        
+
         ProductGrid.el.store.baseParams.catId = record.get('id');
         ProductGrid.el.store.baseParams.siteId = record.get('site_id');
-        
+
         ProductGrid.el.store.load();
     },
-    
+
     reload: function() {
         CategoryGrid.el.store.reload();
     },
-    
+
     /**
      * @param {Array} record [Ext.data.Record]
      */
     remove: function(records) {
         var selectedItems = records || CategoryGrid.el.selModel.getSelections();
-        
+
         if (!selectedItems.length || !confirm('Are you sure?'.l())) {
             return;
         }
-        
+
         var data = {};
         for (var i = 0; i < selectedItems.length; i++) {
 //            if (selectedItems[i].get('lvl') == 0) {
@@ -191,7 +191,7 @@ var CategoryGrid = {
 //            }
             data[i] = selectedItems[i].id;
         }
-        
+
         Ext.Ajax.request({
             url: Axis.getUrl('catalog_category/delete/'),
             method: 'post',
@@ -201,11 +201,11 @@ var CategoryGrid = {
             }
         });
     }
-    
+
 };
 
 Ext.onReady(function() {
-    
+
     CategoryGrid.record = Ext.data.Record.create([
         { name: 'id', type: 'int' },
         { name: 'name' },
@@ -217,7 +217,7 @@ Ext.onReady(function() {
         { name: 'disable_remove' },
         { name: 'disable_edit' }
     ]);
-    
+
     var ds = new Axis.data.NestedSetStore({
         autoLoad: true,
         listeners: {
@@ -231,7 +231,7 @@ Ext.onReady(function() {
         rootFieldName: 'site_id',
         url: Axis.getUrl('catalog_category/get-flat-tree')
     });
-    
+
     var actions = new Ext.ux.grid.RowActions({
         header:'Actions'.l(),
         actions:[{
@@ -252,7 +252,7 @@ Ext.onReady(function() {
             }
         }
     });
-    
+
     var cm = new Ext.grid.ColumnModel({
         columns: [{
             dataIndex: 'name',
@@ -262,13 +262,13 @@ Ext.onReady(function() {
                 if (record.get('status') != 'enabled') {
                     value = '<span class="disabled">' + value + '</span>';
                 }
-                
+
                 meta.attr += 'ext:qtip="ID: ' + record.get('id') + '"';
                 return value;
             }
         }, actions]
     });
-    
+
     CategoryGrid.el = new Axis.grid.GridTree({
         autoExpandColumn: 'name',
         cm: cm,
@@ -283,32 +283,35 @@ Ext.onReady(function() {
             'beforerowmoved': CategoryGrid.onBeforeMove,
             'rowclick': CategoryGrid.onRowClick
         },
-        tbar: [/*{
-            handler: function() {
-                Category.add();
-            },
-            icon: Axis.skinUrl + '/images/icons/add.png',
-            text: 'Add'.l()
-        },*/ {
-            handler: function() {
-                CategoryGrid.remove();
-            },
-            icon: Axis.skinUrl + '/images/icons/delete.png',
-            text: 'Delete'.l()
-        }, {
-            handler: CategoryGrid.reload,
-            icon: Axis.skinUrl + '/images/icons/refresh.png',
-            text: 'Reload'.l()
-        }, '->', {
-            handler: CategoryGrid.expandAll,
-            icon: Axis.skinUrl + '/images/icons/expand-all.gif',
-            overflowText: 'Expand'.l(),
-            tooltip: 'Expand'.l()
-        }, '-',  {
-            handler: CategoryGrid.collapseAll,
-            icon: Axis.skinUrl + '/images/icons/collapse-all.gif',
-            overflowText: 'Collapse'.l(),
-            tooltip: 'Collapse'.l()
-        }]
+        tbar: {
+            enableOverflow: true,
+            items: [{
+                handler: function() {
+                    Category.add();
+                },
+                icon: Axis.skinUrl + '/images/icons/add.png',
+                text: 'Add'.l()
+            }, {
+                handler: function() {
+                    CategoryGrid.remove();
+                },
+                icon: Axis.skinUrl + '/images/icons/delete.png',
+                text: 'Delete'.l()
+            }, {
+                handler: CategoryGrid.reload,
+                icon: Axis.skinUrl + '/images/icons/refresh.png',
+                text: 'Reload'.l()
+            }, '->', {
+                handler: CategoryGrid.expandAll,
+                icon: Axis.skinUrl + '/images/icons/expand-all.gif',
+                overflowText: 'Expand'.l(),
+                tooltip: 'Expand'.l()
+            }, '-',  {
+                handler: CategoryGrid.collapseAll,
+                icon: Axis.skinUrl + '/images/icons/collapse-all.gif',
+                overflowText: 'Collapse'.l(),
+                tooltip: 'Collapse'.l()
+            }]
+        }
     });
 });
