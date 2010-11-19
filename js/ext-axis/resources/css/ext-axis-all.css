@@ -41,3 +41,13 @@
 
 /* override invalid ext-ux style */
 .x-grid3-cell-first .x-grid3-cell-inner { padding-left: 0; }
+
+/* grid filters */
+.x-grid3-filter .x-grid3-header { background-position: 0 1px; }
+.x-grid3-filter .x-grid3-header .x-grid3-filter-row td { border-bottom: 1px solid #c6c6c6;
+    background: #e6e6e6 url(../images/gray/grid/grid3-filterrow.gif) repeat-x 0 0;
+}
+.x-grid3-filter .x-grid3-header .x-grid3-filter-row td.x-grid3-hd-over .x-grid3-hd-inner { background: none; }
+.x-grid3-filter .x-grid3-header .x-grid3-filter-row td.x-grid3-hd-over { border-left-color: #EEEEEE; border-right-color: #D0D0D0; }
+.x-grid3-filter-row td { vertical-align: top !important; }
+.x-grid3-cell-filter-inner { cursor: inherit; padding: 3px 3px 3px 3px; position: relative; }

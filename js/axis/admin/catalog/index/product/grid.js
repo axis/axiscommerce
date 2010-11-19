@@ -276,6 +276,7 @@ Ext.onReady(function() {
     });
 
     var ds = new Ext.data.Store({
+        autoLoad: true,
         baseParams: {
             limit: ProductGrid.pageSize
         },
@@ -289,7 +290,7 @@ Ext.onReady(function() {
     });
 
     var actions = new Ext.ux.grid.RowActions({
-        header:'Actions'.l(),
+        //header:'Actions'.l(),
         actions:[{
             iconCls: 'icon-page-edit',
             tooltip: 'Edit'.l()
@@ -310,17 +311,32 @@ Ext.onReady(function() {
     var status = new Axis.grid.CheckColumn({
         dataIndex: 'is_active',
         header: 'Status'.l(),
-        width: 60
+        width: 100,
+        filter: {
+            store: new Ext.data.ArrayStore({
+                data: [[0, 'Disabled'], [1, 'Enabled']],
+                fields: ['id', 'name']
+            })
+        }
     });
+
+    // var filters = new Axis.grid.GridFilters({
+    //     filters: [
+    //         //{type: 'numeric', dataIndex: 'id'},
+    //         {type: 'string', dataIndex: 'name'}//,
+    //         //{type: 'string', dataIndex: 'sku'}
+    //     ]
+    // });
 
     var cm = new Ext.grid.ColumnModel({
         defaults: {
-            sortable: true
+            sortable: true,
+            filterable: true
         },
         columns: [{
             dataIndex: 'id',
             header: 'Id'.l(),
-            width: 50
+            width: 100
         }, {
             dataIndex: 'name',
             header: 'Name'.l(),
@@ -331,7 +347,19 @@ Ext.onReady(function() {
                 allowBlank: false
             }),
             header: 'SKU'.l(),
-            width: 180
+            width: 180,
+            filter: {
+                store: new Ext.data.JsonStore({
+                    baseParams: {
+                        limit: 0,
+                        show_allcountry: 0
+                    },
+                    url: Axis.getUrl('location_country/list'),
+                    root: 'data',
+                    fields: ['id', 'name']
+                }),
+                mode: 'remote'
+            }
         }, {
             align: 'right',
             dataIndex: 'quantity',
@@ -340,7 +368,7 @@ Ext.onReady(function() {
                 allowNegative: false
             }),
             header: 'Quantity'.l(),
-            width: 60
+            width: 100
         }, {
             align: 'right',
             dataIndex: 'price',
@@ -352,7 +380,7 @@ Ext.onReady(function() {
             renderer: function(value) {
                 return value.toFixed(2);
             },
-            width: 90
+            width: 100
         },
         status,
         actions]
@@ -363,7 +391,7 @@ Ext.onReady(function() {
         ds: ds,
         cm: cm,
         id: 'grid-product-list',
-        plugins: [actions, status],
+        plugins: [actions, status/*, filters*/],
         listeners: {
             'rowdblclick': function(grid, index, e) {
                 ProductGrid.edit(ProductGrid.el.store.getAt(index));

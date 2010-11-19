@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -24,31 +24,52 @@
  * GridPanel for standard Axis 2-columns layout
  */
 Axis.grid.EditorGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
-    
+
     autoExpandMax: 1600,
-    
+
     clicksToEdit: 1,
-    
+
     collapsible: true,
-    
+
+    // filterable: true,
+
     header: false,
-    
+
     massAction: true,
-    
+
     region: 'center',
-    
+
     split: true,
-    
+
     stripeRows: true,
-    
+
     trackMouseOver: true,
-    
+
     viewConfig: {
         emptyText: 'No records found'.l()
     },
-    
+
     width: 220,
-    
+
+    getView: function() {
+        // if (!this.filterable) {
+        //     return Axis.grid.EditorGridPanel.superclass.getView();
+        // }
+
+        if (!this.view) {
+            Ext.each(this.getColumnModel().columns, function(col) {
+                if (col.filterable) {
+                    this.view = new Axis.grid.FilterView(this.viewConfig);
+                    return false;
+                }
+            }, this);
+            if (!this.view) {
+                this.view = Axis.grid.EditorGridPanel.superclass.getView();
+            }
+        }
+        return this.view;
+    },
+
     initComponent: function() {
         if (this.massAction && !this.sm) {
             this.sm = new Ext.grid.CheckboxSelectionModel();
