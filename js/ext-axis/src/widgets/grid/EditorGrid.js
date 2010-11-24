@@ -31,8 +31,6 @@ Axis.grid.EditorGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
 
     collapsible: true,
 
-    // filterable: true,
-
     header: false,
 
     massAction: true,
@@ -50,25 +48,6 @@ Axis.grid.EditorGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
     },
 
     width: 220,
-
-    getView: function() {
-        // if (!this.filterable) {
-        //     return Axis.grid.EditorGridPanel.superclass.getView();
-        // }
-
-        if (!this.view) {
-            Ext.each(this.getColumnModel().columns, function(col) {
-                if (col.filterable) {
-                    this.view = new Axis.grid.FilterView(this.viewConfig);
-                    return false;
-                }
-            }, this);
-            if (!this.view) {
-                this.view = Axis.grid.EditorGridPanel.superclass.getView();
-            }
-        }
-        return this.view;
-    },
 
     initComponent: function() {
         if (this.massAction && !this.sm) {

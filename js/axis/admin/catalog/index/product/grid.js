@@ -313,6 +313,8 @@ Ext.onReady(function() {
         header: 'Status'.l(),
         width: 100,
         filter: {
+            editable: false,
+            resetValue: 'reset',
             store: new Ext.data.ArrayStore({
                 data: [[0, 'Disabled'], [1, 'Enabled']],
                 fields: ['id', 'name']
@@ -320,18 +322,9 @@ Ext.onReady(function() {
         }
     });
 
-    // var filters = new Axis.grid.GridFilters({
-    //     filters: [
-    //         //{type: 'numeric', dataIndex: 'id'},
-    //         {type: 'string', dataIndex: 'name'}//,
-    //         //{type: 'string', dataIndex: 'sku'}
-    //     ]
-    // });
-
     var cm = new Ext.grid.ColumnModel({
         defaults: {
-            sortable: true,
-            filterable: true
+            sortable: true
         },
         columns: [{
             dataIndex: 'id',
@@ -347,19 +340,7 @@ Ext.onReady(function() {
                 allowBlank: false
             }),
             header: 'SKU'.l(),
-            width: 180,
-            filter: {
-                store: new Ext.data.JsonStore({
-                    baseParams: {
-                        limit: 0,
-                        show_allcountry: 0
-                    },
-                    url: Axis.getUrl('location_country/list'),
-                    root: 'data',
-                    fields: ['id', 'name']
-                }),
-                mode: 'remote'
-            }
+            width: 180
         }, {
             align: 'right',
             dataIndex: 'quantity',
@@ -391,7 +372,7 @@ Ext.onReady(function() {
         ds: ds,
         cm: cm,
         id: 'grid-product-list',
-        plugins: [actions, status/*, filters*/],
+        plugins: [actions, status, new Axis.grid.Filter()],
         listeners: {
             'rowdblclick': function(grid, index, e) {
                 ProductGrid.edit(ProductGrid.el.store.getAt(index));
