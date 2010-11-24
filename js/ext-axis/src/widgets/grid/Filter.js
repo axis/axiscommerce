@@ -52,10 +52,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             viewready       : this.doRender,
             columnresize    : this.onColumnResize,
             columnmove      : this.onColumnMove,
-            bodyscroll      : this.onScroll,
-            resize          : function() {
-                // console.log(arguments);
-            }
+            bodyscroll      : this.onScroll
         });
         this.view.onLayout = this.view.onLayout.createSequence(function(vw, vh) {
             if (!this.filterDom) {
@@ -98,8 +95,8 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
     getFilterItems: function(column) {
         var items = [];
         var cfg = {
-            //id              : 'combo-' + column.dataIndex,
             displayField    : 'name',
+            editable        : true,
             hideLabel       : true,
             mode            : 'local',
             triggerAction   : 'all',
@@ -132,11 +129,14 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
 
         if ('datefield' === cfg.xtype || 'numberfield' === cfg.xtype) {
             cfg.hideLabel = false;
-            cfg.fieldLabel = 'From';
+            cfg.fieldLabel = 'From'.l();
             items.push(cfg);
-            items.push(Ext.copyTo(
-                {fieldLabel: 'To'}, cfg, 'anchor,displayField,hideLabel,valueField,xtype'
-            ));
+            var cfgTo = {};
+            for (var i in cfg) {
+                cfgTo[i] = cfg[i];
+            }
+            cfgTo.fieldLabel = 'To'.l();
+            items.push(cfgTo);
             return items;
         } else if ('combo' === cfg.xtype) {
             var emptyRecord = {},
@@ -219,7 +219,6 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
         var cnt = this.filters.get('x-grid3-filter-cnt-' + dataIndex);
         cnt.el.parent('td').setWidth(width);
         cnt.doLayout();
-        console.log('resize');
     },
 
     onColumnMove: function(oldIndex, newIndex) {
