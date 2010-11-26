@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Search
+ * @subpackage  Axis_Search_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Search
- * @subpackage  Model
+ * @subpackage  Axis_Search_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Search_Model_Highlighter_Default extends Zend_Search_Lucene_Search_Highlighter_Default

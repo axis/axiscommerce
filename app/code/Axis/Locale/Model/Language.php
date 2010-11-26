@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Locale
+ * @subpackage  Axis_Locale_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @subpackage  Model
+ * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Locale_Model_Language extends Axis_Db_Table

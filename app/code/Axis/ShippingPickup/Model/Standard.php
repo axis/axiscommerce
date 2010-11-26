@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_ShippingPickup
+ * @subpackage  Axis_ShippingPickup_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_ShippingPickup
- * @subpackage  Model
+ * @subpackage  Axis_ShippingPickup_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_ShippingPickup_Model_Standard extends Axis_Method_Shipping_Model_Abstract

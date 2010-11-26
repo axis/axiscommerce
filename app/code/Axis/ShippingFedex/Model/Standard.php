@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_ShippingFedex
+ * @subpackage  Axis_ShippingFedex_Model
  * @copyright   Copyright 2008-2009 Axis LLC
  * @copyright   (c) 2002, 2003 Steve Fatula of Fatula Consulting compconsultant@yahoo.com
  * @license     GNU Public License V3.0
@@ -28,7 +29,7 @@
  *
  * @category    Axis
  * @package     Axis_ShippingFedex
- * @subpackage  Model
+ * @subpackage  Axis_ShippingFedex_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstract

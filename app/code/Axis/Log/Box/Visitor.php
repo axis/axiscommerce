@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Log
+ * @subpackage  Axis_Log_Box
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Log
- * @subpackage  Box
+ * @subpackage  Axis_Log_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Log_Box_Visitor extends Axis_Core_Box_Virtual_Abstract

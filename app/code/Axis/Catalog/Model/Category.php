@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @subpackage  Model
+ * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Catalog_Model_Category extends Axis_Db_Table
@@ -92,7 +93,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     /**
      *
      * @param int $id
-     * @return <type>
+     * @return Zend_Db_Statement_Interface
      */
     public function deleteItem($id)
     {
@@ -139,7 +140,10 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
      * @param int $languageId
      * @param mixed(array) $siteIds
      * @param bool $isActive
-     * @return array [site_id => array, site_id => array]
+     * @return array
+     * <pre>
+     * [site_id => array, site_id => array]
+     * </pre>
      */
     public function getFlatTree($languageId, $siteIds = null, $activeOnly = false)
     {
@@ -208,8 +212,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     {
         return $this->select('id')
             ->where('site_id = ? ', $siteId)
-            ->fetchCol()
-            ;
+            ->fetchCol();
     }
 
     /**
@@ -314,7 +317,16 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
         return $this->_disabledCategories;
     }
 
-    public function getRelationCategoriesByProductId($productId, $languageId = null, $siteId = null)
+    /**
+     * Retrieve one-dimensional array of categories where the product lies in,
+     * including their parent categories
+     *
+     * @param int $productId
+     * @param int $languageId   [optional]
+     * @param int $siteId       [optional]
+     * @return array
+     */
+    public function getRelatedCategoriesByProductId($productId, $languageId = null, $siteId = null)
     {
         if (null === $languageId) {
             $languageId = Axis_Locale::getLanguageId();

@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Locale
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Router
  * @copyright   Copyright 2008-2010 Axis
  * @copyright   Dmitry Merva  http://myengine.com.ua  d.merva@gmail.com
  * @license     GNU Public License V3.0
@@ -27,15 +28,15 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Locale
- * @subpackage  Route
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Router
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
 {
     /**
      *
-     * @var array 
+     * @var array
      */
     protected $_dependency = array();
 
@@ -44,7 +45,7 @@ class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
         if (!$this->hasRoute('default')) {
             $dispatcher = $this->getFrontController()->getDispatcher();
             $request = $this->getFrontController()->getRequest();
-            
+
             $compat = new Axis_Controller_Router_Route_Module(array(), $dispatcher, $request);
             $this->_routes = array_merge(array('default' => $compat), $this->_routes);
         }
@@ -79,7 +80,7 @@ class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
      *  This is the Rule of Two: one Master and one apprentice.
      *  When you are ready to claim the mantle of Dark Lord as your own, you must do so by eliminating me."
      * ― Darth Bane
-     * 
+     *
      * @return array
      */
     public function sortRoutes()

@@ -23,7 +23,6 @@
  * @license     GNU Public License V3.0
  */
 
-
 class Axis_Account_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.7';

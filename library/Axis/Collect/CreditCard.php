@@ -1,33 +1,32 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
- * @package     Axis_Payment
+ * @package     Axis_Collect
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
- * @package     Axis_Payment
- * @subpackage  Collect
+ * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Collect_CreditCard implements Axis_Collect_Interface
@@ -49,7 +48,7 @@ class Axis_Collect_CreditCard implements Axis_Collect_Interface
         'MASTERCARD'       => Zend_Validate_CreditCard::MASTERCARD,
         'SOLO'             => Zend_Validate_CreditCard::SOLO,
         'VISA'             => Zend_Validate_CreditCard::VISA,
-    
+
     );
 
     /**
@@ -77,9 +76,9 @@ class Axis_Collect_CreditCard implements Axis_Collect_Interface
             $ret = array();
             foreach(explode(",", $id) as $key) {
                 if (array_key_exists($key, self::$_cards))
-                    $ret[$key] = self::$_cards[$key]; 
+                    $ret[$key] = self::$_cards[$key];
             }
-            return implode(", ", $ret);        
+            return implode(", ", $ret);
         }
         return self::$_cards[$id];
     }

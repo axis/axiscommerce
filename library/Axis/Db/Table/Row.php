@@ -1,32 +1,34 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Db
+ * @subpackage  Axis_Db_Table
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Db
+ * @subpackage  Axis_Db_Table
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Db_Table_Row extends Zend_Db_Table_Row_Abstract
@@ -58,7 +60,7 @@ class Axis_Db_Table_Row extends Zend_Db_Table_Row_Abstract
      * @var string
      */
     protected $_prefix;
-    
+
     /**
      * Initialize object
      *
@@ -69,7 +71,7 @@ class Axis_Db_Table_Row extends Zend_Db_Table_Row_Abstract
     public function init()
     {
         parent::init();
-        
+
         $this->_prefix = $this->getTable()->info(Axis_Db_Table::PREFIX);
 
 //        // auto type converting
@@ -113,10 +115,10 @@ class Axis_Db_Table_Row extends Zend_Db_Table_Row_Abstract
         }
         return $table;
     }
-    
+
     /**
-     * Retrun current datebase adapter 
-     * 
+     * Retrun current datebase adapter
+     *
      * @return Zend_Db_Adapter_Abstract
      */
     public function getAdapter()

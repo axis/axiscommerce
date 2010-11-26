@@ -1,33 +1,34 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
- * @package     Axis_ShippingFlat
+ * @package     Axis_Config
+ * @subpackage  Axis_Config_Handler
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
- * @package     Axis_ShippingFlat
- * @subpackage  Handler
+ * @package     Axis_Config
+ * @subpackage  Axis_Config_Handler
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler_Interface
@@ -42,12 +43,12 @@ class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler
         if (!is_array($value)) {
            return $value;
         }
-        
+
         function remove_quotes(&$str)
         {
              $str = str_replace(array('"', "'"), '', $str);
         }
-        
+
         $filename = Axis::config()->system->path . '/var/export/' . current($value);
 
         if (@!$fp = fopen($filename, 'r')) {
@@ -73,7 +74,7 @@ class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler
             $data = array_pad($data, $rowSize, '');
             array_walk($data, 'remove_quotes');
             $data = array_combine($titles, $data);
-            
+
             Axis::table('shippingtable_rate')->insert(array(
                 'site_id' => $value['siteId'],
                 'country_id' => Axis::single('location/country')

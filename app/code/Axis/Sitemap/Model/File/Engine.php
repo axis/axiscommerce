@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Sitemap
+ * @subpackage  Axis_Sitemap_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Sitemap
- * @subpackage  Model
+ * @subpackage  Axis_Sitemap_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Sitemap_Model_File_Engine extends Axis_Db_Table
