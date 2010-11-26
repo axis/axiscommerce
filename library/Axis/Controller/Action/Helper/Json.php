@@ -16,28 +16,29 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
- * @package     Axis_Core
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Action_Helper
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
- * @package     Axis_Core
- * @subpackage  Helper
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Action_Helper
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Controller_Action_Helper_Json extends Zend_Controller_Action_Helper_Json
 {
     /**
      *
-     * @var array 
+     * @var array
      */
     protected $_data;
-    
+
     /**
      * Encode JSON response and immediately send
      *
@@ -150,7 +151,7 @@ class Axis_Controller_Action_Helper_Json extends Zend_Controller_Action_Helper_J
      * @param string $name
      * @param mixed $argunents
      * @return mixed
-     * @throw Axis_Exception
+     * @throws Axis_Exception
      */
     public function __call($name, $argunents)
     {

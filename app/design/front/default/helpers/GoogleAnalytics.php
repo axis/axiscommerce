@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_GoogleAnalytics
+ * @package     Axis_View
+ * @subpackage  Axis_View_Helper_Front
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,8 +27,8 @@
 /**
  *
  * @category    Axis
- * @package     Axis_GoogleAnalytics
- * @subpackage  Helper
+ * @package     Axis_View
+ * @subpackage  Axis_View_Helper_Front
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_View_Helper_GoogleAnalytics

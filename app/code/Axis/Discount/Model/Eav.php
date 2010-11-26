@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Discount
+ * @subpackage  Axis_Discount_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Discount
- * @subpackage  Model
+ * @subpackage  Axis_Discount_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Discount_Model_Eav extends Axis_Db_Table

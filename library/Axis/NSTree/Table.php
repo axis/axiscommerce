@@ -1,24 +1,25 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
  * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_NSTree
  * @copyright   Copyright 2008-2010 Axis
  * @copyright   Marat Komarov <bassguitarrer@gmail.com>
  * @license     GNU Public License V3.0
@@ -28,10 +29,9 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @subpackage  NSTree
+ * @subpackage  Axis_Catalog_NSTree
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-
 class Axis_NSTree_Table extends Axis_Catalog_Model_Category
 {
     const LEFT         = 'left';
@@ -45,7 +45,7 @@ class Axis_NSTree_Table extends Axis_Catalog_Model_Category
     protected $_left = 'lft';
 
     protected $_right = 'rgt';
-    
+
     protected $_treeId = 'site_id';
 
     protected $_dataForeign;
@@ -378,7 +378,7 @@ class Axis_NSTree_Table extends Axis_Catalog_Model_Category
 
         $n = $this->getNodeInfo($id);
         $p = $this->getNodeInfo($newParentId);
-        
+
         $holders = array(
             'L_n' => $n[$this->_left],
             'R_n' => $n[$this->_right],
@@ -525,7 +525,7 @@ class Axis_NSTree_Table extends Axis_Catalog_Model_Category
             ));
             return false;
         }
-        
+
         $sql = $this->_inflectQuery($sql);
         $sql = str_replace( // @todo replace with normal sql bind
             array(':L_n', ':R_n', ':V_n', ':L_p', ':R_p', ':V_p', ':tId'),

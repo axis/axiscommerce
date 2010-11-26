@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Install
+ * @subpackage  Axis_Install_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Install
- * @subpackage  Model
+ * @subpackage  Axis_Install_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Install_Model_Wizard

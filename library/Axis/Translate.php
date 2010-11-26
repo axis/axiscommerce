@@ -63,10 +63,10 @@ class Axis_Translate
      */
     public function __construct($module = 'Axis_Core')
     {
-        
+
         $this->_locale = Axis_Locale::getLocale()->toString();
         self::$_module = $module;
-        
+
         if ('Axis_Install' !== $module
             && false == Axis::config('core/translation/autodetect')) {
 
@@ -247,8 +247,6 @@ class Axis_Translate
      * @param string $text
      * @param string $module
      * @param string $locale
-     * @example  addTranslate('name')
-     *           -//-('name', '..../app/locale/en_US/Axis_Contacts.php')
      * @return bool
      */
 

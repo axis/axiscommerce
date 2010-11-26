@@ -18,11 +18,10 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Account
+ * @package     Axis_Log
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
-
 
 class Axis_Log_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 {
@@ -50,14 +49,14 @@ class Axis_Log_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
         $installer = Axis::single('install/installer');
 
         $installer->run("
-        
+
         ALTER TABLE `{$installer->getTable('log_url_info')}`
             MODIFY COLUMN `url` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
             MODIFY COLUMN `refer` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL;
 
         ALTER TABLE `{$installer->getTable('log_visitor_info')}`
             MODIFY COLUMN `http_refer` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL;
-        
+
         ");
     }
 }

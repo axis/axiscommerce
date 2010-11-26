@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Discount
+ * @subpackage  Axis_Discount_Box
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Discount
- * @subpackage  Box
+ * @subpackage  Axis_Discount_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Discount_Box_Special extends Axis_Catalog_Box_Product_Listing

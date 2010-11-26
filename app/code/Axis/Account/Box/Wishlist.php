@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Account
+ * @subpackage  Axis_Account_Box
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Account
- * @subpackage  Box
+ * @subpackage  Axis_Account_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Account_Box_Wishlist extends Axis_Account_Box_Abstract

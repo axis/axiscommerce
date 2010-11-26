@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_ShippingPerWeightUnit
+ * @subpackage  Axis_ShippingPerWeightUnit_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -28,7 +29,7 @@
  *
  * @category    Axis
  * @package     Axis_ShippingPerWeightUnit
- * @subpackage  Model
+ * @subpackage  Axis_ShippingPerWeightUnit_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_ShippingPerWeightUnit_Model_Standard extends Axis_Method_Shipping_Model_Abstract

@@ -1,21 +1,25 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @category    Axis
+ * @package     Axis_Community
+ * @subpackage  Axis_Community_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -30,7 +34,7 @@
 class Axis_Community_Model_Form_Review extends Axis_Form
 {
     protected $_translatorModule = 'community';
-    
+
     /**
      * @param array $options[productId => int]
      */
@@ -47,9 +51,9 @@ class Axis_Community_Model_Form_Review extends Axis_Form
         if (is_array($options)) {
             $default = array_merge($default, $options);
         }
-        
+
         parent::__construct($default);
-        
+
         $this->addElement('hidden', 'product', array(
             'value' => $product
         ));
@@ -111,7 +115,7 @@ class Axis_Community_Model_Form_Review extends Axis_Form
                 new Zend_Validate_StringLength(10, null, 'utf-8')
             )
         ));
-        
+
         // ratings
         $ratings = array();
         if (!Axis::single('community/review_mark')->isCustomerVoted(Axis::getCustomerId(), $product)) {
@@ -133,42 +137,42 @@ class Axis_Community_Model_Form_Review extends Axis_Form
                         'separator' => ''
                     ))
                     ->setDisableTranslator(true);
-                    
+
                 $ratings[] = 'rating_' . $rating['id'];
             }
         }
-        
+
         $this->addDisplayGroup(array_merge(
                 $ratings, array('author', 'title', 'pros', 'cons', 'summary')
             ),
             'review'
         );
-        
+
         if (count($ratings)) {
             $this->getDisplayGroup('review')
                 ->addRow($ratings, 'row1');
         }
-        
+
         $this->getDisplayGroup('review')
             ->addRow(array('author', 'title'), 'row2')
             ->addRow(array('pros', 'cons'), 'row3')
             ->addRow('summary', 'row4');
-            
+
         $this->getDisplayGroup('review')->getRow('row2')
             ->addColumn('author', 'col1')
             ->addColumn('title', 'col2');
-            
+
         $this->getDisplayGroup('review')->getRow('row3')
             ->addColumn('pros', 'col1')
             ->addColumn('cons', 'col2');
-        
+
         if (Axis::single('community/review')->canAdd()) {
             $this->addElement('button', 'submit', array(
                 'type' => 'submit',
                 'class' => 'button',
                 'label' => 'Add Review'
             ));
-            
+
             $this->addActionBar(array('submit'));
         }
     }

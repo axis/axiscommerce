@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Cms
+ * @subpackage  Axis_Cms_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Cms
- * @subpackage  Model
+ * @subpackage  Axis_Cms_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Cms_Model_Block extends Axis_Db_Table
@@ -46,7 +47,8 @@ class Axis_Cms_Model_Block extends Axis_Db_Table
      * Inserts or update cms_block
      *
      * @param array $data
-     * @return
+     * @return mixed The primary key value(s), as an associative array if the
+     *     key is compound, or a scalar if the key is single-column.
      */
     public function save(array $data)
     {

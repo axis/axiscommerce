@@ -1,33 +1,34 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_PaymentAuthorizenetAim
+ * @subpackage  Axis_PaymentAuthorizenetAim_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_PaymentAuthorizenetAim
- * @subpackage  Model
+ * @subpackage  Axis_PaymentAuthorizenetAim_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Model_Card_Abstract
@@ -135,11 +136,11 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
         $result = $this->_postRequest(
             $this->_buildRequest($order)
         );
-        
+
         switch ($result->getResponseCode()) {
             case 1:
                 $this->getRequest()->setLastTransId($result->getTransactionId());
-                return true; 
+                return true;
                 break;
             case 2:
                 $message = 'Payment authorization transaction has been declined.';
@@ -172,7 +173,7 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
         $result = $this->_postRequest(
             $this->_buildRequest($order)
         );
-        
+
         if ($result->getResponseCode() == 1) {
             $this->getRequest()->setLastTransId($result->getTransactionId());
             return true;
@@ -198,9 +199,9 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
 
             if($result->getResponseCode() == 1) {
                 return true;
-            } 
+            }
             $message = $result->getResponseReasonText();
-            
+
         }
         $this->log($message);
         return false;
@@ -219,7 +220,7 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
 
             if ($result->getResponseCode() == 1) {
                 return true;
-            } 
+            }
             $message = $result->getResponseReasonText();
 
         }
@@ -232,11 +233,7 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
      *
      * @link http://www.authorize.net/support/AIM_guide.pdf
      * @param Axis_Sales_Model_Order_Row $order
-     *
-     * @hidden param string $request->getAnetTransType()
-     *  'AUTH_CAPTURE','AUTH_ONLY', 'CAPTURE_ONLY',
-     *  'CREDIT', 'VOID', 'PRIOR_AUTH_CAPTURE'
-     * @return unknown
+     * @return Axis_Object
      */
     protected function _buildRequest(Axis_Sales_Model_Order_Row $order)
     {
@@ -273,7 +270,7 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
                 Axis::config('locale/main/baseCurrency')
             );
         }
-        
+
         switch ($request->getAnetTransType()) {
             case 'CREDIT':
             case 'VOID':
@@ -373,7 +370,7 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
 
         try {
             $response = $httpClient->request()->getBody();
-            
+
         } catch (Exception $e) {
             $message = $e->getCode() . 'Gateway request error: ' . $e->getMessage();
             $this->log($message);

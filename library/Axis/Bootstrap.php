@@ -25,8 +25,9 @@
 
 /**
  *
+ * @uses        Zend_Application_Bootstrap_Bootstrap
  * @category    Axis
- * @package     Axis_Core
+ * @package     Axis_Bootstrap
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap

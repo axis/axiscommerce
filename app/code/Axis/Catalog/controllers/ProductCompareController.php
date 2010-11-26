@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Controller
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @subpackage  Controller
+ * @subpackage  Axis_Catalog_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Catalog_ProductCompareController extends Axis_Core_Controller_Front

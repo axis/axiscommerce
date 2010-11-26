@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Db
+ * @subpackage  Axis_Db_Table
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,6 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Db
+ * @subpackage  Axis_Db_Table
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
@@ -192,16 +194,16 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     }
 
     /**
-     *
-     * @method string hasName
-     * @method int getName
-     * @method int getNameById
-     * @method string cntName
-     * @example Axis::single('core/template')->getNameById(1)
-     *                   -//-   ->getName(1) used  first primary key
-     *                   -//-   ->getIdByName('default')
-     *                   -//-   ->hasName('default')
-     *                   -//-   ->cntFieldName('try') count by field "field_name" = 'try'
+     * Example:
+     * <code>
+     * <?php
+     * Axis::single('core/template')->getNameById(1);
+     * Axis::single('core/template')->getName(1);
+     * Axis::single('core/template')->getIdByName('default');
+     * Axis::single('core/template')->hasName('default');
+     * Axis::single('core/template')->cntFieldName('try'); count by field "field_name" = 'try'
+     * ?>
+     * </code>
      */
     public function __call($call, $argv)
     {

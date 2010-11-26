@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Account
+ * @package     Axis_Tag
+ * @subpackage  Axis_Tag_Controller
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Tag
- * @subpackage  Controller
+ * @subpackage  Axis_Tag_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Tag_AccountController extends Axis_Account_Controller_Account
