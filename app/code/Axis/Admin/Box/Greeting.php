@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Admin
+ * @subpackage  Axis_Admin_Box
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Admin
- * @subpackage  Box
+ * @subpackage  Axis_Admin_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Admin_Box_Greeting extends Axis_Admin_Box_Abstract 

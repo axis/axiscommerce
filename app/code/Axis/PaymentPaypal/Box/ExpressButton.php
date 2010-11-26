@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_PaymentPaypal
+ * @subpackage  Axis_PaymentPaypal_Box
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_PaymentPaypal
- * @subpackage  Box
+ * @subpackage  Axis_PaymentPaypal_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_PaymentPaypal_Box_ExpressButton extends Axis_Core_Box_Abstract

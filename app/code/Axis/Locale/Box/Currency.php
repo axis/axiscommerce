@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Locale
+ * @subpackage  Axis_Locale_Box
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Locale
- * @subpackage  Box
+ * @subpackage  Axis_Locale_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Locale_Box_Currency extends Axis_Core_Box_Abstract

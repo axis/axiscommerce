@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @subpackage  Model
+ * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
@@ -443,6 +444,11 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
 
     /**
      * Retrieve array of category paths, where the product lies in
+     *
+     * @param int $preferableCategoryId defines which of product paths is more important (if product has 2 or more paths)
+     * @param boolean $allPaths if true - function will return all paths of product
+     * @return array
+     * <pre>
      * Array(
      *     // path 1
      *     [0] => Array(
@@ -462,16 +468,12 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
      *     // path 2
      *     [1] => ...
      * )
-     *
-     * @param int $preferableCategoryId defines which of product paths is more important (if product has 2 or more paths)
-     * @param boolean $allPaths if true - function will return all paths of product
-     * @return array One of founded paths
+     * </pre>
      */
     public function getParentItems(
         $preferableCategoryId = null, $allPaths = false, $languageId = null)
     {
-
-        $rowset = Axis::single('catalog/category')->getRelationCategoriesByProductId(
+        $rowset = Axis::single('catalog/category')->getRelatedCategoriesByProductId(
             $this->id, $languageId
         );
 
@@ -708,7 +710,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     }
 
     /**
-     * Высчитывает цену учитывая набор атрибутов и скидку на продукт
+     * Get the product price including attributes and discounts
      *
      * @return float
      */
@@ -786,7 +788,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     }
 
     /**
-     * Высчитывает вес учитывая набор атрибутов
+     * Get the product weight considering on the attribute set
      *
      * @return float
      */
@@ -838,13 +840,15 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     }
 
     /**
-     * Возвращает связь вариаций к ее атрибутам.
+     * Retrieve the variations array with their attributes
+     *
+     * @return array
+     * <pre>
      * array(
      *     variationId => array(optionId => valueId, optionId => valueId),
      *     variationId => array(optionId => valueId, optionId => valueId)
      * )
-     *
-     * @return array
+     * </pre>
      */
     public function getVariationsAssign()
     {
@@ -864,7 +868,13 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
 
     /**
      *
-     * @param array $options options: array(optionId => valueId, optionId => valueId)
+     * @param array $options
+     * <pre>
+     * array(
+     *  optionId => valueId,
+     *  optionId => valueId
+     * )
+     * </pre>
      * @return int|bool
      */
     public function getVariationIdByVariationOptions($options)
@@ -975,7 +985,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     }
 
     /**
-     * @return mixed null|array()
+     * @return mixed null|array
      */
     public function getManufacturer($languageId = null)
     {

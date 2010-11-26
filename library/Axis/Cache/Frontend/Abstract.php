@@ -1,35 +1,36 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Cache
+ * @subpackage  Axis_Cache_Frontend
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Cache
- * @subpackage  Frontend
+ * @subpackage  Axis_Cache_Frontend
  * @author      Axis Core Team <core@axiscommerce.com>
- * @abstract 
+ * @abstract
  */
 abstract class Axis_Cache_Frontend_Abstract
 {
@@ -38,7 +39,7 @@ abstract class Axis_Cache_Frontend_Abstract
     protected $_cacheByDefault = true;
 
     protected $_cachableMethods = array();
-    
+
     protected $_nonCachedMethods = array();
 
     /**
@@ -84,7 +85,7 @@ abstract class Axis_Cache_Frontend_Abstract
      * @return string Cache id
      */
     abstract protected function _makeId($methodName, $parameters);
-    
+
     /**
      * Set a specific life time
      *

@@ -1,44 +1,45 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Sales
+ * @subpackage  Axis_Sales_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Sales
- * @subpackage  Model
+ * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_Status extends Axis_Db_Table 
+class Axis_Sales_Model_Order_Status extends Axis_Db_Table
 {
     protected $_name = "sales_order_status";
     protected $_rowClass = 'Axis_Sales_Model_Order_Status_Row';
     protected $_primary = array('id');
-    
+
     /**
      * Retrieve an array of order statuses
-     * @param int parentId  
+     * @param int parentId
      * @return array
      */
     public function getList($statusId = null)
@@ -46,7 +47,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
         if (null !== $statusId) {
             $childrens = Axis::single('sales/order_status_relation')->getChildrens($statusId);
         }
-        
+
         $select = $this->getAdapter()->select()
             ->from(array('sos' => $this->_prefix . 'sales_order_status'))
             ->joinLeft(array('sost' => $this->_prefix . 'sales_order_status_text'),
@@ -60,17 +61,17 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
         }
         return $this->getAdapter()->fetchAll($select);
     }
-    
+
     /**
      * Update existing or create new order status
-     * 
+     *
      * @param array $data
      * @return void
      */
     public function batchSave($data)
     {
         $languages = array_keys(Axis_Collect_Language::collect());
-        
+
         foreach ($data as $id => $row) {
             if (!$this->getSystem(intval($row['id']))) {
                 $this->update(
@@ -84,7 +85,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
 
                 if (!$record = Axis::single('sales/order_status_text')->find($row['id'], $langId)->current()) {
                     $record = Axis::single('sales/order_status_text')->createRow(array(
-                        'status_id' => intval($row['id']), 
+                        'status_id' => intval($row['id']),
                         'language_id' => intval($langId),
                         'status_name' => $row['status_name_' . $langId]
                     ));
@@ -96,18 +97,17 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
                 $record->save();
             }
         }
-        
+
         Axis::message()->addSuccess(
             Axis::translate('sales')->__(
                 'Status was saved successfully'
         ));
     }
-    
+
     /**
-     * 
-     * @return 
+     *
      * @param int $id
-     * @param string $name 
+     * @param string $name
      * @param array|int|string $parent
      * @param array|int|string $children
      * @param array of string $translates ( 1 => 'pending', 2 => 'jxsredfyyz')
@@ -130,10 +130,10 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
             ));
         }
         $this->update(
-            array('name' => $name, 'system' => $system), 
+            array('name' => $name, 'system' => $system),
             $this->getAdapter()->quoteInto('id = ?', $id)
         );
-        
+
         if (!is_array($parent)) {
             if (is_string($parent)) {
                 $parent = array($this->getIdByName($parent));
@@ -154,23 +154,23 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
             Axis::single('sales/order_status_relation')->delete(
                 $this->getAdapter()->quoteInto('from_status = ? OR to_status = ? ', array($id, $id))
             );
-            
+
             foreach ($parent as $from) {
                 Axis::single('sales/order_status_relation')->add($from, $id);
             }
-            
+
             foreach ($children as $to) {
                 Axis::single('sales/order_status_relation')->add($id, intval($to));
             }
         }
-        
+
         Axis::single('sales/order_status_text')->delete(
             $this->getAdapter()->quoteInto('status_id = ?', $id)
         );
         foreach (array_keys(Axis_Collect_Language::collect()) as $langId) {
             if (!isset($translates[$langId]))
                 continue;
-            
+
             Axis::single('sales/order_status_text')->insert(array(
                 'status_id' => $id,
                 'language_id' => $langId,
@@ -181,11 +181,11 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
             Axis::translate('sales')->__(
                 "Order status  %s upload", $name
         ));
-           
+
     }
-    
+
     /**
-     * 
+     *
      * @param string $name
      * @param array|int|string $parent
      * @param array|int|string $children
@@ -199,7 +199,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
                 Axis::translate('sales')->__(
                     'Order status "%s" already exist', $name
             ));
-            return false; 
+            return false;
         }
         if (!is_array($parent)) {
             if (is_string($parent)) {
@@ -217,7 +217,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
                 $children = array($children);
             }
         }
-        
+
         $id = $this->insert(array(
             'name' => $name,
             'system' => 0
@@ -226,15 +226,15 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
         foreach ($parent as $from) {
             Axis::single('sales/order_status_relation')->add($from, $id);
         }
-        
+
         foreach ($children as $to) {
             Axis::single('sales/order_status_relation')->add($id, intval($to));
         }
-        
+
         foreach (array_keys(Axis_Collect_Language::collect()) as $langId) {
             if (!isset($translates[$langId]))
                 continue;
-            
+
             Axis::single('sales/order_status_text')->insert(array(
                 'status_id' => $id,
                 'language_id' => $langId,
@@ -245,7 +245,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
             Axis::translate('sales')->__(
                 "New order status create : %s", $name
         ));
-        
+
         return $this;
     }
 }

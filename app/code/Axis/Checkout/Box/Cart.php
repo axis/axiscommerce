@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Checkout
+ * @subpackage  Axis_Checkout_Box
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Checkout
- * @subpackage  Box
+ * @subpackage  Axis_Checkout_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Checkout_Box_Cart extends Axis_Core_Box_Abstract

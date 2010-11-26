@@ -18,12 +18,16 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Core
+ * @package     Axis_Event
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 
 /**
  * Event observer class
+ *
+ * @category    Axis
+ * @package     Axis_Event
+ * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Event_Observer
 {
@@ -42,8 +46,6 @@ class Axis_Event_Observer
     /**
      * Reads the event config from modules configuration
      * and cache it
-     *
-     * @constructor
      */
     private function __construct()
     {

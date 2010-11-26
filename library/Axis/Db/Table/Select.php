@@ -16,17 +16,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Db
+ * @subpackage  Axis_Db_Table
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Db
+ * @subpackage  Axis_Db_Table
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Db_Table_Select extends Zend_Db_Table_Select
@@ -88,12 +90,15 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
 
     /**
      * use carefully: FOUND_ROWS
-     * @example
-     * <p>
-     *  $select->calcFoundRows(); <br/>
-     *  $rowset = $select->fetchAll();<br/>
-     *  $count = $select->foundRows();<br/>
-     * </p>
+     * Example:
+     * <code>
+     * <?php
+     * $select->calcFoundRows();
+     * $rowset = $select->fetchAll();
+     * $count = $select->foundRows();
+     * ?>
+     * </code>
+     *
      * @return int|bool
      */
     public function foundRows()
@@ -124,7 +129,7 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
         $this->columns($column);
         return (int) $this->getAdapter()->fetchOne($this);
     }
-    
+
     /**
      * Sets the use auto add table colleration name flag.
      *
@@ -321,12 +326,12 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
         $fields  = $this->getPart(Zend_Db_Table_Select::COLUMNS);
         $primary = $this->_info[Zend_Db_Table_Abstract::NAME];
         $schema  = $this->_info[Zend_Db_Table_Abstract::SCHEMA];
-        
+
         if (count($this->_parts[Zend_Db_Table_Select::UNION]) == 0) {
 
             // If no fields are specified we assume all fields from primary table
             if (!count($fields)) {
-                
+
                 $prefix  = $this->_info[Axis_Db_Table_Abstract::PREFIX];
                 $shortPrimary = substr($primary, strlen($prefix));
 
@@ -413,7 +418,7 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
      * Fetches the first column of all SQL result rows as an array.
      *
      * The first column in each row is used as the array key.
-     * 
+     *
      * @param mixed $bind Data to bind into SELECT placeholders.
      * @return array
      */

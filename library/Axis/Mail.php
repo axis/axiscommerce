@@ -93,8 +93,11 @@ class Axis_Mail extends Zend_Mail
 
    /**
     *
-    *  //@todo refactoring  http://www.zendcasts.com/painless-html-emails-with-zend_mail/2010/06/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+ZendScreencastsVideoTutorialsAboutTheZendPhpFrameworkForDesktop+%28Zend+Screencasts%3A+Video+Tutorials+about+the+Zend+PHP+Framework++%28desktop%29%29&utm_content=Google+Reader
-    *  @param array(
+    * @todo refactoring http://www.zendcasts.com/painless-html-emails-with-zend_mail/2010/06/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+ZendScreencastsVideoTutorialsAboutTheZendPhpFrameworkForDesktop+%28Zend+Screencasts%3A+Video+Tutorials+about+the+Zend+PHP+Framework++%28desktop%29%29&utm_content=Google+Reader
+    *
+    * @param array
+    * <pre>
+    * array(
     *      ['event' => string]
     *      'subject' => string,
     *      'data' => array(
@@ -108,6 +111,7 @@ class Axis_Mail extends Zend_Mail
     *      ['charset' =>   ],
     *      'report' => true|false
     *  )
+    * </pre>
     *  @return bool
     */
     public function setConfig(array $config)

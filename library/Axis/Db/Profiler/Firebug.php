@@ -16,17 +16,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Db
+ * @subpackage  Axis_Db_Profiler
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Db
+ * @subpackage  Axis_Db_Profiler
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Db_Profiler_Firebug extends Zend_Db_Profiler_Firebug
@@ -49,7 +51,7 @@ class Axis_Db_Profiler_Firebug extends Zend_Db_Profiler_Firebug
         if(!$this->_label) {
             $this->_label = 'Zend_Db_Profiler_Firebug';
         }
-	if (function_exists('xdebug_get_function_stack')) {
+    if (function_exists('xdebug_get_function_stack')) {
             $this->_xdebugAvailable = true;
         }
     }
@@ -71,7 +73,7 @@ class Axis_Db_Profiler_Firebug extends Zend_Db_Profiler_Firebug
                 $this->_message = new Zend_Wildfire_Plugin_FirePhp_TableMessage($this->_label);
                 $this->_message->setBuffered(true);
                 //$this->_message->setHeader(array('Time','Event','Parameters'));
-		$this->_message->setHeader(array('Time','Event','Parameters','Backtrace'));
+        $this->_message->setHeader(array('Time','Event','Parameters','Backtrace'));
                 $this->_message->setDestroy(true);
                 $this->_message->setOption('includeLineNumbers', false);
                 Zend_Wildfire_Plugin_FirePhp::getInstance()->send($this->_message);
@@ -113,8 +115,8 @@ class Axis_Db_Profiler_Firebug extends Zend_Db_Profiler_Firebug
         $this->_message->addRow(array((string)round($profile->getElapsedSecs(),5),
                                       $profile->getQuery(),
                                       //($params=$profile->getQueryParams())?$params:null));
-					($params=$profile->getQueryParams())?$params:null,
-					$this->getXdebugStack()));
+                    ($params=$profile->getQueryParams())?$params:null,
+                    $this->getXdebugStack()));
 
         $this->updateMessageLabel();
     }

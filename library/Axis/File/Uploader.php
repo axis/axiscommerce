@@ -1,51 +1,56 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @category    Axis
+ * @package     Axis_File
+ * @copyright   Copyright 2008-2010 Axis
+ * @license     GNU Public License V3.0
  */
 
 /**
  *
  * @category    Axis
- * @package     Axis_Core
+ * @package     Axis_File
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_File_Uploader
 {
     /**
      * Copy of $_FILES[$fileName]
-     * 
+     *
      * @var array
      */
     protected $_file = array();
-    
+
     /**
      * @var bool
      */
     protected $_useDispersion = false;
-    
+
     /**
      * @var array
      */
     protected $_allowedExtensions = null;
-    
+
     /**
      * Php error codes
-     * 
+     *
      * @var array
      */
     protected $_errorCode = array(
@@ -56,9 +61,8 @@ class Axis_File_Uploader
         4 => "No file was uploaded",
         6 => "Missing a temporary folder"
     );
-    
+
     /**
-     * @constructor
      * @param string $fileName
      * @throws Axis_Exception
      */
@@ -71,7 +75,7 @@ class Axis_File_Uploader
         }
         $this->_file = $_FILES[$fileName];
     }
-    
+
     /**
      * @param string $desinationFolder
      * @param string $fileName
@@ -81,45 +85,45 @@ class Axis_File_Uploader
     public function save($destination, $fileName = null)
     {
         $this->_validateFile();
-        
+
         $destination = rtrim($destination, '/\\');
-        
+
         if (null === $fileName) {
             $fileName = $this->_file['name'];
         }
-        
+
         $fileName = $this->_getCorrectFileName($fileName);
         $dispersion = $this->_getDispersionPath($fileName);
-        
+
         if (!is_dir($destination . $dispersion)
             && !@mkdir($destination . $dispersion, 0777, true)) {
-            
+
             throw new Axis_Exception("Unable to create directory '{$destination}'");
         }
-        
+
         $fileName = $this->_getNewFileName($destination . $dispersion . $fileName);
         $fileName = $dispersion . $fileName;
-        
+
         $result = @move_uploaded_file(
-            $this->_file['tmp_name'], 
+            $this->_file['tmp_name'],
             $destination . $fileName
         );
-        
+
         if (!$result) {
             throw new Axis_Exception($this->_errorCode[$this->_file['error']]);
         }
-        
+
         chmod($destination . $fileName, 0777);
-        
+
         return array(
             'path' => $destination,
             'file' => $fileName
         );
     }
-    
+
     /**
      * Set allowed extensions for uploader instance
-     * 
+     *
      * @param array $extensions
      * @return Axis_File_Uploader Provides fluent interface
      */
@@ -130,10 +134,10 @@ class Axis_File_Uploader
         }
         return $this;
     }
-    
+
     /**
      * Validate file extension
-     * 
+     *
      * @param string $extension
      * @return bool
      */
@@ -147,7 +151,7 @@ class Axis_File_Uploader
         }
         return false;
     }
-    
+
     /**
      * @param bool $flag
      * @return Axis_File_Uploader Provides fluent interface
@@ -157,30 +161,30 @@ class Axis_File_Uploader
         $this->_useDispersion = (bool) $flag;
         return $this;
     }
-    
+
     /**
      * Validate file before save
-     * 
+     *
      * @return void
      * @throws Axis_Exception
      */
     protected function _validateFile()
     {
         $pathinfo = pathinfo($this->_file['name']);
-        
+
         if (!isset($pathinfo['extension'])) {
             $pathinfo['extension'] = '';
         }
-        
+
         if (!$this->isAllowedExtension($pathinfo['extension'])) {
             throw new Axis_Exception("Disallowed file type.");
         }
     }
-    
+
     /**
      * Retrieve unique file name within destination folder
      * Adds number to the end of fileName if same fileName found
-     * 
+     *
      * @param string $filePath
      * @return string
      */
@@ -199,10 +203,10 @@ class Axis_File_Uploader
         }
         return basename($filePath);
     }
-    
+
     /**
      * Removes invalid symbols from the fileName
-     * 
+     *
      * @param string $fileName
      * @return string
      */
@@ -210,21 +214,21 @@ class Axis_File_Uploader
     {
         return preg_replace('/[^a-zA-Z0-9_\.]/', '_', $fileName);
     }
-    
+
     /**
      * Retrieve additional folders to move file to it
-     * 
+     *
      * @param string $fileName
      * @return string
      */
     protected function _getDispersionPath($fileName)
     {
         $dispersionPath = '/';
-        
+
         if (!$this->_useDispersion) {
             return $dispersionPath;
         }
-        
+
         for ($i = 0; $i < 2; $i++) {
             if (!preg_match('/[a-zA-Z0-9_]{1}/', $fileName[$i])) {
                 break;

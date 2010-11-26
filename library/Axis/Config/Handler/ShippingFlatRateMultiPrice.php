@@ -1,33 +1,34 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
- * @package     Axis_ShippingFlat
+ * @package     Axis_Config
+ * @subpackage  Axis_Config_Handler
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
- * @package     Axis_ShippingFlat
- * @subpackage  Handler
+ * @package     Axis_Config
+ * @subpackage  Axis_Config_Handler
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Handler_Interface
@@ -63,7 +64,7 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
      * @param Zend_View_Interface $view
      * @return string
      */
-    public static function getHtml($value, Zend_View_Interface $view = null) 
+    public static function getHtml($value, Zend_View_Interface $view = null)
     {
         $value = json_decode($value, true);
         if (!is_array($value)) {
@@ -83,7 +84,7 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
                   . '</div>';
             $i++;
         }
-        
+
         $jsStrReplaceFunction =
         ' function str_replace(search, replace, subject, count) {
 
@@ -122,7 +123,7 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
               )
             . '</div>'
             . '</div>'
-           
+
             . $view->formButton('shippingmultirate-template-add', 'Add', array('onclick' => ' var i = ' . $i . ';'
                 . $jsStrReplaceFunction . '
                 function clone() {
