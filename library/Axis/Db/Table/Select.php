@@ -46,7 +46,7 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
      *
      * @var bool
      */
-    protected $_useCollerationName = true;
+    protected $_useCorrelationName = true;
 
     /**
      * Class constructor
@@ -131,14 +131,14 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
     }
 
     /**
-     * Sets the use auto add table colleration name flag.
+     * Sets the use auto add table correlation name flag.
      *
      * @param bool $flag
      * @return Zend_Db_Select This Zend_Db_Select object.
      */
-    public function setUseCollerationName($flag = true)
+    public function setUseCorrelationName($flag = true)
     {
-        $this->_useCollerationName = $flag;
+        $this->_useCorrelationName = $flag;
         return $this;
     }
 
@@ -146,7 +146,7 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
      * Generate a short table name
      *
      * @param string $name A qualified identifier.
-     * @return string unique colleration table name.
+     * @return string unique correlation table name.
      */
     private function _getCorrelationTableName($name)
     {
@@ -189,7 +189,7 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
 //            throw new Zend_Db_Select_Exception("");
 //        }
 
-        if (true === $this->_useCollerationName && !is_array($name)) {
+        if (true === $this->_useCorrelationName && !is_array($name)) {
             $name = array($this->_getCorrelationTableName($name) => $name);
         }
         $prefix = $this->_info[Axis_Db_Table_Abstract::PREFIX];

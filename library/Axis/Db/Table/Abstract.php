@@ -364,7 +364,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     {
         if (!($where instanceof Zend_Db_Table_Select)) {
             $select = $this->select()
-                ->setUseCollerationName(false)
+                ->setUseCorrelationName(false)
                 ->setIntegrityCheck();
 
             if ($where !== null) {
@@ -413,7 +413,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     {
         if (!($where instanceof Zend_Db_Table_Select)) {
             $select = $this->select()
-                ->setUseCollerationName(false)
+                ->setUseCorrelationName(false)
                 ->setIntegrityCheck();
 
             if ($where !== null) {
