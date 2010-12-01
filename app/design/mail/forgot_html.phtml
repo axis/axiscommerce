@@ -63,17 +63,16 @@
                                 ?>
                             </strong>
                             <br/>
-                            <?php echo $this->translate('core')->__('Welcome to') . ' ' . $this->site ?>
-                            <br/>
-                            <?php echo $this->translate('core')->__('To log in when visiting our site just click')?>
-                            <a href="<?php echo $this->href('/account/auth', true)?>" style="color:#1E7EC8;"
-                            ><?php echo $this->translate('core')->__('Login')?></a> 
-                             
                             <p style="border:1px solid #BEBCB7; padding:13px 18px; background:#F8F7F5; ">
-                                <?php echo $this->translate('core')->__('Use the following values when prompted to log in'); ?>:<br/>
-                                <?php echo $this->translate('core')->__('E-mail')?>: <?php echo $this->customer['email'] ?><br/>
-                                <?php echo $this->translate('core')->__('Password')?>: <?php echo $this->customer['password'] ?>
-                            <p>
+                                <?php
+
+                                $link = '<br/><a href="' . $this->link . '" style="color:#1E7EC8;">' . $this->link . '</a>';
+                                echo $this->translate('core')->__('If you want to change your password, go to %s', $link) ?>
+                                <br/>
+                                <?php echo $this->translate('core')->__('This link is valid for only 24 hours.') ?>
+                                <br/>
+                                <?php echo $this->translate('core')->__('Until') . ': ' . Axis_Date::now()->addDay(1)->toString('YYYY-MM-dd HH:mm')?>
+                            </p>
                             <p><?php echo $this->translate('core')->__('When you log in to your account, you will be able to do the following');?>:</p>
                             <ul>
                                 <li><?php echo $this->translate('core')->__('Proceed through checkout faster when making a purchase');?></li>
