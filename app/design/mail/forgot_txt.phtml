@@ -8,9 +8,7 @@
  
 <?php echo $this->translate('core')->__('If you want to change your password, go to %s', $this->link) ?> 
 <?php echo $this->translate('core')->__('This link is valid for only 24 hours.') ?> 
-<?php
-    echo $this->translate('core')->__('Until') . ': ' . Axis_Date::now()->addDay(1)->toString('YYYY-MM-dd HH:mm') 
-?> 
+<?php echo $this->translate('core')->__('Until') . ': ' . Axis_Date::now()->addDay(1)->toString('YYYY-MM-dd HH:mm')?>
 
 <?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toString('Y'); ?> <?php echo $this->site ?> 
 <?php echo $this->translate('core')->__("Powered by %s v. %s", "Axis", Axis::app()->getVersion()) ?>
