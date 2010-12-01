@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Cms
+ * @subpackage  Axis_Cms_Box
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Cms
- * @subpackage  Box
+ * @subpackage  Axis_Cms_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Cms_Box_Navigation extends Axis_Core_Box_Abstract

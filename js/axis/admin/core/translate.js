@@ -34,29 +34,18 @@ var Locale = {
  *
  * @param {String} module_code
  */
-String.prototype.l = function(module_code){
-    key = this;
+String.prototype.l = function(module_code) {
+    var key = this.toString();
     var module = 'core';
 
     if (module_code != undefined) {
         module = module_code;
     }
 
-    if (!Locale[module]) {
-        localized = key; // localization file not found
+    if (!Locale[module] || !Locale[module][key]) {
+        localized = key; // localization not found
     } else {
         localized = Locale[module][key];
-    }
-
-    if (localized == undefined) {
-        $.each(Locale, function(k, v){
-            if (localized == undefined) {
-                localized = v[key];
-            }
-        });
-        if (localized == undefined) {
-            localized = '__translation not found__ ' + key;
-        }
     }
 
     if (arguments.length > 1) {

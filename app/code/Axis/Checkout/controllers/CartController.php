@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Checkout
+ * @subpackage  Axis_Checkout_Controller
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Checkout
- * @subpackage  Controller
+ * @subpackage  Axis_Checkout_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
@@ -103,6 +104,7 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
         foreach ($data as $itemId => $quantity) {
             Axis::single('checkout/cart')->updateItem($itemId, $quantity);
         }
+        Axis::session()->lastUrl = $this->_getParam('last_url');
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
     }
 

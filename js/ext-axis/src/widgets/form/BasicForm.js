@@ -153,8 +153,6 @@ Ext.form.BasicForm.override({
     },
 
     resetValidationMessages: function() {
-        this.isValid();
-
         clearInvalid = function(f) {
             if ('compositefield' === f.xtype && f.items.each) {
                 f.items.each(clearField);
@@ -166,9 +164,7 @@ Ext.form.BasicForm.override({
 
         this.items.each(clearInvalid);
 
-        for (var i = 0, limit = this.invalidTabs.length; i < limit; i++) {
-            this.invalidTabs[i].removeClass('error');
-        }
+        $('#' + this.id + ' .error').removeClass('error');
     },
 
     setValues: function(values) {

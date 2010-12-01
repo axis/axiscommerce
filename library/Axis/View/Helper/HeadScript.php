@@ -16,6 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @category    Axis
+ * @package     Axis_View
+ * @subpackage  Axis_View_Helper
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -24,10 +28,9 @@
  *
  * @category    Axis
  * @package     Axis_View
- * @subpackage  Helper
+ * @subpackage  Axis_View_Helper
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-
 class Axis_View_Helper_HeadScript extends Zend_View_Helper_HeadScript
 {
     private $_proxy = null;
@@ -69,8 +72,8 @@ class Axis_View_Helper_HeadScript extends Zend_View_Helper_HeadScript
     /**
      * Search algorithm:
      *  - from current template
-     *  - from default template
      *  - from fallback template
+     *  - from default template
      *  - from AXIS_ROOT
      *
      * @param string $css
@@ -83,9 +86,12 @@ class Axis_View_Helper_HeadScript extends Zend_View_Helper_HeadScript
             return $js;
         }
 
-        $fallbackList = array_unique(
-            array($this->view->templateName, $this->view->defaultTemplate, 'fallback')
-        );
+        $fallbackList = array_unique(array(
+            $this->view->templateName,
+            /* $this->view->defaultTemplate */
+            'fallback',
+            'default'
+        ));
         $find = false;
         foreach ($fallbackList as $fallback) {
             $file = '/skin/' . $this->view->area . '/' . $fallback . '/js/' . $js;

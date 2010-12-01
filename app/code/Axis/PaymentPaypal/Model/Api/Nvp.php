@@ -4,6 +4,7 @@
  *
  * @category    Axis
  * @package     Axis_PaymentPaypal
+ * @subpackage  Axis_PaymentPaypal_Model
  * @copyright   Copyright 2003-2007 Zen Cart Development Team
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version     $Id: paypal_curl.php 7558 2007-11-30 17:54:43Z drbyte $
@@ -14,7 +15,7 @@
  *
  * @category    Axis
  * @package     Axis_PaymentPaypal
- * @subpackage  Model
+ * @subpackage  Axis_PaymentPaypal_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_PaymentPaypal_Model_Api_Nvp 

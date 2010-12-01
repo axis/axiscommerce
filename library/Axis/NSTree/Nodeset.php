@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_NSTree
  * @copyright   Copyright 2008-2010 Axis
  * @copyright   Marat Komarov <bassguitarrer@gmail.com>
  * @license     GNU Public License V3.0
@@ -28,7 +29,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @subpackage  NSTree
+ * @subpackage  Axis_Catalog_NSTree
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_NSTree_Nodeset implements RecursiveIterator

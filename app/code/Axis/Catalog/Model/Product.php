@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @subpackage  Model
+ * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Catalog_Model_Product extends Axis_Db_Table
@@ -114,6 +115,7 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
     /**
      *
      * @param array $filters [optional]
+     * <pre>
      * Accepted filters:
      *      site_ids            integer|array
      *      category_ids        integer|array
@@ -127,6 +129,7 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
      *      attributes          array(optionId => valueId, ...)
      *      limit               integer
      *      start               integer
+     * </pre>
      * @param mixed $order [optional]
      * @param integer $limit [optional]
      * @param integer $start [optional]

@@ -1,42 +1,37 @@
 <?php
 /**
- * Zend Framework
+ * Axis
  *
- * LICENSE
+ * This file is part of Axis.
  *
- * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://framework.zend.com/license/new-bsd
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@zend.com so we can send you a copy immediately.
+ * Axis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * @category   Zend
- * @package    Zend_View
- * @subpackage Helper
- * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: FormButton.php 16541 2009-07-07 06:59:03Z bkarwin $
+ * Axis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @category    Axis
+ * @package     Axis_View
+ * @subpackage  Axis_View_Helper
+ * @copyright   Copyright 2008-2010 Axis
+ * @license     GNU Public License V3.0
  */
-
 
 /**
- * Abstract class for extension
- */
-require_once 'Zend/View/Helper/FormElement.php';
-
-
-/**
- * Helper to generate a "button" element
  *
- * @category   Zend
- * @package    Zend_View
- * @subpackage Helper
- * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @category    Axis
+ * @package     Axis_View
+ * @subpackage  Axis_View_Helper
+ * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Zend_View_Helper_FormButton extends Zend_View_Helper_FormElement
+class Axis_View_Helper_FormButton extends Zend_View_Helper_FormButton
 {
     /**
      * Generates a 'button' element.

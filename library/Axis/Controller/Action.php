@@ -18,7 +18,7 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Core
+ * @package     Axis_Controller
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,7 +26,7 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Core
+ * @package     Axis_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
@@ -114,19 +114,23 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             $view->secureUrl : $view->baseUrl;
         $view->catalogUrl   = Axis::config('catalog/main/route');
 
-        //@todo every template shoud have own defaults
-        $view->defaultTemplate = 'default';
+        //@TODO every template shoud have own defaults
+        //$view->defaultTemplate = 'default';
 
         //Initialize Zend_View stack
         $module = $this->_getScriptsPath($area);
 
         $view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
         $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
+        $view->setScriptPath(array());
 
-        $fallbackList = array_unique(
-            array('fallback', $view->defaultTemplate, $template['name'])
-        );
-        foreach ($fallbackList as $fallback) {
+        $fallbackList = array_unique(array(
+            $template['name'],
+            /* @TODO user defined default: $view->defaultTemplate */
+            'fallback',
+            'default'
+        ));
+        foreach (array_reverse($fallbackList) as $fallback) {
             $templatePath = $systemPath . '/app/design/' . $area . '/' . $fallback;
             if (is_readable($templatePath . '/helpers')) {
                 $view->addHelperPath($templatePath . '/helpers', 'Axis_View_Helper');
@@ -135,7 +139,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
                 $view->addScriptPath($templatePath . '/templates');
                 $view->addScriptPath($templatePath . '/templates/' . $module);
             }
-            if ($template['name'] != $fallback && is_readable($templatePath . '/layouts')) {
+            if (is_readable($templatePath . '/layouts')) {
                 $view->addScriptPath($templatePath . '/layouts');
             }
         }

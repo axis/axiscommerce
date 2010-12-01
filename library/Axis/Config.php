@@ -25,6 +25,7 @@
 
 /**
  *
+ * @uses        Zend_Config
  * @category    Axis
  * @package     Axis_Config
  * @author      Axis Core Team <core@axiscommerce.com>
@@ -34,7 +35,6 @@ class Axis_Config extends Zend_Config
     const MULTI_SEPARATOR = ',';
 
     /**
-     * @constructor
      * @param  array   $array
      * @param  boolean $allowModifications
      * @return void

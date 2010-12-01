@@ -19,6 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Contacts
+ * @subpackage  Axis_Contacts_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  * 
  * @category    Axis
  * @package     Axis_Contacts
- * @subpackage  Model
+ * @subpackage  Axis_Contacts_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Contacts_Model_Message extends Axis_Db_Table

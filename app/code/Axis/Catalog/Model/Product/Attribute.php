@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @subpackage  Model
+ * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
@@ -113,13 +114,16 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
      * @param array $productIds
      * @param integer $languageId [optional]
      * @return array
+     * <pre>
+     * array(
      *  product_id => array(
      *      option_id => array(
      *          name => string,
      *          values => array of strings
      *      )
      *  )
-     *  ...
+     * )
+     * </pre>
      */
     public function getComparable($productIds, $languageId = null)
     {
@@ -211,7 +215,7 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
                 ->find($optionId, Axis_Locale::getLanguageId())
                 ->current()
                 ->name;
-            
+
             Axis::message()->addError(
                 Axis::translate('checkout')->__(
                     'Set required attribute : %s', $productOptionName

@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Community
+ * @subpackage  Axis_Community_Controller
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Community
- * @subpackage  Controller
+ * @subpackage  Axis_Community_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Community_ReviewController extends Axis_Core_Controller_Front

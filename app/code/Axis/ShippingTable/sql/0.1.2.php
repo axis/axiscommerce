@@ -18,11 +18,10 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Account
+ * @package     Axis_ShippingTable
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
-
 
 class Axis_ShippingTable_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 {

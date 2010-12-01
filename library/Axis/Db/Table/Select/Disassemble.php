@@ -17,13 +17,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * @category    Axis
+ * @package     Axis_Db
+ * @subpackage  Axis_Db_Table_Select
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
+/**
+ *
+ * @category    Axis
+ * @package     Axis_Db
+ * @subpackage  Axis_Db_Table_Select
+ * @author      Axis Core Team <core@axiscommerce.com>
+ */
 class Axis_Db_Table_Select_Disassemble
 {
-
     protected $_joinKeys = array(//'from',
         'join'         => 'join',
         'inner join'   => 'joinInner',
@@ -50,7 +59,7 @@ class Axis_Db_Table_Select_Disassemble
             $string,
             $matches
         );
-        
+
         return array(
             'expr' => $string,
             'scheme'      => empty($matches[1]) ? null : $matches[1],
@@ -133,7 +142,7 @@ class Axis_Db_Table_Select_Disassemble
             if (strstr($expr, '.')) {
                 list($tableExpr, $column) = explode('.', $expr);
             }
-            
+
             if (null === $column) {
                 $column = $tableExpr;
                 $tableExpr = null;
@@ -146,7 +155,7 @@ class Axis_Db_Table_Select_Disassemble
             if (strstr($column, ' AS ')) {
                 list($column, $colleration) = explode(' AS ', $column);
             }
-            
+
             if (null === $colleration) {
                 $columns[$this->_tableCorelation($tableExpr)][] = $column;
             } else {
@@ -252,7 +261,7 @@ class Axis_Db_Table_Select_Disassemble
     protected function _addWhere($where)
     {
         $result = '';
-        
+
         $where = 'AND ' . $where;
 
         $replacement = true;
@@ -274,7 +283,7 @@ class Axis_Db_Table_Select_Disassemble
                 $where = str_replace($part, $replacement, $where);
             }
         }
-        
+
         $parts = preg_split(
             '/(\(.*\))/U', $where, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
         );
@@ -289,7 +298,7 @@ class Axis_Db_Table_Select_Disassemble
         $parts = preg_split(
             '/(AND|OR)\s/', $where, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
         );
-        
+
         $type = 'where';
         for ($i = 0 ; $i < count($parts) ; $i++) {
             if ('OR' == $parts[$i]) {

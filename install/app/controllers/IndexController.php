@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Install
+ * @subpackage  Axis_Install_Controller
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Install
- * @subpackage  Controller
+ * @subpackage  Axis_Install_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class IndexController extends Zend_Controller_Action

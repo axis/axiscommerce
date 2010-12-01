@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_View
+ * @subpackage  Axis_View_Helper
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_View
- * @subpackage  Helper
+ * @subpackage  Axis_View_Helper
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_View_Helper_SkinUrl
@@ -40,9 +41,12 @@ class Axis_View_Helper_SkinUrl
             return $baseUrl . '/skin/' . $this->view->area . '/' . $this->view->templateName;
         }
 
-        $fallbackList = array_unique(
-            array($this->view->templateName, $this->view->defaultTemplate, 'fallback')
-        );
+        $fallbackList = array_unique(array(
+            $this->view->templateName,
+            /* $this->view->defaultTemplate */
+            'fallback',
+            'default'
+        ));
         foreach ($fallbackList as $fallback) {
             $file = '/skin/' . $this->view->area . '/' . $fallback  . '/' . $src;
             if (is_readable($this->view->path . $file)) {

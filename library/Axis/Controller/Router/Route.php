@@ -18,17 +18,18 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Locale
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Router
  * @copyright   Copyright 2008-2010 Axis
  * @copyright   Dmitry Merva  http://myengine.com.ua  d.merva@gmail.com
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
- * @package     Axis_Locale
- * @subpackage  Route
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Router
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
@@ -79,7 +80,7 @@ class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
     {
         self::$_defaultLocale = $locale;
     }
-    
+
     /**
      * Matches a user submitted path with parts defined by a map. Assigns and
      * returns an array of variables on a successful match.
@@ -88,10 +89,10 @@ class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
      * @return array|false An array of assigned values or a false on a mismatch
      */
     public function match($path)
-    {   
-        $path = trim($path, $this->_urlDelimiter); 
+    {
+        $path = trim($path, $this->_urlDelimiter);
         $pathParts = explode($this->_urlDelimiter, $path, 2);
- 
+
         if(in_array($pathParts[0], self::$_locales)) {
             $path = (sizeof($pathParts) > 1) ? $pathParts[1] : '';
             $currentLocale = $pathParts[0];
@@ -99,19 +100,19 @@ class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
         } else {
             if(isset($this->_defaults['locale'])) {
                 $currentLocale = $this->_defaults['locale'];
-            } else {       
+            } else {
                 $currentLocale = self::$_defaultLocale;
             }
         }
-        
+
         self::$_currentLocale = $currentLocale;
- 
+
         $params = parent::match($path);
 
         if($params) {
             $params = array_merge($params, array('locale' => $currentLocale));
         }
- 
+
         return $params;
     }
 
@@ -140,7 +141,7 @@ class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
      * @param  boolean $reset Whether or not to set route defaults with those provided in $data
      * @return string Route path with user submitted parameters
      */
-    public function assemble($data = array(), $reset = false, $encode = false)    
+    public function assemble($data = array(), $reset = false, $encode = false)
     {
         if(!isset($data['locale'])) {
             return parent::assemble($data, $reset, $encode);

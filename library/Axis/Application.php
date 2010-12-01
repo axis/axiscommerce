@@ -23,9 +23,14 @@
  * @license     GNU Public License V3.0
  */
 
+ /**
+  * @see Zend_Application
+  */
 @include_once 'Zend/Application.php';
+
 /**
  *
+ * @uses        Zend_Application
  * @category    Axis
  * @package     Axis_Core
  * @author      Axis Core Team <core@axiscommerce.com>
@@ -145,6 +150,6 @@ class Axis_Application extends Zend_Application
      */
     public function getVersion()
     {
-        return '0.7.0.3';
+        return '0.7.0.4';
     }
 }

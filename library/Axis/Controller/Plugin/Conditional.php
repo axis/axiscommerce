@@ -1,20 +1,38 @@
 <?php
 /**
- * Plugin to support conditional GET for php pages (using ETag)
- * Should be loaded the very last in the plugins stack
- * 
+ * Axis
+ *
+ * This file is part of Axis.
+ *
+ * Axis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Axis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
+ *
  * @category    Axis
- * @package     Axis_Cache
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Plugin
  * @copyright   Copyright 2008-2010 Axis
  * @copyright   $Author: danila $
  * @license     GNU Public License V3.0
  */
 
 /**
+ * Plugin to support conditional GET for php pages (using ETag)
+ * Should be loaded the very last in the plugins stack
  *
  * @category    Axis
- * @package     Axis_Cache
- * @subpackage  Plugin
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Plugin
+ * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Controller_Plugin_Conditional extends Zend_Controller_Plugin_Abstract
 {
@@ -29,8 +47,8 @@ class Axis_Controller_Plugin_Conditional extends Zend_Controller_Plugin_Abstract
 
         $inm = str_replace('-gzip', '', $inm);
 
-        // @TODO If the request would, without the If-None-Match header field, 
-        // result in anything other than a 2xx or 304 status, 
+        // @TODO If the request would, without the If-None-Match header field,
+        // result in anything other than a 2xx or 304 status,
         // then the If-None-Match header MUST be ignored
 
         foreach ($inm as $i) {
@@ -52,7 +70,7 @@ class Axis_Controller_Plugin_Conditional extends Zend_Controller_Plugin_Abstract
         if ($send_body) {
             $this->getResponse()
                  ->setHeader('Content-Length', strlen($this->getResponse()->getBody()));
-        } 
+        }
 
         $this->getResponse()->setHeader('ETag', $etag, true);
         $this->getResponse()->setHeader('Pragma', '');

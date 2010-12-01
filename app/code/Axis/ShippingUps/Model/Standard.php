@@ -3,21 +3,22 @@
  * Axis
  *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * @category    Axis
  * @package     Axis_ShippingUps
+ * @subpackage  Axis_ShippingUps_Model
  * @copyright   Copyright 2008-2010 Axis
  * @copyright   Copyright 2003-2007 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
@@ -40,20 +41,20 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
      * @var string
      */
     protected $_code = 'Ups_Standard';
-    
+
     /**
      * Shipping module display name
      *
      * @var string
      */
     protected $_title = 'Ups';
-    
+
     /**
-     * Default Cgi Gateway Url 
-     * @var string 
+     * Default Cgi Gateway Url
+     * @var string
      */
     protected $_defaultGatewayUrl = 'http://www.ups.com/using/services/rave/qcostcgi.cgi';
-    
+
     /**
      * Subcodes
      * @var array
@@ -115,7 +116,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         'UW10' => array('label' => 'UPS Worldwide 10 kilo', 'code' => '25'),
     );
 
-    
+
     //http://www.google.com.ua/url?sa=t&source=web&ct=res&cd=1&url=http%3A%2F%2Faricmackey.com%2Fwp-content%2Fuploads%2F2008%2F04%2Fups-servicecodes.pdf&ei=ilFwSrCgApPmnAOSnuG4Bw&usg=AFQjCNEsnvbbKqFJpNC11Usd9T7sceF1Cg&sig2=C4YzeB2s4p-xbSENCFTtRw
 
     /**
@@ -148,7 +149,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         if ($request['country']['iso_code_2'] === 'CA') {
             $r->productCode = 'STD';
             $r->actionCode = '3';
-        } 
+        }
 
         // Set UPS Origin detail
         $r->originPostalCode = Axis::config()->core->store->zip;
@@ -160,7 +161,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $r->originZone = Axis::single('location/zone')->getCode(
             Axis::config()->core->store->zone
         );
-        
+
         $r->originCity = str_replace(
             ' ', '+', ltrim(Axis::config()->core->store->city)
         );
@@ -177,7 +178,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             );
         }
         $r->destCountryCode = $request['country']['iso_code_2'];
-        $r->destZone = isset($request['zone']['id']) ? 
+        $r->destZone = isset($request['zone']['id']) ?
             Axis::single('location/zone')->getCode($request['zone']['id']) : '';
 
 
@@ -187,7 +188,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         // Set UPS Container type
         $r->containerCode = $this->_package[$this->_config->package]['code'];
-        
+
         // Set UPS package weight
         $r->packageWeight = $request['weight'] < 0.1 ? 0.1 : $request['weight'];
 
@@ -206,10 +207,10 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
                 break;
         }
         $this->_request = $r;
-        
+
         return $this->_request;
     }
-    
+
     protected function _getQuotes()
     {
         if ($this->_config->type === 'XML') {
@@ -219,7 +220,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
     }
 
     /**
-     * Sent request for quote to UPS via XML 
+     * Sent request for quote to UPS via XML
      *
      * @return array
      */
@@ -232,7 +233,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $xml->addChild('Password', $this->_config->xmlPassword);
 
         $this->_xmlAccessRequest = $xml->asXML();
-        
+
         $xml = new SimpleXMLElement('<?xml version = "1.0" encoding = "UTF-8"?><RatingServiceSelectionRequest/>');
         $xml->addAttribute('xml:lang', 'en-US');
         $request = $xml->addChild('Request');
@@ -317,7 +318,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            
+
             $xmlResponse = curl_exec($ch);
             curl_close($ch);
         } catch (Exception $e) {
@@ -388,7 +389,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         }
         return $methods;
     }
-    
+
     /**
      * Sent request for quote to UPS via older HTML method
      *
@@ -420,7 +421,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             'User-Agent' => 'Axis',
             'Connection' => 'Close'
         ));
-        
+
         $request = str_replace(' ', '+', $request);
         $httpClient->setUri((empty($this->_config->gateway) ?
                 $this->_defaultGatewayUrl : $this->_config->gateway) . '?'. $request
@@ -479,7 +480,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
                     $cost = $row[10];
                     break;
             }
-            
+
             if (!in_array($type, $allowed_methods)) {
                 continue;
             }
@@ -501,7 +502,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
     protected function _getShipmentDescription($code)
     {
         $origin = $this->_config->xmlOrigin;
-        
+
         $originShipment = array(
             // United States Domestic Shipments
             'United States Domestic Shipments' => array(

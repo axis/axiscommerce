@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Locale
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Router
  * @copyright   Copyright 2008-2010 Axis
  * @copyright   Dmitry Merva  http://myengine.com.ua  d.merva@gmail.com
  * @license     GNU Public License V3.0
@@ -27,8 +28,8 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Locale
- * @subpackage  Route
+ * @package     Axis_Controller
+ * @subpackage  Axis_Controller_Router
  * @author      Axis Core Team <core@axiscommerce.com>
  */
  class Axis_Controller_Router_Route_Module extends Zend_Controller_Router_Route_Module
@@ -45,7 +46,7 @@
      * @static
      * @var string
      */
-    protected static $_defaultLocale = 'en';     
+    protected static $_defaultLocale = 'en';
 
     /**
      * @static
@@ -61,11 +62,11 @@
      * @static
      * @param string $locale
      */
-    public static function setDefaultLocale($locale) 
+    public static function setDefaultLocale($locale)
     {
         self::$_defaultLocale = $locale;
-    }   
-    
+    }
+
     /**
      * Set request keys based on values in request object
      *
@@ -89,8 +90,8 @@
         }
 
         $this->_keysSet = true;
-    }    
-    
+    }
+
     /**
      * Matches a user submitted path. Assigns and returns an array of variables
      * on a successful match.
@@ -113,11 +114,11 @@
         if ($path != '') {
 
             $path = explode(self::URI_DELIMITER, $path);
-            
+
             if (count($path) && !empty($path[0]) && in_array($path[0], self::$_locales)) {
                 $values['locale'] = array_shift($path);
             }
-            
+
             if (count($path) && $this->_dispatcher && $this->_dispatcher->isValidModule($path[0])) {
                 $values[$this->_moduleKey] = array_shift($path);
                 $this->_moduleValid = true;
@@ -169,7 +170,7 @@
         }
 
         $params += $this->_defaults;
-        
+
         $url = '';
 
         if ($this->_moduleValid || array_key_exists($this->_moduleKey, $data)) {
@@ -185,8 +186,8 @@
 
         $locale = $params['locale'];
         unset($params['locale']);
-        
-        
+
+
         foreach ($params as $key => $value) {
             $url .= '/' . $key;
             $url .= '/' . $value;
