@@ -47,8 +47,8 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             Axis::translate('account')->__('Forgot'), '/account/auth/forgot'
         );
     }
-    
-	public function registerAction()
+
+    public function registerAction()
     {
         $this->view->pageTitle = Axis::translate('account')->__(
             'Forgot password'
@@ -62,7 +62,7 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
         $customerId = Axis::single('account/customer')->getIdByEmail($username);
 
         if ($customerId
-            && $customer = Axis::single('account/customer')->find($customerId)->current()
+            && ($customer = Axis::single('account/customer')->find($customerId)->current())
             && Axis::getSiteId() === $customer->site_id
             ) {
 
@@ -138,17 +138,16 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             return;
             
         } 
-        $isUpdatePassword = Axis::single('account/customer')->update(array(
+        Axis::single('account/customer')->update(array(
             'password' => md5($params['password'])),
             $this->db->quoteInto('email = ?',
                 $modelForgotPass->getEmailByHash($params['hash'])
             )
         );
-        if ($isUpdatePassword) {
-            $modelForgotPass->delete(
-                $this->db->quoteInto('hash = ?', $params['hash'])
-            );
-        }
+        
+        $modelForgotPass->delete(
+            $this->db->quoteInto('hash = ?', $params['hash'])
+        );
         
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
     }
