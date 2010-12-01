@@ -58,16 +58,20 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
              $this->render();
              return;
         }
-        $customerId = Axis::single('account/customer')
-            ->getIdByEmail($username);
+        $customerId = Axis::single('account/customer')->getIdByEmail($username);
 
         if ($customerId) {
+
+            $customer = Axis::single('account/customer')
+                ->find($customerId)->current();
+            if (Axis::getSiteId() !== $customer->site_id) {
+                $this->render();
+                return;
+            }
+
             $hash = $this->_generatePassword();
             $link = $this->view->href('/account/forgot', true)
                   . '?hash=' . $hash;
-            
-            $customer = Axis::single('account/customer')
-                ->find($customerId)->current();
             
             $mail = new Axis_Mail();               
             $mail->setConfig(array(
