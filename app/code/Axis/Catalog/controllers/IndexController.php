@@ -102,31 +102,35 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             return $this->productAction();
         }
 
-        $filters = array('site_ids' => Axis::getSiteId());
-
         $this->view->pageTitle = Axis::translate('catalog')->__('Catalog');
+
+        $select = Axis::model('catalog/product')->select('id')
+            ->addFilterByAvailability()
+            ->joinCategory()
+            ->where('cc.site_id = ?', Axis::getSiteId());
 
         if ($this->hurl->hasParam('cat')) {
             if (!$category = $this->_initCategory($this->hurl->getParamValue('cat'))) {
                 return $this->_forward('not-found', 'Error', 'Axis_Core');
             }
-            $filters['category_ids'] = $category['id'];
+            $select->where('cc.id = ?', $category['id']);
         }
 
         if ($this->hurl->hasParam('manufacturer')) {
-            $filters['manufacturer_ids'] = $this->hurl->getParamValue('manufacturer');
+            $select->where(
+                'cp.manufacturer_id = ?',
+                $this->hurl->getParamValue('manufacturer')
+            );
         }
 
         if ($this->hurl->hasParam('price')) {
             list($from, $to) = explode(',', $this->hurl->getParam('price'));
-            $filters['price'] = array(
-                'from'  => $from,
-                'to'    => $to
-            );
+            $select->where('cp.price >= ?', $from)
+                ->where('cp.price <= ?', $to);
         }
 
         if ($this->hurl->hasParam('attributes')) {
-            $filters['attributes'] = $this->hurl->getAttributeIds();
+            $select->addFilterByAttributes($this->hurl->getAttributeIds());
         }
 
         $paging = array();
@@ -184,21 +188,22 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         switch ($paging['order']) {
             case 'name':
                 $order = 'cpd.name';
+                $select->addDescription();
                 break;
             case 'price':
                 $order = 'cp.price';
                 break;
         }
 
-        $productList = Axis::single('catalog/product')->getList(
-            $filters,
-            $order . ' ' . $paging['dir'],
-            $paging['limit'] == 'all' ? 0 :  $paging['limit'],
-            ($paging['page'] - 1) * ($paging['limit'] == 'all' ? 0 : $paging['limit'])
-        );
+        $productList = $select->limit(
+                $paging['limit'] == 'all' ? 0 :  $paging['limit'],
+                ($paging['page'] - 1) * ($paging['limit'] == 'all' ? 0 : $paging['limit'])
+            )
+            ->order($order . ' ' . $paging['dir'])
+            ->fetchList();
 
         $paging['count'] = $productList['count'];
-        $this->view->products = $productList['products'];
+        $this->view->products = $productList['data'];
 
         $paging['pages'] = 1;
         if ($paging['limit'] != 'all') {

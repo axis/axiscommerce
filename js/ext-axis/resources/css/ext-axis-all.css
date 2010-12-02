@@ -41,3 +41,10 @@
 
 /* override invalid ext-ux style */
 .x-grid3-cell-first .x-grid3-cell-inner { padding-left: 0; }
+
+/* grid filters */
+.x-grid3-filter { background: #e6e6e6; }
+.x-grid3-filter-inner { float: left; overflow: hidden; }
+.x-grid3-filter-offset { padding-left: 1px; text-align: left; }
+.x-grid3-filter td { vertical-align: top !important; border-bottom: 1px solid #c6c6c6; -moz-user-select: text; }
+.x-grid3-cell-filter-inner { cursor: inherit; padding: 3px 3px 3px 3px; position: relative; }

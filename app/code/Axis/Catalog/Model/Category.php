@@ -44,14 +44,6 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     );
 
     /**
-     * Inactive category ids. Including
-     * active child categories of inactive parents
-     *
-     * @var array
-     */
-    private $_disabledCategories = null;
-
-    /**
      *
      * @param array $data
      * @param int $parentId
@@ -293,7 +285,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
      */
     public function getDisabledIds()
     {
-        if (null === $this->_disabledCategories) {
+        if (!Zend_Registry::isRegistered('catalog/disabled_categories')) {
             $categories = $this->fetchAll(
                 "status = 'enabled' AND site_id = " . Axis::getSiteId(), 'lft'
             );
@@ -312,9 +304,9 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
                     }
                 }
             }
-            $this->_disabledCategories = array_values($result);
+            Zend_Registry::set('catalog/disabled_categories', array_values($result));
         }
-        return $this->_disabledCategories;
+        return Zend_Registry::get('catalog/disabled_categories');
     }
 
     /**

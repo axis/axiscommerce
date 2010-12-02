@@ -65,26 +65,27 @@ class Axis_Admin_Community_ReviewController extends Axis_Admin_Controller_Back
     public function getProductListAction()
     {
         $this->_helper->layout->disableLayout();
-        $filters = array(
-            'available_only' => false,
-            'site_ids'       => 0
-        );
+
+        $mProduct = Axis::model('catalog/product');
+        $select = $mProduct->select('id');
+
         if ($this->_hasParam('id')) {
-            $filters['product_ids'] = $this->_getParam('id');
+            $select->where('cp.id = ?', $this->_getParam('id'));
         } elseif ($this->_getParam('query') != '') {
-            $filters['product_name'] = '%' . $this->_getParam('query') . '%';
+            $select->addFilter('cpd.name', $this->_getParam('query'), 'LIKE');
         }
 
-        $productList = Axis::single('catalog/product')->getList(
-            $filters,
-            array('cpd.name ASC', 'cp.id DESC'),
-            $this->_hasParam('limit') ? $this->_getParam('limit') : 40,
-            $this->_hasParam('start') ? $this->_getParam('start') : 0
-        );
+        $list = $select->addDescription()
+            ->limit(
+                $this->_getParam('limit', 40),
+                $this->_getParam('start', 0)
+            )
+            ->order(array('cpd.name ASC', 'cp.id DESC'))
+            ->fetchList();
 
         $this->_helper->json->sendSuccess(array(
-            'totalCount' => $productList['count'],
-            'data'       => array_values($productList['products'])
+            'totalCount' => $list['count'],
+            'data'       => array_values($list['data'])
         ));
     }
 

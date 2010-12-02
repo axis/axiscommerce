@@ -276,6 +276,7 @@ Ext.onReady(function() {
     });
 
     var ds = new Ext.data.Store({
+        autoLoad: true,
         baseParams: {
             limit: ProductGrid.pageSize
         },
@@ -285,11 +286,15 @@ Ext.onReady(function() {
             totalProperty: 'count'
         }, ProductGrid.record),
         remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        },
         url: Axis.getUrl('catalog_index/list-products')
     });
 
     var actions = new Ext.ux.grid.RowActions({
-        header:'Actions'.l(),
+        //header:'Actions'.l(),
         actions:[{
             iconCls: 'icon-page-edit',
             tooltip: 'Edit'.l()
@@ -310,28 +315,44 @@ Ext.onReady(function() {
     var status = new Axis.grid.CheckColumn({
         dataIndex: 'is_active',
         header: 'Status'.l(),
-        width: 60
+        width: 100,
+        filter: {
+            editable: false,
+            resetValue: 'reset',
+            store: new Ext.data.ArrayStore({
+                data: [[0, 'Disabled'], [1, 'Enabled']],
+                fields: ['id', 'name']
+            })
+        }
     });
 
     var cm = new Ext.grid.ColumnModel({
         defaults: {
-            sortable: true
+            sortable: true,
+            table: 'cp'
         },
         columns: [{
             dataIndex: 'id',
             header: 'Id'.l(),
-            width: 50
+            width: 100
         }, {
             dataIndex: 'name',
             header: 'Name'.l(),
-            id: 'name'
+            id: 'name',
+            table: 'cpd',
+            filter: {
+                operator: 'LIKE'
+            }
         }, {
             dataIndex: 'sku',
             editor: new Ext.form.TextField({
                 allowBlank: false
             }),
             header: 'SKU'.l(),
-            width: 180
+            width: 180,
+            filter: {
+                operator: 'LIKE'
+            }
         }, {
             align: 'right',
             dataIndex: 'quantity',
@@ -340,7 +361,7 @@ Ext.onReady(function() {
                 allowNegative: false
             }),
             header: 'Quantity'.l(),
-            width: 60
+            width: 100
         }, {
             align: 'right',
             dataIndex: 'price',
@@ -352,7 +373,7 @@ Ext.onReady(function() {
             renderer: function(value) {
                 return value.toFixed(2);
             },
-            width: 90
+            width: 100
         },
         status,
         actions]
@@ -363,7 +384,7 @@ Ext.onReady(function() {
         ds: ds,
         cm: cm,
         id: 'grid-product-list',
-        plugins: [actions, status],
+        plugins: [actions, status, new Axis.grid.Filter()],
         listeners: {
             'rowdblclick': function(grid, index, e) {
                 ProductGrid.edit(ProductGrid.el.store.getAt(index));

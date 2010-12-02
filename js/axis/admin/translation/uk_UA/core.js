@@ -489,5 +489,7 @@ Locale.module('core', {
     'Shopping Сart': 'Кошик',
     'Wishlist': 'Список бажань',
     'Tags': 'Таги',
-    'Reviews': 'Відгуки'
+    'Reviews': 'Відгуки',
+    'From': 'З',
+    'To': 'По'
 });

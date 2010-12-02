@@ -38,30 +38,23 @@ class Axis_Catalog_Box_New extends Axis_Catalog_Box_Product_Listing
 
     public function initData()
     {
-        $select = Axis::single('catalog/product')->select('id');
-
-        $ids = $select
-            ->distinct()
-            ->joinCategory()
-            ->addCommonFilters(array(
-                'category_ids' => Axis_HumanUri::getInstance()->getParamValue('cat')
-            ))
+        $select = Axis::model('catalog/product')->select('id')
+            ->addFilterByAvailability()
             ->addFilterByNew()
             ->order(array('cp.new_from DESC', 'cp.id DESC'))
-            ->limit($this->getProductsCount())
-            ->fetchCol();
+            ->limit($this->getProductsCount());
 
-        if (!$ids) {
+        if ($catId = Axis_HumanUri::getInstance()->getParamValue('cat')) {
+            $select->joinCategory()
+                ->where('cc.id = ?', $catId);
+        }
+
+        $list = $select->fetchList();
+
+        if (!$list['count']) {
             return false;
         }
 
-        $products = $select->reset()
-            ->from('catalog_product', '*')
-            ->addCommonFields()
-            ->where('cp.id IN (?)', $ids)
-            ->order(array('cp.new_from DESC', 'cp.id DESC'))
-            ->fetchProducts();
-
-        $this->products = $products;
+        $this->products = $list['data'];
     }
 }

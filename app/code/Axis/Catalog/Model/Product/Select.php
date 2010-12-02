@@ -228,24 +228,23 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
 
     public function addFilterByUncategorized()
     {
+        $mProductToCategory = Axis::single('catalog/product_category');
         $rootProducts = Axis::db()->quoteInto(
             'cp.id = ANY (?)',
-            Axis::single('catalog/product_category')
+            $mProductToCategory
                 ->select('cpc.product_id')
                 ->join('catalog_category', 'cc.id = cpc.category_id')
                 ->where('cc.lvl = 0')
         );
         $notChildProducts = Axis::db()->quoteInto(
             'cp.id <> ALL (?)',
-            Axis::single('catalog/product_category')
+            $mProductToCategory
                 ->select('cpc.product_id')
                 ->join('catalog_category', 'cc.id = cpc.category_id')
                 ->where('cc.lvl <> 0')
         );
 
-        $this->where('cp.id <> ALL (?)',
-                Axis::single('catalog/product_category')
-                    ->select('cpc.product_id'))
+        $this->where('cp.id <> ALL (?)', $mProductToCategory->select('cpc.product_id'))
             ->orWhere($rootProducts . ' AND ' . $notChildProducts);
 
         return $this;
@@ -255,37 +254,24 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
      * Apply set of filters to select
      *
      * @param array $filters
+     * <pre>
      *  Accepted filters:
      *      site_ids            integer|array
      *      category_ids        integer|array
-     *      product_ids         integer|array
-     *      products_name       string
      *      manufacturer_ids    integer|array
-     *      available_only      boolean
-     *      uncategorized_only  boolean
-     *      where               string
      *      price               array(from => 0, to => 100)
      *      attributes          array(optionId => valueId, ...)
-     *      limit               integer
-     *      start               integer
-     *
+     * </pre>
      * @return Axis_Catalog_Model_Product_Select
      */
     public function addCommonFilters($filters)
     {
         $filters = array_merge(array(
-            'site_ids'              => Axis::getSiteId(),
-            'category_ids'          => null,
-            'product_ids'           => null,
-            'products_name'         => null,
-            'manufacturer_ids'      => null,
-            'available_only'        => true,
-            'uncategorized_only'    => false,
-            'where'                 => null,
-            'price'                 => array(),
-            'attributes'            => array(),
-            'limit'                 => 0,
-            'start'                 => 0
+            'site_ids'          => Axis::getSiteId(),
+            'category_ids'      => null,
+            'manufacturer_ids'  => null,
+            'price'             => array(),
+            'attributes'        => array()
         ), $filters);
 
         if ($filters['site_ids']) {
@@ -295,6 +281,7 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
                 $this->where('cc.site_id = ?', $filters['site_ids']);
             }
         }
+
         if ($filters['category_ids']) {
             if (is_array($filters['category_ids'])) {
                 $this->where('cc.id IN (?)', $filters['category_ids']);
@@ -302,6 +289,7 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
                 $this->where('cc.id = ?', $filters['category_ids']);
             }
         }
+
         if ($filters['manufacturer_ids']) {
             if (is_array($filters['manufacturer_ids'])) {
                 $this->where('cp.manufacturer_id IN (?)', $filters['manufacturer_ids']);
@@ -309,61 +297,39 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
                 $this->where('cp.manufacturer_id = ?', $filters['manufacturer_ids']);
             }
         }
-        if ($filters['product_ids']) {
-            if (is_array($filters['product_ids'])) {
-                $this->where('cp.id IN (?)', $filters['product_ids']);
-            } else {
-                $this->where('cp.id = ?', $filters['product_ids']);
-            }
-        }
-        if ($filters['available_only']) {
-            $this->addFilterByAvailability();
-        }
-        if ($filters['uncategorized_only']) {
-            $this->addFilterByUncategorized();
-        }
+
         if (isset($filters['price']['from'])) {
             $this->where('cp.price >= ?', $filters['price']['from']);
         }
         if (isset($filters['price']['to'])) {
              $this->where('cp.price <= ?', $filters['price']['to']);
         }
-        if ($filters['products_name']) {
-            $this->where('pd.name LIKE ?', $filters['products_name']);
-        }
-        if ($filters['limit']) {
-            $this->limit($filters['limit'], $filters['start']);
-        }
-        if ($filters['where']) {
-            $this->where($filters['where']);
-        }
 
-        /*
-         * Если уже есть фильтр по атрибутам, то пропускаем эти значения атрибутов
-         * и выбираем атрибуты только для тех продуктов которые имеют атрибуты из
-         * существующего фильтра по атрибутам :). Например если у нас уже есть фильтр по
-         * синему цвету то мы пропускаем опцию цвет, а вибираем атрибуты размера(например)
-         * только для продуктов которые имеют синий цвет
-         */
         if (count($filters['attributes'])) {
-            $joinedAttrs = array();
-            $i = 0;
-            foreach ($filters['attributes'] as $optionId => $valueId) {
-                $this->join(array("pac$i" => 'catalog_product_attribute'),
-                    "pac$i.product_id = cp.id")
-                ->where("pac$i.option_id = ?", $optionId)
-                ->where("pac$i.option_value_id = ?", $valueId);
-                if ($i > 0) {
-                    $where = "IF (pac$i.variation_id=0, 1, "
-                                . "IF (0 < " . implode('+', $joinedAttrs) . ", pac$i.variation_id IN (" . implode(',', $joinedAttrs) . "), 1)"
-                            . ")";
-                    $this->where($where);
-                }
-                $joinedAttrs[] = 'pac' . $i . '.variation_id';
-                ++$i;
-            }
+            $this->addFilterByAttributes($filters['attributes']);
         }
 
+        return $this;
+    }
+
+    public function addFilterByAttributes($attributes)
+    {
+        $joinedAttrs = array();
+        $i = 0;
+        foreach ($attributes as $optionId => $valueId) {
+            $this->join(array("pac$i" => 'catalog_product_attribute'),
+                "pac$i.product_id = cp.id")
+            ->where("pac$i.option_id = ?", $optionId)
+            ->where("pac$i.option_value_id = ?", $valueId);
+            if ($i > 0) {
+                $where = "IF (pac$i.variation_id=0, 1, "
+                            . "IF (0 < " . implode('+', $joinedAttrs) . ", pac$i.variation_id IN (" . implode(',', $joinedAttrs) . "), 1)"
+                        . ")";
+                $this->where($where);
+            }
+            $joinedAttrs[] = 'pac' . $i . '.variation_id';
+            ++$i;
+        }
         return $this;
     }
 
@@ -374,7 +340,7 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
     }
 
     /**
-     *Returns array of products, formatted in acceptible by template form
+     * Returns array of products, formatted in acceptible by template form
      * Add images data to each product, fill discount prices
      *
      * @param array $orderedIds [optional] Use in case if you want to order
@@ -475,5 +441,35 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
         Axis::dispatch('catalog_product_array_fetch', $productObj);
 
         return $productObj->getProducts();
+    }
+
+    /**
+     * Retrieve product list with count of products (CALC_FOUND_ROWS)
+     *
+     * @return array
+     */
+    public function fetchList()
+    {
+        $this->distinct()->calcFoundRows();
+
+        if (!$ids = $this->fetchCol()) {
+            return array(
+                'count' => 0,
+                'data'  => array()
+            );
+        }
+
+        $count = $this->foundRows();
+
+        $products = $this->reset()
+            ->from('catalog_product', '*')
+            ->addCommonFields()
+            ->where('cp.id IN (?)', $ids)
+            ->fetchProducts($ids);
+
+        return array(
+            'count' => $count,
+            'data'  => $products
+        );
     }
 }

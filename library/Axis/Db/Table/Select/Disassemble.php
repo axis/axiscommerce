@@ -64,12 +64,12 @@ class Axis_Db_Table_Select_Disassemble
             'expr' => $string,
             'scheme'      => empty($matches[1]) ? null : $matches[1],
             'tableName'   => $matches[2],
-            'colleration' => empty($matches[3]) ? null : $matches[3],
+            'correlation' => empty($matches[3]) ? null : $matches[3],
             'condition'   => empty($matches[4]) ? null : $matches[4]
         );
     }
 
-    protected function _tableCorelation($expresion)
+    protected function _tableCorrelation($expresion)
     {
         if (null === $expresion) {
             $expresion = $this->_tables[0]['tableName'];
@@ -78,8 +78,8 @@ class Axis_Db_Table_Select_Disassemble
             if ($table['tableName'] !== $expresion) {
                 continue;
             }
-            if (null !== $table['colleration'])  {
-                return $table['colleration'];
+            if (null !== $table['correlation'])  {
+                return $table['correlation'];
             }
             return $table['tableName'];
         }
@@ -151,15 +151,15 @@ class Axis_Db_Table_Select_Disassemble
                 $tableExpr = trim($tableExpr);
             }
             $column = trim($column);
-            $colleration = null;
+            $correlation = null;
             if (strstr($column, ' AS ')) {
-                list($column, $colleration) = explode(' AS ', $column);
+                list($column, $correlation) = explode(' AS ', $column);
             }
 
-            if (null === $colleration) {
-                $columns[$this->_tableCorelation($tableExpr)][] = $column;
+            if (null === $correlation) {
+                $columns[$this->_tableCorrelation($tableExpr)][] = $column;
             } else {
-                $columns[$this->_tableCorelation($tableExpr)][$colleration] = $column;
+                $columns[$this->_tableCorrelation($tableExpr)][$correlation] = $column;
             }
         }
         $this->_columns = $columns;
@@ -180,11 +180,11 @@ class Axis_Db_Table_Select_Disassemble
     protected function _replaceLongTableName($string)
     {
         foreach ($this->getTables() as $table) {
-            if (null === $table['colleration']) {
+            if (null === $table['correlation']) {
                 continue;
             }
             $string = str_replace(
-                $table['tableName'] . '.', $table['colleration'] . '.', $string
+                $table['tableName'] . '.', $table['correlation'] . '.', $string
             );
         }
         return $string;
@@ -192,8 +192,8 @@ class Axis_Db_Table_Select_Disassemble
 
     protected function _getTableNameString(array $table)
     {
-        return (null === $table['colleration']) ? "'{$table['tableName']}'" :
-            "array('{$table['colleration']}' => '{$table['tableName']}')";
+        return (null === $table['correlation']) ? "'{$table['tableName']}'" :
+            "array('{$table['correlation']}' => '{$table['tableName']}')";
 
     }
 
@@ -203,16 +203,16 @@ class Axis_Db_Table_Select_Disassemble
         $columns = array();
         if (isset($this->_columns[$table['tableName']])) {
             $columns = $this->_columns[$table['tableName']];
-        } elseif (isset($this->_columns[$table['colleration']])) {
-            $columns = $this->_columns[$table['colleration']];
+        } elseif (isset($this->_columns[$table['correlation']])) {
+            $columns = $this->_columns[$table['correlation']];
         }
         $columnsStr = '';
         if (count($columns)) {
             $columnsAsArray = count($columns) > 1 ? true : false;
-            foreach ($columns as $colleration => $column) {
-                if (is_string($colleration)) {
+            foreach ($columns as $correlation => $column) {
+                if (is_string($correlation)) {
                     $columnsAsArray = true;
-                    $columnsStr .= ", '{$colleration}' => '{$column}'";
+                    $columnsStr .= ", '{$correlation}' => '{$column}'";
                 } else {
                     $columnsStr .= ", '{$column}'";
                 }

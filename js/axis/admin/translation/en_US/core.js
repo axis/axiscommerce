@@ -489,5 +489,7 @@ Locale.module('core', {
     'Shopping Сart': 'Shopping Сart',
     'Wishlist': 'Wishlist',
     'Tags': 'Tags',
-    'Reviews': 'Reviews'
+    'Reviews': 'Reviews',
+    'From': 'From',
+    'To': 'To'
 });
