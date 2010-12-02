@@ -484,4 +484,101 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
         }
         return $this;
     }
+
+    /**
+     * Add filters to select. Calls addFilter method inside a loop
+     *
+     * @param array $filters
+     * <pre>
+     *  array(
+     *      0 => array(
+     *          field       => table_column
+     *          value       => column_value
+     *          operator    => =|>|<|IN|LIKE    [optional]
+     *          table       => table_correlation[optional]
+     *      )
+     *  )
+     * </pre>
+     * @return Axis_Db_Table_Select
+     */
+    public function addFilters(array $filters)
+    {
+        foreach ($filters as $filter) {
+            if (empty($filter['operator'])) {
+                $filter['operator'] = '=';
+            }
+            if (!isset($filter['table'])) {
+                $filter['table'] = null;
+            }
+            $this->addFilter(
+                $filter['field'],
+                $filter['value'],
+                $filter['operator'],
+                $filter['table']
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add filter to select
+     *
+     * Example of usage:
+     * <code>
+     *  $result = Axis::model('catalog/product')
+     *      ->select(array('id', 'is_active'))
+     *      ->addFilter('cp.sku', 'Forrest Gump')
+     *      ->fetchPairs();
+     * </code>
+     *
+     * @param string $column        Table column name to filter.
+     *                              Can be passed with correlation name: cp.sku
+     * @param mixed  $value         Column value to search for.
+     *                              If array is passed, operator will be automatically setted to 'IN'
+     * @param string $operator      [optional] Mysql operator to compare value
+     * @param string $table         [optional] Table correlation name
+     * @return Axis_Db_Table_Select
+     */
+    public function addFilter($column, $value, $operator = '=', $table = null)
+    {
+        $dot = '.';
+        if (null === $table) {
+            if (strstr($column, '.')) {
+                $dot   = '';
+                $table = '';
+            } else {
+                $table = key($this->getPart(Zend_Db_Select::FROM));
+            }
+        } else if (empty($table)) {
+            $dot = '';
+        }
+
+        if (null === $operator) {
+            $operator = '=';
+        }
+
+        if (is_array($value)) {
+            $operator   = 'IN';
+            $bind       = '(?)';
+        } else {
+            switch ($operator) {
+                case 'IN':
+                case 'NOT IN':
+                    $bind = '(?)';
+                    break;
+                case 'LIKE':
+                    $value = '%' . $value . '%';
+                    $bind = '?';
+                    break;
+                default:
+                    $bind = '?';
+                    break;
+            }
+        }
+
+        return $this->where(
+            "{$table}{$dot}{$column} {$operator} {$bind}", $value
+        );
+    }
 }

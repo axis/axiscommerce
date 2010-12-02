@@ -55,5 +55,31 @@ Axis.grid.EditorGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
             this.cm.config.splice(0, 0, this.sm);
         }
         Axis.grid.EditorGridPanel.superclass.initComponent.call(this);
+
+        this.getStore().on({
+            scope       : this,
+            beforeload  : this.beforeLoad
+        })
+    },
+
+    beforeLoad: function(store, options) {
+        var state           = store.sortInfo,
+            cm              = this.getColumnModel(),
+            col             = null
+            options.params  = options.params || {};
+        if (state) {
+            if (cm.columns) {
+                col = cm.columns[cm.findColumnIndex(state.field)];
+            } else {
+                Ext.each(cm.config, function(col) {
+                    if (col.dataIndex == state.field) {
+                        return false;
+                    }
+                });
+            }
+            if (col && col.table) {
+                options.params.sort = col.table + '.' + state.field;
+            }
+        }
     }
 });

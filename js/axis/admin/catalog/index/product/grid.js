@@ -286,6 +286,10 @@ Ext.onReady(function() {
             totalProperty: 'count'
         }, ProductGrid.record),
         remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        },
         url: Axis.getUrl('catalog_index/list-products')
     });
 
@@ -324,7 +328,8 @@ Ext.onReady(function() {
 
     var cm = new Ext.grid.ColumnModel({
         defaults: {
-            sortable: true
+            sortable: true,
+            table: 'cp'
         },
         columns: [{
             dataIndex: 'id',
@@ -333,14 +338,21 @@ Ext.onReady(function() {
         }, {
             dataIndex: 'name',
             header: 'Name'.l(),
-            id: 'name'
+            id: 'name',
+            table: 'cpd',
+            filter: {
+                operator: 'LIKE'
+            }
         }, {
             dataIndex: 'sku',
             editor: new Ext.form.TextField({
                 allowBlank: false
             }),
             header: 'SKU'.l(),
-            width: 180
+            width: 180,
+            filter: {
+                operator: 'LIKE'
+            }
         }, {
             align: 'right',
             dataIndex: 'quantity',

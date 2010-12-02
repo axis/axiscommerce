@@ -113,65 +113,6 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
     }
 
     /**
-     *
-     * @param array $filters [optional]
-     * <pre>
-     * Accepted filters:
-     *      site_ids            integer|array
-     *      category_ids        integer|array
-     *      product_ids         integer|array
-     *      products_name       string
-     *      manufacturer_ids    integer|array
-     *      available_only      boolean
-     *      uncategorized_only  boolean
-     *      where               string
-     *      price               array(from => 0, to => 100)
-     *      attributes          array(optionId => valueId, ...)
-     *      limit               integer
-     *      start               integer
-     * </pre>
-     * @param mixed $order [optional]
-     * @param integer $limit [optional]
-     * @param integer $start [optional]
-     * @return array
-     */
-    public function getList(array $filters = array(), $order = 'cp.id', $limit = 0, $start = 0)
-    {
-        $select = Axis::single('catalog/product')
-            ->select('id')
-            ->distinct()
-            ->calcFoundRows()
-            ->joinCategory()
-            ->addDescription()
-            ->addCommonFilters($filters)
-            ->order($order);
-
-        if ($limit) {
-            $select->limit($limit, $start);
-        }
-
-        if (!$ids = $select->fetchCol()) {
-            return array(
-                'count'     => 0,
-                'products'  => array()
-            );
-        }
-
-        $count = $select->foundRows();
-
-        $products = $select->reset()
-            ->from('catalog_product', '*')
-            ->addCommonFields()
-            ->where('cp.id IN (?)', $ids)
-            ->fetchProducts($ids);
-
-        return array(
-            'count'     => $count,
-            'products'  => $products
-        );
-    }
-
-    /**
      * Retrieve product row by url
      *
      * @param string $url

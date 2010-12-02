@@ -34,7 +34,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             ),
             fcell: new Ext.Template(
                 '<td class="x-grid3-cell-filter x-grid3-cell x-grid3-td-{id} {css}" style="{style}">',
-                '<div {attr} id="x-grid3-filter-{dataIndex}" class="x-grid3-cell-filter-inner x-grid3-filter-{dataIndex}" unselectable="off" style="{istyle}"></div>',
+                '<div {attr} id="x-grid3-filter-{id}" class="x-grid3-cell-filter-inner x-grid3-filter-{id}" unselectable="off" style="{istyle}"></div>',
                 '</td>'
             )
         }
@@ -43,17 +43,30 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
     },
 
     init: function(grid) {
-        this.grid = grid;
-        this.cm = grid.getColumnModel();
-        this.view = grid.getView();
+        this.grid   = grid;
+        this.cm     = grid.getColumnModel();
+        this.view   = grid.getView();
+        this.store  = grid.getStore();
         this.initFilters();
         this.grid.on({
-            scope           : this,
-            viewready       : this.doRender,
+            beforedestroy   : this.destroy,
+            bodyscroll      : this.onScroll,
             columnresize    : this.onColumnResize,
             columnmove      : this.onColumnMove,
-            bodyscroll      : this.onScroll
+            scope           : this,
+            viewready       : this.doRender
         });
+        this.cm.on({
+            scope       : this,
+            hiddenchange: this.onColumnHiddenChange
+        });
+
+        if (!this.store.mode || 'remote' === this.store.mode) {
+            this.store.on('beforeload', this.onBeforeLoad, this);
+        } else {
+            // this.store.on('load', this.onLoad, this);
+        }
+
         this.view.onLayout = this.view.onLayout.createSequence(function(vw, vh) {
             if (!this.filterDom) {
                 return;
@@ -61,11 +74,9 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             this.filterDom.style.width = vw + 'px';
             Ext.each(Ext.get(this.filterDom.firstChild.firstChild).query('td'), function(td, i) {
                 td.style.width = this.view.getColumnWidth(i);
-                var dataIndex = this.cm.getDataIndex(i);
-                if (dataIndex) {
-                    this.filters
-                        .get('x-grid3-filter-cnt-' + dataIndex)
-                        .doLayout();
+                var filter = this.filters.get('x-grid3-filter-cnt-' + this.cm.getColumnId(i))
+                if (filter) {
+                    filter.doLayout();
                 }
             }, this);
             this.view.scroller.setHeight(vh - Ext.get(this.filterDom).getHeight());
@@ -80,7 +91,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             }
 
             this.filters.add(new Ext.Container({
-                id: 'x-grid3-filter-cnt-' + col.dataIndex,
+                id: 'x-grid3-filter-cnt-' + col.id,
                 layout: 'form',
                 labelWidth: 30,
                 border: false,
@@ -93,12 +104,13 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
     },
 
     getFilterItems: function(column) {
-        var items = [];
-        var cfg = {
+        var items = [],
+            cfg = {
             displayField    : 'name',
             editable        : true,
             hideLabel       : true,
             mode            : 'local',
+            name            : column.dataIndex,
             triggerAction   : 'all',
             valueField      : 'id'
         };
@@ -110,15 +122,16 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             }
         }
 
+        if (column.table) {
+            cfg.table = column.table;
+        }
+
         if (!cfg.xtype) {
-            switch (this.grid.getStore().fields.get(column.dataIndex).type.type) {
+            switch (this.store.fields.get(column.dataIndex).type.type) {
                 case 'int':
                 case 'float':
                     cfg.xtype = 'numberfield';
                     break;
-                // case 'boolean':
-                //     cfg.xtype = 'combo';
-                //     break;
                 case 'date':
                     cfg.xtype = 'datefield';
                     break;
@@ -128,47 +141,100 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
         }
 
         if ('datefield' === cfg.xtype || 'numberfield' === cfg.xtype) {
-            cfg.hideLabel = false;
-            cfg.fieldLabel = 'From'.l();
-            items.push(cfg);
-            var cfgTo = {};
-            for (var i in cfg) {
-                cfgTo[i] = cfg[i];
-            }
-            cfgTo.fieldLabel = 'To'.l();
-            items.push(cfgTo);
-            return items;
+            items = this.createRangefield(cfg);
         } else if ('combo' === cfg.xtype) {
-            var emptyRecord = {},
-                vF  = cfg.valueField   ? cfg.valueField   : 'id',
-                dF  = cfg.displayField ? cfg.displayField : 'name';
+            items = [this.createCombobox(cfg)];
+        } else {
+            items = [this.createTextfield(cfg)];
+        }
+        return items;
+    },
 
-            emptyRecord[vF] = cfg.resetValue ? cfg.resetValue : '';
-            emptyRecord[dF] = cfg.resetText ? cfg.resetText : '';
-            if (cfg.store.data.length) {
-                cfg.store.insert(0, new cfg.store.recordType(emptyRecord));
-            }
-            cfg.store.on('load', function(store, records, options) {
-                store.insert(0, new store.recordType(emptyRecord));
-            });
-
-            cfg.initList = function() {
-                if (this.tpl) {
+    createTextfield: function(cfg) {
+        cfg.listeners = {
+            scope: this,
+            specialkey: function(field, e) {
+                if (e.getKey() != e.ENTER) {
                     return;
                 }
-                this.tpl = new Ext.XTemplate(
-                    '<tpl for="."><div class="x-combo-list-item">{',
-                    this.displayField,
-                    ':this.blank}</div></tpl>',
-                    {
-                        blank: function(value) {
-                            return value === '' ? '&nbsp;' : value;
-                        }
+                this.store.reload();
+            }
+        };
+        return cfg;
+    },
+
+    createRangefield: function(cfg) {
+        cfg.hideLabel = false;
+        cfg.fieldLabel = 'From'.l();
+        cfg.operator = '>=';
+
+        if ('datefield' === cfg.type) {
+            cfg.listeners = {
+                scope: this,
+                select: function(field, date) {
+                    this.store.reload();
+                }
+            }
+        } else {
+            cfg.listeners = {
+                scope: this,
+                specialkey: function(field, e) {
+                    if (e.getKey() != e.ENTER) {
+                        return;
                     }
-                );
-            }.createSequence(Ext.form.ComboBox.prototype.initList)
+                    this.store.reload();
+                }
+            }
         }
-        return [cfg];
+
+        var cfgTo = {};
+        for (var i in cfg) {
+            cfgTo[i] = cfg[i];
+        }
+        cfgTo.fieldLabel = 'To'.l();
+        cfgTo.operator = '<=';
+
+        return [cfg, cfgTo];
+    },
+
+    createCombobox: function(cfg) {
+        var emptyRecord = {},
+            vF  = cfg.valueField   ? cfg.valueField   : 'id',
+            dF  = cfg.displayField ? cfg.displayField : 'name';
+
+        emptyRecord[vF] = cfg.resetValue ? cfg.resetValue : '';
+        emptyRecord[dF] = cfg.resetText  ? cfg.resetText  : '';
+        if (cfg.store.data.length) {
+            cfg.store.insert(0, new cfg.store.recordType(emptyRecord));
+        }
+        cfg.store.on('load', function(store, records, options) {
+            store.insert(0, new store.recordType(emptyRecord));
+        });
+
+        cfg.listeners = {
+            scope: this,
+            select: function(combo, record, i) {
+                this.store.reload();
+            }
+        }
+
+        cfg.initList = function() {
+            if (this.tpl) {
+                return;
+            }
+            this.tpl = new Ext.XTemplate(
+                '<tpl for="."><div class="x-combo-list-item">{',
+                this.displayField,
+                ':this.blank}</div></tpl>',
+                {
+                    blank: function(value) {
+                        return value === '' ? '&nbsp;' : value;
+                    }
+                }
+            );
+        }.createSequence(Ext.form.ComboBox.prototype.initList);
+
+        return cfg;
     },
 
     renderMarkup: function() {
@@ -183,7 +249,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
 
         for (var i = 0; i < len; i++) {
             f.id = cm.getColumnId(i);
-            f.dataIndex = cm.getDataIndex(i);
+            //f.dataIndex = cm.getDataIndex(i);
             f.style = view.getColumnStyle(i, true);
             f.css = i === 0 ? 'x-grid3-cell-first ' : (i == last ? 'x-grid3-cell-last ' : '');
             fcb[fcb.length] = fct.apply(f);
@@ -212,13 +278,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
     },
 
     onColumnResize: function(i, width) {
-        this.filterDom.firstChild.style.width = this.view.getOffsetWidth();
-        this.filterDom.firstChild.firstChild.style.width = this.view.getTotalWidth();
-
-        var dataIndex = this.cm.getDataIndex(i);
-        var cnt = this.filters.get('x-grid3-filter-cnt-' + dataIndex);
-        cnt.el.parent('td').setWidth(width);
-        cnt.doLayout();
+        this.recalculateFilterWidth(i, i + 1);
     },
 
     onColumnMove: function(oldIndex, newIndex) {
@@ -234,21 +294,88 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             Ext.get(tds[oldIndex]).insertBefore(tds[newIndex]);
         }
 
-        tds = Ext.get(this.filterDom).query('td');
+        this.recalculateFilterWidth(start, end);
+    },
 
-        for (var i = start; i <= end; i++) {
+    recalculateFilterWidth: function(from, to) {
+        this.filterDom.firstChild.style.width = this.view.getOffsetWidth();
+        this.filterDom.firstChild.firstChild.style.width = this.view.getTotalWidth();
+
+        var tds = Ext.get(this.filterDom).query('td');
+        from = from || 0;
+        to   = to || tds.length - 1;
+        for (var i = from; i <= to; i++) {
             tds[i].style.width = this.view.getColumnWidth(i);
         }
-        for (var i = start; i <= end; i++) {
-            var dataIndex = this.cm.getDataIndex(i);
-            if (dataIndex) {
-                this.filters.get('x-grid3-filter-cnt-' + dataIndex).doLayout();
+        for (var i = from; i <= to; i++) {
+            var filter = this.filters.get('x-grid3-filter-cnt-' + this.cm.getColumnId(i));
+            if (filter) {
+                filter.doLayout();
             }
         }
+    },
+
+    onColumnHiddenChange: function(cm, i, hidden) {
+        Ext.fly('x-grid3-filter-' + cm.getColumnId(i))
+            .parent('td').dom.style.display = (hidden ? 'none' : '');
+        this.recalculateFilterWidth.defer(50, this, []);
     },
 
     onScroll: function(left, top) {
         this.filterDom.scrollLeft = left;
         this.filterDom.scrollLeft = left; // second time for IE (1/2 time first fails, other browsers ignore)
+    },
+
+    onBeforeLoad: function(store, options) {
+        options.params = options.params || {};
+        this.cleanParams(options.params);
+        var params = {},
+            key = 0;
+
+        this.filters.each(function(cnt) {
+            cnt.items.each(function(field) {
+                if (!field.rendered
+                    || 0 === field.getValue().length
+                    || field.resetValue === field.getValue()) {
+
+                    return true;
+                }
+                params['filter[' + key + '][field]'] = field.getName();
+                params['filter[' + key + '][value]'] = field.getValue();
+                if (field.operator) {
+                    params['filter[' + key + '][operator]'] = field.operator;
+                }
+                if (field.table) {
+                    params['filter[' + key + '][table]'] = field.table;
+                }
+                key++;
+            });
+        });
+
+        Ext.apply(options.params, params);
+    },
+
+    destroy: function() {
+        this.removeAll();
+        this.purgeListeners();
+    },
+
+    // functions from ux.GridFilters
+    cleanParams: function(p) {
+        var regex, key;
+        regex = new RegExp('^filter\[[0-9]+\]');
+        for (key in p) {
+            if (regex.test(key)) {
+                delete p[key];
+            }
+        }
+    },
+
+    removeAll : function () {
+        if(this.filters){
+            Ext.destroy.apply(Ext, this.filters.items);
+            // remove all items from the collection
+            this.filters.clear();
+        }
     }
 });

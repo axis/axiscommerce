@@ -48,53 +48,46 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
 
     public function listProductsAction()
     {
-        $sortMapping = array(
-            'id'        => 'cp.id',
-            'name'      => 'cpd.name',
-            'sku'       => 'cp.sku',
-            'quantity'  => 'cp.quantity',
-            'price'     => 'cp.price',
-            'is_active' => 'cp.is_active'
-        );
-
-        $dirs = array('ASC' => 'ASC', 'DESC' => 'DESC');
-        $start = $this->_getParam('start', 0);
-        $limit = $this->_getParam('limit', 10);
-        $sort  = $this->_getParam('sort', 'id');
-        $dir   = $this->_getParam('dir', 'DESC');
-
         if ($this->_hasParam('catId')) {
-            $category = Axis::single('catalog/category')
+            $category = Axis::model('catalog/category')
                 ->find($this->_getParam('catId', 0))
                 ->current();
         } else {
             // used in order window
-            $category = Axis::single('catalog/category')
+            $category = Axis::model('catalog/category')
                 ->getRoot($this->_getParam('siteId'));
         }
 
-        //$modelProduct  = Axis::single('catalog/product');
-        $filters = array('available_only' => false);
+        $mProduct = Axis::model('catalog/product');
+        $select = $mProduct->select('id');
+
         if ($category instanceof Axis_Db_Table_Row) {
-            $filters['site_ids'] = $this->_getParam('siteId', Axis::getSiteId());
+            $select
+                ->joinCategory()
+                ->addFilter('cc.site_id', $this->_getParam('siteId', Axis::getSiteId()));
             if ($category->lvl != 0) {
-                $filters['category_ids'] = $category->id;
+                $select->addFilter('cc.id', $category->id);
             }
         } else {
-            $filters['site_ids'] = 0;
-            $filters['uncategorized_only'] = true;
+            $select->addFilterByUncategorized();
         }
 
-        $data = Axis::single('catalog/product')->getList(
-            $filters,
-            $sortMapping[$sort] . ' ' . $dirs[$dir],
-            $limit,
-            $start
-        );
+        $list = $select->addDescription()
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 10),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            )
+            ->fetchList();
 
         return $this->_helper->json->sendSuccess(array(
-            'data'  => array_values($data['products']),
-            'count' => $data['count']
+            'data'  => array_values($list['data']),
+            'count' => $list['count']
         ));
     }
 
@@ -102,25 +95,30 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $data = Axis::single('catalog/product')->getList(array(
-                'site_ids'       => $this->_getParam('siteId', 0),
-                'available_only' => false,
-                'where'          => 'cp.ordered > 0'
-            ),
-            array('cp.ordered DESC', 'cp.id DESC'),
-            $this->_getParam('limit', 5),
-            $this->_getParam('start', 0)
-        );
+        $select = Axis::model('catalog/product')->select('id')
+            ->where('cp.ordered > 0')
+            ->limit(
+                $this->_getParam('limit', 5),
+                $this->_getParam('start', 0)
+            )
+            ->order(array('cp.ordered DESC', 'cp.id DESC'));
+
+        if ($siteId = $this->_getParam('siteId', 0)) {
+            $select->joinCategory()
+                ->where('cc.site_id = ?', $siteId);
+        }
+
+        $list = $select->fetchList();
 
         $currency = Axis::single('locale/currency')
             ->getCurrency(Axis::config()->locale->main->currency);
-        foreach ($data['products'] as &$item) {
+        foreach ($list['data'] as &$item) {
             $item['price'] = $currency->toCurrency($item['price']);
         }
 
         return $this->_helper->json->sendSuccess(array(
-            'data'  => array_values($data['products']),
-            'count' => count($data['products'])
+            'data'  => array_values($list['data']),
+            'count' => $list['count']
         ));
     }
 
@@ -128,25 +126,30 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $data = Axis::single('catalog/product')->getList(array(
-                'site_ids'       => $this->_getParam('siteId', 0),
-                'available_only' => false,
-                'where'          => 'cp.viewed > 0'
-            ),
-            array('cp.viewed DESC', 'cp.id DESC'),
-            $this->_getParam('limit', 5),
-            $this->_getParam('start', 0)
-        );
+        $select = Axis::model('catalog/product')->select('id')
+            ->where('cp.viewed > 0')
+            ->limit(
+                $this->_getParam('limit', 5),
+                $this->_getParam('start', 0)
+            )
+            ->order(array('cp.viewed DESC', 'cp.id DESC'));
+
+        if ($siteId = $this->_getParam('siteId', 0)) {
+            $select->joinCategory()
+                ->where('cc.site_id = ?', $siteId);
+        }
+
+        $list = $select->fetchList();
 
         $currency = Axis::single('locale/currency')
             ->getCurrency(Axis::config()->locale->main->currency);
-        foreach ($data['products'] as &$item) {
+        foreach ($list['data'] as &$item) {
             $item['price'] = $currency->toCurrency($item['price']);
         }
 
         return $this->_helper->json->sendJson(array(
-            'data'  => array_values($data['products']),
-            'count' => count($data['products'])
+            'data'  => array_values($list['data']),
+            'count' => $list['count']
         ));
     }
 
@@ -560,7 +563,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             ->site_id;
 
         $processed = array();
-        
+
         $modelProductCategory = Axis::single('catalog/product_category');
         $modelCatalogHurl = Axis::single('catalog/hurl');
         foreach ($data as $product) {
