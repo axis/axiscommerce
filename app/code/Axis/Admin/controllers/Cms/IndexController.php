@@ -207,18 +207,18 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
 
         $tableCategory = Axis::single('admin/cms_category');
         $success = true;
-        if ($data['parentId']) {
+        if ($data['parentId']
+            && ($parent = $tableCategory->find($data['parentId'])->current())) {
+
             $success = $tableCategory->update(array(
-                'parent_id' => $data['parentId'] ?
-                        $data['parentId'] : new Zend_Db_Expr('NULL'),
-                'site_id'   => $tableCategory->find($data['parentId'])
-                        ->current()->site_id
-            ), Axis::db()->quoteInto('id = ' . $data['catId']));
+                'parent_id' => $data['parentId'],
+                'site_id'   => $parent->site_id
+            ), Axis::db()->quoteInto('id = ?', $data['catId']));
         } else {
             $success = $tableCategory->update(array(
                 'parent_id' => new Zend_Db_Expr('NULL'),
                 'site_id'   => $data['siteId']
-            ), Axis::db()->quoteInto('id = ?',$data['catId']));
+            ), Axis::db()->quoteInto('id = ?', $data['catId']));
         }
 
         $this->_helper->json->sendJson(array(
