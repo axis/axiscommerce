@@ -23,13 +23,13 @@ ul, ol { list-style-type: none; padding: 0; margin: 0; }
 .block {display: block;}
 
 .header-container { clear: both; background: #e2e9ec url(../images/header_container_bg.gif) repeat-x 0 100%; }
-.header { margin: 0 auto; width: 90%; }
+.header { margin: 0 auto; /*width: 90%;*/ padding: 0 10px; }
 .navigation-container { clear: both; background: url(../images/nav_container_bg.gif) repeat-x 0 0; }
-.navigation { margin: 0 auto; width: 90%; }
-.middle-container { clear: both; padding-top: 20px; background: #083346 url(../images/middle_container_bg.gif) repeat-x 0 0; }
-.middle { margin: 0 auto; width: 90%; background: #fff; }
+.navigation { margin: 0 auto; /*width: 90%;*/ padding: 0 6px; }
+.middle-container { clear: both; padding-top: 1px; background: #083346 /*url(../images/middle_container_bg.gif) repeat-x 0 0*/; }
+.middle { margin: 0 auto; /*width: 90%;*/ background: #fff; }
 .footer-container { clear: both; }
-.footer { margin: 0 auto; width: 90%; padding-top: 20px; text-align: center; color: #a8bbd0; }
+.footer { margin: 0 auto; /*width: 90%;*/ padding: 20px 10px 0; text-align: center; color: #a8bbd0; }
 
 .page-head { padding: 10px 10px; background: #d1e0e3; border-bottom: 1px solid #c7cbcc; zoom: 1; overflow: hidden; }
 .page-head h3 { padding: 0 !important; font: normal 1.5em Arial, Helvetica, sans-serif; line-height: 26px; }
