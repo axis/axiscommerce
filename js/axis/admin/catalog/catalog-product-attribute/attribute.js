@@ -46,3 +46,22 @@ var Attribute = {
         });
     }
 };
+
+Ext.onReady(function() {
+    Attribute.inputTypeStore = new Ext.data.Store({
+        data: [
+            [0, 'Select'],
+            [1, 'String'],
+            [2, 'Radio'],
+            [3, 'Checkbox'],
+            [4, 'Textarea'],
+            [5, 'File']
+        ],
+        reader: new Ext.data.ArrayReader({
+            idIndex: 0
+        }, [
+            {name: 'id', type: 'int'},
+            {name: 'title'}
+        ])
+    });
+});

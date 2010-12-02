@@ -64,15 +64,15 @@ Ext.onReady(function() {
             totalProperty: 'count',
             id: 'id'
         }, [
-            {name: 'id'},
+            {name: 'id', type: 'int'},
             {name: 'code'},
             {name: 'name'},
             {name: 'input_type'},
-            {name: 'sort_order'}
+            {name: 'sort_order', type: 'int'}
         ]),
         sortInfo: {
             field: 'id',
-            direction: 'ASC'
+            direction: 'DESC'
         },
         remoteSort: true
     });
@@ -84,21 +84,34 @@ Ext.onReady(function() {
         columns: [{
             header: 'Id'.l(),
             dataIndex: 'id',
-            width: 40
+            width: 90
         }, {
             header: 'Code'.l(),
             id: 'code',
             dataIndex: 'code',
-            width: 250
+            width: 250,
+            filter: {
+                operator: 'LIKE'
+            }
         }, {
             header: 'Name'.l(),
             id: 'name',
             dataIndex: 'name',
-            width: 250
+            width: 250,
+            table: 'cpot',
+            filter: {
+                operator: 'LIKE'
+            }
         }, {
             header: 'Type'.l(),
             dataIndex: 'input_type',
-            renderer: AttributeGrid.renderType
+            renderer: AttributeGrid.renderType,
+            filter: {
+                store: Attribute.inputTypeStore,
+                resetValue: 'reset',
+                displayField: 'title',
+                valueField: 'id'
+            }
         }, {
             header: 'Sort Order'.l(),
             dataIndex: 'sort_order'
@@ -109,6 +122,7 @@ Ext.onReady(function() {
         autoExpandColumn: 'name',
         ds: ds,
         cm: cm,
+        plugins: [new Axis.grid.Filter()],
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',

@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -24,23 +24,23 @@
  * Panel for standard Axis admin 2-columns interface
  */
 Axis.Panel = Ext.extend(Ext.Panel, {
-    
+
     border: false,
-    
+
     frame: false,
-    
+
     layout: 'border',
-    
+
     plugins: [],
-    
+
     renderTo: 'inside-box',
-    
+
     listeners: {
         'afterrender': function(cmp) {
             if (undefined === cmp.height) {
                 var height = 550;
                 if (typeof window.innerHeight != 'undefined') {
-                    height = (window.innerHeight < 550) ? 550 : window.innerHeight - 250;
+                    height = (window.innerHeight < 550) ? 550 : window.innerHeight - 235;
                 }
                 cmp.setHeight(height);
             }
@@ -52,7 +52,7 @@ Axis.Panel = Ext.extend(Ext.Panel, {
             }
         }
     },
-    
+
     initComponent: function() {
         this.plugins.push(
             new Ext.ux.PanelResizer()
