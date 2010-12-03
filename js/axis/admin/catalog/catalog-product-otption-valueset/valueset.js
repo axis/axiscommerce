@@ -1,38 +1,38 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 var Set = {
-    
+
     window: null,
-    
+
     form: null,
-    
+
     grid: null,
-    
+
     record: Ext.data.Record.create([
-        {name: 'id'},
+        {name: 'id', type: 'int'},
         {name: 'name', type: 'string'}
     ]),
-    
+
     create: function (){
         Set.form.getForm().setValues({
             id: 0,
@@ -41,7 +41,7 @@ var Set = {
         Set.window.setTitle('New Valueset'.l());
         Set.window.show();
     },
-    
+
     load: function(id) {
         var record = Set.grid.getStore().getById(id);
         Set.form.getForm().setValues({
@@ -51,7 +51,7 @@ var Set = {
         Set.window.setTitle(record.get('name'));
         Set.window.show();
     },
-    
+
     save: function() {
         Set.form.getForm().submit({
             url: Axis.getUrl('catalog_product-option-valueset/save-set'),
@@ -61,23 +61,23 @@ var Set = {
             }
         });
     },
-    
+
     remove: function() {
         var selectedItems = Set.grid.getSelectionModel().selections.items;
-        
+
         if (!selectedItems.length || !confirm('Are you sure?'.l())) {
             return;
         }
-        
+
         var data = {};
-        
+
         for (var i = 0; i < selectedItems.length; i++) {
             if (!selectedItems[i]['data']['id']) {
                 continue;
             }
             data[i] = selectedItems[i]['data']['id'];
         }
-        
+
         Ext.Ajax.request({
             url: Axis.getUrl('catalog_product-option-valueset/delete-sets'),
             params: {data: Ext.encode(data)},
@@ -89,11 +89,11 @@ var Set = {
 };
 
 var Value = {
-    
+
     grid: null,
-    
+
     record: null,
-    
+
     create: function() {
         if (!Value.grid.getStore().baseParams.setId) {
             return alert('Select the valueset on the left panel'.l());
@@ -110,18 +110,18 @@ var Value = {
         Value.grid.getStore().insert(0, newValue);
         Value.grid.startEditing(0, 1);
     },
-    
+
     save: function() {
         var modified = Value.grid.getStore().getModifiedRecords();
         if (!modified.length) {
             return;
         }
-        
+
         var data = {};
         for (var i = 0; i < modified.length; i++) {
             data[modified[i]['id']] = modified[i]['data'];
         }
-        
+
         var jsonData = Ext.encode(data);
         Ext.Ajax.request({
             url: Axis.getUrl('catalog_product-option-valueset/save-values'),
@@ -135,7 +135,7 @@ var Value = {
             }
         });
     },
-    
+
     load: function(id) {
         Value.grid.getStore().baseParams.setId = id;
         Value.grid.getStore().load();
@@ -143,7 +143,7 @@ var Value = {
 };
 
 Ext.onReady(function(){
-    
+
     var dsSet = new Ext.data.Store({
         autoLoad: true,
         proxy: new Ext.data.HttpProxy({
@@ -154,7 +154,7 @@ Ext.onReady(function(){
             id: 'id'
         }, Set.record)
     });
-    
+
     var cmSet = new Ext.grid.ColumnModel({
         columns: [{
             header: "Name".l(),
@@ -162,16 +162,20 @@ Ext.onReady(function(){
             dataIndex: 'name',
             editor: new Ext.form.TextField({
                 allowBlank: false
-            })
+            }),
+            filter: {
+                operator: 'LIKE'
+            }
         }]
     });
-    
+
     Set.grid = new Axis.grid.GridPanel({
         autoExpandColumn: 'name',
         ds: dsSet,
         cm: cmSet,
         region: 'west',
         width: 250,
+        plugins: [new Axis.grid.Filter()],
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
@@ -181,11 +185,11 @@ Ext.onReady(function(){
             icon: Axis.skinUrl + '/images/icons/page_edit.png',
             handler: function(){
                 var selected = Set.grid.getSelectionModel().getSelected();
-        
+
                 if (!selected) {
                     return;
                 }
-                
+
                 Set.load(selected.get('id'));
             }
         }, {
@@ -200,14 +204,14 @@ Ext.onReady(function(){
             }
         }]
     });
-    
+
     Set.grid.on('rowclick', function(grid, index, e) {
         Value.load(grid.getStore().getAt(index).get('id'));
     });
     Set.grid.on('rowdblclick', function(grid, index, e) {
         Set.load(grid.getStore().getAt(index).get('id'));
     });
-    
+
     Set.form = new Axis.form.FormPanel({
         bodyStyle: 'padding: 10px;',
         items: [{
@@ -223,7 +227,7 @@ Ext.onReady(function(){
             xtype: 'hidden'
         }]
     });
-    
+
     Set.window = new Axis.Window({
         width: 350,
         height: 150,
@@ -244,14 +248,18 @@ Ext.onReady(function(){
             }
         }]
     });
-    
+
     valueRecord = [
         {name: 'id', type: 'int'},
         {name: 'sort_order', type: 'int'},
         {name: 'valueset_id', type: 'int'}
     ];
-    
-    var valueCols = [];
+
+    var valueCols = [{
+        dataIndex: 'id',
+        header: 'Id'.l(),
+        width: 90
+    }];
     for (var id in Axis.locales) {
         valueRecord.push(
             {name: 'name_' + id}
@@ -262,12 +270,17 @@ Ext.onReady(function(){
                 allowBlank: false,
                 maxLength: 128
             }),
-            header: 'Title ({language})'.l('core', Axis.locales[id]['language'])
+            header: 'Title ({language})'.l('core', Axis.locales[id]['language']),
+            table: 'cpovt',
+            filter: {
+                operator: 'LIKE',
+                name: 'name'
+            }
         });
     }
-    
+
     Value.record = new Ext.data.Record.create(valueRecord);
-    
+
     var valueStore = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
             url: Axis.getUrl('catalog_product-option-valueset/list-values')
@@ -277,8 +290,9 @@ Ext.onReady(function(){
             id: 'id'
         }, Value.record)
     });
-    
+
     valueCols.push({
+        align: 'right',
         header: 'Sort Order'.l(),
         dataIndex: 'sort_order',
         editor: new Ext.form.NumberField({
@@ -287,7 +301,7 @@ Ext.onReady(function(){
             maxValue: 250
         })
     });
-    
+
     Value.grid = new Axis.grid.EditorGridPanel({
         ds: valueStore,
         cm: new Ext.grid.ColumnModel({
@@ -299,6 +313,7 @@ Ext.onReady(function(){
         viewConfig: {
             forceFit: true
         },
+        plugins: [new Axis.grid.Filter()],
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
@@ -315,15 +330,15 @@ Ext.onReady(function(){
             cls: 'x-btn-text-icon',
             handler : function(){
                 var selectedItems = Value.grid.getSelectionModel().selections.items;
-                
+
                 if (!selectedItems.length)
                     return;
-                
+
                 if (!confirm('Are you sure?'.l()))
                     return;
-                        
+
                 var data = {};
-                
+
                 for (var i = 0; i < selectedItems.length; i++) {
                     data[i] = selectedItems[i].id;
                 }
@@ -345,7 +360,7 @@ Ext.onReady(function(){
             }
         }]
     });
-    
+
     new Axis.Panel({
         items: [
             Set.grid,

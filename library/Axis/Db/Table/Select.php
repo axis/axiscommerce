@@ -549,6 +549,9 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
                 $table = '';
             } else {
                 $table = key($this->getPart(Zend_Db_Select::FROM));
+                if (empty($table)) {
+                    $dot = '';
+                }
             }
         } else if (empty($table)) {
             $dot = '';
