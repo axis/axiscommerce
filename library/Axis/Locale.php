@@ -226,7 +226,13 @@ class Axis_Locale
     public static function getLanguageId()
     {
         if (!isset(Axis::session()->language)) {
-            Axis::session()->language = Axis::config()->locale->main->language;
+            if (Zend_Registry::isRegistered('area')
+                && 'admin' == Zend_Registry::get('area')) {
+
+                Axis::session()->language = Axis::config('locale/main/language_admin');
+            } else {
+                Axis::session()->language = Axis::config('locale/main/language_front');
+            }
         }
         return Axis::session()->language;
     }
