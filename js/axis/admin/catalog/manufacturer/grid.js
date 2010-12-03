@@ -1,51 +1,54 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.onReady(function(){
-    
+
     var record = [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},
-        {name: 'url', type: 'string'},
+        {name: 'key_word', type: 'string', mapping: 'url'},
         {name: 'image', type: 'string'}
     ];
     for (var langId in Axis.languages) {
         record.push({'name': 'title_' + langId});
     }
     var manufacturer_object = Ext.data.Record.create(record);
-    
+
     var ds = new Ext.data.Store({
+        autoLoad: true,
+        baseParams: {
+            limit: 25
+        },
         url: Axis.getUrl('catalog_manufacturer/list'),
-        method: 'get',
         reader: new Ext.data.JsonReader({
             root : 'data',
             totalProperty: 'count',
             id: 'id'
         }, manufacturer_object),
-        remoteSort: false,
+        remoteSort: true,
         pruneModifiedRecords: true,
         sortInfo: {
             field: 'id',
             direction: 'DESC'
         }
     })
-    
+
     var columns = [];
     columns.push({
         header: 'Id'.l(),
@@ -57,21 +60,31 @@ Ext.onReady(function(){
         editor: new Ext.form.TextField({
             allowBlank: false,
             maxLength: 128
-        })
+        }),
+        filter: {
+            operator: 'LIKE'
+        }
     }, {
         header: 'Url'.l(),
-        dataIndex: 'url',
+        dataIndex: 'key_word',
         editor: new Ext.form.TextField({
             allowBlank: false,
             maxLength: 128
-        })
+        }),
+        table: 'ch',
+        filter: {
+            operator: 'LIKE'
+        }
     }, {
         header: 'Image'.l(),
         dataIndex: 'image',
         editor: new Ext.form.TextField({
             allowBlank: true,
             maxLength: 255
-        })
+        }),
+        filter: {
+            operator: 'LIKE'
+        }
     });
     for (var langId in Axis.languages) {
         columns.push({
@@ -81,7 +94,12 @@ Ext.onReady(function(){
             editor: new Ext.form.TextField({
                allowBlank: false,
                maxLength: 255
-            })
+            }),
+            table: 'cpmt',
+            filter: {
+                name: 'title',
+                operator: 'LIKE'
+            }
         });
     }
     var cm = new Ext.grid.ColumnModel({
@@ -90,7 +108,7 @@ Ext.onReady(function(){
         },
         columns: columns
     });
-    
+
     var grid = new Axis.grid.EditorGridPanel({
         cm: cm,
         id: 'grid',
@@ -99,6 +117,7 @@ Ext.onReady(function(){
             forceFit: true,
             deferEmptyText: true
         },
+        plugins: [new Axis.grid.Filter()],
         tbar: [{
             text: 'Add'.l(),
             handler: add,
@@ -126,35 +145,38 @@ Ext.onReady(function(){
             handler: reload,
             iconCls: 'btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/refresh.png'
-        }]
+        }],
+        bbar: new Axis.PagingToolbar({
+            pageSize: 25,
+            store: ds
+        })
     });
-    
+
     new Axis.Panel({
         items: [grid]
     });
-    
-    Ext.getCmp('grid').store.load();
+
     Ext.getCmp('grid').on('rowdblclick', function(grid, index){
         edit(grid.getStore().getAt(index));
     });
-    
-    function reload(){
+
+    function reload() {
         Ext.getCmp('grid').store.reload();
     }
-    
-    function add(){
+
+    function add() {
         Ext.getCmp('window').show();
         Ext.getCmp('window').setTitle('New Manufacturer'.l());
         Ext.getCmp('form').getForm().clear();
     }
-    
-    function edit(record){
-        record = record|| Ext.getCmp('grid').getSelectionModel().getSelected();
-        
+
+    function edit(record) {
+        record = record || Ext.getCmp('grid').getSelectionModel().getSelected();
+
         if (!record) {
             return;
         }
-        
+
         Ext.getCmp('window').show();
         Ext.getCmp('window').setTitle(record.get('name'));
         var form = Ext.getCmp('form').getForm();
@@ -169,14 +191,14 @@ Ext.onReady(function(){
         }
         form.findField('data[title]').setValue(titles);
     }
-    
-    function save(){
+
+    function save() {
         var modified = Ext.getCmp('grid').store.getModifiedRecords();
-        
+
         if (!modified.length) {
             return false;
         }
-        
+
         var data = {};
         for (var i = 0, len = modified.length; i < len; i++) {
             data[modified[i]['id']] = modified[i]['data'];
@@ -190,15 +212,15 @@ Ext.onReady(function(){
             success: reload
         })
     }
-    
-    function deleteSelected(){
+
+    function deleteSelected() {
         var selections = Ext.getCmp('grid').getSelectionModel().getSelections();
-        
+
         if (!selections.length || !confirm('Are you sure?'.l())) {
             return;
         }
-         
-        var data = {};   
+
+        var data = {};
         for (var i = 0, len = selections.length; i < len; i++) {
             data[i] = selections[i]['id'];
         }

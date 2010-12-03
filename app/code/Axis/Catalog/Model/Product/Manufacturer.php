@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
@@ -34,11 +34,13 @@
 class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
 {
     protected $_name = 'catalog_product_manufacturer';
-    
+
+    protected $_selectClass = 'Axis_Catalog_Model_Product_Manufacturer_Select';
+
     protected $_dependentTables = array(
         'Axis_Catalog_Model_Product_Manufacturer_Title'
     );
-    
+
     /**
      * Retrieve list of manufacturers
      * @return array
@@ -46,8 +48,9 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
     public function getList()
     {
         return $this->select('*')
-            ->joinInner('catalog_product_manufacturer_title',
-                'cpm.id = cpmt.manufacturer_id AND language_id = 1',
+            ->joinInner(
+                'catalog_product_manufacturer_title',
+                'cpm.id = cpmt.manufacturer_id AND language_id = :languageId',
                 '*'
             )
             ->joinInner('catalog_hurl',
@@ -56,31 +59,10 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
             )
             ->where('ch.site_id = ?', Axis::getSiteId())
             ->order('cpmt.title ASC')
+            ->bind(array('languageId' => Axis_Locale::getLanguageId()))
             ->fetchAll();
     }
-    
-    /**
-     * Get list of manufacturers on all available languages
-     * @return array
-     */
-    public function getListBackend()
-    {
-        return $this->select('*')
-            ->joinLeft(
-                'catalog_product_manufacturer_title',
-                'cpm.id = cpmt.manufacturer_id',
-                '*'
-            )
-            ->joinLeft(
-                'catalog_hurl',
-                "ch.key_type = 'm' AND ch.key_id = cpm.id",
-                array('url' => 'key_word')
-            )
-            ->order('cpm.id DESC')
-            ->fetchAll()
-            ;
-    }
-    
+
     /**
      * @param array $data (0 => array(row_data), 1 => )
      * @return boolean
@@ -104,12 +86,12 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
         }
         return $success;
     }
-    
+
     /**
      * Update or delete manufacturer row
-     * Checks is recieved url has duplicate before save. 
+     * Checks is recieved url has duplicate before save.
      * If it has - return false
-     * 
+     *
      * @param array $row
      * @return bool
      */
@@ -119,18 +101,18 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
         if (isset($row['id']) && !empty($row['id'])) {
             $manufacturer = $this->find($row['id'])->current();
         }
-        
-        $url = trim($row['url']);
+
+        $url = trim($row['key_word']);
         if (empty($url)) {
             $url = $row['name'];
         }
         $url = preg_replace('/[^a-zA-Z0-9]/', '-', $url);
         if (Axis::single('catalog/hurl')->hasDuplicate(
-                $url, 
-                array_keys(Axis_Collect_Site::collect()), 
+                $url,
+                array_keys(Axis_Collect_Site::collect()),
                 $manufacturer ? $manufacturer->id : null
             )) {
-            
+
             Axis::message()->addError(
                 Axis::translate('catalog')->__(
                     'Duplicate entry (url)'
@@ -138,7 +120,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
             );
             return false;
         }
-        
+
         if (!$manufacturer) {
             unset($row['id']);
             $manufacturer = $this->createRow();
@@ -148,9 +130,9 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
         if (false === $manufacturer->save()) {
             return false;
         }
-        
+
         $success = true;
-        
+
         // title
         Axis::single('catalog/product_manufacturer_title')->delete(
             'manufacturer_id = ' . $manufacturer->id
@@ -160,11 +142,11 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
             $success = $success ? (bool) $modelManufactureTitle->insert(array(
                 'manufacturer_id' => $manufacturer->id,
                 'language_id' => $id,
-                'title' => isset($row['title_' . $id]) ? 
+                'title' => isset($row['title_' . $id]) ?
                     $row['title_' . $id] : ''
             )) : false;
         }
-        
+
         // url
         foreach (Axis_Collect_Site::collect() as $id => $name) {
             $success = $success ? (bool) Axis::single('catalog/hurl')->save(
@@ -175,10 +157,10 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
                     'key_word' => $url
             )) : false;
         }
-        
+
         return $success;
     }
-    
+
     public function deleteByIds($ids)
     {
         if (!is_array($ids)) {

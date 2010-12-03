@@ -242,8 +242,7 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
             $langIdToCode[$lang->id] = $lang->locale;
         }
 
-        $manufacturersSource = Axis::single('catalog/product_manufacturer')
-            ->getListBackend();
+        $manufacturersSource = Axis::single('catalog/product_manufacturer')->getList();
 
         $manufacturers = array();
         foreach ($manufacturersSource as $manufacturer) {
