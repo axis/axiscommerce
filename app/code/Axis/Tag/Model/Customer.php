@@ -218,8 +218,7 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
                 'catalog_product_description',
                 'cpd.product_id = tp.product_id AND cpd.language_id = :languageId'
             )
-            ->bind(array('languageId' => $params['languageId']))
-            ;
+            ->bind(array('languageId' => $params['languageId']));
 
         if (isset($params['filters'])) {
             $this->_setFilter($select, $params['filters']);

@@ -75,7 +75,7 @@ class Axis_Catalog_Model_Product_Option extends Axis_Db_Table
                 "cpot.option_id = cpo.id AND language_id = {$params['languageId']}",
                 array('name', 'description')
             );
-            
+
         } else {
             $select->joinLeft('catalog_product_option_text',
                 'cpot.option_id = cpo.id',
@@ -224,18 +224,16 @@ class Axis_Catalog_Model_Product_Option extends Axis_Db_Table
         }
         return $this->select(array('valueset_id' => 'id'))
             ->join('catalog_product_option_text',
-                'cpot.option_id = cpo.id AND cpot.language_id = :languageId',
+                "cpot.option_id = cpo.id AND cpot.language_id = $languageId",
                 array('valueset_name' => 'name'))
             ->join('catalog_product_option_value',
                 'cpo.id = cpov.valueset_id'
             )
             ->join('catalog_product_option_value_text',
-                'cpovt.option_value_id = cpov.id AND cpovt.language_id = :languageId',
+                "cpovt.option_value_id = cpov.id AND cpovt.language_id = $languageId",
                 array('option_name' => 'name', 'option_id' => 'option_value_id')
             )
-            ->bind(array('languageId' => $languageId))
-            ->fetchAll()
-        ;
+            ->fetchAll();
     }
 
     /**
