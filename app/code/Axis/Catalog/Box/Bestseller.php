@@ -40,13 +40,14 @@ class Axis_Catalog_Box_Bestseller extends Axis_Catalog_Box_Product_Listing
     {
         $select = Axis::model('catalog/product')->select('id')
             ->addFilterByAvailability()
+            ->joinCategory()
+            ->where('cc.site_id = ?', Axis::getSiteId())
             ->where('cp.ordered > 0')
             ->order(array('cp.ordered DESC', 'cp.id DESC'))
             ->limit($this->getProductsCount());
 
         if ($catId = Axis_HumanUri::getInstance()->getParamValue('cat')) {
-            $select->joinCategory()
-                ->where('cc.id = ?', $catId);
+            $select->where('cc.id = ?', $catId);
         }
 
         $list = $select->fetchList();

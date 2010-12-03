@@ -41,12 +41,13 @@ class Axis_Catalog_Box_Featured extends Axis_Catalog_Box_Product_Listing
         $select = Axis::model('catalog/product')->select('id')
             ->addFilterByAvailability()
             ->addFilterByFeatured()
+            ->joinCategory()
+            ->where('cc.site_id = ?', Axis::getSiteId())
             ->order(array('cp.featured_from DESC', 'cp.id DESC'))
             ->limit($this->getProductsCount());
 
         if ($catId = Axis_HumanUri::getInstance()->getParamValue('cat')) {
-            $select->joinCategory()
-                ->where('cc.id = ?', $catId);
+            $select->where('cc.id = ?', $catId);
         }
 
         $list = $select->fetchList();
