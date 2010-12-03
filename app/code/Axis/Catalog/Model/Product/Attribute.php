@@ -403,21 +403,19 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
             )
             ->joinLeft(
                 'catalog_product_option_value_text',
-                'cpovt.option_value_id = cpa.option_value_id AND cpovt.language_id = :languageId'
+                "cpovt.option_value_id = cpa.option_value_id AND cpovt.language_id = $languageId"
              )
             ->joinLeft(
                 'catalog_product_attribute_value',
-                'cpav.product_attribute_id = cpa.id AND (cpav.language_id = :languageId OR cpav.language_id = 0)'
+                "cpav.product_attribute_id = cpa.id AND (cpav.language_id = $languageId OR cpav.language_id = 0)"
             )
             ->where('cpa.product_id = ?', $productId)
             ->where('cpa.variation_id = 0')
             ->where('cpa.modifier = 0')
-            ->where('cpot.language_id = :languageId')
+            ->where('cpot.language_id = ?', $languageId)
             ->order('cpo.sort_order')
             ->order('value')
-            ->bind(array('languageId' => $languageId))
-            ->fetchAll()
-        ;
+            ->fetchAll();
     }
 
     public function getModifiers($productId, $languageId = null)
@@ -443,18 +441,16 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
             )
             ->joinLeft(
                 'catalog_product_option_value_text',
-                'cpovt.option_value_id = cpa.option_value_id AND cpovt.language_id = :languageId',
+                "cpovt.option_value_id = cpa.option_value_id AND cpovt.language_id = $languageId",
                 array('value_name' => 'name')
             )
             ->where('cpa.product_id = ?', $productId)
-            ->where('cpot.language_id = :languageId')
+            ->where('cpot.language_id = ?', $languageId)
             ->where('cpa.modifier = 1')
             ->order('cpo.sort_order')
             ->order('cpov.sort_order')
             ->order('value_name')
-            ->bind(array('languageId' => $languageId))
-            ->fetchAll()
-            ;
+            ->fetchAll();
     }
 
     public function getVariations($productId, $languageId = null)
@@ -492,19 +488,14 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
                 'catalog_product_stock',
                 'cpa.product_id = cps.product_id AND ((cps.backorder = 0 AND cpv.quantity > 0) OR (cps.backorder > 0))'
             )
-            ->where('cpa.product_id = :productId')
+            ->where('cpa.product_id = ?', $productId)
             ->where('cpa.variation_id > 0')
-            ->where('cpot.language_id = :languageId')
-            ->where('cpovt.language_id = :languageId')
+            ->where('cpot.language_id = ?', $languageId)
+            ->where('cpovt.language_id = ?', $languageId)
             ->order('cpo.sort_order')
             ->order('cpov.sort_order')
             ->order('cpa.id')
-            ->bind(array(
-                'productId'  => $productId,
-                'languageId' => $languageId
-            ))
-           ->fetchAll()
-            ;
+            ->fetchAll();
     }
 
 

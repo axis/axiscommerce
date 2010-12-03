@@ -233,8 +233,8 @@ class Axis_Admin_Gbase_IndexController extends Axis_Admin_Controller_Back
         $zendCurrency = $currencyModel->getCurrency($params['currency']);
         $rate = $currencyModel->getData($params['currency'], 'rate');
         $currencyOptions = array(
-            'position' => Axis_Currency::RIGHT,
-            'display'  => Axis_Currency::USE_SHORTNAME
+            'position' => Zend_Currency::RIGHT,
+            'display'  => Zend_Currency::USE_SHORTNAME
         );
 
         $product = $tableProduct->find($productId)->current();

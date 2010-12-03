@@ -154,8 +154,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
             )
             ->where("ch.key_type='c'")
             ->order('cc.lft')
-            ->bind(array('languageId' => $languageId))
-            ;
+            ->bind(array('languageId' => $languageId));
 
         if (null !== $siteIds) {
             $select->where('cc.site_id IN(?)', $siteIds);
