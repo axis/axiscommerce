@@ -48,7 +48,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
     private $_currentCurrencyCode = null;
 
     /**
-     * Array of Axis_Currency objects
+     * Array of Zend_Currency objects
      *
      * @var array
      */
@@ -109,10 +109,10 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
     }
 
     /**
-     * Return Axis_Currency object
+     * Return Zend_Currency object
      *
      * @param string $code
-     * @return Axis_Currency
+     * @return Zend_Currency
      */
     public function getCurrency($code = '')
     {
@@ -121,7 +121,8 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
         }
         if (!isset($this->_instanses[$code])) {
             $options = $this->_getCurrencyOptions($code);
-            $currency = new Axis_Currency(
+            Zend_Currency::setCache(Axis::cache());
+            $currency = new Zend_Currency(
                 $options['currency'],
                 $options['format'] === null ?
                     Axis_Locale::getLocale() : $options['format']
