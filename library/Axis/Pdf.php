@@ -51,12 +51,12 @@ class Axis_Pdf
     
     public function setContent($content)
     {   // next page is <div style="page-break-before:always"></div>
-        @$this->_DOMPDF->load_html($content);
+        $this->_DOMPDF->load_html($content);
     }
     
     public function getPdf($returnFileName = "sample.pdf")
     {
-        @$this->_DOMPDF->render();
-        @$this->_DOMPDF->stream($returnFileName);
+        $this->_DOMPDF->render();
+        $this->_DOMPDF->stream($returnFileName);
     }   
 }
