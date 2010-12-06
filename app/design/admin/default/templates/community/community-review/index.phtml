@@ -24,7 +24,7 @@ var ratingCombo = new Ext.form.ComboBox({
     hidden: true,
     editable: false
 })
-<?php 
+<?php
 $ratings = Axis::single('community/review_rating')->getList();
 
 $combos = "
@@ -93,23 +93,7 @@ var review_object = Ext.data.Record.create([
     {name: 'pros', type: 'string'},
     {name: 'cons', type: 'string'},
     {name: 'summary', type: 'string'},
-    {name: 'status', type: 'string'}
+    {name: 'status', type: 'string'},
+    {name: 'rating', type: 'float'}
 ]);
-var expander = new Ext.grid.RowExpander({
-    enableCaching: false,
-    tpl : new Ext.Template(
-        '<div style="margin: 0px 0px 0px 45px; padding: 0px 0px 5px;">',
-        <?php 
-            $fields = "";
-            foreach ($ratings as $rating) {
-                $fields .= "'<div class=\"rating\"><span class=\"rating-title\">$rating[title]</span> {rating_$rating[id]}</div>',\n";
-            }
-            echo $fields;
-        ?>
-        '<br clear="all"/><div><b>Pros:</b> {pros}</div>',
-        '<div><b>Cons:</b> {cons}</div><br/>',
-        '<div><b>Summary:</b> {summary}</div>',
-        '</div>'
-    )
-});
 </script>

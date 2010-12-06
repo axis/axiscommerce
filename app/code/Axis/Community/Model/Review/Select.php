@@ -34,7 +34,6 @@
 class Axis_Community_Model_Review_Select extends Axis_Db_Table_Select
 {
     /**
-     *
      * @return  Axis_Admin_Model_Cms_Page_Select Fluent interface
      */
     public function addRating()
@@ -47,5 +46,52 @@ class Axis_Community_Model_Review_Select extends Axis_Db_Table_Select
         return $this;
     }
 
+    /**
+     * @param integer $languageId [optional]
+     * @return Axis_Catalog_Model_Product_Select
+     */
+    public function addProductDescription($languageId = null)
+    {
+        if (null === $languageId) {
+            $languageId = Axis_Locale::getLanguageId();
+        }
 
+        return $this->joinLeft('catalog_product_description',
+            'cr.id = cpd.product_id AND cpd.language_id = ' . $languageId,
+            array(
+                'product_name'              => 'name',
+                'product_image_seo_name'    => 'image_seo_name'
+            )
+        );
+    }
+
+    /**
+     * Rewriting of parent method
+     * Add having statement if filter by rating is required
+     *
+     * @param array $filters
+     * <pre>
+     *  array(
+     *      0 => array(
+     *          field       => table_column
+     *          value       => column_value
+     *          operator    => =|>|<|IN|LIKE    [optional]
+     *          table       => table_correlation[optional]
+     *      )
+     *  )
+     * </pre>
+     * @return Axis_Db_Table_Select
+     */
+    public function addFilters(array $filters)
+    {
+        foreach ($filters as $key => $filter) {
+            if ('rating' != $filter['field']) {
+                continue;
+            }
+            $this->having("rating {$filter['operator']} ?", $filter['value']);
+            unset($filters[$key]);
+        }
+
+        return parent::addFilters($filters);
+    }
 }

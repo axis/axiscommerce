@@ -48,17 +48,38 @@ class Axis_Admin_Community_ReviewController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $where  = $this->_hasParam('where') ? $this->_getParam('where') : null;
-        $limit  = $this->_hasParam('limit') ? $this->_getParam('limit') : 20;
-        $page   = $this->_hasParam('page')  ? $this->_getParam('page')  : null;
-        $dir    = $this->_hasParam('dir')   ? $this->_getParam('dir')   : 'DESC';
-        $order  = $this->_hasParam('sort')  ? $this->_getParam('sort')  : 'cr.date_created';
+        $sort = $this->_getParam('sort', 'id');
+        $mReview = Axis::model('community/review');
+        $select = $mReview->select('id')
+            ->distinct()
+            ->calcFoundRows()
+            ->addProductDescription()
+            ->addRating()
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 10),
+                $this->_getParam('start', 0)
+            )
+            ->order($sort . ' ' . $this->_getParam('dir', 'DESC'));
 
-        $reviews = Axis::single('community/review')->getList($where, $order, $dir, $limit, $page, true);
+        $data = array();
+        if ($ids = $select->fetchCol()) {
+            $data = $mReview->select('*')
+                ->addProductDescription()
+                ->addRating()
+                ->where('cr.id IN (?)', $ids)
+                ->order($sort . ' ' . $this->_getParam('dir', 'DESC'))
+                ->fetchAssoc();
+
+            $ratings = $mReview->loadRating(array_keys($data));
+            foreach ($data as $key => &$review) {
+                $review['ratings'] = $ratings[$key];
+            }
+        }
 
         $this->_helper->json->sendSuccess(array(
-            'totalCount' => $reviews['count'],
-            'data' => $reviews['reviews']
+            'count' => $select->foundRows(),
+            'data'  => array_values($data)
         ));
     }
 
