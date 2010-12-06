@@ -23,6 +23,7 @@
  * @license     GNU Public License V3.0
  */
 
+define("DOMPDF_UNICODE_ENABLED", true);
 require_once('dompdf/dompdf_config.inc.php');
 
 /**
