@@ -563,9 +563,11 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
             $operator = strtoupper($operator);
         }
 
-        if (is_array($value) && 'NOT IN' != $operator) {
-            $operator   = 'IN';
-            $bind       = '(?)';
+        if (is_array($value)) {
+            $bind = '(?)';
+            if ('NOT IN' != $operator) {
+                $operator = 'IN';
+            }
         } else {
             switch ($operator) {
                 case 'IN':
