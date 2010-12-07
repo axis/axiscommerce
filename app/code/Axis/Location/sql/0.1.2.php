@@ -46,7 +46,7 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         INSERT INTO `{$installer->getTable('location_address_format')}`
             (`id`, `name`, `address_format`, `address_summary`)
-            VALUES (1, 'ISO/IEC 19773', '{{firstname}} {{lastname}}EOL{{if company}}{{company}}EOL{{/if}}{{if street_address}}{{street_address}}EOL{{/if}}{{if suburb}}{{suburb}}EOL{{/if}}{{city}} {{if zone.name}}{{zone.name}} {{/if}}{{postcode}}EOL{{country.name}}EOL{{if phone}}T: {{phone}}EOL{{/if}}EOL{{if fax}}F: {{fax}}EOL{{/if}}', '{{firstname}} {{lastname}}');
+            VALUES (1, 'ISO/IEC 19773', '{{firstname}} {{lastname}}EOL{{if company}}{{company}}EOL{{/if}}{{if street_address}}{{street_address}}EOL{{/if}}{{if suburb}}{{suburb}}EOL{{/if}}{{if city}}{{city}}{{/if}} {{if zone.name}}{{zone.name}} {{/if}}{{if postcode}}{{postcode}}{{/if}}{{if country}}EOL{{country.name}}EOL{{/if}}{{if phone}}T: {{phone}}EOL{{/if}}EOL{{if fax}}F: {{fax}}EOL{{/if}}', '{{firstname}} {{lastname}}');
 
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('location_country')}`;
