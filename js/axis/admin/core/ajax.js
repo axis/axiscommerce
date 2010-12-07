@@ -43,7 +43,7 @@ Ext.Ajax.on('requestcomplete', function(connection, response, options){
     }
 
     if (typeof obj.messages == 'object' && obj.messages.length !== 0) {
-        MessageStack.init(obj.messages).render();
+        MessageStack.init(obj.messages);
     }
 });
 
@@ -59,23 +59,23 @@ var Spinner = {
     {
         ++this.count;
         if (jQuery('#mask').length) {
+            jQuery('#mask').show();
             return;
         }
+
         var viewport = getViewportSize();
         var scrollOffset = getScrollOffset();
+
         jQuery(document.body).append(
             '<div id="mask" style="">' +
             '<div id="mask-loading" class="ext-el-mask-msg x-mask-loading"><div>' + 'Loading'.l() + '</div></div>' +
             '</div>'
         );
         jQuery('#mask').css({
-            zIndex: 20000,
-            position: 'absolute',
-            width: '300px',
-            height: '150px',
-            top: scrollOffset.top + viewport.height / 2 - 75,
+            top : scrollOffset.top + viewport.height / 2 - 75,
             left: scrollOffset.left + viewport.width / 2 - 150
         });
+
         var loadingLabel = jQuery('#mask-loading');
         loadingLabel.css({
             top: 75 - loadingLabel.height() / 2,
@@ -86,52 +86,61 @@ var Spinner = {
     hide: function()
     {
         if (!--this.count) {
-            jQuery('#mask').remove();
+            jQuery('#mask').hide();
         }
     }
 }
 
 var MessageStack = {
-    _target: '#inside-box',
-    _stack: [],
+
+    _container: null,
+
     _sortOrder: ['error', 'warning', 'notice', 'success'],
 
     init: function(messages)
     {
-        this.clear();
+        if (!this._container) {
+            this._container = Ext.DomHelper.insertFirst(document.body, {
+                id: 'messages'
+            }, true);
+            this._container.alignTo(document, 't-t');
+        }
+
         this._toString(messages);
-        return this;
     },
 
-    render: function()
+    render: function(type, messages)
     {
-        jQuery(this._target).prepend('<div id="messages"></div>');
-        for (var i in this._stack) {
-            if (typeof this._stack[i] != 'string' || this._stack[i] == '')
-                continue;
-            jQuery('#messages', this._target).append(this._stack[i]);
+        var el = Ext.DomHelper.append(this._container, {
+            html: this._getMessageMarkup(type, this._parse(messages)),
+            style: 'visibility: hidden'
+        }, true);
+
+        el.pause(0.5).slideIn();
+
+        if ('success' == type) {
+            el.pause(2).ghost('t', {
+                remove: true
+            });
         }
     },
 
-    clear: function()
+    remove: function(el)
     {
-        this._stack = [];
-        jQuery('#messages', this._target).remove();
-    },
-
-    hide: function(e)
-    {
-        jQuery(e).fadeOut();
+        Ext.get(el).parent('.msg-container').ghost('t', {
+            remove: true
+        });
     },
 
     _toString: function(messages)
     {
         /* first read important messages */
         for (var i in this._sortOrder) {
-            if (!messages[this._sortOrder[i]] || !messages[this._sortOrder[i]].length)
+            if (!messages[this._sortOrder[i]] || !messages[this._sortOrder[i]].length) {
                 continue;
+            }
 
-            this._fillStack(this._sortOrder[i], messages[this._sortOrder[i]]);
+            this.render(this._sortOrder[i], messages[this._sortOrder[i]]);
 
             /* delete processed messages */
             delete messages[this._sortOrder[i]];
@@ -139,39 +148,46 @@ var MessageStack = {
 
         /* read everything else */
         for (var i in messages) {
-            if (!messages[i] || !messages[i].length || typeof messages[i] == 'function')
+            if (!messages[i] || !messages[i].length || typeof messages[i] == 'function') {
                 continue;
+            }
 
-            this._fillStack(i, messages[i]);
+            this.render(i, messages[i]);
 
             /* delete processed messages */
             delete messages[i];
         }
     },
 
-    _fillStack: function(type, messages)
-    {
-        this._stack[type] =
-            '<ul class="' + type + '-msg" title="' + type + '" onclick="MessageStack.hide(this)">' +
-                this._parse(messages) +
-            '</ul>';
-    },
-
     _parse: function(object)
     {
-        if (typeof object == 'string')
-            return object;
+        if (typeof object == 'string') {
+            return '<li>' + object + '</li>';
+        }
 
         var parsed = '';
 
         for (var i in object) {
-            if (typeof object[i] == 'function')
+            if (typeof object[i] == 'function') {
                 continue;
+            }
             parsed += '<li>' + object[i] + '</li>';
         }
         return parsed;
-    }
+    },
 
+    _getMessageMarkup: function(type, message)
+    {
+        return '<div class="msg-container">'+
+            '<div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div>'+
+            '<div class="x-box-ml"><div class="x-box-mr"><div class="x-box-mc">'+
+            '<ul class="' + type + '-msg">' + message + '</ul>'+
+            '</div></div></div>'+
+            '<div class="x-box-bl"><div class="x-box-br"><div class="x-box-bc"></div></div></div>'+
+            '<a href="#" onclick="MessageStack.remove(this); return false;" class="close-container">Close</a>'+
+            '</div>'
+        ;
+    }
 }
 
 function getViewportSize(){
