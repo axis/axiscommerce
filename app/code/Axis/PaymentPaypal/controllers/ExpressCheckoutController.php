@@ -40,6 +40,15 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
      */
     private $_payment;
 
+    /**
+     *
+     * @return Axis_PaymentPaypal_Model_Express
+     */
+    protected function _getPayment()
+    {
+        return $this->_payment;
+    }
+
     protected function _getAddressForm()
     {
         $form = Axis::model('account/Form_Address');
@@ -74,7 +83,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
         parent::init();
         
         $this->_payment = Axis::single('paymentPaypal/express');
-        if (!$this->_payment->isEnabled()) {
+        if (!$this->_getPayment()->isEnabled()) {
             $this->_redirect('/checkout/cart');
         }
     }
@@ -82,23 +91,23 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
     public function indexAction()
     {
         //SetExpressCheckout get token
-        if (!$this->_payment->runSetExpressCheckout()) {
+        if (!$this->_getPayment()->runSetExpressCheckout()) {
             $this->_redirect('/checkout/cart');
         }
         
         $this->_getCheckout()->setPaymentMethodCode(
-            $this->_payment->getCode()
+            $this->_getPayment()->getCode()
         );
 
         $useraction = '&useraction=continue';
-        if (true == $this->_payment->getStorage()->markflow) {
+        if (true == $this->_getPayment()->getStorage()->markflow) {
             $useraction = '&useraction=commit';
         }
 
         $this->_redirect(
-            $this->_payment->getPayPalLoginServer()
+            $this->_getPayment()->getPayPalLoginServer()
                 . "?cmd=_express-checkout&token="
-                . $this->_payment->getStorage()->token
+                . $this->_getPayment()->getStorage()->token
                 . $useraction,
             array(),
             false
@@ -107,15 +116,15 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
 
     public function detailsAction()
     {
-        if (empty($this->_payment->getStorage()->token)) {
+        if (empty($this->_getPayment()->getStorage()->token)) {
             $this->_redirect('/paymentpaypal/express-checkout/index');
         }
 
-        $response = $this->_payment->runGetExpressCheckoutDetails();
+        $response = $this->_getPayment()->runGetExpressCheckoutDetails();
 
-        if (empty($this->_payment->getStorage()->payer['payer_id'])) {
+        if (empty($this->_getPayment()->getStorage()->payer['payer_id'])) {
 
-            $this->_payment->getStorage()->token = null;
+            $this->_getPayment()->getStorage()->token = null;
             $this->_redirect('/paymentpaypal/express-checkout/index');
         }
 
@@ -125,6 +134,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
             );
             $countryId = Axis::single('location/country')
                     ->getIdByName(urldecode($response['SHIPTOCOUNTRYNAME']));
+
             $company = !empty($response['BUSINESS']) ?
                 urldecode($response['BUSINESS']) : '';
             
@@ -147,7 +157,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
         if (null === $this->_getCheckout()->getShippingMethodCode()) {
             $this->_redirect('/paymentpaypal/express-checkout/shipping-method');
         }
-        if (true == $this->_payment->getStorage()->markflow) {
+        if (true == $this->_getPayment()->getStorage()->markflow) {
             $this->_redirect('/paymentpaypal/express-checkout/process');
         }
 
@@ -159,12 +169,12 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
         $checkout = $this->_getCheckout();
         $this->view->checkout = array(
             'delivery' => $checkout->getDelivery(),
-            'email' => urldecode(
-                $this->_payment->getStorage()->payer['payer_email']
+            'email'    => urldecode(
+                $this->_getPayment()->getStorage()->payer['payer_email']
             ),
             'products' => $checkout->getCart()->getProducts(),
-            'totals' => $checkout->getTotal()->getCollects(),
-            'total' => $checkout->getTotal()->getTotal(),
+            'totals'   => $checkout->getTotal()->getCollects(),
+            'total'    => $checkout->getTotal()->getTotal(),
             'shipping' => $checkout->shipping()->getTitle()
         );
         $this->render();
@@ -262,22 +272,22 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
     {
         $total = $this->_getCheckout()->getTotal()->getTotal();
 
-        $response = $this->_payment->runDoExpressCheckoutPayment();
+        $response = $this->_getPayment()->runDoExpressCheckoutPayment();
         if (!$response) {
             $this->_redirect('/paymentpaypal/express-checkout/cancel');
         }
 
-        if (empty($this->_payment->getStorage()->payer['payer_email'])) {
+        if (empty($this->_getPayment()->getStorage()->payer['payer_email'])) {
 
             $delivery = $this->_getCheckout()->getDelivery();
 
-            $this->_payment->getStorage()->payer['payer_email'] =
+            $this->_getPayment()->getStorage()->payer['payer_email'] =
                 $delivery->firstname . ' ' . $delivery->lastname;
         }
 
         $this->_getCheckout()->setBilling(array(
             'firstname' => 'Paypal Account: ',
-            'lastname' => $this->_payment->getStorage()->payer['payer_email']
+            'lastname' => $this->_getPayment()->getStorage()->payer['payer_email']
 //            'phone' => '',
 //            'fax' => '',
 //            'company' => '',
@@ -294,7 +304,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
 
         $this->_getCheckout()->setOrderId($order->id);
 
-        $this->_payment->clear();
+        $this->_getPayment()->clear();
         //$this->_getCheckout()->getCart()->clear();
         $this->_redirect('checkout/index/success');
     }
@@ -304,16 +314,16 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
      */
     public function cancelAction()
     {
-        $this->_payment->clear();
+        $this->_getPayment()->clear();
         $this->_redirect('/checkout/cancel');
     } 
 
     public function editAction()
     {
     	$this->_redirect(
-    	    $this->_payment->getPayPalLoginServer()
+    	    $this->_getPayment()->getPayPalLoginServer()
     	    . '?cmd=_express-checkout&useraction=continue&token='
-    	    . $this->_payment->getStorage()->token,
+    	    . $this->_getPayment()->getStorage()->token,
             array(),
     	    false
         );
