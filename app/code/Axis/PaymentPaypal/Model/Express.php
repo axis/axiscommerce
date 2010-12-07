@@ -58,7 +58,9 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
         );
 
         if (!$amount) {
-            $this->log("\n\tFailure SetExpressCheckout. Total order null.\n");
+            $message = "\n\tFailure SetExpressCheckout. Total order null.\n";
+            $this->log($message);
+            Axis_Message::getInstance()->addError($message);
             return false;
         }
         $options['PAYMENTACTION'] = 'Authorization';
@@ -87,9 +89,9 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
                 $options['SHIPTOSTREET2'] = $delivery->suburb;
             }
             $options['SHIPTOCITY']        = $delivery->city;
-            $options['SHIPTOSTATE']       = null !== $delivery->zone ? $delivery->zone->code : '';
+            $options['SHIPTOSTATE']       = null !== $delivery->zone ? $delivery->zone['code'] : '';
             $options['SHIPTOZIP']         = $delivery->postcode;
-            $options['SHIPTOCOUNTRYCODE'] = $delivery->country->isoCode2;
+            $options['SHIPTOCOUNTRYCODE'] = $delivery->country['iso_code_2'];
             $options['PHONENUM']          = $delivery->phone;
         }
 
@@ -116,7 +118,9 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
         );
 
         if ($response['ACK'] != 'Success') {
-            $this->log("\n\tFailure SetExpressCheckout\n");
+            $message = "\n\tFailure SetExpressCheckout\n";
+            $this->log($message);
+            Axis_Message::getInstance()->addError($message);
             return false;
         }
 
@@ -133,7 +137,6 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
      */
     public function runGetExpressCheckoutDetails()
     {
-
         $response = $this->getApi()->GetExpressCheckoutDetails(
             $this->getStorage()->token
         );
@@ -143,7 +146,9 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
           . "Respopnse : " . Zend_Debug::dump($response, null, false)
         );
         if ($response['ACK'] != 'Success') {
-            $this->log("\n\tFailure GetExpressCheckoutDetails\n");
+            $message = "\n\tFailure GetExpressCheckoutDetails\n";
+            $this->log($message);
+            Axis_Message::getInstance()->addError($message);
             return false;
         }
 
@@ -162,26 +167,34 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             )
         );
 
-        // Alert customer that they've selected an unconfirmed address at PayPal, and must go back and choose a Confirmed one
-        if ($this->_config->confirmedAddress && $response['ADDRESSSTATUS'] != 'Confirmed') {
+        // Alert customer that they've selected an unconfirmed address
+        // at PayPal, and must go back and choose a Confirmed one
+        if ($this->_config->confirmedAddress
+            && $response['ADDRESSSTATUS'] != 'Confirmed') {
 
-            $this->log("\n\tFailure GetExpressCheckoutDetails ADDRESSSTATUS not confirmed \n");
+            $message = "\n\tFailure GetExpressCheckoutDetails ADDRESSSTATUS not confirmed \n";
+            $this->log($message);
+            Axis_Message::getInstance()->addError($message);
             return false;
         }
 
-        if (!isset($response['ADDRESSSTATUS']) || $response['ADDRESSSTATUS'] == 'None' ) {
+        if (!isset($response['ADDRESSSTATUS']) 
+            || $response['ADDRESSSTATUS'] == 'None' ) {
+            
             return false;
         }
 
         if (empty($response['SHIPTOSTREET2'])) {
             $response['SHIPTOSTREET2'] = '';
         }
-        // accomodate PayPal bug which repeats 1st line of address for 2nd line if 2nd line is empty.
+        // accomodate PayPal bug which repeats 1st line of address
+        // for 2nd line if 2nd line is empty.
         if ($response['SHIPTOSTREET2'] == $response['SHIPTOSTREET']) {
             $response['SHIPTOSTREET2'] = '';
         }
 
-        // accomodate PayPal bug which incorrectly treats 'Yukon Territory' as YK instead of ISO standard of YT.
+        // accomodate PayPal bug which incorrectly treats 'Yukon Territory'
+        // as YK instead of ISO standard of YT.
         if ($response['SHIPTOSTATE'] == 'YK') {
             $response['SHIPTOSTATE'] = 'YT';
         }
@@ -195,13 +208,12 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
 
     public function runDoExpressCheckoutPayment()
     {
-//        Zend_Debug::dump(__METHOD__);
         $options = $this->getLineItemDetails();
         $delivery = $this->getCheckout()->getDelivery();
         if (!$delivery instanceof Axis_Address) {
             return false;
         }
-
+        
         $options = array_merge($options, array(
             'SHIPTONAME'   => $delivery->firstname . ' ' . $delivery->lastname,
             'SHIPTOSTREET' => $delivery->street_address,
@@ -209,7 +221,7 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             'SHIPTOCITY'   => $delivery->city,
             'SHIPTOSTATE'  => null !== $delivery->zone ? $delivery->zone->code : '',
             'SHIPTOZIP'    => $delivery->postcode,
-            'SHIPTOCOUNTRYCODE' => $delivery->country->isoCode2
+            'SHIPTOCOUNTRYCODE' => $delivery->country['iso_code_2']
         ));
         
         if (is_array($this->getStorage()->payer)
@@ -230,8 +242,8 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             unset($options['SHIPTOPHONE']);
         }
         // if State is not supplied, repeat the city so that it's not blank, otherwise PayPal croaks
-        if ((!isset($options['SHIPTOSTATE']) || trim($options['SHIPTOSTATE']) == '') &&
-            !isset($options['SHIPTOCITY']) && $options['SHIPTOCITY'] != '') {
+        if ((!isset($options['SHIPTOSTATE']) || trim($options['SHIPTOSTATE']) == '') 
+            && !isset($options['SHIPTOCITY']) && $options['SHIPTOCITY'] != '') {
 
             $options['SHIPTOSTATE'] = $options['SHIPTOCITY'];
         }
@@ -263,7 +275,9 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
 //        Zend_Debug::dump($response);
 //        die;
         if ($response['ACK'] != 'Success') {
-            $this->log("\n\tFailure DoExpressCheckoutPayment\n");
+            $message = "\n\tFailure DoExpressCheckoutPayment\n";
+            $this->log($message);
+            Axis_Message::getInstance()->addError($message);
             return false;
         }
         return $response;
@@ -271,18 +285,19 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
 
     public function getPayPalLoginServer()
     {
-        if ($this->_config->server == 'live') {
+        if ('live' === $this->_config->server) {
             // live url
-            $paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
-        } else {
-            // sandbox url
-            $paypal_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
-            // for UK sandbox -- NOTE: this system is intermittently flakey ... and if it's down, odd redirects occur.
-            if ($this->_config->mode == 'payflow') {
-                $paypal_url = 'https://test-expresscheckout.paypal.com/cgi-bin/webscr';
-            }
+            return 'https://www.paypal.com/cgi-bin/webscr';
         }
-        return $paypal_url;
+
+        // for UK sandbox -- NOTE: this system is intermittently flakey ...
+        // and if it's down, odd redirects occur.
+        if ('payflow' === $this->_config->mode) {
+            return 'https://test-expresscheckout.paypal.com/cgi-bin/webscr';
+        }
+
+        // sandbox url
+        return 'https://www.sandbox.paypal.com/cgi-bin/webscr';
     }
 
     public function preProcess()
