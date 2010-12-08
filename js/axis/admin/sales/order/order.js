@@ -1,21 +1,21 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -30,7 +30,7 @@ Ext.onReady(function(){
             {name: 'id', type: 'int'},
             {name: 'number'},
             {name: 'site_id', type: 'int'},
-            {name: 'date_purchased_on', type: 'int'},
+            {name: 'date_purchased_on', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'customer_name'},
             {name: 'customer_email'},
             {name: 'customer_id', type: 'int'},
@@ -49,7 +49,7 @@ Ext.onReady(function(){
             store.removeAll();
             store.baseParams = {'statusId': 0};
             store.load();
-            
+
             Order.window.show();
         },
         load: function(id) {
@@ -82,7 +82,7 @@ Ext.onReady(function(){
                     store.removeAll();
                     store.baseParams = {'customerId': data.order.customer_id};
                     store.load();
-                    
+
                     form.findField('order[customer_id]').loadData(data);
 //                    Ext.getCmp('box-subtotal-info').el.dom.innerHTML = data.totals.form;
 
@@ -122,11 +122,11 @@ Ext.onReady(function(){
             var modified = Ext.getCmp('grid-order').getStore().getModifiedRecords();
             if (!modified.length)
                 return;
-            
+
             for (var i = 0; i < modified.length; i++) {
                 data[modified[i]['id']] = modified[i]['data'];
             }
-            
+
             Ext.Ajax.request({
                 url: Axis.getUrl('sales_order-status/batch-save'),
                 params: {
@@ -137,13 +137,13 @@ Ext.onReady(function(){
                     Ext.getCmp('grid-order').getStore().reload();
                 }
             });
-            
+
         },
         remove: function(orderIds) {
             if (!confirm('Are you sure?'.l())) {
                 return false;
             }
-            
+
             Ext.Ajax.request({
                 url: Axis.getUrl('sales_order/delete'),
                 params: {data: Ext.encode(orderIds)},
