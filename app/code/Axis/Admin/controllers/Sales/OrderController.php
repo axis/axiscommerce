@@ -375,7 +375,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 'firstname' => '-//-',
                 'lastname'  => '-//-',
                 'group'     => 'Guest',
-                'group_id'  => Axis::single('account/customer_group')->getIdByName('Guest'),
+                'group_id'  => Axis_Account_Model_Customer_Group::GROUP_GUEST_ID,
                 'email'     => $order->customer_email
             );
         }

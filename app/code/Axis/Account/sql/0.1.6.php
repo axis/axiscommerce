@@ -172,7 +172,8 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
             INSERT INTO `{$installer->getTable('account_customer_group')}` (`id`, `name`, `description`) VALUES
-              (1, 'General', ''),(2, 'Retailer', ''),(3, 'Wholesale', ''),(4, 'Banned', ''), (5, 'Guest', '');
+              (1, 'General', ''),(2, 'Retailer', ''),(3, 'Wholesale', ''),
+              (4, 'Banned', ''), (" . Axis_Account_Model_Customer_Group::GROUP_GUEST_ID . ", 'Guest', '');
 
             -- DROP TABLE IF EXISTS `{$installer->getTable('account_customer_valueset')}`;
             CREATE TABLE IF NOT EXISTS `{$installer->getTable('account_customer_valueset')}` (

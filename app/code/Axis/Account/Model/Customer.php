@@ -250,8 +250,7 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
         }
 
         if (null === $customerGroupId)  {
-            $customerGroupId =  Axis::single('account/customer_group')
-                ->getIdByName('Guest');
+            $customerGroupId = Axis_Account_Model_Customer_Group::GROUP_GUEST_ID;
         }
         return $customerGroupId;
     }

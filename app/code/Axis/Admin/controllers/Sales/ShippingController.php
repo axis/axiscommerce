@@ -39,10 +39,7 @@ class Axis_Admin_Sales_ShippingController extends Axis_Admin_Controller_Back
             $price, Axis_Method_Shipping_Model_Abstract $shipping, array $params)
         {
             $customerGroupId = $params['customer_group_id'];
-            if (empty($customerGroupId)) {
-                return 0;
-            }
-
+           
             if (!$taxClassId = $shipping->config()->taxClass) {
                 if (!$taxClassId = Axis::config()->tax->shipping->taxClass) {
                     return 0;
