@@ -200,19 +200,6 @@ Ext.onReady(function () {
             gridTag
         ]
     });
-
-    function setTag(id) {
-       var store = gridWishlist.getStore();
-       store.lastOptions = {params:{start:0, limit:25}};
-       gridTag.filters.filters.get('id').setValue({'eq': id});
-    }
-
-    if (typeof(tagId) !== "undefined") {
-        setTag(tagId);
-    } else {
-        storeTag.load({params:{start:0, limit:25}});
-    }
-
 });
 
 
