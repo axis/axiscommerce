@@ -1,123 +1,162 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 
-Ext.onReady(function (){
-    Ext.QuickTips.init();  
-    
-    var filters = new Ext.ux.grid.GridFilters({
-        filters: [
-            {type: 'numeric', dataIndex: 'id'},
-            {type: 'string', dataIndex: 'customer_email'},
-            {type: 'string', dataIndex: 'product_name'},
-            {type: 'string', dataIndex: 'tag'}
-        ]
-    });
-    
+Ext.onReady(function () {
+
+    Ext.QuickTips.init();
+
     var storeTag = new Ext.data.GroupingStore({
-        url: Axis.getUrl('tag_index/list'),
+        autoLoad: true,
+        baseParams: {
+            limit: 25
+        },
         reader: new Ext.data.JsonReader({
-                idProperty: '',
                 root : 'data',
                 totalProperty: 'count'
-            },
-            ['id', 'product_id', 'product_name', 'tag', 'customer_email', 'customer_id', 'status']
+            }, [
+                {name: 'id', type: 'int'},
+                {name: 'product_id', type: 'int'},
+                {name: 'product_name'},
+                {name: 'name'},
+                {name: 'customer_email'},
+                {name: 'customer_id'},
+                {name: 'status'}
+            ]
         ),
-        sortInfo: {field: 'tag', direction: "ASC"},
-        remoteSort: true
+        remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        },
+        url: Axis.getUrl('tag_index/list')
     });
-    
+
     function renderCustomer(value, meta, record) {
         if (record.data.customer_id) {
-            meta.attr = 'ext:qtip="Open in new window ' + value + '"';
             return String.format(
-                '<a href="{1}" class="grid-link-icon user">{0}</a>',
+                '<a href="{1}">{0}</a>',
                 value,
                 Axis.getUrl('customer_index/index/customerId/' + record.data.customer_id)
             );
         } else if (!value) {
-            var title = 'Undefined'.l();
-            meta.attr = 'ext:qtip="' + title + '"';
-            return title;
+            return 'Undefined'.l();
         }
         return value;
     }
-    
+
     function renderProduct(value, meta, record) {
-        meta.attr = 'ext:qtip="Open in new window ' + value + '"';
-        var productAction =  Axis.getUrl('catalog_index/index/productId/.productId.');
         return String.format(
-            '<a href="{1}" class="grid-link-icon product" target="_blank">{0} </a>',
-            value, productAction.replace(/\.productId\./, record.data.product_id));
+            '<a href="{1}" target="_blank">{0}</a>',
+            value,
+            Axis.getUrl('catalog_index/index/productId/' + record.data.product_id)
+        );
     }
-    function renderStatus(value){
-        return statuses[value] ? statuses[value] : value;  
-    };
-    
-    var columnsTag = new Ext.grid.ColumnModel([{
-        header: "Id".l(),
-        width: 30,
-        dataIndex: 'id',
-        groupable:false,
-        sortable: true
-    }, {
-        header: "Tag".l(),
-        width: 170,
-        dataIndex: 'tag',
-        groupable:true,
-        sortable: true
-    }, {
-        header: "Product Name".l(),
-        id:'product_name',
-        width: 145,
-        sortable: true,
-        dataIndex: 'product_name',
-        renderer: renderProduct
-    }, {
-        header: "Customer".l(),
-        width: 170,
-        sortable: true,
-        dataIndex: 'customer_email',
-        renderer: renderCustomer
-    }, {
-        header: "Status".l(),
-        width: 170,
-        sortable: true,
-        dataIndex: 'status',
-        editor: new Ext.grid.GridEditor(new Ext.form.ComboBox({
-            triggerAction: 'all',
-            transform: 'status-combo',
-            lazyRender: true,
-            typeAhead: true,
-            forceSelection: false,
-            editable: false
-        })),
-        renderer: renderStatus
-    }]);
+
+    var columnsTag = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable    : true,
+            groupable   : false
+        },
+        columns: [{
+            header      : "Id".l(),
+            dataIndex   : 'id',
+            width       : 90
+        }, {
+            header      : "Tag".l(),
+            dataIndex   : 'name',
+            groupable   : true,
+            width       : 170,
+            filter: {
+                operator: 'LIKE'
+            }
+        }, {
+            dataIndex   : 'product_name',
+            groupable   : true,
+            header      : "Product Name".l(),
+            id          :'product_name',
+            renderer    : renderProduct,
+            width       : 145,
+            table       : 'cpd',
+            sortName    : 'name',
+            filter: {
+                name    : 'name',
+                operator: 'LIKE'
+            }
+        }, {
+            header      : "Customer".l(),
+            sortable    : true,
+            dataIndex   : 'customer_email',
+            renderer    : renderCustomer,
+            width       : 200,
+            table       : 'ac',
+            sortName    : 'email',
+            filter: {
+                name    : 'email',
+                operator: 'LIKE'
+            }
+        }, {
+            header      : "Status".l(),
+            sortable    : true,
+            dataIndex   : 'status',
+            editor      : new Ext.form.ComboBox({
+                triggerAction   : 'all',
+                transform       : 'status-combo',
+                lazyRender      : true,
+                typeAhead       : true,
+                forceSelection  : false,
+                editable        : false
+            }),
+            width       : 170,
+            renderer    : function(value) {
+                var i = 0;
+                while (statuses[i]) {
+                    if (value == statuses[i][0]) {
+                        return statuses[i][1];
+                    }
+                    i++;
+                }
+                return value;
+            },
+            filter      : {
+                editable: false,
+                store: new Ext.data.ArrayStore({
+                    data    : statuses,
+                    fields  : ['id', 'name']
+                }),
+                valueField  : 'id',
+                displayField: 'name',
+                resetValue  : 'reset',
+                idIndex     : 0
+            }
+        }]
+    });
+
     var changeStatusMenu = new Ext.menu.Menu({
         id: changeStatusMenu,
         items: menuStatus
-    })
-    gridTag = new Axis.grid.EditorGridPanel({
+    });
+
+    var gridTag = new Axis.grid.EditorGridPanel({
         id: 'gridTag',
         autoExpandColumn: 'product_name',
         store: storeTag,
@@ -126,6 +165,7 @@ Ext.onReady(function (){
             emptyText: 'No records found'.l(),
             groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
         }),
+        plugins:[new Axis.grid.Filter()],
         tbar: [{
             text: 'Delete',
             icon: Axis.skinUrl + '/images/icons/delete.png',
@@ -151,37 +191,27 @@ Ext.onReady(function (){
         }],
         bbar: new Axis.PagingToolbar({
             store: storeTag
-        }),
-        plugins:[
-            filters,
-            new Ext.ux.grid.Search({
-                mode: 'local',
-                iconCls: false,
-                dateFormat: 'Y-m-d',
-                width: 150,
-                minLength: 2
-            })
-        ]
+        })
     });
-    
+
     new Axis.Panel({
         items: [
             gridTag
         ]
     });
-    
+
     function setTag(id) {
        var store = gridWishlist.getStore();
        store.lastOptions = {params:{start:0, limit:25}};
        gridTag.filters.filters.get('id').setValue({'eq': id});
     }
-     
+
     if (typeof(tagId) !== "undefined") {
         setTag(tagId);
     } else {
         storeTag.load({params:{start:0, limit:25}});
     }
-     
+
 });
 
 
@@ -209,9 +239,9 @@ function remove() {
     if (!selectedItems.length || !confirm('Are you sure?'.l())) {
         return;
     }
-    
+
     var data = {};
-    
+
     for (var i = 0; i < selectedItems.length; i++) {
         data[i] = selectedItems[i].get('id');
     }
@@ -225,7 +255,7 @@ function remove() {
     });
 }
 function setStatus(status) {
-    var selected = gridTag.getSelectionModel().getSelections();
+    var selected = Ext.getCmp('gridTag').getSelectionModel().getSelections();
     for (var i = 0; i < selected.length; i++) {
         selected[i].set('status', status);
     }

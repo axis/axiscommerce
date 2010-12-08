@@ -34,7 +34,10 @@
 class Axis_Tag_Model_Customer extends Axis_Db_Table
 {
     protected $_name = 'tag_customer';
+
     protected $_dependentTables = array('Axis_Tag_Model_Product');
+
+    protected $_selectClass = 'Axis_Tag_Model_Customer_Select';
 
     const STATUS_APPROVED    = 1;
     const STATUS_PENDING     = 2;
