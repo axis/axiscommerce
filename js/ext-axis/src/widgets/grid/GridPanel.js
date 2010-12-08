@@ -74,7 +74,8 @@ Axis.grid.GridPanel = Ext.extend(Ext.grid.GridPanel, {
                 });
             }
             if (col && col.table) {
-                options.params.sort = col.table + '.' + state.field;
+                var field = col.sortName ? col.sortName : state.field;
+                options.params.sort = col.table + '.' + field;
             }
         }
     }
