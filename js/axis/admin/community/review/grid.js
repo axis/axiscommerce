@@ -53,6 +53,7 @@ Ext.onReady(function(){
             dataIndex: 'product_name',
             id: 'product_name',
             table: 'cpd',
+            sortName: 'name',
             filter: {
                 name: 'name',
                 operator: 'LIKE'
@@ -64,6 +65,7 @@ Ext.onReady(function(){
             renderer: function(value) {
                 return value ? value.toFixed(2) : '';
             },
+            table: '',
             width: 90
         }, {
             header: 'Author'.l(),
