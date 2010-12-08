@@ -247,6 +247,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             return false;
         }
         if (isset($discount['group'])
+            && Axis_Account_Model_Customer_Group::GROUP_ALL_ID !== $filter['customerGroupId']
             && !in_array($filter['customerGroupId'], $discount['group'])) {
 
             return false;

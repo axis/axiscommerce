@@ -33,6 +33,9 @@
  */
 class Axis_Account_Model_Customer_Group extends Axis_Db_Table
 {
+    const GROUP_ALL_ID = 0;
+    const GROUP_GUEST_ID = 5;
+
     protected $_name = 'account_customer_group';
     protected $_primary = 'id';
 
@@ -86,12 +89,12 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
                 'description' => $values['description']
             );
             
-            if (in_array($groupId, $existsCustomerGroups)) {
+            if (in_array($groupId, $existsCustomerGroups)
+                && Axis_Account_Model_Customer_Group::GROUP_GUEST_ID !== $groupId
+                && Axis_Account_Model_Customer_Group::GROUP_ALL_ID !== $groupId) {
                 $return = $return && $this->update(
                     $row,
-                    $this->getAdapter()->quoteInto(
-                        "id = ? AND name <> 'Guest'", $groupId
-                    )
+                    $this->getAdapter()->quoteInto("id = ?", $groupId)
                 );
             } else {
                 $return = $return && $this->insert($row);

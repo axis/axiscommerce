@@ -111,6 +111,10 @@
      */
     public function calculateByCartId($cartId, $geozoneIds, $customerGroupId)
     {
+        $customerGroupId = array(
+            $customerGroupId,
+            Axis_Account_Model_Customer_Group::GROUP_ALL_ID
+        );
 
         $rawRows = Axis::single('checkout/cart_product')
             ->select(array('final_price', 'quantity'))
@@ -119,7 +123,7 @@
             ->join('location_geozone', 'lg.id = tr.geozone_id', 'priority')
             ->where('ccp.shopping_cart_id = ?', $cartId)
             ->where('tr.geozone_id IN (?)', $geozoneIds)
-            ->where('tr.customer_group_id = ?', $customerGroupId)
+            ->where('tr.customer_group_id IN(?)', $customerGroupId)
             ->fetchAll()
             ;
         $rates = array();
@@ -152,10 +156,14 @@
         if (null == $taxClassId) {
             return 0;
         }
+        $customerGroupId = array(
+            $customerGroupId,
+            Axis_Account_Model_Customer_Group::GROUP_ALL_ID
+        );
         $rate = (float) $this->select('rate')
             ->joinInner('location_geozone', 'lg.id = tr.geozone_id')
             ->where('tr.geozone_id IN (?)', $geozoneIds)
-            ->where('tr.customer_group_id = ?', $customerGroupId)
+            ->where('tr.customer_group_id IN (?)', $customerGroupId) // 0 - all customers
             ->where('tr.tax_class_id = ?', $taxClassId)
             ->order('lg.priority DESC')
             ->limit(1)

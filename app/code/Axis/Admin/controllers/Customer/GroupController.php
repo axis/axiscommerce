@@ -96,15 +96,23 @@ class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
         $customerGroupIds = Zend_Json::decode($this->_getParam('data'));
 
         $isValid = true;
-        $guestGroupId = Axis::single('account/customer_group')
-            ->getIdByName('Guest');
 
-        if (in_array($guestGroupId, $customerGroupIds)) {
+        if (in_array(Axis_Account_Model_Customer_Group::GROUP_GUEST_ID, $customerGroupIds)) {
             $isValid = false;
             Axis::message()->addError(
                 Axis::translate('admin')->__(
                     "Your can't delete default Guest group id: %s ",
-                    $guestGroupId
+                    Axis_Account_Model_Customer_Group
+                )
+            );
+        }
+
+        if (in_array(Axis_Account_Model_Customer_Group::GROUP_ALL_ID, $customerGroupIds)) {
+            $isValid = false;
+            Axis::message()->addError(
+                Axis::translate('admin')->__(
+                    "Your can't delete default All group id: %s ",
+                    Axis_Account_Model_Customer_Group::GROUP_ALL_ID
                 )
             );
         }
