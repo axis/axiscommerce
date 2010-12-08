@@ -1,29 +1,29 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 Ext.onReady(function (){
-    Ext.QuickTips.init(); 
-    var menuTime = today;   
-    
+    Ext.QuickTips.init();
+    var menuTime = today;
+
     var filters = new Ext.ux.grid.GridFilters({
         filters: [
             {type: 'numeric', dataIndex: 'id'},
@@ -36,7 +36,7 @@ Ext.onReady(function (){
             {type: 'date',   dataIndex: 'created_at', dateFormat: 'Y-m-d'}
         ]
     });
-    
+
     var storeSearch = new Ext.data.GroupingStore({
         proxy: new Ext.data.HttpProxy({
             url: Axis.getUrl('search/list')
@@ -52,7 +52,7 @@ Ext.onReady(function (){
         remoteSort: true,
         groupField:'query'
     });
-    
+
     function renderCustomer(value, meta, record) {
         var link = (Axis.getUrl('customer_index/index/customerId/.customerId.'))
             .replace(/\.customerId\./, record.data.customer_id);
@@ -60,50 +60,50 @@ Ext.onReady(function (){
             value = ' Guest';
             link = '#';
         }
-        
+
         meta.attr = 'ext:qtip="goto ' + value + '"';
         return String.format(
-                '<a href="{1}" class="grid-link-icon user" target="_blank" >{0}</a>',
+                '<a href="{1}" target="_blank">{0}</a>',
                 value, link);
-    } 
+    }
     var selectModel = new Ext.grid.CheckboxSelectionModel();
-   
+
     var columnsSearch = new Ext.grid.ColumnModel([{
-        header: "Id".l(), 
-        width: 30, 
-        sortable: true, 
+        header: "Id".l(),
+        width: 30,
+        sortable: true,
         dataIndex: 'id',
         groupable:false
     }, {
-        header: "Query".l(), 
+        header: "Query".l(),
         width: 300,
-        sortable: true, 
+        sortable: true,
         dataIndex: 'query'
     }, {
-        header: "Results".l(), 
+        header: "Results".l(),
         id:'product_name',
         sortable: true,
         dataIndex: 'num_results'
     }, {
-        header: "Customer".l(), 
-        width: 170, 
+        header: "Customer".l(),
+        width: 170,
         sortable: true,
         dataIndex: 'customer_email',
         renderer: renderCustomer
     }, {
-        header: "Hit".l(), 
-        width: 30, 
+        header: "Hit".l(),
+        width: 30,
         dataIndex: 'hit',
-        sortable: true, 
+        sortable: true,
         groupable:false
     }, {
-        header: "Created On".l(), 
-        width: 145, 
+        header: "Created On".l(),
+        width: 145,
         sortable: true,
         dataIndex: 'created_at',
         groupable:false
-    }]); 
-       
+    }]);
+
     gridSearch = new Axis.grid.EditorGridPanel({
         autoExpandColumn: 'product_name',
         store: storeSearch,
@@ -133,22 +133,22 @@ Ext.onReady(function (){
                     },
                     menu: {
                         items:[{
-                            text: 'Today ({count})'.l('core', countToday), 
-                            group: 'time', 
-                            checked: false, 
-                            checkHandler: function(menuItem, cheked) { 
+                            text: 'Today ({count})'.l('core', countToday),
+                            group: 'time',
+                            checked: false,
+                            checkHandler: function(menuItem, cheked) {
                                 if (cheked) menuTime = today;
                             }
                         }, {
-                            text: 'Last week ({count})'.l('core', countWeek), 
-                            group: 'time', 
-                            checked: false, 
-                            checkHandler: function(menuItem, cheked) { 
+                            text: 'Last week ({count})'.l('core', countWeek),
+                            group: 'time',
+                            checked: false,
+                            checkHandler: function(menuItem, cheked) {
                                  if (cheked) menuTime = week;
                              }
                         }, {
-                            text: 'Last month ({count})'.l('core', countMonth), 
-                            group: 'time',  
+                            text: 'Last month ({count})'.l('core', countMonth),
+                            group: 'time',
                             checked: false ,
                             checkHandler: function(menuItem, cheked){
                                 if (cheked) menuTime = month;
@@ -180,7 +180,7 @@ Ext.onReady(function (){
                     if (!selectedItems[i]['data']['id']) continue;
                     data[i] = selectedItems[i]['data']['id'];
                 }
-                    
+
                 Ext.Ajax.request({
                     url: Axis.getUrl('search/delete'),
                     params: {data: Ext.encode(data)},
@@ -188,7 +188,7 @@ Ext.onReady(function (){
                         storeSearch.reload();
                     }
                 });
-               } 
+               }
         }, '->', {
             text: 'Reload'.l(),
             handler: function() {
@@ -201,13 +201,13 @@ Ext.onReady(function (){
             store: storeSearch
         })
     });
-    
+
     new Axis.Panel({
         items: [
             gridSearch
         ]
     });
-    
+
     function setSearchQuery(id) {
         var store = gridSearch.getStore();
         store.lastOptions = {params:{start:0, limit:25}};
@@ -215,7 +215,7 @@ Ext.onReady(function (){
         gridSearch.filters.filters.get('id').setValue({'eq': id});
         gridSearch.filters.filters.get('id').setActive(true);
     }
-    
+
     function setCustomer(id) {
         var store = gridSearch.getStore();
         store.lastOptions = {params:{start:0, limit:25}};
@@ -223,12 +223,12 @@ Ext.onReady(function (){
         gridSearch.filters.filters.get('customer_id').setValue({'eq': id});
         gridSearch.filters.filters.get('customer_id').setActive(true);
     }
-    
+
     gridSearch.render();
-    
+
     if (typeof(searchId) !== "undefined")
         setSearchQuery(searchId);
-    else { 
+    else {
         if (typeof(customerId) !== "undefined")
             setCustomer(customerId);
         else {
@@ -243,21 +243,21 @@ function resetFilters() {
 function setFilterNumeric(field, condition, val, checked) {
     var store = gridSearch.getStore();
     store.lastOptions = {params:{start:0, limit:25}};
-    gridSearch.filters.filters.get(field).setActive(false);  
+    gridSearch.filters.filters.get(field).setActive(false);
     switch(condition) {
          case 'lt':
              gridSearch.filters.filters.get(field).setValue({'lt': val});
-             break;    
+             break;
          case 'gt':
              gridSearch.filters.filters.get(field).setValue({'gt': val});
              break;
          default:
-             gridSearch.filters.filters.get(field).setValue({'eq': val}); 
+             gridSearch.filters.filters.get(field).setValue({'eq': val});
     }
     gridSearch.filters.filters.get(field).setActive(checked);
 }
 // only for filter with type date
-//@params field name of colunm see dataIndex, 
+//@params field name of colunm see dataIndex,
 function setFilterDate(field, condition, val, checked) {
     var store = gridSearch.getStore();
     store.lastOptions = {params:{start:0, limit:25}};
@@ -267,12 +267,12 @@ function setFilterDate(field, condition, val, checked) {
     switch(condition) {
         case 'lt':
             gridSearch.filters.filters.get(field).setValue({'before': dt});
-            break;    
+            break;
         case 'gt':
             gridSearch.filters.filters.get(field).setValue({'after': dt});
             break;
         default:
-            gridSearch.filters.filters.get(field).setValue({'on': dt}); 
+            gridSearch.filters.filters.get(field).setValue({'on': dt});
     }
     gridSearch.filters.filters.get(field).setActive(checked);
 }
@@ -281,7 +281,7 @@ function setFilterString(field, val, checked) {
     var store = gridSearch.getStore();
     store.lastOptions = {params:{start:0, limit:25}};
     gridSearch.filters.filters.get(field).setActive(false);
-    gridSearch.filters.filters.get(field).setValue(val); // val is a string 
+    gridSearch.filters.filters.get(field).setValue(val); // val is a string
     gridSearch.filters.filters.get(field).setActive(checked);
 }
 

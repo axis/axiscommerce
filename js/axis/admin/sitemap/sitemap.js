@@ -1,21 +1,21 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -23,8 +23,8 @@
 var editWin, storeSitemap, resultWin;
 //http://sitemaps.org/protocol.php#location
 Ext.onReady(function (){
-     
-    Ext.QuickTips.init();  
+
+    Ext.QuickTips.init();
     var sitemap = {
         addnew: function () {
             jQuery('#sitemap-form')[0].clear();
@@ -39,12 +39,12 @@ Ext.onReady(function (){
              }
              for (var i = 0; i < selectedItems.length; i++) {
                  sitemapId = selectedItems[i].id;
-                 getWindow();   
+                 getWindow();
                  editWin.show();
                  jQuery('#sitemap-form-site').val(selectedItems[i].data.site_id);
                  jQuery('#sitemap-form-engine').val(selectedItems[i].data.engines.split(','));
                  jQuery('#sitemap-form-filename').val(selectedItems[i].data.filename);
-                 jQuery('#sitemap-form-savepath').val(selectedItems[i].data.savepath); 
+                 jQuery('#sitemap-form-savepath').val(selectedItems[i].data.savepath);
                  jQuery('#sitemap').show();
              }
         },
@@ -104,7 +104,7 @@ Ext.onReady(function (){
                                 jQuery('#result-' + engines[i].name).html(value);
                             }
                         }
-                        getResults();   
+                        getResults();
                         resultWin.setTitle('Results informing ');
                         resultWin.show();
                         jQuery('#result').show();
@@ -134,9 +134,9 @@ Ext.onReady(function (){
                         editWin.hide();
                         jQuery('#sitemap-form-site').get(0).checked = false;
                         jQuery('#sitemap-form-filename').val('');
-                        jQuery('#sitemap-form-savepath').val(''); 
+                        jQuery('#sitemap-form-savepath').val('');
                         storeSitemap.reload();
-                    } 
+                    }
                 }
             });
         },
@@ -161,9 +161,9 @@ Ext.onReady(function (){
                 }
             })
         }
-        
+
     };
-   
+
     storeSitemap = new Ext.data.GroupingStore({
         url: Axis.getUrl('sitemap_index/list'),
         reader: new Ext.data.JsonReader({
@@ -171,20 +171,20 @@ Ext.onReady(function (){
                 totalProperty: 'count',
                 id: 'id'
             },
-            ['id', 
-            'filename', 
+            ['id',
+            'filename',
             {name: 'generated_at', type: 'date', dateFormat: 'Y-m-d'},
             {name: 'usage_at', type: 'date', dateFormat: 'Y-m-d'},
-            'site_id', 
-            'status', 
-            'baseUrl', 
+            'site_id',
+            'status',
+            'baseUrl',
             'engines']
         ),
         sortInfo: {field: 'id', direction: "ASC"},
         remoteSort: false
         //,groupField:'site_id'
     });
-    
+
     var actions = new Ext.ux.grid.RowActions({
         header:'Actions'.l(),
         actions:[{
@@ -209,30 +209,30 @@ Ext.onReady(function (){
             }
         }
     });
-    
+
     var storeSites = new Ext.data.JsonStore({
         id: 'id',
         fields: ['id', 'name','base'],
         data: sites
     });
-    
+
     var storeEngines = new Ext.data.JsonStore({
         id: 'id',
         fields: ['id', 'url','name'],
         data: engines
     });
-    
+
     var columnsSitemap = new Ext.grid.ColumnModel([
         {
-            header: "Id".l(), 
-            width: 40, 
-            sortable: true, 
+            header: "Id".l(),
+            width: 40,
+            sortable: true,
             dataIndex: 'id',
             groupable:false
         }, {
-            header: "Sites".l(), 
+            header: "Sites".l(),
             sortable: true,
-            dataIndex: 'site_id', 
+            dataIndex: 'site_id',
             editor: new Ext.form.ComboBox({
                 store:storeSites,
                 valueField:'id',
@@ -249,9 +249,9 @@ Ext.onReady(function (){
             },
             width: 200
         }, {
-            header: "Engines".l(), 
+            header: "Engines".l(),
             sortable: true,
-            width: 180, 
+            width: 180,
             dataIndex: 'engines', //must return from action.list type string, example 'google, ask'
             editor: new Ext.ux.Andrie.Select(Ext.applyIf({
                 fieldLabel:  'Field',
@@ -276,8 +276,8 @@ Ext.onReady(function (){
                 return ret ;
             }
         }, {
-            header: "Filename".l(), 
-            width: 250, 
+            header: "Filename".l(),
+            width: 250,
             sortable: true,
             dataIndex: 'filename',
             renderer: function(value, meta) {
@@ -285,8 +285,8 @@ Ext.onReady(function (){
                 return ret;
             }
         }, {
-            header: "Link for Search Engines".l(), 
-            width: 250, 
+            header: "Link for Search Engines".l(),
+            width: 250,
             dataIndex: 'filename',
             id: 'filename',
             renderer: function(value, meta, record) {
@@ -295,13 +295,11 @@ Ext.onReady(function (){
                 } else {
                     value = Axis.baseUrl + '/' + value + '.xml';
                 }
-                return String.format(
-                    '<a href="{0}" class="grid-link-icon url" target="_blank" >{0}</a>',
-                    value);
+                return String.format('<a href="{0}" target="_blank">{0}</a>', value);
             }
         }, {
             header: 'Created'.l(),
-            width: 100, 
+            width: 100,
             sortable: true,
             dataIndex: 'generated_at',
             groupable:false,
@@ -309,8 +307,8 @@ Ext.onReady(function (){
                 return Ext.util.Format.date(v);
             }
         }, {
-            header: "Status".l(), 
-            width: 90, 
+            header: "Status".l(),
+            width: 90,
             sortable: true,
             dataIndex: 'status',
             renderer: function(value, meta) {
@@ -319,7 +317,7 @@ Ext.onReady(function (){
         },
         actions
     ]);
-    
+
     gridSitemap = new Axis.grid.EditorGridPanel({
         autoExpandColumn: 'filename',
         ds: storeSitemap,
@@ -369,19 +367,19 @@ Ext.onReady(function (){
             }
         }]
     });
-    
+
     new Axis.Panel({
         items: [
             gridSitemap
         ]
     });
-    
+
     function setSitemap(id) {
        var store = gridSitemap.getStore();
        store.lastOptions = {params:{start:0, limit:21}};
        gridSitemap.filters.filters.get('id').setValue({'eq': id});
     }
-    
+
     if (typeof(sitemapId) !== "undefined") {
         setSitemap(sitemapId);
     } else {
@@ -392,7 +390,7 @@ Ext.onReady(function (){
             }
         })
     }
-        
+
     function getWindow() {
         if (!editWin) {
             editWin = new Ext.Window({
@@ -414,12 +412,12 @@ Ext.onReady(function (){
                         editWin.hide();
                     }
                 }]
-               
+
             });
         }
         return editWin;
     }
-    
+
     function getResults() {
         if (!resultWin) {
             resultWin = new Ext.Window({
@@ -437,7 +435,7 @@ Ext.onReady(function (){
                         resultWin.hide();
                     }
                 }]
-               
+
             });
         }
         return resultWin;

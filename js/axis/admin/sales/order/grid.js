@@ -122,7 +122,7 @@ Ext.onReady(function(){
                 meta.attr = 'ext:qtip="Open in new window ' + value + '"';
                 var customerAction = Axis.getUrl('customer_index/index/customerId/.customerId.');
                 return String.format(
-                    '<a href="{1}" class="grid-link-icon user" target="_blank" >{0}</a>',
+                    '<a href="{1}" target="_blank" >{0}</a>',
                     value,
                     customerAction.replace(/\.customerId\./, record.data.customer_id)
                 );
