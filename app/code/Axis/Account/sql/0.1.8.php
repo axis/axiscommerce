@@ -34,7 +34,7 @@ class Axis_Account_Upgrade_0_1_8 extends Axis_Core_Model_Migration_Abstract
             'id' => Axis_Account_Model_Customer_Group::GROUP_ALL_ID,
             'name' => 'All',
             'description' => 'system group no delete'
-        ));
+        ))->save();
     }
 
     public function down()
