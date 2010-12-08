@@ -31,6 +31,7 @@ Ext.onReady(function () {
             limit: 25
         },
         reader: new Ext.data.JsonReader({
+                idProperty: '', // prevent losing of duplicate tags
                 root : 'data',
                 totalProperty: 'count'
             }, [
