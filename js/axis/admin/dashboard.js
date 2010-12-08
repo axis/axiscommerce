@@ -119,7 +119,7 @@ var params;
             renderer:   function (value, meta, record) {
             meta.attr = 'ext:qtip="Open in new window ' + value + '"';
             return String.format(
-                    '<a href="{1}" class="grid-link-icon user" target="_blank" >{0}</a>',
+                    '<a href="{1}" target="_blank">{0}</a>',
                     value, action.customer.replace(/\.id\./, record.data.customer_id));
             }
         },{
@@ -290,7 +290,7 @@ var params;
                 }
                 meta.attr = 'ext:qtip="Open in new window ' + value + '"';
                 return String.format(
-                        '<a href="{1}" class="grid-link-icon user" target="_blank" >{0}</a>',
+                        '<a href="{1}" target="_blank">{0}</a>',
                         value, link);
             }
         }, {

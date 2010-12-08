@@ -67,14 +67,8 @@
     width: 16px;
     background: url(../images/icons/table_delete.png) no-repeat left top !important;
 }
-.grid-link-icon {
-    color: #666;
-    padding-left: 18px;
-    text-decoration: none;
-}
-.grid-link-icon:hover {
-    text-decoration: underline;
-}
+.x-grid3-cell a { text-decoration: none; color: #243673; }
+.x-grid3-cell a:hover { text-decoration: underline; }
 .user {
     background: url(../images/icons/user.png) no-repeat left top !important;
 }
