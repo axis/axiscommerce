@@ -22,6 +22,11 @@
 
 Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
 
+    params: {
+        filters : {},
+        length  : 0
+    },
+
     constructor: function(config) {
         this.templates = {
             master: new Ext.Template(
@@ -122,7 +127,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             }
         }
 
-        if (column.table) {
+        if (undefined !== typeof column.table) {
             cfg.table = column.table;
         }
 
@@ -331,8 +336,8 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
     onBeforeLoad: function(store, options) {
         options.params = options.params || {};
         this.cleanParams(options.params);
-        var params = {},
-            key = 0;
+        var params  = {},
+            length  = 0;
 
         this.filters.each(function(cnt) {
             cnt.items.each(function(field) {
@@ -342,19 +347,50 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
 
                     return true;
                 }
-                params['filter[' + key + '][field]'] = field.getName();
-                params['filter[' + key + '][value]'] = field.getValue();
+                params['filter[' + length + '][field]'] = field.getName();
+                params['filter[' + length + '][value]'] = field.getValue();
                 if (field.operator) {
-                    params['filter[' + key + '][operator]'] = field.operator;
+                    params['filter[' + length + '][operator]'] = field.operator;
                 }
-                if (field.table) {
-                    params['filter[' + key + '][table]'] = field.table;
+                if (undefined !== field.table) {
+                    params['filter[' + length + '][table]'] = field.table;
                 }
-                key++;
+                length++;
             });
         });
 
+        // reset start param if filters has been changed
+        if (length != this.params.length) {
+            this.resetPagination(options, store);
+        } else {
+            for (var key in params) {
+                if (!this.isEqual(this.params.filters[key], params[key])) {
+                    this.resetPagination(options, store);
+                    break;
+                }
+            }
+        }
+
+        this.params.filters = params;
+        this.params.length  = length;
+
         Ext.apply(options.params, params);
+    },
+
+    isEqual: function(v1, v2)
+    {
+        v1 = v1.toString ? v1.toString() : v1;
+        v2 = v2.toString ? v2.toString() : v2;
+
+        return v1 == v2;
+    },
+
+    resetPagination: function(o, s) {
+        var start = s.paramNames.start;
+        o.params[start] = 0;
+        if (s.lastOptions && s.lastOptions.params && s.lastOptions.params[start]) {
+            s.lastOptions.params[start] = 0;
+        }
     },
 
     destroy: function() {
