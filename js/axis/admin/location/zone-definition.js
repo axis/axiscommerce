@@ -86,7 +86,7 @@ Ext.onReady(function(){
                 return;
             }
             GZone.activeId = id;
-            dsAssign.proxy.conn.url =  Axis.getUrl('location_zone-definition/list-assigns/gzoneId/') + id;
+            dsAssign.baseParams.geozone_id = GZone.activeId;
             dsAssign.load();
         },
         
@@ -195,7 +195,7 @@ Ext.onReady(function(){
                 alert('Select some definition & press "Load Zones" to activate zones list');
                 return false;
             }
-            Assign.activeId = 0;
+            Assign.activeId = null;
             Assign.window.show();
         },
         
@@ -203,23 +203,20 @@ Ext.onReady(function(){
             var aId = dsAssign.data.items[rowIndex].id;
             Assign.activeId = aId;
             Ext.Ajax.request({
-                url:  Axis.getUrl('location_zone-definition/get-assign/assignId/') + aId,
+                url:  Axis.getUrl('location_zone-definition/get-assign/'),
                 method: 'post',
-                params: {
-                    gzoneId:  GZone.activeId,
-                    assignId: Assign.activeId,
-                    country: $('#country').attr('value'),
-                    zone: $('#zone').attr('value')
-                },
+                params: {id: Assign.activeId},
                 callback: function(options, success, response) {
                     oResponse = Ext.decode(response.responseText);
-                    if (!oResponse.country_id)
+                    if (!oResponse.country_id) {
                         oResponse.country_id = 0;
+                    }
                     $('#country > option[value=' + oResponse.country_id + ']').attr({selected: true});
                     updateZones();
                     
-                    if (!oResponse.zone_id)
+                    if (!oResponse.zone_id) {
                         oResponse.zone_id = 0;
+                    }
                     $('#zone > option[value=' + oResponse.zone_id + ']').attr({selected: true});
                     Assign.window.show();
                 }
@@ -232,10 +229,10 @@ Ext.onReady(function(){
                 url:  Axis.getUrl('location_zone-definition/save-assign'),
                 method: 'post',
                 params: {
-                    gzoneId:  GZone.activeId,
-                    assignId: Assign.activeId,
-                    country: $('#country').attr('value'),
-                    zone: $('#zone').attr('value')
+                    geozone_id: GZone.activeId,
+                    id:         Assign.activeId,
+                    country_id: $('#country').attr('value'),
+                    zone_id:    $('#zone').attr('value')
                 },
                 callback: function(response, options) {
                     Assign.window.hide();
@@ -270,9 +267,7 @@ Ext.onReady(function(){
     });
     
     var dsAssign = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            url:  Axis.getUrl('location_zone-definition/list-assigns')
-        }),
+        url:  Axis.getUrl('location_zone-definition/list-assigns'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'

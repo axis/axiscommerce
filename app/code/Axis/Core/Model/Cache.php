@@ -148,7 +148,7 @@ class Axis_Core_Model_Cache extends Axis_Db_Table
             }
             if (is_array($values)) {
                 $row->is_active = $values['is_active'];
-                $row->lifetime = (int)$values['lifetime'] ?
+                $row->lifetime = (int) $values['lifetime'] ?
                     (int)$values['lifetime'] : new Zend_Db_Expr('NULL');
             } else {
                 $row->is_active = $values;
