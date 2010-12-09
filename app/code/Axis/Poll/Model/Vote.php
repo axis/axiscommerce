@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Poll
  * @subpackage  Axis_Poll_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Poll
  * @subpackage  Axis_Poll_Model
@@ -34,7 +34,7 @@
 class Axis_Poll_Model_Vote extends Axis_Db_Table
 {
     protected $_name = 'poll_vote';
-    
+
     public function hasVoteInTable($questionId, $customerId = false, $ip = null)
     {
         if (false === $customerId) {
@@ -49,20 +49,20 @@ class Axis_Poll_Model_Vote extends Axis_Db_Table
         } else {
             $cWhere = "AND pv.customer_id = {$customerId} ";
             $ipWhere = '';
-            //usually not used  
+            //usually not used
             if (null !== $ip) {
                 $ipWhere = $this->getAdapter()->quoteInto('AND pv.ip = ? ', $ip);
             }
         }
-        
-    	$query = "SELECT COUNT(*) FROM " . $this->_prefix . 'poll_vote' . " as  pv " .
+
+        $query = "SELECT COUNT(*) FROM " . $this->_prefix . 'poll_vote' . " as  pv " .
             'INNER JOIN ' . $this->_prefix . 'poll_answer pa ON pa.id = pv.answer_id ' .
             "WHERE   pa.question_id = ? " .
             $ipWhere .
             $cWhere;
         return (bool) $this->getAdapter()->fetchOne($query, $questionId);
     }
-    
+
     public function getVoteCount($customerId = false)
     {
         if (false === $customerId) {
@@ -99,7 +99,7 @@ class Axis_Poll_Model_Vote extends Axis_Db_Table
             'ORDER BY cnt',
             Axis_Locale::getLanguageId()
         );
-        
+
         $assigns = array();
         foreach ($rowset as $row) {
             $assigns[$row['question_id']][$row['answer_id']] = $row;
@@ -113,14 +113,13 @@ class Axis_Poll_Model_Vote extends Axis_Db_Table
      */
     public function getQuestionIdsFromCookie($name = 'polls')
     {
-        
         $questionIds = array();
         if (!isset($_COOKIE[$name])) {
             return array();
         }
         $questionIds = array();
         $items = array_filter(explode(',', $_COOKIE[$name]));
-        
+
         foreach ($items as $item) {
             if (strstr($item, ':')) {
                 list($questionId, $customerId) = explode(':', $item);
@@ -134,24 +133,26 @@ class Axis_Poll_Model_Vote extends Axis_Db_Table
                 $questionIds[$questionId] = $questionId;
             }
         }
-        
+
         return array_values($questionIds);
     }
 
-    public function addToCookie(
-        $values, $path, $time = 2592000, $name = 'polls')
+    public function addToCookie($values, $path, $time = 2592000, $name = 'polls')
     {
-        
+        if (empty($path)) {
+            $path = '/';
+        }
+
         $cookieValues = array();
         if (isset($_COOKIE[$name])) {
             $cookieValues = array_filter(explode(',', $_COOKIE[$name]));
         }
-        
+
         if (!is_array($values)) {
             $values = array($values);
         }
         $customerId = Axis::getCustomerId();
-        
+
         if ($customerId) {
             foreach ($values as &$value) {
                 $value .= ':' . $customerId;
