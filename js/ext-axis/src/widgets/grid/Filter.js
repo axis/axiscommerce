@@ -303,7 +303,9 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
 
         var tds = Ext.get(this.filterDom).query('td');
         from = from || 0;
-        to   = to || tds.length - 1;
+        if (!to || to >= tds.length) {
+            to = tds.length - 1;
+        }
         for (var i = from; i <= to; i++) {
             tds[i].style.width = this.view.getColumnWidth(i);
         }
