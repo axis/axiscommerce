@@ -1,7 +1,8 @@
 <?php 
-$this->headScript()->appendFile('/js/ext-ux/multiselect/ComboSelect.js');
-
-$this->headScript()->appendFile('/js/axis/admin/sitemap/sitemap.js');
+$this->headScript()
+    ->appendFile('/js/ext-ux/multiselect/ComboSelect.js')
+    ->appendFile('js/ext-axis/src/widgets/form/ComboSelect.js')
+    ->appendFile('/js/axis/admin/sitemap/sitemap.js');
 ?>
 <script type="text/javascript">
 
