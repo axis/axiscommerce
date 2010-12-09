@@ -140,7 +140,6 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
      */
     public function getAllWithWeight($limit = null)
     {
-
         $tags = $this->select(
                 array('name', '*', new Zend_Db_Expr('COUNT(*) AS weight'))
             )
@@ -151,7 +150,6 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
             ->where('site_id = ?', Axis::getSiteId())
             ->where('status = ?', self::STATUS_APPROVED)
             ->group('tc.name')
-            //->order('RAND()');
             ->limit($limit)
             ->order('weight DESC')
             ->fetchAssoc();
@@ -160,115 +158,12 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
         return $tags;
     }
 
-   /**
-    * Return list tag on backend
-    * @param array $params
-    * @return mixed|array
-    */
-    public function getList($params = array())
-    {
-        $select = $this->select(
-                array('id', 'tag' => 'name', 'status')
-            )
-            ->joinLeft(
-                'account_customer',
-                'tc.customer_id = ac.id',
-                array('customer_email' => 'email', 'customer_id' => 'id')
-            )
-            ->joinLeft(
-                'tag_product',
-                'tp.customer_tag_id = tc.id',
-                'product_id'
-            )
-            ->joinLeft(
-                'catalog_product_description',
-                'cpd.product_id = tp.product_id AND cpd.language_id = :languageId',
-                array('product_name' => 'name')
-            )
-            ->bind(array('languageId' => $params['languageId']))
-            ;
-
-        if (!empty($params['limit'])) {
-            $select->limit($params['limit'], $params['start']);
-        }
-        if (!empty($params['sort'])) {
-            $select->order($params['sort'] . ' ' . $params['dir']);
-        }
-        if (isset($params['filters'])) {
-            $this->_setFilter($select, $params['filters']);
-        }
-
-        return $select->fetchAll();
-    }
-
     /**
-    * Return count tag on backend
-    * @param array $params
-    * @return int
-    */
-    public function getCount($params = array())
-    {
-        $select = $this->select(new Zend_Db_Expr('COUNT(*)'))
-            ->joinLeft(
-                'account_customer',
-                'tc.customer_id = ac.id'
-            )
-            ->joinLeft(
-                'tag_product',
-                'tp.customer_tag_id = tc.id'
-            )
-            ->joinLeft(
-                'catalog_product_description',
-                'cpd.product_id = tp.product_id AND cpd.language_id = :languageId'
-            )
-            ->bind(array('languageId' => $params['languageId']));
-
-        if (isset($params['filters'])) {
-            $this->_setFilter($select, $params['filters']);
-        }
-        return $this->getAdapter()->fetchOne($select);
-    }
-
-    /**
-    * @param (Zend_Db_Select|Zend_Db_Table_Select) $select
-    * @param array $filters
-    * @return mixed (Zend_Db_Select|Zend_Db_Table_Select)
-    */
-    private function _setFilter(&$select, array $filters)
-    {
-        foreach ($filters as $filter) {
-            switch ($filter['data']['type']) {
-                case 'numeric': case 'date':
-                    $condition = $filter['data']['comparison'] == 'eq' ? '=' :
-                                     ($filter['data']['comparison'] == 'lt' ? '<' : '>');
-                    if ($filter['field'] == 'product_id') {
-                        $select->where("tp.product_id $condition ?", $filter['data']['value']);
-                    } else {
-                        $select->where("tc.$filter[field] $condition ?", $filter['data']['value']);
-                    }
-                    break;
-                default:
-                    if (($filter['field'] == 'customer_email')) {
-                        $select->where("c.email LIKE ?", $filter['data']['value'] . "%");
-                    } else if ($filter['field'] == 'product_name') {
-                        $select->where("cpd.name LIKE ?", $filter['data']['value'] . "%");
-                    } else if ($filter['field'] == 'tag') {
-                        $select->where("tc.name LIKE ?", $filter['data']['value'] . "%");
-                    } else {
-                        $select->where("tc.$filter[field] LIKE ?", $filter['data']['value'] . "%");
-                    }
-                    break;
-            }
-        }
-        return $select;
-    }
-
-    /**
-    * Returns array of tags status
-    *
-    * @static
-    * @return const array
-    */
+     * Returns array of tags status
+     *
+     * @static
+     * @return array
+     */
     public static function getStatuses()
     {
         return array(
@@ -278,6 +173,9 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
         );
     }
 
+    /**
+     * @return Axis_Db_Table_Row
+     */
     public function getRowByTag($tag)
     {
         return $this->fetchRow(
@@ -285,8 +183,7 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
                 ->where('name = ?', $tag)
                 ->where('customer_id = ?', Axis::getCustomerId())
                 ->where('site_id = ?', Axis::getSiteId())
-            )
-            ;
+        );
     }
 
     /**
