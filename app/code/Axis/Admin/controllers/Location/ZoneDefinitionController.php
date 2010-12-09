@@ -122,10 +122,23 @@ class Axis_Admin_Location_ZoneDefinitionController extends Axis_Admin_Controller
     public function listAssignsAction()
     {
         $this->_helper->layout->disableLayout();
-        
-        $data = Axis::single('location/geozone_zone')
-            ->getListByGeozone($this->_getParam('gzoneId'));
-        
+        $geozoneId = $this->_getParam('geozone_id');
+        $data = Axis::single('location/geozone_zone')->select('id')
+            ->join('location_geozone',
+                   'lg.id = lgz.geozone_id',
+                   array('geozone_name' => 'name')
+               )
+    	       ->joinLeft('location_country',
+                   'lc.id = lgz.country_id',
+                   array('country_name' => 'name', 'iso_code_2', 'iso_code_3')
+    	       )
+    	       ->joinLeft('location_zone',
+                   'lz.id = lgz.zone_id',
+                   array('zone_name' => 'name', 'zone_code' => 'code')
+               )
+               ->where("geozone_id = ?", $geozoneId)
+               ->fetchAll()
+        ;
         $this->_helper->json->sendSuccess(array(
             'data' => $data
         ));
@@ -134,37 +147,18 @@ class Axis_Admin_Location_ZoneDefinitionController extends Axis_Admin_Controller
     public function getAssignAction()
     {
         $this->_helper->layout->disableLayout();
-        
-        $this->_helper->json->sendJson(
-            Axis::single('location/geozone_zone')
-                ->find($this->_getParam('assignId', 0))->current()->toArray(),
-            false, false
-        );
+        $id = $this->_getParam('id', 0);
+        $data = Axis::single('location/geozone_zone')->find($id)
+            ->current()
+            ->toArray();
+        $this->_helper->json->sendJson($data, false, false);
     }
     
     public function saveAssignAction()
     {
         $this->_helper->layout->disableLayout();
         $data = $this->_getAllParams();
-        $table = Axis::single('location/geozone_zone');
-        if ($data['assignId']) {
-        	$table->update(
-                array(
-                    'country_id' => $data['country'],
-                    'zone_id' => $data['zone']
-                ),
-                'id = ' . intval($data['assignId'])
-        	);
-        } else {
-        	$table->insert(
-                array(
-                    'geozone_id' => $data['gzoneId'],
-                    'country_id' => $data['country'],
-                    'zone_id' => $data['zone']
-                )
-            );
-        }
-        
+        Axis::single('location/geozone_zone')->save($data);
         $this->_helper->json->sendSuccess();
     }
 

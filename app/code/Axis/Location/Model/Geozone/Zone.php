@@ -37,34 +37,6 @@ class Axis_Location_Model_Geozone_Zone extends Axis_Db_Table
 
     /**
      *
-     * @param int $geozoneId
-     * @return array
-     */
-    public function getListByGeozone($geozoneId)
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(array('zgtz' => $this->_prefix . 'location_geozone_zone'), array('id'))
-               ->join(
-                   array('zg' => $this->_prefix . 'location_geozone'),
-                   'zg.id = zgtz.geozone_id',
-                   array('geozone_name' => 'name')
-               )
-    	       ->joinLeft(
-                   array('c' => $this->_prefix . 'location_country'),
-                   'c.id = zgtz.country_id',
-                   array('country_name' => 'name', 'iso_code_2', 'iso_code_3')
-    	       )
-    	       ->joinLeft(
-    	           array('z' => $this->_prefix . 'location_zone'),
-                   'z.id = zgtz.zone_id',
-                   array('zone_name' => 'name', 'zone_code' => 'code')
-               )
-               ->where("geozone_id = ?", $geozoneId);
-        return $select->query()->fetchAll();
-    }
-
-    /**
-     *
      * @param array $data
      * @param mixed $where
      * @return mixed
@@ -73,12 +45,6 @@ class Axis_Location_Model_Geozone_Zone extends Axis_Db_Table
     {
         if (empty($data['modified_on'])) {
             $data['modified_on'] = Axis_Date::now()->toSQLString();
-        }
-        if (!$data['zone_id']) {
-        	$data['zone_id'] = null;
-        }
-        if (!$data['country_id']) {
-        	$data['country_id'] = null;
         }
         return parent::update($data, $where);
     }
@@ -93,11 +59,8 @@ class Axis_Location_Model_Geozone_Zone extends Axis_Db_Table
         if (empty($data['created_on'])) {
             $data['created_on'] = Axis_Date::now()->toSQLString();
         }
-        if (!$data['zone_id']) {
-            $data['zone_id'] = null;
-        }
-        if (!$data['country_id']) {
-            $data['country_id'] = null;
+        if (empty($data['modified_on'])) {
+            $data['modified_on'] = Axis_Date::now()->toSQLString();
         }
         return parent::insert($data);
     }
@@ -121,5 +84,23 @@ class Axis_Location_Model_Geozone_Zone extends Axis_Db_Table
             return false;
         }
         return true;
+    }
+
+    /**
+     *
+     * @param array $data
+     * @return mixed The primary key value(s), as an associative array if the
+     *     key is compound, or a scalar if the key is single-column.
+     */
+    public function save(array $data)
+    {
+        $row = $this->find($data['id'])->current();
+        unset($data['id']);
+        if($row instanceof Axis_Db_Table_Row) {
+            $row->setFromArray($data);
+        } else {
+           $row = $this->createRow($data);
+        }
+        return $row->save();
     }
 }
