@@ -139,9 +139,7 @@ class Axis_Admin_Location_ZoneDefinitionController extends Axis_Admin_Controller
                ->where("geozone_id = ?", $geozoneId)
                ->fetchAll()
         ;
-        $this->_helper->json->sendSuccess(array(
-            'data' => $data
-        ));
+        $this->_helper->json->setData($data)->sendSuccess();
     }
     
     public function getAssignAction()

@@ -2,6 +2,8 @@
     var sites = <?php echo Zend_Json_Encoder::encode($this->sitesList);?>;
 </script>
 <?php
-    $this->headScript()->appendFile('/js/ext-ux/multiselect/ComboSelect.js');
-    $this->headScript()->appendFile('/js/axis/admin/template/mail.js'); 
+    $this->headScript()
+        ->appendFile('/js/ext-ux/multiselect/ComboSelect.js')
+        ->appendFile('js/ext-axis/src/widgets/form/ComboSelect.js')
+        ->appendFile('/js/axis/admin/template/mail.js');
 ?>
