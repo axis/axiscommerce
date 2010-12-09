@@ -105,13 +105,7 @@ class Axis_Contacts_Model_Message extends Axis_Db_Table
             ->find($departmentId)
             ->current();
         
-        if ($department) {
-            $to = $department->email;
-        } else {
-            $to = Axis_Collect_MailBoxes::getName(
-                Axis::config()->contact->main->email
-            );
-        }
+        $to = $department->email;
         
         $mail = new Axis_Mail();
         $mail->setConfig(array(

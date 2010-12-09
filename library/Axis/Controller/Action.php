@@ -89,7 +89,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $this->view = $view;
 
         $request = $this->getRequest();
-        $systemPath = Axis::config()->system->path;
+        $systemPath = Axis::config('system/path');
 
         $view->templateName = $template['name'];
         $view->area         = $area;
