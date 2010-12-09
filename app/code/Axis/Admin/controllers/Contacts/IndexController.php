@@ -176,24 +176,20 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
         
         $data = $this->_getAllParams();
         
-        $dep = Axis::single('contacts/department');
-        
-        if ($department = $dep->find($data['depId'])->current()) {
-            $from = $department->email;
-        } else {
-            $from = Axis_Collect_MailBoxes::getName(
-                Axis::config()->contact->main->email
-            );
-        }
+        $from = Axis::single('contacts/department')
+            ->find($data['depId'])
+            ->current()
+            ->email;
         
         $customerId = Axis::single('account/customer')
             ->getIdByEmail($data['email']);
         $customer = Axis::single('account/customer')
-            ->find($customerId)->current();
+            ->find($customerId)
+            ->current();
 
         //@todo if null need firstname = full name from custom_info fields
         $firstname = null !== $customer ? $customer->firstname : 'Guest';
-        $lastname = null !== $customer ? $customer->lastname : '';
+        $lastname  = null !== $customer ? $customer->lastname : '';
         
         $mail = new Axis_Mail();
         
@@ -203,9 +199,9 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
             'data'    => array(
                 'text' => $data['message'], 
                 'custom_info' => "",
-                'reply' => true,
+                'reply'     => true,
                 'firstname' => $firstname,
-                'lastname' => $lastname
+                'lastname'  => $lastname
             ),
             'to'      => $data['email'],
             'from'    => array('email' => $from)

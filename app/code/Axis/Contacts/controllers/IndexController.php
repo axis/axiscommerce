@@ -41,12 +41,12 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
         if ($this->_request->isPost()) {
             $data = $this->_request->getPost();
             if ($form->isValid($data)) {
-                $custom_info = '';
+                $customInfo = '';
                 foreach ($form->getElements() as $element) {
                     if (($element->getValue() != '')
                         && (true != $element->getAttrib('skip'))) {
-                        $custom_info .= $element->getLabel()
-                                     . ': ' . $element->getValue() . "\n";
+                        $customInfo .= $element->getLabel()
+                            . ': ' . $element->getValue() . "\n";
                     }
                 }
                 Axis::single('contacts/message')->add(
@@ -54,7 +54,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                     $data['subject'], 
                     $data['message'], 
                     $data['department'],
-                    $custom_info
+                    $customInfo
                 );
                 Axis::message()->addSuccess(
                     Axis::translate('contacts')->__(

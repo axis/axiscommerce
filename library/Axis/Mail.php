@@ -45,7 +45,10 @@ class Axis_Mail extends Zend_Mail
     public function __construct($charset = 'UTF-8')
     {
         parent::__construct($charset);
-        $this->view = new Zend_View();
+//        $this->view = new Zend_View();
+        $this->view = Axis::app()->getBootstrap()
+            ->getResource('layout')
+            ->getView();
 
         /* for use in ->render('../[script.php]')  */
         $this->view->setLfiProtection(false);
@@ -53,42 +56,9 @@ class Axis_Mail extends Zend_Mail
         $this->view->addScriptPath(
             Axis::config('system/path') . '/app/design/mail'
         );
-        $this->view->addHelperPath(
-            Axis::config('system/path') . '/library/Axis/View/Helper',
-            'Axis_View_Helper'
-        );
-
-        $this->view->area         = Zend_Registry::get('area');
-        $this->view->path         = Axis::config('system/path');
-        $this->view->baseUrl      = Axis::config('system/baseurl');
-        $template                 = Axis_Layout::getTemplate();
-        $this->view->templateName = $template['name'];
-        $sites                    = Axis_Collect_Site::collect();
-        $this->view->site         = $sites[Axis::getSiteId()];
-        $this->view->company      = Axis::single('core/site')->getCompanyInfo();
-
-        $this->view->addScriptPath(Axis::config()->system->path .
-            '/app/design/front/' . $template['name'] . '/templates'
-        );
-        $this->view->addScriptPath(Axis::config()->system->path .
-            '/app/design/admin/' . $template['name'] . '/templates'
-        );
-        if ($template['name'] != 'default') {
-            $this->view->addHelperPath(
-                $this->view->path . '/app/design/front/default/helpers',
-                'Axis_View_Helper'
-            );
-            $this->view->addScriptPath(
-                $this->view->path . '/app/design/front/default/templates'
-            );
-            $this->view->addHelperPath(
-                $this->view->path . '/app/design/admin/default/helpers',
-                'Axis_View_Helper'
-            );
-            $this->view->addScriptPath(
-                $this->view->path . '/app/design/admin/default/templates'
-            );
-        }
+        $sites               = Axis_Collect_Site::collect();
+        $this->view->site    = $sites[Axis::getSiteId()];
+        $this->view->company = Axis::single('core/site')->getCompanyInfo();
     }
 
    /**
