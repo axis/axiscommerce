@@ -31,31 +31,35 @@
  * @subpackage  Axis_Log_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Log_Model_Url_Info extends Axis_Db_Table
+class Axis_Log_Model_Url_Info_Select extends Axis_Db_Table_Select
 {
-    protected $_name = 'log_url_info';
-
-    protected $_selectClass = 'Axis_Log_Model_Url_Info_Select';
-
     /**
-     * @param string $url
-     * @param string $refer
-     * @return mixed         The primary key of the row inserted.
+     * Rewriting of parent method.
+     * Added support for date and hit filtering
+     *
+     * @param array $filters
+     * <pre>
+     *  array(
+     *      0 => array(
+     *          field       => table_column
+     *          value       => column_value
+     *          operator    => =|>|<|IN|LIKE    [optional]
+     *          table       => table_correlation[optional]
+     *      )
+     *  )
+     * </pre>
+     * @return Axis_Db_Table_Select
      */
-    public function add($url = null, $refer = null)
+    public function addFilters(array $filters)
     {
-        $request = Zend_Controller_Front::getInstance()->getRequest();
-        if (null === $url) {
-            $url = $request->getScheme() . '://'
-            . $request->getHttpHost()
-            . $request->getRequestUri();
+        foreach ($filters as $key => $filter) {
+            if ('date' != $filter['field'] && 'hit' != $filter['field']) {
+                continue;
+            }
+            $this->having("{$filter['field']} {$filter['operator']} ?", $filter['value']);
+            unset($filters[$key]);
         }
-        if (null === $refer) {
-            $refer = $request->getServer('HTTP_REFERER', '');
-        }
-        return $this->insert(array(
-            'url'   => $url,
-            'refer' => $refer
-        ));
+
+        return parent::addFilters($filters);
     }
 }
