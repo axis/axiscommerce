@@ -31,32 +31,35 @@
  * @subpackage  Axis_Search_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Search_Model_Log extends Axis_Db_Table
+class Axis_Search_Model_Log_Select extends Axis_Db_Table_Select
 {
-    protected $_name = 'search_log';
-
-    protected $_selectClass = 'Axis_Search_Model_Log_Select';
+    /**
+     * Adds customer_email column to select
+     *
+     * @return Axis_Search_Model_Log_Select
+     */
+    public function addCustomer()
+    {
+        return $this->joinLeft(
+            'account_customer',
+            'sl.customer_id = ac.id',
+            array(
+                'customer_email'    => 'email'
+            )
+        );
+    }
 
     /**
-     * @param array $data
-     * @return mixed
+     * Adds query string and hit count to select
+     *
+     * @return Axis_Search_Model_Log_Select
      */
-    public function logging(array $data = array())
+    public function addQuery()
     {
-        $pdata = array(
-           'num_results' => $data['num_results'],
-           'created_at'  => Axis_Date::now()->toSQLString(),
-           'visitor_id'  => Axis::single('log/visitor')->getVisitor()->id,
-           'customer_id' => Axis::getCustomerId(),
-           'site_id'     => Axis::getSiteId()
+        return $this->joinLeft(
+            'search_log_query',
+            'sl.query_id = slq.id',
+            array('query', 'hit')
         );
-
-        $query = Axis::single('search/log_query')->getQuery($data['query']);
-        $query->hit++;
-        $query->save();
-        $pdata['query_id'] = $query->id;
-
-        /* @todo analize search query */
-        return parent::insert($pdata);
     }
 }
