@@ -20,52 +20,30 @@
  * @license     GNU Public License V3.0
  */
 
-Ext.onReady(function(){
+Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
-    var filters = new Ext.ux.grid.GridFilters({
-        filters: [
-            {type: 'numeric', dataIndex: 'id'},
-            {type: 'string',  dataIndex: 'number'},
-            {type: 'string',  dataIndex: 'customer_name'},
-            {type: 'string',  dataIndex: 'customer_email'},
-            {type: 'numeric', dataIndex: 'order_total_base'},
-            {type: 'numeric', dataIndex: 'order_total'},
-            {type: 'numeric', dataIndex: 'customer_id'},
-            {type: 'date',    dataIndex: 'date_purchased_on', dateFormat: 'Y-m-d H:i:s'},
-            {
-                type: 'list',
-                dataIndex: 'order_status_id',
-                options: statusOrder,
-                phpMode: true
-            },{
-                type: 'list',
-                dataIndex: 'site_id',
-                options: statusSites,
-                phpMode: true
-            }
-        ]
-    });
-
     var ds = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('sales_order/list')
-        }),
-
+        autoLoad: true,
+        baseParams: {
+            limit: 25
+        },
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
             id: 'id'
         }, Order.record),
-
         remoteSort: true,
-        pruneModifiedRecords: true
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        },
+        url: Axis.getUrl('sales_order/list')
     });
 
     var actions = new Ext.ux.grid.RowActions({
-        // header:'Actions'.l(),
-        actions:[{
+        actions: [{
             iconCls: 'icon-page-edit',
             tooltip: 'Edit'.l()
         }, {
@@ -85,67 +63,105 @@ Ext.onReady(function(){
     });
 
     var cm = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
         columns: [{
             header: "Id".l(),
             dataIndex: 'id',
-            width: 90,
-            sortable: true
+            width: 90
         }, {
             header: "Number".l(),
             dataIndex: 'number',
-            width: 110
+            width: 110,
+            filter: {
+                operator: 'LIKE'
+            }
+        }, {
+            header: "Customer".l(),
+            id: 'customer_name',
+            dataIndex: 'customer_name',
+            renderer: function (value, meta, record) {
+                var customerId = record.get('customer_id');
+                if (!customerId) {
+                    return 'Guest'.l();
+                }
+                return String.format(
+                    '<a href="{1}" target="_blank">{0}</a>',
+                    value,
+                    Axis.getUrl('customer_index/index/customerId/' + customerId)
+                );
+            },
+            filter: {
+                operator: 'LIKE'
+            }
+        }, {
+            header: "Email".l(),
+            dataIndex: 'customer_email',
+            renderer: function (value, meta, record) {
+                var customerId = record.get('customer_id');
+                if (!customerId) {
+                    return value;
+                }
+                return String.format(
+                    '<a href="{1}" target="_blank">{0}</a>',
+                    value,
+                    Axis.getUrl('customer_index/index/customerId/' + customerId)
+                );
+            },
+            width: 210,
+            table: 'ac',
+            sortName: 'email',
+            filter: {
+                name: 'email',
+                operator: 'LIKE'
+            }
+        }, {
+            align: 'right',
+            header: "Total Base",
+            dataIndex: 'order_total_base',
+            width: 150,
+            sortName: 'order_total',
+            filter: {
+                name: 'order_total',
+                xtype: 'numberfield'
+            }
+        }, {
+            align: 'right',
+            header: "Total Purchased",
+            dataIndex: 'order_total_customer',
+            width: 150,
+            table: '',
+            filter: {
+                xtype: 'numberfield'
+            }
         }, {
             header: "Site".l(),
             dataIndex: 'site_id',
-            width: 130,
             renderer: function(id) {
                 if (typeof(sites[id]) == undefined) {
                     return 'Undefined'.l();
                 }
                 return sites[id];
+            },
+            width: 130,
+            filter: {
+                store: new Ext.data.ArrayStore({
+                    data: statusSites,
+                    fields: ['id', 'name']
+                })
             }
-        }, {
-            header: "Customer".l(),
-            id: 'customer_name',
-            dataIndex: 'customer_name'
-        }, {
-            header: "Email".l(),
-            width: 210,
-            sortable: true,
-            dataIndex: 'customer_email',
-            renderer: 	function (value, meta, record) {
-
-                var customerId = record.data.customer_id;
-                if ("0" === customerId || !customerId) {
-                    return value;
-                }
-                meta.attr = 'ext:qtip="Open in new window ' + value + '"';
-                var customerAction = Axis.getUrl('customer_index/index/customerId/.customerId.');
-                return String.format(
-                    '<a href="{1}" target="_blank" >{0}</a>',
-                    value,
-                    customerAction.replace(/\.customerId\./, record.data.customer_id)
-                );
-           }
         }, {
             header: "Date".l(),
             dataIndex: 'date_purchased_on',
-            width: 180,
+            width: 135,
             renderer: function (value) {
                 return Ext.util.Format.date(value) + ' ' + Ext.util.Format.date(value, 'H:i:s');
             }
         }, {
-            header: "Total Base",
-            dataIndex: 'order_total_base',
-            width: 150
-        }, {
-            header: "Total Purchased",
-            dataIndex: 'order_total',
-            width: 150
-        }, {
             header: "Status".l(),
             dataIndex: 'order_status_id',
-            width: 140,
+            width: 130,
             renderer: function (statusId) {
                 for (var i in orderStatuses) {
                     if (orderStatuses[i]['status_id'] == statusId) {
@@ -153,6 +169,13 @@ Ext.onReady(function(){
                     }
                 }
                 return 'unknown';
+            },
+            filter: {
+                store: new Ext.data.ArrayStore({
+                    data: statusOrder,
+                    fields: ['id', 'name']
+                }),
+                resetValue: 'reset'
             }
         }, actions]
     });
@@ -167,14 +190,7 @@ Ext.onReady(function(){
         }),
         plugins:[
             actions,
-            filters,
-            new Ext.ux.grid.Search({
-                mode:'local',
-                iconCls:false,
-                dateFormat:'Y-m-d',
-                width: 150,
-                minLength:2
-            })
+            new Axis.grid.Filter()
         ],
         tbar: [{
             text: 'Add'.l(),
@@ -204,7 +220,8 @@ Ext.onReady(function(){
             text: 'Print'.l(),
             icon: Axis.skinUrl + '/images/icons/printer_add.png',
             cls: 'x-btn-text-icon',
-            menu : {items: [{
+            menu: {
+                items: [{
                     text: 'Print Invoces'.l(),
                     handler: function(menuItem, cheked) {
                         if (Order.beforePrint()) {
@@ -246,8 +263,9 @@ Ext.onReady(function(){
                             $('#print-form').submit();
                         }
                     }
-                }
-            ]}}, '-', {
+                }]
+             }
+         }, '-', {
                 text: 'Delete'.l(),
                 icon: Axis.skinUrl + '/images/icons/delete.png',
                 cls: 'x-btn-text-icon',
@@ -285,6 +303,4 @@ Ext.onReady(function(){
     if (typeof(orderId) !== "undefined") {
         Order.load(orderId);
     }
-    ds.load({params:{start:0, limit:25}});
-
-}, this);
+});
