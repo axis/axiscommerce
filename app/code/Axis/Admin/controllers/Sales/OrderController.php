@@ -50,48 +50,45 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $sort    = $this->_getParam('sort', 'id');
-        $dir     = $this->_getParam('dir', 'DESC');
-        $limit   = $this->_getParam('limit', 20);
-        $start   = $this->_getParam('start', 0);
-        $filters = $this->_getParam('filter', false);
-
-        $select = Axis::single('sales/order')
-            ->select('*')
+        $select = Axis::single('sales/order')->select('*')
+            ->columns(array(
+                'order_total_customer' => new Zend_Db_Expr('currency_rate * order_total')
+            ))
             ->calcFoundRows()
-            ->order($sort . ' ' . $dir)
-            ->limit($limit, $start)
             ->joinLeft('account_customer',
                 'so.customer_id = ac.id',
-                array('firstname', 'lastname')
+                array('customer_name' => new Zend_Db_Expr('CONCAT(firstname, " ", lastname)'))
             )
-            ->addGridFilters($filters)
-            ;
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit($this->_getParam('limit', 25), $this->_getParam('start', 0))
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
 
-        $orderRowset = $select->fetchAll();
-        $count = $select->count();
-
-        $modelCurrency = Axis::single('locale/currency');
+        $orders = $select->fetchAll();
+        $mCurrency = Axis::single('locale/currency');
         $mainStoreCurrency = Axis::config('locale/main/currency');
 
-        //prepare
-        foreach ($orderRowset as &$order) {
-            $order['order_total_base'] = $order['order_total'] . ' ' . $mainStoreCurrency;
-            $order['order_total'] =
-                $order['order_total'] * $order['currency_rate'] . ' ' . $order['currency'];
+        // add currency symbols to totals
+        foreach ($orders as &$order) {
+            $order['order_total_base'] =
+                $order['order_total'] . ' ' . $mainStoreCurrency;
 
-            if (empty($order['firstname']) && empty($order['lastname'])) {
-                $customerName = Axis::translate('account')->__('Guest');
-            } else {
-                $customerName = $order['firstname'] . ' ' . $order['lastname'];
+            // find the precision of user selected currency
+            $precision = $mCurrency->getData($order['currency'], 'currency_precision');
+            if (empty($precision)) {
+                $precision = 2;
             }
-            $order['customer_name'] = $customerName;
+            $order['order_total_customer'] =
+                round($order['order_total_customer'], $precision) . ' ' . $order['currency'];
         }
 
-        $this->_helper->json
-            ->setData($orderRowset)
-            ->setCount($count)
-            ->sendSuccess();
+        $this->_helper->json->sendSuccess(array(
+            'data'  => $orders,
+            'count' => $select->count()
+        ));
     }
 
     public function saveAction()
@@ -470,7 +467,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
 
             $modifierAttributes = Axis::single('catalog/product_attribute')
                 ->getAttributesByModifiers($product->id, $param['modifiers']);
-            
+
             $variationAttributes = array_fill_keys(
                 Axis::single('catalog/product_attribute')
                     ->select('id')

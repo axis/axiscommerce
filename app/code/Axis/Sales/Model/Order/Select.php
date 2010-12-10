@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_Select extends Axis_Admin_Model_Select_Grid
+class Axis_Sales_Model_Order_Select extends Axis_Db_Table_Select
 {
     /**
      *
@@ -59,5 +59,37 @@ class Axis_Sales_Model_Order_Select extends Axis_Admin_Model_Select_Grid
             $this->where('customer_id IS NULL');
         }
         return $this;
+    }
+
+    /**
+     * Rewriting of parent method.
+     * Added support for customer_name and order_total in customer currency filtering
+     *
+     * @param array $filters
+     * <pre>
+     *  array(
+     *      0 => array(
+     *          field       => table_column
+     *          value       => column_value
+     *          operator    => =|>|<|IN|LIKE    [optional]
+     *          table       => table_correlation[optional]
+     *      )
+     *  )
+     * </pre>
+     * @return Axis_Sales_Model_Order_Select
+     */
+    public function addFilters(array $filters)
+    {
+        foreach ($filters as $key => $filter) {
+            if ('customer_name' == $filter['field']) {
+                $this->where("CONCAT(firstname, ' ', lastname) LIKE ?", '%' . $filter['value'] . '%');
+                unset($filters[$key]);
+            } else if ('order_total_customer' == $filter['field']) {
+                $this->having("{$filter['field']} {$filter['operator']} ?", $filter['value']);
+                unset($filters[$key]);
+            }
+        }
+
+        return parent::addFilters($filters);
     }
 }

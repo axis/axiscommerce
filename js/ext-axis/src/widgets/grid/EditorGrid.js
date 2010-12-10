@@ -77,9 +77,10 @@ Axis.grid.EditorGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
                     }
                 });
             }
-            if (col && col.table) {
-                var field = col.sortName ? col.sortName : state.field;
-                options.params.sort = col.table + '.' + field;
+            if (col) {
+                var field = col.sortName ? col.sortName     : state.field;
+                var table = col.table    ? col.table + '.'  : '';
+                options.params.sort = table + field;
             }
         }
     }

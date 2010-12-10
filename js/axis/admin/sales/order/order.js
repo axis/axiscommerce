@@ -36,7 +36,7 @@ Ext.onReady(function(){
             {name: 'customer_id', type: 'int'},
             {name: 'order_status_id', type: 'int'},
             {name: 'order_total_base'},
-            {name: 'order_total'}
+            {name: 'order_total_customer'}
         ]),
         window: {},
         form: {},

@@ -34,7 +34,9 @@
 class Axis_Sales_Model_Order extends Axis_Db_Table
 {
     protected $_name = 'sales_order';
+
     protected $_rowClass = 'Axis_Sales_Model_Order_Row';
+
     protected $_selectClass = 'Axis_Sales_Model_Order_Select';
 
     /**
