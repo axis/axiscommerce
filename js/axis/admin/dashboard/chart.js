@@ -1,26 +1,25 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
-//Ext.onReady(function(){
 var Chart = {
     _url: Axis.getUrl('index/dash-board-chart'),
     siteId: false,
@@ -48,7 +47,7 @@ var Chart = {
             success: function(response) {
                 response = Ext.decode(response.responseText);
                 var yAxis = Ext.getCmp('chart').yAxis;
-                
+
                 var data = response.data;
                 var max = data[0].value || 1;
                 var length = data.length;
@@ -108,8 +107,7 @@ var Chart = {
                 }
                 Ext.StoreMgr.lookup('storeChart').loadData(response);
             }
-        })
-        return;
+        });
     },
     setType: function(type){
         this.type = type;
@@ -169,17 +167,11 @@ Ext.onReady(function(){
         storeId: 'storeChart',
         autoLoad: false,
         fields: [
-            {
-                name: 'time',
-                type: 'date',
-                dateFormat: 'Y-m-d H:i:s'
-            },{
-                name: 'value'
-            }
+            {name: 'time', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'value'}
         ]
     });
 
-    // simple array store
     var comboboxTimePeriod = new Ext.form.ComboBox({
         width: 100,
         store: new Ext.data.ArrayStore({
@@ -209,7 +201,6 @@ Ext.onReady(function(){
         defaultType: 'button',
         baseCls: 'x-plain',
         cls: 'btn-panel',
-//        split: false,
         defaults: {
             toggleGroup: 'panel-buttons-change-type',
             enableToggle: true
@@ -244,30 +235,35 @@ Ext.onReady(function(){
         majorUnit: 1,
         labelRenderer: Chart.getTime
     });
-    
+
     new Ext.Panel({
         id: 'panel-chart',
         region: 'center',
         header: true,
         title : '-',
         split: true,
-//        renderTo: 'container',
-//        width: 700,
-//        height: 500,
         layout: 'fit',
         border: true,
-        tbar:[panelChangeType, '->', comboboxTimePeriod],
+        tbar:[
+            panelChangeType,
+            '->',
+            comboboxTimePeriod
+        ],
         bbar: [{
             text: 'Previous'.l(),
             icon: Axis.skinUrl + '/images/icons/arrow_left.png',
-            handler: function() {Chart.setPeriodIndex(1).reload();}
+            handler: function() {
+                Chart.setPeriodIndex(1).reload();
+            }
         }, {
             text: 'Next'.l(),
             id: 'button-time-period-next',
             iconAlign: 'right',
             disabled: true,
             icon: Axis.skinUrl + '/images/icons/arrow_right.png',
-            handler: function() {Chart.setPeriodIndex(-1).reload();}
+            handler: function() {
+                Chart.setPeriodIndex(-1).reload();
+            }
         }],
         items: {
             //http://developer.yahoo.com/yui/charts/
@@ -322,7 +318,6 @@ Ext.onReady(function(){
             },
             chartStyle: {
                 padding: 10,
-//                animationEnabled: true,
                 font: {
                     name: 'Tahoma',
                     color: 0x444444,
@@ -389,7 +384,8 @@ Ext.onReady(function(){
             }]
         }
     });
+
     Ext.getCmp('panel-change-type').items.first().toggle(true);
+
     Chart.reload();
 });
-//});

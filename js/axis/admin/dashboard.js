@@ -20,18 +20,7 @@
  * @license     GNU Public License V3.0
  */
 
-var action = {
-    'product'  : Axis.getUrl('catalog_index/index/siteId/.siteId./productId/.id.'),
-    'review'   : Axis.getUrl('review_index/index/reviewId/.id.'),
-    'order'    : Axis.getUrl('sales_order/index/orderId/.id.'),
-    'wishlist' : Axis.getUrl('customer_wishlist/index/wishlistId/.id.'),
-    'customer' : Axis.getUrl('customer_index/index/customerId/.id.'),
-    'contact'  : Axis.getUrl('contacts_index/index/mailId/.id.'), //@todo it`s no work
-    'search'   : Axis.getUrl('search/index/searchId/.id.')
-
-};
-var params;
- Ext.onReady(function(){
+Ext.onReady(function(){
 
     var sites = new Ext.FormPanel({
         standardSubmit: true,
@@ -67,468 +56,408 @@ var params;
             {contentEl: 'quick-summary-content', border: false}
         ]
     });
+
     var orderRecord = new Ext.data.Record.create([
-        {name: 'id'},
-        {name: 'site_id'},
-        {name: 'date_purchased_on'},
+        {name: 'id', type: 'int'},
+        {name: 'site_id', type: 'int'},
+        {name: 'date_purchased_on', type: 'date', dateFormat: 'Y-m-d H:i:s'},
         {name: 'billing_name'},
         {name: 'delivery_name'},
+        {name: 'customer_name'},
         {name: 'customer_email'},
-        {name: 'customer_id'},
-        {name: 'order_status_id'},
-        {name: 'order_total'}
+        {name: 'customer_id', type: 'int'},
+        {name: 'order_status_id', type: 'int'},
+        {name: 'order_total_base'}
     ]);
 
     var dsOrder = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            method: 'post',
-            url: Axis.getUrl('sales_order/list')
-        }),
-        baseParams: params,
+        url: Axis.getUrl('sales_order/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
             id: 'id'
         }, orderRecord),
-
         remoteSort: true,
-        pruneModifiedRecords: true
+        sortInfo: {
+            field: 'date_purchased_on',
+            direction: 'DESC'
+        }
     });
 
-    var dsOrderCustomer = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            method: 'post',
-            url: Axis.getUrl('sales_order/list')
-        }),
-        baseParams:params,
-        reader: new Ext.data.JsonReader({
-            root: 'data',
-            totalProperty: 'count',
-            id: 'id'
-        }, orderRecord),
-
-        remoteSort: true,
-        pruneModifiedRecords: true
-    });
-    var cmOrder = new Ext.grid.ColumnModel([
-        {
+    var cmOrder = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [{
             header: "Customer".l(),
-            sortable: true,
             id: 'customer',
-            dataIndex: 'customer_email',
-            renderer:   function (value, meta, record) {
-            meta.attr = 'ext:qtip="Open in new window ' + value + '"';
-            return String.format(
+            dataIndex: 'customer_name',
+            renderer: function (value, meta, record) {
+                var customerId = record.get('customer_id');
+                if (!customerId) {
+                    return 'Guest'.l();
+                }
+                return String.format(
                     '<a href="{1}" target="_blank">{0}</a>',
-                    value, action.customer.replace(/\.id\./, record.data.customer_id));
-            }
-        },{
+                    value,
+                    Axis.getUrl('customer_index/index/customerId/' + customerId)
+                );
+            },
+        }, {
+            header: "Order Total".l(),
+            dataIndex: 'order_total_base',
+            sortName: 'order_total',
+            width: 130
+        }, {
             header: "Purchased On".l(),
             dataIndex: 'date_purchased_on',
+            renderer: function(value) {
+                return Ext.util.Format.date(value) + ' ' + Ext.util.Format.date(value, 'H:i:s');
+            },
             width: 130
-        },{
-            header: "Order Total".l(),
-            dataIndex: 'order_total',
-            width: 130
-        }
-    ]);
+        }]
+    });
 
-    var gridOrders = new Ext.grid.EditorGridPanel({
+    var ordersGrid = new Axis.grid.GridPanel({
         title: 'Orders'.l(),
         autoExpandColumn: 'customer',
         id: 'grid-orders',
         ds: dsOrder,
         cm: cmOrder,
         border: false,
-        viewConfig: {
-            emptyText: 'No records found'.l()
-        },
-        bbar:['->',
-            new Ext.Button({
-                cls: 'x-btn-text',
-                text: 'All orders'.l(),
-                handler: function() {
-                    document.location.href =
-                        Axis.getUrl('sales_order/index/');
-                }
-            })
-        ]
+        massAction: false,
+        bbar: []
     });
 
-    var ordersCustomerGrid = new Ext.grid.EditorGridPanel({
+    var dsCustomer = new Ext.data.Store({
+        url: Axis.getUrl('customer_index/list'),
+        reader: new Ext.data.JsonReader({
+            root: 'data',
+            totalProperty: 'count',
+            id: 'id'
+        }, [
+            {name: 'id', type: 'int'},
+            {name: 'email'},
+            {name: 'created_at', type: 'date', dateFormat: 'Y-m-d'},
+        ]),
+        remoteSort: true,
+        sortInfo: {
+            field: 'created_at',
+            direction: 'DESC'
+        }
+    });
+
+    var cmCustomer = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [{
+            header: "Customer".l(),
+            id: 'customer',
+            dataIndex: 'email',
+            renderer: function (value, meta, record) {
+                return String.format(
+                    '<a href="{1}" target="_blank">{0}</a>',
+                    value,
+                    Axis.getUrl('customer_index/index/customerId/' + record.get('id'))
+                );
+            },
+        }, {
+            header: "Date created".l(),
+            dataIndex: 'created_at',
+            renderer: function(value) {
+                return Ext.util.Format.date(value);
+            },
+            width: 100
+        }]
+    });
+
+    var customerGrid = new Axis.grid.GridPanel({
         title: 'Customers'.l(),
         autoExpandColumn: 'customer',
-        ds: dsOrderCustomer,
-        cm: cmOrder,
+        ds: dsCustomer,
+        cm: cmCustomer,
         border: false,
-        viewConfig: {
-            emptyText: 'No records found'.l()
-        },
-        bbar:['->',
-            new Ext.Button({
-                cls: 'x-btn-text',
-                text: 'All orders'.l(),
-                handler: function() {
-                    document.location.href =
-                        Axis.getUrl('sales_order/index/');
-                }
-            })
-        ]
+        massAction: false,
+        bbar:[]
     });
 
     var dsContact = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            method: 'post',
-            url: Axis.getUrl('contacts_index/list')
-        }),
-        baseParams:params,
+        url: Axis.getUrl('contacts_index/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
             id: 'id'
         }, Ext.data.Record.create([
-            {name: 'id'},
+            {name: 'id', type: 'int'},
             {name: 'email'},
             {name: 'subject'},
             {name: 'message'},
             {name: 'custom_info'},
             {name: 'department_name'},
-            {name: 'created_at'},
-            {name: 'department_id'},
+            {name: 'created_at', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'department_id', type: 'int'},
             {name: 'datetime'},
             {name: 'message_status'}
         ])),
-
         remoteSort: true,
-        pruneModifiedRecords: true
+        sortInfo: {
+            field: 'created_at',
+            direction: 'DESC'
+        }
     });
-    var cmContact = new Ext.grid.ColumnModel([
-        {
+
+    var cmContact = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [{
             header: "Email".l(),
             dataIndex: 'email',
-            width: 150,
-            sortable: true
+            width: 150
         },{
             id: 'subject',
             header: "Subject".l(),
-            dataIndex: 'subject',
-            sortable: true
+            dataIndex: 'subject'
         },{
-            header: "Data & Time".l(),
+            header: "Created On".l(),
             dataIndex: 'created_at',
-            width: 130,
-            sortable: true
-        }
-    ]);
-    var contactGrid = new Ext.grid.EditorGridPanel({
+            renderer: function(value) {
+                return Ext.util.Format.date(value) + ' ' + Ext.util.Format.date(value, 'H:i:s');
+            },
+            width: 130
+        }]
+    });
+
+    var contactGrid = new Axis.grid.GridPanel({
         autoExpandColumn: 'subject',
         title: 'Messages'.l(),
         ds: dsContact,
         cm: cmContact,
         border: false,
-        autoScroll: true,
-        viewConfig: {
-            emptyText: 'No records found'.l()
-        },
-        bbar: ['->',
-            new Ext.Button({
-                 cls: 'x-btn-text',
-                text: 'All contacts'.l(),
-                handler: function() {
-                    document.location.href =
-                        Axis.getUrl('contacts_index');
-                }
-            })
-        ]
+        massAction: false,
+        bbar: []
     });
 
     var dsSearch = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-             method: 'post',
-            url: Axis.getUrl('search/list')
-        }),
-        baseParams: params,
+        url: Axis.getUrl('search/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
             id: 'id'
         }, Ext.data.Record.create([
-            {name: 'id'},
-            {name: 'num_results'},
-            {name: 'hit'},
+            {name: 'id', type: 'int'},
+            {name: 'num_results', type: 'int'},
+            {name: 'hit', type: 'int'},
             {name: 'session_id'},
-            {name: 'created_at'},
+            {name: 'created_at', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'query'},
             {name: 'customer_email'},
-            {name: 'customer_id'}
+            {name: 'customer_id', type: 'int'}
         ])),
-
         remoteSort: true,
-        pruneModifiedRecords: true
+        sortInfo: {
+            field: 'created_at',
+            direction: 'DESC'
+        }
     });
-    var cmSearch = new Ext.grid.ColumnModel([
-        {
+
+    var cmSearch = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [{
             header: "Query".l(),
-            width: 50,
-            sortable: true,
+            id: 'query',
             dataIndex: 'query'
         }, {
             header: "Results".l(),
-            width: 45,
-            sortable: true,
+            width: 50,
             dataIndex: 'num_results'
-        }, {
-            header: "Customer".l(),
-            width: 165,
-            sortable: true,
-            dataIndex: 'customer_email',
-            renderer: function (value, meta, record) {
-                 var link = action.customer.replace(/\.id\./, record.data.customer_id);
-                if (value == null) {
-                    value = ' Guest';
-                    link = '#';
-                }
-                meta.attr = 'ext:qtip="Open in new window ' + value + '"';
-                return String.format(
-                        '<a href="{1}" target="_blank">{0}</a>',
-                        value, link);
-            }
         }, {
             header: "Hit".l(),
             width: 25,
-            dataIndex: 'hit',
-            sortable: true,
-            groupable:false
+            dataIndex: 'hit'
         }, {
             header: "Created On".l(),
             width: 130,
-            sortable: true,
+            renderer: function(value) {
+                return Ext.util.Format.date(value) + ' ' + Ext.util.Format.date(value, 'H:i:s');
+            },
             dataIndex: 'created_at',
-            groupable:false
-        }
+        }]
+    });
 
-    ]);
-    var searchGrid = new Ext.grid.EditorGridPanel({
+    var searchGrid = new Axis.grid.GridPanel({
+        autoExpandColumn: 'query',
+        title: 'Search Terms'.l(),
         ds: dsSearch,
         cm: cmSearch,
         border: false,
-        viewConfig: {
-            forceFit: true,
-            emptyText: 'No records found'.l()
-        },
-        title: 'Search Terms'.l(),
-        bbar: new Ext.Toolbar({
-            items:['->',
-                new Ext.Button({
-                    cls: 'x-btn-text',
-                    text: 'All searches'.l(),
-                    handler: function() {
-                        document.location.href =  Axis.getUrl('search');
-                    }
-                })
-            ]
-        })
+        massAction: false,
+        bbar: []
     });
 
     var dsBestView = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            method: 'post',
-            url: Axis.getUrl('catalog_index/list-viewed')
-        }),
-        baseParams: params,
+        url: Axis.getUrl('catalog_index/list-viewed'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
             id: 'id'
         }, Ext.data.Record.create([
-            {name: 'id'},
-            {name: 'viewed'},
-            {name: 'price'},
+            {name: 'id', type: 'int'},
+            {name: 'viewed', type: 'int'},
+            {name: 'price', type: 'float'},
             {name: 'name'}
         ])),
         remoteSort: true,
-        pruneModifiedRecords: true
+        sortInfo: {
+            field: 'viewed',
+            direction: 'DESC'
+        }
     });
 
-    var cmBestView = new Ext.grid.ColumnModel([
-        {
+    var cmBestView = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: false,
+            menuDisabled: true
+        },
+        columns: [{
             header: "Product".l(),
             id: 'product',
-            sortable: true,
             dataIndex: 'name'
         }, {
             header: "Price".l(),
             width: 90,
-            sortable: true,
             dataIndex: 'price'
         }, {
             header: "Viewed".l(),
             width: 70,
-            sortable: true,
             dataIndex: 'viewed'
-        }
-    ]);
+        }]
+    });
 
-    var bestViewGrid = new Ext.grid.EditorGridPanel({
+    var bestViewGrid = new Axis.grid.GridPanel({
         title: 'Best viewed'.l(),
         autoExpandColumn: 'product',
         ds: dsBestView,
         cm: cmBestView,
         border: false,
-        viewConfig: {
-            emptyText: 'No records found'.l()
-        },
+        massAction: false,
         bbar: []
     });
 
     var dsBestseller = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            method: 'post',
-            url: Axis.getUrl('catalog_index/list-bestseller')
-        }),
-        baseParams:params,
+        url: Axis.getUrl('catalog_index/list-bestseller'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
             id: 'id'
         }, Ext.data.Record.create([
-            {name: 'id'},
+            {name: 'id', type: 'int'},
             {name: 'ordered_qty'},
-            {name: 'ordered'},
-            {name: 'price'},
+            {name: 'ordered', type: 'int'},
+            {name: 'price', type: 'float'},
             {name: 'name'}
         ])),
-
         remoteSort: true,
-        pruneModifiedRecords: true
+        sortInfo: {
+            field: 'ordered',
+            direction: 'DESC'
+        }
     });
-    var cmBestseller = new Ext.grid.ColumnModel([
-        {
+
+    var cmBestseller = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: false,
+            menuDisabled: true
+        },
+        columns: [{
             header: "Product".l(),
             id: 'product',
-            sortable: true,
             dataIndex: 'name'
-
-        },{
+        }, {
             header: "Price".l(),
             width: 90,
-            sortable: true,
             dataIndex: 'price'
-        },{
+        }, {
             header: "Ordered Qty".l(),
-            width: 70,
+            width: 75,
             dataIndex: 'ordered_qty'
-        },{
+        }, {
             header: "Ordered".l(),
             width: 70,
-            sortable: true,
             dataIndex: 'ordered'
-        }
+        }]
+    });
 
-    ]);
-    var bestsellerGrid = new Ext.grid.EditorGridPanel({
+    var bestsellerGrid = new Axis.grid.GridPanel({
+        autoExpandColumn: 'product',
         ds: dsBestseller,
         cm: cmBestseller,
-        autoExpandColumn: 'product',
         border: false,
         title: 'Bestsellers'.l(),
-        viewConfig: {
-            forceFit:true,
-            emptyText: 'No records found'.l()
-        },
+        massAction: false,
         bbar: []
     });
 
     params = {
         'start' : 0,
-        'limit' : 5,
-        'dir'   : 'DESC',
-        'sort'  : 'date_purchased_on'
+        'limit' : 10
     };
-    if (onlyDate) {
-        params['filter[0][data][comparison]'] = 'gt';
-        params['filter[0][data][type]']       = 'date';
-        params['filter[0][data][value]']      = date;
-        params['filter[0][field]']            = 'date_purchased_on';
+    if (currentSiteId) {
+        params['filter[1][field]'] = 'site_id';
+        params['filter[1][value]'] = currentSiteId;
     }
-    if (currentSiteId != 0 )
-    {
-        params['filter[1][data][type]']       = 'numeric';
-        params['filter[1][data][comparison]'] = 'eq';
-        params['filter[1][field]']            = 'site_id';
-        params['filter[1][data][value]']      = currentSiteId;
-    }
-    gridOrders.on('rowdblclick', function(grid, rowIndex, e) {
-        var row = gridOrders.getStore().getAt(rowIndex);
-        window.location = action.order.replace(/\.id\./, row.id);
+    ordersGrid.on('rowdblclick', function(grid, rowIndex, e) {
+        var row = ordersGrid.getStore().getAt(rowIndex);
+        window.location = Axis.getUrl('sales_order/index/orderId/' + row.id);
     });
     dsOrder.baseParams = params;
     dsOrder.load();
 
-    params['filter[2][data][type]']       = 'numeric';
-    params['filter[2][data][comparison]'] = 'noteq';
-    params['filter[2][field]']            = 'customer_id';
-    params['filter[2][data][value]']      = 0;
-    ordersCustomerGrid.on('rowdblclick', function(grid, rowIndex, e) {
-        var row = ordersCustomerGrid.getStore().getAt(rowIndex);
-        window.location = action.order.replace(/\.id\./, row.id);
+    customerGrid.on('rowdblclick', function(grid, rowIndex, e) {
+        var row = customerGrid.getStore().getAt(rowIndex);
+        window.location = Axis.getUrl('customer_index/index/customerId/' + row.id);
     });
-    dsOrderCustomer.baseParams = params;
-    dsOrderCustomer.load();
+    dsCustomer.baseParams = params;
+    dsCustomer.load();
 
-    delete params['filter[2][data][type]'];
-    delete params['filter[2][data][comparison]'];
-    delete params['filter[2][field]'];
-    delete params['filter[2][data][value]'];
-    params['sort'] = 'created_at';
-    if (onlyDate) {
-        params['filter[0][field]'] = 'created_at';
-    }
     contactGrid.on('rowdblclick', function(grid, rowIndex, e) {
         var row = contactGrid.getStore().getAt(rowIndex);
-        window.location = action.contact.replace(/\.id\./, row.id);
+        window.location = Axis.getUrl('contacts_index/index/mailId/' + row.id);
     });
     dsContact.baseParams = params;
     dsContact.load();
-    if (onlyDate) {
-        params['filter[0][field]'] = 'created_at';
-    }
+
     searchGrid.on('rowdblclick', function(grid, rowIndex, e) {
         var row = searchGrid.getStore().getAt(rowIndex);
-        window.location = action.search.replace(/\.id\./, row.id);
+        window.location = Axis.getUrl('search/index/searchId/' + row.id);
     });
     dsSearch.baseParams = params;
     dsSearch.load();
 
     params = {
         'start' : 0,
-        'limit' : 5,
-        'dir'   :  'DESC'
+        'limit' : 10
     }
-    if (currentSiteId != 0 )
-    {
+    if (currentSiteId != 0 ) {
          params['siteId'] = currentSiteId;
     }
     bestViewGrid.on('rowdblclick', function(grid, rowIndex, e) {
         var row = bestViewGrid.getStore().getAt(rowIndex);
-        window.location = action.product
-            .replace(/\.id\./, row.id)
-            .replace(/\.siteId\./,currentSiteId);
+        window.location = Axis.getUrl('catalog_index/index/productId/' + row.id);
     });
     dsBestView.baseParams = params;
     dsBestView.load();
 
     bestsellerGrid.on('rowdblclick', function(grid, rowIndex, e) {
         var row = bestsellerGrid.getStore().getAt(rowIndex);
-        window.location = action.product
-            .replace(/\.id\./, row.id)
-            .replace(/\.siteId\./,currentSiteId);
+        window.location = Axis.getUrl('catalog_index/index/productId/' + row.id);
     });
-    delete params['dir'];
     dsBestseller.baseParams = params;
     dsBestseller.load();
 
-    // basic tabs 1, built from existing content
     var orderTabs = new Ext.TabPanel({
         activeTab: 0,
         flex: 1,
@@ -537,7 +466,9 @@ var params;
             margin: '0 0 7px 0'
         },
         items:[
-            gridOrders, ordersCustomerGrid, contactGrid
+            ordersGrid,
+            customerGrid,
+            contactGrid
         ]
     });
 
@@ -545,7 +476,11 @@ var params;
         activeTab: 0,
         flex: 1,
         plain: true,
-        items:[bestViewGrid, bestsellerGrid, searchGrid]
+        items:[
+            bestViewGrid,
+            bestsellerGrid,
+            searchGrid
+        ]
     });
 
     var panelWest = new Ext.Panel({
@@ -560,7 +495,7 @@ var params;
         layoutConfig: {
             align : 'stretch'
         },
-        width: 450,
+        width: 500,
         items: [
             sites,
             quickSummary,
