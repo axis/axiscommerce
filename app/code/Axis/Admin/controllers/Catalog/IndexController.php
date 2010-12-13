@@ -98,7 +98,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
         $select = Axis::model('catalog/product')->select('id')
             ->where('cp.ordered > 0')
             ->limit(
-                $this->_getParam('limit', 5),
+                $this->_getParam('limit', 10),
                 $this->_getParam('start', 0)
             )
             ->order(array('cp.ordered DESC', 'cp.id DESC'));
@@ -129,7 +129,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
         $select = Axis::model('catalog/product')->select('id')
             ->where('cp.viewed > 0')
             ->limit(
-                $this->_getParam('limit', 5),
+                $this->_getParam('limit', 10),
                 $this->_getParam('start', 0)
             )
             ->order(array('cp.viewed DESC', 'cp.id DESC'));

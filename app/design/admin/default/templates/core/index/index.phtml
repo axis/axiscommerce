@@ -1,10 +1,8 @@
-<?php $this->headScript()->appendFile('js/ext-axis/src/widgets/Panel.js'); ?>
-<?php $this->headScript()->appendFile('/js/axis/admin/chart.js'); ?>
+<?php $this->headScript()->appendFile('/js/axis/admin/dashboard/chart.js'); ?>
 <?php $this->headScript()->appendFile('/js/axis/admin/dashboard.js'); ?>
 
 <script type="text/javascript">
     var date = '<?php echo $this->date ?>';
-    var onlyDate = false; 
     var currentSiteId = <?php echo $this->siteId; ?>;
     Ext.onReady(function(){
         Chart.init(currentSiteId);
@@ -14,7 +12,7 @@
         <select name="siteId" id="site_id">
             <option value="0"><?php echo Axis::translate('admin')->__('All sites')?></option>
             <?php foreach ($this->sites as $id => $name) : ?>
-                <option value="<?php echo $id?>"<?php 
+                <option value="<?php echo $id?>"<?php
                 if ($id == $this->siteId) :
                     echo ' selected="selected" ';
                 endif;
@@ -42,7 +40,7 @@
                     <td><?php echo Axis::translate('admin')->__('Average Order')?> : </td>
                     <td><?php echo $this->escape($this->orderAverage);?></td>
                     <td><?php echo Axis::translate('admin')->__('Conversion rate')?> : </td>
-                    <td><?php  echo $this->visitorToDay ? 
+                    <td><?php  echo $this->visitorToDay ?
                         $this->escape(round(($this->orderCountToDay*100)/$this->visitorToDay, 2)) : 0; ?> %
                     </td>
                 </tr>
@@ -50,7 +48,7 @@
                     <td><?php echo Axis::translate('admin')->__('Customers')?> :</td>
                     <td><?php echo $this->escape($this->customerCount); ?></td>
                     <td><?php echo Axis::translate('admin')->__('Pageviews per visit')?> : </td>
-                    <td><?php echo $this->visitorToDay 
+                    <td><?php echo $this->visitorToDay
                         ? $this->escape(floor($this->pageviewsToDay/$this->visitorToDay)) : 0; ?>
                     </td>
                 </tr>
