@@ -15,66 +15,114 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 Ext.onReady(function () {
-    var store = new Ext.data.GroupingStore({
-        url: Axis.getUrl('discount_index/list'),
+
+    var ds = new Ext.data.Store({
+        baseParams: {
+            limit: 25
+        },
         reader: new Ext.data.JsonReader({
+                idProperty: 'id',
                 root : 'data',
                 totalProperty: 'count'
-            },
-            ['id', 'name', 'from_date', 'to_date', 'is_active', 'priority', 'is_combined']
+            }, [
+                {name: 'id', type: 'int'},
+                {name: 'name'},
+                {name: 'from_date', type: 'date', dateFormat: 'Y-m-d'},
+                {name: 'to_date', type: 'date', dateFormat: 'Y-m-d'},
+                {name: 'is_active', type: 'int'},
+                {name: 'priority', type: 'int'},
+                {name: 'is_combined', type: 'int'}
+            ]
         ),
-        sortInfo: {field: 'name', direction: "ASC"}
+        remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        },
+        url: Axis.getUrl('discount_index/list')
     });
-    
-    var cm = new Ext.grid.ColumnModel([{
-        header: "Id".l(),
-        width: 30,
-        dataIndex: 'id',
-        sortable: true
-    },{
-        header: "Discount Name".l(),
-        id:'name',
-        width: 70,
-        sortable: true,
-        dataIndex: 'name'
-    },{
-        header: "Start Date".l(),
-        width: 70,
-        sortable: true,
-        dataIndex: 'from_date'
-    },{
-        header: "End Date".l(),
-        width: 70,
-        sortable: true,
-        dataIndex: 'to_date'
-    },{
-        header: "Status".l(),
-        width: 70,
-        sortable: true,
-        dataIndex: 'is_active'
-    },{
-        header: "Priority".l(),
-        width: 70,
-        sortable: true,
-        dataIndex: 'priority'
-    },{
-        header: "Combined".l(),
-        width: 70,
-        sortable: true,
-        dataIndex: 'is_combined'
-    }]);
+
+    var cm = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [{
+            header: "Id".l(),
+            width: 90,
+            dataIndex: 'id'
+        }, {
+            header: "Discount Name".l(),
+            id:'name',
+            dataIndex: 'name'
+        }, {
+            header: "Priority".l(),
+            width: 80,
+            dataIndex: 'priority'
+        }, {
+            header: "Combined".l(),
+            width: 110,
+            dataIndex: 'is_combined',
+            renderer: function(value) {
+                if (value) {
+                    return 'Combined'.l();
+                }
+                return 'Not Combined'.l();
+            },
+            filter: {
+                editable: false,
+                resetValue: 'reset',
+                store: new Ext.data.ArrayStore({
+                    data: [[0, 'Not Combined'.l()], [1, 'Combined'.l()]],
+                    fields: ['id', 'name']
+                })
+            }
+        }, {
+            header: "Start Date".l(),
+            width: 130,
+            renderer: function(value) {
+                return Ext.util.Format.date(value);
+            },
+            dataIndex: 'from_date'
+        }, {
+            header: "End Date".l(),
+            width: 130,
+            renderer: function(value) {
+                return Ext.util.Format.date(value);
+            },
+            dataIndex: 'to_date'
+        }, {
+            header: "Status".l(),
+            width: 90,
+            dataIndex: 'is_active',
+            renderer: function(value) {
+                if (value) {
+                    return 'Enabled'.l();
+                }
+                return 'Disabled'.l();
+            },
+            filter: {
+                editable: false,
+                resetValue: 'reset',
+                store: new Ext.data.ArrayStore({
+                    data: [[0, 'Disabled'.l()], [1, 'Enabled'.l()]],
+                    fields: ['id', 'name']
+                })
+            }
+        }]
+    });
 
     var grid = new Axis.grid.EditorGridPanel({
         id: 'gridDiscount',
         autoExpandColumn: 'name',
-        ds: store,
+        ds: ds,
         cm: cm,
+        plugins: [new Axis.grid.Filter()],
         tbar: [{
                 text: 'Add'.l(),
                 icon: Axis.skinUrl + '/images/icons/add.png',
@@ -124,7 +172,7 @@ Ext.onReady(function () {
             },
             new Ext.Toolbar.Separator(),
             new Ext.Toolbar.TextItem('Display mode  '.l()),
-            new Ext.Toolbar.Item('tbar-display-mode') , '->', 
+            new Ext.Toolbar.Item('tbar-display-mode') , '->',
             {
                 text: 'Reload'.l(),
                 icon: Axis.skinUrl + '/images/icons/refresh.png',
@@ -135,10 +183,10 @@ Ext.onReady(function () {
             }
         ],
         bbar: new Axis.PagingToolbar({
-            store: store
+            store: ds
         })
     });
-    
+
     new Axis.Panel({
         items: [
             grid
@@ -155,9 +203,8 @@ Ext.onReady(function () {
     });
 
     Ext.get('tbar-display-mode').on('change', function(event, element) {
-        var mode = element.options[element.selectedIndex].value;
-        Ext.getCmp('gridDiscount').getStore().load({params:{
-            start:0, limit:25, displayMode: mode
-        }});
+        Ext.getCmp('gridDiscount').getStore().baseParams['displayMode'] =
+            element.options[element.selectedIndex].value;
+        Ext.getCmp('gridDiscount').getStore().load();
     })
 });

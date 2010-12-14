@@ -492,5 +492,6 @@ Locale.module('core', {
     'Reviews': 'Reviews',
     'From': 'From',
     'To': 'To',
-    'Payer': 'Payer'
+    'Payer': 'Payer',
+    'Not Combined': 'Not Combined'
 });

@@ -34,55 +34,13 @@
 class Axis_Discount_Model_Discount extends Axis_Db_Table
 {
     protected $_name = 'discount';
+
     protected $_primary = 'id';
+
     protected $_rowClass = 'Axis_Discount_Model_Discount_Row';
 
-    protected function _setListFilter(Zend_Db_Select $select, array $params)
-    {
-        if (!isset($params['special'])) {
-            return $select;
-        }
-        $subQuery = $this->getAdapter()->select()
-            ->from(array('d' => $this->_prefix . 'discount'), array('id'))
-            ->join(array('e' => $this->_prefix . 'discount_eav'),
-               "e.discount_id = d.id AND e.entity = 'special' AND e.value = '1' ",
-               array()
-            )
-        ;
-        $specialDiscountIds = $this->getAdapter()->fetchAll($subQuery);
-        if (!count($specialDiscountIds)) {
-            return $params['special'] ? $select->where('1 != 1') : $select;
-        }
+    protected $_selectClass = 'Axis_Discount_Model_Discount_Select';
 
-        $condition = $params['special'] ? '' : ' NOT ';
-        $select->where($this->getAdapter()->quoteInto(
-            "d.id {$condition} IN (?)", $specialDiscountIds
-        ));
-
-        return $select;
-    }
-
-    public function getList($params)
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(array('d' => $this->_prefix . 'discount'))
-            ->order($params['sort'] . ' ' . $params['dir'])
-            ->limit($params['limit'], $params['start']);
-        $select = $this->_setListFilter($select, $params);
-        return $this->getAdapter()->fetchAll($select->__toString());
-    }
-
-    public function getCount($params)
-    {
-        $select = $this->getAdapter()->select()
-            ->from(array('d' => $this->_prefix . 'discount'),
-                new Zend_Db_Expr('COUNT(*)')
-            );
-
-        $select = $this->_setListFilter($select, $params);
-
-        return $this->getAdapter()->fetchOne($select);
-    }
     /**
      * @static
      * @return const array
@@ -90,9 +48,9 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
     public static function getPriceConditionTypes()
     {
         return array(
-            'equals' => 'Equals',
-            'greate' => 'Greater then',
-            'less' => 'Less then'
+            'equals'    => 'Equals',
+            'greate'    => 'Greater then',
+            'less'      => 'Less then'
         );
     }
 
