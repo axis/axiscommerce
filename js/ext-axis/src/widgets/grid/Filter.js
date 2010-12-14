@@ -351,6 +351,8 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
                 params['filter[' + length + '][value]'] = field.getValue();
                 if (field.operator) {
                     params['filter[' + length + '][operator]'] = field.operator;
+                } else if ('textfield' == field.xtype) {
+                    params['filter[' + length + '][operator]'] = 'LIKE';
                 }
                 if (undefined !== field.table) {
                     params['filter[' + length + '][table]'] = field.table;

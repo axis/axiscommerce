@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -43,29 +43,29 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $alpha = new Axis_Filter_DbField();
+        $select = Axis::model('discount/discount')->select('*')
+            ->calcFoundRows()
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 25),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
 
-        $params = array(
-            'start' => (int) $this->_getParam('start', 0),
-            'limit' => (int) $this->_getParam('limit', 25),
-            'sort' => $alpha->filter($this->_getParam('sort', 'id')),
-            'dir' => $alpha->filter($this->_getParam('dir', 'ASC'))
-        );
         $displayMode = $this->_getParam('displayMode', 'without-special');
-        switch ($displayMode) {
-            case 'only-special':
-                $params['special'] = 1;
-                break;
-            case 'without-special':
-                $params['special'] = 0;
-                break;
-            default:
-                break;
+        if ('only-special' == $displayMode) {
+            $select->addFilterBySpecial();
+        } else if ('without-special' == $displayMode) {
+            $select->addFilterByNonSpecial();
         }
 
         $this->_helper->json->sendSuccess(array(
-            'data' => Axis::single('discount/discount')->getList($params),
-            'count' => Axis::single('discount/discount')->getCount($params)
+            'data'  => $select->fetchAll(),
+            'count' => $select->foundRows()
         ));
     }
 
@@ -90,7 +90,7 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
         $discount = Axis::single('discount/discount')
             ->find($this->_getParam('id', 0))
             ->current();
-            
+
         if (!$discount instanceof Axis_Db_Table_Row) {
             $this->_redirect('/discount_index/create');
         }
