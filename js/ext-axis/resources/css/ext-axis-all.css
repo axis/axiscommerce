@@ -40,7 +40,7 @@
 .x-form-image-upload-field-wrap .x-form-file-upload {}
 
 /* override invalid ext-ux style */
-.x-grid3-cell-first .x-grid3-cell-inner { padding-left: 0; }
+.x-grid3-cell-first .x-grid3-cell-inner { padding-left: 4px; }
 
 /* grid filters */
 .x-grid3-filter { background: #e6e6e6; }

@@ -491,5 +491,6 @@ Locale.module('core', {
     'Tags': 'Таги',
     'Reviews': 'Відгуки',
     'From': 'З',
-    'To': 'По'
+    'To': 'По',
+    'Payer': 'Платник'
 });

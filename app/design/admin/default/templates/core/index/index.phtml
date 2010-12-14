@@ -1,5 +1,22 @@
-<?php $this->headScript()->appendFile('/js/axis/admin/dashboard/chart.js'); ?>
-<?php $this->headScript()->appendFile('/js/axis/admin/dashboard.js'); ?>
+<?php
+$this->headScript()
+    ->setProxy('axis_dashboard')
+    ->appendFile('js/axis/admin/index/chart.js')
+    ->appendFile('js/axis/admin/index/activity/order.js')
+    ->appendFile('js/axis/admin/index/activity/customer.js')
+    ->appendFile('js/axis/admin/index/activity/contacts.js')
+    ->appendFile('js/axis/admin/index/statistics/bestseller.js')
+    ->appendFile('js/axis/admin/index/statistics/popular.js');
+
+$this->headScript()->offsetSetFile(10000, 'js/axis/admin/index/activity.js');
+$this->headScript()->offsetSetFile(10010, 'js/axis/admin/index/statistics.js');
+$this->headScript()->offsetSetFile(10050, 'js/axis/admin/index.js');
+
+if (in_array('Axis_Search', array_keys(Axis::app()->getModules()))) {
+    $this->headScript()->offsetSetFile(500, 'js/axis/admin/index/statistics/search.js');
+}
+
+?>
 
 <script type="text/javascript">
     var date = '<?php echo $this->date ?>';
@@ -9,45 +26,45 @@
     });
 </script>
 <div style="display:none;">
-        <select name="siteId" id="site_id">
-            <option value="0"><?php echo Axis::translate('admin')->__('All sites')?></option>
-            <?php foreach ($this->sites as $id => $name) : ?>
-                <option value="<?php echo $id?>"<?php
-                if ($id == $this->siteId) :
-                    echo ' selected="selected" ';
-                endif;
-                ?>><?php echo $name
-                ?></option>
+    <select name="siteId" id="site_id">
+        <option value="0"><?php echo Axis::translate('admin')->__('All sites')?></option>
+        <?php foreach ($this->sites as $id => $name) : ?>
+            <option value="<?php echo $id?>"<?php
+            if ($id == $this->siteId) :
+                echo ' selected="selected" ';
+            endif;
+            ?>><?php echo $name
+            ?></option>
 
-            <?php endforeach; ?>
-        </select>
-     <div id="quick-summary-content">
+        <?php endforeach; ?>
+    </select>
+    <div id="quick-summary-content">
         <table width="100%">
             <tbody>
                 <tr>
-                    <td><?php echo Axis::translate('admin')->__('Total Sales');?> : </td>
+                    <td><?php echo Axis::translate('admin')->__('Total Sales');?>:</td>
                     <td><?php  echo $this->escape($this->orderTotal); ?></td>
-                    <td><?php echo Axis::translate('admin')->__('Today visitors')?> : </td>
+                    <td><?php echo Axis::translate('admin')->__('Today visitors')?>:</td>
                     <td><?php echo $this->escape($this->visitorToDay); ?></td>
                 </tr>
-                 <tr>
-                    <td><?php echo Axis::translate('admin')->__('Today Sales');?> : </td>
+                <tr>
+                    <td><?php echo Axis::translate('admin')->__('Today Sales');?>:</td>
                     <td><?php echo $this->escape($this->orderTotalToDay); ?></td>
-                    <td><?php echo Axis::translate('admin')->__('Today Pageviews')?> : </td>
+                    <td><?php echo Axis::translate('admin')->__('Today Pageviews')?>:</td>
                     <td><?php echo $this->escape($this->pageviewsToDay); ?></td>
                 </tr>
-                 <tr>
-                    <td><?php echo Axis::translate('admin')->__('Average Order')?> : </td>
+                <tr>
+                    <td><?php echo Axis::translate('admin')->__('Average Order')?>:</td>
                     <td><?php echo $this->escape($this->orderAverage);?></td>
-                    <td><?php echo Axis::translate('admin')->__('Conversion rate')?> : </td>
+                    <td><?php echo Axis::translate('admin')->__('Conversion rate')?>:</td>
                     <td><?php  echo $this->visitorToDay ?
-                        $this->escape(round(($this->orderCountToDay*100)/$this->visitorToDay, 2)) : 0; ?> %
+                        $this->escape(round(($this->orderCountToDay*100)/$this->visitorToDay, 2)) : 0; ?>%
                     </td>
                 </tr>
-                 <tr>
-                    <td><?php echo Axis::translate('admin')->__('Customers')?> :</td>
+                <tr>
+                    <td><?php echo Axis::translate('admin')->__('Customers')?>:</td>
                     <td><?php echo $this->escape($this->customerCount); ?></td>
-                    <td><?php echo Axis::translate('admin')->__('Pageviews per visit')?> : </td>
+                    <td><?php echo Axis::translate('admin')->__('Pageviews per visit')?>:</td>
                     <td><?php echo $this->visitorToDay
                         ? $this->escape(floor($this->pageviewsToDay/$this->visitorToDay)) : 0; ?>
                     </td>
@@ -55,5 +72,4 @@
             </tbody>
         </table>
     </div>
-
 </div>
