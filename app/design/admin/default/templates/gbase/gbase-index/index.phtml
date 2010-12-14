@@ -1,22 +1,15 @@
 <div id="lightbox-info"
      style="position: absolute;
             visibility: hidden;
-            left: 215px;
-            top: 127px; 
-            width: 300px; 
-            height: 18px; 
+            left: 137px;
+            top: 115px;
+            width: 300px;
+            height: 18px;
             background: #fff;"
 ></div>
 
-<?php echo $this->error; ?>
-
 <?php
 $this->setButtons(array(
-    array(
-        'title' => Axis::translate('Axis_Admin')->__('Back'),
-        'onclick' => 'history.back()',
-        'class' => 'alt-button'
-    ),
     array(
         'title' => 'Revoke Token',
         'class' => 'alt-button',
@@ -36,11 +29,11 @@ echo $this->formSelect('targetCountry', null, null, $this->gCountries);
 echo $this->formSelect('currency', null, null, $this->currencies);
 ?>
 <script type="text/javascript">
-    var localGrid, gbaseGrid, siteId;
+    var localGrid, gbaseGrid;
 </script>
 
-<?php $this->headScript()->appendFile('/js/axis/admin/gbase/categoryTree.js')?>
-<?php $this->headScript()->appendFile('/js/axis/admin/gbase/localGrid.js')?>
-<?php $this->headScript()->appendFile('/js/axis/admin/gbase/gbaseGrid.js')?>
-<?php $this->headScript()->appendFile('/js/axis/admin/gbase/productTabs.js')?>
-<?php $this->headScript()->appendFile('/js/axis/admin/gbase/panel.js')?>
+<?php $this->headScript()->appendFile('js/axis/admin/gbase/categoryTree.js')?>
+<?php $this->headScript()->appendFile('js/axis/admin/gbase/localGrid.js')?>
+<?php $this->headScript()->appendFile('js/axis/admin/gbase/gbaseGrid.js')?>
+<?php $this->headScript()->appendFile('js/axis/admin/gbase/productTabs.js')?>
+<?php $this->headScript()->appendFile('js/axis/admin/gbase/panel.js')?>

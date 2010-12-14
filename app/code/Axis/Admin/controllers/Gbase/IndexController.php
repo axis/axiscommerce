@@ -84,8 +84,8 @@ class Axis_Admin_Gbase_IndexController extends Axis_Admin_Controller_Back
         // option_values
         if (sizeof($optionValueIds)) {
             $optionValueText = Axis::single('catalog/product_option_value_text')
-                ->select()
-                ->where('option_value_id IN(?)', $optionValueIds)
+                ->select('*')
+                ->where('option_value_id IN (?)', $optionValueIds)
                 ->where('language_id = ?', $languageId)
                 ->fetchAssoc();
         }
@@ -101,19 +101,16 @@ class Axis_Admin_Gbase_IndexController extends Axis_Admin_Controller_Back
 
     private function _getProductId($categoryId, $recursive)
     {
-        $category = Axis::single('catalog/category')->find($categoryId)->current();
+        $category = Axis::model('catalog/category')->find($categoryId)->current();
 
         if (!$category) {
             return false;
         }
 
-        $select = Axis::single('catalog_product')->select()
-            ->from('catalog_product', array('cp.id'))
-            ->join('catalog_product_category',
-                'cp.id = cpc.product_id')
-            ->join('catalog_category',
-                'cc.id = cpc.category_id')
-            ->where('c.site_id = ?', $category->site_id)
+        $select = Axis::model('catalog/product')->select('cp.id')
+            ->join('catalog_product_category', 'cp.id = cpc.product_id')
+            ->join('catalog_category', 'cc.id = cpc.category_id')
+            ->where('cc.site_id = ?', $category->site_id)
             ->order('cp.id', 'ASC');
 
         if ($recursive && $category->lvl != 0) {
@@ -124,7 +121,7 @@ class Axis_Admin_Gbase_IndexController extends Axis_Admin_Controller_Back
         }
 
         if (!empty(Axis::session('gbase')->last_exported)) {
-            $select->where('p.id > ?', Axis::session('gbase')->last_exported);
+            $select->where('cp.id > ?', Axis::session('gbase')->last_exported);
         }
 
         return $select->fetchOne();
@@ -879,8 +876,8 @@ class Axis_Admin_Gbase_IndexController extends Axis_Admin_Controller_Back
             Axis::session('gbase')->imported_count = 0;
         }
 
-        $productModel  = Axis::single('catalog/product');
-        $categoryModel = Axis::single('catalog/category');
+        $productModel  = Axis::model('catalog/product');
+        $categoryModel = Axis::model('catalog/category');
         $category = $categoryModel->find($params['catId'])->current();
 
         if ($category->lvl == 0 || $params['recursive']) {

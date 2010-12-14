@@ -58,59 +58,6 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
             ->sendSuccess();
     }
 
-    /**
-     * Used in gbase and administration->site
-     */
-    public function getItemsAction()
-    {
-        $node = $this->_getParam('node', 0);
-
-        $i = 0;
-        $result = array();
-        if ($node) {// load child nodes of $node
-            $categories = Axis::single('catalog/category')
-                ->find($node)
-                ->current()
-                ->getChildItems();
-
-            $categoryModel = Axis::single('catalog/category');
-            foreach ($categories as $category) {
-                $count = $categoryModel->find($item['id'])
-                    ->current()
-                    ->getProductsCount();
-                
-                $result[$i] = array(
-                    'text'      => $category['name'] . ' [' . $count . ']',
-                    'id'        => $category['id'],
-                    'name'      => $category['name'],
-                    'cls'       => $category['status'] == 'enabled' ?
-                        '' : 'disabledNode',
-                    'leaf'      => false,
-                    'site_id'   => $category['site_id']
-                );
-                if ($category['rgt'] - $category['lft'] == 1) {
-                    $result[$i]['children'] = array();
-                    $result[$i]['expanded'] = true;
-                }
-                $i++;
-            }
-        } else { // Load root nodes(site names)
-            $categories = Axis::single('catalog/category')->getRootCategories();
-            foreach ($categories as $category) {
-                $result[$i] = array(
-                    'id'        => $category['id'],
-                    'text'      => $category['name'],
-                    'site_node' => true,
-                    'leaf'      => false,
-                    'site_id'   => $category['site_id']
-                );
-                $i++;
-            }
-        }
-        
-         $this->_helper->json->sendJson($result, false, false);
-    }
-
     public function getDataAction()
     {
         $catId = $this->_getParam('catId');
