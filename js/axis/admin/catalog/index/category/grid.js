@@ -30,7 +30,7 @@ var CategoryGrid = {
     el: null,
 
     /**
-     * @property {Axis.data.Record} record
+     * @property {Ext.data.Record} record
      */
     record: null,
 
@@ -254,6 +254,10 @@ Ext.onReady(function() {
     });
 
     var cm = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: false,
+            menuDisabled: true
+        },
         columns: [{
             dataIndex: 'name',
             header: 'Name'.l(),
