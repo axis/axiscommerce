@@ -49,18 +49,16 @@ Ext.onReady(function() {
     var ds = new Ext.data.Store({
         url: Axis.getUrl('tag_index/list'),
         baseParams: {
-            'limit'                      : 100,
-            'filter[0][data][type]'      : 'numeric',
-            'filter[0][data][comparison]': 'eq',
-            'filter[0][field]'           : 'product_id',
-            'filter[0][data][value]'     : 0
+            'limit'            : 100,
+            'filter[0][field]' : 'tp.product_id',
+            'filter[0][value]' : 0
         },
         reader: new Ext.data.JsonReader({
             root: 'data',
             idProperty: 'id',
             fields: [
                 {name: 'id', type: 'int'},
-                {name: 'tag'}
+                {name: 'name'}
             ]
         }),
         remoteSort: true
@@ -76,15 +74,15 @@ Ext.onReady(function() {
             header: 'Id'.l(),
             width: 60
         }, {
-            dataIndex: 'tag',
-            id: 'tag',
+            dataIndex: 'name',
+            id: 'name',
             header: 'Tag'.l(),
             width: 100
         }]
     });
 
     TagGrid.el = new Axis.grid.GridPanel({
-        autoExpandColumn: 'tag',
+        autoExpandColumn: 'name',
         border: false,
         cm: cm,
         ds: ds,
@@ -105,7 +103,7 @@ Ext.onReady(function() {
             }
             TagGrid.el.store.load({
                 params: {
-                    'filter[0][data][value]': Product.id
+                    'filter[0][value]': Product.id
                 }
             });
         }
