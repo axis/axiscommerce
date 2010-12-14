@@ -67,6 +67,21 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
             //item.anchor = undefined;
             item.xtype = this.defaultType;
             item.locale = Axis.locales[langId].locale;
+            item.listeners = {
+                scope: this,
+                specialkey: function(field, e) {
+                    if (e.getKey() != e.ENTER || !e.ctrlKey) {
+                        return;
+                    }
+                    var index = this.items.indexOf(field);
+                    var nextField = this.items.itemAt(index + 1);
+                    if (!nextField) {
+                        nextField = this.items.itemAt(0);
+                    }
+                    this.setFormLocale(nextField.locale);
+                    nextField.focus();
+                }
+            };
 
             for (var i = 0, limit = this.tplVars.length; i < limit; i++) {
                 var v = this.tplVars[i];
