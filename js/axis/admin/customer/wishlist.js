@@ -20,93 +20,108 @@
  * @license     GNU Public License V3.0
  */
 
-Ext.onReady(function (){
+Ext.onReady(function() {
+
     Ext.QuickTips.init();
+
     var expander = new  Ext.grid.RowExpander({
          tpl : new Ext.Template(
-             '<p><b>Comment:</b> {wish_comment}</p>'
+             '<p><b>' + 'Comment'.l() + ':</b> {wish_comment}</p>'
          )
     });
 
-    var filters = new Ext.ux.grid.GridFilters({
-        filters: [
-            {type: 'numeric', dataIndex: 'id'},
-            {type: 'string', dataIndex: 'customer_email'},
-            {type: 'string', dataIndex: 'product_name'},
-            {type: 'string', dataIndex: 'wish_comment'},
-            {type: 'date',   dataIndex: 'created_on', dateFormat: 'Y-m-d'}
-        ]
+    var ds = new Ext.data.GroupingStore({
+        autoLoad: true,
+        baseParams: {
+            limit: 25
+        },
+        url: Axis.getUrl('customer_wishlist/list'),
+        reader: new Ext.data.JsonReader({
+            root : 'data',
+            totalProperty: 'count',
+            id: 'id'
+        }, [
+            {name: 'id', type: 'int'},
+            {name: 'product_id', type: 'int'},
+            {name: 'product_name'},
+            {name: 'created_on', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'wish_comment'},
+            {name: 'customer_email'},
+            {name: 'customer_id', type: 'int'}
+        ]),
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        },
+        remoteSort: true
     });
 
-    var storeWishlist = new Ext.data.GroupingStore({
-        url: Axis.getUrl('customer_wishlist/list'),
-         reader: new Ext.data.JsonReader({
-                  root : 'wishlist',
-                  totalProperty: 'count',
-                  id: 'id'
-             },
-             ['id', 'product_id', 'product_name', 'created_on', 'wish_comment', 'customer_email', 'customer_id']
-         ),
-         sortInfo: {field: 'product_id', direction: "ASC"},
-         remoteSort: true
-     });
-
-     function renderCustomer(value, meta, record) {
-        meta.attr = 'ext:qtip="Open in new window ' + value + '"';
-        var customerAction =  Axis.getUrl('customer_index/index/customerId/.customerId.');
+    function renderCustomer(value, meta, record) {
         return String.format(
             '<a href="{1}" target="_blank" >{0}</a>',
-            value, customerAction.replace(/\.customerId\./, record.data.customer_id));
-     }
+            value,
+            Axis.getUrl('customer_index/index/customerId/' + record.data.customer_id)
+        );
+    }
 
-     function renderProduct(value, meta, record) {
-        meta.attr = 'ext:qtip="Open in new window ' + value + '"';
-        var productAction =  Axis.getUrl('catalog_index/index/productId/.productId.');
+    function renderProduct(value, meta, record) {
         return String.format(
             '<a href="{1}" target="_blank">{0} </a>',
-            value, productAction.replace(/\.productId\./, record.data.product_id));
-     }
+            value,
+            Axis.getUrl('catalog_index/index/productId/' + record.data.product_id)
+        );
+    }
 
-     var columnsWishlist = new Ext.grid.ColumnModel([
-         expander, {
-             header: "Id".l(),
-             width: 30,
-             sortable: true,
-             dataIndex: 'id',
-             groupable:false
-         }, {
-             header: "Product Name".l(),
-             id:'product_name',
-             width: 145,
-             sortable: true,
-             dataIndex: 'product_name',
-             renderer: renderProduct
-         }, {
-             header: "Customer".l(),
-             width: 170,
-             sortable: true,
-             dataIndex: 'customer_email',
-             renderer: renderCustomer
-         }, {
-             header: "Comment".l(),
-             width: 170,
-             dataIndex: 'wish_comment',
-             groupable:false
-         }, {
-             header: "Created On".l(),
-             width: 145,
-             sortable: true,
-             dataIndex: 'created_on',
-             groupable:false
-         }
-     ]);
+    var cm = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [expander, {
+            header: "Id".l(),
+            width: 90,
+            dataIndex: 'id',
+            groupable:false
+        }, {
+            header: "Product Name".l(),
+            id: 'product_name',
+            width: 145,
+            dataIndex: 'product_name',
+            renderer: renderProduct,
+            table: 'cpd',
+            sortName: 'name',
+            filter: {
+                name: 'name'
+            }
+        }, {
+            header: "Customer".l(),
+            width: 190,
+            dataIndex: 'customer_email',
+            renderer: renderCustomer,
+            table: 'ac',
+            sortName: 'email',
+            filter: {
+                name: 'email'
+            }
+        }, {
+            header: "Created On".l(),
+            width: 145,
+            dataIndex: 'created_on',
+            renderer: function(value) {
+                return Ext.util.Format.date(value) + ' ' + Ext.util.Format.date(value, 'H:i:s');
+            },
+            groupable:false
+        }]
+    });
 
-     gridWishlist = new Axis.grid.GridPanel({
-        ds: storeWishlist,
-        cm: columnsWishlist,
-        sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
+    var grid = new Axis.grid.GridPanel({
+        autoExpandColumn: 'product_name',
+        ds: ds,
+        cm: cm,
+        massAction: false,
+        sm: new Ext.grid.RowSelectionModel({
+            singleSelect:true
+        }),
         view: new Ext.grid.GroupingView({
-            forceFit:true,
             emptyText: 'No records found'.l(),
             groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
         }),
@@ -118,43 +133,19 @@ Ext.onReady(function (){
             }
         }],
         bbar: new Axis.PagingToolbar({
-            store: storeWishlist
+            store: ds
         }),
         plugins:[
-            filters,
             expander,
-            new Ext.ux.grid.Search({
-                 mode: 'local',
-                 iconCls: false,
-                 dateFormat: 'Y-m-d',
-                 width: 150,
-                 minLength: 2
-            })
+            new Axis.grid.Filter()
         ]
     });
 
     new Axis.Panel({
         items: [
-            gridWishlist
+            grid
         ]
     });
-
-    function setWishlist(id) {
-        var store = gridWishlist.getStore();
-        store.lastOptions = {params:{start:0, limit:25}};
-        gridWishlist.filters.filters.get('id').setValue({'eq': id});
-    }
-
-    if (typeof(wishlistId) !== "undefined") {
-        setWishlist(wishlistId);
-    } else {
-        storeWishlist.load({
-            params: {
-                start: 0,
-                limit: 25
-            }
-        });
-    }
 });
 
 

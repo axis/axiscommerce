@@ -233,13 +233,6 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
             }
         }
 
-        // wishlist
-        $result['wishlist'] = Axis::single('account/wishlist')->getList(array(
-            'getProductNames' => true,
-            'customerId' => $customer->id,
-            'languageId' => Axis_Locale::getLanguageId()
-        ));
-
         return $this->_helper->json->sendSuccess(array(
             'data' => $result
         ));

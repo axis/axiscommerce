@@ -35,6 +35,8 @@ class Axis_Account_Model_Wishlist extends Axis_Db_Table
 {
     protected $_name = 'account_wishlist';
 
+    protected $_selectClass = 'Axis_Account_Model_Wishlist_Select';
+
     /**
      *
      * @param array $comments
@@ -51,74 +53,6 @@ class Axis_Account_Model_Wishlist extends Axis_Db_Table
             $row->save();
         }
         return true;
-    }
-
-    /**
-     *
-     * @param array $params
-     * @return array
-     */
-    public function getList($params = array())
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(array('cw' => $this->_prefix . 'account_wishlist'));
-        if (isset($params['getProductNames'])) {
-            $select->joinLeft(
-                array('pd' => $this->_prefix . 'catalog_product_description'),
-                "pd.product_id = cw.product_id AND pd.language_id = "
-                . $params['languageId'], array('product_name' => 'name')
-            );
-        }
-        if (isset($params['getCustomerEmail'])) {
-            $select->joinLeft(
-                array('c' => $this->_prefix . 'account_customer'),
-                'cw.customer_id = c.id',
-                array('customer_email' => 'email')
-            );
-        }
-        if (isset($params['customerId'])) {
-            $select->where('cw.customer_id = ?', $params['customerId']);
-        }
-        if (!empty($params['limit'])) {
-            $select->limit($params['limit'], $params['start']);
-        }
-        if (!empty($params['sort'])) {
-            $select->order($params['sort'] . ' ' . $params['dir']);
-        }
-
-        if (isset($params['filters'])) {
-            $filterGrid = $params['filters'];
-            foreach ($filterGrid as $filter) {
-                switch ($filter['data']['type']) {
-                    case 'numeric': case 'date':
-                        $condition = $filter['data']['comparison'] == 'eq' ? '=' :
-                        ($filter['data']['comparison'] == 'lt' ? '<' : '>');
-                        $select->where("cw.$filter[field] $condition ?", $filter['data']['value']);
-                        break;
-                    case 'list':
-                        $select->where($this->getAdapter()->quoteInto("
-                        cw.$filter[field] IN (?)", explode(',', $filter['data']['value'])));
-                        break;
-                    default:
-                        if (($filter['field'] == 'customer_email')) {
-                            if (!isset($params['getCustomerEmail'])) {
-                                $select->joinLeft(
-                                    array('c' => $this->_prefix . 'account_customer'),
-                                    'cw.customer_id = c.id',
-                                    array('customer_email' => 'email')
-                                );
-                            }
-                            $select->where("c.email LIKE ?", $filter['data']['value'] . "%");
-                        } else if (($filter['field'] == 'product_name')&&(isset($params['getProductNames']))) {
-                            $select->where("pd.name LIKE ?", $filter['data']['value'] . "%");
-                        } else {
-                            $select->where("cw.$filter[field] LIKE ?", $filter['data']['value'] . "%");
-                        }
-                        break;
-                }
-            }
-        }
-        return $select->query()->fetchAll();
     }
 
     /**
@@ -163,49 +97,5 @@ class Axis_Account_Model_Wishlist extends Axis_Db_Table
             $item['product'] = $products[$item['product_id']];
         }
         return $wishlist;
-    }
-
-    /**
-     *
-     * @param array $params
-     * @return int
-     */
-    public function getCount($params = array())
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(array('cw' => $this->_prefix . 'account_wishlist'), new Zend_Db_Expr('COUNT(*)'));
-        if (isset($params['filters'])) {
-            $filterGrid = $params['filters'];
-            foreach ($filterGrid as $filter) {
-                switch ($filter['data']['type']) {
-                    case 'numeric':
-                    case 'date':
-                        $condition = $filter['data']['comparison'] == 'eq' ? '=' :
-                        ($filter['data']['comparison'] == 'lt' ? '<' : '>');
-                        $select->where("cw.$filter[field] $condition ?", $filter['data']['value']);
-                        break;
-                    default:
-                        if ($filter['field'] == 'customer_email') {
-                            $select->joinLeft(
-                                array('c' => $this->_prefix . 'account_customer'),
-                                'cw.customer_id = c.id',
-                                array()
-                            );
-                            $select->where("c.email LIKE ?", $filter['data']['value'] . "%");
-                        } elseif ($filter['field'] == 'product_name') {
-                            $select->joinLeft(
-                                array('pd' => $this->_prefix . 'catalog_product_description'),
-                                "pd.product_id = cw.product_id AND pd.language_id = " . $params['languageId'],
-                                array()
-                            );
-                            $select->where("pd.name LIKE ?", $filter['data']['value'] . "%");
-                        } else {
-                            $select->where("cw.$filter[field] LIKE ?", $filter['data']['value'] . "%");
-                        }
-                    break;
-                }
-            }
-        }
-        return $this->getAdapter()->fetchOne($select);
     }
 }
