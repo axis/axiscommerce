@@ -62,8 +62,10 @@ class Axis_Admin_Community_ReviewController extends Axis_Admin_Controller_Back
             )
             ->order($sort . ' ' . $this->_getParam('dir', 'DESC'));
 
-        $data = array();
-        if ($ids = $select->fetchCol()) {
+        $ids    = $select->fetchCol();
+        $count  = $select->foundRows();
+        $data   = array();
+        if ($ids) {
             $data = $mReview->select('*')
                 ->addProductDescription()
                 ->addRating()
@@ -78,7 +80,7 @@ class Axis_Admin_Community_ReviewController extends Axis_Admin_Controller_Back
         }
 
         $this->_helper->json->sendSuccess(array(
-            'count' => $select->foundRows(),
+            'count' => $count,
             'data'  => array_values($data)
         ));
     }
@@ -113,21 +115,29 @@ class Axis_Admin_Community_ReviewController extends Axis_Admin_Controller_Back
     public function getCustomerListAction()
     {
         $this->_helper->layout->disableLayout();
-        $filters = array(
-            'sort' => 'ac.email',
-            'dir' => 'ASC',
-            'start' => $this->_hasParam('start') ? $this->_getParam('start') : 0,
-            'limit' => $this->_hasParam('limit') ? $this->_getParam('limit') : 40
-        );
-        if ($this->_hasParam('id')) {
-            $filters['customer_id'] = $this->_getParam('id');
-        } elseif ($this->_getParam('query') != '') {
-            $filters['customer_email'] = $this->_getParam('query');
+
+        $select = Axis::model('account/customer')->select('*')
+            ->calcFoundRows()
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 40),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
+
+        if ($customerId = $this->_getParam('id')) {
+            $select->where('ac.id = ?', $customerId);
+        } elseif ($query = $this->_getParam('query')) {
+            $select->where('ac.email LIKE ?', '%' . $query . '%');
         }
-        $data = Axis::single('account/customer')->getList($filters);
+
         $this->_helper->json->sendSuccess(array(
-            'totalCount' => $data['count'],
-            'data' => array_values($data['accounts'])
+            'data'  => $select->fetchAll(),
+            'count' => $select->foundRows()
         ));
     }
 

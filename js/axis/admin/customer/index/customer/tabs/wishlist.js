@@ -25,20 +25,32 @@ var WishlistGrid = {
     el: null,
 
     clearData: function() {
-        WishlistGrid.el.store.loadData([]);
+        WishlistGrid.delayedLoader.state = '';
+        WishlistGrid.el.store.loadData({
+            data: []
+        });
     },
 
     loadData: function(data) {
-        WishlistGrid.el.store.loadData(data.wishlist);
+        WishlistGrid.delayedLoader.state = '';
+        if (Ext.getCmp('tab-panel-customer').getActiveTab() == WishlistGrid.el) {
+            WishlistGrid.delayedLoader.load();
+        }
     }
 };
 
 Ext.onReady(function() {
 
     var ds = new Ext.data.Store({
-        mode: 'local',
-        pruneModifiedRecords: true,
+        url: Axis.getUrl('customer_wishlist/list'),
+        baseParams: {
+            'limit'                     : 25,
+            'filter[customer][field]'   : 'customer_id',
+            'filter[customer][value]'   : 0
+        },
         reader: new Ext.data.JsonReader({
+            root: 'data',
+            totalProperty: 'count',
             idProperty: 'id',
             fields: [
                 {name: 'id', type: 'int'},
@@ -47,7 +59,12 @@ Ext.onReady(function() {
                 {name: 'wish_comment'},
                 {name: 'created_on', type: 'date', dateFormat: 'Y-m-d h:i:s'}
             ]
-        })
+        }),
+        remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        }
     });
 
     var expander = new Ext.grid.RowExpander({
@@ -58,23 +75,11 @@ Ext.onReady(function() {
                 }
 
                 var html = '<div class="account-wishlist-comment box-expander">';
+                html += '<b>' + 'Comment'.l() + ':</b> ';
                 html += (comment = record.get('wish_comment')) ? comment : '';
                 html += '</div>';
 
                 this.tpl.set(html);
-            }
-        }
-    });
-
-    var actions = new Ext.ux.grid.RowActions({
-        header:'Actions'.l(),
-        actions:[{
-            iconCls: 'icon-page-edit',
-            tooltip: 'Edit'.l()
-        }],
-        callbacks: {
-            'icon-page-edit': function(grid, record, action, row, col) {
-                window.open(Axis.getUrl('catalog_index/index/productId/' + record.get('product_id')));
             }
         }
     });
@@ -87,20 +92,32 @@ Ext.onReady(function() {
         columns: [expander, {
             dataIndex: 'product_id',
             header: 'Id'.l(),
-            width: 60
+            width: 90
         }, {
             dataIndex: 'product_name',
             id: 'name',
             header: 'Name'.l(),
-            width: 100
+            width: 100,
+            table: 'cpd',
+            sortName: 'name',
+            filter: {
+                name: 'name'
+            },
+            renderer: function(value) {
+                return String.format(
+                    '<a href="{1}" target="_blank">{0} </a>',
+                    value,
+                    Axis.getUrl('catalog_index/index/productId/' + record.get('product_id'))
+                );
+            }
         }, {
             dataIndex: 'created_on',
             header: 'Date created'.l(),
             renderer: function(v) {
-                return Ext.util.Format.date(v);
+                return Ext.util.Format.date(v) + ' ' + Ext.util.Format.date(v, 'H:i:s');
             },
-            width: 120
-        }, actions]
+            width: 130
+        }]
     });
 
     WishlistGrid.el = new Axis.grid.GridPanel({
@@ -111,13 +128,28 @@ Ext.onReady(function() {
         massAction: false,
         plugins: [
             expander,
-            actions
+            new Axis.grid.Filter()
         ],
         sm: new Ext.grid.RowSelectionModel(),
-        title: 'Wishlist'.l()
+        title: 'Wishlist'.l(),
+        bbar: new Axis.PagingToolbar({
+            store: ds
+        })
     });
 
     CustomerWindow.addTab(WishlistGrid.el, 60);
     CustomerWindow.dataObjects.push(WishlistGrid);
+
+    WishlistGrid.delayedLoader = new Axis.DelayedLoader({
+        el: WishlistGrid.el,
+        ds: ds,
+        loadFn: function() {
+            if (!Customer.id) {
+                return;
+            }
+            WishlistGrid.el.store.baseParams['filter[customer][value]'] = Customer.id;
+            WishlistGrid.el.store.load();
+        }
+    });
 
 });

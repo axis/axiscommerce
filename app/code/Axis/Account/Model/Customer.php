@@ -34,8 +34,11 @@
 class Axis_Account_Model_Customer extends Axis_Db_Table
 {
     protected $_name = 'account_customer';
+
     protected $_rowClass = 'Axis_Account_Model_Customer_Row';
+
     protected $_selectClass = 'Axis_Account_Model_Customer_Select';
+
     protected $_dependentTables = array('Axis_Account_Model_Customer_Detail');
 
     /**
@@ -137,56 +140,6 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
         Axis::single('checkout/cart')->unsetCartId();
         Axis::single('checkout/checkout')->getStorage()->unsetAll();
         return $this;
-    }
-
-    /**
-     *
-     * @param array $params
-     * @return array
-     */
-    public function getList($params = array())
-    {
-        $select = $this->select('*')
-            ->calcFoundRows()
-            ->distinct();
-
-        if (isset($params['getSitesName']) && (bool) $params['getSitesName']) {
-            $select->joinLeft(
-                'core_site', 'cs.id = ac.site_id', array('site_name' => 'name')
-            );
-        }
-        if (isset($params['customer_id'])) {
-            $select->where('ac.id = ?', $params['customer_id']);
-        }
-        $isCustomerEmail = (int) isset($params['customer_email']);
-        $isFirstName     = (int) isset($params['firstname']);
-        $isLastName      = (int) isset($params['lastname']);
-        $whereMethod = 'where';
-        if (($isCustomerEmail + $isFirstName + $isLastName) > 1) {
-            $whereMethod = 'orWhere';
-        }
-        if (isset($params['customer_email'])) {
-            $select->$whereMethod("ac.email LIKE '%{$params['customer_email']}%'");
-        }
-
-        if (isset($params['firstname'])) {
-            $select->$whereMethod("ac.firstname LIKE '%{$params['firstname']}%'");
-        }
-        if (isset($params['lastname'])) {
-            $select->$whereMethod("ac.lastname LIKE '%{$params['lastname']}%'");
-        }
-
-        if (!empty($params['sort'])) {
-            $select->order($params['sort'] . ' ' . $params['dir']);
-        }
-        if (!empty($params['limit'])) {
-            $select->limit($params['limit'], $params['start']);
-        }
-
-        return array(
-            'accounts' => $select->fetchAll(),
-            'count'    => $select->count()
-        );
     }
 
     /**

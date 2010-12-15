@@ -72,29 +72,35 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $alpha = new Zend_Filter_Alpha();
-        $params = array(
-            'start' => (int) $this->_getParam('start', 0),
-            'limit' => (int) $this->_getParam('limit', 25),
-            'sort'  => $this->_getParam('sort', 'id'),
-            'dir'   => $alpha->filter($this->_getParam('dir', 'ASC')),
-            'getSitesName' => true
-        );
+        $select = Axis::model('account/customer')->select('*')
+            ->calcFoundRows()
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 25),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
 
         //extjs combobox compatible
         if ($query = $this->_getParam('query')) {
-            $params['customer_email'] = $query;
-            $params['firstname']      = $query;
-            $params['lastname']       = $query;
+            $query = '%' . $query . '%';
+            $select->orWhere('ac.email LIKE ?', $query)
+                ->orWhere('ac.firstname LIKE ?', $query)
+                ->orWhere('ac.lastname LIKE ?', $query);
         }
 
-        $data = Axis::single('account/customer')->getList($params);
-        foreach ($data['accounts'] as &$item) {
-            $item['password'] = '';
+        $accounts = $select->fetchAll();
+        foreach ($accounts as &$account) {
+            unset($account['password']);
         }
+
         return $this->_helper->json->sendSuccess(array(
-            'data'  => $data['accounts'],
-            'count' => $data['count']
+            'data'  => $accounts,
+            'count' => $select->foundRows()
         ));
     }
 
@@ -226,13 +232,6 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
                 $product['attributes'] = array_values($product['attributes']);
             }
         }
-
-        // wishlist
-        $result['wishlist'] = Axis::single('account/wishlist')->getList(array(
-            'getProductNames' => true,
-            'customerId' => $customer->id,
-            'languageId' => Axis_Locale::getLanguageId()
-        ));
 
         return $this->_helper->json->sendSuccess(array(
             'data' => $result
