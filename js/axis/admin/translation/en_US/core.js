@@ -493,5 +493,8 @@ Locale.module('core', {
     'From': 'From',
     'To': 'To',
     'Payer': 'Payer',
-    'Not Combined': 'Not Combined'
+    'Not Combined': 'Not Combined',
+    'New': 'New',
+    'Readed': 'Readed',
+    'Replied': 'Replied'
 });
