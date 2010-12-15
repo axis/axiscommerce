@@ -77,9 +77,10 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
                 return;
             }
             this.filterDom.style.width = vw + 'px';
+            var gridId = this.grid.getId();
             Ext.each(Ext.get(this.filterDom.firstChild.firstChild).query('td'), function(td, i) {
                 td.style.width = this.view.getColumnWidth(i);
-                var filter = this.filters.get('x-grid3-filter-cnt-' + this.cm.getColumnId(i))
+                var filter = this.filters.get('x-grid3-filter-cnt-' + this.cm.getColumnId(i) + '-' + gridId)
                 if (filter) {
                     filter.doLayout();
                 }
@@ -90,13 +91,14 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
 
     initFilters: function() {
         this.filters = new Ext.util.MixedCollection();
+        var gridId = this.grid.getId();
         Ext.each(this.cm.columns, function(col) {
             if (false === col.filterable || !col.dataIndex) {
                 return true;
             }
 
             this.filters.add(new Ext.Container({
-                id: 'x-grid3-filter-cnt-' + col.id,
+                id: 'x-grid3-filter-cnt-' + col.id + '-' + gridId,
                 layout: 'form',
                 labelWidth: 30,
                 border: false,
@@ -111,14 +113,14 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
     getFilterItems: function(column) {
         var items = [],
             cfg = {
-            displayField    : 'name',
-            editable        : true,
-            hideLabel       : true,
-            mode            : 'local',
-            name            : column.dataIndex,
-            triggerAction   : 'all',
-            valueField      : 'id'
-        };
+                displayField    : 'name',
+                editable        : true,
+                hideLabel       : true,
+                mode            : 'local',
+                name            : column.dataIndex,
+                triggerAction   : 'all',
+                valueField      : 'id'
+            };
 
         if (column.filter) {
             cfg = Ext.applyIf(column.filter, cfg);
@@ -250,10 +252,11 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             fcb     = [],
             f       = {},
             len     = cm.getColumnCount(),
-            last    = len - 1;
+            last    = len - 1,
+            gridId  = this.grid.getId();
 
         for (var i = 0; i < len; i++) {
-            f.id = cm.getColumnId(i);
+            f.id = cm.getColumnId(i) + '-' + gridId;
             //f.dataIndex = cm.getDataIndex(i);
             f.style = view.getColumnStyle(i, true);
             f.css = i === 0 ? 'x-grid3-cell-first ' : (i == last ? 'x-grid3-cell-last ' : '');
@@ -314,8 +317,9 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
         for (var i = from; i <= to; i++) {
             tds[i].style.width = this.view.getColumnWidth(i);
         }
+        var gridId = this.grid.getId();
         for (var i = from; i <= to; i++) {
-            var filter = this.filters.get('x-grid3-filter-cnt-' + this.cm.getColumnId(i));
+            var filter = this.filters.get('x-grid3-filter-cnt-' + this.cm.getColumnId(i) + '-' + gridId);
             if (filter) {
                 filter.doLayout();
             }
@@ -323,7 +327,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
     },
 
     onColumnHiddenChange: function(cm, i, hidden) {
-        Ext.fly('x-grid3-filter-' + cm.getColumnId(i))
+        Ext.fly('x-grid3-filter-' + cm.getColumnId(i) + this.grid.getId())
             .parent('td').dom.style.display = (hidden ? 'none' : '');
         this.recalculateFilterWidth.defer(50, this, []);
     },
