@@ -1,1 +1,14 @@
 <?php $this->headScript()->appendFile('/js/axis/admin/location/country.js'); ?>
+
+<script type="text/javascript">
+var addressFormats = [
+    <?php
+    $str = '';
+    foreach ($this->addressFormats as $id => $name) :
+        $name = addslashes($name);
+        $str .= "[{$id}, '{$name}'], ";
+    endforeach;
+    echo substr($str, 0, -2);
+    ?>
+];
+</script>

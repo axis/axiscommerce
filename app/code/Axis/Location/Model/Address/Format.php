@@ -24,8 +24,6 @@
  * @license     GNU Public License V3.0
  */
 
-//@todo table and model maybe never used (future for address format helper)
-
 /**
  *
  * @category    Axis
