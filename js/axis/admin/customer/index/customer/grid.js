@@ -128,7 +128,6 @@ Ext.onReady(function() {
     });
 
     var actions = new Ext.ux.grid.RowActions({
-        header:'Actions'.l(),
         actions:[{
             iconCls: 'icon-page-edit',
             tooltip: 'Edit'.l()
@@ -149,7 +148,15 @@ Ext.onReady(function() {
     var status = new Axis.grid.CheckColumn({
         dataIndex: 'is_active',
         header: 'Status'.l(),
-        width: 60
+        width: 100,
+        filter: {
+            editable: false,
+            resetValue: 'reset',
+            store: new Ext.data.ArrayStore({
+                data: [[0, 'Disabled'.l()], [1, 'Enabled'.l()]],
+                fields: ['id', 'name']
+            })
+        }
     });
 
     var cm = new Ext.grid.ColumnModel({
@@ -159,7 +166,7 @@ Ext.onReady(function() {
         columns: [{
             dataIndex: 'id',
             header: 'Id'.l(),
-            width: 50
+            width: 90
         }, {
             dataIndex: 'firstname',
             header: 'Firstname'.l(),
@@ -193,7 +200,15 @@ Ext.onReady(function() {
                 }
                 return value;
             },
-            width: 120
+            width: 120,
+            filter: {
+                editable: false,
+                resetValue: 'reset',
+                store: new Ext.data.ArrayStore({
+                    data: customerGroups,
+                    fields: ['id', 'name']
+                })
+            }
         }, {
             dataIndex: 'site_id',
             editor: Customer.siteCombo,
@@ -205,14 +220,22 @@ Ext.onReady(function() {
                 }
                 return value;
             },
-            width: 120
+            width: 120,
+            filter: {
+                editable: false,
+                resetValue: 'reset',
+                store: new Ext.data.ArrayStore({
+                    data: sites,
+                    fields: ['id', 'name']
+                })
+            }
         }, {
             dataIndex: 'created_at',
             header: 'Date created'.l(),
             renderer: function(v) {
-                return Ext.util.Format.date(v);;
+                return Ext.util.Format.date(v);
             },
-            width: 100
+            width: 130
         },
         status,
         actions]
@@ -222,7 +245,11 @@ Ext.onReady(function() {
         autoExpandColumn: 'email',
         ds: ds,
         cm: cm,
-        plugins: [actions, status],
+        plugins: [
+            actions,
+            status,
+            new Axis.grid.Filter()
+        ],
         listeners: {
             'rowdblclick': function(grid, index, e) {
                 CustomerGrid.edit(CustomerGrid.el.store.getAt(index));

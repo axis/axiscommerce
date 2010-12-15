@@ -49,11 +49,12 @@ Ext.onReady(function() {
     var ds = new Ext.data.Store({
         url: Axis.getUrl('tag_index/list'),
         baseParams: {
-            'limit'           : 100,
-            'filter[0][field]': 'customer_id',
-            'filter[0][value]': 0
+            'limit'                     : 25,
+            'filter[customer][field]'   : 'customer_id',
+            'filter[customer][value]'   : 0
         },
         reader: new Ext.data.JsonReader({
+            totalProperty: 'count',
             root: 'data',
             idProperty: 'id',
             fields: [
@@ -62,7 +63,11 @@ Ext.onReady(function() {
                 {name: 'product_name'}
             ]
         }),
-        remoteSort: true
+        remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        }
     });
 
     var cm = new Ext.grid.ColumnModel({
@@ -71,18 +76,22 @@ Ext.onReady(function() {
             menuDisabled: true
         },
         columns: [{
-            dataIndex: 'id',
-            header: 'Id'.l(),
-            width: 60
+            dataIndex   : 'id',
+            header      : 'Id'.l(),
+            width       : 90
         }, {
-            dataIndex: 'name',
-            id: 'tag',
-            header: 'Tag'.l(),
-            width: 100
+            dataIndex   : 'name',
+            id          : 'tag',
+            header      : 'Tag'.l()
         }, {
-            dataIndex: 'product_name',
-            header: 'Product Name'.l(),
-            width: 250
+            dataIndex   : 'product_name',
+            header      : 'Product Name'.l(),
+            width       : 250,
+            table       : 'cpd',
+            sortName    : 'name',
+            filter: {
+                name    : 'name'
+            }
         }]
     });
 
@@ -93,7 +102,11 @@ Ext.onReady(function() {
         ds: ds,
         massAction: false,
         sm: new Ext.grid.RowSelectionModel(),
-        title: 'Tags'.l()
+        plugins: [new Axis.grid.Filter()],
+        title: 'Tags'.l(),
+        bbar: new Axis.PagingToolbar({
+            store: ds
+        })
     });
 
     CustomerWindow.addTab(TagGrid.el, 70);
@@ -106,11 +119,8 @@ Ext.onReady(function() {
             if (!Customer.id) {
                 return;
             }
-            TagGrid.el.store.load({
-                params: {
-                    'filter[0][value]': Customer.id
-                }
-            });
+            TagGrid.el.store.baseParams['filter[customer][value]'] = Customer.id;
+            TagGrid.el.store.load();
         }
     });
 });

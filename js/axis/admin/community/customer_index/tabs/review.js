@@ -49,12 +49,14 @@ Ext.onReady(function() {
     var ds = new Ext.data.Store({
         url: Axis.getUrl('community_review/get-list'),
         baseParams: {
-            'limit': 100,
-            'where': 'cr.customer_id = 0'
+            'limit': 25,
+            'filter[customer][field]': 'cr.customer_id',
+            'filter[customer][value]': 0
         },
         reader: new Ext.data.JsonReader({
             root: 'data',
             idProperty: 'id',
+            totalProperty: 'count',
             fields: [
                 {name: 'id', type: 'int'},
                 {name: 'title'},
@@ -64,7 +66,11 @@ Ext.onReady(function() {
                 {name: 'cons'}
             ]
         }),
-        remoteSort: true
+        remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        }
     });
 
     var expander = new Ext.grid.RowExpander({
@@ -103,30 +109,37 @@ Ext.onReady(function() {
         columns: [expander, {
             dataIndex: 'id',
             header: 'Id'.l(),
-            width: 60
+            width: 90
         }, {
             dataIndex: 'title',
             id: 'title',
-            header: 'Title'.l(),
-            width: 100
+            header: 'Title'.l()
         }, {
             dataIndex: 'product_name',
             header: 'Product Name'.l(),
-            width: 250
+            width: 250,
+            table: 'cpd',
+            sortName: 'name',
+            filter: {
+                name: 'name'
+            }
         }]
     });
 
     ReviewGrid.el = new Axis.grid.GridPanel({
         autoExpandColumn: 'title',
-        border: false,
         cm: cm,
         ds: ds,
         massAction: false,
         plugins: [
-            expander
+            expander,
+            new Axis.grid.Filter()
         ],
         sm: new Ext.grid.RowSelectionModel(),
-        title: 'Reviews'.l()
+        title: 'Reviews'.l(),
+        bbar: new Axis.PagingToolbar({
+            store: ds
+        })
     });
 
     CustomerWindow.addTab(ReviewGrid.el, 80);
@@ -139,11 +152,8 @@ Ext.onReady(function() {
             if (!Customer.id) {
                 return;
             }
-            ReviewGrid.el.store.load({
-                params: {
-                    'where': 'cr.customer_id = ' + Customer.id
-                }
-            });
+            ReviewGrid.el.store.baseParams['filter[customer][value]'] = Customer.id;
+            ReviewGrid.el.store.load();
         }
     });
 });
