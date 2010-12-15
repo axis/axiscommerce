@@ -62,8 +62,10 @@ class Axis_Admin_Community_ReviewController extends Axis_Admin_Controller_Back
             )
             ->order($sort . ' ' . $this->_getParam('dir', 'DESC'));
 
-        $data = array();
-        if ($ids = $select->fetchCol()) {
+        $ids    = $select->fetchCol();
+        $count  = $select->foundRows();
+        $data   = array();
+        if ($ids) {
             $data = $mReview->select('*')
                 ->addProductDescription()
                 ->addRating()
@@ -78,7 +80,7 @@ class Axis_Admin_Community_ReviewController extends Axis_Admin_Controller_Back
         }
 
         $this->_helper->json->sendSuccess(array(
-            'count' => $select->foundRows(),
+            'count' => $count,
             'data'  => array_values($data)
         ));
     }
