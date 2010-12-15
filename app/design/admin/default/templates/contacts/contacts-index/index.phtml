@@ -1,5 +1,29 @@
 <?php $this->headScript()->appendFile('/js/axis/admin/contacts/contact-us.js'); ?>
 
+<script type"text/javascript">
+var sites = [
+    <?php
+    $str = '';
+    foreach (Axis_Collect_Site::collect() as $id => $name) {
+        $name = addslashes($name);
+        $str .= "[$id, '$name'],\n";
+    }
+    echo substr($str, 0, -2);
+    ?>
+];
+var departaments = [
+    <?php
+    $str = '';
+    foreach (Axis_Collect_Department::collect() as $id => $name) {
+        $name = addslashes($name);
+        $str .= "[$id, '$name'],\n";
+    }
+    echo substr($str, 0, -2);
+    ?>
+];
+var statuses = [['new', 'New'.l()], ['read', 'Readed'.l()], ['replied', 'Replied'.l()]];
+</script>
+
 <div id="tpl-message" class="x-hidden">
 <table width="100%" cellpadding="3" class="axis-table">
     <tr valign="top">

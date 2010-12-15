@@ -493,5 +493,8 @@ Locale.module('core', {
     'From': 'З',
     'To': 'По',
     'Payer': 'Платник',
-    'Not Combined': 'Не комбінована'
+    'Not Combined': 'Не комбінована',
+    'New': 'Новий',
+    'Readed': 'Прочитаний',
+    'Replied': 'Дана відповідь'
 });
