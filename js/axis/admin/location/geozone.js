@@ -1,21 +1,21 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,7 +26,7 @@ Ext.onReady(function(){
             return 'All';
         return value;
     };
-    
+
     var GZone = {
         activeId: 0,
         record: Ext.data.Record.create([
@@ -46,7 +46,7 @@ Ext.onReady(function(){
             dsGZone.insert(0, record);
             gridGZone.startEditing(0, 0);
         },
-        
+
         getSelectedId: function() {
             var selModel = gridGZone.getSelectionModel();
             var selectedItems = gridGZone.getSelectionModel().selections.items;
@@ -57,19 +57,19 @@ Ext.onReady(function(){
                 return selectedItems[0].id;
             return false;
         },
-        
+
         save: function() {
             var data = {};
             var modified = dsGZone.getModifiedRecords();
             if (!modified.length)
                 return;
-            
+
             for (var i = 0; i < modified.length; i++) {
                 data[modified[i]['id']] = modified[i]['data'];
             }
-            
+
             Ext.Ajax.request({
-                url: Axis.getUrl('location_zone-definition/save'),
+                url: Axis.getUrl('location_geozone/save'),
                 params: {
                     data: Ext.encode(data)
                 },
@@ -79,7 +79,7 @@ Ext.onReady(function(){
                 }
             });
         },
-        
+
         editAssigns: function() {
             var id = GZone.getSelectedId();
             if (!id) {
@@ -89,7 +89,7 @@ Ext.onReady(function(){
             dsAssign.baseParams.geozone_id = GZone.activeId;
             dsAssign.load();
         },
-        
+
         remove: function() {
             if (!confirm('Delete definition(s)?'))
                 return;
@@ -99,9 +99,9 @@ Ext.onReady(function(){
                 if (!selectedItems[i]['data']['id']) continue;
                 data[i] = selectedItems[i]['data']['id'];
             }
-                
+
             Ext.Ajax.request({
-                url:  Axis.getUrl('location_zone-definition/delete'),
+                url:  Axis.getUrl('location_geozone/delete'),
                 params: {data: Ext.encode(data)},
                 callback: function() {
                     dsGZone.reload();
@@ -110,20 +110,20 @@ Ext.onReady(function(){
         },
         grid: {}
     };
-    
+
     var dsGZone = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
-            url:  Axis.getUrl('location_zone-definition/list')
+            url:  Axis.getUrl('location_geozone/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
             id: 'id'
         }, GZone.record),
-        
+
         sortInfo: {field: 'priority', direction: 'DESC'},
         remoteSort: true
-        
+
     });
     var cmGZone = new Ext.grid.ColumnModel([{
         header: "Name".l(),
@@ -147,7 +147,7 @@ Ext.onReady(function(){
         })
     }]);
     cmGZone.defaultSortable = true;
-    
+
     var gridGZone = new Axis.grid.EditorGridPanel({
         ds: dsGZone,
         cm: cmGZone,
@@ -182,9 +182,9 @@ Ext.onReady(function(){
             store: dsGZone
         })
     });
-    
+
     dsGZone.load({params:{start:0, limit:25}});
-    
+
     var Assign = {
         activeId: 0,
         record: Ext.data.Record.create([
@@ -198,12 +198,12 @@ Ext.onReady(function(){
             Assign.activeId = null;
             Assign.window.show();
         },
-        
+
         edit: function(grid, rowIndex, e) {
             var aId = dsAssign.data.items[rowIndex].id;
             Assign.activeId = aId;
             Ext.Ajax.request({
-                url:  Axis.getUrl('location_zone-definition/get-assign/'),
+                url:  Axis.getUrl('location_geozone/get-assign'),
                 method: 'post',
                 params: {id: Assign.activeId},
                 callback: function(options, success, response) {
@@ -213,7 +213,7 @@ Ext.onReady(function(){
                     }
                     $('#country > option[value=' + oResponse.country_id + ']').attr({selected: true});
                     updateZones();
-                    
+
                     if (!oResponse.zone_id) {
                         oResponse.zone_id = 0;
                     }
@@ -222,11 +222,11 @@ Ext.onReady(function(){
                 }
             });
         },
-        
+
         save: function() {
             Assign.window.disable();
             Ext.Ajax.request({
-                url:  Axis.getUrl('location_zone-definition/save-assign'),
+                url:  Axis.getUrl('location_geozone/save-assign'),
                 method: 'post',
                 params: {
                     geozone_id: GZone.activeId,
@@ -241,11 +241,11 @@ Ext.onReady(function(){
                 }
             });
         },
-        
+
         window: {},
         grid: {}
     };
-    
+
     Assign.window = new Ext.Window({
         contentEl: 'form-assign',
         layout: 'fit',
@@ -265,9 +265,9 @@ Ext.onReady(function(){
             }
         }]
     });
-    
+
     var dsAssign = new Ext.data.Store({
-        url:  Axis.getUrl('location_zone-definition/list-assigns'),
+        url:  Axis.getUrl('location_geozone/list-assigns'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -277,11 +277,11 @@ Ext.onReady(function(){
             {name: 'country_name'},
             {name: 'zone_name'}
         ]),
-        
+
         sortInfo: {field: 'id', direction: 'ASC'},
         remoteSort: true
     });
-    
+
     var cmAssign = new Ext.grid.ColumnModel([{
         header: 'Definition'.l(),
         dataIndex: 'geozone_name',
@@ -297,7 +297,7 @@ Ext.onReady(function(){
         renderer: renderName,
         width: 150
     }]);
-    
+
     var gridAssign = new Axis.grid.EditorGridPanel({
         ds: dsAssign,
         cm: cmAssign,
@@ -323,9 +323,9 @@ Ext.onReady(function(){
                 for (var i = 0; i < selectedItems.length; i++) {
                     data[i] = selectedItems[i].id;
                 }
-                
+
                 Ext.Ajax.request({
-                    url:  Axis.getUrl('location_zone-definition/delete-assigns'),
+                    url:  Axis.getUrl('location_geozone/delete-assigns'),
                     params: {data: Ext.encode(data)},
                     callback: function() {
                         dsAssign.reload();
@@ -345,14 +345,14 @@ Ext.onReady(function(){
             }
         }]
     });
-    
+
     new Axis.Panel({
         items: [
             gridGZone,
             gridAssign
         ]
     });
-    
+
     gridAssign.on('rowdblclick', Assign.edit);
-    
+
 });

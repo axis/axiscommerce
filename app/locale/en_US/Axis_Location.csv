@@ -3,7 +3,8 @@
 "Country was deleted successfully","Country was deleted successfully"
 "No zone found to delete","No zone found to delete"
 "Zone was deleted successfully","Zone was deleted successfully"
-"Zones Definitions","Zones Definitions"
+"States / Provinces","States / Provinces"
 "Zones","Zones"
 "An error has been occured while trying to save '%s' zone. 'priority' field should be unique","An error has been occured while trying to save '%s' zone. 'priority' field should be unique"
-"Locations / Taxes","Locations / Taxes"
+"Locations / Taxes","Locations / Taxes",
+"Geozones","Geozones"
