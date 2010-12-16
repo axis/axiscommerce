@@ -16,8 +16,7 @@
 <script type="text/javascript">
 var countryZones = <?php echo Zend_Json_Encoder::encode($this->countryZones);?>;
 
-function updateZones()
-{
+function updateZones() {
     var country_id = $('#country').attr('value');
     // clean
     var options = $('#zone')[0].options;
@@ -33,4 +32,4 @@ function updateZones()
     return true;
 }
 </script>
-<?php $this->headScript()->appendFile('/js/axis/admin/location/zone-definition.js'); ?>
+<?php $this->headScript()->appendFile('js/axis/admin/location/geozone.js'); ?>
