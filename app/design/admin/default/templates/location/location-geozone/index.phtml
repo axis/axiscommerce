@@ -16,8 +16,7 @@
 <script type="text/javascript">
 var countryZones = <?php echo Zend_Json_Encoder::encode($this->countryZones);?>;
 
-function updateZones()
-{
+function updateZones() {
     var country_id = $('#country').attr('value');
     // clean
     var options = $('#zone')[0].options;

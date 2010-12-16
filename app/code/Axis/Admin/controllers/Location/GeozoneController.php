@@ -37,43 +37,40 @@ class Axis_Admin_Location_GeozoneController extends Axis_Admin_Controller_Back
     {
         $this->view->pageTitle = Axis::translate('location')->__('Geozones');
 
-        $countries = Axis::single('location/country')
+        $this->view->countries = Axis::single('location/country')
             ->select(array('id', 'name'))
             ->order('name')
             ->fetchPairs();
 
-        $countries = array('0' => 'All') + $countries;
         $zones = Axis::single('location/zone')->fetchAll()->toArray();
         $countryZones = array();
         foreach ($zones as $zone) {
-                $countryZones[$zone['country_id']][] = $zone;
+            $countryZones[$zone['country_id']][] = $zone;
         }
-        $this->view->countries = $countries;
         $this->view->countryZones = $countryZones;
+
         $this->render();
     }
 
     public function listAction()
     {
-        $dbField = new Axis_Filter_DbField();
-
-        $order = $dbField->filter($this->_getParam('sort', 'id')) . ' '
-               . $dbField->filter($this->_getParam('dir', 'ASC'));
-
-        $limit = (int) $this->_getParam('limit', 20);
-        $start = $this->_getParam('start', 0);
-
-        $select = Axis::single('location/geozone')
-            ->select()
+        $select = Axis::single('location/geozone')->select('*')
             ->calcFoundRows()
-            ->order($order)
-            ->limit($limit, $start)
-            ;
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 25),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
 
-        return $this->_helper->json
-            ->setData($select->fetchAll())
-            ->setCount($select->count())
-            ->sendSuccess();
+        return $this->_helper->json->sendSuccess(array(
+            'data'  => $select->fetchAll(),
+            'count' => $select->foundRows()
+        ));
     }
 
     public function saveAction()
@@ -81,27 +78,15 @@ class Axis_Admin_Location_GeozoneController extends Axis_Admin_Controller_Back
         $this->getHelper('layout')->disableLayout();
         $data = Zend_Json::decode($this->_getParam('data'));
 
-        if (!sizeof($data)) {
+        if (!count($data)) {
             return;
         }
+
         $modelGeozone = Axis::single('location/geozone');
-
         foreach ($data as $rowData) {
-            try {
-                $modelGeozone->save($rowData);
-
-            } catch (Zend_Db_Exception $e) {
-                if (23000 === $e->getCode()) {
-
-                    Axis::message()->addError(
-                        Axis::translate('location')->__(
-                            "An error has been occured while trying to save '%s' zone. 'priority' field should be unique",
-                            $rowData['name']
-                    ));
-                }
-                Axis::message()->addError($e->getMessage());
-            }
+            $modelGeozone->save($rowData);
         }
+
         $this->_helper->json->sendSuccess();
     }
 
@@ -120,24 +105,36 @@ class Axis_Admin_Location_GeozoneController extends Axis_Admin_Controller_Back
     public function listAssignsAction()
     {
         $this->_helper->layout->disableLayout();
-        $geozoneId = $this->_getParam('geozone_id');
-        $data = Axis::single('location/geozone_zone')->select('id')
-            ->join('location_geozone',
-                   'lg.id = lgz.geozone_id',
-                   array('geozone_name' => 'name')
-               )
-               ->joinLeft('location_country',
-                   'lc.id = lgz.country_id',
-                   array('country_name' => 'name', 'iso_code_2', 'iso_code_3')
-               )
-               ->joinLeft('location_zone',
-                   'lz.id = lgz.zone_id',
-                   array('zone_name' => 'name', 'zone_code' => 'code')
-               )
-               ->where("geozone_id = ?", $geozoneId)
-               ->fetchAll()
-        ;
-        $this->_helper->json->setData($data)->sendSuccess();
+
+        $select = Axis::single('location/geozone_zone')->select('*')
+            ->calcFoundRows()
+            ->addFilters($this->_getParam('filter', array()))
+            ->joinInner('location_geozone',
+                'lg.id = lgz.geozone_id',
+                array('geozone_name' => 'name')
+            )
+            ->joinLeft('location_country',
+                'lc.id = lgz.country_id',
+                array('country_name' => 'name', 'iso_code_2', 'iso_code_3')
+            )
+            ->joinLeft('location_zone',
+                'lz.id = lgz.zone_id',
+                array('zone_name' => 'name', 'zone_code' => 'code')
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
+
+        if ($geozoneId = $this->_getParam('geozone_id')) {
+            $select->where('geozone_id = ?', $geozoneId);
+        }
+
+        $this->_helper->json->sendSuccess(array(
+            'data'  => $select->fetchAll(),
+            'count' => $select->foundRows()
+        ));
     }
 
     public function getAssignAction()

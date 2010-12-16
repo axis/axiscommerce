@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Location
  * @subpackage  Axis_Location_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Location
  * @subpackage  Axis_Location_Model
@@ -33,8 +33,8 @@
  */
 class Axis_Location_Model_Geozone extends Axis_Db_Table
 {
-	protected $_name = 'location_geozone';
-	
+    protected $_name = 'location_geozone';
+
     /**
      *
      * @param array $rowData
@@ -42,22 +42,16 @@ class Axis_Location_Model_Geozone extends Axis_Db_Table
      */
     public function save($rowData)
     {
-        if (isset($rowData['id']) && $row = $this->fetchRow(
-                $this->getAdapter()->quoteInto('id = ?', $rowData['id']))) {
-
-            if (empty($rowData['modified_on'])) {
-                $rowData['modified_on'] = Axis_Date::now()->toSQLString();
-            }
+        if (isset($rowData['id']) && $row = $this->find($rowData['id'])->current()) {
+            $rowData['modified_on'] = Axis_Date::now()->toSQLString();
             $row->setFromArray($rowData);
         } else {
-            if (empty($rowData['created_on'])) {
-                $rowData['created_on'] = Axis_Date::now()->toSQLString();
-            }
+            $rowData['created_on'] = Axis_Date::now()->toSQLString();
             $row = $this->createRow($rowData);
         }
         return $row->save();
     }
-    
+
     /**
      * Return Geozone ids by country & zone
      *
@@ -68,7 +62,7 @@ class Axis_Location_Model_Geozone extends Axis_Db_Table
     public function getIds($countryId, $zoneId = 0)
     {
         // IF $countryId == 0 => ALL COUNTRY (in country table row with id 0)
-        // IF $zoneId == 0 => ALL country zones 
+        // IF $zoneId == 0 => ALL country zones
         $collect = $this->select()
             ->from('location_geozone', 'id')
             ->joinLeft('location_geozone_zone', 'lg.id = lgz.geozone_id')
