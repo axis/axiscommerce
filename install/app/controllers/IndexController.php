@@ -129,6 +129,7 @@ class IndexController extends Zend_Controller_Action
     public function checkRequirementsAction()
     {
         foreach ($this->_install->checkRequirements() as $item) {
+            $item = current($item);
             if (!$item['success']) {
                 $this->_redirect('index/step-requirements');
             }
