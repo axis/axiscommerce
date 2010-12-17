@@ -96,3 +96,4 @@
 "Installing. Please wait...","Встановлення. Зачекайте будь-ласка..."
 "Your server must have mod_rewrite module loaded to go futher","Для продовження встановлення, на сервері необхідно завантажити модуль mod_rewrite"
 "Server configuration doesn't meet the Axis needs","Конфігурація сервера не відповідає вимогам Axis"
+"File Permissions","Файлова система"
