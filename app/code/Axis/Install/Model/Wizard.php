@@ -174,7 +174,11 @@ class Axis_Install_Model_Wizard
         );
 
         foreach ($requirements['PHP Settings'] as $key => &$values) {
-            $values['value'] = intval(ini_get($key)) === 1 ? 'On' : 'Off';
+            if ('magic_quotes' == $key) {
+                $values['value'] = get_magic_quotes_gpc() === 1 ? 'On' : 'Off';
+            } else {
+                $values['value'] = intval(ini_get($key)) === 1 ? 'On' : 'Off';
+            }
             $values['success'] = $values['value'] === $values['expected'] ? true : false;
         }
         foreach ($requirements['PHP Extensions'] as $key => &$values) {

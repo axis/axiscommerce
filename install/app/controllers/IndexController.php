@@ -119,11 +119,11 @@ class IndexController extends Zend_Controller_Action
                 }
             }
         }
-        if (!$this->view->isValid) {
+        // if (!$this->view->isValid) {
             $this->render('step-requirements');
-        } else {
-            $this->_redirect('index/step-localization');
-        }
+        // } else {
+        //     $this->_redirect('index/step-localization');
+        // }
     }
 
     public function checkRequirementsAction()
