@@ -63,15 +63,16 @@ class Axis_Translate
      */
     public function __construct($module = 'Axis_Core')
     {
-
         $this->_locale = Axis_Locale::getLocale()->toString();
         self::$_module = $module;
 
-        if ('Axis_Install' !== $module
-            && false == Axis::config('core/translation/autodetect')) {
+        if ('install' !== Zend_Registry::get('area')
+            && Axis::config('core/translation/autodetect')) {
 
-             Zend_Translate::setCache(Axis::cache());
+            return;
         }
+
+        Zend_Translate::setCache(Axis::cache());
     }
 
     /**
@@ -86,8 +87,9 @@ class Axis_Translate
         if (null === self::$_instance) {
             self::$_instance = new self($module);
         } elseif (self::$_module !== $module) {
+            if ('install' !== Zend_Registry::get('area')
+                && !in_array($module, array_keys(Axis::app()->getModules()))) {
 
-            if (!in_array($module, array_keys(Axis::app()->getModules()))) {
                 throw new Axis_Exception(
                     'Translate error : module ' . $module . ' not exist'
                 );
@@ -148,7 +150,7 @@ class Axis_Translate
     {
         $text = array_shift($args);
 
-        if ('Axis_Install' !== self::$_module
+        if ('install' !== Zend_Registry::get('area')
             && Axis::config('core/translation/autodetect')
             && (null === $this->getTranslator() // translate file not exist
                 || !$this->getTranslator()->isTranslated($text, false, $this->_locale))) {

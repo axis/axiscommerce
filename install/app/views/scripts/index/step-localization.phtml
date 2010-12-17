@@ -1,21 +1,21 @@
 <form id="form-locale" action="<?php echo $this->baseUrl?>/index/save-localization" method="post">
 <fieldset class="group-select">
-    <legend><span><?php echo $this->t('Default locale settings') ?></span></legend>
-    <h4 class="legend"><?php echo $this->t('Default locale settings') ?></h4>
+    <legend><span><?php echo Axis::translate('install')->__('Default locale settings') ?></span></legend>
+    <h4 class="legend"><?php echo Axis::translate('install')->__('Default locale settings') ?></h4>
     <ul>
         <li>
             <div class="input-box">
-                <label for="default-locale"><?php echo $this->t('Locale')?>:</label><br/>
+                <label for="default-locale"><?php echo Axis::translate('install')->__('Locale')?>:</label><br/>
                 <?php echo $this->formSelect('default[locale]', 'en_US', null, Axis_Locale::getInstallLocaleList()) ?>
             </div>
         </li>
         <li>
             <div class="input-box">
-                <label for="default-timezone"><?php echo $this->t('Timezone')?>:</label><br/>
+                <label for="default-timezone"><?php echo Axis::translate('install')->__('Timezone')?>:</label><br/>
                 <?php echo $this->formSelect('default[timezone]', 'Eastern Standard Time', null, Axis_Locale::getTimeZoneList()) ?>
             </div>
             <div class="input-box">
-                <label for="default-currency"><?php echo $this->t('Currency')?>:</label><br/>
+                <label for="default-currency"><?php echo Axis::translate('install')->__('Currency')?>:</label><br/>
                 <?php echo $this->formSelect('default[currency]', 'USD',  null, Axis_Locale::getCurrencyList()) ?>
             </div>
         </li>
@@ -23,18 +23,18 @@
 </fieldset>
 
 <fieldset class="group-select">
-    <legend><span><?php echo $this->t('Additional locales') ?></span></legend>
-    <h4 class="legend"><?php echo $this->t('Additional locales') ?></h4>
+    <legend><span><?php echo Axis::translate('install')->__('Additional locales') ?></span></legend>
+    <h4 class="legend"><?php echo Axis::translate('install')->__('Additional locales') ?></h4>
     <div class="clear"></div>
-    <button type="button" id="add-locale" onclick="Locale.addLocale();"><span><?php echo $this->t('Add Locale') ?></span></button>
-    <button type="button" id="add-currency" onclick="Locale.addCurrency();"><span><?php echo $this->t('Add Currency') ?></span></button>
+    <button type="button" id="add-locale" onclick="Locale.addLocale();"><span><?php echo Axis::translate('install')->__('Add Locale') ?></span></button>
+    <button type="button" id="add-currency" onclick="Locale.addCurrency();"><span><?php echo Axis::translate('install')->__('Add Currency') ?></span></button>
     <div class="col2-set">
         <div id="additional-locale" class="col-1"></div>
         <div id="additional-currency" class="col-2"></div>
     </div>
 </fieldset>
 <div class="button-set">
-    <?php echo $this->button($this->t('Continue'), array(
+    <?php echo $this->button(Axis::translate('install')->__('Continue'), array(
         'type' => 'submit'
     )) ?>
 </div>

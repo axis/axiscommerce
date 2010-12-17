@@ -1,22 +1,22 @@
 <table class="data-table requirements-table">
     <thead>
         <tr>
-            <th><?php echo $this->t('Title') ?></th>
-            <th><?php echo $this->t('Expected Value') ?></th>
-            <th><?php echo $this->t('Server Value') ?></th>
-            <th><?php echo $this->t('Success') ?></th>
+            <th><?php echo Axis::translate('install')->__('Title') ?></th>
+            <th><?php echo Axis::translate('install')->__('Expected Value') ?></th>
+            <th><?php echo Axis::translate('install')->__('Server Value') ?></th>
+            <th><?php echo Axis::translate('install')->__('Success') ?></th>
         </tr>
     </thead>
     <tbody>
 <?php foreach ($this->requirements as $groupTitle => $group) : ?>
     <tr class="group-row">
-        <td colspan="100"><strong><?php echo $this->t($groupTitle) ?></strong></td>
+        <td colspan="100"><strong><?php echo Axis::translate('install')->__($groupTitle) ?></strong></td>
     </tr>
     <?php foreach ($group as $option) : ?>
         <tr class="option-row row-<?php echo $option['success'] ? 'success' : 'failure' ?>">
-            <td class="title"><?php echo $this->t($option['title']) ?></td>
-            <td class="expected"><?php echo $this->t($option['expected']) ?></td>
-            <td class="server"><?php echo $this->t($option['value']) ?></td>
+            <td class="title"><?php echo Axis::translate('install')->__($option['title']) ?></td>
+            <td class="expected"><?php echo Axis::translate('install')->__($option['expected']) ?></td>
+            <td class="server"><?php echo Axis::translate('install')->__($option['value']) ?></td>
             <td class="result"><?php echo $option['success'] ?></td>
         </tr>
     <?php endforeach; ?>
@@ -31,9 +31,9 @@
     if (!$this->isValid) :
         $params['disabled'] = 'disabled';
     endif;
-    echo $this->button($this->t('Continue'), $params) ?>
+    echo $this->button(Axis::translate('install')->__('Continue'), $params) ?>
     <?php if (!$this->isValid) : ?>
-        <?php echo $this->button($this->t('Refresh'), array(
+        <?php echo $this->button(Axis::translate('install')->__('Refresh'), array(
             'href' => $this->baseUrl . '/index/step-requirements',
             'class' => 'button f-right'
         ), 'link') ?>

@@ -119,16 +119,17 @@ class IndexController extends Zend_Controller_Action
                 }
             }
         }
-        if (!$this->view->isValid) {
+        // if (!$this->view->isValid) {
             $this->render('step-requirements');
-        } else {
-            $this->_redirect('index/step-localization');
-        }
+        // } else {
+        //     $this->_redirect('index/step-localization');
+        // }
     }
 
     public function checkRequirementsAction()
     {
         foreach ($this->_install->checkRequirements() as $item) {
+            $item = current($item);
             if (!$item['success']) {
                 $this->_redirect('index/step-requirements');
             }
@@ -343,7 +344,7 @@ class IndexController extends Zend_Controller_Action
             file_put_contents($this->_getConfigPath(), $content);
         } else {
             throw new Zend_Exception(
-                $this->view->t("Config file is not writable at %s", $this->_getConfigPath())
+                Axis::translate('install')->__("Config file is not writable at %s", $this->_getConfigPath())
             );
         }
     }

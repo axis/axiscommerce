@@ -3,21 +3,21 @@
 <?php endif; ?>
 <ul class="disc">
     <li>
-        <?php echo $this->t(
+        <?php echo Axis::translate('install')->__(
             "Go to %s", 
             "<a href='" . $this->frontend . "' 
-                onclick='window.open(this.href);return false;'>" . $this->t('Frontend') . 
+                onclick='window.open(this.href);return false;'>" . Axis::translate('install')->__('Frontend') . 
             "</a>") ?>
     <li>
-        <?php echo $this->t(
+        <?php echo Axis::translate('install')->__(
             "Go to %s", 
             "<a href='" . $this->backend . "' 
-                onclick='window.open(this.href);return false;'>" . $this->t('Backend') . 
+                onclick='window.open(this.href);return false;'>" . Axis::translate('install')->__('Backend') . 
             "</a>") ?>
         <ul class="disc">
-            <li><?php echo $this->t('Username') ?>: <?php echo $this->user_login; ?></li>
-            <li><?php echo $this->t('Password') ?>: <?php echo $this->user_password; ?></li>
+            <li><?php echo Axis::translate('install')->__('Username') ?>: <?php echo $this->user_login; ?></li>
+            <li><?php echo Axis::translate('install')->__('Password') ?>: <?php echo $this->user_password; ?></li>
         </ul>
     </li>
-    <li><?php echo $this->t('Crypt key') ?>: <?php echo $this->crypt_key; ?></li>
+    <li><?php echo Axis::translate('install')->__('Crypt key') ?>: <?php echo $this->crypt_key; ?></li>
 </ul>

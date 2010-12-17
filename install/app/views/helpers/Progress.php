@@ -46,9 +46,9 @@ class Axis_View_Helper_Progress
         $html = '<ul class=\'install-progress\'>';
         foreach ($steps as $id => $step) {
             if ($current == $id)
-                $html .= '<li class="active">' . $this->view->t($step) . '</li>';
+                $html .= '<li class="active">' . Axis::translate('install')->__($step) . '</li>';
             else
-                $html .= '<li>' . $this->view->t($step) . '</li>';
+                $html .= '<li>' . Axis::translate('install')->__($step) . '</li>';
         }
         $html .= '</ul>';
 

@@ -96,18 +96,16 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
     {
         $this->bootstrap('Session');
 
-        if (!is_array(Axis::session('install')->locale)
-            || !@date_default_timezone_set(current($this->_session->locale['timezone']))) {
-
-            @date_default_timezone_set('America/Los_Angeles');
+        $timezone = Axis_Locale::DEFAULT_TIMEZONE;
+        if (is_array(Axis::session('install')->locale)) {
+            $timezone = current(Axis::session('install')->locale['timezone']);
         }
+        Axis_Locale::setTimezone($timezone);
     }
 
-    protected function _initApp()
+    protected function _initArea()
     {
-        $this->bootstrap('Session');
         Zend_Registry::set('area', 'install');
-//        Axis::translate('Axis_Install');
     }
 
     protected function _initFrontController()

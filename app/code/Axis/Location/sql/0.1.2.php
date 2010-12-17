@@ -42,12 +42,7 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             `address_format` TEXT NOT NULL DEFAULT '',
             `address_summary` TEXT NOT NULL DEFAULT '',
             PRIMARY KEY  (`id`)
-        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2;
-
-        INSERT INTO `{$installer->getTable('location_address_format')}`
-            (`id`, `name`, `address_format`, `address_summary`)
-            VALUES (1, 'ISO/IEC 19773', '{{firstname}} {{lastname}}EOL{{if company}}{{company}}EOL{{/if}}{{if street_address}}{{street_address}}EOL{{/if}}{{if suburb}}{{suburb}}EOL{{/if}}{{if city}}{{city}}{{/if}} {{if zone.name}}{{zone.name}} {{/if}}{{if postcode}}{{postcode}}{{/if}}{{if country}}EOL{{country.name}}EOL{{/if}}{{if phone}}T: {{phone}}EOL{{/if}}EOL{{if fax}}F: {{fax}}EOL{{/if}}', '{{firstname}} {{lastname}}');
-
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('location_country')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('location_country')}` (
@@ -545,6 +540,12 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
+        Axis::model('location/address_format')->insert(array(
+            'name'              => 'ISO/IEC 19773',
+            'address_format'    => '{{firstname}} {{lastname}}EOL{{if company}}{{company}}EOL{{/if}}{{if street_address}}{{street_address}}EOL{{/if}}{{if suburb}}{{suburb}}EOL{{/if}}{{if city}}{{city}}{{/if}} {{if zone.name}}{{zone.name}} {{/if}}{{if postcode}}{{postcode}}{{/if}}{{if country}}EOL{{country.name}}EOL{{/if}}{{if phone}}T: {{phone}}EOL{{/if}}EOL{{if fax}}F: {{fax}}EOL{{/if}}',
+            'address_summary'   => '{{firstname}} {{lastname}}'
+        ));
+
         Axis::single('admin/menu')
             ->add('Locations / Taxes', null, 70, 'Axis_Location')
             ->add('Locations / Taxes->Countries', 'location_country', 10, 'Axis_Location')
@@ -578,8 +579,7 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')
             ->add('locale', 'Locale', null, null, array('translation_module' => 'Axis_Locale'))
-            ->add('locale/main/addressFormat', 'Locale/General/Default Address Format', 1, 'select', 'Default address format', array('model' => 'AddressFormat'))
-            ;
+            ->add('locale/main/addressFormat', 'Locale/General/Default Address Format', 1, 'select', 'Default address format', array('model' => 'AddressFormat'));
     }
 
     public function down()

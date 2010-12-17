@@ -96,3 +96,4 @@
 "Installing. Please wait...","Installing. Please wait..."
 "Your server must have mod_rewrite module loaded to go futher","Your server must have mod_rewrite module loaded to go futher"
 "Server configuration doesn't meet the Axis needs","Server configuration doesn't meet the Axis needs"
+"File Permissions","File Permissions"
