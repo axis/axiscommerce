@@ -207,13 +207,13 @@ class Axis_Install_Model_Wizard
             $this->_session->db_password
         );
         if (!$conn) {
-            throw new Axis_Exception(Axis::translate()->__(
+            throw new Axis_Exception(Axis::translate('install')->__(
                 "Can't connect to database. Check server name, username or user password"
             ));
         }
 
         if (!mysql_select_db($this->_session->db_dbname, $conn)) {
-            throw new Axis_Exception(Axis::translate()->__(
+            throw new Axis_Exception(Axis::translate('install')->__(
                 "Can't select this database, check database name"
             ));
         }

@@ -63,9 +63,10 @@ $bootstrapConfig = array(
 
 $application = new Axis_Application(APPLICATION_ENV, $bootstrapConfig);
 
+$application->bootstrap(array(
+    'Application', 'Locale', 'Cache', 'Area', 'Session', 'View'
+));
 if (is_readable(AXIS_ROOT . '/app/etc/config.php')) {
     $application->bootstrap('DbAdapter');
 }
-$application->bootstrap(array(
-    'Locale', 'Cache', 'Loader', 'View', 'Session', 'App', 'FrontController'
-));
+$application->bootstrap(array('FrontController'));

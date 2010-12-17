@@ -1,7 +1,7 @@
 <?php if (count($this->modules)) : ?>
 <ul class="installation-mode">
-<li><input type="radio" name="mode" id="standard" checked="checked"/><label for="standard"><?php echo $this->t('Standard setup') ?></label></li>
-<li><input type="radio" name="mode" id="advanced"/><label for="advanced"><?php echo $this->t('Advanced setup') ?></label></li>
+<li><input type="radio" name="mode" id="standard" checked="checked"/><label for="standard"><?php echo Axis::translate('install')->__('Standard setup') ?></label></li>
+<li><input type="radio" name="mode" id="advanced"/><label for="advanced"><?php echo Axis::translate('install')->__('Advanced setup') ?></label></li>
 </ul>
 <form class="module-wrapper" id="form-modules" style="display: none" action="<?php echo $this->baseUrl?>/index/save-modules">
     <ul class="module-container">
@@ -45,30 +45,30 @@
     </ul>
     
     <ul class="module-filter">
-        <li id="hide-required" class="active"><?php echo $this->t('Hide required') ?></li>
+        <li id="hide-required" class="active"><?php echo Axis::translate('install')->__('Hide required') ?></li>
     <?php 
     foreach (array_keys(array_filter($tabs)) as $title) :
         if ($title == 'all') :
             continue;
         endif;
-        echo '<li id="hide-' . $title . '" class="active">' . $this->t('Hide ' . $title) .  '</li>';
+        echo '<li id="hide-' . $title . '" class="active">' . Axis::translate('install')->__('Hide ' . $title) .  '</li>';
     endforeach; ?>
     </ul>
 </form>
 <div class="button-set">
-    <?php echo $this->button($this->t('Back'), array(
+    <?php echo $this->button(Axis::translate('install')->__('Back'), array(
         'onclick' => "window.location='" . $this->baseUrl . "/index/step-user'; return false;",
         'class' => 'alt-button',
         'type' => 'button'
     )) ?>
-    <?php echo $this->button($this->t('Install'), array(
+    <?php echo $this->button(Axis::translate('install')->__('Install'), array(
         'type' => 'submit',
         'id' => 'submit'
     )) ?>
 </div>
 <script type="text/javascript">
-    $('.module-container').initModules('<?php echo implode(',', array_keys(array_filter($tabs))) ?>', '<?php echo $this->t("Installing. Please wait...") ?>');
+    $('.module-container').initModules('<?php echo implode(',', array_keys(array_filter($tabs))) ?>', '<?php echo Axis::translate('install')->__("Installing. Please wait...") ?>');
 </script>
 <?php else : ?>
-<p><?php echo $this->t('No modules found') ?></p>
+<p><?php echo Axis::translate('install')->__('No modules found') ?></p>
 <?php endif; ?>

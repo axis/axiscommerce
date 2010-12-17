@@ -1,43 +1,43 @@
 <form id="form-user" action="<?php echo $this->baseUrl?>/index/save-user" method="post">
     <fieldset class="group-select">
-        <legend><span><?php echo $this->t('Administrator account') ?></span></legend>
-        <h4 class="legend"><?php echo $this->t('Administrator account') ?></h4>
+        <legend><span><?php echo Axis::translate('install')->__('Administrator account') ?></span></legend>
+        <h4 class="legend"><?php echo Axis::translate('install')->__('Administrator account') ?></h4>
         <ul>
         <li>
-            <label for="email"> <?php echo $this->t('Email')?><span class="required">*</span>:</label><br/>
+            <label for="email"> <?php echo Axis::translate('install')->__('Email')?><span class="required">*</span>:</label><br/>
             <input name="email" id="email" type="text" class="required input-text" value="<?php echo $this->email ?>"/>
         </li>
         <li>
             <div class="col2-set">
                 <div class="col-1">
-                    <label for="name" ><?php echo $this->t('Firstname')?><span class="required">*</span>:</label><br/>
+                    <label for="name" ><?php echo Axis::translate('install')->__('Firstname')?><span class="required">*</span>:</label><br/>
                     <input name="name" id="name" type="text" class="required input-text" value="<?php echo $this->firstname ?>"/>
                 </div>
                 <div class="col-2">
-                    <label for="surname"> <?php echo $this->t('Lastname')?><span class="required">*</span>:</label><br/>
+                    <label for="surname"> <?php echo Axis::translate('install')->__('Lastname')?><span class="required">*</span>:</label><br/>
                     <input name="surname" id="surname" type="text" class="required input-text" value="<?php echo $this->lastname ?>"/>
                 </div>
             </div>
         </li>
         <li>
-            <label for="login"> <?php echo $this->t('Username')?><span class="required">*</span>:</label><br/>
+            <label for="login"> <?php echo Axis::translate('install')->__('Username')?><span class="required">*</span>:</label><br/>
             <input name="login" id="login" type="text" class="required input-text" value="<?php echo $this->login ?>"/>
-            <small><?php echo $this->t('This name you will need to access to store backend')?></small>
+            <small><?php echo Axis::translate('install')->__('This name you will need to access to store backend')?></small>
         </li>
         <li>
-            <label for="password"><?php echo $this->t('Password')?><span class="required">*</span>:</label><br/>
+            <label for="password"><?php echo Axis::translate('install')->__('Password')?><span class="required">*</span>:</label><br/>
             <input name="password" id="password" type="password" class="required input-text"/>
         </li>
         </ul>
     </fieldset>
 
 <div class="button-set">
-    <?php echo $this->button($this->t('Back'), array(
+    <?php echo $this->button(Axis::translate('install')->__('Back'), array(
         'onclick' => "window.location='" . $this->baseUrl . "/index/step-configuration'; return false;",
         'class' => 'alt-button',
         'type' => 'button'
     )) ?>
-    <?php echo $this->button($this->t('Continue'), array(
+    <?php echo $this->button(Axis::translate('install')->__('Continue'), array(
         'type' => 'submit'
     )) ?>
 </div>

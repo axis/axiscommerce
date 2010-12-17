@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title><?php echo $this->t($this->pageTitle) ?></title>
+        <title><?php echo Axis::translate('install')->__($this->pageTitle) ?></title>
         <link rel="icon" href="<?php echo $this->baseUrl?>/images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="<?php echo $this->baseUrl?>/images/favicon.ico" type="image/x-icon" />
         <link href="<?php echo $this->baseUrl?>/css/reset.css" rel="stylesheet" type="text/css"/>
@@ -14,7 +14,7 @@
         </script>
     </head>
     <body>
-        <noscript><div class="noscript-notice"><p><strong><?php echo $this->t('Please enable JavaScript in your browser.') ?></strong></p></div></noscript>
+        <noscript><div class="noscript-notice"><p><strong><?php echo Axis::translate('install')->__('Please enable JavaScript in your browser.') ?></strong></p></div></noscript>
         <div class="wrapper">
             
             <div class="header-container">
@@ -23,7 +23,7 @@
                         <a href="<?php echo $this->baseUrl?>"><img src="<?php echo $this->baseUrl?>/images/logo.gif" alt="Axiscommerce"/></a>
                     </div>
                     <p class="locale">
-                        <label for="interface_locale"><?php echo $this->t('Language') ?>:</label>
+                        <label for="interface_locale"><?php echo Axis::translate('install')->__('Language') ?>:</label>
                         <?php echo $this->formSelect('interface_locale', 
                             Axis_Locale::getLocale()->toString(), 
                             array(
@@ -40,13 +40,13 @@
                     <div class="middle layout-2columns-left">
                         <div class="col-main">
                             <?php echo $this->message() ?>
-                            <h1><?php echo $this->t($this->pageTitle) ?></h1>
+                            <h1><?php echo Axis::translate('install')->__($this->pageTitle) ?></h1>
                             <?php echo $this->layout()->content ?>
                         </div>
                         
                         <div class="col-left side-col">
                             <div class="box installation-process">
-                                <div class="head"><span class="title"><?php echo $this->t('Installation Process') ?></span></div>
+                                <div class="head"><span class="title"><?php echo Axis::translate('install')->__('Installation Process') ?></span></div>
                                 <div class="content">
                                     <?php echo $this->progress(); ?>
                                 </div>
@@ -59,13 +59,13 @@
             <div class="footer-container">
                 <div class="footer">
                     <p class="legality">
-                        <?php echo $this->t('Copyright &copy; 2010, Axis, Inc. All Rights Reserved')?>
+                        <?php echo Axis::translate('install')->__('Copyright &copy; 2010, Axis, Inc. All Rights Reserved')?>
                     </p>
-                    <p class="bug-report"><?php echo $this->t(
+                    <p class="bug-report"><?php echo Axis::translate('install')->__(
                         "Report any %s you've found", 
                         "<a href='http://github.com/axis/axiscommerce/issues' 
-                            title='" . $this->t('Report') . "'
-                            onclick='window.open(this.href);return false;'>" . $this->t('Bugs or Issues') . 
+                            title='" . Axis::translate('install')->__('Report') . "'
+                            onclick='window.open(this.href);return false;'>" . Axis::translate('install')->__('Bugs or Issues') . 
                         "</a>") ?>
                     </p>
                 </div>

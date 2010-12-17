@@ -344,7 +344,7 @@ class IndexController extends Zend_Controller_Action
             file_put_contents($this->_getConfigPath(), $content);
         } else {
             throw new Zend_Exception(
-                $this->view->t("Config file is not writable at %s", $this->_getConfigPath())
+                Axis::translate('install')->__("Config file is not writable at %s", $this->_getConfigPath())
             );
         }
     }
