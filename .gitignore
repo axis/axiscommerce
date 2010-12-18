@@ -16,4 +16,4 @@ var/templates/*
 .project
 .settings
 nbproject/
-
+.buildpath
