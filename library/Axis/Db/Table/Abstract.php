@@ -234,11 +234,9 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
         if (isset($fields[1])) {
             $conditionField = underscore($fields[1]);
         }
-        if (!isset($conditionField)
-            || null === $conditionField
-            || !$conditionField) {
-
-            $conditionField = current($this->info('primary'));
+        if (!isset($conditionField) || null === $conditionField || !$conditionField) {
+            $primaryInfo = $this->info('primary');
+            $conditionField = current($primaryInfo);
         }
 //        if (!in_array($conditionField, $columns)
 //            || !in_array($ruturnField, $columns)) {

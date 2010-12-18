@@ -54,6 +54,10 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
         } elseif (!is_writable($cacheDir)) {
             chmod($cacheDir, 0777);
         }
+        if (!is_writable($cacheDir)) {
+            echo "Sessions directory should be writable. Run 'chmod -R 0777 path/to/var'";
+            exit();
+        }
         Zend_Session::start(array(
             'cookie_lifetime' => 864000, // 10 days
             'name'            => 'axisid',
@@ -74,6 +78,10 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
             mkdir($cacheDir, 0777);
         } elseif(!is_writable($cacheDir)) {
             chmod($cacheDir, 0777);
+        }
+        if (!is_writable($cacheDir)) {
+            echo "Cache directory should be writable. Run 'chmod -R 0777 path/to/var'";
+            exit();
         }
         $backendOptions = array(
             'cache_dir'                 => $cacheDir,

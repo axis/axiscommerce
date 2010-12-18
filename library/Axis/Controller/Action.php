@@ -50,8 +50,12 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             );
         } else {
             $controller = $this->getRequest()->getControllerName();
-            $module = false === strpos($controller, '_') ?
-                'core' : current(explode('_', $controller));
+            if (false === strpos($controller, '_')) {
+                $module = 'core';
+            } else {
+                $controllerArray = explode('_', $controller);
+                $module = current($controllerArray);
+            }
         }
         return $module;
     }
