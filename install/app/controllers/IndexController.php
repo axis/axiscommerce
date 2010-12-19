@@ -80,6 +80,7 @@ class IndexController extends Zend_Controller_Action
                     dirname(str_replace('/install', '', $_SERVER['PHP_SELF'])),
                     '/\\'
                 );
+                $uri = str_replace('/index.php', '', $uri);
                 header("Location: http://$host$uri/");
             }
             exit();
