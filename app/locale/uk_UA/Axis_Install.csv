@@ -47,7 +47,7 @@
 "Use Secure URLs (SSL)","Використовувати захищений протокол (SSL)"
 "Secure Url","Захищене посилання"
 "Site secure url","Захищене посилання на сайт"
-"Store configuration","Нагаштування магазину"
+"Store configuration","Налаштування магазину"
 "Encription Key","Ключ шифрування"
 "Key that will be used to encrypt private data like passwords, usernames, credit cards etc.","Ключ, що буде використовуватись для шифрування приватних даних (паролі, дані кредитних карток та інше)"
 "Locale","Локаль"
