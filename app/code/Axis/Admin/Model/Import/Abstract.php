@@ -82,7 +82,11 @@ abstract class Axis_Admin_Model_Import_Abstract implements Axis_Admin_Model_Impo
                     'host'     => $data['host'],
                     'username' => $data['db_user'],
                     'password' => $data['db_password'],
-                    'dbname'   => $data['db_name']
+                    'dbname'   => $data['db_name'],
+                    'driver_options' => array(
+                        //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
+                        1002 => 'SET NAMES UTF8'
+                    )
                 ));
                 self::$_adapter->getConnection();
                 self::$_db_prefix = Axis::config()->db->prefix;
