@@ -434,38 +434,28 @@ class Axis_Admin_Model_Import_Creloaded extends Axis_Admin_Model_Import_Abstract
 
         //human url
         $key_word = "";
-        if (isset($entry['description'][$this->_primary_language]['products_url']) && $entry['description'][$this->_primary_language]['products_url'] != '') {
+        if (!empty($entry['description'][$this->_primary_language]['products_url'])) {
             $key_word = $this->_prepareString($entry['description'][$this->_primary_language]['products_url']);
-        } else {
+        } elseif (!empty($entry['description'][$this->_primary_language]['products_name'])) {
             $key_word = $this->_prepareString($entry['description'][$this->_primary_language]['products_name']);
         }
 
-        if ($key_word != "") {
-            $duplicate = Axis::db()->fetchRow(
-                "SELECT hu.*
-                 FROM " . parent::$_db_prefix . parent::HUMAN_URL . " AS hu
-                 WHERE hu.key_word = '$key_word'
-                 AND hu.site_id = $this->_site"
-            );
-
-            if ($duplicate) {
-                $key_word .= $product_id;
-            }
-
-            $hurl = array (
-                'key_word' => $key_word,
-                'site_id' => $this->_site,
-                'key_type' => 'p',
-                'key_id' => $product_id
-            );
-        } else {
-            $hurl = array (
-                'key_word' => $product['sku'],
-                'site_id' => $this->_site,
-                'key_type' => 'p',
-                'key_id' => $product_id
-            );
+        if (!empty($key_word)) {
+            $key_word = $product['sku'];
         }
+
+        $i = 0;
+        $uniqueKeyWord = $key_word;
+        while (Axis::model('catalog/hurl')->hasDuplicate($uniqueKeyWord, $this->_site)) {
+            $uniqueKeyWord = $key_word . '-' . $i++;
+        }
+
+        $hurl = array (
+            'key_word'  => $uniqueKeyWord,
+            'site_id'   => $this->_site,
+            'key_type'  => 'p',
+            'key_id'    => $product_id
+        );
 
         Axis::db()->insert(parent::$_db_prefix . parent::HUMAN_URL, $hurl);
 
