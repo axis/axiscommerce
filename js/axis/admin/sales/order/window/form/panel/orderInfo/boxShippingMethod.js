@@ -58,15 +58,6 @@ Ext.onReady(function(){
                 payment_method_code : form.findField('order[payment_method_code]').getValue()
 
             });
-            for (index in params) {
-                if ('billing_zone_id' == index || 'delivery_zone_id' == index) {
-                    break;
-                }
-                var param = params[index];
-                if ('' === param || null === param) {
-                    return;
-                }
-            }
             
             var oldValue = form.findField('order[shipping_method_code]').getValue();
             Ext.StoreMgr.lookup('storeShippingMethod').load({
