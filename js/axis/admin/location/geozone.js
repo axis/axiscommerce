@@ -74,8 +74,8 @@ var GZone = {
         });
     },
 
-    editAssigns: function() {
-        var id = GZone.getSelectedId();
+    editAssigns: function(id) {
+        var id = id || GZone.getSelectedId();
         if (!id) {
             alert('Please select/save geozone first');
             return;
@@ -87,7 +87,7 @@ var GZone = {
 
     remove: function() {
         var selectedItems = GZone.grid.getSelectionModel().getSelections();
-        if (!selectedItems.length || !confirm('Delete definition(s)?')) {
+        if (!selectedItems.length || !confirm('Are you sure?'.l())) {
             return;
         }
 
@@ -253,10 +253,6 @@ Ext.onReady(function() {
             text: 'Delete'.l(),
             icon: Axis.skinUrl + '/images/icons/delete.png',
             handler: GZone.remove
-        }, {
-            text: 'Load Zones'.l(),
-            icon: Axis.skinUrl + '/images/icons/details.png',
-            handler: GZone.editAssigns
         }, '->', {
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             handler: function() {
@@ -265,7 +261,12 @@ Ext.onReady(function() {
         }],
         bbar: new Axis.PagingToolbar({
             store: dsGZone
-        })
+        }),
+        listeners: {
+            'rowclick': function(grid, index, e) {
+                GZone.editAssigns(grid.getStore().getAt(index).get('id'));
+            }
+        }
     });
 
     Assign.window = new Ext.Window({
@@ -280,7 +281,7 @@ Ext.onReady(function() {
         buttons: [{
             text: 'Save'.l(),
             handler: Assign.save
-        },{
+        }, {
             text: 'Cancel'.l(),
             handler: function(){
                 Assign.window.hide();
@@ -332,7 +333,7 @@ Ext.onReady(function() {
                 name: 'name'
             }
         }, {
-            header: 'Zone'.l(),
+            header: 'State / Province'.l(),
             dataIndex: 'zone_name',
             renderer: renderName,
             width: 220,
