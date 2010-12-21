@@ -37,8 +37,8 @@ class Axis_View_Helper_PaymentForm
      * Return additional paymet form
      * @return string
      * @param object|string $payment
-     * @param string $app[optional] 'front' | 'admin'
      * @param string $template example: 'view', 'form', 'process' etc
+     * @param string $app[optional] 'front' | 'admin'
      */
     public function paymentForm($paymentCode, $template, $area = null)
     {
@@ -58,9 +58,9 @@ class Axis_View_Helper_PaymentForm
 
         $shortPath = 'payment' . str_replace('_', '/', strtolower($paymentCode))
                    . '/' . $template . '.phtml';
-
+       
         if (is_readable($templatePath . '/' . $shortPath)) {
-             return $this->view->render($shortPath);
+            return $this->view->render($shortPath);
         }
 
         return '';

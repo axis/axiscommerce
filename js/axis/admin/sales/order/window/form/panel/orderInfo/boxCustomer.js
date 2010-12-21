@@ -99,25 +99,25 @@ Ext.onReady(function(){
         })
         ,listeners: {
             load: function(store, records, options) {
-                pageSize = Order.form.getForm().findField('order[customer_id]').pageSize;
+                var form = Order.form.getForm();
+                pageSize = form.findField('order[customer_id]').pageSize;
 //                store.insert(pageSize,
                 store.add(new store.recordType({
                     id: -1,
-                    email: 'Checkout as Guest',
+                    email: 'Guest'.l(),
                     firstname: '',
                     lastname: '',
-                    group_id: 5,
+                    group_id: CUSTOMER_GROUP_GUEST_ID,
                     site_id: 1
 
                 }));
 //                store.insert(pageSize++,
-                store.add(
-                new store.recordType({
+                store.add(new store.recordType({
                     id: -2,
                     email: 'Add new Customer',
                     firstname: '',
                     lastname: '',
-                    group_id: 1,
+                    group_id: CUSTOMER_GROUP_GENERAL_ID,
                     site_id: 1
 
                 }));
@@ -210,7 +210,7 @@ Ext.onReady(function(){
             }));
             this.setValue(data.order.customer_id);
         } else {
-            this.setValue('Checkout as Guest');
+            this.setValue('Guest'.l());
         }
     };
 

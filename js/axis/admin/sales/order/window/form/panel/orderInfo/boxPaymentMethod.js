@@ -80,13 +80,18 @@ Ext.onReady(function(){
         anchor: '-10',
         listeners: {
             beforeselect: function(combo, record, index) {
+                var form = Order.form.getForm();
                 var value = combo.getStore().getAt(index);
                 Ext.StoreMgr.lookup('storeShippingMethod').reloadList({
                     payment_method_code: value.get('code')
                 });
 
-                Order.form.getForm().findField('order[payment_method]').setValue(
+                form.findField('order[payment_method]').setValue(
                     value.get('name')
+                );
+
+                form.findField('order[payment_form]').setValue(
+                    value.get('form')
                 );
             },
             focus: function(combo) {
@@ -104,13 +109,19 @@ Ext.onReady(function(){
             }
     });
 
-    Order.form.boxPaymentMethod = {
+       Order.form.boxPaymentMethod = {
         id: 'box-payment-method',
         title : 'Payment method'.l(),
         items: [cmpPaymentCode, {
                 xtype: 'hidden',
                 name: 'order[payment_method]'
-            }]
+            }, new Ext.Panel({
+                name: 'order[payment_form]',
+                width: 300,
+                header: false,
+                html: ''
+            })
+        ]
     };
     
 }, this);
