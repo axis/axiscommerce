@@ -35,13 +35,17 @@ class Axis_View_Helper_AddJsValidateTranslation
 {
     public function addJsValidateTranslation()
     {
-        if (file_exists('js/jquery/validate/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js')) {
+        if (file_exists('js/jquery/jquery-validate/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js')) {
             $this->view->headScript()->appendFile(
-                'js/jquery/validate/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js'
+                'js/jquery/jquery-validate/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js'
             );
-        } elseif (file_exists('js/jquery/validate/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
+        } elseif (file_exists('js/jquery/jquery-validate/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
             $this->view->headScript()->appendFile(
-                'js/jquery/validate/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js'
+                'js/jquery/jquery-validate/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js'
+            );
+        } elseif (file_exists('js/jquery/jquery-validate/localization/messages_' . strtolower(Axis_Locale::getLocale()->getRegion()) . '.js')) {
+            $this->view->headScript()->appendFile(
+                'js/jquery/jquery-validate/localization/messages_' . strtolower(Axis_Locale::getLocale()->getRegion()) . '.js'
             );
         }
     }
