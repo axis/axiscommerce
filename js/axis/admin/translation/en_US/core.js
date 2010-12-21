@@ -496,5 +496,6 @@ Locale.module('core', {
     'Not Combined': 'Not Combined',
     'New': 'New',
     'Readed': 'Readed',
-    'Replied': 'Replied'
+    'Replied': 'Replied',
+    'State / Province': 'State / Province'
 });

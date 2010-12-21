@@ -496,5 +496,6 @@ Locale.module('core', {
     'Not Combined': 'Не комбінована',
     'New': 'Новий',
     'Readed': 'Прочитаний',
-    'Replied': 'Дана відповідь'
+    'Replied': 'Дана відповідь',
+    'State / Province': 'Штат / Область'
 });
