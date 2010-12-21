@@ -26,12 +26,12 @@ Dep.rootId = Dep.id =  depRootId;
 
 var Contact = {
 
-    el: null,
+    grid: null,
 
     record: null,
 
     getSelectedId: function() {
-        var selectedItems = Contact.el.getSelectionModel().getSelections();
+        var selectedItems = Contact.grid.getSelectionModel().getSelections();
         if (!selectedItems.length) {
             return false;
         }
@@ -42,7 +42,7 @@ var Contact = {
     },
 
     getSelectedDepartamentId: function() {
-        var selectedItems = Contact.el.getSelectionModel().getSelections();
+        var selectedItems = Contact.grid.getSelectionModel().getSelections();
         if (!selectedItems.length) {
             return false;
         }
@@ -68,7 +68,7 @@ var Contact = {
                         message_status: 'replied'
                     },
                     callback: function() {
-                        Contact.el.getStore().reload();
+                        Contact.grid.getStore().reload();
                     }
                 })
             }
@@ -82,7 +82,7 @@ var Contact = {
         }
         formMail.getForm().clear();
         Contact.window.show();
-        var selected = Contact.el.getSelectionModel().getSelected();
+        var selected = Contact.grid.getSelectionModel().getSelected();
         var mail    = selected.data['email'];
         var subject = selected.data['subject'];
         var message = selected.data['message'];
@@ -116,13 +116,13 @@ var Contact = {
                 message_status: 'read'
             },
             callback: function() {
-                Contact.el.getStore().reload();
+                Contact.grid.getStore().reload();
             }
         });
     },
 
     remove: function() {
-        var selectedItems = Contact.el.getSelectionModel().getSelections();
+        var selectedItems = Contact.grid.getSelectionModel().getSelections();
         if (!selectedItems.length || !confirm('Are you sure?'.l())) {
             return;
         }
@@ -141,7 +141,7 @@ var Contact = {
                 data: Ext.encode(data)
             },
             callback: function() {
-                Contact.el.getStore().reload();
+                Contact.grid.getStore().reload();
             }
         });
    }
@@ -329,7 +329,7 @@ Ext.onReady(function() {
         }]
     });
 
-    Contact.el = new Axis.grid.GridPanel({
+    Contact.grid = new Axis.grid.GridPanel({
         autoExpandColumn: 'message',
         ds: ds,
         cm: cm,
@@ -356,7 +356,7 @@ Ext.onReady(function() {
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             cls: 'x-btn-icon',
             handler: function() {
-                grid.getStore().reload();
+                Contact.grid.getStore().reload();
             }
         }]
     });
@@ -523,10 +523,10 @@ Ext.onReady(function() {
     new Axis.Panel({
         items: [
             Department.tree,
-            Contact.el
+            Contact.grid
         ]
     });
 
-    Contact.el.on('rowdblclick', Contact.view);
+    Contact.grid.on('rowdblclick', Contact.view);
 
 }, this);

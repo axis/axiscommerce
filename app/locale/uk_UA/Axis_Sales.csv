@@ -70,4 +70,5 @@
 "Pattern for Custom Order Number","Патерн номера замовлення"
 "Prefix for Custom Order Number","Префікс номера замовлення"
 "All notifications about new orders will be sended to this email","Всі повідомлення про нові замовлення будуть відсилатись на вказану адресу"
-"",""
+"Your create new order","Ви оформили нове замовлення"
+"Order created","Замовлення створене"

@@ -106,10 +106,10 @@
                                 
                                 <tr>
                                     <td>
-                                        <?php echo $this->address($this->order['billing']) ?>
+                                        <?php echo $this->address($this->order->getBilling()) ?>
                                     </td>
                                     <td>
-                                        <?php echo $this->address($this->order['delivery']) ?>
+                                        <?php echo $this->address($this->order->getDelivery()) ?>
                                     </td>
                                 </tr>
                                 <tr class="no-border" style=" border:none;height:20px;">
@@ -138,7 +138,7 @@
                                     <td><?php echo $this->translate('core')->__('SKU');?></td>
                                     <td><?php echo $this->translate('core')->__('Subtotal');?></td>
                                 </tr>
-                                <?php foreach ($this->order['products'] as $product) : ?>
+                                <?php foreach ($this->order->getProducts() as $product) : ?>
                                     <tr>
                                         <td style="width:25px;"><?php echo $product['quantity'] ?></td>
                                         <td><?php echo $product['name'] ?>
@@ -153,22 +153,22 @@
                                         <?php endif; ?>
                                         </td>
                                         <td><?php echo $this->escape($product['sku']) ?></td>
-                                        <td><?php echo $this->price($product['quantity'] * $product['final_price']) ?></td>
+                                        <td><?php echo $this->currency($product['quantity'] * $product['final_price']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </table>
                             <table cellspacing="0" width="100%" style="margin-top:10px;text-align:right;" class="a-right no-border no-padding margin-top"> 
                                 <!-- Totals List -->
-                                <?php foreach ($this->order['totals'] as $total) : ?>
+                                <?php foreach ($this->order->getTotals() as $total) : ?>
                                     <tr>
                                         <td class="a-right" ><?php echo $total['title']?>:&nbsp;</td>
-                                        <td style="width:20%; text-align:left; padding-left:30px;"><?php echo $this->price($total['value'])?></td>
+                                        <td style="width:20%; text-align:left; padding-left:30px;"><?php echo $this->currency($total['value'])?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <!-- Totals List End -->
                                 <tr>
                                     <td><?php echo $this->translate('core')->__('Grand Total');?> : </td>
-                                    <td style="width:20%; text-align:left; padding-left:30px;"><?php echo $this->price($this->order['order_total']) ?></td>
+                                    <td style="width:20%; text-align:left; padding-left:30px;"><?php echo $this->currency($this->order['order_total']) ?></td>
                                 </tr>
                             </table>
                             <!-- Products List End -->
