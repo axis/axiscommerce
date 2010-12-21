@@ -54,47 +54,6 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
         $this->_redirect('/checkout/onepage');
     }
 
-    private function _sendMails($order)
-    {
-        $customer = Axis::single('account/customer')
-            ->find($order->customer_id)->current();
-        $orderInfo = $order->toArray();
-        $orderInfo['products'] = $order->getProducts();
-        $orderInfo['totals']   = $order->getTotals();
-        $orderInfo['billing']  = $order->getBilling();
-        $orderInfo['delivery'] = $order->getDelivery();
-        $mail = new Axis_Mail();
-        $mail->setConfig(array(
-            'event'   => 'order_new-customer',
-            'subject' => Axis::translate('checkout')->__(
-                'Your create new order'
-            ),
-            'data'    => array(
-                'firstname' => $customer->firstname,
-                'lastname'  => $customer->lastname,
-                'orderId'   => $order->id,
-                'order'     => $orderInfo
-            ),
-            'to'      =>  $order->customer_email
-        ));
-        $customerSendRet = $mail->send();
-
-        $mail = new Axis_Mail();
-        $mail->setConfig(array(
-            'event'   => 'order_new-owner',
-            'subject' => Axis::translate('checkout')->__(
-                'Order created'
-            ),
-            'data'    => array(
-                'order'     => $orderInfo
-            ),
-            'to'      =>  Axis_Collect_MailBoxes::getName(
-                Axis::config()->sales->order->email
-            )
-        ));
-        return $customerSendRet && $mail->send();
-    }
-
     // @todo parent class forward to child method :D
     public function processAction()
     {
@@ -148,13 +107,11 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
             /* create order */
             $order = Axis::single('sales/order')->createFromCheckout();
 
-            Axis::dispatch('sales_order_create_success', array('order' => $order));
+            Axis::dispatch('sales_order_create_success', $order);
 
             $checkout->setOrderId($order->id);
 
             $checkout->payment()->postProcess($order);
-
-            //$this->_sendMails($order);
 
             $this->render();
             $checkout->payment()->clear();

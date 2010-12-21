@@ -20,7 +20,7 @@
  
 <?php echo $this->translate('core')->__('Bought products')?> 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-<?php foreach ($this->order['products'] as $itemId => &$product) : ?>
+<?php foreach ($this->order->getProducts() as $product) : ?>
     <?php echo $this->translate('core')->__('Product Name') . ' : ' . $product['name'];?> 
     <?php if (!empty($product['attributes'])) {
         echo $this->translate('core')->__('Attributes') . ' : '; 
@@ -32,7 +32,7 @@
     <?php echo $this->translate('core')->__('Final price'). ' : ' . strip_tags($this->price($product['quantity'] * $product['final_price']));?> 
 <?php endforeach; ?> 
     <?php echo $this->translate('core')->__('Order total')?> :  
-    <?php foreach ($this->order['totals'] as $total) : ?>
+    <?php foreach ($this->order->getTotals() as $total) : ?>
     <?php echo $total['title']?> : <?php echo strip_tags($this->price($total['value']))?>  
     <?php endforeach; ?>
     
