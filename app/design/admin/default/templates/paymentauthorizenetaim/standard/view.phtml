@@ -1,0 +1,13 @@
+<?php if($cc = Axis::single('PaymentAuthorizenetAim/Standard_Order')->find($this->order['id'])->current()) : 
+    
+    $cc = $cc->toArray();
+    $crypt = Axis_Crypt::factory(); ?>
+    <br/>
+    <br/>
+    <?php echo $this->translate('checkout')->__("Credit Card");?> : <?php echo $crypt->decrypt($cc['cc_type'])?> <br />
+    <?php echo $this->translate('checkout')->__("Card Owner's Name");?> : <?php echo $crypt->decrypt($cc['cc_owner'])?> <br />
+    <?php echo $this->translate('checkout')->__("Card Number");?> : <?php echo $crypt->decrypt($cc['cc_number'])?> <br />
+    <?php echo $this->translate('checkout')->__("Expiration Date");?> : <?php echo $crypt->decrypt($cc['cc_expires'])?> <br />
+    <?php if (!empty($cc['cc_cvv'])) : echo $this->translate('checkout')->__("Cvv");?> : 
+        <?php echo $crypt->decrypt($cc['cc_cvv'])?> <br /> <?php endif;?>
+<?php endif; ?>
