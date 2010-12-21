@@ -10,7 +10,7 @@
 <?php echo $this->translate('core')->__('Once your package ships we will send an email with a link to track your order.'); ?>  
 <?php echo $this->translate('core')->__('You can check the status of your order by logging into your account')?> 
 <?php echo $this->href('/account/order', true);?>
-<?php echo $this->translate('core')->__('Your last order')?> <?php echo $this->href('/account/order/view/orderId/' . $this->orderId, true);?>
+<?php echo $this->translate('core')->__('Your last order')?> <?php echo $this->href('/account/order/view/orderId/' . $this->order->id, true);?>
 
 <?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toString('Y'); ?> <?php echo $this->site ?> 
 <?php echo $this->translate('core')->__("Powered by %s v. %s", "Axis", Axis::app()->getVersion()) ?>
