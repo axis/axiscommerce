@@ -303,7 +303,8 @@ class Axis_Admin_Model_Import_Creloaded extends Axis_Admin_Model_Import_Abstract
             //human url
             $keyWord = $data['name'] = $this->_prepareString($data['name']);
             $i = 0;
-            while (Axis::single('catalog/hurl')->hasDuplicate($keyWord, $this->_site)) {
+            $mHurl = Axis::model('catalog/hurl');
+            while ($mHurl->hasDuplicate($keyWord, $this->_site)) {
                 $keyWord = $data['name'] . '-' . ++$i;
             }
 
@@ -446,7 +447,8 @@ class Axis_Admin_Model_Import_Creloaded extends Axis_Admin_Model_Import_Abstract
 
         $i = 0;
         $uniqueKeyWord = $key_word;
-        while (Axis::model('catalog/hurl')->hasDuplicate($uniqueKeyWord, $this->_site)) {
+        $mHurl = Axis::model('catalog/hurl');
+        while ($mHurl->hasDuplicate($uniqueKeyWord, $this->_site)) {
             $uniqueKeyWord = $key_word . '-' . $i++;
         }
 

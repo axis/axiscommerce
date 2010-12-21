@@ -158,7 +158,7 @@ var Chart = {
     }
 }
 
-Ext.chart.Chart.CHART_URL = Axis.secureUrl + '/js/ext-3.2.1/resources/charts.swf';
+Ext.chart.Chart.CHART_URL = Axis.secureUrl + '/js/ext-3.3.1/resources/charts.swf';
 
 Ext.onReady(function(){
 
@@ -270,7 +270,7 @@ Ext.onReady(function(){
             xtype: 'columnchart',
             store: store,
             id: 'chart',
-            url: Axis.secureUrl + '/js/ext-3.2.1/resources/charts.swf',
+            url: Axis.secureUrl + '/js/ext-3.3.1/resources/charts.swf',
             xField: 'time',
             yAxis: yAxis,
             xAxis: xAxis,

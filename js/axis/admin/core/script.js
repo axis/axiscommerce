@@ -24,7 +24,7 @@ if (typeof Ext != 'object') {
     alert(
         'ExtJs library not found at AXIS_ROOT/js folder'
         + "\n"
-        + 'Download and unpack it under the js folder (AXIS_ROOT/js/ext-3.2.1)'
+        + 'Download and unpack it under the js folder (AXIS_ROOT/js/ext-3.3.1)'
    );
 }
 
