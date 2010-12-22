@@ -53,7 +53,7 @@ class Axis_Admin_Tax_ClassController extends Axis_Admin_Controller_Back
             ->order(
                 $this->_getParam('sort', 'id')
                 . ' '
-                . $this->_getParam('dir', 'ASC')
+                . $this->_getParam('dir', 'DESC')
             );
 
         $this->_helper->json->sendSuccess(array(
