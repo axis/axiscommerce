@@ -327,7 +327,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
     },
 
     onColumnHiddenChange: function(cm, i, hidden) {
-        Ext.fly('x-grid3-filter-' + cm.getColumnId(i) + this.grid.getId())
+        Ext.fly('x-grid3-filter-' + cm.getColumnId(i) + '-' + this.grid.getId())
             .parent('td').dom.style.display = (hidden ? 'none' : '');
         this.recalculateFilterWidth.defer(50, this, []);
     },
