@@ -68,7 +68,8 @@ class Axis_Admin_Sales_PaymentController extends Axis_Admin_Controller_Back
         foreach ($allowedMethods['methods'] as $method) {
             $data[] = array(
                 'code' => $method['code'],
-                'name' => $method['title']
+                'name' => $method['title'],
+                'form' => $this->view->paymentForm($method['code'], 'form')
             );
         }
         return $this->_helper->json

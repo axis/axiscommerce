@@ -38,9 +38,8 @@ class Axis_View_Helper_PaymentForm
      * @return string
      * @param object|string $payment
      * @param string $template example: 'view', 'form', 'process' etc
-     * @param string $app[optional] 'front' | 'admin'
      */
-    public function paymentForm($paymentCode, $template, $area = null)
+    public function paymentForm($paymentCode, $template)
     {
         if ($paymentCode instanceof Axis_Method_Payment_Model_Abstract) {
             $this->view->payment = $paymentCode;
@@ -49,16 +48,15 @@ class Axis_View_Helper_PaymentForm
             $this->view->payment = Axis_Payment::getMethod($paymentCode);
         }
 
-        if (null === $area) {
-            $area = $this->view->area;
-        }
-
-        $templatePath = $this->view->path . '/app/design/' . $area . '/'
-                      . $this->view->templateName . '/templates';
+        $templatePath = $this->view->path . '/app/design/' 
+            . $this->view->area . '/'
+            . $this->view->templateName
+            . '/templates';
 
         $shortPath = 'payment' . str_replace('_', '/', strtolower($paymentCode))
                    . '/' . $template . '.phtml';
-       
+
+               Axis_FirePhp::log($templatePath . '/' . $shortPath);
         if (is_readable($templatePath . '/' . $shortPath)) {
             return $this->view->render($shortPath);
         }

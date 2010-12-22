@@ -64,7 +64,7 @@
                             <?php echo $this->translate('core')->__('Once your package ships we will send an email with a link to track your order.'); ?>
                             <?php echo $this->translate('core')->__('You can check the status of your order by <a %s>logging into your account</a>', 'href="' . $this->href('/account/order', true) . '" style="color:#1E7EC8;"'); ?>
                             <br/>
-                            <a href="<?php echo $this->href('/account/order/view/orderId/' . $this->order->ird, true)?>" style="color:#1E7EC8;"
+                            <a href="<?php echo $this->href('/account/order/view/orderId/' . $this->order->id, true)?>" style="color:#1E7EC8;"
                             ><?php echo $this->translate('core')->__('Your last order')?></a>
                             
                             <br clear="all"/>

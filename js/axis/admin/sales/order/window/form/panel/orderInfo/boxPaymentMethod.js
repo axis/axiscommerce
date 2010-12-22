@@ -31,8 +31,9 @@ Ext.onReady(function(){
             root: 'data',
             id: 'id'
         }, [
-            {name: 'code',               type: 'string'},
-            {name: 'name',               type: 'string'}
+            {name: 'code', type: 'string'},
+            {name: 'name', type: 'string'},
+            {name: 'form', type: 'string'}
         ]),
         pruneModifiedRecords: true,
         reloadList: function() {
@@ -52,7 +53,6 @@ Ext.onReady(function(){
                     break;
                 }
                 var param = params[index];
-                console.log(param);
                 if ('' === param || null === param) {
                     alert(index);
                     return;
@@ -89,10 +89,9 @@ Ext.onReady(function(){
                 form.findField('order[payment_method]').setValue(
                     value.get('name')
                 );
-
-                form.findField('order[payment_form]').setValue(
-                    value.get('form')
-                );
+                console.log(value);
+                debugger;
+                Ext.getCmp('order[payment_form]').update(value.get('form'));
             },
             focus: function(combo) {
                  if (!Ext.isDefined(this.store.totalLength)) {
@@ -116,9 +115,10 @@ Ext.onReady(function(){
                 xtype: 'hidden',
                 name: 'order[payment_method]'
             }, new Ext.Panel({
-                name: 'order[payment_form]',
+                id: 'order[payment_form]',
                 width: 300,
-                header: false,
+//                header: false,
+                border: false,
                 html: ''
             })
         ]
