@@ -497,5 +497,6 @@ Locale.module('core', {
     'New': 'Новий',
     'Readed': 'Прочитаний',
     'Replied': 'Дана відповідь',
-    'State / Province': 'Штат / Область'
+    'State / Province': 'Штат / Область',
+    'Geozone': 'Ґеозона'
 });

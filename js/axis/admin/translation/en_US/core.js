@@ -497,5 +497,6 @@ Locale.module('core', {
     'New': 'New',
     'Readed': 'Readed',
     'Replied': 'Replied',
-    'State / Province': 'State / Province'
+    'State / Province': 'State / Province',
+    'Geozone': 'Geozone'
 });
