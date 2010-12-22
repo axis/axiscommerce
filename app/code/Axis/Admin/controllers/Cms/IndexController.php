@@ -33,12 +33,9 @@
  */
 class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
 {
-
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('cms')->__(
-            'Categories/Pages'
-        );
+        $this->view->pageTitle = Axis::translate('cms')->__('Categories/Pages');
 
         $result = "";
 
@@ -296,13 +293,12 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
         $sort  = $this->_getParam('sort', false);
         $dir   = $this->_getParam('dir', 'ASC');
 
-        $select = Axis::model('admin/cms_page')
-            ->select('*')
+        $select = Axis::model('admin/cms_page')->select('*')
             ->calcFoundRows()
             ->addContent($this->_langId)
             ->group('cp.id')
-            ->addCategoryName()
-            ;
+            ->addCategoryName();
+
         switch ($filterTree['type']) {
             case 'site':
                 $select->addSiteFilter($filterTree['data']);

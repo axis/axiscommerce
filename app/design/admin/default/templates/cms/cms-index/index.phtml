@@ -1,24 +1,13 @@
 <?php
-//plugin
-$this->headScript()->appendFile('/js/ext-ux/grid/GridSearch.js');
-//gui
-$this->headScript()->appendFile('/js/axis/admin/cms/siteTree.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/toolbar.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/pageGrid.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/pageEditor.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/categoryEditor.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/panel.js');
+$this->headScript()
+    ->appendFile('js/axis/admin/cms/index/category/tree.js')
+    ->appendFile('js/axis/admin/cms/index/toolbar.js')
+    ->appendFile('js/axis/admin/cms/index/page/grid.js')
+    ->appendFile('js/axis/admin/cms/index/page/window.js')
+    ->appendFile('js/axis/admin/cms/index/category/window.js')
+    ->appendFile('js/axis/admin/cms/index/panel.js');
 ?>
 
-<?php
-$this->setButtons(array(
-    array(
-        'title' => Axis::translate('Axis_Admin')->__('Back'),
-        'onclick' => 'history.back()',
-        'class' => 'alt-button'
-    )
-));
-?>
 <script type="text/javascript">
 
     var pageStore, pageGrid, pageWindow, pageForm, page, categoryForm, categoryWindow,

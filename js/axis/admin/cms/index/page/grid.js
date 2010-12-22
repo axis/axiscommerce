@@ -24,24 +24,6 @@ Ext.onReady(function(){
 
     Ext.QuickTips.init();
 
-    var status = new Axis.grid.CheckColumn({
-        header: 'Status'.l(),
-        width: 60,
-        dataIndex: 'is_active'
-    });
-
-    var comment = new Axis.grid.CheckColumn({
-        header: 'Comments'.l(),
-        width: 80,
-        dataIndex: 'comment'
-    });
-
-    var showInBox = new Axis.grid.CheckColumn({
-        header: 'Show in box'.l(),
-        width: 80,
-        dataIndex: 'show_in_box'
-    });
-
     var pageFields = new Ext.data.Record.create([
         'id',
         'category_name',
@@ -54,15 +36,16 @@ Ext.onReady(function(){
     ]);
 
     pageStore = new Ext.data.GroupingStore({
-        proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('cms_index/get-pages')
-        }),
+        url: Axis.getUrl('cms_index/get-pages'),
         reader: new Ext.data.JsonReader({
             totalProperty: 'totalCount',
             root: 'pages',
             id: 'id'
         }, pageFields),
-        sortInfo: {field: 'category_name', direction: 'ASC'},
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        },
         remoteSort: true
     });
 
@@ -125,64 +108,64 @@ Ext.onReady(function(){
         }]
     });
 
-    var pageColumn = new Ext.grid.ColumnModel([{
-        header: 'Category'.l(),
+    var status = new Axis.grid.CheckColumn({
+        header: 'Status'.l(),
+        width: 80,
+        dataIndex: 'is_active'
+    });
+
+    var comment = new Axis.grid.CheckColumn({
+        header: 'Comments'.l(),
+        width: 80,
+        dataIndex: 'comment'
+    });
+
+    var showInBox = new Axis.grid.CheckColumn({
+        header: 'Show in box'.l(),
         width: 120,
-        dataIndex: 'category_name'
-    }, {
-        header: 'Name'.l(),
-        id: 'name',
-        width: 160,
-        dataIndex: 'name',
-        editor: new Ext.form.TextField({
-            allowBlank: false,
-            maxLength: 45
-        })
-    }, {
-        header: 'Link'.l(),
-        id: 'link',
-        width: 100,
-        dataIndex: 'link',
-        editor: new Ext.form.TextField({
-            allowBlank: true,
-            maxLength: 45
-        })
-    }, {
-        header: 'Layout'.l(),
-        width: 150,
-        dataIndex: 'layout',
-        editor: new Ext.form.ComboBox({
-            triggerAction: 'all',
-            displayField: 'name',
-            typeAhead: true,
-            mode: 'local',
-            valueField: 'name',
-            store: layoutStore
-        })
-    },
-        status,
-        comment,
-        showInBox
-    ]);
-    pageColumn.defaultSortable = true;
+        dataIndex: 'show_in_box'
+    });
 
-    var searchPage = new Ext.ux.grid.Search({
-        iconCls:false,
-        width: 170,
-        emptyText: 'Find a Page'.l(),
-        showSelectAll: false,
-        paramNames: {
-            query:  'filterSearch[query]',
-            fields: 'filterSearch[fields]'
+    var pageColumn = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
         },
-        minLength: 0,
-        checkIndexes: ['name'],
-        disableIndexes: ['id', 'category_name', 'link', 'layout', 'is_active', 'comment']
-    })
-
-    var paging = new Axis.PagingToolbar({
-        store: pageStore
-    })
+        columns: [{
+            header: 'id',
+            dataIndex: 'id',
+            width: 90
+        }, {
+            header: 'Category'.l(),
+            width: 120,
+            dataIndex: 'category_name'
+        }, {
+            header: 'Name'.l(),
+            id: 'name',
+            width: 160,
+            dataIndex: 'name',
+            editor: new Ext.form.TextField({
+                allowBlank: false,
+                maxLength: 45
+            })
+        }, {
+            header: 'Layout'.l(),
+            width: 150,
+            dataIndex: 'layout',
+            editor: new Ext.form.ComboBox({
+                editable: false,
+                triggerAction: 'all',
+                displayField: 'name',
+                typeAhead: true,
+                mode: 'local',
+                valueField: 'name',
+                store: layoutStore
+            })
+        },
+            status,
+            comment,
+            showInBox
+        ]
+    });
 
     pageGrid = new Axis.grid.EditorGridPanel({
         ds: pageStore,
@@ -191,13 +174,8 @@ Ext.onReady(function(){
         plugins: [
             status,
             comment,
-            showInBox,
-            searchPage
+            showInBox
         ],
-        view: new Ext.grid.GroupingView({
-            forceFit: true,
-            emptyText: 'No records found'.l()
-        }),
         tbar: [{
             text: 'Add'.l(),
             cls: 'x-btn-text-icon',
@@ -231,7 +209,9 @@ Ext.onReady(function(){
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             handler: reloadGrid
         }],
-        bbar: paging
+        bbar: new Axis.PagingToolbar({
+            store: pageStore
+        })
     });
 
     pageGrid.on('rowdblclick', function(grid, pageId, e) {
