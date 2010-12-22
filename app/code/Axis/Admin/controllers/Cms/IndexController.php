@@ -243,12 +243,11 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
             'title', 'link', 'description',
             'meta_title', 'meta_keyword', 'meta_description'
         );
-
         foreach(Axis_Collect_Language::collect() as $languageId => $lName) {
             foreach ($keyset as $key) {
                 $category[$key . '_' . $languageId] =
                     isset($content[$languageId][$key]) ?
-                        $content[$languageId][$key] : new Zend_Db_Expr('NULL');
+                        $content[$languageId][$key] : '';
             }
         }
 
@@ -285,44 +284,25 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
 
         $filterTree   = $this->_getParam('filterTree');
-        $filterSearch = $this->_getParam('filterSearch');
-
-        $start = (int) $this->_getParam('start', 1);
-        $limit = (int) $this->_getParam('limit', false);
-
-        $sort  = $this->_getParam('sort', false);
-        $dir   = $this->_getParam('dir', 'ASC');
 
         $select = Axis::model('admin/cms_page')->select('*')
             ->calcFoundRows()
-            ->addContent($this->_langId)
-            ->group('cp.id')
-            ->addCategoryName();
+            ->addCategoryName()
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 25),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
 
-        switch ($filterTree['type']) {
-            case 'site':
-                $select->addSiteFilter($filterTree['data']);
-                break;
-            case 'category':
-                $select->addCategoriesFilter($filterTree['data']);
-                break;
-        }
-
-        if (!empty($filterSearch['query'])) {
-            $select->where("cp.name LIKE ?", "%" . $filterSearch['query'] . "%");
-        }
-
-        if (false === $sort) {
-            $select->order($sort . ' ' . $dir);
-        }
-        if (false === $limit) {
-            $select->limit($limit, $start);
-        }
-
-        $this->_helper->json
-            ->setPages($select->fetchAll())
-            ->setTotalCount($select->count())
-            ->sendSuccess();
+        $this->_helper->json->sendSuccess(array(
+            'data'  => $select->fetchAll(),
+            'count' => $select->foundRows()
+        ));
     }
 
     public function getPageDataAction()

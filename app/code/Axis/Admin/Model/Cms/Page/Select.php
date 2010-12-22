@@ -34,9 +34,10 @@
 class Axis_Admin_Model_Cms_Page_Select extends Axis_Db_Table_Select
 {
     /**
+     * Add all columns from cms_page_content table to select
      *
      * @param int $languageId [optional]
-     * @return  Axis_Admin_Model_Cms_Page_Select Fluent interface
+     * @return  Axis_Admin_Model_Cms_Page_Select
      */
     public function addContent($languageId = null)
     {
@@ -54,61 +55,36 @@ class Axis_Admin_Model_Cms_Page_Select extends Axis_Db_Table_Select
     }
 
     /**
+     * Adds all names of categories where the page lies in, devided by commas
      *
-     * @return  Axis_Admin_Model_Cms_Page_Select Fluent interface
+     * @return Axis_Admin_Model_Cms_Page_Select
      */
     public function addCategoryName()
     {
-        $this->joinLeft(
-                array('cpc2'=> 'cms_page_category'),
-                'cpc2.cms_page_id = cp.id'
+        $this->group('cp.id')
+            ->joinLeft(
+                'cms_page_category',
+                'cpc.cms_page_id = cp.id'
             )
             ->joinLeft(
                 'cms_category',
-                'cc.id = cpc2.cms_category_id',
-                array('category_name' =>
-                    new Zend_Db_Expr('GROUP_CONCAT(cc.name separator \', \')')
+                'cc.id = cpc.cms_category_id',
+                array(
+                    'category_name' =>
+                        new Zend_Db_Expr('GROUP_CONCAT(cc.name separator \', \')')
                 )
             );
 
         return $this;
     }
 
-    /**
-     * @param int $siteId
-     * @return  Axis_Admin_Model_Cms_Page_Select Fluent interface
-     */
-    public function addSiteFilter($siteId)
-    {
-        //cc cms_category
-        $this->where('cc.site_id = ?', $siteId);
-        return $this;
-    }
 
     /**
-     * @param string|array $categories
-     * @return  Axis_Admin_Model_Cms_Page_Select Fluent interface
+     * Adds filter to get only uncategorized pages
+     *
+     * @return Axis_Admin_Model_Cms_Page_Select
      */
-    public function addCategoriesFilter($categories = 'all')
-    {
-        if ('lost' === $categories) {
-            $this->addLostFilter();
-        } else if ('all' != $categories) {
-
-            if (!is_array($categories)) {
-                $categories = array($categories);
-            }
-            $this->where('cpc2.cms_category_id IN (?)', $categories);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * @return  Axis_Admin_Model_Cms_Page_Select Fluent interface
-     */
-    public function addLostFilter()
+    public function addFilterByUncategorized()
     {
             $subSelect = Axis::single('cms/page_category')
                 ->select('cms_page_id')
@@ -117,5 +93,35 @@ class Axis_Admin_Model_Cms_Page_Select extends Axis_Db_Table_Select
             $this->where("cp.id <> ALL (?)", $subSelect);
 
         return $this;
+    }
+
+    /**
+     * Rewriting of parent method
+     * Add having statement if filter by category_name is required
+     *
+     * @param array $filters
+     * <pre>
+     *  array(
+     *      0 => array(
+     *          field       => table_column
+     *          value       => column_value
+     *          operator    => =|>|<|IN|LIKE    [optional]
+     *          table       => table_correlation[optional]
+     *      )
+     *  )
+     * </pre>
+     * @return Axis_Db_Table_Select
+     */
+    public function addFilters(array $filters)
+    {
+        foreach ($filters as $key => $filter) {
+            if ('category_name' != $filter['field']) {
+                continue;
+            }
+            $this->having("category_name LIKE ?",  '%' . $filter['value'] . '%');
+            unset($filters[$key]);
+        }
+
+        return parent::addFilters($filters);
     }
 }

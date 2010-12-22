@@ -66,7 +66,7 @@ Ext.onReady(function(){
         id: 'tree-site',
         root: root,
         rootVisible: false,
-        width: 230,
+        width: 250,
         border: true,
         autoScroll: true,
         loader: stLoader,
@@ -80,36 +80,39 @@ Ext.onReady(function(){
         split: true,
         tbar: [{
             text: 'Add'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/add.png',
             handler: createCategory
         },{
             text: 'Edit'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/page_edit.png',
             handler: editCategory
         },{
             text: 'Delete'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/delete.png',
             handler: deleteCategory
         }, {
-            cls: 'x-btn-icon',
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             handler: reloadTree
         }]
      });
 
-     siteTree.on('click', function(node, e) {
-         site = node.attributes.siteId;
-         pageCategory = category = node.attributes.id;
+    siteTree.on('click', function(node, e) {
+        site = node.attributes.siteId;
+        pageCategory = category = node.attributes.id;
 
-         pageGrid.getStore().baseParams = {
-             'filterTree[type]' : site != 'null' ? 'site' : 'category',
-             'filterTree[data]': site != 'null' ? site : category
-         };
+        var baseParams = pageGrid.getStore().baseParams;
+        if (site != 'null') {
+            baseParams['filter[site][field]'] = 'cc.site_id';
+            baseParams['filter[site][value]'] = site;
+        } else if (category != 'all') {
+            baseParams['filter[site][field]'] = 'cc.id';
+            baseParams['filter[site][value]'] = category;
+        } else {
+            delete baseParams['filter[site][field]'];
+            delete baseParams['filter[site][value]'];
+        }
 
-         pageGrid.getStore().load({params:{start:0, limit:20}});
+        pageGrid.getStore().reload();
     });
 
     siteTree.on('nodedragover', function(dragEvent) {

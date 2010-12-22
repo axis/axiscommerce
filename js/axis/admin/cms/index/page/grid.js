@@ -24,24 +24,25 @@ Ext.onReady(function(){
 
     Ext.QuickTips.init();
 
-    var pageFields = new Ext.data.Record.create([
-        'id',
-        'category_name',
-        'name',
-        'link',
-        'is_active',
-        'comment',
-        'layout',
-        'show_in_box'
-    ]);
-
     pageStore = new Ext.data.GroupingStore({
+        autoLoad: true,
+        baseParams: {
+            limit: 25
+        },
         url: Axis.getUrl('cms_index/get-pages'),
         reader: new Ext.data.JsonReader({
-            totalProperty: 'totalCount',
-            root: 'pages',
+            totalProperty: 'count',
+            root: 'data',
             id: 'id'
-        }, pageFields),
+        }, [
+            {name: 'id', type: 'int'},
+            {name: 'category_name'},
+            {name: 'name'},
+            {name: 'is_active', type: 'int'},
+            {name: 'comment', type: 'int'},
+            {name: 'layout'},
+            {name: 'show_in_box', type: 'int'}
+        ]),
         sortInfo: {
             field: 'id',
             direction: 'DESC'
@@ -108,22 +109,45 @@ Ext.onReady(function(){
         }]
     });
 
+    var statusStore = new Ext.data.ArrayStore({
+        data: [['reset', ''], [0, 'Disabled'.l()], [1, 'Enabled'.l()]],
+        fields: ['id', 'name']
+    })
+
     var status = new Axis.grid.CheckColumn({
         header: 'Status'.l(),
         width: 80,
-        dataIndex: 'is_active'
+        dataIndex: 'is_active',
+        filter: {
+            prependResetValue: false,
+            editable: false,
+            resetValue: 'reset',
+            store: statusStore
+        }
     });
 
     var comment = new Axis.grid.CheckColumn({
         header: 'Comments'.l(),
         width: 80,
-        dataIndex: 'comment'
+        dataIndex: 'comment',
+        filter: {
+            prependResetValue: false,
+            editable: false,
+            resetValue: 'reset',
+            store: statusStore
+        }
     });
 
     var showInBox = new Axis.grid.CheckColumn({
         header: 'Show in box'.l(),
         width: 120,
-        dataIndex: 'show_in_box'
+        dataIndex: 'show_in_box',
+        filter: {
+            prependResetValue: false,
+            editable: false,
+            resetValue: 'reset',
+            store: statusStore
+        }
     });
 
     var pageColumn = new Ext.grid.ColumnModel({
@@ -137,7 +161,8 @@ Ext.onReady(function(){
         }, {
             header: 'Category'.l(),
             width: 120,
-            dataIndex: 'category_name'
+            dataIndex: 'category_name',
+            table: ''
         }, {
             header: 'Name'.l(),
             id: 'name',
@@ -149,7 +174,7 @@ Ext.onReady(function(){
             })
         }, {
             header: 'Layout'.l(),
-            width: 150,
+            width: 210,
             dataIndex: 'layout',
             editor: new Ext.form.ComboBox({
                 editable: false,
@@ -168,44 +193,40 @@ Ext.onReady(function(){
     });
 
     pageGrid = new Axis.grid.EditorGridPanel({
+        autoExpandColumn: 'name',
         ds: pageStore,
         cm: pageColumn,
         id: 'grid-page-list',
         plugins: [
             status,
             comment,
-            showInBox
+            showInBox,
+            new Axis.grid.Filter()
         ],
         tbar: [{
             text: 'Add'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/add.png',
             handler: createPage
         }, {
             text: 'Edit'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/page_edit.png',
             handler: editPage
         }, {
             text: 'Batch'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/menu_action.png',
             menu: batchMenu
         }, {
             text: 'Save'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/save_multiple.png',
             handler: saveChanges
         }, {
             text: 'Delete'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/delete.png',
             handler: function() {
                 batch('remove', 0);
             }
         }, '->', {
             text: 'Reload'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             handler: reloadGrid
         }],
@@ -217,14 +238,6 @@ Ext.onReady(function(){
     pageGrid.on('rowdblclick', function(grid, pageId, e) {
         editPage();
     })
-
-    pageGrid.getStore().baseParams = {
-        'filterTree[type]': 'category',
-        'filterTree[data]': 'all'
-    };
-
-    pageGrid.getStore().load({params:{start:0, limit:25}})
-
 })
 
 function batch(field, value) {
