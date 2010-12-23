@@ -53,11 +53,9 @@
                             <!-- Content Section -->
                             <strong>
                                 <?php echo $this->translate('core')->__('Hello') . ', ';
-                                if ($this->firstname && $this->lastname) {
-                                    echo $this->firstname . ' ' . $this->lastname;
-                                } else {
-                                    echo 'customer';
-                                }?>
+                                    echo $this->order->getBilling()->getFirstname() . ' '
+                                        . $this->order->getBilling()->getLastname();
+                                ?>
                             </strong>
                             <br/>
                             <?php echo $this->translate('core')->__('Thank you for your order from %s', $this->site)?>

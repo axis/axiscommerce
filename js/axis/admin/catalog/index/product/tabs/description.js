@@ -18,7 +18,7 @@
  */
 
 Ext.onReady(function() {
-    
+
     ProductWindow.formFields.push(
         {name: 'product_id', mapping: 'product.id', type:'int'},
         {name: 'product[is_active]', mapping: 'product.is_active', type: 'int'},
@@ -28,7 +28,7 @@ Ext.onReady(function() {
         {name: 'product[featured_to]', mapping: 'product.featured_to', type: 'date', dateFormat: 'Y-m-d h:i:s'},
         {name: 'product[manufacturer_id]', mapping: 'product.manufacturer_id', type: 'int'}
     );
-    
+
     for (var id in Axis.languages) {
         ProductWindow.formFields.push({
             name: 'description[' + id + '][name]',
@@ -41,7 +41,7 @@ Ext.onReady(function() {
             mapping: 'description.lang_' + id + '.short_description'
         });
     }
-    
+
     ProductWindow.addTab({
         title: 'Description'.l(),
         bodyStyle: 'padding: 10px',
@@ -146,5 +146,4 @@ Ext.onReady(function() {
             xtype: 'hidden'
         }]
     }, 10);
-    
 });

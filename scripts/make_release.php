@@ -20,7 +20,7 @@ class ReleaseMaker
             'doc',
             'tests',
             'app/etc/config.php',
-            'js/ext-3.2.1/*',
+            'js/ext-3.3.1/*',
             'media/*/*',      // skip all content inside every folder inside media
             'var/*/*',
             'var/axis_sample_data_latest.sql',
@@ -29,14 +29,14 @@ class ReleaseMaker
         ),
         // path that will be copied despite of exclude rules
         'include' => array(
-            'js/ext-3.2.1/adapter/jquery/*',
-            'js/ext-3.2.1/examples/ux/ux-all.js',
-            'js/ext-3.2.1/examples/ux/css/ux-all.css',
-            'js/ext-3.2.1/examples/ux/images/*',
-            'js/ext-3.2.1/resources/*',
-            'js/ext-3.2.1/src/locale/*',
-            'js/ext-3.2.1/ext-all.js',
-            'js/ext-3.2.1/license.txt',
+            'js/ext-3.3.1/adapter/jquery/*',
+            'js/ext-3.3.1/examples/ux/ux-all.js',
+            'js/ext-3.3.1/examples/ux/css/ux-all.css',
+            'js/ext-3.3.1/examples/ux/images/*',
+            'js/ext-3.3.1/resources/*',
+            'js/ext-3.3.1/src/locale/*',
+            'js/ext-3.3.1/ext-all.js',
+            'js/ext-3.3.1/license.txt',
             'var/minify/*'
         )
     );

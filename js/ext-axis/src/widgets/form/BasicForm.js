@@ -97,18 +97,10 @@ Ext.form.BasicForm.override({
                     if (f.dataIndex == id || f.id == id || f.getName() == id) {
                         field = f;
                         return false;
-                    } else if (f.isComposite && f.rendered) {
-                        return f.items.each(findMatchingField);
                     } else if (f.isComposite) {
-                        Ext.each(f.items, function(el) {
-                            if (el.dataIndex == id || el.id == id || el.name == id) {
-                                field = el;
-                                return false;
-                            }
-                        });
-                        if (undefined !== field) {
-                            return false;
-                        }
+                        return f.items.each(findMatchingField);
+                    } else if (f instanceof Ext.form.CheckboxGroup && f.rendered) {
+                        return f.eachItem(findMatchingField);
                     } else if (f.xtype == 'langset' && f.getField(id)) {
                         field = f;
                         return false;
@@ -168,7 +160,7 @@ Ext.form.BasicForm.override({
     },
 
     setValues: function(values) {
-        this.resetValidationMessages();
+        //this.resetValidationMessages();
         if(Ext.isArray(values)){ // array of objects
             for(var i = 0, len = values.length; i < len; i++){
                 var v = values[i];
@@ -188,8 +180,7 @@ Ext.form.BasicForm.override({
                     // modification start
                     if (field.xtype == 'langset' && (fi = field.getField(id))) {
                         field.setValue(id, values[id]);
-                    }
-                    else {
+                    } else {
                         if (field.setValue) {
                             field.setValue(values[id]);
                         } else {

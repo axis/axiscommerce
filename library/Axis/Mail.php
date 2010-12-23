@@ -125,7 +125,7 @@ class Axis_Mail extends Zend_Mail
         if (isset($config['from']) && is_string($config['from'])) {
             $from = $config['from'];
         }
-
+        $config['subject'] = $this->view->site . ' : ' . $config['subject'];
         $this->setSubject($config['subject']);
         $this->view->subject = $config['subject'];
         $this->addTo($config['to']);
