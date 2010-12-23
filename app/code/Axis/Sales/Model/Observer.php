@@ -60,18 +60,12 @@ class Axis_Sales_Model_Observer
      */
     public function notifyCustomerNewOrder(Axis_Sales_Model_Order_Row $order)
     {
-        $customer = Axis::single('account/customer')
-            ->find($order->customer_id)
-            ->current();
-
         $mail = new Axis_Mail();
         $mail->setConfig(array(
             'event'   => 'order_new-customer',
             'subject' => Axis::translate('sales')->__('Your create new order'),
             'data'    => array(
-                'firstname' => $customer->firstname,
-                'lastname'  => $customer->lastname,
-                'order'     => $order
+                'order' => $order
             ),
             'to' =>  $order->customer_email
         ));

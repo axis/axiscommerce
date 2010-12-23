@@ -53,18 +53,16 @@
                             <!-- Content Section -->
                             <strong>
                                 <?php echo $this->translate('core')->__('Hello') . ', ';
-                                if ($this->firstname && $this->lastname) {
-                                    echo $this->firstname . ' ' . $this->lastname;
-                                } else {
-                                    echo 'customer';
-                                }?>
+                                    echo $this->order->getBilling()->getFirstname() . ' '
+                                        . $this->order->getBilling()->getLastname();
+                                ?>
                             </strong>
                             <br/>
                             <?php echo $this->translate('core')->__('Thank you for your order from %s', $this->site)?>
                             <?php echo $this->translate('core')->__('Once your package ships we will send an email with a link to track your order.'); ?>
                             <?php echo $this->translate('core')->__('You can check the status of your order by <a %s>logging into your account</a>', 'href="' . $this->href('/account/order', true) . '" style="color:#1E7EC8;"'); ?>
                             <br/>
-                            <a href="<?php echo $this->href('/account/order/view/orderId/' . $this->order->ird, true)?>" style="color:#1E7EC8;"
+                            <a href="<?php echo $this->href('/account/order/view/orderId/' . $this->order->id, true)?>" style="color:#1E7EC8;"
                             ><?php echo $this->translate('core')->__('Your last order')?></a>
                             
                             <br clear="all"/>
