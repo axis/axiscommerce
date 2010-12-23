@@ -56,7 +56,6 @@ class Axis_View_Helper_PaymentForm
         $shortPath = 'payment' . str_replace('_', '/', strtolower($paymentCode))
                    . '/' . $template . '.phtml';
 
-               Axis_FirePhp::log($templatePath . '/' . $shortPath);
         if (is_readable($templatePath . '/' . $shortPath)) {
             return $this->view->render($shortPath);
         }

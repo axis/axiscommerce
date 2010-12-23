@@ -79,9 +79,14 @@ Ext.onReady(function(){
         lazyRender: true,
         anchor: '-10',
         listeners: {
-            beforeselect: function(combo, record, index) {
+            beforeselect: function (combo, record, index) {
+                
+                var value = combo.getStore().getAt(index);//=== record
+                if (combo.lastSelectionText == value.get('name')) {
+                    return false;
+                }
                 var form = Order.form.getForm();
-                var value = combo.getStore().getAt(index);
+                
                 Ext.StoreMgr.lookup('storeShippingMethod').reloadList({
                     payment_method_code: value.get('code')
                 });
@@ -89,8 +94,6 @@ Ext.onReady(function(){
                 form.findField('order[payment_method]').setValue(
                     value.get('name')
                 );
-                console.log(value);
-                debugger;
                 Ext.getCmp('order[payment_form]').update(value.get('form'));
             },
             focus: function(combo) {

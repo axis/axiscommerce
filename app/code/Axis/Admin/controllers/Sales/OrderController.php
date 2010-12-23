@@ -382,10 +382,14 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
         $billing = $order->getBilling();
         $data['address']['billing'] = $billing->toFlatArray();
 
+        $this->view->cc = Axis::single('sales/order_creditcard')
+            ->find($order->id)
+            ->current();
+        $form = $this->view->paymentForm($order->payment_method_code, 'view');
         $data['payment'] = array(
             'name' => $order->payment_method,
             'code' => $order->payment_method_code,
-            'form' => $this->view->paymentForm($order->payment_method_code, 'view')
+            'form' => $form
         );
         $data['shipping'] = array(
             'name' => $order->shipping_method,

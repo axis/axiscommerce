@@ -1,4 +1,4 @@
- <?php 
+ <?php
 for ($i = 1; $i < 13; $i++) {
     $expires_month[sprintf('%02d', $i)] = strftime('%B - (%m)', mktime(0, 0, 0, $i, 1, 2000));
 }
@@ -8,35 +8,24 @@ for ($i = $today['year']; $i < $today['year'] + 10; $i++) {
     $expires_year[strftime('%y', mktime(0, 0, 0, 1, 1, $i))] = strftime('%Y', mktime(0, 0, 0, 1, 1, $i));
 }
 ?>
-
-<div class="payment-additional" >
-    <dl class="form" id="extra-fields-<?php echo $this->payment->getCode();?>">
-        <dt><?php echo $this->translate('checkout')->__('CC Owner')?></dt>
-        <dd><?php echo $this->formText($this->payment->getCode() . '-CcOwner', null, array(
-            'autocomplete' => 'off',
-            'class' => 'input-text'
-        )) ?></dd>
-        
-        <dt><?php echo $this->translate('checkout')->__('CC Number')?></dt>
-        <dd><?php echo $this->formText($this->payment->getCode() . '-CcNumber', null, array(
-            'autocomplete' => 'off',
-            'class' => 'input-text'
-        )) ?></dd>
-        
-        <dt><?php echo $this->translate('checkout')->__('Credit Card Type')?></dt>
-        <dd><?php echo $this->ccIcons($this->payment->getCCTypes(), $this->payment->getCode())->__toString() ?></dd>
-        
-        <dt><?php echo $this->translate('checkout')->__('Expires Date')?></dt>
-        <dd><?php echo $this->formSelect($this->payment->getCode() . '-CcExpiresMonth', null, null, $expires_month) . '&nbsp;'
-            . $this->formSelect($this->payment->getCode() . '-CcExpiresYear', null, null, $expires_year) ?>
-        </dd>
-        <dt><?php echo$this->translate('checkout')->__('CVV')?></dt>
-        <dd>
-            <?php echo $this->formText($this->payment->getCode() . '-CcCvv', null, array(
-                'autocomplete' => 'off',
-                'class' => 'input-text'
-            )) ?>
-            <a class="cc-help" onclick="return toggleCvv(this)" href="#"><?php echo $this->translate('checkout')->__('CVV Help') ?></a> 
-        </dd>
-    </dl>
-</div>
+<?php echo $this->translate('checkout')->__('CC Owner')?>
+<?php echo $this->formText('order[payment_method][owner]', null, array(
+    'autocomplete' => 'off',
+    'class' => 'input-text'
+)) ?>
+<br/>
+<?php echo $this->translate('checkout')->__('CC Number')?>
+<?php echo $this->formText(/*$this->payment->getCode() . */'order[payment_method][number]', null, array(
+    'autocomplete' => 'off',
+    'class' => 'input-text'
+)) ?>
+<br/>
+<?php echo $this->translate('checkout')->__('Expires Date')?>
+<?php echo $this->formSelect('order[payment_method][expiresmonth]', null, null, $expires_month) . '&nbsp;'
+    . $this->formSelect('order[payment_method][expiresyear]', null, null, $expires_year) ?>
+<br/>
+<?php echo$this->translate('checkout')->__('CVV')?>
+<?php echo $this->formText('order[payment_method][cvv]', null, array(
+    'autocomplete' => 'off',
+    'class' => 'input-text'
+)) ?>
