@@ -542,7 +542,7 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         Axis::model('location/address_format')->insert(array(
             'name'              => 'ISO/IEC 19773',
-            'address_format'    => '{{firstname}} {{lastname}}EOL{{if company}}{{company}}EOL{{/if}}{{if street_address}}{{street_address}}EOL{{/if}}{{if suburb}}{{suburb}}EOL{{/if}}{{if city}}{{city}}{{/if}} {{if zone.name}}{{zone.name}} {{/if}}{{if postcode}}{{postcode}}{{/if}}{{if country}}EOL{{country.name}}EOL{{/if}}{{if phone}}T: {{phone}}EOL{{/if}}EOL{{if fax}}F: {{fax}}EOL{{/if}}',
+            'address_format'    => '{{firstname}} {{lastname}}EOL{{if company}}{{company}}EOL{{/if}}{{if street_address}}{{street_address}}EOL{{/if}}{{if suburb}}{{suburb}}EOL{{/if}}{{if city}}{{city}}{{/if}} {{if zone.name}}{{zone.name}} {{/if}}{{if postcode}}{{postcode}}{{/if}}{{if country}}EOL{{country.name}}EOL{{/if}}{{if phone}}T: {{phone}}EOL{{/if}}{{if fax}}F: {{fax}}EOL{{/if}}',
             'address_summary'   => '{{firstname}} {{lastname}}'
         ));
 
