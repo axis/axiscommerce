@@ -91,6 +91,7 @@ Ext.onReady(function(){
                     form.findField('order[billing_address_type]').setValue(1); //old address
                     form.findField('order[delivery_address_type]').setValue(1);
 
+                    Ext.getCmp('order[payment_form]').update(data.payment.form);
                 }
             });
         },

@@ -1,0 +1,31 @@
+ <?php
+for ($i = 1; $i < 13; $i++) {
+    $expires_month[sprintf('%02d', $i)] = strftime('%B - (%m)', mktime(0, 0, 0, $i, 1, 2000));
+}
+
+$today = getdate();
+for ($i = $today['year']; $i < $today['year'] + 10; $i++) {
+    $expires_year[strftime('%y', mktime(0, 0, 0, 1, 1, $i))] = strftime('%Y', mktime(0, 0, 0, 1, 1, $i));
+}
+?>
+<?php echo $this->translate('checkout')->__('CC Owner')?>
+<?php echo $this->formText('order[payment_method][owner]', null, array(
+    'autocomplete' => 'off',
+    'class' => 'input-text'
+)) ?>
+<br/>
+<?php echo $this->translate('checkout')->__('CC Number')?>
+<?php echo $this->formText(/*$this->payment->getCode() . */'order[payment_method][number]', null, array(
+    'autocomplete' => 'off',
+    'class' => 'input-text'
+)) ?>
+<br/>
+<?php echo $this->translate('checkout')->__('Expires Date')?>
+<?php echo $this->formSelect('order[payment_method][expiresmonth]', null, null, $expires_month) . '&nbsp;'
+    . $this->formSelect('order[payment_method][expiresyear]', null, null, $expires_year) ?>
+<br/>
+<?php echo$this->translate('checkout')->__('CVV')?>
+<?php echo $this->formText('order[payment_method][cvv]', null, array(
+    'autocomplete' => 'off',
+    'class' => 'input-text'
+)) ?>

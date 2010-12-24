@@ -448,4 +448,52 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
         }
         return new $rowClass($data);
     }
+
+    /**
+     * Returns the Row found or created with the primary keys or data array
+     * 
+     * @param  mixed $key The value(s) of the primary keys.
+     * @return Zend_Db_Table_Row_Abstract Row matching the criteria.
+     * @throws Zend_Db_Table_Exception
+     */
+    public function getRow()
+    {
+        $this->_setupPrimaryKey();
+        $args = func_get_args();
+        $keyNames = array_values((array) $this->_primary);
+        $data = $primary = array();
+        if (is_array($args[0])) {
+            foreach ($keyNames as $key) {
+                $primary[$key] = isset($args[0][$key]) ? $args[0][$key] : -1;
+            }
+            $data = $args[0];
+        } else {
+        
+            if (count($args) < count($keyNames)) {
+                require_once 'Zend/Db/Table/Exception.php';
+                throw new Zend_Db_Table_Exception("Too few columns for the primary key");
+            }
+
+            if (count($args) > count($keyNames)) {
+                require_once 'Zend/Db/Table/Exception.php';
+                throw new Zend_Db_Table_Exception("Too many columns for the primary key");
+            }
+
+            foreach ($keyNames as $key) {
+                $primary[$key] = array_shift($args);
+            }
+            $data = $primary;
+        }
+        
+        $select = $this->select();
+        foreach ($primary as $key => $value) {
+            $select->where("$key = ?", $value);
+        }
+        $row = $this->fetchRow($select);
+
+        if(!$row instanceof Axis_Db_Table_Row) {
+            $row = $this->createRow();
+        }
+        return $row->setFromArray($data);
+    }
 }

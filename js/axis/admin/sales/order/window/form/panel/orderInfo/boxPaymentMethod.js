@@ -31,8 +31,9 @@ Ext.onReady(function(){
             root: 'data',
             id: 'id'
         }, [
-            {name: 'code',               type: 'string'},
-            {name: 'name',               type: 'string'}
+            {name: 'code', type: 'string'},
+            {name: 'name', type: 'string'},
+            {name: 'form', type: 'string'}
         ]),
         pruneModifiedRecords: true,
         reloadList: function() {
@@ -52,7 +53,6 @@ Ext.onReady(function(){
                     break;
                 }
                 var param = params[index];
-                console.log(param);
                 if ('' === param || null === param) {
                     alert(index);
                     return;
@@ -79,15 +79,22 @@ Ext.onReady(function(){
         lazyRender: true,
         anchor: '-10',
         listeners: {
-            beforeselect: function(combo, record, index) {
-                var value = combo.getStore().getAt(index);
+            beforeselect: function (combo, record, index) {
+                
+                var value = combo.getStore().getAt(index);//=== record
+                if (combo.lastSelectionText == value.get('name')) {
+                    return false;
+                }
+                var form = Order.form.getForm();
+                
                 Ext.StoreMgr.lookup('storeShippingMethod').reloadList({
                     payment_method_code: value.get('code')
                 });
 
-                Order.form.getForm().findField('order[payment_method]').setValue(
+                form.findField('order[payment_method]').setValue(
                     value.get('name')
                 );
+                Ext.getCmp('order[payment_form]').update(value.get('form'));
             },
             focus: function(combo) {
                  if (!Ext.isDefined(this.store.totalLength)) {
@@ -104,13 +111,20 @@ Ext.onReady(function(){
             }
     });
 
-    Order.form.boxPaymentMethod = {
+       Order.form.boxPaymentMethod = {
         id: 'box-payment-method',
         title : 'Payment method'.l(),
         items: [cmpPaymentCode, {
                 xtype: 'hidden',
                 name: 'order[payment_method]'
-            }]
+            }, new Ext.Panel({
+                id: 'order[payment_form]',
+                width: 300,
+//                header: false,
+                border: false,
+                html: ''
+            })
+        ]
     };
     
 }, this);
