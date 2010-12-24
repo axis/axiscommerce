@@ -211,12 +211,15 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
 
         emptyRecord[vF] = cfg.resetValue ? cfg.resetValue : '';
         emptyRecord[dF] = cfg.resetText  ? cfg.resetText  : '';
-        if (cfg.store.data.length) {
-            cfg.store.insert(0, new cfg.store.recordType(emptyRecord));
+
+        if (false !== cfg.prependResetValue) {
+            if (cfg.store.data.length) {
+                cfg.store.insert(0, new cfg.store.recordType(emptyRecord));
+            }
+            cfg.store.on('load', function(store, records, options) {
+                store.insert(0, new store.recordType(emptyRecord));
+            });
         }
-        cfg.store.on('load', function(store, records, options) {
-            store.insert(0, new store.recordType(emptyRecord));
-        });
 
         cfg.listeners = {
             scope: this,

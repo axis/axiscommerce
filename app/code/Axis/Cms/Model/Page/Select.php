@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Model
+ * @package     Axis_Cms
+ * @subpackage  Axis_Cms_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,11 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Model
+ * @package     Axis_Cms
+ * @subpackage  Axis_Cms_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Model_Cms_Page_Select extends Axis_Db_Table_Select
+class Axis_Cms_Model_Page_Select extends Axis_Db_Table_Select
 {
     /**
      * Add all columns from cms_page_content table to select

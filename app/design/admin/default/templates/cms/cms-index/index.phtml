@@ -1,187 +1,19 @@
 <?php
-//plugin
-$this->headScript()->appendFile('/js/ext-ux/grid/GridSearch.js');
-//gui
-$this->headScript()->appendFile('/js/axis/admin/cms/siteTree.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/toolbar.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/pageGrid.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/pageEditor.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/categoryEditor.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/panel.js');
+$this->headScript()
+    ->appendFile('js/axis/admin/cms/index/category.js')
+    ->appendFile('js/axis/admin/cms/index/category/tree.js')
+    ->appendFile('js/axis/admin/cms/index/category/window.js')
+    ->appendFile('js/axis/admin/cms/index/toolbar.js')
+    ->appendFile('js/axis/admin/cms/index/page.js')
+    ->appendFile('js/axis/admin/cms/index/page/grid.js')
+    ->appendFile('js/axis/admin/cms/index/page/tabs/description.js')
+    ->appendFile('js/axis/admin/cms/index/page/tabs/seo.js')
+    ->appendFile('js/axis/admin/cms/index/page/tabs/category.js')
+    ->appendFile('js/axis/admin/cms/index/page/window.js')
+    ->appendFile('js/axis/admin/cms/index/panel.js');
 ?>
 
-<?php
-$this->setButtons(array(
-    array(
-        'title' => Axis::translate('Axis_Admin')->__('Back'),
-        'onclick' => 'history.back()',
-        'class' => 'alt-button'
-    )
-));
-?>
 <script type="text/javascript">
-
-    var pageStore, pageGrid, pageWindow, pageForm, page, categoryForm, categoryWindow,
-        siteTree, pageCategory, category = 'all', categoryFrom, site = 'null',
-        parentId, categoryBlock, layoutStore;
-    //lang tabs for categories
-    var categoryTabs = [
-    <?php
-        $catTab = "";
-        $catReader ="";
-        foreach (Axis_Collect_Language::collect() as $languageId => $lang) {
-            $lang = addslashes($lang);
-            $catReader .= "'title_$languageId',
-                           'link_$languageId',
-                           'description_$languageId',
-                           'meta_title_$languageId',
-                           'meta_keyword_$languageId',
-                           'meta_description_$languageId',";
-            $catTab .= "{
-                title: '$lang',
-                layout: 'form',
-                items: [{
-                    xtype: 'fieldset',
-                    title: 'General'.l(),
-                    autoHeight: true,
-                    collapsible: true,
-                    defaults: {anchor: '100%'},
-                    items: [{
-                        fieldLabel: 'Title'.l(),
-                        name: 'title_$languageId',
-                        xtype: 'textfield',
-                        allowBlank: true
-                    }, {
-                        fieldLabel: 'Link'.l(),
-                        name: 'link_$languageId',
-                        xtype: 'textfield',
-                        allowBlank: true
-                    }, {
-                        fieldLabel: 'Description'.l(),
-                        name: 'description_$languageId',
-                        xtype: 'textarea',
-                        allowBlank: true
-                    }]
-                }, {
-                    xtype: 'fieldset',
-                    title: 'Meta'.l(),
-                    autoHeight: true,
-                    collapsible: true,
-                    defaults: {anchor: '100%'},
-                    items: [{
-                        fieldLabel: 'Title'.l(),
-                        name: 'meta_title_$languageId',
-                        xtype: 'textfield',
-                        allowBlank: true
-                    }, {
-                        fieldLabel: 'Keywords'.l(),
-                        name: 'meta_keyword_$languageId',
-                        xtype: 'textarea',
-                        allowBlank: true
-                    }, {
-                        fieldLabel: 'Description'.l(),
-                        name: 'meta_description_$languageId',
-                        xtype: 'textarea',
-                        allowBlank: true
-                    }]
-                }]
-            },\n";
-        }
-        echo substr($catTab, 0, -2);
-    ?>];
-    var categoryReader = [
-        'name',
-        'is_active',
-    <?php echo substr($catReader, 0, -1); ?>
-    ];
-    //langTabs for pageEditor
-    var pageTabs = [
-    <?php
-        $pageTab="";
-        $pageReader="";
-        foreach (Axis_Collect_Language::collect() as $languageId => $lang) {
-            $lang = addslashes($lang);
-            $pageReader .= "'title_$languageId',
-                            'link_$languageId',
-                            'content_$languageId',
-                            'meta_title_$languageId',
-                            'meta_keyword_$languageId',
-                            'meta_description_$languageId',";
-            $pageTab .= "{
-                title: '$lang',
-                hideMode: 'offsets',
-                layout: 'form',
-                items: [{
-                    xtype: 'fieldset',
-                    title: 'General'.l(),
-                    autoHeight: true,
-                    collapsible: true,
-                    items: [{
-                        layout: 'column',
-                        border: false,
-                        items: [{
-                            columnWidth: 0.5,
-                            layout: 'form',
-                            border: false,
-                            items: [{
-                                fieldLabel: 'Title'.l(),
-                                name: 'title_$languageId',
-                                xtype: 'textfield',
-                                anchor: '95%'
-                            }]
-                            }, {
-                            columnWidth: 0.5,
-                            layout: 'form',
-                            border: false,
-                            items: [{
-                                fieldLabel: 'Link'.l(),
-                                name: 'link_$languageId',
-                                xtype: 'textfield',
-                                anchor: '95%'
-                            }]
-                        }]
-                    },
-                        new Ext.form.HtmlEditor({
-                            name: 'content_$languageId',
-                            fieldLabel: 'Content'.l(),
-                            anchor: '100%'
-                        })
-                    ]
-                }, {
-                    xtype: 'fieldset',
-                    title: 'Meta'.l(),
-                    autoHeight: true,
-                    collapsible: true,
-                    items: [{
-                        fieldLabel: 'Title'.l(),
-                        name: 'meta_title_$languageId',
-                        xtype: 'textfield',
-                        anchor: '100%'
-                    }, {
-                        fieldLabel: 'Keywords'.l(),
-                        name: 'meta_keyword_$languageId',
-                        xtype: 'textarea',
-                        anchor: '100%'
-                    }, {
-                        fieldLabel: 'Description'.l(),
-                        name: 'meta_description_$languageId',
-                        xtype: 'textarea',
-                        anchor: '100%'
-                    }]
-                }]
-            },\n";
-        }
-        echo substr($pageTab, 0, -2);
-    ?>];
-    var pageReader = [
-        'name',
-        'is_active',
-        'layout',
-        'comment',
-        //'access',
-    <?php echo substr($pageReader, 0, -1); ?>
-    ];
-
     //batch menu
     var layoutMenu = [
     <?php
@@ -191,13 +23,10 @@ $this->setButtons(array(
             $menu .= "{
                 text: '$value',
                 handler: function() {
-                    batch('layout', '$name');
+                    PageGrid.batchProcess('layout', '$name');
                 }
             },\n";
         }
         echo substr($menu, 0, -2);
     ?>];
-
-    //batch menu
-    var storeCategoryMenu = [<?php echo $this->categoryMenu; ?>]
 </script>

@@ -1,22 +1,22 @@
-    <?php
+<?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
@@ -25,17 +25,63 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Cms_Model_Category extends Axis_Db_Table 
+class Axis_Cms_Model_Category extends Axis_Db_Table
 {
     protected $_name = 'cms_category';
+
     protected $_rowClass = 'Axis_Cms_Model_Category_Row';
-    
+
+    protected $_primary = 'id';
+
+    /**
+     * Update or insert category row
+     *
+     * @param array $data
+     * <code>
+     *  column_name => value,
+     *  content     => array(
+     *      langId => array()
+     *  )
+     * </code>
+     */
+    public function save(array $data)
+    {
+        // $this->getRow($data)->save();
+
+        if (!isset($data['id'])
+            || !$row = $this->find($data['id'])->current()) {
+
+            $row = $this->createRow();
+        }
+        unset($data['id']);
+        if (empty($data['parent_id'])) {
+            $data['parent_id'] = new Zend_Db_Expr('NULL');
+        }
+        $row->setFromArray($data)->save();
+
+        $mContent = Axis::model('cms/category_content');
+        foreach ($data['content'] as $languageId => $values) {
+
+            // $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
+
+            if (!$rowContent = $mContent->find($row->id, $languageId)->current()) {
+                $rowContent = $mContent->createRow(array(
+                    'cms_category_id'   => $row->id,
+                    'language_id'       => $languageId
+                ));
+            }
+            $rowContent->setFromArray($values)->save();
+        }
+
+        return $row->id;
+    }
+
     public function getCategoryIdByLink($link)
     {
         return Axis::single('cms/category_content')
@@ -48,7 +94,7 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
             ->where('cc.site_id = ?', Axis::getSiteId())
             ->fetchOne();
     }
-    
+
     public function getActiveCategory()
     {
         return $this->select(array('id', 'parent_id'))
@@ -74,20 +120,20 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
             ->where('cms_page_id = ? ', $pageId)
             ->fetchCol();
     }
-    
-    private function _recurse(&$arr, $id, &$res = array()) 
+
+    private function _recurse(&$arr, $id, &$res = array())
     {
         if (isset($arr[$id]) && (null !== $arr[$id])) {
             $res[$id] = $arr[$id];
-        } else { 
+        } else {
             return $res;
-        }       
+        }
         if (null !== $arr[$id]['parent_id'] ) {
             $this->_recurse($arr, $arr[$id]['parent_id'], $res);
-        } 
+        }
         return $res;
     }
-    
+
     public function getParentCategory($id, $isPage = false)
     {
         $all = $this->select(array('id', 'parent_id'))
@@ -99,7 +145,7 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
             ->where('ccc.language_id = ?', Axis_Locale::getLanguageId())
             ->where('ccc.link IS NOT NULL')
             ->fetchAssoc();
-        
+
         if ($isPage) {
             $id = current($this->getIdsByPage($id));
         }
@@ -107,10 +153,10 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
         $this->_recurse($all, $id, $result);
         return array_reverse($result);
     }
-    
+
     /**
      *  return parent category for some site and lang
-     * 
+     *
      */
     public function getRootCategories()
     {
@@ -125,5 +171,5 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
            ->where('cc.parent_id IS NULL')
 //           ->where('ccc.link IS NOT NULL')
            ->fetchAll();
-    } 
+    }
 }

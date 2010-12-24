@@ -498,5 +498,7 @@ Locale.module('core', {
     'Readed': 'Readed',
     'Replied': 'Replied',
     'State / Province': 'State / Province',
-    'Geozone': 'Geozone'
+    'Geozone': 'Geozone',
+    'New Сategory': 'New Сategory',
+    'New Page': 'New Page'
 });

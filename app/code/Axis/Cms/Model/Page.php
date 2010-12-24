@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
@@ -34,8 +34,64 @@
 class Axis_Cms_Model_Page extends Axis_Db_Table
 {
     protected $_name = 'cms_page';
+
     protected $_rowClass = 'Axis_Cms_Model_Page_Row';
-    
+
+    protected $_selectClass = 'Axis_Cms_Model_Page_Select';
+
+    /**
+     * Update or insert page row
+     *
+     * @param array $data
+     * <code>
+     *  column_name => value,
+     *  content     => array(
+     *      langId => array()
+     *  ),
+     *  category => json_string
+     * </code>
+     */
+    public function save(array $data)
+    {
+        // $this->getRow($data)->save();
+
+        if (!isset($data['id'])
+            || !$row = $this->find($data['id'])->current()) {
+
+            $row = $this->createRow();
+        }
+        unset($data['id']);
+        $row->setFromArray($data)->save();
+
+        $mContent = Axis::model('cms/page_content');
+        foreach ($data['content'] as $languageId => $values) {
+
+            // $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
+
+            if (!$rowContent = $mContent->find($row->id, $languageId)->current()) {
+                $rowContent = $mContent->createRow(array(
+                    'cms_page_id'   => $row->id,
+                    'language_id'       => $languageId
+                ));
+            }
+            $rowContent->setFromArray($values)->save();
+        }
+
+        $mPageCategory = Axis::single('cms/page_category');
+        $mPageCategory->delete(Axis::db()->quoteInto('cms_page_id = ?', $row->id));
+        foreach (Zend_Json::decode($data['category']) as $categoryId) {
+
+            // $mPageCategory->getRow($categoryId, $row->id)->save();
+
+            $mPageCategory->insert(array(
+                'cms_category_id' => $categoryId,
+                'cms_page_id'     => $row->id
+            ));
+        }
+
+        return $row->id;
+    }
+
     public function getPageIdByLink($link)
     {
         return Axis::single('cms/page_content')->select('cms_page_id')
@@ -53,8 +109,8 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
     }
 
     /**
-     *  return root cms pages 
-     * 
+     *  return root cms pages
+     *
      */
     public function getBoxPages()
     {
@@ -86,7 +142,7 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
             ->fetchAll()
             ;
     }
-    
+
     public function getPageListByActiveCategory($categoryIds, $languageId)
     {
         if (empty($categoryIds)) {
