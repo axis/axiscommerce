@@ -91,7 +91,7 @@ class SandboxController extends Axis_Core_Controller_Front
         $d[15] = '11';
         $d[12] = '00';
         Zend_Debug::dump($d);
-        
+
         $routes = array('a' => 'Hey', 'b' => 'hey', 'c' => 'My1', 'd' => 'my2');
         $afterKey = 'k';
 
@@ -102,7 +102,7 @@ class SandboxController extends Axis_Core_Controller_Front
 
         $firstPart = array_splice($routes, 0, $length);
         $firstPart['new_key'] = 'new_value';
-        
+
         Zend_Debug::dump($firstPart + $routes);
 
         $this->_prefix = '';

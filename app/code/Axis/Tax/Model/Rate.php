@@ -34,11 +34,8 @@
  */
  class Axis_Tax_Model_Rate extends Axis_Db_Table
 {
-	/**
-	 * The default table name 
-	 */
-	protected $_name = 'tax_rate';
-	
+    protected $_name = 'tax_rate';
+
     public function update(array $data, $where)
     {
         if (empty($data['modified_on'])) {
@@ -53,53 +50,6 @@
             $data['created_on'] = Axis_Date::now()->toSQLString();
         }
         return parent::insert($data);
-    }
-    
-    /**
-     * Multi rows save  
-     * @param array rows
-     * @return bool
-     */
-    public function save($rows)
-    {
-        // Saving exists values
-        foreach ($rows as $id => $row) {
-            
-            if (isset($row['id'])) {// update
-                $this->update(
-                    array(
-                        'tax_class_id'      => $row['tax_class_id'],
-                        'geozone_id'        => $row['geozone_id'],
-                        'customer_group_id' => $row['customer_group_id'],
-                        'rate'              => $row['rate'],
-                        'description'       => $row['description']
-                    ), 
-                    $this->getAdapter()->quoteInto('id = ?', $id)
-                );
-            } else { // insert
-                $isDuplicate = $this->select('id')
-                    ->where('tax_class_id = ?', $row['tax_class_id'])
-                    ->where('geozone_id = ?', $row['geozone_id'])
-                    ->where('customer_group_id = ?', $row['customer_group_id'])
-                    ->fetchOne();
-
-                if ($isDuplicate) {
-                    Axis::message()->addError(
-                        Axis::translate('checkout')->__(
-                            'Duplicate entry (must be unique set taxclass, geozone, customer group)'
-                    ));
-                    return false;
-                }
-                $this->insert(array(
-                    'tax_class_id'      => $row['tax_class_id'],
-                    'geozone_id'        => $row['geozone_id'],
-                    'customer_group_id' => $row['customer_group_id'],
-                    'rate'              => $row['rate'],
-                    'description'       => $row['description']
-                ));
-            }
-        }
-        return true;
     }
     
     /**

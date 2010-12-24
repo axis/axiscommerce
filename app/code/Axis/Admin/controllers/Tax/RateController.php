@@ -37,11 +37,11 @@ class Axis_Admin_Tax_RateController extends Axis_Admin_Controller_Back
     {
         $this->view->pageTitle = Axis::translate('tax')->__('Tax Rates');
 
-        $this->view->zones          = Axis::single('location/geozone')
+        $this->view->zones = Axis::single('location/geozone')
             ->fetchAll()
             ->toArray();
 
-        $this->view->taxClasses     = Axis::single('tax/class')
+        $this->view->taxClasses = Axis::single('tax/class')
             ->fetchAll()
             ->toArray();
 
@@ -79,14 +79,17 @@ class Axis_Admin_Tax_RateController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $data = Zend_Json::decode($this->_getParam('data'));
-        if (!count($data)) {
+        $rowset = Zend_Json::decode($this->_getParam('data'));
+        if (!count($rowset)) {
             return;
         }
+        $modelTaxRate = Axis::model('tax/rate');
 
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('tax/rate')->save($data)
-        ));
+        foreach ($rowset as $rowData) {
+            $modelTaxRate->getRow($rowData)->save();
+        }
+        $this->_helper->json->sendSuccess();
+
     }
 
     public function deleteAction()
@@ -98,7 +101,9 @@ class Axis_Admin_Tax_RateController extends Axis_Admin_Controller_Back
             return;
         }
 
-        Axis::single('tax/rate')->delete($this->db->quoteInto('id IN (?)', $ids));
+        Axis::single('tax/rate')->delete(
+            $this->db->quoteInto('id IN (?)', $ids)
+        );
         $this->_helper->json->sendSuccess();
     }
 }
