@@ -15,22 +15,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 Ext.onReady(function(){
-    
+
     Ext.QuickTips.init();
-    
+
     Ext.form.Field.prototype.msgTarget = 'qtip';
-    
+
     var panel = new Axis.Panel({
         items: [
             Ext.getCmp('panel-search'),
-            Ext.getCmp('tree-site'),
-            Ext.getCmp('grid-page-list')
+            CategoryTree.el,
+            PageGrid.el
         ]
     });
 });

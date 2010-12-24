@@ -20,11 +20,113 @@
  * @license     GNU Public License V3.0
  */
 
-Ext.onReady(function(){
+var CategoryTree = {
+
+    el: null,
+
+    reload: function() {
+        CategoryTree.el.getLoader().load(CategoryTree.el.root);
+    },
+
+    add: function() {
+        var node = CategoryTree.el.getSelectionModel().getSelectedNode();
+        if (!node || !node.attributes.site_id) {
+            alert('Select site or parent category'.l());
+            return;
+        }
+
+        if (isNaN(node.id)) {
+            Category.add(0, node.attributes.site_id);
+        } else {
+            Category.add(node.id, node.attributes.site_id);
+        }
+    },
+
+    edit: function(id) {
+        var node = CategoryTree.el.getSelectionModel().getSelectedNode();
+        if (!node || isNaN(node.id)) {
+            return;
+        }
+        Category.load(node.id);
+    },
+
+    remove: function(id) {
+        var selected = CategoryTree.el.getSelectionModel().getSelectedNode();
+        if (!selected
+            || isNaN(selected.id)
+            || !confirm('Are you sure? All child categories will be also deleted'.l())) {
+
+            return;
+        }
+
+        Ext.Ajax.request({
+            url: Axis.getUrl('cms_index/delete-category'),
+            params: {
+                id: selected.id
+            },
+            success: function() {
+                CategoryTree.el.getLoader().load(CategoryTree.el.root);
+            }
+        });
+    },
+
+    onClick: function(node, e) {
+        var category = node.attributes.id,
+            baseParams = PageGrid.el.getStore().baseParams;
+
+        delete baseParams['uncategorized'];
+        delete baseParams['filter[site][field]'];
+        delete baseParams['filter[site][value]'];
+
+        if (category.indexOf('_') === 0) {
+            baseParams['filter[site][field]'] = 'cc.site_id';
+            baseParams['filter[site][value]'] = node.attributes.site_id;
+        } else if (category == 'lost') {
+            baseParams['uncategorized'] = 1;
+        } else if (category != 'all') {
+            baseParams['filter[site][field]'] = 'cc.id';
+            baseParams['filter[site][value]'] = category;
+        }
+
+        PageGrid.el.getStore().reload();
+    },
+
+    onNodeDragOver: function(dragEvent) {
+        var parentNode  = dragEvent.target,
+            dropNode    = dragEvent.dropNode;
+
+        if (dragEvent.point == "above" || dragEvent.point == "below") {
+            parentNode = parentNode.parentNode;
+        }
+
+        if (parentNode.id == 'rootNode' || isNaN(dropNode.id)) {
+            return false;
+        }
+    },
+
+    onNodeDrop: function(dropEvent) {
+        var parentNode  = dropEvent.target,
+            dropNode    = dropEvent.dropNode;
+
+        if (dropEvent.point == 'above' || dropEvent.point == 'below') {
+            parentNode = parentNode.parentNode;
+        }
+
+        Ext.Ajax.request({
+            url: Axis.getUrl('cms_index/move-category'),
+            params: {
+                id          : dropNode.id,
+                parent_id   : isNaN(parentNode.id) ? null : parentNode.id,
+                site_id     : parentNode.attributes.site_id
+            },
+            failure: CategoryTree.reload
+        });
+    }
+};
+
+Ext.onReady(function() {
 
     Ext.QuickTips.init();
-
-    Ext.form.Field.prototype.msgTarget = 'under';
 
     var root = new Ext.tree.AsyncTreeNode({
         text: 'Axis root node'.l(),
@@ -32,37 +134,29 @@ Ext.onReady(function(){
         id:'rootNode'
     });
 
-    stLoader = new Ext.tree.TreeLoader({
-        url: Axis.getUrl('cms_index/get-site-tree')
+    var stLoader = new Ext.tree.TreeLoader({
+        url: Axis.getUrl('cms_index/get-site-tree'),
+        listeners: {
+            'beforeload': function(loader, node) {
+                CategoryTree.el.root.appendChild([
+                     new Ext.tree.TreeNode({
+                         text:'All Pages'.l(),
+                         id: 'all',
+                         iconCls: 'icon-folder',
+                         allowDrag: false
+                     }),
+                     new Ext.tree.TreeNode({
+                         text:'Uncategorized'.l(),
+                         id: 'lost',
+                         iconCls: 'icon-bin',
+                         allowDrag: false
+                     })
+                ]);
+            }
+        }
     });
 
-    stLoader.on('beforeload', function(stLoader, node) {
-        stLoader.baseParams.siteId = node.attributes.siteId;
-        root.appendChild(
-            new Ext.tree.TreeNode({
-                 text:'All Pages'.l(),
-                 id: 'all',
-                 siteId: 'null',
-                 catId: 'null',
-                 iconCls: 'icon-folder',
-                 allowDrag: false
-             }),
-             new Ext.tree.TreeNode({
-                 text:'Uncategorized'.l(),
-                 id: 'lost',
-                 siteId: 'null',
-                 catId: 'null',
-                 iconCls: 'icon-bin',
-                 allowDrag: false
-             })
-        );
-    }, this);
-
-    stLoader.on('load', function(stLoader, node){
-        buildGridMenu();
-    }, this)
-
-    siteTree = new Ext.tree.TreePanel({
+    CategoryTree.el = new Ext.tree.TreePanel({
         id: 'tree-site',
         root: root,
         rootVisible: false,
@@ -78,150 +172,34 @@ Ext.onReady(function(){
         collapseMode: 'mini',
         header: false,
         split: true,
+        listeners: {
+            'click'         : CategoryTree.onClick,
+            'nodedragover'  : CategoryTree.onNodeDragOver,
+            'nodedrop'      : CategoryTree.onNodeDrop
+        },
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
-            handler: createCategory
-        },{
+            handler: function() {
+                CategoryTree.add();
+            }
+        }, {
             text: 'Edit'.l(),
             icon: Axis.skinUrl + '/images/icons/page_edit.png',
-            handler: editCategory
-        },{
+            handler: function() {
+                CategoryTree.edit();
+            }
+        }, {
             text: 'Delete'.l(),
             icon: Axis.skinUrl + '/images/icons/delete.png',
-            handler: deleteCategory
+            handler: function() {
+                CategoryTree.remove();
+            }
         }, {
             icon: Axis.skinUrl + '/images/icons/refresh.png',
-            handler: reloadTree
+            handler: function() {
+                CategoryTree.reload();
+            }
         }]
      });
-
-    siteTree.on('click', function(node, e) {
-        site = node.attributes.siteId;
-        pageCategory = category = node.attributes.id;
-
-        var baseParams = pageGrid.getStore().baseParams;
-        if (site != 'null') {
-            baseParams['filter[site][field]'] = 'cc.site_id';
-            baseParams['filter[site][value]'] = site;
-        } else if (category != 'all') {
-            baseParams['filter[site][field]'] = 'cc.id';
-            baseParams['filter[site][value]'] = category;
-        } else {
-            delete baseParams['filter[site][field]'];
-            delete baseParams['filter[site][value]'];
-        }
-
-        pageGrid.getStore().reload();
-    });
-
-    siteTree.on('nodedragover', function(dragEvent) {
-        parentNode = dragEvent.target;
-        dropNode = dragEvent.dropNode;
-
-        if(dragEvent.point == "above" || dragEvent.point == "below")
-            parentNode = parentNode.parentNode;
-
-        if(parentNode.id == 'rootNode' || isNaN(dropNode.id)) {
-            return false;
-        }
-    });
-
-    siteTree.on('nodedrop', function(dropEvent) {
-        parentNode = dropEvent.target;
-        dropNode = dropEvent.dropNode;
-
-        category = dropNode.id;
-
-        if (dropEvent.point == 'above' || dropEvent.point == 'below') {
-            parentNode = parentNode.parentNode;
-        }
-
-        getNodeParams(parentNode);
-
-        Ext.Ajax.request({
-            url: Axis.getUrl('cms_index/move-category'),
-            params: {catId: category, parentId: parentId, siteId: site},
-            success: buildGridMenu
-        })
-    })
 });
-
-var root, stLoader;
-
-function reloadTree() {
-    siteTree.getLoader().load(siteTree.root);
-}
-
-function getNodeParams(node) {
-    if (node.attributes.siteId != 'null') {
-        site = node.attributes.siteId;
-        parentId = 0;
-    } else {
-        parentId = node.id;
-        site = 0;
-    }
-}
-
-function createCategory(){
-    node = siteTree.getSelectionModel().getSelectedNode();
-    if (!node) {
-        alert('Select site or parent category'.l());
-        return;
-    }
-
-    getNodeParams(node);
-
-    category = 'new';
-    categoryForm.getForm().clear();
-    categoryWindow.show();
-}
-
-function editCategory() {
-    var node = siteTree.getSelectionModel().getSelectedNode();
-    if (!node || isNaN(node.id)) {
-        return;
-    }
-    parentNode = node.parentNode;
-
-    getNodeParams(parentNode);
-
-    category = node.id;
-    categoryForm.getForm().clear();
-    categoryWindow.show();
-    categoryForm.getForm().load({
-        url: Axis.getUrl('cms_index/get-category/catId/') + category,
-        method: 'get'
-    });
-}
-
-function deleteCategory() {
-    var itemToDelete = siteTree.getSelectionModel().getSelectedNode();
-    if (!itemToDelete || itemToDelete.attributes.siteId != 'null') {
-        alert('Select category to delete');
-        return;
-    }
-    if (!confirm('Are you sure? All child categories will be also deleted'.l())) {
-        return;
-    }
-
-    parentNode = itemToDelete.parentNode;
-
-    Ext.Ajax.request({
-        url: Axis.getUrl('cms_index/delete-category'),
-        params: {id: itemToDelete.id},
-        success: function() {
-            siteTree.getLoader().load(siteTree.root, function() {
-                categoryWindow.hide();
-            });
-            pageGrid.getStore().load({params:{start:0, limit:15}});
-        }
-    });
-}
-
-/*
- * grid menu builder. rebuil after every siteTree load
- */
-function buildGridMenu() {
-    tree = siteTree.root.childNodes;
-}

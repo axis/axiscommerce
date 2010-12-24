@@ -20,11 +20,71 @@
  * @license     GNU Public License V3.0
  */
 
+var PageGrid = {
+
+    el: null,
+
+    remove: function() {
+        var selectedItems = PageGrid.el.getSelectionModel().getSelections();
+        if (!selectedItems.length || !confirm('Are you sure?')) {
+            return;
+        }
+
+        var data = {};
+        for (var i = 0; i < selectedItems.length; i++) {
+            data[i] = selectedItems[i].id;
+        }
+        Ext.Ajax.request({
+            url: Axis.getUrl('cms_index/delete-page'),
+            params: {
+                data: Ext.encode(data)
+            },
+            callback: function() {
+                PageGrid.el.getStore().reload();
+            }
+        });
+    },
+
+    reload: function() {
+        PageGrid.el.getStore().reload();
+    },
+
+    save: function() {
+        var modified = PageGrid.el.getStore().getModifiedRecords();
+        if (!modified.length) {
+            return;
+        }
+
+        var data = {};
+        for (var i = 0; i < modified.length; i++) {
+            data[modified[i]['id']] = modified[i]['data'];
+        }
+
+        Ext.Ajax.request({
+            url: Axis.getUrl('cms_index/batch-page-save'),
+            params: {
+                data: Ext.encode(data)
+            },
+            callback: function() {
+                PageGrid.el.getStore().commitChanges();
+                PageGrid.el.getStore().reload();
+            }
+        });
+    },
+
+    batchProcess: function(field, value) {
+        var selected = PageGrid.el.getSelectionModel().getSelections();
+        for (var i = 0; i < selected.length; i++) {
+            selected[i].set(field, value);
+        }
+    }
+};
+
 Ext.onReady(function(){
 
     Ext.QuickTips.init();
 
-    pageStore = new Ext.data.GroupingStore({
+    var ds = new Ext.data.GroupingStore({
         autoLoad: true,
         baseParams: {
             limit: 25
@@ -50,21 +110,8 @@ Ext.onReady(function(){
         remoteSort: true
     });
 
-    layoutStore = new Ext.data.Store({
-        url: Axis.getUrl('template_layout/list-collect'),
-        reader: new Ext.data.JsonReader({
-            root: 'data'
-        }, ['name']),
-        autoLoad: true
-    });
-
     var batchMenu = new Ext.menu.Menu({
-        items: [
-        {
-            text: 'Copy Selected to'.l(),
-            icon: Axis.skinUrl + '/images/icons/copy_multiple.png',
-            menu: storeCategoryMenu
-        }, {
+        items: [{
             text: 'Change Layout to'.l(),
             icon: Axis.skinUrl + '/images/icons/layout.png',
             menu: layoutMenu
@@ -75,13 +122,13 @@ Ext.onReady(function(){
                 text: 'Disabled'.l(),
                 icon: Axis.skinUrl + '/images/icons/disabled.png',
                 handler: function() {
-                    batch('is_active', 0);
+                    PageGrid.batchProcess('is_active', 0);
                 }
             }, {
                 text: 'Enabled'.l(),
                 icon: Axis.skinUrl + '/images/icons/enabled.png',
                 handler: function() {
-                    batch('is_active', 1);
+                    PageGrid.batchProcess('is_active', 1);
                 }
             }]
         }, {
@@ -91,21 +138,15 @@ Ext.onReady(function(){
                 text: 'Disabled'.l(),
                 icon: Axis.skinUrl + '/images/icons/disabled.png',
                 handler: function() {
-                    batch('comment', 0);
+                    PageGrid.batchProcess('comment', 0);
                 }
             }, {
                 text: 'Enabled'.l(),
                 icon: Axis.skinUrl + '/images/icons/enabled.png',
                 handler: function() {
-                    batch('comment', 1);
+                    PageGrid.batchProcess('comment', 1);
                 }
             }]
-        }, {
-            text: 'Remove from db'.l(),
-            icon: Axis.skinUrl + '/images/icons/drive_delete.png',
-            handler: function() {
-                batch('remove', 1);
-            }
         }]
     });
 
@@ -150,7 +191,7 @@ Ext.onReady(function(){
         }
     });
 
-    var pageColumn = new Ext.grid.ColumnModel({
+    var cm = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
         },
@@ -183,7 +224,7 @@ Ext.onReady(function(){
                 typeAhead: true,
                 mode: 'local',
                 valueField: 'name',
-                store: layoutStore
+                store: Page.layoutStore
             })
         },
             status,
@@ -192,11 +233,10 @@ Ext.onReady(function(){
         ]
     });
 
-    pageGrid = new Axis.grid.EditorGridPanel({
+    PageGrid.el = new Axis.grid.EditorGridPanel({
         autoExpandColumn: 'name',
-        ds: pageStore,
-        cm: pageColumn,
-        id: 'grid-page-list',
+        ds: ds,
+        cm: cm,
         plugins: [
             status,
             comment,
@@ -206,11 +246,17 @@ Ext.onReady(function(){
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
-            handler: createPage
+            handler: Page.add
         }, {
             text: 'Edit'.l(),
             icon: Axis.skinUrl + '/images/icons/page_edit.png',
-            handler: editPage
+            handler: function() {
+                var selected = PageGrid.el.getSelectionModel().getSelected();
+                if (!selected) {
+                    return;
+                }
+                Page.load(selected.get('id'));
+            }
         }, {
             text: 'Batch'.l(),
             icon: Axis.skinUrl + '/images/icons/menu_action.png',
@@ -218,150 +264,24 @@ Ext.onReady(function(){
         }, {
             text: 'Save'.l(),
             icon: Axis.skinUrl + '/images/icons/save_multiple.png',
-            handler: saveChanges
+            handler: PageGrid.save
         }, {
             text: 'Delete'.l(),
             icon: Axis.skinUrl + '/images/icons/delete.png',
             handler: function() {
-                batch('remove', 0);
+                PageGrid.remove();
             }
         }, '->', {
             text: 'Reload'.l(),
             icon: Axis.skinUrl + '/images/icons/refresh.png',
-            handler: reloadGrid
+            handler: PageGrid.reload
         }],
         bbar: new Axis.PagingToolbar({
-            store: pageStore
+            store: ds
         })
     });
 
-    pageGrid.on('rowdblclick', function(grid, pageId, e) {
-        editPage();
+    PageGrid.el.on('rowdblclick', function(grid, index, e) {
+        Page.load(grid.getStore().getAt(index).get('id'));
     })
-})
-
-function batch(field, value) {
-    switch (field) {
-        case 'remove':
-            if (value == '0') {       //remove from selected treeNode
-                categoryFrom = category;
-                deletePage();
-            } else if (value == '1') { //remove from db
-                categoryFrom = 'all';
-                deletePage();
-            }
-            break;
-        case 'category':
-            var selectedItems = pageGrid.getSelectionModel().selections.items;
-
-            if (selectedItems.length < 1)
-                return;
-
-            var data = {};
-
-            for (var i = 0; i < selectedItems.length; i++) {
-                data[i] = selectedItems[i].id;
-            }
-            var jsonData = Ext.encode(data);
-            Ext.Ajax.request({
-                url: Axis.getUrl('cms_index/copy-page'),
-                params: {pages: jsonData, catId: value}
-            });
-            break;
-        default:
-            var selected = pageGrid.getSelectionModel().getSelections();
-            for (var i = 0; i < selected.length; i++) {
-                selected[i].set(field, value);
-            }
-            break;
-    }
-}
-
-function deletePage() {
-    var selectedItems = pageGrid.getSelectionModel().selections.items;
-
-    if (selectedItems.length < 1)
-        return;
-
-    if (!confirm('Delete Page(s)?'))
-        return;
-
-    var data = {};
-
-    for (var i = 0; i < selectedItems.length; i++) {
-        data[i] = selectedItems[i].id;
-    }
-    var jsonData = Ext.encode(data);
-    Ext.Ajax.request({
-        url: Axis.getUrl('cms_index/delete-page'),
-        params: {data: jsonData, catId: categoryFrom, siteId: site},
-        callback: function() {
-            pageGrid.getStore().reload();
-        }
-    });
-}
-
-function createPage() {
-    page = 'new';
-    pageForm.getForm().clear();
-    resetNodes();
-    pageWindow.show();
-}
-
-function editPage() {
-    page = pageGrid.getSelectionModel().getSelected();
-    if (!page) return;
-    page = page.id;
-    pageForm.getForm().clear();
-    pageWindow.show();
-    pageForm.getForm().load({
-        url: Axis.getUrl('cms_index/get-page-data'),
-        params: {pageId: page},
-        success: setCheckedNodes
-    });
-}
-
-function setCheckedNodes() {
-    resetNodes();
-    var node;
-
-    for (var i = 0; i < pageForm.reader.jsonData.category.length; i++) {
-        node = categoryBlock.getNodeById(parseInt(pageForm.reader.jsonData.category[i]))
-        node.ui.toggleCheck(true);
-        categoryBlock.getSelectionModel().select(node, null, true);
-        node.checked = true;
-        node.attributes.checked = true;
-    }
-}
-
-function resetNodes() {
-    categoryBlock.root.cascade(function(){
-        this.ui.toggleCheck(false);
-        this.unselect();
-        this.checked = false;
-        this.attributes.checked = false;
-    })
-}
-
-function saveChanges() {
-    var modified = pageGrid.getStore().getModifiedRecords();
-    if (modified.length < 1) return alert('Nothing to save');
-    var data = {};
-
-    for (var i = 0; i < modified.length; i++) {
-        data[modified[i]['id']] = modified[i]['data'];
-    }
-
-    var jsonData = Ext.encode(data);
-    Ext.Ajax.request({
-        url: Axis.getUrl('cms_index/quick-save-page'),
-        params: {data: jsonData},
-        callback: function() {
-            pageGrid.getStore().commitChanges();
-            pageGrid.getStore().reload();
-        }
-    })
-}
-function reloadGrid() {
-    pageGrid.getStore().reload();
-}
+});

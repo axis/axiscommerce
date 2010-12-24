@@ -70,7 +70,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         /*
          * Get cms pages
          */
-        $tableCmsCategory = Axis::single('admin/cms_category');
+        $tableCmsCategory = Axis::single('cms/category');
         $categories       = $tableCmsCategory->getActiveCategory();
 
         $categoryIds = array ();

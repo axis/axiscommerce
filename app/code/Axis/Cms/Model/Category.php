@@ -34,7 +34,53 @@
 class Axis_Cms_Model_Category extends Axis_Db_Table
 {
     protected $_name = 'cms_category';
+
     protected $_rowClass = 'Axis_Cms_Model_Category_Row';
+
+    protected $_primary = 'id';
+
+    /**
+     * Update or insert category row
+     *
+     * @param array $data
+     * <code>
+     *  column_name => value,
+     *  content     => array(
+     *      langId => array()
+     *  )
+     * </code>
+     */
+    public function save(array $data)
+    {
+        // $this->getRow($data)->save();
+
+        if (!isset($data['id'])
+            || !$row = $this->find($data['id'])->current()) {
+
+            $row = $this->createRow();
+        }
+        unset($data['id']);
+        if (empty($data['parent_id'])) {
+            $data['parent_id'] = new Zend_Db_Expr('NULL');
+        }
+        $row->setFromArray($data)->save();
+
+        $mContent = Axis::model('cms/category_content');
+        foreach ($data['content'] as $languageId => $values) {
+
+            // $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
+
+            if (!$rowContent = $mContent->find($row->id, $languageId)->current()) {
+                $rowContent = $mContent->createRow(array(
+                    'cms_category_id'   => $row->id,
+                    'language_id'       => $languageId
+                ));
+            }
+            $rowContent->setFromArray($values)->save();
+        }
+
+        return $row->id;
+    }
 
     public function getCategoryIdByLink($link)
     {

@@ -139,12 +139,16 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
         function getChilds($node, $root) {
             $result = array();
 
-            $tableCmsCategory = Axis::single('admin/cms_category');
-            //if !$root -> load subcategories, else -> load root categories of site
+            $tableCmsCategory = Axis::single('cms/category');
             if ($root) {
-                $cats = $tableCmsCategory->getRootCategory($node);
+                $cats = $tableCmsCategory->select('*')
+                    ->where('cc.site_id = ?', $node)
+                    ->where('cc.parent_id is NULL')
+                    ->fetchAssoc();
             } else {
-                $cats = $tableCmsCategory->getChildCategory($node);
+                $cats = $tableCmsCategory->select('*')
+                    ->where('cc.parent_id = ?', $node)
+                    ->fetchAssoc();
             }
 
             //get categories

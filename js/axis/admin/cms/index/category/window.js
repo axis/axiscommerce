@@ -20,25 +20,88 @@
  * @license     GNU Public License V3.0
  */
 
+var CategoryWindow = {
+
+    el: null,
+
+    form: null,
+
+    formFields: [],
+
+    save: function(closeWindow) {
+        CategoryWindow.form.getForm().submit({
+            url: Axis.getUrl('cms_index/save-category'),
+            success: function(form, action) {
+                CategoryTree.reload();
+                if (closeWindow) {
+                    CategoryWindow.hide();
+                    CategoryWindow.form.getForm().clear();
+                } else {
+                    var response = Ext.decode(action.response.responseText);
+                    Category.load(response.data.id);
+                }
+            },
+            failure: function(form, action) {
+                if (action.failureType == 'client') {
+                    return;
+                }
+            }
+        });
+    },
+
+    show: function() {
+        CategoryWindow.el.show();
+    },
+
+    hide: function() {
+        CategoryWindow.el.hide();
+    }
+
+};
+
 Ext.onReady(function() {
 
-     categoryForm = new Ext.form.FormPanel({
-        labelWidth: 80,
-        autoScroll: true,
-        border: false,
+    CategoryWindow.formFields = [
+        {name: 'id', type: 'int'},
+        {name: 'site_id', type: 'int'},
+        {name: 'parent_id', type: 'int'},
+        {name: 'name'},
+        {name: 'is_active'}
+    ];
+    for (var id in Axis.locales) {
+        CategoryWindow.formFields.push({
+            name: 'content[' + id + '][title]',
+            mapping: 'content.lang_' + id + '.title'
+        }, {
+            name: 'content[' + id + '][description]',
+            mapping: 'content.lang_' + id + '.description'
+        }, {
+            name: 'content[' + id + '][link]',
+            mapping: 'content.lang_' + id + '.link'
+        }, {
+            name: 'content[' + id + '][meta_title]',
+            mapping: 'content.lang_' + id + '.meta_title'
+        }, {
+            name: 'content[' + id + '][meta_description]',
+            mapping: 'content.lang_' + id + '.meta_description'
+        }, {
+            name: 'content[' + id + '][meta_keyword]',
+            mapping: 'content.lang_' + id + '.meta_keyword'
+        });
+    }
+
+    CategoryWindow.form = new Axis.form.FormPanel({
+        bodyStyle: 'padding: 10px 10px 0',
+        method: 'post',
         reader: new Ext.data.JsonReader({
-            root: 'category'
-            },
-            categoryReader
-        ),
+            root: 'data'
+        }, CategoryWindow.formFields),
         defaults: {
             anchor: '-20'
         },
         items: [{
             layout: 'column',
-            labelAlign: 'top',
             border: false,
-            bodyStyle: 'padding: 10px 10px 0',
             items: [{
                 columnWidth: 0.5,
                 layout: 'form',
@@ -65,8 +128,7 @@ Ext.onReady(function() {
                     displayField: 'value',
                     valueField: 'id',
                     mode: 'local',
-                    value: '1',
-                    emptyText: 'Select status'.l(),
+                    initialValue: '1',
                     triggerAction: 'all',
                     editable: false,
                     hiddenName: 'is_active',
@@ -74,54 +136,71 @@ Ext.onReady(function() {
                 }]
            }]
         }, {
-            xtype: 'tabpanel',
-            layoutOnTabChange: true,
-            deferredRender: false,
-            border: false,
-            activeTab: 0,
-            plain:true,
-            defaults: {
-                autoHeight:true,
-                bodyStyle:'padding:10px'
-            },
-            items: categoryTabs
-        }]
-    });
-
-    categoryWindow = new Ext.Window({
-        closeAction: 'hide',
-        plain: true,
-        width: 520,
-        height: 530,
-        layout: 'fit',
-        items: categoryForm,
-        title: 'Category',
-        buttons:
-        [{
-            text: 'Save'.l(),
-            handler: saveCategory
+            name: 'content[title]',
+            fieldLabel: 'Title'.l(),
+            xtype: 'langset'
         }, {
-            text: 'Cancel'.l(),
-            handler: function(){
-                categoryWindow.hide();
-            }
+            name: 'content[link]',
+            fieldLabel: 'Link'.l(),
+            xtype: 'langset'
+        }, {
+            name: 'content[description]',
+            defaultType: 'textarea',
+            fieldLabel: 'Description'.l(),
+            xtype: 'langset'
+        }, {
+            xtype: 'fieldset',
+            title: 'Meta'.l(),
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                name: 'content[meta_title]',
+                fieldLabel: 'Title'.l(),
+                xtype: 'langset'
+            }, {
+                name: 'content[meta_description]',
+                defaultType: 'textarea',
+                fieldLabel: 'Description'.l(),
+                xtype: 'langset'
+            }, {
+                name: 'content[meta_keyword]',
+                defaultType: 'textarea',
+                fieldLabel: 'Keywords'.l(),
+                xtype: 'langset'
+            }]
+        }, {
+            xtype: 'hidden',
+            name: 'id',
+            initialValue: 0
+        }, {
+            xtype: 'hidden',
+            name: 'parent_id'
+        }, {
+            xtype: 'hidden',
+            name: 'site_id'
         }]
     });
-})
 
-function saveCategory() {
-    categoryForm.getForm().submit({
-        url: Axis.getUrl('cms_index/save-category'),
-        params: {catId: category, parentId: parentId, siteId: site},
-        clientValidation: true,
-        success: function(form, response){
-            var obj = Ext.decode(response.response.responseText);
-            var parentNodeId = (parentId ? parentId : '_' + site);
-            siteTree.getLoader().load(siteTree.root, function() {
-                var path = siteTree.getNodeById(obj.data.catId).getPath();
-                siteTree.selectPath(path)
-            });
-            categoryWindow.hide();
-        }
-    })
-}
+    CategoryWindow.el = new Axis.Window({
+        items: CategoryWindow.form,
+        title: 'Category'.l(),
+        buttons: [{
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save'.l(),
+            handler: function() {
+                CategoryWindow.save(true);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save & Continue Edit'.l(),
+            handler: function() {
+                CategoryWindow.save(false);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/cancel.png',
+            text: 'Cancel'.l(),
+            handler: CategoryWindow.hide
+        }]
+    });
+});

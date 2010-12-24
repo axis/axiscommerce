@@ -20,212 +20,146 @@
  * @license     GNU Public License V3.0
  */
 
-Ext.onReady(function(){
+var PageWindow = {
 
-    pageForm = new Ext.form.FormPanel({
-        labelWidth: 80,
-        autoScroll: true,
-        border: true,
-        labelAlign: 'top',
-        region: 'center',
-        bodyStyle: 'padding: 5px',
-        reader: new Ext.data.JsonReader({
-            root: 'page'
-        }, pageReader),
-        collpseMode: 'mini',
-        header: false,
-        split: true,
-        items: [{
-            layout: 'column',
-            border: false,
-            anchor: '-20',
-            bodyStyle: 'padding: 5px 0px 0px',
-            items: [{
-                columnWidth: 0.5,
-                layout: 'form',
-                border: false,
-                items: [{
-                    fieldLabel: 'Name'.l(),
-                    xtype: 'textfield',
-                    name: 'name',
-                    allowBlank: false,
-                    anchor: '-10'
-                }, {
-                    fieldLabel: 'Status'.l(),
-                    xtype: 'combo',
-                    name: 'is_active',
-                    hiddenName: 'is_active',
-                    store: new Ext.data.SimpleStore({
-                        fields: ['id', 'value'],
-                        data: [['0', 'Disabled'.l()], ['1', 'Enabled'.l()]]
-                    }),
-                    displayField: 'value',
-                    valueField: 'id',
-                    mode: 'local',
-                    editable: false,
-                    value: '1',
-                    emptyText: 'Select status'.l(),
-                    triggerAction: 'all',
-                    anchor: '-10'
-                }]
-            }, {
-                columnWidth: 0.5,
-                layout: 'form',
-                border: false,
-                items: [{
-                    fieldLabel: 'Layout'.l(),
-                    xtype: 'combo',
-                    name: 'layout',
-                    hiddenName: 'layout',
-                    store: layoutStore,
-                    displayField: 'name',
-                    valueField: 'name',
-                    mode: 'local',
-                    editable: false,
-                    emptyText: 'Select layout'.l(),
-                    triggerAction: 'all',
-                    anchor: '100%'
-                }, {
-                    fieldLabel: 'Comments'.l(),
-                    xtype: 'combo',
-                    name: 'comment',
-                    editable: false,
-                    hiddenName: 'comment',
-                    store: new Ext.data.SimpleStore({
-                        fields: ['id', 'value'],
-                        data: [['0', 'Disabled'.l()], ['1', 'Enabled'.l()]]
-                    }),
-                    displayField: 'value',
-                    valueField: 'id',
-                    mode: 'local',
-                    value: '1',
-                    emptyText: 'Comments to page'.l(),
-                    triggerAction: 'all',
-                    anchor: '100%'
-                }]
-            }]
-        }, {
-            xtype: 'tabpanel',
-            layoutOnTabChange: true,
-            deferredRender: false,
-            activeTab: 0,
-            plain: true,
-            autoHeight: true,
-            border: true,
-            defaults: {bodyStyle: 'padding: 10px 10px 5px', autoHeight: true},
-            anchor: '-20',
-            items: pageTabs
-        }]
-    });
+    el: null,
 
-    root = new Ext.tree.AsyncTreeNode({
-        text: 'Axis root node'.l(),
-        id: 'rootNode'
-    })
+    form: null,
 
-    categoryBlock = new Ext.tree.TreePanel({
-        border: true,
-        lines: false,
-        animate: false,
-        enableDD: false,
-        selModel: new Ext.tree.MultiSelectionModel(),
-        containerScroll: true,
-        root: root,
-        layout: 'fit',
-        rootVisible: false,
-        region: 'east',
-        autoScroll: true,
-        collapsible: true,
-        collpseMode: 'mini',
-        header: false,
-        split: true,
-        width: 150,
-        loader: new Ext.tree.TreeLoader({
-            url: Axis.getUrl('cms_index/get-site-tree'),
-            baseAttrs: {
-                checked: false,
-                expanded: false
-            }
-        }),
-        bbar: [{
-            text: 'Toggle check'.l(),
-            cls: 'x-btn-text-icon',
-            icon: Axis.skinUrl + '/images/icons/tick.png',
-            handler: function() {
-                categoryBlock.root.cascade(function(){
-                      this.ui.toggleCheck();
-                })
-            }
-        }],
-        listeners: {
-            checkchange: function(node, checked) {
-                if (isNaN(node.id)) return;
-                if (checked) {
-                    this.getSelectionModel().select(node, null, true);
-                }
-                else {
-                    node.unselect();
-                }
-            },
-            click: function(node, e){
-                if (isNaN(node.id)) return;
-                if (node.isSelected()) {
-                    node.unselect();
-                    node.checked = false;
-                    node.attributes.checked = false;
-                    node.ui.toggleCheck(false);
+    formFields: [],
+
+    tabs: [],
+
+    /**
+     * Objects that will store additional information about product
+     * e.g. AttributeGrid, VariationGrid etc.
+     * These objects should have getData, loadData and clearData methods
+     */
+    dataObjects: [],
+
+    data: {},
+
+    categoryTree: null,
+
+    /**
+     * @param {Object} tab
+     * @param {integer} sortOrder
+     */
+    addTab: function(tab, sortOrder) {
+        if (!PageWindow.tabCollection) {
+            PageWindow.tabCollection = new Ext.util.MixedCollection();
+        }
+        PageWindow.tabCollection.add(sortOrder, tab);
+        PageWindow.tabCollection.keySort('ASC', function(a, b) {
+            return a - b;
+        });
+        PageWindow.tabs.splice(
+            PageWindow.tabCollection.indexOf(tab), 0, tab
+        );
+    },
+
+    save: function(closeWindow) {
+        PageWindow.getData();
+        PageWindow.form.getForm().submit({
+            url: Axis.getUrl('cms_index/save-page'),
+            params: PageWindow.data,
+            success: function(form, action) {
+                PageGrid.el.getStore().reload();
+                if (closeWindow) {
+                    PageWindow.hide();
+                    PageWindow.form.getForm().clear();
+                    PageWindow.clearData();
                 } else {
-                    this.getSelectionModel().select(node, e, true);
-                    node.checked = true;
-                    node.attributes.checked = true;
-                    node.ui.toggleCheck(true);
+                    var response = Ext.decode(action.response.responseText);
+                    Page.load(response.data.id);
                 }
-                return false;
-            },
-            dblclick: function(node, e) {
-                node.ui.toggleCheck(!node.ui.isChecked());
             }
-        }
-    });
+        });
+    },
 
-    pageWindow = new Axis.Window({
-        width: 800,
-        height: 500,
-        maximizable: true,
-        layout: 'border',
-        border: false,
-        items: [
-            pageForm,
-            categoryBlock
-        ],
-        title: 'Page',
-        buttons: [{
-            text: 'Save'.l(),
-            handler: submitPageForm
-        }, {
-            text: 'Cancel'.l(),
-            handler: function(){
-                pageWindow.hide();
+    hide: function() {
+        PageWindow.el.hide();
+    },
+
+    show: function() {
+        PageWindow.el.show();
+    },
+
+    clearData: function() {
+        Ext.each(PageWindow.dataObjects, function(item) {
+            item.clearData();
+        });
+        PageWindow.data = {};
+    },
+
+    loadData: function(data) {
+        Ext.each(PageWindow.dataObjects, function(item) {
+            item.loadData(data);
+        });
+    },
+
+    getData: function() {
+        PageWindow.data = {};
+        Ext.each(PageWindow.dataObjects, function(item) {
+            var data = item.getData();
+            for (i in data) {
+                PageWindow.data[i] = Ext.encode(data[i]);
             }
+        });
+    }
+
+};
+
+Ext.onReady(function() {
+
+    PageWindow.form = new Axis.form.FormPanel({
+        bodyStyle: {
+            padding: '5px 0 0'
+        },
+        method: 'post',
+        reader: new Ext.data.JsonReader({
+            root: 'data'
+        }, PageWindow.formFields),
+        items: [{
+            activeTab: 0,
+            anchor: Ext.isWebKit ? 'undefined 100%' : '100% 100%',
+            border: false,
+            defaults: {
+                autoScroll: true,
+                hideMode: 'offsets',
+                layout: 'form'
+            },
+            deferredRender: false, // Ext.form.RadioGroup getErrors() problem
+            enableTabScroll: true,
+            id: 'tab-panel-page',
+            plain: true,
+            xtype: 'tabpanel',
+            items: PageWindow.tabs
         }]
     });
 
-    pageForm.on('resize', function(){
-        pageWindow.doLayout();
+    PageWindow.el = new Axis.Window({
+        items: [
+            PageWindow.form
+        ],
+        maximizable: true,
+        title: 'New Page'.l(),
+        buttons: [{
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save'.l(),
+            handler: function() {
+                PageWindow.save(true);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save & Continue Edit'.l(),
+            handler: function() {
+                PageWindow.save(false);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/cancel.png',
+            text: 'Cancel'.l(),
+            handler: PageWindow.hide
+        }]
     });
-
-})
-
-function submitPageForm(){
-    pageForm.getForm().submit({
-        url: Axis.getUrl('cms_index/save-page'),
-        params: {
-            pageId: page,
-            category: Ext.encode(categoryBlock.getChecked('id'))
-        },
-        success: function(){
-            pageWindow.hide();
-            pageGrid.getStore().load();
-        }
-    })
-}
+});
