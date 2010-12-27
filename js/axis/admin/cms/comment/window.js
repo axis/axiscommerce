@@ -20,9 +20,39 @@
  * @license     GNU Public License V3.0
  */
 
-Ext.onReady(function(){
+var CommentWindow = {
 
-    commentForm = new Axis.form.FormPanel({
+    el: null,
+
+    form: null,
+
+    show: function() {
+        CommentWindow.el.show();
+    },
+
+    hide: function() {
+        CommentWindow.el.hide();
+    },
+
+    save: function(closeWindow) {
+        CommentWindow.form.getForm().submit({
+            url: Axis.getUrl('cms_comment/save-comment'),
+            success: function(form, action) {
+                CommentGrid.el.getStore().reload();
+                if (closeWindow) {
+                    CommentWindow.hide();
+                    CommentWindow.form.getForm().clear();
+                }
+            }
+        });
+    }
+};
+
+Ext.onReady(function() {
+
+    Ext.form.Field.prototype.msgTarget = 'qtip';
+
+    CommentWindow.form = new Axis.form.FormPanel({
         labelAlign: 'top',
         bodyStyle: 'padding: 5px 5px 0px 5px',
         reader: new Ext.data.JsonReader({
@@ -57,7 +87,7 @@ Ext.onReady(function(){
                     fieldLabel: 'Email'.l(),
                     xtype: 'textfield',
                     name: 'email',
-                         vtype: 'email',
+                    vtype: 'email',
                     anchor: '-5',
                     maxLength: 45
                 }]
@@ -71,7 +101,7 @@ Ext.onReady(function(){
                     name: 'status',
                     emptyText: 'Select status'.l(),
                     hiddenName: 'status',
-                    store: new Ext.data.SimpleStore({
+                    store: new Ext.data.ArrayStore({
                         fields: ['id', 'value'],
                         data: status
                     }),
@@ -90,37 +120,36 @@ Ext.onReady(function(){
             anchor: '100%',
             height: 300,
             xtype: 'textarea'
-        }]
-    });
-
-    commentWindow = new Ext.Window({
-        closeAction: 'hide',
-        plain: false,
-        width: 640,
-        height: 490,
-        maximizable: true,
-        layout: 'fit',
-        title: 'Comment',
-        items: commentForm,
-        buttons: [{
-            text: 'Save'.l(),
-            handler: submitComment
         }, {
-            text: 'Cancel'.l(),
-            handler: function() {
-                commentWindow.hide();
-            }
+            name: 'id',
+            initialValue: 0,
+            xtype: 'hidden'
+        }, {
+            name: 'cms_page_id',
+            xtype: 'hidden'
         }]
     });
-})
 
-function submitComment() {
-     commentForm.getForm().submit({
-          url: Axis.getUrl('cms_comment/save-comment'),
-          params: {commentId: comment, pageId: page},
-        success: function(){
-            commentWindow.hide();
-            commentGrid.getStore().reload();
-        }
-     });
-}
+    CommentWindow.el = new Axis.Window({
+        maximizable: true,
+        title: 'Comment'.l(),
+        items: CommentWindow.form,
+        buttons: [{
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save'.l(),
+            handler: function() {
+                CommentWindow.save(true);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save & Continue Edit'.l(),
+            handler: function() {
+                CommentWindow.save(false);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/cancel.png',
+            text: 'Cancel'.l(),
+            handler: CommentWindow.hide
+        }]
+    });
+});

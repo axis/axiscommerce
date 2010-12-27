@@ -153,7 +153,7 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
 
         $categoryId = $this->_getParam('id');
 
-        $success = Axis::single('admin/cms_category')->delete(
+        $success = Axis::model('cms/category')->delete(
             Axis::db()->quoteInto('id IN(?)', $categoryId)
         );
         if ($success) {

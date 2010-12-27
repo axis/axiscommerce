@@ -3,39 +3,27 @@ $this->headScript()
     ->appendFile('/js/axis/admin/cms/comment/toolbar.js')
     ->appendFile('/js/axis/admin/cms/comment/tree.js')
     ->appendFile('/js/axis/admin/cms/comment/grid.js')
-    ->appendFile('/js/axis/admin/cms/comment/editor.js')
-    ->appendFile('/js/axis/admin/cms/comment/imageWindow.js')
+    ->appendFile('/js/axis/admin/cms/comment/window.js')
     ->appendFile('/js/axis/admin/cms/comment/panel.js');
-
-echo $this->formSelect('status-combo', null, null, $this->status);
 ?>
 
 <script type="text/javascript">
-var statuses = <?php echo Zend_Json_Encoder::encode($this->status); ?>;
-var status = new Array();
-for (var i = 0; i < statuses.length; i++) {
-    status[i] = new Array();
-    status[i] = [i, statuses[i]];
-}
-
-var menuStatus = [
 <?php
-    $i = 0;
-    $menu = "";
-    foreach ($this->status as $value) {
-        $value = addslashes($value);
-        $menu .= "{
-            text: '$value',
-            cls: 'x-btn-text-icon',
-            handler: function() {
-                setStatus($i);
-            }
-        },\n";
-        $i++;
-    }
-    echo substr($menu, 0, -2);
-?>];
-
-var commentGrid, commentWindow, commentTree, comment, page, imageWindow;
+$menu = '';
+$statuses = '';
+foreach ($this->status as $id => $name) :
+    $name = addslashes($name);
+    $statuses .= "[{$id}, '{$name}'], ";
+    $menu .= "{
+        text: '{$name}',
+        cls: 'x-btn-text-icon',
+        handler: function() {
+            CommentGrid.setStatus({$id});
+        }
+    },\n";
+endforeach;
+echo 'var menuStatus = [' . substr($menu, 0, -2) . '];';
+echo 'var status = [' . substr($statuses, 0, -2) . '];';
+?>
 </script>
 

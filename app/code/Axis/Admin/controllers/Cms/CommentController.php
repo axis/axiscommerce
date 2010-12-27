@@ -35,12 +35,8 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('cms')->__(
-            'Page Comments'
-        );
-
-        $this->view->status = Axis_Admin_Model_Cms_Page_Comment::getStatuses();
-
+        $this->view->pageTitle = Axis::translate('cms')->__('Page Comments');
+        $this->view->status = Axis::model('cms/page_comment')->getStatuses();
         $this->render();
     }
 
@@ -48,22 +44,30 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $filterGrid = $this->_getParam('filter');
         $filterTree = $this->_getParam('filterTree');
 
-        $tableComment = Axis::single('admin/cms_page_comment');
+        $select = Axis::model('cms/page_comment')->select('*')
+            ->calcFoundRows()
+            ->addPageName()
+            ->addCategoryName()
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 25),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
 
-        $pagingParams = array(
-            'start' => (int) $this->_getParam('start'),
-            'limit' => (int) $this->_getParam('limit'),
-            'sort'  => $this->_getParam('sort'),
-            'dir'   => $this->_getParam('dir')
-        );
+        if ($this->_hasParam('uncategorized')) {
+            $select->addFilterByUncategorized();
+        }
 
         $this->_helper->json->sendSuccess(array(
-            'totalCount' => $tableComment->getCount($filterGrid, $filterTree),
-            'comments' => $tableComment
-                ->getComments($filterGrid, $filterTree, $pagingParams)
+            'data'  => $select->fetchAll(),
+            'count' => $select->foundRows()
         ));
     }
 
@@ -72,33 +76,31 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
 
         $data = $this->_getAllParams();
-
-        $tableComment = Axis::single('admin/cms_page_comment');
-
-        if ($data['commentId'] != 'new') {
-            $currentComment = $tableComment
-                ->find($this->_getParam('commentId'))
-                ->current();
-            $currentComment->author = $data['author'];
-            $currentComment->email  = $data['email'];
-            $currentComment->status = $data['status'] != '' ?
-                $data['status'] : 0;
-            $currentComment->content = $data['content'];
-            $currentComment->modified_on = Axis_Date::now()->toSQLString();
-            $currentComment->save();
-            Axis::dispatch('cms_comment_update_success', $data);
+        $isNew = false;
+        if (isset($data['id']) && !$data['id']) {
+            unset($data['id']);
+            $isNew = true;
+            $data['created_on'] = Axis_Date::now()->toSQLString();
         } else {
-            $tableComment->insert(array(
-                'author'      => $data['author'],
-                'email'       => $data['email'],
-                'status'      => $data['status'] != '' ? $data['status'] : 0,
-                'content'     => $data['content'],
-                'created_on'  => Axis_Date::now()->toSQLString(),
-                'cms_page_id' => $data['pageId']
-            ));
-            Axis::dispatch('cms_comment_add_success', $data);
+            $data['modified'] = Axis_Date::now()->toSQLString();
         }
-        $this->_helper->json->sendSuccess();
+        $row = Axis::model('cms/page_comment')->getRow($data);
+        $row->save();
+
+        if ($isNew) {
+            Axis::dispatch('cms_comment_add_success', $row);
+        } else {
+            Axis::dispatch('cms_comment_update_success', $row);
+        }
+
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
+        ));
+
+        $this->_helper->json->sendSuccess(array(
+            'id' => $row->id
+        ));
     }
 
     public function quickSaveAction()
@@ -106,15 +108,19 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
 
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-
-        $tableComment = Axis::single('admin/cms_page_comment');
-
+        $mComment = Axis::model('cms/page_comment');
         foreach ($data as $commentId => $values) {
-            $currentComment = $tableComment->find($commentId)->current();
-            $currentComment->author = $values['author'];
-            $currentComment->status = $values['status'];
-            $currentComment->save();
+            $mComment->find($commentId)
+                ->current()
+                ->setFromArray($values)
+                ->save();
         }
+
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
+        ));
+
         $this->_helper->json->sendSuccess();
     }
 
@@ -122,7 +128,7 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        Axis::single('admin/cms_page_comment')->delete(
+        Axis::single('cms/page_comment')->delete(
             $this->db->quoteInto('id IN(?)',
                 Zend_Json_Decoder::decode($this->_getParam('data'))
         ));
@@ -169,7 +175,7 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
 
             //get pages
             if (!$root) {
-                    $pages = Axis::single('admin/cms_page')
+                    $pages = Axis::single('cms/page')
                         ->select(array('name', 'id', 'is_active'))
                         ->join('cms_page_category',
                             'cp.id = cpc.cms_page_id',
@@ -196,10 +202,10 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
         function getLostPage() {
             $result = array();
 
-            $pages = Axis::single('admin/cms_page')->
-                    select(array('name', 'id', 'is_active'))
-                        ->addFilterByUncategorized()
-                        ->fetchAll();
+            $pages = Axis::single('cms/page')
+                ->select(array('name', 'id', 'is_active'))
+                ->addFilterByUncategorized()
+                ->fetchAll();
 
             foreach ($pages as $page) {
                     $result[] = array(

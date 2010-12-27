@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Cms
- * @subpackage  Axis_Cms_Model
+ * @package     Axis_Admin
+ * @subpackage  Axis_Admin_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,48 +27,41 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Cms
- * @subpackage  Axis_Cms_Model
+ * @package     Axis_Admin
+ * @subpackage  Axis_Admin_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Cms_Model_Page_Select extends Axis_Db_Table_Select
+class Axis_Cms_Model_Page_Comment_Select extends Axis_Db_Table_Select
 {
     /**
      * Add all columns from cms_page_content table to select
      *
-     * @param int $languageId [optional]
-     * @return  Axis_Admin_Model_Cms_Page_Select
+     * @return  Axis_Cms_Model_Page_Comment_Select
      */
-    public function addContent($languageId = null)
+    public function addPageName()
     {
-        if (null === $languageId) {
-            $languageId = Axis_Locale::getLanguageId();
-        }
-        $this->joinLeft(
-            'cms_page_content',
-            $this->getAdapter()->quoteInto(
-                'cp.id = cpc.cms_page_id AND cpc.language_id = ?', $languageId
-            ),
-            '*'
+        return $this->joinLeft(
+            'cms_page',
+            'cpc.cms_page_id = cp.id',
+            array('page_name' => 'name')
         );
-        return $this;
     }
 
     /**
      * Adds all names of categories where the page lies in, devided by commas
      *
-     * @return Axis_Admin_Model_Cms_Page_Select
+     * @return Axis_Cms_Model_Page_Comment_Select
      */
     public function addCategoryName()
     {
-        $this->group('cp.id')
+        $this->group('cpc.id')
             ->joinLeft(
-                'cms_page_category',
-                'cpc.cms_page_id = cp.id'
+                array('cpcat' => 'cms_page_category'),
+                'cpc.cms_page_id = cpcat.cms_page_id'
             )
             ->joinLeft(
                 'cms_category',
-                'cc.id = cpc.cms_category_id',
+                'cc.id = cpcat.cms_category_id',
                 array(
                     'category_name' =>
                         new Zend_Db_Expr('GROUP_CONCAT(cc.name separator \', \')')
@@ -78,19 +71,18 @@ class Axis_Cms_Model_Page_Select extends Axis_Db_Table_Select
         return $this;
     }
 
-
     /**
      * Adds filter to get only uncategorized pages
      *
-     * @return Axis_Admin_Model_Cms_Page_Select
+     * @return Axis_Cms_Model_Page_Comment_Select
      */
     public function addFilterByUncategorized()
     {
-        $subSelect = Axis::model('cms/page_category')
+        $subSelect = Axis::single('cms/page_category')
             ->select('cms_page_id')
             ->distinct();
 
-        $this->where("cp.id <> ALL (?)", $subSelect);
+        $this->where("cpc.cms_page_id <> ALL (?)", $subSelect);
 
         return $this;
     }
@@ -110,7 +102,7 @@ class Axis_Cms_Model_Page_Select extends Axis_Db_Table_Select
      *      )
      *  )
      * </pre>
-     * @return Axis_Db_Table_Select
+     * @return Axis_Cms_Model_Page_Comment_Select
      */
     public function addFilters(array $filters)
     {
