@@ -39,10 +39,7 @@ var BlockWindow = {
 
 Ext.onReady(function(){
 
-    BlockWindow.form = new Ext.form.FormPanel({
-        labelWidth: 80,
-        autoScroll: true,
-        border: false,
+    BlockWindow.form = new Axis.FormPanel({
         labelAlign: 'top',
         bodyStyle: 'padding: 5px 5px 0px 5px',
         reader: new Ext.data.JsonReader({

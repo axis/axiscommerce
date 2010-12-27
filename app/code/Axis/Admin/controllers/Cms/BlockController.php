@@ -36,7 +36,6 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('cms')->__('Static Blocks');
-
         $this->render();
     }
 
@@ -44,8 +43,12 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
+        $select = Axis::model('cms/block')->select('*')
+            ->calcFoundRows();
+
         $this->_helper->json->sendSuccess(array(
-            'data' => Axis::single('admin/cms_block')->getList()
+            'data' => $select->fetchAll(),
+            'count' => $select->foundRows()
         ));
     }
 
@@ -53,7 +56,7 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        if (!$row = Axis::single('admin/cms_block')
+        if (!$row = Axis::model('cms/block')
                 ->find($this->_getParam('id'))->current()) {
 
             Axis::message()->addError(Axis::translate('Axis_Cms')->__(
@@ -71,7 +74,7 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        Axis::single('cms/block')->save($this->_getAllParams());
+        Axis::model('cms/block')->save($this->_getAllParams());
         Axis::message()->addSuccess(Axis::translate('core')->__(
             'Data was saved successfully'
         ));
@@ -84,10 +87,9 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
 
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
 
-        $tableBlock = Axis::single('cms/block');
-
+        $mBlock = Axis::model('cms/block');
         foreach ($data as $values) {
-            $tableBlock->save($values);
+            $mBlock->save($values);
         }
         Axis::message()->addSuccess(Axis::translate('core')->__(
             'Data was saved successfully'
@@ -102,7 +104,7 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
 
         $this->_helper->json->sendJson(array(
-            'success' => Axis::single('admin/cms_block')->delete(
+            'success' => Axis::single('cms/block')->delete(
                 $this->db->quoteInto('id IN(?)', $data)
             )
         ));
