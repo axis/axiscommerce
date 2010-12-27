@@ -107,8 +107,6 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
             /* create order */
             $order = Axis::single('sales/order')->createFromCheckout();
 
-            Axis::dispatch('sales_order_create_success', $order);
-
             $checkout->setOrderId($order->id);
 
             $checkout->payment()->postProcess($order);
@@ -137,10 +135,13 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
          /* analytic ZA4OT*/
         Axis::config()->analytics->main->checkoutSuccess = true;
 
-        if (!$orderId = $this->_getCheckout()->getOrderId()) {
+        $orderId = $this->_getCheckout()->getOrderId();
+        $order = axis::model('sales/order')->find($orderId)->current();
+        if (!$order instanceof Axis_Sales_Model_Order_Row) {
             $this->_redirect('/checkout/onepage');
         }
-        $this->view->orderId = $orderId;
+        Axis::dispatch('sales_order_create_success', $order);
+        $this->view->order = $order;
         $this->_getCheckout()->clean();
 
         $this->render();

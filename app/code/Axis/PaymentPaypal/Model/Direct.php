@@ -75,8 +75,8 @@ class Axis_PaymentPaypal_Model_Direct extends Axis_PaymentPaypal_Model_Abstract
             'CITY'        => $billing->getCity(),
             'STATE'       => $billing->getZone()->getCode() ?
                 $billing->getZone()->getCode() : $billing->getCity(),
-            'COUNTRYCODE' => $billing->getCountry()->getCode(),
-            'EXPDATE'     => $cc->getCcExpiresMonth() . $cc->getCcExpiresYear(),
+            'COUNTRYCODE' => $billing->getCountry()->getIsoCode_2(),
+            'EXPDATE'     => $cc->getCcExpiresMonth() . '/' . $cc->getCcExpiresYear(),
             'PAYMENTACTION' => ($this->_config->paymentAction == 'Authorization') ? 'Authorization' : 'Sale'
         );
         
@@ -89,15 +89,15 @@ class Axis_PaymentPaypal_Model_Direct extends Axis_PaymentPaypal_Model_Abstract
             'SHIPTOZIP'    => $delivery->getPostcode(),
             'SHIPTOSTATE'  => $delivery->getZone()->getCode() ?
                 $delivery->getZone()->getCode() : $delivery->getCity(),
-            'SHIPTOCOUNTRYCODE'=> $delivery->getCountry()->getCode()
+            'SHIPTOCOUNTRYCODE'=> $delivery->getCountry()->getIsoCode_2()
         );
         // if these optional parameters are blank, remove them from transaction
         if (isset($optionsShip['SHIPTOSTREET2']) && empty($optionsShip['SHIPTOSTREET2'])) {
             unset($optionsShip['SHIPTOSTREET2']);
         }
-        
+
         $response = $this->getApi()->DoDirectPayment(
-            sprintf('%.2f', $this->getAmountInBaseCurrency($order->getSubTotal())),
+            sprintf('%.2f', $this->getAmountInBaseCurrency($order->order_total)),
             $cc->getCcNumber(),
             $cc->getCcCvv(),
             $cc->getCcExpiresMonth() . $cc->getCcExpiresYear(),
