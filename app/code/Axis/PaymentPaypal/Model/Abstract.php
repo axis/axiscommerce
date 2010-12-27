@@ -243,8 +243,10 @@ abstract class Axis_PaymentPaypal_Model_Abstract extends Axis_Method_Payment_Mod
         $result = array();
         $i = 0;
         while(isset($response[$filter . $i])) {
-            $result[$response['L_SEVERITYCODE' . $i]][] = urldecode($response[$filter . $i])
-                . ' ErrorCode:' . $response['L_ERRORCODE' . $i];
+            $severity = isset($response['L_SEVERITYCODE' . $i]) ? 
+                $response['L_SEVERITYCODE' . $i] : 'error';
+            $result[$severity][] = urldecode($response[$filter . $i]) .
+                ' ErrorCode:' . $response['L_ERRORCODE' . $i];
             $i++;
         }
         return $result;
