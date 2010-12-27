@@ -53,7 +53,7 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
             'address2'          => $delivery->getSuburb(),
             'city'              => $delivery->getCity(),
             'state'             => $delivery->getZone()->getCode(),
-            'country'           => $delivery->getCountry()->getCode(),
+            'country'           => $delivery->getCountry()->getIsoCode_2(),
             'zip'               => $delivery->getPostcode(),
         );
         if ($this->_config->logo) {
