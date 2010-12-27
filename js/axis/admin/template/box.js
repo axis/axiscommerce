@@ -1,21 +1,21 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -30,7 +30,7 @@ Ext.onReady(function(){
             {name: 'box_status', type: 'int'},
             {name: 'class'},
             {name: 'sort_order', type: 'int'},
-            {name: 'show'}
+            {name: 'page_ids'}
         ]),
         getSelectedId: function() {
             var selectedItems = grid.getSelectionModel().selections.items;
@@ -41,23 +41,24 @@ Ext.onReady(function(){
         },
         loadGrid: function(templateId) {
             Box.templateId = templateId;
-            ds.commitChanges();
-            ds.load({params: {tId: templateId}});
+            ds.baseParams['filter[template][field]'] = 'template_id';
+            ds.baseParams['filter[template][value]'] = templateId;
+            ds.reload();
         },
         create: function() {
             if (!Box.templateId)
                 return alert('Select template on the left');
-                
+
             grid.stopEditing();
             var record = new Box.record({
                 'block': 'content',
                 'box_status': 0,
                 'class': '',
                 'sort_order': 100,
-                'show': ''
+                'page_ids': ''
             });
             ds.insert(0, record);
-            grid.startEditing(0, 1);
+            grid.startEditing(0, 2);
         },
         edit: function(id) {
             if (!id) {
@@ -75,7 +76,7 @@ Ext.onReady(function(){
                     $(':checkbox', '#form-box').bind('click', function(){
                         var type = $(this).attr('id').substring(0, 4);
                         var pageId = $(this).attr('id').substring(5);
-                        
+
                         if (type == 'hide'){
                            $('#show-' + pageId).removeAttr('checked');
                         } else{
@@ -84,24 +85,24 @@ Ext.onReady(function(){
                     });
                 }
             });
-            
+
         },
         remove: function() {
             var selectedItems = grid.getSelectionModel().selections.items;
-            
+
             if (!selectedItems.length || !confirm('Are you sure?'.l())) {
                 return;
             }
-                
+
             var data = {};
-            
+
             for (var i = 0; i < selectedItems.length; i++) {
                 if (!selectedItems[i]['data']['id']) {
                     continue;
                 }
                 data[i] = selectedItems[i]['data']['id'];
             }
-                
+
             Ext.Ajax.request({
                 url: Axis.getUrl('template_box/delete'),
                 params: {data: Ext.encode(data)},
@@ -125,11 +126,11 @@ Ext.onReady(function(){
             var modified = ds.getModifiedRecords();
             if (!modified.length)
                 return;
-            
+
             for (var i = 0; i < modified.length; i++) {
                 data[modified[i]['id']] = modified[i]['data'];
             }
-            
+
             Ext.Ajax.request({
                 url: Axis.getUrl('template_box/batch-save'),
                 params: {
@@ -166,39 +167,50 @@ Ext.onReady(function(){
         })
     });
     var Box = Axis.Template.Box;
-    
+
     var ds = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('template_box/list') 
-        }),
-        
+        baseParams: {
+            limit: 25
+        },
+        url: Axis.getUrl('template_box/list'),
         reader: new Ext.data.JsonReader({
+            totalProperty: 'count',
             root: 'data',
             id: 'id'
-        }, Box.record)
+        }, Box.record),
+        remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        }
     });
-    
+
     var dsPages = new Ext.data.Store({
         data: Axis.pages,
         reader: new Ext.data.JsonReader({
             idProperty: 'id',
             fields: [
-                {name: 'id', type: 'int'}, 
+                {name: 'id', type: 'int'},
                 {name: 'name'}
             ]
         })
     });
-    
-    var selectModel = new Ext.grid.CheckboxSelectionModel();
-    
+
     var status = new Axis.grid.CheckColumn({
         header: 'Status'.l(),
-        width: 50,
-        dataIndex: 'box_status'
+        width: 100,
+        dataIndex: 'box_status',
+        filter: {
+            editable: false,
+            resetValue: 'reset',
+            store: new Ext.data.ArrayStore({
+                data: [[0, 'Disabled'.l()], [1, 'Enabled'.l()]],
+                fields: ['id', 'name']
+            })
+        }
     });
-    
+
     var actions = new Ext.ux.grid.RowActions({
-        header:'Actions'.l(),
         actions:[{
             iconCls:'icon-edit',
             tooltip:'Edit'.l()
@@ -209,12 +221,19 @@ Ext.onReady(function(){
             }
         }
     });
-    
-    var cm = new Ext.grid.ColumnModel([
-        selectModel, {
+
+    var cm = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [{
+            header: 'Id'.l(),
+            dataIndex: 'id',
+            width: 90
+        }, {
             header: "Box".l(),
+            id: 'block',
             dataIndex: 'class',
-            sortable: true,
             mode: 'local',
             width: 220,
             editor: new Ext.form.ComboBox({
@@ -229,11 +248,11 @@ Ext.onReady(function(){
             dataIndex: 'block',
             editor: new Ext.form.TextField({
                allowBlank: false
-            })
+            }),
+            width: 120
         }, {
-            header: "Show on".l(), 
-            sortable: true,
-            dataIndex: 'show',
+            header: "Show on".l(),
+            dataIndex: 'page_ids',
             width: 200,
             editor: new Ext.ux.Andrie.Select({
                 multiSelect: true,
@@ -242,8 +261,7 @@ Ext.onReady(function(){
                 displayField: 'name',
                 triggerAction: 'all',
                 mode: 'local'
-            })
-            ,
+            }),
             renderer: function(value, meta) {
                 if (typeof(value) == 'undefined' || value == '')  {
                     return 'None'.l();
@@ -258,46 +276,51 @@ Ext.onReady(function(){
                 ret = ret.join(', ');
                 meta.attr = 'ext:qtip="Used on pages : ' + ret + '"';
                 return ret;
+            },
+            sortName: 'page_id',
+            table: 'ctbp',
+            filter: {
+                name: 'page_id',
+                store: new Ext.data.Store({
+                    data: Axis.pages,
+                    reader: new Ext.data.JsonReader({
+                        idProperty: 'id',
+                        fields: [
+                            {name: 'id', type: 'int'},
+                            {name: 'name'}
+                        ]
+                    })
+                })
             }
         }, {
+            align: 'right',
             header: 'Sort Order'.l(),
-            width: 80,
+            width: 100,
             dataIndex: 'sort_order',
             editor: new Ext.form.TextField({
                allowBlank: false
             })
-        }, 
+        },
         status,
-        actions
-    ]);
-    
-    var grid = new Ext.grid.EditorGridPanel({
+        actions]
+    });
+
+    var grid = new Axis.grid.EditorGridPanel({
+        autoExpandColumn: 'block',
         title: 'Boxes'.l(),
         ds: ds,
         cm: cm,
-        viewConfig: {
-            forceFit:true,
-            emptyText: 'No records found'.l()
-        },
-        selModel: selectModel,
-        clicksToEdit: 1,
         plugins: [
-            status, 
+            status,
             actions,
-            new Ext.ux.grid.Search({
-                mode: 'local',
-                align: 'left',
-                iconCls: false,
-                dateFormat: 'Y-m-d',
-                width: 200,
-                minLength: 2
-            })
+            new Axis.grid.Filter()
         ],
-        bbar: [],
+        bbar: new Axis.PagingToolbar({
+            store: ds
+        }),
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
-            cls: 'x-btn-text-icon',
             handler: Box.create
         }, {
             text: 'Save'.l(),
@@ -307,11 +330,9 @@ Ext.onReady(function(){
         }, {
             text: 'Delete'.l(),
             icon: Axis.skinUrl + '/images/icons/delete.png',
-            cls: 'x-btn-text-icon',
             handler: Box.remove
         }, '->', {
             icon: Axis.skinUrl + '/images/icons/refresh.png',
-            cls: 'x-btn-icon',
             handler: function() {
                 grid.getStore().reload();
             }
@@ -322,4 +343,4 @@ Ext.onReady(function(){
         Box.edit(grid.getStore().getAt(rowIndex).get('id'));
     })
     Box.grid = grid;
-})
+});

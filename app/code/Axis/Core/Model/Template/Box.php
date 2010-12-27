@@ -35,6 +35,10 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
 {
     protected $_name = 'core_template_box';
 
+    protected $_primaty = 'id';
+
+    protected $_selectClass = 'Axis_Core_Model_Template_Box_Select';
+
     /**
      * Retrieve the list of all boxes, including active cms boxes
      *
@@ -175,7 +179,7 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                 }
             } else {
                 // get rows that remains visible
-                $pageIds = array_filter(explode(',', trim($item['show'], ', ')));
+                $pageIds = array_filter(explode(',', trim($item['page_ids'], ', ')));
                 if (!count($pageIds)) {
                     $modelBoxPage->delete(array(
                         'box_id = ' . intval($row->id),
