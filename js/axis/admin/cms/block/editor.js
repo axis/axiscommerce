@@ -1,31 +1,31 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 var BlockWindow = {
-    
+
     el: null,
-    
+
     form: null,
-    
+
     save: function() {
         BlockWindow.form.getForm().submit({
             url: Axis.getUrl('cms_block/save'),
@@ -38,17 +38,8 @@ var BlockWindow = {
 };
 
 Ext.onReady(function(){
-    
-    var htmlEditor = new Ext.form.HtmlEditor({
-        name: 'content',
-        fieldLabel: 'Content'.l(),
-        anchor: '99%'
-    });
-     
-    BlockWindow.form = new Ext.form.FormPanel({
-        labelWidth: 80,
-        autoScroll: true,
-        border: false,
+
+    BlockWindow.form = new Axis.FormPanel({
         labelAlign: 'top',
         bodyStyle: 'padding: 5px 5px 0px 5px',
         reader: new Ext.data.JsonReader({
@@ -56,7 +47,7 @@ Ext.onReady(function(){
         }, [
             {name: 'id', type: 'int'},
             {name: 'name'},
-            {name: 'is_active', type: 'int'}, 
+            {name: 'is_active', type: 'int'},
             {name: 'content'}
         ]),
         items: [{
@@ -99,13 +90,19 @@ Ext.onReady(function(){
                     maxLength: 45
                 }]
             }]
-        }, htmlEditor, {
+        }, {
+            name: 'content',
+            fieldLabel: 'Content'.l(),
+            anchor: '99%',
+            height: 300,
+            xtype: 'textarea'
+        }, {
             name: 'id',
             initialValue: 0,
             xtype: 'hidden'
         }]
     });
-     
+
     BlockWindow.el = new Axis.Window({
         width: 640,
         height: 500,

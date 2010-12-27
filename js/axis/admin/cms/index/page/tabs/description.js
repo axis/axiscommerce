@@ -116,7 +116,7 @@ Ext.onReady(function() {
             name: 'content[title]',
             xtype: 'langset'
         }, {
-            defaultType: 'htmleditor',
+            defaultType: 'textarea',
             height: 250,
             fieldLabel: 'Content'.l(),
             name: 'content[content]',

@@ -79,7 +79,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         }
         $pages = array();
         if ($conf->cms->showPages) {
-            $pages = Axis::single('admin/cms_page')
+            $pages = Axis::single('cms/page')
                 ->getPageListByActiveCategory($categoryIds, $config['lang_id']);
         }
         $this->view->pages     = $pages;

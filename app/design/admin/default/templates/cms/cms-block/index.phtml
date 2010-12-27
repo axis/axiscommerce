@@ -1,11 +1,5 @@
 <?php
-$this->setButtons(array(
-    array(
-        'title' => Axis::translate('Axis_Admin')->__('Back'),
-        'onclick' => 'history.back()',
-        'class' => 'alt-button'
-    )
-));
-$this->headScript()->appendFile('/js/axis/admin/cms/block/grid.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/block/editor.js');
+$this->headScript()
+    ->appendFile('/js/axis/admin/cms/block/grid.js')
+    ->appendFile('/js/axis/admin/cms/block/editor.js');
 ?>

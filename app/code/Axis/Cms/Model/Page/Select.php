@@ -86,11 +86,11 @@ class Axis_Cms_Model_Page_Select extends Axis_Db_Table_Select
      */
     public function addFilterByUncategorized()
     {
-            $subSelect = Axis::single('cms/page_category')
-                ->select('cms_page_id')
-                ->distinct();
+        $subSelect = Axis::model('cms/page_category')
+            ->select('cms_page_id')
+            ->distinct();
 
-            $this->where("cp.id <> ALL (?)", $subSelect);
+        $this->where("cp.id <> ALL (?)", $subSelect);
 
         return $this;
     }

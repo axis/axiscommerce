@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
@@ -34,22 +34,22 @@
 class Axis_Core_Model_Template_Box extends Axis_Db_Table
 {
     protected $_name = 'core_template_box';
-    
+
     /**
      * Retrieve the list of all boxes, including active cms boxes
-     * 
+     *
      * @param bool $includeCms
      * @return array
      */
     public function getList($includeCms = true)
     {
         $modules = Axis::single('core/module')->getList();
-        
+
         if (!($boxes = Axis::cache()->load('boxes_list'))) {
             $boxes = array();
             foreach ($modules as $moduleCode => $values) {
                 list($namespace, $module) = explode('_', $moduleCode, 2);
-                $path = Axis::config()->system->path 
+                $path = Axis::config()->system->path
                       . '/app/code/' . $namespace . '/' . $module . '/Box';
 
                 if (!is_readable($path)) {
@@ -57,7 +57,7 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                 }
                 $dir = opendir($path);
                 while (($file = readdir($dir))) {
-                    if (!is_readable($path . '/' . $file) 
+                    if (!is_readable($path . '/' . $file)
                         || !is_file($path . '/' . $file)) {
 
                         continue;
@@ -68,32 +68,34 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                         continue;
                     }
                     $boxes[] = ucwords($namespace . '_' . $module . '_' . $box);
-                    
+
                 }
             }
             Axis::cache()->save($boxes, 'boxes_list', array('modules'));
         }
-        
+
         /* this part is not needed to be cached */
         if ($includeCms && in_array('Axis_Cms', array_keys($modules))) {
-            $cmsBoxes = Axis::single('admin/cms_block')->getList('is_active = 1');
+            $cmsBoxes = Axis::model('cms/block')->select('*')
+                ->where('is_active = 1')
+                ->fetchAll();
             foreach ($cmsBoxes as $box) {
                 $boxes[] = 'Axis_Cms_Block_' . $box['name'];
             }
         }
         sort($boxes);
-        
+
         return $boxes;
     }
-    
+
     /**
      * Retrieve the information about boxes within provided pages and template
-     * 
+     *
      *  @param int $templateId
      *  @param  array $pagesIds
      *  @return array Boxes and inforamtion about them
      */
-    public function getCustomInfo($templateId, $pagesIds) 
+    public function getCustomInfo($templateId, $pagesIds)
     {
         return $this->select(array('id', 'class', 'block', 'config'))
             ->joinInner('core_template_box_page',
@@ -112,10 +114,10 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
             ->fetchAll()
             ;
     }
-    
+
     /**
      * Save or insert box data
-     * 
+     *
      * @param int $templateId
      * @param array $data
      * @param string(normal|batch) mode
@@ -130,9 +132,9 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
             ));
             return false;
         }
-        
+
         foreach ($data as $id => $item) {
-            if (!isset($item['id']) 
+            if (!isset($item['id'])
                 || !$row = $this->find($item['id'])->current()) {
 
                 $row = $this->createRow();
@@ -142,7 +144,7 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
             }
             $row->setFromArray($item);
             $row->save();
-            
+
             /* insert assignments to pages */
             $modelBoxPage = Axis::single('core/template_box_page');
             if ('batch' != $mode) {
@@ -150,11 +152,11 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                 $modelBoxPage->delete('box_id = ' . intval($row->id));
 
                 foreach ($item['box'] as $pageId => $box) {
-                    if (isset($item['show'][$pageId]) 
+                    if (isset($item['show'][$pageId])
                         && $item['show'][$pageId]) {
 
                         $show = 1;
-                    } elseif (isset($item['hide'][$pageId]) 
+                    } elseif (isset($item['hide'][$pageId])
                         && $item['hide'][$pageId]) {
 
                         $show = 0;
@@ -181,17 +183,17 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                     ));
                     continue;
                 }
-                
+
                 $boxIds = array_fill(0, count($pageIds), $row->id);
                 $rowsToUpdate = $modelBoxPage->find($boxIds, $pageIds);
-                
+
                 // delete all others visible
                 $modelBoxPage->delete(array(
                     'box_id = ' . intval($row->id),
                     'box_show = 1',
                     $this->_db->quoteInto('page_id NOT IN (?)', $pageIds)
                 ));
-                
+
                 // update existing
                 foreach ($rowsToUpdate as $rowToUpdate) {
                     unset(
@@ -202,7 +204,7 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                     ));
                     $rowToUpdate->save();
                 }
-                
+
                 // insert new
                 foreach ($pageIds as $pageId) {
                     $modelBoxPage->insert(array(
@@ -214,22 +216,22 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                 }
             }
         }
-        
+
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Box was saved successfully'
         ));
         return true;
     }
-    
+
     /**
      * Insert box
      * @param string class 'Catalog_Navigation'
-     * @param string block 'left' or  'footer' , etc... 
-     * @param mixed $pages 
+     * @param string block 'left' or  'footer' , etc...
+     * @param mixed $pages
      *  'module/controler/action',
      *  array(
-     *      'module/controler/action', 
+     *      'module/controler/action',
      *      'module2/controler/action'
      *  )
      * @param int $templateId If template is not provided, current templateId will be used
@@ -259,7 +261,7 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
             $pages = array($pages);
         }
         if (null === $templateId) {
-            $templateId = isset(Axis::config()->design->main->frontTemplateId) ? 
+            $templateId = isset(Axis::config()->design->main->frontTemplateId) ?
                 Axis::config()->design->main->frontTemplateId : 1;
         }
         $data = array(
@@ -271,7 +273,7 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
             'config'      => $config
         );
         $boxId = $this->insert($data);
-        
+
         foreach ($pages as $page) {
             $pageId = Axis::single('core/page')->getPageIdByRequest($page);
             if (!$pageId) {
@@ -291,10 +293,10 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                 'sort_order' => $data['sort_order']
             ));
         }
-        
+
         foreach ($extraOptions as $page => $values) {
             $pageId = Axis::single('core/page')->getPageIdByRequest($page);
-            
+
             if (!$pageId) {
                 $request = explode('/', $page);
                 $pageId = Axis::single('core/page')->insert(array(
@@ -302,7 +304,7 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
                     'controller_name' => $request[1],
                     'action_name'     => $request[2]
                 ));
-                // there are no boxes assigned to page, if it was just created, 
+                // there are no boxes assigned to page, if it was just created,
                 $row = Axis::single('core/template_box_page')->createRow();
             } elseif (!$row = Axis::single('core/template_box_page')
                 ->find($boxId, $pageId)->current()) {
@@ -314,28 +316,28 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
             $row->page_id = $pageId;
             $row->save();
         }
-        
+
         return $this;
     }
-    
+
     /**
-     * Remove box 
+     * Remove box
      * @param string className (ModuleName_BoxName | ModuleName)
      * @return Axis_Core_Model_Template_Box provides fluent interface
      */
     public function remove($className)
-    {   
+    {
         list($namespace, $moduleName, $boxName) = explode('_', $className);
-        
+
         if (empty($boxName)) {
             $boxName = '%';
         }
         if (empty($moduleName)) {
             $moduleName = '%';
         }
-        
+
         $this->delete("class LIKE '{$namespace}_{$moduleName}_{$boxName}'");
-        
+
         return $this;
     }
 }

@@ -1,48 +1,72 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
-Ext.onReady(function(){
-    
-    var htmlEditor = new Ext.form.HtmlEditor({
-        name: 'content',
-        fieldLabel: 'Content'.l(),
-        anchor: '99%'
-    });
-    
-     commentForm = new Ext.form.FormPanel({
-          labelWidth: 80,
-        autoScroll: true,
-        border: false,
+var CommentWindow = {
+
+    el: null,
+
+    form: null,
+
+    show: function() {
+        CommentWindow.el.show();
+    },
+
+    hide: function() {
+        CommentWindow.el.hide();
+    },
+
+    save: function(closeWindow) {
+        CommentWindow.form.getForm().submit({
+            url: Axis.getUrl('cms_comment/save-comment'),
+            success: function(form, action) {
+                CommentGrid.el.getStore().reload();
+                if (closeWindow) {
+                    CommentWindow.hide();
+                    CommentWindow.form.getForm().clear();
+                }
+            }
+        });
+    }
+};
+
+Ext.onReady(function() {
+
+    Ext.form.Field.prototype.msgTarget = 'qtip';
+
+    CommentWindow.form = new Axis.form.FormPanel({
         labelAlign: 'top',
         bodyStyle: 'padding: 5px 5px 0px 5px',
         reader: new Ext.data.JsonReader({
             root: 'comment'
-            },
-            ['author', 'email', 'status', 'content']
-        ),
+        }, [
+            'author',
+            'email',
+            'status',
+            'content'
+        ]),
         items: [{
             layout: 'column',
             border: false,
-            bodyStyle: 'padding: 5px 0px 0px',
+            anchor: '100%',
             items: [{
                 columnWidth: .3,
                 layout: 'form',
@@ -53,7 +77,7 @@ Ext.onReady(function(){
                     name: 'author',
                     allowBlank: false,
                     maxLength: 45,
-                    anchor: '95%'
+                    anchor: '-5'
                 }]
             }, {
                 columnWidth: .4,
@@ -63,8 +87,8 @@ Ext.onReady(function(){
                     fieldLabel: 'Email'.l(),
                     xtype: 'textfield',
                     name: 'email',
-                         vtype: 'email',
-                    anchor: '95%',
+                    vtype: 'email',
+                    anchor: '-5',
                     maxLength: 45
                 }]
             }, {
@@ -77,7 +101,7 @@ Ext.onReady(function(){
                     name: 'status',
                     emptyText: 'Select status'.l(),
                     hiddenName: 'status',
-                    store: new Ext.data.SimpleStore({
+                    store: new Ext.data.ArrayStore({
                         fields: ['id', 'value'],
                         data: status
                     }),
@@ -86,69 +110,46 @@ Ext.onReady(function(){
                     mode: 'local',
                     editable: false,
                     triggerAction: 'all',
-                    anchor: '95%',
+                    anchor: '100%',
                     maxLength: 45
                 }]
             }]
-        }, htmlEditor]
-     });
-     
-     commentWindow = new Ext.Window({
-        closeAction: 'hide',
-          plain: false,
-        width: 640,
-        height: 490,
-        maximizable: true,
-        layout: 'fit',
-        title: 'Comment',
-          items: commentForm,
-        buttons: 
-        [{
-            text: 'Save'.l(),
-               handler: submitComment
-        },
-        {
-            text: 'Cancel'.l(),
-            handler: function(){
-                commentWindow.hide();
-            }           
+        }, {
+            name: 'content',
+            fieldLabel: 'Content'.l(),
+            anchor: '100%',
+            height: 300,
+            xtype: 'textarea'
+        }, {
+            name: 'id',
+            initialValue: 0,
+            xtype: 'hidden'
+        }, {
+            name: 'cms_page_id',
+            xtype: 'hidden'
         }]
-     })
-     
-     commentForm.on('resize', function(){
-        commentWindow.doLayout();
     });
-     
-     /*
-     commentForm.findById('htmlEditor').on('render', function() {
-    
-         var imageButton = new Ext.Toolbar.Button ({
-             icon: Axis.skinUrl + '/images/icons/image.png',
-             id: 'imageButton',
-             cls: 'x-btn-icon',
-             tooltip: {text: 'Insert image into comment', title: 'Insert image'},
-               handler: function(){
-                    imageWindow.show();
-               } 
-         });
-          
-        var tb = commentForm.findById('htmlEditor').getToolbar();
-          
-          tb.addSeparator();
-        tb.add(imageButton);
-          
-     })
-     */
-     
-})
 
-function submitComment() {
-     commentForm.getForm().submit({
-          url: Axis.getUrl('cms_comment/save-comment'),
-          params: {commentId: comment, pageId: page},
-        success: function(){
-            commentWindow.hide();
-            commentGrid.getStore().reload();
-        }
-     })
-}
+    CommentWindow.el = new Axis.Window({
+        maximizable: true,
+        title: 'Comment'.l(),
+        items: CommentWindow.form,
+        buttons: [{
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save'.l(),
+            handler: function() {
+                CommentWindow.save(true);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save & Continue Edit'.l(),
+            handler: function() {
+                CommentWindow.save(false);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/cancel.png',
+            text: 'Cancel'.l(),
+            handler: CommentWindow.hide
+        }]
+    });
+});

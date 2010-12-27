@@ -1,72 +1,156 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
-Ext.onReady(function(){
-    Ext.QuickTips.init();  
-    
-    Ext.form.Field.prototype.msgTarget = 'under';
-    
-    var filters = new Ext.ux.grid.GridFilters({
-        filters: [
-            {type: 'numeric', dataIndex: 'id'},
-            {type: 'string', dataIndex: 'category_name'},
-            {type: 'string', dataIndex: 'page_name'},
-            {type: 'string', dataIndex: 'author'},
-            {type: 'date', dataIndex: 'created_on', dateFormat: 'Y-m-d'},
-            {type: 'date', dataIndex: 'modified_on', dateFormat: 'Y-m-d'},
-            {
-                 type: 'list',
-                 dataIndex: 'status',
-                 options: status,
-                 phpMode: true
-            }
-        ]
-    });
+var CommentGrid = {
 
-    var commentStore = new Ext.data.GroupingStore({
-        proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('cms_comment/get-comments'),
-            method: 'post'
-        }),
+    el: null,
+
+    add: function() {
+        if (null == CommentTree.pageId) {
+            return alert('Select page in left tree panel'.l());
+        }
+        CommentWindow.form.getForm().clear();
+        CommentWindow.form.getForm().setValues({
+            cms_page_id: CommentTree.pageId
+        });
+        CommentWindow.el.setTitle('New Comment'.l());
+        CommentWindow.show();
+    },
+
+    save: function() {
+        var modified = CommentGrid.el.getStore().getModifiedRecords();
+        if (!modified.length) {
+            return;
+        }
+
+        var data = {};
+        for (var i = 0; i < modified.length; i++) {
+            data[modified[i]['id']] = modified[i]['data'];
+        }
+
+        Ext.Ajax.request({
+            url: Axis.getUrl('cms_comment/quick-save'),
+            params: {
+                data: Ext.encode(data)
+            },
+            callback: function() {
+                CommentGrid.el.getStore().commitChanges();
+                CommentGrid.el.getStore().reload();
+            }
+        });
+    },
+
+    edit: function(record) {
+        var r = record || CommentGrid.el.getSelectionModel().getSelected();
+        if (!r) {
+            return;
+        }
+        CommentWindow.el.setTitle('Comment'.l() + ': ' + r.get('email'));
+        CommentWindow.form.getForm().setValues({
+            author      : r.get('author'),
+            email       : r.get('email'),
+            status      : r.get('status'),
+            content     : r.get('content'),
+            id          : r.get('id'),
+            cms_page_id : r.get('cms_page_id')
+        });
+        CommentWindow.show();
+    },
+
+    remove: function() {
+        var selectedItems = CommentGrid.el.getSelectionModel().selections.items;
+        if (!selectedItems.length || !confirm('Are you sure?'.l())) {
+            return;
+        }
+
+        var data = {};
+        for (var i = 0; i < selectedItems.length; i++) {
+            data[i] = selectedItems[i].id;
+        }
+        Ext.Ajax.request({
+            url: Axis.getUrl('cms_comment/delete-comment'),
+            params: {
+                data: Ext.encode(data)
+            },
+            callback: function() {
+                CommentGrid.el.getStore().reload();
+            }
+        });
+    },
+
+    reload: function() {
+        CommentGrid.el.getStore().reload();
+    },
+
+    setStatus: function(status) {
+        var selected = CommentGrid.el.getSelectionModel().getSelections();
+        for (var i = 0, len = selected.length; i < len; i++) {
+            selected[i].set('status', status);
+        }
+    }
+};
+
+Ext.onReady(function() {
+
+    var ds = new Ext.data.GroupingStore({
+        autoLoad: true,
+        baseParams: {
+            limit: 25
+        },
+        url: Axis.getUrl('cms_comment/get-comments'),
         reader: new Ext.data.JsonReader({
-            totalProperty: 'totalCount',
-            root: 'comments',
-            id: 'id'},
-            ['id', 'category_name', 'author', 'email', 'created_on', 'modified_on', 'page_name', 'status', 'content']
-        ),
+            totalProperty: 'count',
+            root: 'data',
+            id: 'id'
+        }, [
+            {name: 'id', type: 'int'},
+            {name: 'cms_page_id', type: 'int'},
+            {name: 'category_name'},
+            {name: 'author'},
+            {name: 'email'},
+            {name: 'created_on', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'modified_on', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'page_name'},
+            {name: 'status', type: 'int'},
+            {name: 'content'}
+        ]),
         groupField: 'page_name',
-        sortInfo: {field: 'created_on', direction: 'ASC'},
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        },
         remoteSort: true
     });
 
     var statusCombo = new Ext.form.ComboBox({
+        editable: false,
         triggerAction: 'all',
-        transform: 'status-combo',
-        lazyRender: true,
-        typeAhead: true,
-        forceSelection: false
+        store: new Ext.data.ArrayStore({
+            data: status,
+            fields: ['id', 'name']
+        })
     });
 
-    var postContent = new Ext.grid.RowExpander({
+    var commentExpander = new Ext.grid.RowExpander({
         tpl : new Ext.Template(
             '<p style="padding-left: 45px; margin: 5px 0px;"><b>Author:</b> {author}</p>',
             '<p style="padding-left: 45px; margin: 5px 0px;"><b>Email:</b> {email}</p>',
@@ -74,182 +158,119 @@ Ext.onReady(function(){
         )
     });
 
-    var commentColumn = new Ext.grid.ColumnModel([
-        postContent, {
+    var cm = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [commentExpander, {
             header: 'Id'.l(),
             dataIndex: 'id',
-            width: 30
+            width: 90
         }, {
             header: 'Category'.l(),
             dataIndex: 'category_name',
-            width: 120
+            width: 150
         }, {
             header: 'Page Name'.l(),
             dataIndex: 'page_name',
-            id: 'page_name',
+            id: 'page-name',
+            table: 'cp',
+            sortName: 'name',
+            filter: {
+                name: 'name'
+            },
             width: 150
         }, {
-            header: 'Author'.l(),
-            dataIndex: 'author',
-            width: 130,
-            editor: new Ext.form.TextField({
-                maxLength: 45
-            })
+            header: 'Email'.l(),
+            dataIndex: 'email',
+            width: 200
         }, {
             header: 'Created'.l(),
             dataIndex: 'created_on',
-            width: 125
+            renderer: function(v) {
+                return Ext.util.Format.date(v) + ' ' + Ext.util.Format.date(v, 'H:i:s');
+            },
+            width: 130
         }, {
             header: 'Modified'.l(),
             dataIndex: 'modified_on',
-            width: 125
+            renderer: function(v) {
+                return Ext.util.Format.date(v) + ' ' + Ext.util.Format.date(v, 'H:i:s');
+            },
+            width: 130
         }, {
             header: 'Status'.l(),
             dataIndex: 'status',
-            width: 80,
+            width: 100,
             editor: statusCombo,
-            renderer: function(value) {
-               return statusCombo.store.data.items[value].data.text;
+            renderer: function(v) {
+                var i = 0;
+                while (status[i]) {
+                    if (v == status[i][0]) {
+                        return status[i][1];
+                    }
+                    i++;
+                }
+                return v;
+            },
+            filter: {
+                editable: false,
+                resetValue: 'reset',
+                store: new Ext.data.ArrayStore({
+                    data: status,
+                    fields: ['id', 'name']
+                })
             }
-        }
-    ]);
-    commentColumn.defaultSortable = true;
+        }]
+    });
 
     var commentActionMenu = new Ext.menu.Menu({
         id: commentActionMenu,
         items: menuStatus
     });
 
-    commentGrid = new Axis.grid.EditorGridPanel({
+    CommentGrid.el = new Axis.grid.GridPanel({
         id: 'grid-comment',
-        view: new Ext.grid.GroupingView({
-            forceFit: true,
-            emptyText: 'No records found'.l()
-        }),
-        autoExpandColumn: 'page_name',
-        cm: commentColumn,
-        ds: commentStore,
-        plugins: [filters, postContent],
-        stripeRows: true,
+        autoExpandColumn: 'page-name',
+        cm: cm,
+        ds: ds,
+        listeners: {
+            'rowdblclick': function(grid, index, e) {
+                CommentGrid.edit(grid.getStore().getAt(index));
+                return false; // prevent expanding of commentExpander
+            }
+        },
+        plugins: [
+            commentExpander,
+            new Axis.grid.Filter()
+        ],
         tbar: [{
             text: 'Add'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/add.png',
-            handler: createComment
+            handler: CommentGrid.add
         }, {
             text: 'Edit'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/page_edit.png',
-            handler: editComment
+            handler: CommentGrid.edit
         }, {
             text: 'Change Status to'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/menu_action.png',
             menu: commentActionMenu
         }, {
             text: 'Save'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/save_multiple.png',
-            handler: saveChanges
+            handler: CommentGrid.save
         }, {
             text: 'Delete'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/delete.png',
-             handler: deleteSelected
+             handler: CommentGrid.remove
         }, '->', {
             text: 'Reload'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/refresh.png',
-            handler: reloadGrid
+            handler: CommentGrid.reload
         }],
         bbar: new Axis.PagingToolbar({
-            store: commentStore
+            store: ds
         })
     });
-
-    commentGrid.on('rowdblclick', function(grid, comment, e) {
-        editComment();
-    });
-
-    commentGrid.getStore().load({params:{start:0, limit:25}});
-})
-
-function reloadGrid() {
-    commentGrid.getStore().reload();
-}
-
-function deleteSelected() {
-    var selectedItems = commentGrid.getSelectionModel().selections.items;
-    
-    if (!selectedItems.length || !confirm('Are you sure?'.l())) {
-        return;
-    }
-        
-    var data = {};
-   
-    for (var i = 0; i < selectedItems.length; i++) {
-        data[i] = selectedItems[i].id;
-    }
-    var jsonData = Ext.encode(data);
-    Ext.Ajax.request({
-        url: Axis.getUrl('cms_comment/delete-comment'),
-        params: {data: jsonData},
-        callback: function() {
-            commentGrid.getStore().reload();
-        }
-    });
-}
-
-function saveChanges() {
-    var modified = commentGrid.getStore().getModifiedRecords();
-    if (!modified.length) return;
-
-    var data = {};
-    
-    for (var i = 0; i < modified.length; i++) {
-        data[modified[i]['id']] = modified[i]['data'];
-    }
-    
-    var jsonData = Ext.encode(data);
-    Ext.Ajax.request({
-        url: Axis.getUrl('cms_comment/quick-save'),
-        params: {data: jsonData},
-        callback: function() {
-            commentGrid.getStore().commitChanges();
-            commentGrid.getStore().reload();
-        }
-    });
-}
-
-function editComment() {
-    var selected = commentGrid.getSelectionModel().getSelected();
-    if (!selected) {
-        return;
-    }
-    comment = selected.id;
-    commentWindow.show();
-    commentWindow.setTitle('Comment'.l());
-    commentForm.getForm().setValues({
-        author:  selected.get('author'),
-        email:   selected.get('email'),
-        status:  selected.get('status'),
-        content: selected.get('content')
-    });
-}
-
-function createComment() {
-    if (isNaN(page)) {
-        return alert('Select page in left tree panel'.l());
-    }
-    comment = 'new';
-    commentForm.getForm().clear();
-    commentWindow.show();
-    commentWindow.setTitle('Add'.l());
-}
-
-function setStatus(status) {
-    var selected = commentGrid.getSelectionModel().getSelections();
-    for (var i = 0; i < selected.length; i++) {
-        selected[i].set('status', status);
-    }
-}
+});
