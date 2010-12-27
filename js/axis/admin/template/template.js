@@ -1,21 +1,21 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -23,7 +23,7 @@
 Ext.namespace('Axis', 'Axis.Template', 'Axis.Template.Template', 'Axis.Template.Box');
 
 Ext.onReady(function() {
-    
+
     var Template = {
         load: function(node, e) {
             if (node.id == '0')
@@ -50,19 +50,19 @@ Ext.onReady(function() {
         },
         remove: function() {
             var selectedItem = tree.getSelectionModel().getSelectedNode();
-            
+
             if (!selectedItem)
                 return;
-            
+
             if (!confirm('Are you sure?'))
                 return;
-                
+
             Ext.Ajax.request({
                 url: Axis.getUrl('template_index/delete'),
                 params: {templateId: selectedItem.id},
                 method: 'post',
                 callback: function(request, success, response) {
-                    
+
                     var res = Ext.decode(response.responseText)
                     if (!res.success){
                         alert('Error ' + res.data.error);
@@ -77,7 +77,7 @@ Ext.onReady(function() {
                 success: function(form, response) {
                     rootNode.reload();
                     templateWin.hide();
-                } 
+                }
             });
         },
         startImport: function() {
@@ -121,10 +121,10 @@ Ext.onReady(function() {
             var template = tree.getSelectionModel().getSelectedNode();
             if (!template)
                 return;
-                
+
             if (!confirm('Export this template?'))
                 return;
-            
+
             Ext.Ajax.request({
                 url: Axis.getUrl('template_index/export'),
                 params: {templateId: template.id},
@@ -135,15 +135,15 @@ Ext.onReady(function() {
             });
         }
     }
-    
+
     Axis.Template.Template = Template;
-    
+
     var rootNode = new Ext.tree.AsyncTreeNode({
         text: 'Templates'.l(),
         draggable:false,
         id: '0'
     });
-    
+
     var tree = new Ext.tree.TreePanel({
         collapseMode: 'mini',
         collapsible: true,
@@ -155,8 +155,9 @@ Ext.onReady(function() {
         useArrows:true,
         autoScroll:true,
         root: rootNode,
+        rootVisible: false,
         animate: false,
-        containerScroll: true, 
+        containerScroll: true,
         loader: new Ext.tree.TreeLoader({
             dataUrl: Axis.getUrl('template_index/get-nodes')
         }),
@@ -188,30 +189,29 @@ Ext.onReady(function() {
             }
         }]
     });
-    
+
     tree.on('click', Template.load);
     rootNode.expand();
-    
+
     var tabPanel = new Ext.TabPanel({
         split: true,
         region: 'center',
         plain: true,
         autoScroll: true,
-        height: 550,
         activeTab: 0,
         items: [
             Axis.Template.Box.grid,
             Axis.Template.Layout.grid
         ]
     });
-    
+
     var templateStore = new Ext.data.JsonStore({
         url: Axis.getUrl('template_index/list-xml-templates'),
         root: 'data',
         id: 'template',
         fields: ['template'/*, 'file'*/]
     });
-    
+
     var importForm = new Ext.FormPanel({
         url: Axis.getUrl('template_index/import'),
         defaults: {width: 130},
@@ -232,8 +232,8 @@ Ext.onReady(function() {
             anchor: '98%',
             valueField: 'template'
         })]
-    }); 
-    
+    });
+
     var templateForm = new Ext.FormPanel({
         url: Axis.getUrl('template_index/save'),
         defaults: {width: 130},
@@ -265,12 +265,12 @@ Ext.onReady(function() {
             name: 'id'
         }]
     })
-    
+
     var templateWin =  new Ext.Window({
         layout: 'fit',
         width: 400,
         height: 220,
-        plain: false, 
+        plain: false,
         title: 'Template',
         closeAction: 'hide',
         buttons: [{
@@ -284,12 +284,12 @@ Ext.onReady(function() {
         }],
         items: templateForm
     })
-    
+
     var importWin =  new Ext.Window({
         layout: 'fit',
         width: 300,
         height: 110,
-        plain: false, 
+        plain: false,
         title: 'Template',
         closeAction: 'hide',
         buttons: [{
@@ -303,11 +303,11 @@ Ext.onReady(function() {
         }],
         items: importForm
     })
-    
+
     tree.getRootNode().on('load', function(node){
         templateStore.load();
     });
-    
+
     new Axis.Panel({
         items: [
             tree,

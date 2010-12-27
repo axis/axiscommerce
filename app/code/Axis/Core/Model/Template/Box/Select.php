@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Cms
- * @subpackage  Axis_Cms_Model
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,44 +27,26 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Cms
- * @subpackage  Axis_Cms_Model
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Cms_Model_Page_Comment_Select extends Axis_Db_Table_Select
+class Axis_Core_Model_Template_Box_Select extends Axis_Db_Table_Select
 {
-    /**
-     * Add all columns from cms_page_content table to select
-     *
-     * @return  Axis_Cms_Model_Page_Comment_Select
-     */
-    public function addPageName()
-    {
-        return $this->joinLeft(
-            'cms_page',
-            'cpc.cms_page_id = cp.id',
-            array('page_name' => 'name')
-        );
-    }
-
     /**
      * Adds all names of categories where the page lies in, devided by commas
      *
      * @return Axis_Cms_Model_Page_Comment_Select
      */
-    public function addCategoryName()
+    public function addPageIds()
     {
-        $this->group('cpc.id')
+        $this->group('ctb.id')
             ->joinLeft(
-                array('cpcat' => 'cms_page_category'),
-                'cpc.cms_page_id = cpcat.cms_page_id'
-            )
-            ->joinLeft(
-                'cms_category',
-                'cc.id = cpcat.cms_category_id',
+                'core_template_box_page',
+                'ctb.id = ctbp.box_id',
                 array(
-                    'category_name' =>
-                        new Zend_Db_Expr('GROUP_CONCAT(cc.name separator \', \')')
+                    'page_ids' =>
+                        new Zend_Db_Expr('GROUP_CONCAT(ctbp.page_id separator \',\')')
                 )
             );
 
@@ -72,24 +54,8 @@ class Axis_Cms_Model_Page_Comment_Select extends Axis_Db_Table_Select
     }
 
     /**
-     * Adds filter to get only uncategorized pages
-     *
-     * @return Axis_Cms_Model_Page_Comment_Select
-     */
-    public function addFilterByUncategorized()
-    {
-        $subSelect = Axis::single('cms/page_category')
-            ->select('cms_page_id')
-            ->distinct();
-
-        $this->where("cpc.cms_page_id <> ALL (?)", $subSelect);
-
-        return $this;
-    }
-
-    /**
      * Rewriting of parent method
-     * Add having statement if filter by category_name is required
+     * Add having statement if filter by page_name is required
      *
      * @param array $filters
      * <pre>
@@ -107,11 +73,12 @@ class Axis_Cms_Model_Page_Comment_Select extends Axis_Db_Table_Select
     public function addFilters(array $filters)
     {
         foreach ($filters as $key => $filter) {
-            if ('category_name' != $filter['field']) {
+            if ('page_name' != $filter['field']) {
                 continue;
             }
-            $this->having("category_name LIKE ?",  '%' . $filter['value'] . '%');
+            $this->having("page_name LIKE ?",  '%' . $filter['value'] . '%');
             unset($filters[$key]);
+            break;
         }
 
         return parent::addFilters($filters);
