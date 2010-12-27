@@ -270,7 +270,8 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
 	
     public function processAction()
     {
-        $total = $this->_getCheckout()->getTotal()->getTotal();
+        $checkout = $this->_getCheckout();
+        $total = $checkout->getTotal()->getTotal();
 
         $response = $this->_getPayment()->runDoExpressCheckoutPayment();
         if (!$response) {
@@ -279,13 +280,13 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
 
         if (empty($this->_getPayment()->getStorage()->payer['payer_email'])) {
 
-            $delivery = $this->_getCheckout()->getDelivery();
+            $delivery = $checkout->getDelivery();
 
             $this->_getPayment()->getStorage()->payer['payer_email'] =
                 $delivery->firstname . ' ' . $delivery->lastname;
         }
 
-        $this->_getCheckout()->setBilling(array(
+        $checkout->setBilling(array(
             'firstname' => 'Paypal Account: ',
             'lastname' => $this->_getPayment()->getStorage()->payer['payer_email']
 //            'phone' => '',
@@ -302,10 +303,12 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
 
         $order = Axis::single('sales/order')->createFromCheckout();
 
-        $this->_getCheckout()->setOrderId($order->id);
+        $checkout->setOrderId($order->id);
+
+//        $this->_getPayment()->postProcess($order);
 
         $this->_getPayment()->clear();
-        //$this->_getCheckout()->getCart()->clear();
+        
         $this->_redirect('checkout/index/success');
     }
     
