@@ -1,13 +1,13 @@
-<?php 
-// gui
-$this->headScript()->appendFile('/js/axis/admin/cms/comment/toolbar.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/comment/tree.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/comment/grid.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/comment/editor.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/comment/imageWindow.js');
-$this->headScript()->appendFile('/js/axis/admin/cms/comment/panel.js');
+<?php
+$this->headScript()
+    ->appendFile('/js/axis/admin/cms/comment/toolbar.js')
+    ->appendFile('/js/axis/admin/cms/comment/tree.js')
+    ->appendFile('/js/axis/admin/cms/comment/grid.js')
+    ->appendFile('/js/axis/admin/cms/comment/editor.js')
+    ->appendFile('/js/axis/admin/cms/comment/imageWindow.js')
+    ->appendFile('/js/axis/admin/cms/comment/panel.js');
 
-echo $this->formSelect('status-combo', null, null, $this->status); 
+echo $this->formSelect('status-combo', null, null, $this->status);
 ?>
 
 <script type="text/javascript">
@@ -30,7 +30,7 @@ var menuStatus = [
             handler: function() {
                 setStatus($i);
             }
-        },\n"; 
+        },\n";
         $i++;
     }
     echo substr($menu, 0, -2);
