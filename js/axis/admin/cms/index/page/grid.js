@@ -196,7 +196,7 @@ Ext.onReady(function(){
             sortable: true
         },
         columns: [{
-            header: 'id',
+            header: 'Id'.l(),
             dataIndex: 'id',
             width: 90
         }, {
