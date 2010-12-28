@@ -38,7 +38,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('gbase/main/notes', 'Payment notes', 'Google Checkout', 'string')
             ->add('gbase/main/application', 'Application', 'StoreArchitect-Axis-' . Axis::app()->getVersion(), 'string', 'Name of the application that last modified this item.\r\nAll applications should set this attribute whenever they insert or update an item. Recommended format : Organization-ApplicationName-Version')
             ->add('gbase/main/dryRun', 'dryRun', '0', 'bool', "Set 'Yes' for testing, 'No' for production")
-            ->add('gbase/main/link', 'Link products to', 'Website', 'select', "If you want to use GoogleBase pages as landing page for your items, or you  can't give the link to your webstore - select Google base, otherwise - select Website.", array('config_options' => 'GoogleBase,Website'))
+            ->add('gbase/main/link', 'Link products to', 'Website', 'select', "If you want to use GoogleBase pages as landing page for your items, or you  can't give the link to your webstore - select Google Base, otherwise - select Website.", array('config_options' => 'GoogleBase,Website'))
             ->add('gbase/main/itemType', 'Item type', 'Products', 'string', 'Type of your products. Read this for more information http://code.google.com/apis/base/starting-out.html#ItemTypes')
             ->add('gbase/auth/login', 'Login', '', 'handler', 'Your google account to submit products', array('model' => 'Crypt'))
             ->add('gbase/auth/password', 'Password', '', 'handler', 'Password to google account', array('model' => 'Crypt'))
@@ -46,7 +46,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('admin/menu')
             ->add('Marketing', null, 40, 'Axis_Admin')
-            ->add('Marketing->Google base', 'gbase_index', 20, 'Axis_Admin');
+            ->add('Marketing->Google Base', 'gbase_index', 20, 'Axis_Admin');
 
         Axis::single('admin/acl_resource')
             ->add('admin/gbase', 'Google Base')
@@ -68,7 +68,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')->remove('gbase');
         Axis::single('core/config_value')->remove('gbase');
 
-        Axis::single('admin/menu')->remove('Marketing->Google base');
+        Axis::single('admin/menu')->remove('Marketing->Google Base');
 
         Axis::single('admin/acl_resource')
             ->remove('admin/gbase');
