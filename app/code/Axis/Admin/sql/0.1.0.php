@@ -127,7 +127,7 @@ class Axis_Admin_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add("admin/roles/index")
             ->add("admin/roles/save")
 
-            ->add('admin/cache', 'Cache management')
+            ->add('admin/cache', 'Cache Management')
             ->add("admin/cache/clean")
             ->add("admin/cache/clean-all")
             ->add("admin/cache/get-list")

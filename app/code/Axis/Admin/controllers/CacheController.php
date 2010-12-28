@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -36,27 +36,27 @@ class Axis_Admin_CacheController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__(
-            'Cache management'
+            'Cache Management'
         );
         $this->render();
     }
-    
+
     public function getListAction()
     {
         return $this->_helper->json->sendSuccess(array(
             'data' => Axis::single('core/cache')->getList()
         ));
     }
-    
+
     public function saveAction()
     {
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-        
+
         return $this->_helper->json->sendJson(array(
             'success' => Axis::single('core/cache')->save($data)
         ));
     }
-    
+
     public function cleanAction()
     {
         $tags = Zend_Json_Decoder::decode($this->_getParam('data'));
@@ -70,7 +70,7 @@ class Axis_Admin_CacheController extends Axis_Admin_Controller_Back
             'success' => Axis_Core_Model_Cache::getCache()->clean('matchingAnyTag', $tags)
         ));
     }
-    
+
     public function cleanAllAction()
     {
         Axis::message()->addSuccess(

@@ -18,29 +18,29 @@
  */
 
 var ImageGrid = {
-    
+
     el: null,
-    
+
     clearData: function() {
         ImageGrid.el.store.loadData([]);
     },
-    
+
     loadData: function(data) {
         ImageGrid.el.store.loadData(data.images);
     },
-    
+
     getData: function() {
         var modified = ImageGrid.el.store.getModifiedRecords();
-        
+
         if (!modified.length) {
             return;
         }
-        
+
         var data = {};
         for (var i = modified.length - 1; i >= 0; i--) {
             data[modified[i].id] = modified[i]['data'];
         }
-        
+
         return {
             'image': data
         };
@@ -127,9 +127,9 @@ Ext.onReady(function() {
             allowNegative: false,
             maxValue: 255
         }),
-        header: 'Sort order'.l(),
+        header: 'Sort Order'.l(),
         width: 60
-    }, 
+    },
         imageThumbnail,
         imageListing,
         imageBase,
