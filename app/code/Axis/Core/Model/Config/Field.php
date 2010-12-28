@@ -34,7 +34,12 @@
 class Axis_Core_Model_Config_Field extends Axis_Db_Table
 {
     protected $_name = 'core_config_field';
+
+    protected $_primary = 'id';
+
     protected $_rowClass = 'Axis_Core_Model_Config_Field_Row';
+
+    protected $_selectClass = 'Axis_Core_Model_Config_Field_Select';
 
     /**
      *

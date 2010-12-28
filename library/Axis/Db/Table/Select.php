@@ -578,6 +578,10 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
                     $value = '%' . $value . '%';
                     $bind = '?';
                     break;
+                case 'STRICT_LIKE':
+                    $operator = 'LIKE';
+                    $bind = '?';
+                    break;
                 default:
                     $bind = '?';
                     break;
