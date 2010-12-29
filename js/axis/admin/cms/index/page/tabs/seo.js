@@ -47,19 +47,28 @@ Ext.onReady(function() {
             name: 'content[link]',
             xtype: 'langset'
         }, {
-            fieldLabel: 'Title'.l(),
-            xtype: 'langset',
-            name: 'content[meta_title]'
-        }, {
-            fieldLabel: 'Description'.l(),
-            defaultType: 'textarea',
-            xtype: 'langset',
-            name: 'content[meta_description]'
-        }, {
-            fieldLabel: 'Keywords'.l(),
-            defaultType: 'textarea',
-            xtype: 'langset',
-            name: 'content[meta_keyword]'
+            anchor: '100%',
+            title: 'Meta'.l(),
+            border: true,
+            xtype: 'fieldset',
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                fieldLabel: 'Title'.l(),
+                xtype: 'langset',
+                name: 'content[meta_title]'
+            }, {
+                fieldLabel: 'Description'.l(),
+                defaultType: 'textarea',
+                xtype: 'langset',
+                name: 'content[meta_description]'
+            }, {
+                fieldLabel: 'Keywords'.l(),
+                defaultType: 'textarea',
+                xtype: 'langset',
+                name: 'content[meta_keyword]'
+            }]
         }]
     }, 20);
 });
