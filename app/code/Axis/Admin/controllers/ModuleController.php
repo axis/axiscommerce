@@ -46,15 +46,16 @@ class Axis_Admin_ModuleController extends Axis_Admin_Controller_Back
         $result = array();
         $i = 0;
 
-        $modelModule = Axis::single('core/module');
+        $modelModule = Axis::model('core/module');
         $codes = $modelModule->getListFromFilesystem();
         foreach ($codes as $i => $code) {
             $module = $modelModule->getByCode($code);
-            $result[$i] = $module->toArray();
-            $result[$i]['version'] = $module->getVersion();
-            $result[$i]['hide_install'] = $module->isInstalled();
-            $result[$i]['hide_uninstall'] = !$module->isInstalled() || !$module->hasUninstall();
-            $result[$i]['hide_upgrade'] = !$module->hasUpgrade();
+
+            $result[$i]                     = $module->toArray();
+            $result[$i]['version']          = $module->getVersion();
+            $result[$i]['hide_install']     = $module->isInstalled();
+            $result[$i]['hide_uninstall']   = !$module->isInstalled() || !$module->hasUninstall();
+            $result[$i]['hide_upgrade']     = !$module->hasUpgrade();
 
             $upgrades = $module->getAvailableUpgrades();
             if (count($upgrades)) {
@@ -72,8 +73,23 @@ class Axis_Admin_ModuleController extends Axis_Admin_Controller_Back
             }
         }
 
+        // apply grid filter
+        $result = $this->_filter($result);
+        $count = count($result);
+
+        if ($count) {
+            // apply sorting
+            usort($result, array($this, '_cmp'));
+            // apply pagination
+            $limit = $this->_getParam('limit', 25);
+            $start = $this->_getParam('start', 0);
+            $result = array_chunk($result, $limit);
+            $result = $result[$start/$limit];
+        }
+
         return $this->_helper->json->sendSuccess(array(
-            'data' => $result
+            'data'  => $result,
+            'count' => $count
         ));
     }
 
@@ -81,8 +97,16 @@ class Axis_Admin_ModuleController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $module = Axis::single('core/module')->getByCode($this->_getParam('code'));
-        $module->install();
+        $mModule = Axis::model('core/module');
+        if (!$this->_hasParam('code')) {
+            foreach ($mModule->getListFromFilesystem() as $code) {
+                $module = $mModule->getByCode($code);
+                $module->install();
+            }
+        } else {
+            $module = $mModule->getByCode($this->_getParam('code'));
+            $module->install();
+        }
         return $this->_helper->json->sendSuccess();
     }
 
@@ -99,8 +123,52 @@ class Axis_Admin_ModuleController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $module = Axis::single('core/module')->getByCode($this->_getParam('code'));
-        $module->upgradeAll();
+        $mModule = Axis::model('core/module');
+        if (!$this->_hasParam('code')) {
+            foreach ($mModule->fetchAll() as $module) {
+                $module->upgradeAll();
+            }
+        } else {
+            $module = $mModule->getByCode($this->_getParam('code'));
+            $module->upgradeAll();
+        }
         return $this->_helper->json->sendSuccess();
+    }
+
+    protected function _filter(array &$array = array())
+    {
+        foreach ($this->_getParam('filter', array()) as $filter) {
+            foreach ($array as $i => $row) {
+                if ('version' == $filter['field']) {
+                    $v1 = $filter['operator'] == '>=' ? $filter['value'] : $row['version'];
+                    $v2 = $filter['operator'] == '<=' ? $filter['value'] : $row['version'];
+                    if (1 === version_compare($v1, $v2)) {
+                        unset($array[$i]);
+                    }
+                } else {
+                    if (false === stripos($row[$filter['field']], $filter['value'])) { // LIKE compare
+                        unset($array[$i]);
+                    }
+                }
+            }
+        }
+        return array_values($array);
+    }
+
+    protected function _cmp($a, $b)
+    {
+        $field  = $this->_getParam('sort', 'name');
+        $dir    = $this->_getParam('dir', 'ASC');
+
+        if ('version' === $field) {
+            $result = version_compare($a['version'], $b['version']);
+        } else {
+            $result = strcmp($a[$field], $b[$field]);
+        }
+
+        if ('DESC' === $dir && 0 != $result) {
+            return $result == -1 ? 1 : -1;
+        }
+        return $result;
     }
 }

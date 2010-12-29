@@ -496,5 +496,7 @@ Locale.module('core', {
     'State / Province': 'State / Province',
     'Geozone': 'Geozone',
     'New Сategory': 'New Сategory',
-    'New Page': 'New Page'
+    'New Page': 'New Page',
+    'Install All': 'Install All',
+    'Upgrade All': 'Install All'
 });
