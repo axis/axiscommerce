@@ -1,32 +1,32 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 Ext.onReady(function(){
-    
+
     Ext.QuickTips.init();
-    
+
     var used_categories = new Array(); //categories, that are used by sites
     var category_values = new Array(); //set of all root categories
-    
+
     var siteFields = Ext.data.Record.create([
        'id',
        'name',
@@ -34,24 +34,25 @@ Ext.onReady(function(){
        'secure',
        'root_category'
     ]);
-    
+
     var categoryFields = new Ext.data.Record.create([
         'id',
-        'text'
+        'name'
     ])
-    
+
     var rootCategoriesStore = new Ext.data.Store({
-        url: Axis.getUrl('catalog_category/get-items'),
+        url: Axis.getUrl('catalog_category/get-root-categories'),
         //data: categories,
         reader: new Ext.data.JsonReader({
-            id: 'id'
+            idProperty: 'id',
+            root: 'data'
         }, categoryFields)
     })
     rootCategoriesStore.load();
-    
+
     var rootCategoriesCombo = new Ext.form.ComboBox({
         store: rootCategoriesStore,
-        displayField: 'text',
+        displayField: 'name',
         valueField: 'id',
         triggerAction: 'all',
         lastQuery: '',
@@ -60,7 +61,7 @@ Ext.onReady(function(){
         lazyInit: true,
         forceSelection: true
     })
-    
+
     rootCategoriesCombo.on('change', function(combo, newValue, oldValue){
         oldValue_position = used_categories.indexOf(oldValue);
         newValue_position = used_categories.indexOf(newValue);
@@ -69,11 +70,11 @@ Ext.onReady(function(){
         if (newValue_position == -1)
             used_categories[used_categories.length] = newValue;
     })
-    
+
     rootCategoriesCombo.on('focus', function(combo){
         var value_to_skip = this.getValue();
         var str = "";
-        var categories_clone = category_values.slice(0); 
+        var categories_clone = category_values.slice(0);
         for (var i = 0, len = used_categories.length; i < len; i++){
             if (used_categories[i] == value_to_skip/* || used_categories[i] == 0*/)
                 continue;
@@ -88,17 +89,18 @@ Ext.onReady(function(){
         str = str == "" ? '^-10$' : str;
         rootCategoriesStore.filter('id', new RegExp(str));
     })
-    
+
     rootCategoriesCombo.on('blur', function(combo){
-        rootCategoriesStore.clearFilter(); 
+        rootCategoriesStore.clearFilter();
     })
-    
+
     var rootCategoriesRenderer = function(value){
-        if (!rootCategoriesStore.getById(value))
+        if (!rootCategoriesStore.getById(value)) {
             return '';
-        return rootCategoriesStore.getById(value).get('text');
+        }
+        return rootCategoriesStore.getById(value).get('name');
     }
-    
+
     var cm = new Ext.grid.ColumnModel([
         {
             header: 'Id'.l(),
@@ -134,7 +136,7 @@ Ext.onReady(function(){
         }
     ])
     cm.defaultSortable = true;
-    
+
     var ds = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
             method: 'get',
@@ -146,32 +148,28 @@ Ext.onReady(function(){
         }, siteFields),
         pruneModifiedRecords: true
     })
-    
+
     rootCategoriesStore.on('load', function(store, records, options){
         ds.load();
-        /*store.add([new Ext.data.Record(
-            {id: '0', text: 'New'.l()},
-            0
-        )]);*/
         category_values.length = 0;
         Ext.each(store.data.items, function(item, index, items){
             category_values[category_values.length] = item.id;
         })
     })
-    
+
     var used_categories = new Array();
-    
+
     ds.on('load', function(){
         Ext.each(this.data, function(item, index, items){
             if (items.items[index].get('root_category'))
                 used_categories[used_categories.length] = items.items[index].get('root_category');
         })
     })
-    
+
     ds.on('beforeload', function(store, records, options){
         used_categories.length = 0;
     })
-    
+
     var grid = new Axis.grid.EditorGridPanel({
         autoExpandColumn: 'name',
         ds: ds,
@@ -179,34 +177,30 @@ Ext.onReady(function(){
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
-            cls: 'x-btn-text-icon',
             handler: addSite
         }, {
             text: 'Save'.l(),
             icon: Axis.skinUrl + '/images/icons/save_multiple.png',
-            cls: 'x-btn-text-icon',
             handler: saveSite
         }, {
             text: 'Delete'.l(),
             icon: Axis.skinUrl + '/images/icons/delete.png',
-            cls: 'x-btn-text-icon',
             handler: deleteSite
         }, '->', {
             text: 'Reload'.l(),
             icon: Axis.skinUrl + '/images/icons/refresh.png',
-            cls: 'x-btn-text-icon',
             handler: function(){
                 grid.getStore().reload();
             }
         }]
     });
-    
+
     new Axis.Panel({
         items: [
             grid
         ]
     });
-    
+
     function addSite(){
         var s = new siteFields({
             id: 'new',
@@ -221,15 +215,15 @@ Ext.onReady(function(){
     }
     function saveSite(){
         var modified = grid.getStore().getModifiedRecords();
-        
+
         if (!modified.length)
             return false;
-        
+
         var data = {};
         for (var i = 0; i < modified.length; i++) {
             data[modified[i]['id']] = modified[i]['data'];
         }
-        
+
         var jsonData = Ext.encode(data);
         Ext.Ajax.request({
             url: Axis.getUrl('site/save'),
@@ -242,15 +236,15 @@ Ext.onReady(function(){
     }
     function deleteSite(){
         var selectedItems = grid.getSelectionModel().selections.items;
-        
-        if (!selectedItems.length) 
+
+        if (!selectedItems.length)
             return;
-        
+
         if (!confirm('Delete site?'))
             return;
-            
+
         var data = {};
-        
+
         for (var i = 0; i < selectedItems.length; i++) {
             data[i] = selectedItems[i].id;
         }
