@@ -28,8 +28,7 @@ Ext.onReady(function() {
         title: 'Sites'.l(),
         header: false,
         bodyStyle: {
-            padding: '20px 10px 13px',
-            margin: '0 0 7px 0'
+            padding: '20px 10px 13px'
         },
         items:[new Ext.form.ComboBox({
             hideLabel: true,
@@ -49,12 +48,18 @@ Ext.onReady(function() {
         title: 'Quick Summary'.l(),
         border: true,
         bodyStyle: {
-            padding: '10px',
-            margin: '0 0 7px 0'
+            padding: '10px'
         },
         items:[
             {contentEl: 'quick-summary-content', border: false}
         ]
+    });
+
+    var spacerPanel = new Ext.Panel({
+        border: false,
+        bodyStyle: {
+            height: '7px',
+        }
     });
 
     var westPanel = new Ext.Panel({
@@ -72,8 +77,11 @@ Ext.onReady(function() {
         width: 500,
         items: [
             sitesPanel,
+            spacerPanel,
             quickSummaryPanel,
+            spacerPanel.cloneConfig(),
             ActivityPanel.el,
+            spacerPanel.cloneConfig(),
             StatisticsPanel.el
         ]
     });

@@ -51,9 +51,6 @@ Ext.onReady(function() {
         activeTab: 0,
         flex: 1,
         plain: true,
-        bodyStyle: {
-            margin: '0 0 7px 0'
-        },
         items: ActivityPanel.tabs
     });
 
