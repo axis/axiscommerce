@@ -385,7 +385,7 @@ Ext.onReady(function() {
 
     var cm = new Ext.grid.ColumnModel({
         defaults: {
-            sortable: true,
+            sortable: true
         },
         columns: [{
             header: 'Path'.l(),
@@ -395,15 +395,18 @@ Ext.onReady(function() {
             header: 'Value'.l(),
             dataIndex: 'value',
             width: 200,
+            sortable: false,
             filterable: false
         }, {
             header: 'Title'.l(),
             dataIndex: 'title',
             id: 'title',
+            sortable: false,
             filterable: false
         }, {
             header: 'Took from'.l(),
             dataIndex: 'from',
+            filterable: false,
             width: 90
         }]
     });

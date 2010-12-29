@@ -108,15 +108,27 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
     public function listAction()
     {
         $mConfigField = Axis::model('core/config_field');
-        $select = $mConfigField->select('*')
+        $select = $mConfigField->select('id')
             ->calcFoundRows()
-            ->addValue()
             ->addFilters($this->_getParam('filter', array()))
             ->where('lvl = 3')
             ->limit(
                 $this->_getParam('limit', 25),
                 $this->_getParam('start', 0)
             )
+            ->order(array(
+                $this->_getParam('sort', 'path')
+                . ' '
+                . $this->_getParam('dir', 'ASC')
+            ));
+
+        $ids    = $select->fetchCol();
+        $count  = $select->foundRows();
+
+        $select = $mConfigField->select('*')
+            ->calcFoundRows()
+            ->addValue()
+            ->where('ccf.id IN (?)', $ids)
             ->order(array(
                 $this->_getParam('sort', 'path')
                 . ' '
@@ -128,12 +140,9 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
             $select->where('ccv.site_id IN (?)', array(0, $this->_getParam('site_id')));
         }
 
-        $data   = $select->fetchAll();
-        $count  = $select->foundRows();
-
         $rowset = new Axis_Db_Table_Rowset(array(
             'table'    => $mConfigField,
-            'data'     => $data,
+            'data'     => $select->fetchAll(),
             'readOnly' => $select->isReadOnly(),
             'rowClass' => $mConfigField->getRowClass(),
             'stored'   => true
