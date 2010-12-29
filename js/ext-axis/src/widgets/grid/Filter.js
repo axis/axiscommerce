@@ -147,7 +147,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             }
         }
 
-        if ('datefield' === cfg.xtype || 'numberfield' === cfg.xtype) {
+        if ('datefield' === cfg.xtype || 'numberfield' === cfg.xtype || cfg.rangeField) {
             items = this.createRangefield(cfg);
         } else if ('combo' === cfg.xtype) {
             items = [this.createCombobox(cfg)];
@@ -175,10 +175,16 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
         cfg.fieldLabel = 'From'.l();
         cfg.operator = '>=';
 
-        if ('datefield' === cfg.type) {
+        if ('datefield' === cfg.xtype) {
             cfg.listeners = {
                 scope: this,
                 select: function(field, date) {
+                    this.store.reload();
+                },
+                specialkey: function(field, e) {
+                    if (e.getKey() != e.ENTER) {
+                        return;
+                    }
                     this.store.reload();
                 }
             }
