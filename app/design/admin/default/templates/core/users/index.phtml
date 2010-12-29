@@ -1,10 +1,13 @@
-<?php 
-echo $this->formSelect('roles-list', null, array('style' => 'display:none;'), $this->roles);
-$this->headScript()->appendFile('/js/axis/admin/users.js');
-?>
+<?php $this->headScript()->appendFile('/js/axis/admin/users.js'); ?>
 
 <script type="text/javascript">
-Ext.onReady(function(){
-    var rolesList = Ext.decode('<?php echo $this->jsonRoles?>')
-});
+var roles = [
+    <?php
+    $roles = '';
+    foreach ($this->roles as $id => $role) :
+        $role = addslashes($role);
+        $roles .= "[{$id}, '{$role}'], ";
+    endforeach;
+    echo substr($roles, 0, -2); ?>
+];
 </script>

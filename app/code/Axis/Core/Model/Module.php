@@ -35,13 +35,13 @@ class Axis_Core_Model_Module extends Axis_Db_Table
 {
     protected $_name = 'core_module';
 
+    protected $_primary = 'id';
+
     protected $_rowClass = 'Axis_Core_Model_Module_Row';
 
     protected $_dependentTables = array(
         'Axis_Core_Model_Module_Upgrade',
     );
-
-    private $_processed_modules = null;
 
     protected $_metadata = array(
         'id' => array(

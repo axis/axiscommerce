@@ -124,25 +124,30 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
 
         $ids    = $select->fetchCol();
         $count  = $select->foundRows();
+        $data   = array();
 
-        $select = $mConfigField->select('*')
-            ->calcFoundRows()
-            ->addValue()
-            ->where('ccf.id IN (?)', $ids)
-            ->order(array(
-                $this->_getParam('sort', 'path')
-                . ' '
-                . $this->_getParam('dir', 'ASC'),
-                'site_id DESC'
-            ));
+        if (count($ids)) {
+            $select = $mConfigField->select('*')
+                ->calcFoundRows()
+                ->addValue()
+                ->where('ccf.id IN (?)', $ids)
+                ->order(array(
+                    $this->_getParam('sort', 'path')
+                    . ' '
+                    . $this->_getParam('dir', 'ASC'),
+                    'site_id DESC'
+                ));
 
-        if ($this->_hasParam('site_id')) {
-            $select->where('ccv.site_id IN (?)', array(0, $this->_getParam('site_id')));
+            if ($this->_hasParam('site_id')) {
+                $select->where('ccv.site_id IN (?)', array(0, $this->_getParam('site_id')));
+            }
+
+            $data = $select->fetchAll();
         }
 
         $rowset = new Axis_Db_Table_Rowset(array(
             'table'    => $mConfigField,
-            'data'     => $select->fetchAll(),
+            'data'     => $data,
             'readOnly' => $select->isReadOnly(),
             'rowClass' => $mConfigField->getRowClass(),
             'stored'   => true

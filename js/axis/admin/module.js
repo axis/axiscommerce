@@ -1,60 +1,74 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 Ext.onReady(function() {
     Ext.QuickTips.init();
-    
+
     var module = new Ext.data.Record.create([
-        'code',
-        'name',
-        'package',
-        'is_active',
-        'version',
-        'hide_install',
-        'hide_upgrade',
-        'hide_uninstall',
-        'upgrade_tooltip',
-        'install_tooltip'
-    ])
-    
+        {name: 'code'},
+        {name: 'name'},
+        {name: 'package'},
+        {name: 'is_active', type: 'int'},
+        {name: 'version'},
+        {name: 'hide_install', type: 'int'},
+        {name: 'hide_upgrade', type: 'bool'},
+        {name: 'hide_uninstall', type: 'bool'},
+        {name: 'upgrade_tooltip'},
+        {name: 'install_tooltip'}
+    ]);
+
     var ds = new Ext.data.Store({
+        autoLoad: true,
+        baseParams: {
+            limit: 25
+        },
         url: Axis.getUrl('module/get-list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
-            id: 'name'
+            idProperty: 'code', // not installed modules doesn't have id
+            totalProperty: 'count'
         }, module),
-        autoLoad: true
-    })
-    
-    var status = new Axis.grid.CheckColumn({
-        header: "Status".l(),
-        dataIndex: 'is_active',
-        menuDisabled: true,
-        fixed: true,
-        width: 60
+        remoteSort: true,
+        sortInfo: {
+            field: 'name',
+            direction: 'ASC'
+        }
     });
-    
+
+    // var status = new Axis.grid.CheckColumn({
+    //     header: "Status".l(),
+    //     dataIndex: 'is_active',
+    //     width: 90,
+    //     filter: {
+    //         editable: false,
+    //         resetValue: 'reset',
+    //         store: new Ext.data.ArrayStore({
+    //             data: [[0, 'Disabled'.l()], [1, 'Enabled'.l()]],
+    //             fields: ['id', 'name']
+    //         })
+    //     }
+    // });
+
     var actions = new Ext.ux.grid.RowActions({
-        header: 'Actions'.l(),
         actions: [{
             iconCls: 'icon icon-box-green',
             tooltip: 'Install'.l(),
@@ -89,9 +103,12 @@ Ext.onReady(function() {
             }
         }]
     });
-    
-    var cm = new Ext.grid.ColumnModel([
-        {
+
+    var cm = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [{
             header: 'Package'.l(),
             id: 'package',
             dataIndex: 'package',
@@ -99,54 +116,67 @@ Ext.onReady(function() {
         }, {
             header: 'Name'.l(),
             id: 'name',
-            dataIndex: 'name',
-            menuDisabled: true
+            dataIndex: 'name'
         }, {
             header: 'Version'.l(),
             dataIndex: 'version',
-            width: 70,
-            fixed: true,
-            menuDisabled: true
-        }, status, actions
-    ])
-    cm.defaultSortable = true;
-    
+            width: 90,
+            filter: {
+                rangeField: true
+            }
+        },
+        //status,
+        actions]
+    });
+
     var grid = new Axis.grid.EditorGridPanel({
         autoExpandColumn: 'name',
         cm: cm,
         ds: ds,
         id: 'grid-module',
         plugins: [
-            status,
+            //status,
             actions,
-            new Ext.ux.grid.Search({
-                mode: 'local',
-                align: 'left',
-                iconCls: false,
-                dateFormat: 'Y-m-d',
-                width: 200,
-                minLength: 2
-            })
+            new Axis.grid.Filter()
         ],
-        bbar: [],
-        tbar: ['->', {
+        bbar: new Axis.PagingToolbar({
+            store: ds
+        }),
+        tbar: [{
+            text: 'Install All'.l(),
+            icon: Axis.skinUrl + '/images/icons/package_green.png',
+            handler: function() {
+                Ext.Ajax.request({
+                    url: Axis.getUrl('module/install'),
+                    callback: callback
+                })
+            }
+        }, {
+            text: 'Upgrade All'.l(),
+            icon: Axis.skinUrl + '/images/icons/lightbulb.png',
+            handler: function() {
+                Ext.Ajax.request({
+                    url: Axis.getUrl('module/upgrade'),
+                    callback: callback
+                })
+            }
+        }, '->', {
             text: 'Reload'.l(),
-            iconCls: 'x-btn-text',
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             handler: reload
         }]
     });
-    
+
     new Axis.Panel({
         items: [
             grid
         ]
     });
-    
+
     function reload() {
         ds.reload();
     }
-    
+
     function callback(request, success, response) {
         if (response.responseText == '') {
             window.location.reload();

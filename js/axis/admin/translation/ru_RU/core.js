@@ -496,5 +496,7 @@ Locale.module('core', {
     'State / Province': 'Штат / Область',
     'Geozone': 'Геозона',
     'New Сategory': 'Новая категория',
-    'New Page': 'Новая страница'
+    'New Page': 'Новая страница',
+    'Install All': 'Установить все',
+    'Upgrade All': 'Обновить все'
 });
