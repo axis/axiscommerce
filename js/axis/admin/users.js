@@ -49,6 +49,7 @@ Ext.onReady(function(){
     ]);
 
     var ds = new Ext.data.Store({
+        autoLoad: true,
         baseParams: {
             limit: 25
         },
@@ -234,6 +235,4 @@ Ext.onReady(function(){
             grid
         ]
     });
-
-    ds.load({params:{start:0, limit:25}});
-}, this);
+});
