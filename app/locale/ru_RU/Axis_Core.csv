@@ -11,7 +11,7 @@
 "Module '%s' is required by '%s', but can't be installed", "Модуль \'%s\' обязателен для  \'%s\', но не может быть установлен"
 "Module '%s' was successfully installed", "Модуль \'%s\' успешно установлен"
 "Module '%s', (version %s %s) is required by '%s', but can't be upgraded", "Модуль \'%s\', (версия %s %s) требует \'%s\', по этому не может быть обновлено"
-"Powered by %s v. %s", "Работает на %s в. %s"
+"Powered by %s v. %s", "Работает на %s %s"
 "Report any %s you've found", "Сообщите про %s с которыми вы столкнулись"
 "An error has occured processing your request", "Ошибка выполнения запроса"
 "Attributes", "Атрибуты"
