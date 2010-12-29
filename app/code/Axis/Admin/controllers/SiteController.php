@@ -33,23 +33,9 @@
  */
 class Axis_Admin_SiteController extends Axis_Admin_Controller_Back
 {
-    protected $_table;
-
-    public function init()
-    {
-        parent::init();
-        $this->setActionToAclAssignment(array(
-                'index' => 'admin/site/view',
-                'edit'  => 'admin/site/edit',
-                'save'  => 'admin/site/edit'
-        ));
-        $this->_table = Axis::single('core/site');
-    }
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('core')->__('Sites');
-        $this->view->sites = $this->_table->fetchAll()->toArray();
         $this->render();
     }
 
@@ -66,7 +52,7 @@ class Axis_Admin_SiteController extends Axis_Admin_Controller_Back
 
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
 
-        $this->_table->save($data);
+        Axis::model('core/site')->save($data);
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Site was saved successfully'
@@ -81,7 +67,7 @@ class Axis_Admin_SiteController extends Axis_Admin_Controller_Back
 
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
 
-        $this->_table->delete(
+        Axis::model('core/site')->delete(
             $this->db->quoteInto('id IN(?)', $data)
         );
         Axis::dispatch('core_site_delete_success', array('site_ids' => $data));

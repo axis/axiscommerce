@@ -41,7 +41,7 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
 
     public function getFlatTreeAction()
     {
-        $categories = Axis::single('catalog/category')->getNestedTreeData();
+        $categories = Axis::model('catalog/category')->getNestedTreeData();
 
         foreach ($categories as &$category) {
             if ($category['lvl'] == 0) {
@@ -58,14 +58,21 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
             ->sendSuccess();
     }
 
+    public function getRootCategoriesAction()
+    {
+        $this->_helper->json->sendSuccess(array(
+            'data' => Axis::model('catalog/category')->getRootCategories()
+        ));
+    }
+
     public function getDataAction()
     {
         $catId = $this->_getParam('catId');
-        $cat = Axis::single('catalog/category')->getInfoWithKeyWord($catId);
+        $cat = Axis::model('catalog/category')->getInfoWithKeyWord($catId);
 
         $catDesc = array();
 
-        $rows = Axis::single('catalog/category_description')
+        $rows = Axis::model('catalog/category_description')
             ->fetchAll("category_id = {$catId}")->toArray();
 
         $result = $cat;
@@ -87,7 +94,7 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
     {
         $success = true;
 
-        $categoryModel = Axis::single('catalog/category');
+        $categoryModel = Axis::model('catalog/category');
         /* @var $categoryModel Axis_Catalog_Model_Category */
 
         $parentId = $this->_getParam('parent_id', 0);
@@ -96,9 +103,9 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
         $siteId = $this->_getParam('site_id');
 
         /* if human url already exist */
+        $mHurl = Axis::model('catalog/hurl');
         if (!empty($catKeyWord) &&
-            Axis::single('catalog/hurl')
-                ->hasDuplicate($catKeyWord, $siteId, $categoryId)) {
+            $mHurl->hasDuplicate($catKeyWord, $siteId, $categoryId)) {
 
             Axis::message()->addError(
                 Axis::translate('catalog')->__(
@@ -160,11 +167,12 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
         $metaDescription   = $this->_getParam('meta_description');
         $metaKeyword       = $this->_getParam('meta_keyword');
 
+        $mCategoryDescription = Axis::model('catalog/category_description');
         foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
             if (!isset($categoryName[$languageId])) {
                 continue;
             }
-            $row = Axis::single('catalog/category_description')->save(array(
+            $row = $mCategoryDescription->save(array(
                 'category_id' => $categoryId,
                 'language_id' => $languageId,
                 'name' => $categoryName[$languageId],
@@ -181,15 +189,13 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
         }
 
         /* Save Human Url */
-
-        Axis::single('catalog/hurl')->delete(array(
+        $mHurl->delete(array(
             $this->db->quoteInto('key_id = ?', $categoryId),
             $this->db->quoteInto('key_type = ?', 'c')
         ));
 
-
         if (!empty($catKeyWord)) {
-            $hurlSuccess =  Axis::single('catalog/hurl')->save(array(
+            $hurlSuccess = $mHurl->save(array(
                 'key_word' => $catKeyWord,
                 'key_type' => 'c',
                 'site_id' => $siteId,
@@ -214,8 +220,9 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
     {
         $categoryIds = Zend_Json_Decoder::decode($this->_getParam('data'));
 
+        $mCategory = Axis::model('catalog/category');
         foreach ($categoryIds as $categoryId) {
-            Axis::single('catalog/category')->deleteItem($categoryId);
+            $mCategory->deleteItem($categoryId);
             Axis::dispatch('catalog_category_remove_success', array(
                 'category_id' => $categoryId
             ));
@@ -226,9 +233,9 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
 
     public function moveAction()
     {
-        $moveType = $this->_getParam('moveType');
-        $newParentId = $this->_getParam('newParentId');
-        $categoryId = $this->_getParam('catId');
+        $moveType       = $this->_getParam('moveType');
+        $newParentId    = $this->_getParam('newParentId');
+        $categoryId     = $this->_getParam('catId');
 
         $nsTreeTable = new Axis_NSTree_Table();
 
