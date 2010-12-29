@@ -53,36 +53,23 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        // $this->getRow($data)->save();
-
-        if (!isset($data['id'])
-            || !$row = $this->find($data['id'])->current()) {
-
-            $row = $this->createRow();
+        if (!$data['id']) {
+            unset($data['id']);
         }
-        unset($data['id']);
-        $row->setFromArray($data)->save();
+        $row = $this->getRow($data);
+        $row->save();
 
         $mContent = Axis::model('cms/page_content');
         foreach ($data['content'] as $languageId => $values) {
-
-            // $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
-
-            if (!$rowContent = $mContent->find($row->id, $languageId)->current()) {
-                $rowContent = $mContent->createRow(array(
-                    'cms_page_id'   => $row->id,
-                    'language_id'       => $languageId
-                ));
+            if (empty($values['link'])) {
+                $values['link'] = $row->name;
             }
-            $rowContent->setFromArray($values)->save();
+            $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
         }
 
-        $mPageCategory = Axis::single('cms/page_category');
+        $mPageCategory = Axis::model('cms/page_category');
         $mPageCategory->delete(Axis::db()->quoteInto('cms_page_id = ?', $row->id));
         foreach (Zend_Json::decode($data['category']) as $categoryId) {
-
-            // $mPageCategory->getRow($categoryId, $row->id)->save();
-
             $mPageCategory->insert(array(
                 'cms_category_id' => $categoryId,
                 'cms_page_id'     => $row->id
