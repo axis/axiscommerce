@@ -107,14 +107,26 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
           KEY `FK_community_review_rating_title_language_id` (`language_id`),
           CONSTRAINT `FK_community_review_rating_title_language_id` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE,
           CONSTRAINT `FK_community_review_rating_title_rating_id` FOREIGN KEY (`rating_id`) REFERENCES `{$installer->getTable('community_review_rating')}` (`id`) ON DELETE CASCADE
-        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
-
-        INSERT INTO `{$installer->getTable('community_review_rating_title')}` (`rating_id`, `language_id`, `title`) VALUES
-        (1, 1, 'Price'),
-        (2, 1, 'Quality'),
-        (3, 1, 'Value');
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
         ");
+
+        $titles = array(
+            'Price',
+            'Quality',
+            'Value'
+        );
+        $languages = Axis_Collect_Language::collect();
+        $mRatingTitle = Axis::model('community/review_rating_title');
+        foreach (Axis::model('community/review_rating')->fetchAll() as $rating) {
+            foreach ($languages as $langId => $langName) {
+                $mRatingTitle->createRow(array(
+                    'rating_id'     => $rating->id,
+                    'language_id'   => $langId,
+                    'title'         => $titles[$rating->id - 1]
+                ))->save();
+            }
+        }
 
         Axis::single('core/config_field')
             ->add('community', 'Community', null, null, array('translation_module' => 'Axis_Community'))

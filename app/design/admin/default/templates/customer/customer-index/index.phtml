@@ -33,6 +33,9 @@ var customerGroups = [
     <?php
     $str = '';
     foreach (Axis_Collect_CustomerGroup::collect() as $id => $name) {
+        if (!$id) { // skip 'All' group
+            continue;
+        }
         $name = addslashes($name);
         $str .= "[$id, '$name'],\n";
     }

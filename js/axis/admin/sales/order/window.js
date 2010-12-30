@@ -22,19 +22,12 @@
 
 Ext.onReady(function(){
 
-    
-    
-//    /* Window */
     Order.window = new Axis.Window({
         id: 'viewOrder',
-        layout: 'fit',
         title: 'Order'.l(),
         width: 700,
-        height: 700,
-        plain: true,
+        height: 510,
         maximizable: true,
-        autoScroll: true,
-        border: false,
         items: [Order.form],
         buttons: [{
             icon: Axis.skinUrl + '/images/icons/database_save.png',
@@ -57,6 +50,4 @@ Ext.onReady(function(){
         }]
     });
 
-//    Order.load(1);
-
-}, this);
+});

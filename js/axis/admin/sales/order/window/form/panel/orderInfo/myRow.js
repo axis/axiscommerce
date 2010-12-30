@@ -21,7 +21,7 @@
  */
 Ext.onReady(function(){
 
-    
+
     myRow = function (config1, config2) {
         _myBox = function (config) {
             return Ext.applyIf(config || {}, {
@@ -34,7 +34,7 @@ Ext.onReady(function(){
         column1.anchor = '-10';
         return {
             layout: 'column',
-            anchor: '-20',
+            anchor: '100%',
             defaults: {
                 border: false,
                 columnWidth: '.5',

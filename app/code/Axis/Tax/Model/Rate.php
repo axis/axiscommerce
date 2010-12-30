@@ -1,19 +1,19 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
@@ -38,23 +38,20 @@
 
     public function update(array $data, $where)
     {
-        if (empty($data['modified_on'])) {
-            $data['modified_on'] = Axis_Date::now()->toSQLString();
-        }
+        unset($data['created_on']);
+        $data['modified_on'] = Axis_Date::now()->toSQLString();
         return parent::update($data, $where);
     }
-    
+
     public function insert(array $data)
     {
-        if (empty($data['created_on'])) {
-            $data['created_on'] = Axis_Date::now()->toSQLString();
-        }
+        $data['created_on'] = Axis_Date::now()->toSQLString();
         return parent::insert($data);
     }
-    
+
     /**
      * Calculate Tax by Shopping Cart Id
-     * 
+     *
      * @param int $cartId
      * @param array $geozoneIds
      * @return float
@@ -80,7 +77,7 @@
         foreach ($rawRows as $row) {
             if (!isset($rates[$row['id']])
                 || $rates[$row['id']]['priority'] < $row['priority']) {
-            
+
                 $rates[$row['id']] = $row['rate'];
             }
         }
@@ -90,11 +87,11 @@
         }
         return round($tax, 2);
     }
-    
+
     /**
-     * Calculate tax by one price 
-     *  
-     * @param int price 
+     * Calculate tax by one price
+     *
+     * @param int price
      * @param int $taxClassId
      * @param array $geozoneIds
      * @param int $customerGroupId
@@ -119,7 +116,7 @@
             ->limit(1)
             ->fetchOne()
             ;
-        
+
         return round(($price * $rate) / 100, 2);
     }
 }
