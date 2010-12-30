@@ -195,7 +195,6 @@ Ext.onReady(function() {
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
-            cls: 'x-btn-text-icon',
             handler : function(){
                 Order.add();
             }
@@ -207,7 +206,6 @@ Ext.onReady(function() {
         },*/{
             text: 'Edit'.l(),
             icon: Axis.skinUrl + '/images/icons/page_edit.png',
-            cls: 'x-btn-text-icon',
             handler: function() {
                 var selected = Ext.getCmp('grid-order')
                     .getSelectionModel().getSelected();
@@ -219,7 +217,6 @@ Ext.onReady(function() {
         }, {
             text: 'Print'.l(),
             icon: Axis.skinUrl + '/images/icons/printer_add.png',
-            cls: 'x-btn-text-icon',
             menu: {
                 items: [{
                     text: 'Print Invoces'.l(),
@@ -265,10 +262,57 @@ Ext.onReady(function() {
                     }
                 }]
              }
+         }, {
+            text: 'Pdf'.l(),
+            icon: Axis.skinUrl + '/images/icons/page_white_acrobat.png',
+            menu: {
+                items: [{
+                    text: 'Print Invoces'.l(),
+                    handler: function(menuItem, cheked) {
+                        if (Order.beforePrint('pdf')) {
+                            $('#print-invoice').val(true);
+                            $('#print-form').submit();
+                        }
+                    }
+                }, {
+                    text: 'Print Packingslips'.l(),
+                    handler: function(menuItem, cheked) {
+                        if (Order.beforePrint('pdf')) {
+                            $('#print-packingslip').val(true);
+                            $('#print-form').submit();
+                        }
+                    }
+                }, {
+                    text: 'Print Invoces & Packingslips'.l(),
+                    handler: function(menuItem, cheked) {
+                        if (Order.beforePrint('pdf')) {
+                            $('#print-invoice').val(true);
+                            $('#print-packingslip').val(true);
+                            $('#print-form').submit();
+                        }
+                    }
+                }, {
+                    text: 'Print Label Billing'.l(),
+                    handler: function(menuItem, cheked) {
+                        if (Order.beforePrint('pdf')) {
+                            $('#print-label').val(true);
+                            $('#print-form').submit();
+                        }
+                    }
+                }, {
+                    text: 'Print Label Shipping'.l(),
+                    handler: function(menuItem, cheked) {
+                        if (Order.beforePrint('pdf')) {
+                            $('#print-label').val(true);
+                            $('#print-label-address-type').val('shipping');
+                            $('#print-form').submit();
+                        }
+                    }
+                }]
+             }
          }, '-', {
                 text: 'Delete'.l(),
                 icon: Axis.skinUrl + '/images/icons/delete.png',
-                cls: 'x-btn-text-icon',
                 handler : function(){
                     var selectedItems = Ext.getCmp('grid-order')
                         .getSelectionModel().selections.items;
@@ -290,7 +334,6 @@ Ext.onReady(function() {
                 handler: function (){
                     Ext.getCmp('grid-order').getStore().reload();
                 },
-                iconCls: 'btn-text-icon',
                 icon: Axis.skinUrl + '/images/icons/refresh.png'
             }
         ]

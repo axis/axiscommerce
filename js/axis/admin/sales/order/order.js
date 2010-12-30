@@ -153,8 +153,10 @@ Ext.onReady(function(){
                 }
             });
         },
-        beforePrint: function()
+        beforePrint: function(output)
         {
+            $('#print-form').attr('target', (output === 'pdf' ? '_self' : '_blank'));
+            $('#print-output').val(output || 'html');
             $('#print-label-address-type').val('billing');
             $('#print-invoice').val(false);
             $('#print-packingslip').val(false);

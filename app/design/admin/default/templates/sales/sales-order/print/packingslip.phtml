@@ -1,10 +1,10 @@
 <?php $order = $this->order; ?>
-<table cellspacing="0" class="a-right small-text vertical-top no-border no-padding margin-top"> 
+<table cellspacing="0" class="a-right small-text vertical-top no-border no-padding margin-top">
     <tr>
         <td>
             <div id="logo">
                 <a href="<?php echo $this->href('index')?>">
-                    <?php echo $this->image('logo.gif') ?>
+                    <?php echo $this->image('logo_print.gif') ?>
                 </a>
             </div>
         </td>
@@ -24,12 +24,12 @@
     </tr>
 </table>
 <!-- <br/> -->
-<table cellspacing="0" class="two-columns"> 
+<table cellspacing="0" class="two-columns">
     <tr class="dark-brown ">
         <th colspan="2">
             <!-- @todo invoice Id -->
             <?php echo $this->translate('sales')->__('Order')?> # <?php echo $order['number'] ?> :: <?php
-            echo $this->translate('sales')->__('Order Date')?>: <?php 
+            echo $this->translate('sales')->__('Order Date')?>: <?php
             echo Axis_Date::timestamp(strtotime($order['date_purchased_on']))->toPhpString("D M j Y"); ?><br/>
         </th>
     </tr>
@@ -37,7 +37,7 @@
         <th><?php echo $this->translate('sales')->__('Bill to');?></th>
         <th><?php echo $this->translate('sales')->__('Ship to');?></th>
     </tr>
-    
+
     <tr>
         <td>
             <?php echo $this->address($order['billing']) ?>
@@ -49,7 +49,7 @@
     <tr class="no-border">
         <td colspan="2"></td>
     </tr>
-   
+
     <tr class="brown">
         <td><?php echo $this->translate('sales')->__('Payment Method');?></td>
         <td><?php echo $this->translate('sales')->__('Shipping Method');?></td>
@@ -86,10 +86,10 @@
                 <br/>
                 <?php
                 foreach ($product['attributes'] as $attr) {
-                    echo $attr['product_option'] . ': ' 
-                       . $this->escape($attr['product_option_value']) . "<br />\n"; 
+                    echo $attr['product_option'] . ': '
+                       . $this->escape($attr['product_option_value']) . "<br />\n";
                 }?>
-                
+
             <?php endif; ?>
             </td>
             <td><?php echo $this->escape($product['sku']) ?></td>
