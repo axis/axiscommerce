@@ -66,9 +66,9 @@ class Axis_Tax_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
           CONSTRAINT `FK_tax_rate_class` FOREIGN KEY (`tax_class_id`) REFERENCES `{$installer->getTable('tax_class')}` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
-        INSERT INTO `{$installer->getTable('tax_rate')}` (`id`, `tax_class_id`, `geozone_id`, `customer_group_id`, `rate`, `description`) 
-        VALUES (1, 1, 2, ". Axis_Account_Model_Customer_Group::GROUP_ALL_ID . ", 8, 'Taxable Goods'),
-               (2, 2, 2," . Axis_Account_Model_Customer_Group::GROUP_ALL_ID . ", 8, 'Shipping Tax');
+        INSERT INTO `{$installer->getTable('tax_rate')}` (`id`, `tax_class_id`, `geozone_id`, `customer_group_id`, `rate`, `description`)
+        VALUES (1, 1, 1, ". Axis_Account_Model_Customer_Group::GROUP_ALL_ID . ", 8, 'Taxable Goods'),
+               (2, 2, 1," . Axis_Account_Model_Customer_Group::GROUP_ALL_ID . ", 8, 'Shipping Tax');
 
         ");
 
