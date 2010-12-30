@@ -49,9 +49,7 @@ Ext.onReady(function() {
     var ds = new Ext.data.Store({
         url: Axis.getUrl('tag_index/list'),
         baseParams: {
-            'limit'            : 100,
-            'filter[0][field]' : 'tp.product_id',
-            'filter[0][value]' : 0
+            limit: 25
         },
         reader: new Ext.data.JsonReader({
             root: 'data',
@@ -61,23 +59,25 @@ Ext.onReady(function() {
                 {name: 'name'}
             ]
         }),
-        remoteSort: true
+        remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        }
     });
 
     var cm = new Ext.grid.ColumnModel({
         defaults: {
-            sortable: true,
-            menuDisabled: true
+            sortable: true
         },
         columns: [{
             dataIndex: 'id',
             header: 'Id'.l(),
-            width: 60
+            width: 90
         }, {
             dataIndex: 'name',
             id: 'name',
-            header: 'Tag'.l(),
-            width: 100
+            header: 'Tag'.l()
         }]
     });
 
@@ -88,7 +88,11 @@ Ext.onReady(function() {
         ds: ds,
         massAction: false,
         sm: new Ext.grid.RowSelectionModel(),
-        title: 'Tags'.l()
+        title: 'Tags'.l(),
+        plugins: [new Axis.grid.Filter()],
+        bbar: new Axis.PagingToolbar({
+            store: ds
+        })
     });
 
     ProductWindow.addTab(TagGrid.el, 110);
@@ -101,11 +105,9 @@ Ext.onReady(function() {
             if (!Product.id) {
                 return;
             }
-            TagGrid.el.store.load({
-                params: {
-                    'filter[0][value]': Product.id
-                }
-            });
+            TagGrid.el.store.baseParams['filter[product][field]'] = 'tp.product_id';
+            TagGrid.el.store.baseParams['filter[product][value]'] = Product.id;
+            TagGrid.el.store.reload();
         }
     });
 });

@@ -49,12 +49,12 @@ Ext.onReady(function() {
     var ds = new Ext.data.Store({
         url: Axis.getUrl('community_review/get-list'),
         baseParams: {
-            'limit': 100,
-            'where': 'cr.product_id = 0'
+            limit: 25
         },
         reader: new Ext.data.JsonReader({
             root: 'data',
             idProperty: 'id',
+            totalProperty: 'count',
             fields: [
                 {name: 'id', type: 'int'},
                 {name: 'title'},
@@ -64,7 +64,11 @@ Ext.onReady(function() {
                 {name: 'cons'}
             ]
         }),
-        remoteSort: true
+        remoteSort: true,
+        sortInfo: {
+            field: 'id',
+            direction: 'DESC'
+        }
     });
 
     var expander = new Ext.grid.RowExpander({
@@ -97,13 +101,12 @@ Ext.onReady(function() {
 
     var cm = new Ext.grid.ColumnModel({
         defaults: {
-            sortable: true,
-            menuDisabled: true
+            sortable: true
         },
         columns: [expander, {
             dataIndex: 'id',
             header: 'Id'.l(),
-            width: 60
+            width: 90
         }, {
             dataIndex: 'title',
             id: 'title',
@@ -123,10 +126,14 @@ Ext.onReady(function() {
         ds: ds,
         massAction: false,
         plugins: [
-            expander
+            expander,
+            new Axis.grid.Filter()
         ],
         sm: new Ext.grid.RowSelectionModel(),
-        title: 'Reviews'.l()
+        title: 'Reviews'.l(),
+        bbar: new Axis.PagingToolbar({
+            store: ds
+        })
     });
 
     ProductWindow.addTab(ReviewGrid.el, 100);
@@ -139,11 +146,9 @@ Ext.onReady(function() {
             if (!Product.id) {
                 return;
             }
-            ReviewGrid.el.store.load({
-                params: {
-                    'where': 'cr.product_id = ' + Product.id
-                }
-            });
+            ReviewGrid.el.store.baseParams['filter[product][field]'] = 'product_id';
+            ReviewGrid.el.store.baseParams['filter[product][value]'] = Product.id;
+            ReviewGrid.el.store.reload();
         }
     });
 });
