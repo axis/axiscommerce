@@ -37,19 +37,27 @@ var BlockWindow = {
     }
 };
 
-Ext.onReady(function(){
+Ext.onReady(function() {
+
+    var formFields = [
+        {name: 'id', type: 'int'},
+        {name: 'name'},
+        {name: 'is_active', type: 'int'}
+    ];
+
+    for (i in Axis.locales) {
+        formFields.push({
+            name: 'content[' + i + '][content]',
+            mapping: 'content.lang_' + i + '.content'
+        });
+    }
 
     BlockWindow.form = new Axis.FormPanel({
         labelAlign: 'top',
         bodyStyle: 'padding: 5px 5px 0px 5px',
         reader: new Ext.data.JsonReader({
             root: 'data'
-        }, [
-            {name: 'id', type: 'int'},
-            {name: 'name'},
-            {name: 'is_active', type: 'int'},
-            {name: 'content'}
-        ]),
+        }, formFields),
         items: [{
             layout: 'column',
             border: false,
@@ -86,16 +94,17 @@ Ext.onReady(function(){
                     mode: 'local',
                     editable: false,
                     triggerAction: 'all',
-                    anchor: '-5',
+                    anchor: '100%',
                     maxLength: 45
                 }]
             }]
         }, {
-            name: 'content',
+            name: 'content[content]',
             fieldLabel: 'Content'.l(),
-            anchor: '99%',
+            anchor: '-20',
             height: 300,
-            xtype: 'textarea'
+            defaultType: 'textarea',
+            xtype: 'langset'
         }, {
             name: 'id',
             initialValue: 0,

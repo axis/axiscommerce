@@ -207,19 +207,31 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             CONSTRAINT `FK_SALES_ORDER_STATUS_TEXT_LANGUAGE` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
-        INSERT INTO `{$installer->getTable('sales_order_status_text')}` (`status_id`, `language_id`, `status_name`) VALUES
-        (0, 1, 'New'),
-        (1, 1, 'Pending payment'),
-        (2, 1, 'Proccesing'),
-        (3, 1, 'Shipping'),
-        (4, 1, 'Delivered'),
-        (5, 1, 'Complete'),
-        (6, 1, 'Hold'),
-        (7, 1, 'Canceled'),
-        (8, 1, 'Refund'),
-        (9, 1, 'Failed');
-
         ");
+
+        $statusText = array(
+            'New',
+            'Pending payment',
+            'Proccesing',
+            'Shipping',
+            'Delivered',
+            'Completed',
+            'Holded',
+            'Canceled',
+            'Refund',
+            'Failed'
+        );
+        $mStatusText = Axis::model('sales/order_status_text');
+        $languages = Axis_Collect_Language::collect();
+        foreach (Axis::model('sales/order_status')->fetchAll() as $status) {
+            foreach ($languages as $langId => $langName) {
+                $mStatusText->createRow(array(
+                    'status_id'     => $status->id,
+                    'language_id'   => $langId,
+                    'status_name'   => $statusText[$status->id]
+                ))->save();
+            }
+        }
 
         Axis::single('core/config_field')
             ->add('sales', 'Sales', null, null, array('translation_module' => 'Axis_Sales'))

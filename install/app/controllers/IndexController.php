@@ -272,7 +272,13 @@ class IndexController extends Zend_Controller_Action
         $this->_session->user_login     = $params['login'];
         $this->_session->user_email     = $params['email'];
         $this->_session->user_password  = $params['password'];
-        $this->_redirect('index/step-modules');
+
+        $this->_session->modules = array_keys(
+            Axis_Install_Model_Module::getModules()
+        );
+        $this->_install();
+
+        // $this->_redirect('index/step-modules');
     }
 
     public function stepModulesAction()

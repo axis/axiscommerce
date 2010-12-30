@@ -7,7 +7,7 @@
         <link rel="shortcut icon" href="<?php echo $this->baseUrl?>/images/favicon.ico" type="image/x-icon" />
         <link href="<?php echo $this->baseUrl?>/css/reset.css" rel="stylesheet" type="text/css"/>
         <link href="<?php echo $this->baseUrl?>/css/style.css" rel="stylesheet" type="text/css"/>
-        <script type="text/javascript" src="<?php echo str_replace('/install', '', $this->baseUrl)?>/js/jquery/jquery-1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo str_replace('/install', '', $this->baseUrl)?>/js/jquery/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="<?php echo $this->baseUrl ?>/js/Installer.js"></script>
         <script type="text/javascript">
             var baseUrl = '<?php echo $this->baseUrl ?>';
@@ -16,7 +16,7 @@
     <body>
         <noscript><div class="noscript-notice"><p><strong><?php echo Axis::translate('install')->__('Please enable JavaScript in your browser.') ?></strong></p></div></noscript>
         <div class="wrapper">
-            
+
             <div class="header-container">
                 <div class="header">
                     <div id="logo">
@@ -24,8 +24,8 @@
                     </div>
                     <p class="locale">
                         <label for="interface_locale"><?php echo Axis::translate('install')->__('Language') ?>:</label>
-                        <?php echo $this->formSelect('interface_locale', 
-                            Axis_Locale::getLocale()->toString(), 
+                        <?php echo $this->formSelect('interface_locale',
+                            Axis_Locale::getLocale()->toString(),
                             array(
                                 'onchange'=> "window.location.href = baseUrl + '/index/change-locale/new_locale/' + this.value"
                             ),
@@ -34,7 +34,7 @@
                     </p>
                 </div>
             </div>
-            
+
             <div class="middle-container-wrapper">
                 <div class="middle-container">
                     <div class="middle layout-2columns-left">
@@ -43,7 +43,7 @@
                             <h1><?php echo Axis::translate('install')->__($this->pageTitle) ?></h1>
                             <?php echo $this->layout()->content ?>
                         </div>
-                        
+
                         <div class="col-left side-col">
                             <div class="box installation-process">
                                 <div class="head"><span class="title"><?php echo Axis::translate('install')->__('Installation Process') ?></span></div>
@@ -55,22 +55,22 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-container">
                 <div class="footer">
                     <p class="legality">
                         <?php echo Axis::translate('install')->__('Copyright &copy; 2010, Axis, Inc. All Rights Reserved')?>
                     </p>
                     <p class="bug-report"><?php echo Axis::translate('install')->__(
-                        "Report any %s you've found", 
-                        "<a href='http://github.com/axis/axiscommerce/issues' 
+                        "Report any %s you've found",
+                        "<a href='http://github.com/axis/axiscommerce/issues'
                             title='" . Axis::translate('install')->__('Report') . "'
-                            onclick='window.open(this.href);return false;'>" . Axis::translate('install')->__('Bugs or Issues') . 
+                            onclick='window.open(this.href);return false;'>" . Axis::translate('install')->__('Bugs or Issues') .
                         "</a>") ?>
                     </p>
                 </div>
             </div>
-            
+
         </div>
     </body>
 </html>

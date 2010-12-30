@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
@@ -34,10 +34,10 @@
 class Axis_Core_Model_Template extends Axis_Db_Table
 {
     protected $_name = 'core_template';
-    
+
     /**
      * Retrieve the array of currently using templates
-     * 
+     *
      * @return array(site_id => template_id)
      */
     public function getUsed() {
@@ -45,10 +45,10 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         $adminTemplates = Axis::single('core/config_value')->getValues('design/main/adminTemplateId');
         return $frontTemplates + $adminTemplates;
     }
-    
+
     /**
-     * Retrieve information about template 
-     * 
+     * Retrieve information about template
+     *
      * @param int $id
      * @return array
      */
@@ -61,29 +61,29 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             ));
             return array();
         }
-        
+
         $templateAssignments = '';
         $usedTemplates = Axis::single('core/template')->getUsed();
-        
+
         if (in_array($template->id, $usedTemplates)) {
             $sites = Axis_Collect_Site::collect();
-            $sites[0] = 'Global';  
+            $sites[0] = 'Global';
             foreach ($usedTemplates as $siteId => $templateId){
                 if ($template->id == $templateId && isset($sites[$siteId]))
                     $templateAssignments .= $sites[$siteId] . ', ';
             }
             $templateAssignments = substr($templateAssignments, 0, -2);
         }
-        
+
         $result = $template->toArray();
         $result['assignments'] = $templateAssignments;
-        
+
         return $result;
     }
-    
+
     /**
      * Save or insert template
-     * 
+     *
      * @param array $data
      * @return bool
      */
@@ -96,20 +96,20 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             ));
             return false;
         }
-        
+
         if (isset($data['is_active'])) {
             $data['is_active'] = 1;
         } else {
             $data['is_active'] = 0;
         }
-        
+
         if (!$row = $this->find($data['id'])->current()) {
             unset($data['id']);
             $row = $this->createRow();
         }
         $row->setFromArray($data);
         $row->save();
-        
+
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Template was saved successfully'
@@ -199,7 +199,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
     {
         $d = dir($dir);$x = array();
         while (false !== ($r = $d->read())) {
-            if($r[0] != "." &&  $r != "." && $r != ".." && 
+            if($r[0] != "." &&  $r != "." && $r != ".." &&
                ((false == $p && is_dir($dir.$r)) || true == $p)) {
 
                $x[$r] = (is_dir($dir . $r) ? array() : (is_file($dir . $r) ? true : false));
@@ -228,7 +228,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         $dir = Axis::config()->system->path . '/var/templates/';
         $templates = array();
 
-        
+
         foreach ($this->_getDirTree($dir) as $key => $value) {
             if (!in_array($key, $existTemplate))
                 $templates[] = array('template' => $key/*, 'file' => $value*/);
@@ -306,7 +306,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
     public function importTemplateFromXmlFile($xmlFileName)
     {
         $template = $this->_parseXml($xmlFileName);
-        
+
         if (!$templateId = $this->getIdByName($template['name'])) {
             $templateId = $this->insert(array(
                 'name' => $template['name'],
@@ -319,7 +319,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                 'default_layout' =>  $template['default_layout']
             ), 'id = ' . $templateId);
         }
-        
+
         $existPages = Axis::single('core/page')->getPages(true);
         $pages = array();
         $boxes = $template['box'];
@@ -350,7 +350,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             ));
         }
         $existPages = array_flip(Axis::single('core/page')->getPages(true));
-        
+
         foreach ($boxes as $box) {
             $boxId = Axis::single('core/template_box')->insert(array(
                 'template_id' => $templateId,
@@ -386,17 +386,20 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             ));
         }
 
+        $languages = Axis::model('locale/language')->fetchAll();
+        $mBlock = Axis::model('cms/block');
         foreach ($cmsBlocks as $cmsBlock) {
-            $row = Axis::single('cms/block')->fetchRow(
+            $row = $mBlock->fetchRow(
                 $this->getAdapter()->quoteInto('name = ?', $cmsBlock['name'])
             );
-            if (!$row instanceof Zend_Db_Table_Row_Abstract /*Zend_Db_Table_Row_Abstract*/)
-            {
-                Axis::single('cms/block')->insert(array(
-                    'name' => $cmsBlock['name'],
-                    'is_active' => $cmsBlock['is_active'],
-                    'content' => $cmsBlock['content']
-                ));
+            if (!$row instanceof Zend_Db_Table_Row_Abstract) {
+                $content = array();
+                $data = $cmsBlock;
+                foreach ($languages as $language) {
+                    $content[$language['id']]['content'] = $data['content'];
+                }
+                $data['content'] = $content;
+                $mBlock->save($data);
             }
         }
 
