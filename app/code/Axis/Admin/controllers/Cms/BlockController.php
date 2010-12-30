@@ -65,8 +65,21 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
 
+        $data = $row->toArray();
+        $content = Axis::single('cms/block_content')
+            ->select(array('language_id', '*'))
+            ->where('block_id = ? ', $row->id)
+            ->fetchAssoc();
+        foreach (Axis_Collect_Language::collect() as $languageId => $values) {
+            $data['content']['lang_' . $languageId] = array();
+            if (!isset($content[$languageId])) {
+                continue;
+            }
+            $data['content']['lang_' . $languageId] = $content[$languageId];
+        }
+
         $this->_helper->json->sendSuccess(array(
-            'data' => $row->toArray()
+            'data' => $data
         ));
     }
 

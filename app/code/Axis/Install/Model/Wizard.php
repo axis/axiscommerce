@@ -53,7 +53,7 @@ class Axis_Install_Model_Wizard
         'localization'  => 'Localization',
         'configuration' => 'Store configuration',
         'user'          => 'Setup admin account',
-        'modules'       => 'Modules',
+        //'modules'       => 'Modules',
         'finish'        => 'All done'
     );
 

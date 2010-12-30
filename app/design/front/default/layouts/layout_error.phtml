@@ -4,9 +4,16 @@
         <?php echo $this->render('html/html_head.phtml') ?>
     </head>
     <body class="<?php echo $this->bodyClass() ?>">
+        <noscript>
+            <div class="noscript-notice"><p>
+                <strong><?php echo Axis::translate('core')->__(
+                    'Please enable JavaScript in your browser.'
+                ) ?></strong>
+            </p></div>
+        </noscript>
         <?php echo $this->layout()->afterBodyBegin ?>
         <div class="wrapper">
-                
+
             <div class="header-container">
                 <div class="header">
                     <div id="logo">
@@ -15,16 +22,16 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="middle-container-wrapper">
                 <div class="middle-container">
                     <div class="middle layout-1column">
                         <div class="col-main">
-                            
+
                             <?php echo $this->message() ?>
-                            
+
                             <?php echo $this->title($this->pageTitle) ?>
-                            
+
                             <?php if ($this->error): ?>
                             <div class="exception-trace-wrapper">
                                 <div class="exception-trace">
@@ -38,12 +45,12 @@
                                     'More information about this error may be available in the server error log.'
                                 ) ?></li>                            </ul>
                             <?php endif ?>
-                            
+
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-container">
                 <div class="footer">
                     <p class="legality">
@@ -54,7 +61,7 @@
                         you've found</p>
                 </div>
             </div>
-                
+
         </div>
         <?php echo $this->layout()->beforeBodyEnd ?>
     </body>

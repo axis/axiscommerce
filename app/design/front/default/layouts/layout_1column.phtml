@@ -4,19 +4,26 @@
         <?php echo $this->render('html/html_head.phtml') ?>
     </head>
     <body class="<?php echo $this->bodyClass() ?>">
+        <noscript>
+            <div class="noscript-notice"><p>
+                <strong><?php echo Axis::translate('core')->__(
+                    'Please enable JavaScript in your browser.'
+                ) ?></strong>
+            </p></div>
+        </noscript>
         <?php echo $this->layout()->afterBodyBegin ?>
         <div class="wrapper">
-            
+
             <?php echo $this->render('html/header_topbar.phtml') ?>
-            
+
             <div class="header-container">
                 <div class="header">
                     <?php echo $this->render('html/header.phtml') ?>
                 </div>
             </div>
-            
+
             <?php echo $this->crumbs() ?>
-            
+
             <div class="middle-container-wrapper">
                 <div class="middle-container">
                     <div class="middle layout-1column">
@@ -29,13 +36,13 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-container">
                 <div class="footer">
                     <?php echo $this->render('html/footer.phtml') ?>
                 </div>
             </div>
-                
+
         </div>
         <?php echo $this->layout()->beforeBodyEnd ?>
     </body>

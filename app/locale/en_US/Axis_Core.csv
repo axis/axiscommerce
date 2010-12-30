@@ -284,7 +284,6 @@
 "General","General"
 "Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)","Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)"
 "Admin url (example.com/<b>adminRoute</b>)","Admin url (example.com/<b>adminRoute</b>)"
-"",""
 "Company country","Company country"
 "Company name","Company name"
 "Company website","Company website"
@@ -295,3 +294,4 @@
 "Mail Transport (smtp or sendmail)","Mail Transport (smtp or sendmail)"
 "%d record(s) was saved successfully","%d record(s) was saved successfully"
 "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section","Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section"
+"Please enable JavaScript in your browser.","Please enable JavaScript in your browser."

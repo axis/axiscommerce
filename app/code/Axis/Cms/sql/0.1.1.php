@@ -132,17 +132,7 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         //blocks
         $mBlock = Axis::model('cms/block');
         $mBlock->insert(array(
-            'content'   => '<noscript><div class="noscript-notice"><p><strong>{{helper_t(Please enable JavaScript in your browser.)}}</strong></p></div></noscript>',
-            'is_active' => 1,
-            'name'      => 'noscript_notice'
-        ));
-        $mBlock->insert(array(
-            'content'   => '<div class="demo-notice">{{helper_t(Please notice! This is a demo store. Any order placed will not be processed.)}}</div>',
-            'is_active' => 1,
-            'name'      => 'demo_notice'
-        ));
-        $mBlock->insert(array(
-            'content'   => '<p class="legality">&copy; 2008-2010 <a href="http://www.axiscommerce.com">Axis</a> {{helper_t(Demo Store. All rights reserved.)}}</p>',
+            'content'   => '<p class="legality">&copy; 2008-2010 <a href="http://www.axiscommerce.com">Axis</a>Demo Store. All rights reserved.</p>',
             'is_active' => 1,
             'name'      => 'copyright'
         ));

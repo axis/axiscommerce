@@ -37,9 +37,11 @@ class Axis_Cms_Model_Block extends Axis_Db_Table
 
     public function getContentByName($name)
     {
-        return $this->select('content')
-            ->where('name = ?', $name)
-            ->where('is_active = ?', 1)
+        return $this->select('cbc.content')
+            ->joinLeft('cms_block_content', 'cbc.block_id = cb.id')
+            ->where('cb.name = ?', $name)
+            ->where('cbc.language_id = ?', Axis_Locale::getLanguageId())
+            ->where('cb.is_active = ?', 1)
             ->fetchOne();
     }
 
@@ -58,5 +60,12 @@ class Axis_Cms_Model_Block extends Axis_Db_Table
         unset($data['id']);
         $row->setFromArray($data);
         $row->save();
+
+        $mContent = Axis::model('cms/block_content');
+        foreach ($data['content'] as $languageId => $values) {
+            $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
+        }
+
+        return $row->id;
     }
 }
