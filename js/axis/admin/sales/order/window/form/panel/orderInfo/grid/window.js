@@ -63,7 +63,7 @@ Ext.onReady(function(){
     additionalProduts = {
         add: function () {
             var selections = additionalProduts._getSelections();
-            
+
             if (undefined === selections.__count__) {
                 selections.__count__ = function() {
                     var count = 0;
@@ -96,6 +96,7 @@ Ext.onReady(function(){
                         store.modified.push(record);
                         store.add(record);
                     }
+                    windowAddProductOrder.hide();
                 }
             });
         },
@@ -147,7 +148,7 @@ Ext.onReady(function(){
                 variationId = 0;
                 record = selections[i].data;
                 selected[record.id] = record;
-                
+
                 selected[record.id].orderId = form
                     .findField('order[id]')
                     .getValue();
@@ -169,7 +170,7 @@ Ext.onReady(function(){
                     variationId = domElements[0].value;
                 }
                 selected[record.id].variationId = variationId;
-                
+
                 domElements = Ext.query('#product-attributes-form-' + record.id + ' .product-modifiers .modifier');
                 modifiers = modifier = null;
                 for(var j in domElements) {
@@ -180,7 +181,7 @@ Ext.onReady(function(){
                     if (('radio' === domElements[j].type
                             || 'checkbox' === domElements[j].type)
                         && false === domElements[j].checked ) {
-                            
+
                         continue;
                     }
                     modifiers = _prepareModifiers(
@@ -229,7 +230,7 @@ Ext.onReady(function(){
         }
     });
     var selectionModel = new Ext.grid.CheckboxSelectionModel();
-    
+
 //////////////////////////////////////////////////////////////
 
     AjaxRowExpander = function(config) {
@@ -275,54 +276,69 @@ Ext.onReady(function(){
     });
 
     var expander = new AjaxRowExpander();
-    
-    var cm = new Ext.grid.ColumnModel([
-        selectionModel,
-        expander,
+
+    var cm = new Ext.grid.ColumnModel({
+        defaults: {
+            sortable: true
+        },
+        columns: [
+            selectionModel,
+            expander,
         {
             header: 'Name'.l(),
             dataIndex: 'name',
             width: 300,
-            menuDisabled: true
+            menuDisabled: true,
+            table: 'cpd'
         }, {
+            align: 'right',
             header: 'Price'.l(),
             dataIndex: 'price',
             menuDisabled: true
         }, {
+            align: 'right',
             header: 'Quantity'.l(),
             dataIndex: 'quantity',
             menuDisabled: true,
+            sortable: false,
             editor: new Ext.form.NumberField({
                 allowBlank: false,
                 allowNegative: false,
                 maxValue: 100000
-            })
+            }),
+            filterable: false
         }, {
-            header: 'Avaible'.l(),
+            align: 'right',
+            header: 'Available'.l(),
             dataIndex: 'avaible_quantity',
-            menuDisabled: true
-        }
-    ])
-    cm.defaultSortable = true;
+            menuDisabled: true,
+            sortName: 'quantity',
+            filter: {
+                name: 'quantity'
+            }
+        }]
+    });
 
     var pagginator = new Axis.PagingToolbar({
         pageSize: 10,
         store: storeProducts
     });
-    
-    var gridAddProducts = new Ext.grid.EditorGridPanel({
+
+    var gridAddProducts = new Axis.grid.EditorGridPanel({
         cm: cm,
         sm: selectionModel,
         ds: storeProducts,
         id: 'grid-add-products',
-        plugins: [expander],
-        border: true,
+        plugins: [
+            expander,
+            new Axis.grid.Filter()
+        ],
+        border: false,
         viewConfig: {
             forceFit: true,
             emptyText: 'No records found'.l()
         },
         bbar: pagginator
-
     });
 
     gridAddProducts.override({

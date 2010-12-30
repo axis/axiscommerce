@@ -35,7 +35,7 @@ Ext.onReady(function(){
         {name: 'quantity',             type: 'float'},
         {name: 'sku',                  type: 'string'},
         {name: 'product_rate',         type: 'float'},
-        {name: 'product_subtotal',     
+        {name: 'product_subtotal',
             type: 'float',
             dependencies: ['final_price', 'quantity'],
             notDirty: true,
@@ -43,7 +43,7 @@ Ext.onReady(function(){
                 return parseFloat(parseFloat(
                     record.get('final_price') * record.get('quantity')
                 ).toFixed(2));
-            }}, 
+            }},
         {name: 'product_subweight',
             type: 'float',
             dependencies: ['final_weight', 'quantity'],
@@ -52,7 +52,7 @@ Ext.onReady(function(){
                 return parseFloat(parseFloat(
                     record.get('final_weight') * record.get('quantity')
                 ).toFixed(2));
-            }}, 
+            }},
         {name: 'product_subtax',
             type: 'float',
             dependencies: ['product_rate', 'quantity', 'final_price'],
@@ -103,7 +103,7 @@ Ext.onReady(function(){
         Ext.StoreMgr.lookup('storeShippingMethod').reloadList();
         Ext.StoreMgr.lookup('storePaymentMethod').reloadList();
     };
-    
+
     var expander = new Ext.grid.RowExpander({
         listeners: {
             beforeexpand: function(expander, record, body, rowIndex) {
@@ -184,7 +184,6 @@ Ext.onReady(function(){
         sm: selectionModel,
         ds: ds,
         id: 'grid-products',
-        anchor: '-20',
         autoHeight: true,
         plugins: [expander],
         bodyStyle: 'margin-bottom: 7px',
@@ -227,5 +226,5 @@ Ext.onReady(function(){
         Ext.StoreMgr.lookup('storePaymentMethod').reloadList();
     });
     ds.on('update', ds.reloadDepend);
-    
+
 }, this);
