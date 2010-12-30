@@ -1,19 +1,19 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
@@ -35,7 +35,7 @@ require_once('dompdf/dompdf_config.inc.php');
 class Axis_Pdf
 {
     private $_DOMPDF;
-  
+
     public function __construct()
     {
         //Zend_Loader::registerAutoload('Axis_Pdf_Loader');
@@ -48,15 +48,15 @@ class Axis_Pdf
         }
         $this->_DOMPDF = new DOMPDF();
     }
-    
+
     public function setContent($content)
     {   // next page is <div style="page-break-before:always"></div>
-        $this->_DOMPDF->load_html($content);
+        @$this->_DOMPDF->load_html($content);
     }
-    
+
     public function getPdf($returnFileName = "sample.pdf")
     {
-        $this->_DOMPDF->render();
-        $this->_DOMPDF->stream($returnFileName);
-    }   
+        @$this->_DOMPDF->render();
+        @$this->_DOMPDF->stream($returnFileName);
+    }
 }

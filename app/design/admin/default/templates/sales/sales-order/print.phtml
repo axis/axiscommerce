@@ -90,19 +90,19 @@ table tr td, table tr th {
 }
 .dashed-border .empty-cell, .empty-cell {
     border:none !important;
-    
+
 }
 </style>
 </head>
 <body>
-    
+
     <?php $i = 0;?>
     <?php function newPage(&$i) {
         if ($i > 0) {
             echo '<!-- Next page --><div style="page-break-before:always"></div>';
         }
         $i++;
-    } 
+    }
     ?>
     <?php foreach ($this->orders as $order) :?>
         <?php $this->order = $order;?>
@@ -120,6 +120,9 @@ table tr td, table tr th {
         <?php // newPage($i); ?>
         <?php echo $this->render('/sales-order/print/label.phtml') ?>
     <?php endif; ?>
-    
+
+    <script type="text/javascript">
+        window.print();
+    </script>
 </body>
 </html>

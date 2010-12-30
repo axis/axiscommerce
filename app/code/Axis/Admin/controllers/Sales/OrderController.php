@@ -324,13 +324,18 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
         $this->view->orders = $orders;
         $script = $this->getViewScript('print', false);
         $content = $this->view->render($script);
-        $pdf = new Axis_Pdf();
-        $pdf->setContent($content);
-        $pdf->getPdf($pdfFileName
-            . ($firstOrderId != end($orderIds) ?
-                $firstOrderId . '-' . end($orderIds) : $firstOrderId)
-            . '.pdf'
-        );
+
+        if ('pdf' === $this->_getParam('output', 'html')) {
+            $pdf = new Axis_Pdf();
+            $pdf->setContent($content);
+            $pdf->getPdf($pdfFileName
+                . ($firstOrderId != end($orderIds) ?
+                    $firstOrderId . '-' . end($orderIds) : $firstOrderId)
+                . '.pdf'
+            );
+        } else {
+            echo $content;
+        }
     }
 
     public function getOrderInfoAction()
