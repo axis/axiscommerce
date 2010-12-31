@@ -136,9 +136,6 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
               CONSTRAINT `FK_account_customer_field_group_label_language` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
-            INSERT INTO `{$installer->getTable('account_customer_fieldgroup_label')}` (`customer_field_group_id`, `language_id`, `group_label`) VALUES
-              (1, 1, 'Personal');
-
             -- DROP TABLE IF EXISTS `{$installer->getTable('account_customer_field_label')}`;
             CREATE TABLE IF NOT EXISTS `{$installer->getTable('account_customer_field_label')}` (
               `customer_field_id` mediumint(8) unsigned NOT NULL,
@@ -149,10 +146,6 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
               CONSTRAINT `FK_account_customer_field_label_customer_field` FOREIGN KEY (`customer_field_id`) REFERENCES `{$installer->getTable('account_customer_field')}` (`id`) ON DELETE CASCADE,
               CONSTRAINT `FK_account_customer_field_label_language` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
-            INSERT INTO `{$installer->getTable('account_customer_field_label')}` (`customer_field_id`, `language_id`, `field_label`) VALUES
-              (1, 1, 'Firstname'),
-              (2, 1, 'Lastname');
 
             -- DROP TABLE IF EXISTS `{$installer->getTable('account_customer_forgotpassword')}`;
             CREATE TABLE IF NOT EXISTS `{$installer->getTable('account_customer_forgotpassword')}` (
