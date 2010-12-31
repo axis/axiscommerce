@@ -40,8 +40,7 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
         $this->view->siteId = $siteId;
         $date = Axis_Date::now()
             ->setHour(0)->setMinute(0)->setSecond(0)
-            ->toPhpString('Y-m-d H:i:s')
-            ;
+            ->toPhpString('Y-m-d H:i:s');
 
         $currency = Axis::single('locale/currency')->getCurrency(
             Axis::config()->locale->main->currency
@@ -53,18 +52,17 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
             $order->getTotal($this->db->quoteInto('site_id = ?', $siteId))
         );
 
-        $this->view->orderTotalToDay = $currency->toCurrency(
+        $this->view->orderTotalToday = $currency->toCurrency(
             $order->getTotal(array(
                 $this->db->quoteInto('date_purchased_on > ? ', $date),
                 $this->db->quoteInto('site_id = ?', $siteId)
             ))
         );
 
-        $this->view->orderCountToDay = $order->select()
+        $this->view->orderCountToday = $order->select()
             ->where('date_purchased_on > ?', $date)
             ->addSiteFilter($siteId)
-            ->count('DISTINCT customer_email')
-            ;
+            ->count('DISTINCT customer_email');
 
         $count = $order->select()
             ->addSiteFilter($siteId)
@@ -73,33 +71,20 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
             $count ? $order->getTotal($this->db->quoteInto('site_id = ?', $siteId))/$count : 0
         );
 
-        $this->view->orderCustomerToDay = $order->select()
-            ->where('date_purchased_on > ?', $date)
-            ->addSiteFilter($siteId)
-            ->addGuestFilter()
-            ->count()
-            ;
-
         $this->view->customerCount = Axis::single('account/customer')
             ->select()
             ->addSiteFilter($siteId)
             ->count();
 
-        $this->view->visitorToDay = Axis::single('log/visitor')
+        $this->view->visitorToday = Axis::single('log/visitor')
             ->select()
             ->where('last_visit_at > ?', $date)
             ->addSiteFilter($siteId)
             ->count('DISTINCT session_id');
 
-        $this->view->pageviewsToDay = Axis::single('log/url')
+        $this->view->pageviewsToday = Axis::single('log/url')
             ->select()
             ->where('visit_at > ? ', $date)
-            ->addSiteFilter($siteId)
-            ->count();
-
-        $this->view->mailCountToDay =  Axis::single('contacts/message')
-            ->select()
-            ->where('created_at > ? ', $date)
             ->addSiteFilter($siteId)
             ->count();
 

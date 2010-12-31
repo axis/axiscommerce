@@ -98,7 +98,6 @@
 "We can not deliver the goods at the listed address.", "Мы не можем доставить товар по указанному адресу."
 "You will be redirected to PayPal website when you place an order", "После размещения заказа, вы будете перенаправлены на сайт PayPal"
 "You will be redirected to paypal in a few seconds.", "Вы будете перенаправлены на PayPal в течение нескольких секунд."
-"Your create new order", "Вы создаете новый заказ"
 "Your shopping cart is empty", "Ваша корзина пуста"
 "edit", "редактировать"
 "loading...", "загрузка..."
@@ -111,4 +110,3 @@
 "Enabled", "Включено"
 "Sort Order", "Сортировка"
 "ShippingTax", "Налог на доставку"
-"", ""

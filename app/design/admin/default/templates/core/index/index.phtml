@@ -42,31 +42,31 @@ if (in_array('Axis_Search', array_keys(Axis::app()->getModules()))) {
         <table width="100%">
             <tbody>
                 <tr>
-                    <td><?php echo Axis::translate('admin')->__('Total Sales');?>:</td>
+                    <td><?php echo Axis::translate('sales')->__('All Time Sales');?>:</td>
                     <td><?php  echo $this->escape($this->orderTotal); ?></td>
-                    <td><?php echo Axis::translate('admin')->__('Today visitors')?>:</td>
-                    <td><?php echo $this->escape($this->visitorToDay); ?></td>
+                    <td><?php echo Axis::translate('log')->__('Today Visitors')?>:</td>
+                    <td><?php echo $this->escape($this->visitorToday); ?></td>
                 </tr>
                 <tr>
-                    <td><?php echo Axis::translate('admin')->__('Today Sales');?>:</td>
-                    <td><?php echo $this->escape($this->orderTotalToDay); ?></td>
-                    <td><?php echo Axis::translate('admin')->__('Today Pageviews')?>:</td>
-                    <td><?php echo $this->escape($this->pageviewsToDay); ?></td>
+                    <td><?php echo Axis::translate('sales')->__('Today Sales');?>:</td>
+                    <td><?php echo $this->escape($this->orderTotalToday); ?></td>
+                    <td><?php echo Axis::translate('log')->__('Today Pageviews')?>:</td>
+                    <td><?php echo $this->escape($this->pageviewsToday); ?></td>
                 </tr>
                 <tr>
-                    <td><?php echo Axis::translate('admin')->__('Average Order')?>:</td>
+                    <td><?php echo Axis::translate('sales')->__('Average Order Total')?>:</td>
                     <td><?php echo $this->escape($this->orderAverage);?></td>
-                    <td><?php echo Axis::translate('admin')->__('Conversion rate')?>:</td>
-                    <td><?php  echo $this->visitorToDay ?
-                        $this->escape(round(($this->orderCountToDay*100)/$this->visitorToDay, 2)) : 0; ?>%
+                    <td><?php echo Axis::translate('sales')->__('Conversion rate')?>:</td>
+                    <td><?php echo $this->visitorToday ?
+                        $this->escape(round(($this->orderCountToday*100) / $this->visitorToday, 2)) : 0; ?>%
                     </td>
                 </tr>
                 <tr>
-                    <td><?php echo Axis::translate('admin')->__('Customers')?>:</td>
+                    <td><?php echo Axis::translate('account')->__('Customers')?>:</td>
                     <td><?php echo $this->escape($this->customerCount); ?></td>
-                    <td><?php echo Axis::translate('admin')->__('Pageviews per visit')?>:</td>
-                    <td><?php echo $this->visitorToDay
-                        ? $this->escape(floor($this->pageviewsToDay/$this->visitorToDay)) : 0; ?>
+                    <td><?php echo Axis::translate('log')->__('Pageviews per Visit')?>:</td>
+                    <td><?php echo $this->visitorToday
+                        ? $this->escape(floor($this->pageviewsToday / $this->visitorToday)) : 0; ?>
                     </td>
                 </tr>
             </tbody>

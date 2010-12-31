@@ -63,7 +63,7 @@ class Axis_Sales_Model_Observer
         $mail = new Axis_Mail();
         $mail->setConfig(array(
             'event'   => 'order_new-customer',
-            'subject' => Axis::translate('sales')->__('Your create new order'),
+            'subject' => Axis::translate('sales')->__('Your order'),
             'data'    => array(
                 'order' => $order
             ),
