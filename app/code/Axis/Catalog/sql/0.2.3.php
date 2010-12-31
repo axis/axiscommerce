@@ -73,8 +73,6 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
           CONSTRAINT `FK_CATALOG_CATEGORY_DESCRIPTION_LANGUAGE_ID` FOREIGN KEY (`language_id`) REFERENCES `{$installer->getTable('locale_language')}` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
-        INSERT INTO `{$installer->getTable('catalog_category_description')}` (`category_id`, `language_id`, `name`, `description`) VALUES (1, 1, 'Main Store', 'Root Category');
-
         -- DROP TABLE IF EXISTS `{$installer->getTable('catalog_hurl')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('catalog_hurl')}` (
           `key_word` varchar(128) NOT NULL,
@@ -343,6 +341,17 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
         INSERT INTO `{$installer->getTable('catalog_product_variation')}` (`id`, `product_id`, `price`, `sku`, `quantity`, `price_type`, `weight`, `weight_type`) VALUES (0, NULL, 0.0000, '', 0.0000, 'by', 0.00, 'by');
 
         ");
+
+        $languages = Axis_Collect_Language::collect();
+        $mCategoryDescription = Axis::model('catalog/category_description');
+        foreach ($languages as $langId => $langName) {
+            $mCategoryDescription->createRow(array(
+                'category_id'   => 1,
+                'language_id'   => $langId,
+                'name'          => 'Main Store',
+                'description'   => 'Root Category'
+            ))->save();
+        }
 
         Axis::single('core/config_field')
             ->add('catalog', 'Catalog', null, null, array('translation_module' => 'Axis_Catalog'))

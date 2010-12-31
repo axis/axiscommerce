@@ -4,5 +4,7 @@
 "Php log","Php log"
 "Shipping log","Shipping log"
 "General","General"
-"",""
 "Path relative to AXIS_ROOT","Path relative to AXIS_ROOT"
+"Pageviews per Visit","Pageviews per Visit"
+"Today Visitors","Today Visitors"
+"Today Pageviews","Today Pageviews"
