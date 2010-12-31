@@ -64,8 +64,8 @@ Ext.onReady(function() {
                 Ext.each(record.get('attributes'), function(row) {
                     html += String.format(
                         '<p class="product-attribute expander-row"><label>{0}</label><span>{1}</span></p>',
-                        row.name,
-                        row.value
+                        row.product_option,
+                        row.product_option_value
                     );
                 }, this);
                 html += '</div>';
