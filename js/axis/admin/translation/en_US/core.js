@@ -498,5 +498,5 @@ Locale.module('core', {
     'New Сategory': 'New Сategory',
     'New Page': 'New Page',
     'Install All': 'Install All',
-    'Upgrade All': 'Install All'
+    'Upgrade All': 'Upgrade All'
 });
