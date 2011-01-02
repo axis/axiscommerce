@@ -49,13 +49,19 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     public function listProductsAction()
     {
         if ($this->_hasParam('catId')) {
-            $category = Axis::model('catalog/category')
-                ->find($this->_getParam('catId', 0))
-                ->current();
-        } else {
+            if ($catId = $this->_getParam('catId', 0)) {
+                $category = Axis::model('catalog/category')
+                    ->find($this->_getParam('catId', 0))
+                    ->current();
+            } else {
+                $category = 0; // uncategorized products filter
+            }
+        } elseif ($this->_hasParam('siteId')) {
             // used in order window
             $category = Axis::model('catalog/category')
                 ->getRoot($this->_getParam('siteId'));
+        } else {
+            $category = false; // do not filter by category or site
         }
 
         $mProduct = Axis::model('catalog/product');
@@ -68,8 +74,10 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             if ($category->lvl != 0) {
                 $select->addFilter('cc.id', $category->id);
             }
-        } else {
+        } elseif (0 === $category) {
             $select->addFilterByUncategorized();
+        } elseif (null === $category) {
+            // user wanted to filter by non-existing category
         }
 
         $list = $select->addDescription()
