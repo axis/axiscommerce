@@ -46,10 +46,9 @@
 <script type="text/javascript">
 jQuery('document').ready(function() {
     Spinner.message = '<?php echo Axis::translate('install')->__("Installing. Please wait...") ?>';
-    $('button#submit').click(function() {
-        $(this).attr('disabled', 'disabled');
+    $('#form-user').submit(function() {
+        $('button#submit').attr('disabled', 'disabled');
         Spinner.show();
-        $('#form-user').submit();
     });
 });
 </script>
