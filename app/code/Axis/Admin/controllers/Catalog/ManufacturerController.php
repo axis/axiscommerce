@@ -50,13 +50,12 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             ->limit(
                 $this->_getParam('limit', 25),
                 $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'cpm.id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
             );
-
-        $sort = $this->_getParam('sort', 'cpm.id');
-        if (strstr($sort, 'cpmd.title_')) {
-            $sort = 'cpmd.title';
-        }
-        $select->order($sort . ' ' . $this->_getParam('dir', 'DESC'));
 
         if (!$ids = $select->fetchCol()) {
             return $this->_helper->json->sendSuccess(array(
@@ -71,7 +70,11 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             ->addUrl()
             ->addDescription(false)
             ->where('cpm.id IN (?)', $ids)
-            ->order($sort . ' ' . $this->_getParam('dir', 'DESC'));
+            ->order(
+                $this->_getParam('sort', 'cpm.id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
 
         $result = array();
         foreach ($select->fetchAll() as $manufacturer) {
