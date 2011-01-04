@@ -101,7 +101,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
             )) {
 
             throw new Axis_Exception(
-                Axis::translate('catalog')->__('Duplicate entry (url)')
+                Axis::translate('core')->__('Column %s should be unique', 'url')
             );
         }
 
@@ -109,11 +109,13 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
         $row->setFromArray($data)->save();
 
         // description
-        $mManufactureDescription =  Axis::model('catalog/product_manufacturer_description');
-        foreach (Axis_Collect_Language::collect() as $languageId => $languangeName) {
-            $mManufactureDescription->getRow($row->id, $languageId)
-                ->setFromArray($data['description'][$languageId])
-                ->save();
+        if (isset($data['description'])) {
+            $mManufactureDescription =  Axis::model('catalog/product_manufacturer_description');
+            foreach (Axis_Collect_Language::collect() as $languageId => $languangeName) {
+                $mManufactureDescription->getRow($row->id, $languageId)
+                    ->setFromArray($data['description'][$languageId])
+                    ->save();
+            }
         }
 
         // url

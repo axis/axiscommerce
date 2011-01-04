@@ -156,12 +156,24 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
         $this->_helper->layout->disableLayout();
 
         $mManufacturer = Axis::model('catalog/product_manufacturer');
+        $i = 0;
         foreach (Zend_Json_Decoder::decode($this->_getParam('data')) as $data) {
-            $mManufacturer->save($data);
+            try {
+                $mManufacturer->save($data);
+                $i++;
+            } catch (Axis_Exception $e) {
+                Axis::message()->addError($e->getMessage());
+            }
+        }
+
+        if ($i) {
+            Axis::message()->addSuccess(
+                Axis::translate('core')->__('%d record(s) was saved successfully', $i)
+            );
         }
 
         $this->_helper->json->sendJson(array(
-            'success' => true
+            'success' => (bool) $i
         ));
     }
 
