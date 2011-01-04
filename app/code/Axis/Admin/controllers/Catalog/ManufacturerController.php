@@ -50,13 +50,12 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             ->limit(
                 $this->_getParam('limit', 25),
                 $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'cpm.id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
             );
-
-        $sort = $this->_getParam('sort', 'cpm.id');
-        if (strstr($sort, 'cpmd.title_')) {
-            $sort = 'cpmd.title';
-        }
-        $select->order($sort . ' ' . $this->_getParam('dir', 'DESC'));
 
         if (!$ids = $select->fetchCol()) {
             return $this->_helper->json->sendSuccess(array(
@@ -71,7 +70,11 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             ->addUrl()
             ->addDescription(false)
             ->where('cpm.id IN (?)', $ids)
-            ->order($sort . ' ' . $this->_getParam('dir', 'DESC'));
+            ->order(
+                $this->_getParam('sort', 'cpm.id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
 
         $result = array();
         foreach ($select->fetchAll() as $manufacturer) {
@@ -153,12 +156,24 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
         $this->_helper->layout->disableLayout();
 
         $mManufacturer = Axis::model('catalog/product_manufacturer');
+        $i = 0;
         foreach (Zend_Json_Decoder::decode($this->_getParam('data')) as $data) {
-            $mManufacturer->save($data);
+            try {
+                $mManufacturer->save($data);
+                $i++;
+            } catch (Axis_Exception $e) {
+                Axis::message()->addError($e->getMessage());
+            }
+        }
+
+        if ($i) {
+            Axis::message()->addSuccess(
+                Axis::translate('core')->__('%d record(s) was saved successfully', $i)
+            );
         }
 
         $this->_helper->json->sendJson(array(
-            'success' => true
+            'success' => (bool) $i
         ));
     }
 

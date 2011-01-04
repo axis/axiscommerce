@@ -191,7 +191,12 @@ Ext.onReady(function(){
             params: {
                 data: Ext.encode(data)
             },
-            success: reload
+            success: function(response, request) {
+                response = Ext.decode(response.responseText);
+                if (response.success) {
+                    reload();
+                }
+            }
         })
     }
 
