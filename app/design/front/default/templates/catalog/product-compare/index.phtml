@@ -11,15 +11,19 @@ $misc = array(
 $iterator = 0;
 echo '<colgroup>';
 echo '<col class="col-first col-even" />';
+$width = 100;
+if (count($this->products)) {
+    $width = round(100 / count($this->products), 2);
+}
 foreach ($this->products as $product) {
-    echo '<col class="' . ($iterator++ % 2 ? "col-even" : "col-odd") . '" />';
+    echo '<col style="width:' . $width . '%" class="' . ($iterator++ % 2 ? "col-even" : "col-odd") . '" />';
 }
 echo '</colgroup>';
 
 /* name */
 echo '<thead><tr><th>Product: </th>';
 foreach ($this->products as $product) {
-    echo '<th>' . 
+    echo '<th>' .
     '<a href="' . $this->href($this->catalogUrl . '/'. $product['key_word']) .'">' . $product['name'] . '</a>'
     . '</th>';
 }
@@ -33,9 +37,9 @@ foreach ($this->products as $product) {
     $imageTitle = isset($product['images'][$product['image_listing']]) ?
         $product['images'][$product['image_listing']]['title'] : '';
     echo '<td>' . $this->imager('/product' . $imagePath, array(
-           'width'  => $this->config()->image->product->widthSmall, 
-           'height' => $this->config()->image->product->heightSmall, 
-           'alt' => $this->escape($imageTitle), 
+           'width'  => $this->config()->image->product->widthSmall,
+           'height' => $this->config()->image->product->heightSmall,
+           'alt' => $this->escape($imageTitle),
            'seo' => $product['image_seo_name']
        )) . '</td>';
 }
@@ -45,7 +49,7 @@ echo '</tr>';
 echo '<tr><td><strong>' . $this->translate('catalog')->__('Price')
     .':</strong></td>';
 foreach ($this->products as $product) {
-    echo '<td>' 
+    echo '<td>'
        . $this->price($product['price'])
        . '</td>';
 }
@@ -68,7 +72,7 @@ foreach ($this->options as $optionId => $optionName) {
             echo '<td>-</td>';
             continue;
         }
-        
+
         echo '<td>' . implode(', ', $product['options'][$optionId]['values']) . '</td>';
     }
     echo '</tr>';
@@ -89,13 +93,13 @@ foreach ($this->options as $optionId => $optionName) {
         <?php else: ?>
             <div class="out-of-stock"><?php echo $this->translate('catalog')->__('Out of stock') ?></div>
         <?php endif ?>
-        
+
         <p class="add-to">
             <a href="<?php echo $this->href('account/wishlist/add/id/' . $prodId, true)?>"
                 class="add-to-wishlist"><span><span>
                 <?php echo $this->translate('catalog')->__('Add to Wishlist')?></span></span></a>
         </p>
-        
+
         <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/remove/product/' . $prodId) ?>"
            title="Remove from compare list"
             ><?php echo $this->translate('catalog')->__('Remove') ?></a>

@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Controller
@@ -36,7 +36,8 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
     public function init()
     {
         parent::init();
-        $this->view->pageTitle = Axis::translate('checkout')->__('Checkout');
+        $this->view->pageTitle = Axis::translate('checkout')->__('Checkout Process');
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $this->view->crumbs()->disable();
         $this->view->crumbs()->add(
             Axis::translate('checkout')->__(
@@ -44,10 +45,7 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
             ),
             '/checkout/wizard'
         );
-        $this->view->meta()->setTitle(
-            Axis::translate('checkout')->__(
-            'Checkout'
-        ));
+
         if (!Axis::getCustomerId()
             && !$this->_getCheckout()->getStorage()->asGuest
             && !in_array(
@@ -64,17 +62,17 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
         $this->_forward('login');
     }
 
-    public function loginAction() 
+    public function loginAction()
     {
         $this->view->pageTitle = Axis::translate('checkout')->__('Login');
-        
+
         if (Axis::getCustomerId()) {
             $this->_redirect('/checkout/wizard/billing-address');
         }
-        
+
         $formSignup = Axis::single('account/form_signup');
         $formSignup->setAttrib('onsubmit', 'register(); return false;');
-        
+
         $this->view->formAddress = $this->_getAddressForm();
         $this->view->formSignup = $formSignup;
         $this->view->nextPage = '/checkout/wizard/billing-address';
@@ -92,7 +90,7 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
         $storage->registerGuest = (bool)$this->_getParam('register_guest', false);
         $this->_redirect('/checkout/wizard/billing-address');
     }
-    
+
     public function billingAddressAction()
     {
         $storage = $this->_getCheckout()->getStorage();
@@ -106,7 +104,7 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
         $formAddress->getActionBar()
             ->getElement('submit')
             ->setLabel(Axis::translate('checkout')->__('Continue'));
-            
+
         if ($storage->registerGuest) {
             $formAddress->addRegisterField();
         } else {
@@ -118,12 +116,12 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
         );
         if (($billing = $this->_getCheckout()->getBilling())
             && $formAddress->isValid($billing->toFlatArray())) {
-            
+
             $formAddress->populate($billing->toFlatArray());
         }
         echo $formAddress->render();
     }
-    
+
     public function setBillingAddressAction()
     {
         $checkout = $this->_getCheckout();
@@ -142,7 +140,7 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
             if ($this->_getParam('use_as_delivery', false)) {
                 $result = $checkout->setBilling($addressId) &&
                           $checkout->setDelivery($addressId);
-                
+
                 $this->_redirect('/checkout/wizard/shipping-method');
                 return ;
             }
@@ -193,12 +191,12 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
         );
         if (($delivery = $this->_getCheckout()->getDelivery())
             && $formAddress->isValid($delivery->toFlatArray())) {
-            
+
             $formAddress->populate($delivery->toFlatArray());
         }
         echo $formAddress->render();
     }
-    
+
     public function setDeliveryAddressAction()
     {
         $checkout = $this->_getCheckout();
@@ -224,15 +222,15 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
         $this->_redirect('/checkout/wizard/shipping-method');
         return;
     }
-    
-    public function shippingMethodAction() 
+
+    public function shippingMethodAction()
     {
         $this->view->pageTitle = Axis::translate('checkout')->__(
             'Shipping Method'
         );
         parent::shippingMethodAction();
     }
-    
+
     public function paymentMethodAction()
     {
         $this->view->pageTitle = Axis::translate('checkout')->__(
@@ -240,11 +238,11 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
         );
         parent::paymentMethodAction();
     }
-    
+
     public function setPaymentMethodAction()
-    {   
+    {
         $methodCode = $this->_getParam('method');
-        
+
         if (!in_array($methodCode, Axis_Payment::getMethodNames())) {
             Axis::message()->addError(
                 Axis::translate('checkout')->__(
@@ -254,11 +252,11 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
             $this->_redirect('/checkout/wizard/payment-method');
             return;
         }
-        
+
         $method = Axis_Payment::getMethod($methodCode);
         if (!$method instanceof Axis_Method_Payment_Model_Abstract ||
             !$method->isEnabled() ||
-            !$method->isAllowed($this->_getCheckout()->getPaymentRequest())) 
+            !$method->isAllowed($this->_getCheckout()->getPaymentRequest()))
         {
             Axis::message()->addError(
                 Axis::translate('checkout')->__(
@@ -268,18 +266,18 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
             $this->_redirect('/checkout/wizard/payment-method');
             return;
         }
-        
+
         $this->_getCheckout()->setPaymentMethodCode($methodCode);
-        $this->_redirect('/checkout/wizard/confirmation');    
+        $this->_redirect('/checkout/wizard/confirmation');
     }
-    
+
     public function setShippingMethodAction()
     {
         $methodCode = $this->_getParam('method');
-        
+
         // methodCode can include method type also - Pickup_Standard|Ups_Standard_WXS
         list($moduleName, $methodName) = explode('_', $methodCode);
-        
+
         if (!in_array($moduleName . '_' . $methodName, Axis_Shipping::getMethodNames())) {
             Axis::message()->addError(Axis::translate('checkout')->__(
                 "'%s' method not found among installed modules", $methodCode
@@ -287,11 +285,11 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
             $this->_redirect('/checkout/wizard/shipping-method');
             return;
         }
-        
+
         $method = Axis_Shipping::getMethod($methodCode);
         if (!$method instanceof Axis_Method_Shipping_Model_Abstract ||
-            !$method->isEnabled() || 
-            !$method->isAllowed($this->_getCheckout()->getShippingRequest())) 
+            !$method->isEnabled() ||
+            !$method->isAllowed($this->_getCheckout()->getShippingRequest()))
         {
             Axis::message()->addError(
                 Axis::translate('checkout')->__(
@@ -301,11 +299,11 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
             $this->_redirect('/checkout/wizard/shipping-method');
             return;
         }
-        
+
         $this->_getCheckout()->setShippingMethodCode($methodCode);
         $this->_redirect('/checkout/wizard/payment-method');
     }
-    
+
     public function confirmationAction()
     {
         $this->view->pageTitle = Axis::translate('checkout')->__(

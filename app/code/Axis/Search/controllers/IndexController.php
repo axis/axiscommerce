@@ -45,6 +45,7 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
         $this->view->pageTitle = Axis::translate('search')->__(
             "Search results for '%s'", trim($queryStr)
         );
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $this->view->query = $queryStr = trim($queryStr);
         $paging['page']  = $page  = (int) $this->_getParam('page', 1);
 
