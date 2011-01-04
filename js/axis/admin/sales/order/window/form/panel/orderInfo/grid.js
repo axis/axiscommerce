@@ -34,8 +34,9 @@ Ext.onReady(function(){
         {name: 'final_weight',         type: 'float'},
         {name: 'quantity',             type: 'float'},
         {name: 'sku',                  type: 'string'},
-        {name: 'product_rate',         type: 'float'},
-        {name: 'product_subtotal',
+        {name: 'tax_rate',             type: 'float'},
+        {
+            name: 'product_subtotal',
             type: 'float',
             dependencies: ['final_price', 'quantity'],
             notDirty: true,
@@ -43,8 +44,9 @@ Ext.onReady(function(){
                 return parseFloat(parseFloat(
                     record.get('final_price') * record.get('quantity')
                 ).toFixed(2));
-            }},
-        {name: 'product_subweight',
+            }
+        }, {
+            name: 'product_subweight',
             type: 'float',
             dependencies: ['final_weight', 'quantity'],
             notDirty: true,
@@ -52,18 +54,20 @@ Ext.onReady(function(){
                 return parseFloat(parseFloat(
                     record.get('final_weight') * record.get('quantity')
                 ).toFixed(2));
-            }},
-        {name: 'product_subtax',
+            }
+        }, {
+            name: 'product_subtax',
             type: 'float',
-            dependencies: ['product_rate', 'quantity', 'final_price'],
+            dependencies: ['tax_rate', 'quantity', 'final_price'],
             notDirty: true,
             calc: function(record) {
                 return parseFloat(parseFloat(
-                    record.get('product_rate')
+                    record.get('tax_rate')
                         * record.get('quantity')
                         * record.get('final_price') / 100
                     ).toFixed(2));
-            }},
+            }
+        },
         {name: 'variation_id', type: 'int'},
         {name: 'remove', type: 'int'}
     ]);
@@ -95,7 +99,7 @@ Ext.onReady(function(){
         form.findField('totals[subtotal]').setValue(
             store.sum('product_subtotal').toFixed(2)
         );
-            if (true === totalsConfig.tax) {
+        if (true === totalsConfig.tax) {
             form.findField('totals[tax]').setValue(
                 store.sum('product_subtax').toFixed(2)
             );
@@ -129,28 +133,31 @@ Ext.onReady(function(){
             }
         }
     });
-    var selectionModel = new Ext.grid.CheckboxSelectionModel();
+
     var cm = new Ext.grid.ColumnModel([
-        selectionModel,
         expander, {
             header: 'Name'.l(),
             dataIndex: 'name',
+            id: 'name',
             width: 300,
             menuDisabled: true
         }, {
+            align: 'right',
             header: 'Price'.l(),
             dataIndex: 'final_price',
+            width: 90,
             menuDisabled: true,
             editor: new Ext.form.NumberField({
                 allowBlank: false,
                 allowNegative: false,
                 maxValue: 100000
             })
-
         }, {
+            align: 'right',
             header: 'Quantity'.l(),
             dataIndex: 'quantity',
             menuDisabled: true,
+            width: 60,
             editor: new Ext.form.NumberField({
                 allowBlank: false,
                 allowNegative: false,
@@ -160,11 +167,12 @@ Ext.onReady(function(){
 //                    return true;
 //                }
             })
-
         }, {
+            align: 'right',
             header: 'Tax'.l(),
             dataIndex: 'product_subtax',
             menuDisabled: true,
+            width: 60,
             hidden: !totalsConfig.tax,
             editor: new Ext.form.NumberField({
                 allowBlank: false,
@@ -172,26 +180,27 @@ Ext.onReady(function(){
                 maxValue: 100000
             })
         }, {
+            align: 'right',
             header: 'Subtotal'.l(),
+            width: 100,
             dataIndex: 'product_subtotal',
             menuDisabled: true
         }
     ])
     cm.defaultSortable = true;
 
-    var grid = new Ext.grid.EditorGridPanel({
+    var grid = new Axis.grid.EditorGridPanel({
+        autoExpandColumn: 'name',
+        width: 'auto',
         cm: cm,
-        sm: selectionModel,
         ds: ds,
         id: 'grid-products',
         autoHeight: true,
         plugins: [expander],
         bodyStyle: 'margin-bottom: 7px',
-//        autoScroll: true,
         border: true,
         tbar: [{
             text: 'Add'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/add.png',
             handler: function() {
                 Ext.getCmp('grid-add-products').getStore().reload();
@@ -199,7 +208,6 @@ Ext.onReady(function(){
             }
         }, {
             text: 'Delete'.l(),
-            cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/delete.png',
             handler: function() {
                 var selectedItems = grid.getSelectionModel().getSelections();
@@ -212,12 +220,7 @@ Ext.onReady(function(){
 
                 ds.reloadDepend(ds);
             }
-        }],
-        viewConfig: {
-            forceFit: true,
-            emptyText: 'No records found'.l()
-        }
-
+        }]
     });
 
     ds.on('add', ds.reloadDepend);

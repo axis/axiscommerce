@@ -173,8 +173,8 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             )
             ->bind(array('languageId' => Axis_Locale::getLanguageId()))
             ->where('sosh.order_id = ?', $this->id)
-            ->fetchAll()
-        ;
+            ->order('sosh.id DESC')
+            ->fetchAll();
     }
 
     public function getProducts()

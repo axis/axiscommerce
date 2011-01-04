@@ -28,7 +28,7 @@ Ext.onReady(function(){
         id: 'tab-order-info',
         title: 'Order Info'.l(),
         defaults: {
-            border: false
+            //border: false
         },
         border: false,
         items: [
@@ -38,26 +38,16 @@ Ext.onReady(function(){
             myRow(Order.form.boxPaymentMethod, Order.form.boxShippingMethod),
             myRow(Order.form.boxStatusInfo, Order.form.boxSubtotalInfo),
             myRow({
-                    title : 'Customer comments'.l(),
-                    border: false,
-                    id: 'box-customer-comments',
-                    items: [{
-                        name: 'order[customer_comments]',
-                        xtype: 'textarea',
-                        hideLabel: true,
-                        readOnly: true,
-                        anchor: '100%'
-                    }]
-                }, {
-                    title : 'Admin comments'.l(),
-                    border: false,
-                    id: 'box-admin-comments',
-                    items: [{
-                        name: 'order[admin_comments]',
-                        xtype: 'textarea',
-                        hideLabel: true,
-                        anchor: '100%'
-                    }]
+                fieldLabel: 'Customer comments'.l(),
+                name: 'order[customer_comments]',
+                xtype: 'textarea',
+                readOnly: true,
+                anchor: '100%'
+            }, {
+                fieldLabel: 'Admin comments'.l(),
+                name: 'order[admin_comments]',
+                xtype: 'textarea',
+                anchor: '100%'
             }),
             {
                 xtype: 'hidden',
@@ -65,5 +55,5 @@ Ext.onReady(function(){
             }
         ]
     });
-    
+
 }, this);

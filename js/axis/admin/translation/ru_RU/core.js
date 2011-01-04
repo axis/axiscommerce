@@ -435,7 +435,7 @@ Locale.module('core', {
     "Status Comment": "Коментарий статуса",
     "Tax": "Налог",
     "Subtotal": "Сумма",
-    "Date added": "Дата добавлена",
+    "Date added": "Дата добавления",
     "Notified": "Уведомлен",
     "Store": "Магазин",
     "Placed on": "Размещен",
