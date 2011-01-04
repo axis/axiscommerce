@@ -25,9 +25,17 @@ Ext.onReady(function(){
         {name: 'key_word', type: 'string', mapping: 'url'},
         {name: 'image', type: 'string'}
     ];
-    for (var langId in Axis.languages) {
-        record.push({'name': 'title_' + langId});
+
+    for (var id in Axis.locales) {
+        record.push({
+            name: 'description[' + id + '][title]',
+            mapping: 'description.lang_' + id + '.title'
+        }, {
+            name: 'description[' + id + '][description]',
+            mapping: 'description.lang_' + id + '.description'
+        });
     }
+
     var manufacturer_object = Ext.data.Record.create(record);
 
     var ds = new Ext.data.Store({
@@ -49,74 +57,56 @@ Ext.onReady(function(){
         }
     })
 
-    var columns = [];
-    columns.push({
-        header: 'Id'.l(),
-        dataIndex: 'id',
-        width: 40
-    }, {
-        header: 'Name'.l(),
-        dataIndex: 'name',
-        editor: new Ext.form.TextField({
-            allowBlank: false,
-            maxLength: 128
-        }),
-        filter: {
-            operator: 'LIKE'
-        }
-    }, {
-        header: 'Url'.l(),
-        dataIndex: 'key_word',
-        editor: new Ext.form.TextField({
-            allowBlank: false,
-            maxLength: 128
-        }),
-        table: 'ch',
-        filter: {
-            operator: 'LIKE'
-        }
-    }, {
-        header: 'Image'.l(),
-        dataIndex: 'image',
-        editor: new Ext.form.TextField({
-            allowBlank: true,
-            maxLength: 255
-        }),
-        filter: {
-            operator: 'LIKE'
-        }
-    });
-    for (var langId in Axis.languages) {
-        columns.push({
-            header: 'Title ({language})'.l('core', Axis.languages[langId]),
-            dataIndex: 'title_' + langId,
-            width: 150,
-            editor: new Ext.form.TextField({
-               allowBlank: false,
-               maxLength: 255
-            }),
-            table: 'cpmt',
-            filter: {
-                name: 'title',
-                operator: 'LIKE'
-            }
-        });
-    }
     var cm = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
         },
-        columns: columns
+        columns: [{
+            header: 'Id'.l(),
+            dataIndex: 'id',
+            width: 90
+        }, {
+            header: 'Name'.l(),
+            dataIndex: 'name',
+            id: 'name',
+            editor: new Ext.form.TextField({
+                allowBlank: false,
+                maxLength: 128
+            }),
+            filter: {
+                operator: 'LIKE'
+            }
+        }, {
+            header: 'Url'.l(),
+            dataIndex: 'key_word',
+            editor: new Ext.form.TextField({
+                allowBlank: false,
+                maxLength: 128
+            }),
+            width: 190,
+            table: 'ch',
+            filter: {
+                operator: 'LIKE'
+            }
+        }, {
+            header: 'Image'.l(),
+            dataIndex: 'image',
+            editor: new Ext.form.TextField({
+                allowBlank: true,
+                maxLength: 255
+            }),
+            width: 190,
+            filter: {
+                operator: 'LIKE'
+            }
+        }]
     });
 
     var grid = new Axis.grid.EditorGridPanel({
+        autoExpandColumn: 'name',
         cm: cm,
         id: 'grid',
         store: ds,
-        viewConfig: {
-            forceFit: true,
-            deferEmptyText: true
-        },
         plugins: [new Axis.grid.Filter()],
         tbar: [{
             text: 'Add'.l(),
@@ -181,15 +171,7 @@ Ext.onReady(function(){
         Ext.getCmp('window').setTitle(record.get('name'));
         var form = Ext.getCmp('form').getForm();
         form.clear();
-        var titles = {};
-        for (var i in record.data) {
-            if (i.indexOf('title_') === 0) {
-                titles['data[' + i + ']'] = record.data[i];
-            } else {
-                form.findField('data[' + i + ']').setValue(record.data[i]);
-            }
-        }
-        form.findField('data[title]').setValue(titles);
+        form.setValues(record.data);
     }
 
     function save() {

@@ -153,6 +153,12 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
         );
     }
 
+    /**
+     * Add manufacturer data to select
+     *
+     * @param int $languageId
+     * @return Axis_Catalog_Model_Product_Select
+     */
     public function addManufacturer($languageId = null)
     {
         if (null === $languageId) {
@@ -166,10 +172,11 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
                     'manufacturer_name'  => 'name',
                     'manufacturer_image' => 'image'
                 ))
-            ->joinLeft('catalog_product_manufacturer_title',
-                'cpm.id = cpmt.manufacturer_id AND cpmt.language_id = ' . $languageId,
+            ->joinLeft('catalog_product_manufacturer_description',
+                'cpm.id = cpmd.manufacturer_id AND cpmd.language_id = ' . $languageId,
                 array(
-                    'manufacturer_title' => 'title'
+                    'manufacturer_title'       => 'title',
+                    'manufacturer_description' => 'description'
                 ))
             ->joinLeft('catalog_hurl',
                 "cpm.id = ch.key_id AND ch.key_type = 'm' AND ch.site_id = " . Axis::getSiteId(),

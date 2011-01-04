@@ -42,15 +42,15 @@ class Axis_Catalog_Model_Product_Manufacturer_Select extends Axis_Db_Table_Selec
     public function addDescription($languageId = null)
     {
         if (false === $languageId) {
-            $joinOn = 'cpm.id = cpmt.manufacturer_id';
+            $joinOn = 'cpm.id = cpmd.manufacturer_id';
         } else {
             if (null === $languageId) {
                 $languageId = Axis_Locale::getLanguageId();
             }
-            $joinOn = 'cpm.id = cpmt.manufacturer_id AND language_id = ' . $languageId;
+            $joinOn = 'cpm.id = cpmd.manufacturer_id AND language_id = ' . $languageId;
         }
 
-        return $this->joinLeft('catalog_product_manufacturer_title', $joinOn, '*');
+        return $this->joinLeft('catalog_product_manufacturer_description', $joinOn, '*');
     }
 
 
@@ -74,8 +74,8 @@ class Axis_Catalog_Model_Product_Manufacturer_Select extends Axis_Db_Table_Selec
      */
     public function joinDescription()
     {
-        return $this->joinLeft('catalog_product_manufacturer_title',
-            'cpm.id = cpmt.manufacturer_id',
+        return $this->joinLeft('catalog_product_manufacturer_description',
+            'cpm.id = cpmd.manufacturer_id',
             array()
         );
     }

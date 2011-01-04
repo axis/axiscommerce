@@ -78,15 +78,12 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
             ->select()
             ->where('key_word IN (?)', $keywords)
             ->where('site_id = ?', Axis::getSiteId())
-            ->fetchAssoc()
-            ;
+            ->fetchAssoc();
 
         foreach ($rowset as $row) {
-
-            $categoryId = $productId = $manufacturerId = $row['key_id'];
             switch ($row['key_type']) {
                 case 'c':
-                    $this->_params['cat']['value'] = $categoryId;
+                    $this->_params['cat']['value'] = $row['key_id'];
                     if (empty($this->_params['cat']['seo'])) {
                         $this->_params['cat']['seo'] = $row['key_word'];
                     } else {
@@ -94,19 +91,23 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
                     }
                     break;
                 case 'p':
-                    $this->_params['product']['value'] = $productId;
+                    $this->_params['product']['value'] = $row['key_id'];
                     $this->_params['product']['seo'] = $row['key_word'];
-                    $this->getRequest()->setParam('product', $productId);
+                    $this->getRequest()->setParam('product', $row['key_id']);
                     break;
                 case 'm':
-                    $this->_params['manufacturer']['value'] = $manufacturerId;
-                    $this->_params['manufacturer']['seo'] = $row['key_word'];
-                    $this->_params['manufacturer']['title'] =
-                        Axis::single('catalog/product_manufacturer_title')
-                            ->select('title')
-                            ->where('manufacturer_id = ?', $manufacturerId)
-                            ->where('language_id = ?', Axis_Locale::getLanguageId())
-                            ->fetchOne();
+                    $mDescription = Axis::single('catalog/product_manufacturer_description')
+                        ->select(array('title', 'description'))
+                        ->where('manufacturer_id = ?', $row['key_id'])
+                        ->where('language_id = ?', Axis_Locale::getLanguageId())
+                        ->fetchRow();
+
+                    $this->_params['manufacturer'] = array(
+                        'value'         => $row['key_id'],
+                        'seo'           => $row['key_word'],
+                        'title'         => $mDescription['title'],
+                        'description'   => $mDescription['description']
+                    );
                     break;
                 default:
                     break;
