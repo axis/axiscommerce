@@ -38,18 +38,16 @@ Ext.onReady(function(){
             myRow(Order.form.boxPaymentMethod, Order.form.boxShippingMethod),
             myRow(Order.form.boxStatusInfo, Order.form.boxSubtotalInfo),
             myRow({
-                fieldLabel: 'Customer comments'.l(),
-                name: 'order[customer_comments]',
+                fieldLabel: 'Customer comment'.l(),
+                name: 'order[customer_comment]',
                 xtype: 'textarea',
-                readOnly: true,
                 anchor: '100%'
             }, {
-                fieldLabel: 'Admin comments'.l(),
-                name: 'order[admin_comments]',
+                fieldLabel: 'Admin comment'.l(),
+                name: 'order[admin_comment]',
                 xtype: 'textarea',
                 anchor: '100%'
-            }),
-            {
+            }), {
                 xtype: 'hidden',
                 name: 'order[id]'
             }

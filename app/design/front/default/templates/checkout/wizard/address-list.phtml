@@ -1,24 +1,23 @@
 <?php echo $this->title($this->pageTitle) ?>
 
-<form method="post" action="<?php echo $this->href('/checkout/wizard/set-' . $this->addressType, true);?>">
+<form class="axis-form" method="post" action="<?php echo $this->href('/checkout/wizard/set-' . $this->addressType, true);?>">
 <div id="<?php echo $this->escape($this->addressType); ?>-radios">
 <?php
-$this->pageTitle = 'Set ' . $this->addressType . ' address'; 
 if (count($this->addressList)) : ?>
 <table class="table">
-<?php 
+<?php
 $i = 0;
 $columnCount = 3;
 foreach ($this->addressList as $address) : ?>
 
-    <?php if ($i % $columnCount == 0): ?> 
+    <?php if ($i % $columnCount == 0): ?>
         <tr>
     <?php endif; ?>
-    
+
     <td>
         <div class="address">
-            <h5 class="address-title">
-                <input type="radio" name="<?php echo $this->escape($this->addressType) ?>-id" 
+            <h5 class="address-title label-inline">
+                <input type="radio" name="<?php echo $this->escape($this->addressType) ?>-id"
                     value="<?php echo $address->id ?>"
                     id="address-<?php echo $this->escape($this->addressType) ?>-<?php echo $address->id ?>"
                     <?php echo ($this->selectedAddressId == $address->id) ? 'checked="checked"' : '' ?>
@@ -35,12 +34,12 @@ foreach ($this->addressList as $address) : ?>
         </div>
     </td>
     <?php $i++;
-    
+
     if ($i % $columnCount == 0): ?>
         </tr>
     <?php endif;
-    
-endforeach; 
+
+endforeach;
 
 if ($i % $columnCount != 0) :
     for($i; $i % $columnCount; $i++): ?>
@@ -57,20 +56,19 @@ if ($i % $columnCount != 0) :
             'class' => 'alt-button btn-add-address',
             'href' => $this->href('/account/address-book/new', true)
         )) ?>
+        <?php echo $this->button($this->translate('checkout')->__('Continue'), array(
+            'class' => 'button btn-continue',
+            'type' => 'submit'
+        ), 'button') ?>
     </div>
 </div>
 <?php if('billing-address' === $this->addressType):?>
-<div>
+<div class="label-inline">
     <input type="hidden" value="0" name="use_as_delivery"/>
-    <input id="use_as_delivery" class="input-checkbox"
-           type="checkbox" value="1" name="use_as_delivery"/>
-    <label class="optional" for="use_as_delivery">
+    <input id="use_as_delivery" class="input-checkbox" type="checkbox" value="1" name="use_as_delivery"/>
+    <label for="use_as_delivery">
         <?php echo $this->translate('checkout')->__('Ship to this address');?>
     </label>
 </div>
 <?php endif;?>
-<?php echo $this->button($this->translate('checkout')->__('Continue'), array(
-    'class' => 'button btn-continue',
-    'type' => 'submit'
-), 'button') ?>
 </form>

@@ -14,7 +14,7 @@
             <?php echo $this->paymentForm($this->checkout['payment_code'], 'confirm')?>
         </div>
     </div>
-    
+
     <div class="shipping-address address col-2">
         <div class="head">
             <h4 class="address-title">
@@ -43,6 +43,10 @@
 <tr>
     <td colspan="100" class="a-right">
         <form method="post" action="<?php echo $this->href('/checkout/onepage/process', true)?>" id="form-checkout">
+            <p class="order-comment-row">
+                <label for="comment"><?php echo Axis::translate('checkout')->__('You can add some additional information for our manager')?>:</label><br/>
+                <textarea rows="5" cols="80" class="input-text order-comment" name="comment" id="comment"></textarea>
+            </p>
             <?php echo $this->button($this->translate('checkout')->__('Create Order'), array(
                 'class' => 'button btn-confirm',
                 'type' => 'submit'
@@ -57,7 +61,7 @@
     <td>
         <?php echo $product['name'];?><br />
         <?php foreach ($product['attributes'] as $attr) { ?>
-            <div><small><?php 
+            <div><small><?php
                 echo $attr['product_option'] . ': ' . $this->escape($attr['product_option_value']);
             ?> </small></div>
         <?php } ?>

@@ -447,6 +447,8 @@ Locale.module('core', {
     "Status Update": "Обновление статуса",
     "Customer comments": "Коментарии клиента",
     "Admin comments": "Коментарии администратора",
+    "Customer comment": "Коментарий клиента",
+    "Admin comment": "Коментарий администратора",
     "Value of {property}": "Значение {property}",
     "Select Attributes to Add": "Виберите аттрибуты для добавления",
     "Shipping": "Доставка",

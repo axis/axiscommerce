@@ -118,7 +118,7 @@ Ext.onReady(function() {
             }
         }, {
             align: 'right',
-            header: "Total Base",
+            header: "Total Base".l(),
             dataIndex: 'order_total_base',
             width: 150,
             sortName: 'order_total',
@@ -128,7 +128,7 @@ Ext.onReady(function() {
             }
         }, {
             align: 'right',
-            header: "Total Purchased",
+            header: "Total Purchased".l(),
             dataIndex: 'order_total_customer',
             width: 150,
             table: '',

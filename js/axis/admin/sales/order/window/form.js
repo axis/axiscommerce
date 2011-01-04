@@ -21,7 +21,7 @@
  */
 
 Ext.onReady(function() {
-    
+
     Order.form = new Ext.form.FormPanel({
         items: [Ext.getCmp('panel-form-order')],
         border: false,
@@ -114,7 +114,7 @@ Ext.onReady(function() {
                 ,convert: function (v, record) {
                     if (undefined == record.totals.shipping
                         || undefined == record.totals.shipping.value) {
-                        
+
                         return 0;
                     }
                     return record.totals.shipping.value;
@@ -124,7 +124,7 @@ Ext.onReady(function() {
                 ,convert: function (v, record) {
                     if (undefined == record.totals.tax
                         || undefined == record.totals.tax.value) {
-                        
+
                         return 0;
                     }
                     return record.totals.tax.value;
@@ -134,14 +134,15 @@ Ext.onReady(function() {
                 ,convert: function (v, record) {
                     if (undefined == record.totals.shipping_tax
                         || undefined == record.totals.shipping_tax.value) {
-                        
+
                         return 0;
                     }
                     return record.totals.shipping_tax.value;
                 }
             },
-            {name: 'order[order_total]',                  type: 'float',  mapping: 'order.order_total'}
-
+            {name: 'order[order_total]', type: 'float',  mapping: 'order.order_total'},
+            {name: 'order[admin_comment]', mapping: 'order.admin_comment'},
+            {name: 'order[customer_comment]', mapping: 'order.customer_comment'}
         ]))
     });
     Order.form._config = {};
