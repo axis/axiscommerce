@@ -128,7 +128,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
             ->addCommonFilters($filters)
             ->addManufacturer()
             ->group('cpm.id')
-            ->order('cpmt.title')
+            ->order('cpmd.title')
             ->where('cp.manufacturer_id IS NOT NULL');
 
         $manufacturers = $select->fetchAll();

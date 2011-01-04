@@ -38,7 +38,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
     protected $_selectClass = 'Axis_Catalog_Model_Product_Manufacturer_Select';
 
     protected $_dependentTables = array(
-        'Axis_Catalog_Model_Product_Manufacturer_Title'
+        'Axis_Catalog_Model_Product_Manufacturer_Description'
     );
 
     /**
@@ -49,8 +49,8 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
     {
         return $this->select('*')
             ->joinInner(
-                'catalog_product_manufacturer_title',
-                'cpm.id = cpmt.manufacturer_id AND language_id = :languageId',
+                'catalog_product_manufacturer_description',
+                'cpm.id = cpmd.manufacturer_id AND language_id = :languageId',
                 '*'
             )
             ->joinInner('catalog_hurl',
@@ -58,107 +58,76 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
                 array('url' => 'key_word')
             )
             ->where('ch.site_id = ?', Axis::getSiteId())
-            ->order('cpmt.title ASC')
+            ->order('cpmd.title ASC')
             ->bind(array('languageId' => Axis_Locale::getLanguageId()))
             ->fetchAll();
     }
 
     /**
-     * @param array $data (0 => array(row_data), 1 => )
-     * @return boolean
+     * Update or delete manufacturer row
+     * Checks is recieved url has duplicate before save.
+     * If it has - throws an exception
+     *
+     * @param array $data
+     * <pre>
+     * Array(
+     * 	id, name, key_word,
+     *  description => array(
+     *  	langId => array()
+     *  )
+     * )
+     * </pre>
+     * @return int Manufacturer id
+     * @throws Axis_Exception
      */
     public function save($data)
     {
-        if (!is_array(current($data))) {
-            $success = $this->saveRow($data);
-        } else {
-            $success = true;
-            foreach($data as $row) {
-                $success = $success ? $this->saveRow($row) : false;
-            }
-        }
-        if ($success) {
-            Axis::message()->addSuccess(
-                Axis::translate('catalog')->__(
-                    'Data was successfully saved'
-                )
-            );
-        }
-        return $success;
-    }
+        if (!isset($data['id'])
+            || !$row = $this->find($data['id'])->current()) {
 
-    /**
-     * Update or delete manufacturer row
-     * Checks is recieved url has duplicate before save.
-     * If it has - return false
-     *
-     * @param array $row
-     * @return bool
-     */
-    public function saveRow($row)
-    {
-        $manufacturer = false;
-        if (isset($row['id']) && !empty($row['id'])) {
-            $manufacturer = $this->find($row['id'])->current();
+            unset($data['id']);
+            $row = $this->createRow();
         }
 
-        $url = trim($row['key_word']);
+        $url = trim($data['key_word']);
         if (empty($url)) {
-            $url = $row['name'];
+            $url = $data['name'];
         }
-        $url = preg_replace('/[^a-zA-Z0-9]/', '-', $url);
+//        $url = preg_replace('/[^a-zA-Z0-9]/', '-', $url);
         if (Axis::single('catalog/hurl')->hasDuplicate(
                 $url,
                 array_keys(Axis_Collect_Site::collect()),
-                $manufacturer ? $manufacturer->id : null
+                $row->id
             )) {
 
-            Axis::message()->addError(
-                Axis::translate('catalog')->__(
-                    'Duplicate entry (url)'
-                )
+            throw new Axis_Exception(
+                Axis::translate('catalog')->__('Duplicate entry (url)')
             );
-            return false;
         }
 
-        if (!$manufacturer) {
-            unset($row['id']);
-            $manufacturer = $this->createRow();
-        }
-        $row['image'] = empty($row['image']) ? '' : '/' . trim($row['image'], '/');
-        $manufacturer->setFromArray($row);
-        if (false === $manufacturer->save()) {
-            return false;
-        }
+        $data['image'] = empty($data['image']) ? '' : '/' . trim($data['image'], '/');
+        $row->setFromArray($data)->save();
 
-        $success = true;
-
-        // title
-        Axis::single('catalog/product_manufacturer_title')->delete(
-            'manufacturer_id = ' . $manufacturer->id
-        );
-        $modelManufactureTitle =  Axis::single('catalog/product_manufacturer_title');
-        foreach (Axis_Collect_Language::collect() as $id => $lang) {
-            $success = $success ? (bool) $modelManufactureTitle->insert(array(
-                'manufacturer_id' => $manufacturer->id,
-                'language_id' => $id,
-                'title' => isset($row['title_' . $id]) ?
-                    $row['title_' . $id] : ''
-            )) : false;
+        // description
+        $mManufactureDescription =  Axis::model('catalog/product_manufacturer_description');
+        foreach (Axis_Collect_Language::collect() as $languageId => $languangeName) {
+            $mManufactureDescription->getRow($row->id, $languageId)
+                ->setFromArray($data['description'][$languageId])
+                ->save();
         }
 
         // url
-        foreach (Axis_Collect_Site::collect() as $id => $name) {
-            $success = $success ? (bool) Axis::single('catalog/hurl')->save(
-                array(
-                    'site_id'  => $id,
-                    'key_id'   => $manufacturer->id,
-                    'key_type' => 'm',
-                    'key_word' => $url
-            )) : false;
+        $mHurl = Axis::model('catalog/hurl');
+        foreach (Axis_Collect_Site::collect() as $siteId => $siteName) {
+            $mHurl->save(array(
+                'site_id'  => $siteId,
+                'key_id'   => $row->id,
+                'key_type' => 'm',
+                'key_word' => $url
+            ));
         }
 
-        return $success;
+        return $row->id;
     }
 
     public function deleteByIds($ids)

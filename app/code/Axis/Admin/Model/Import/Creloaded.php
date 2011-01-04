@@ -290,7 +290,7 @@ class Axis_Admin_Model_Import_Creloaded extends Axis_Admin_Model_Import_Abstract
             $manufacturerId = Axis::single('catalog/product_manufacturer')->insert($data);
 
             foreach ($this->_language as $axisLanguage => $oscLanguage) {
-                Axis::single('catalog/product_manufacturer_title')->insert(array(
+                Axis::single('catalog/product_manufacturer_description')->insert(array(
                     'manufacturer_id' => $manufacturerId,
                     'language_id'     => $axisLanguage,
                     'title'           => $data['name']

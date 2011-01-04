@@ -53,8 +53,8 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             );
 
         $sort = $this->_getParam('sort', 'cpm.id');
-        if (strstr($sort, 'cpmt.title_')) {
-            $sort = 'cpmt.title';
+        if (strstr($sort, 'cpmd.title_')) {
+            $sort = 'cpmd.title';
         }
         $select->order($sort . ' ' . $this->_getParam('dir', 'DESC'));
 
@@ -75,16 +75,22 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
 
         $result = array();
         foreach ($select->fetchAll() as $manufacturer) {
+            $langId = $manufacturer['language_id'];
             if (!isset($result[$manufacturer['id']])) {
                 $result[$manufacturer['id']] = $manufacturer;
+                $result[$manufacturer['id']]['description'] = array();
                 unset($result[$manufacturer['id']]['title']);
+                unset($result[$manufacturer['id']]['language_id']);
+                unset($result[$manufacturer['id']]['manufacturer_id']);
             }
-            $result[$manufacturer['id']]
-                ['title_' . $manufacturer['language_id']] = $manufacturer['title'];
+            $result[$manufacturer['id']]['description']['lang_' . $langId] = array(
+                'title'         => $manufacturer['title'],
+                'description'   => $manufacturer['description']
+            );
         }
 
         return $this->_helper->json->sendSuccess(array(
-            'data' => array_values($result),
+            'data'  => array_values($result),
             'count' => $count
         ));
     }
@@ -123,10 +129,22 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
     {
         $this->_helper->layout->disableLayout();
 
+        try {
+            $id = Axis::model('catalog/product_manufacturer')
+                ->save($this->_getAllParams());
+            Axis::message()->addSuccess(
+                Axis::translate('catalog')->__('Data was successfully saved')
+            );
+        } catch (Axis_Exception $e) {
+            Axis::message()->addError($e->getMessage());
+            return $this->_helper->json->sendFailure();
+        }
+
         $this->_helper->json->sendJson(array(
-            'success' => Axis::single('catalog/product_manufacturer')->save(
-                $this->_getParam('data')
-             )
+            'success' => (bool) $id,
+            'data'    => array(
+                'id' => $id
+            )
         ));
     }
 
@@ -134,10 +152,13 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
     {
         $this->_helper->layout->disableLayout();
 
+        $mManufacturer = Axis::model('catalog/product_manufacturer');
+        foreach (Zend_Json_Decoder::decode($this->_getParam('data')) as $data) {
+            $mManufacturer->save($data);
+        }
+
         $this->_helper->json->sendJson(array(
-            'success' => Axis::single('catalog/product_manufacturer')->save(
-                Zend_Json_Decoder::decode($this->_getParam('data'))
-             )
+            'success' => true
         ));
     }
 

@@ -996,8 +996,8 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
             $languageId = Axis_Locale::getLanguageId();
         }
         return Axis::single('catalog/product_manufacturer')->select('*')
-            ->joinLeft('catalog_product_manufacturer_title',
-                'cpm.id = cpmt.manufacturer_id AND cpmt.language_id = ' . $languageId,
+            ->joinLeft('catalog_product_manufacturer_description',
+                'cpm.id = cpmd.manufacturer_id AND cpmd.language_id = ' . $languageId,
                 '*')
             ->joinLeft('catalog_hurl',
                 "cpm.id = ch.key_id AND ch.key_type = 'm' AND ch.site_id = " . Axis::getSiteId(),

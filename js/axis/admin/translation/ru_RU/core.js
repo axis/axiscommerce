@@ -35,7 +35,7 @@ Locale.module('core', {
     "Options": "Опции",
     "AutoFill": "Автозаполнение",
     "Select status": "Выберите статус",
-    "Url": "ссылка",
+    "Url": "Ссылка",
     "Image": "Рисунок",
     "Date created": "Дата создания",
     "Date updated": "Дата изменения",

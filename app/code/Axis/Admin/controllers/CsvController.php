@@ -558,7 +558,7 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
         $filter_sites = explode(',', trim($filters['site'], ', '));
 
         $mManufacturer = Axis::single('catalog/product_manufacturer');
-        $mManufacturerTitle = Axis::single('catalog/product_manufacturer_title');
+        $mManufacturerTitle = Axis::single('catalog/product_manufacturer_description');
         $manufacturers = $mManufacturer
             ->select(array('name', 'id'))
             ->fetchPairs();

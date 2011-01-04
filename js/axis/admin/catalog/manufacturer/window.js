@@ -34,28 +34,32 @@ Ext.onReady(function(){
         },
         items: [{
             xtype: 'hidden',
-            name: 'data[id]'
+            name: 'id'
         }, {
             fieldLabel: 'Name'.l(),
             xtype: 'textfield',
-            name: 'data[name]',
+            name: 'name',
             allowBlank: false
         }, {
             fieldLabel: 'Url'.l(),
             xtype: 'textfield',
-            name: 'data[key_word]',
+            name: 'key_word',
             allowBlank: false
         }, {
             allowBlank: false,
             fieldLabel: 'Title'.l(),
             defaultType: 'textfield',
-            name: 'data[title]',
-            tpl: '{self_plain}[{self_nested}_{language_id}]',
+            name: 'description[title]',
+            xtype: 'langset'
+        }, {
+            fieldLabel: 'Description'.l(),
+            defaultType: 'textarea',
+            name: 'description[description]',
             xtype: 'langset'
         }, {
             fieldLabel: 'Image'.l(),
             url: Axis.getUrl('catalog_manufacturer/save-image'),
-            name: 'data[image]',
+            name: 'image',
             rootPath: 'media/manufacturer',
             rootText: 'manufacturer',
             xtype: 'imageuploadfield'
@@ -64,8 +68,7 @@ Ext.onReady(function(){
 
     var window = new Axis.Window({
         id: 'window',
-        width: 400,
-        height: 250,
+        height: 400,
         title: 'Manufacturer'.l(),
         items: form,
         buttons: [{
@@ -86,5 +89,5 @@ Ext.onReady(function(){
                 window.hide();
             }
         }]
-    })
+    });
 });
