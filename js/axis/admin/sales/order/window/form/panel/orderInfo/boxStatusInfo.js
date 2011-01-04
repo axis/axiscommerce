@@ -39,7 +39,7 @@ Ext.onReady(function(){
             id: 'id'
         }, status)
     });
-    
+
     Order.form.boxStatusInfo = {
         title : 'Status Update'.l(),
         id: 'box-status-info',
@@ -48,7 +48,7 @@ Ext.onReady(function(){
 //        labelAlign: 'top',
 //        border: false,
         items: [new Ext.form.ComboBox({
-            hideLabel: true,
+//            hideLabel: true,
             id : 'next-order-status-id',
             hiddenName: 'history[order_status_id]',
             name: 'history[order_status_id]',
@@ -72,5 +72,5 @@ Ext.onReady(function(){
             anchor:'98%'
         }]
     };
-    
+
 }, this);

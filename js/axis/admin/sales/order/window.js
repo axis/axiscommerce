@@ -25,7 +25,7 @@ Ext.onReady(function(){
     Order.window = new Axis.Window({
         id: 'viewOrder',
         title: 'Order'.l(),
-        width: 700,
+        width: 750,
         height: 510,
         maximizable: true,
         items: [Order.form],

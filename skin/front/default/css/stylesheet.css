@@ -1225,6 +1225,9 @@ a.review-stars { outline: none; }
 #form-confirmation .shipping-address { margin-left: 15px; display: inline; }
 #block-confirmation #shopping-cart-table,
 #form-confirmation #shopping-cart-table { margin-top: 7px; }
+#shopping-cart-table .order-comment-row { text-align: left; float: left; }
+#shopping-cart-table .order-comment { width: 665px; }
+#shopping-cart-table .btn-confirm { margin: 20px 45px 0 0; }
 
 /* Tags */
 .product-listing-table .tag-remove {

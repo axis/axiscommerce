@@ -68,6 +68,7 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
         }
 
         $storage = $checkout->getStorage();
+        $storage->customer_comment = $this->_getParam('comment');
 
         if ($storage->registerGuest) {
 

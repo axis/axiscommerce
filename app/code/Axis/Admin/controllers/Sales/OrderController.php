@@ -33,7 +33,6 @@
  */
 class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
 {
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('sales')->__('Orders');
@@ -352,7 +351,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 $product['price'] * $order->currency_rate;
             $product['final_price'] =
                 $product['final_price'] * $order->currency_rate;
-            $product['product_rate'] = $product['tax'] * 100 / $product['final_price'];
+            $product['tax_rate'] = $product['tax'] * 100 / $product['final_price'];
         }
         $data['products'] = array_values($products);
 
@@ -508,8 +507,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                         array('product_option_value' => 'cpovt.name')
                     )
                     ->where('id IN(?)', array_keys($attributes))
-                    ->fetchAll()
-                    ;
+                    ->fetchAll();
             }
 
 
@@ -527,21 +525,20 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 $finalPrice, $product->tax_class_id, $geozoneIds, $customerGroupId
             );
 
-            $descrptionRow = $product->getDescription();
+            $descriptionRow = $product->getDescription();
             $data[] = array(
-                'attributes'           => $attributesOptions,
-                'backorder'            => $stock->backorder,
-                'final_price'          => $finalPrice,
-                'final_weight'         => $finalWeight,
-//                'id'                   => rand(1000, 2000),
-                'order_id'             => $orderId,
-                'product_id'           => $product->id,
-                'name'                 => $descrptionRow['name'],
-                'price'                => $product->price,
-                'quantity'             => $quantity,
-                'sku'                  => $product->sku,
-                'product_rate'         => $productTax * 100 / $finalPrice,
-                'variation_id'         => $variationId
+                'attributes'    => $attributesOptions,
+                'backorder'     => $stock->backorder,
+                'final_price'   => $finalPrice,
+                'final_weight'  => $finalWeight,
+                'order_id'      => $orderId,
+                'product_id'    => $product->id,
+                'name'          => $descriptionRow['name'],
+                'price'         => $product->price,
+                'quantity'      => $quantity,
+                'sku'           => $product->sku,
+                'tax_rate'      => $productTax * 100 / $finalPrice,
+                'variation_id'  => $variationId
             );
         }
         $this->_helper->json

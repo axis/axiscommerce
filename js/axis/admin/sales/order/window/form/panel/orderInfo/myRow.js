@@ -19,6 +19,7 @@
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
+
 Ext.onReady(function(){
 
 
@@ -35,16 +36,16 @@ Ext.onReady(function(){
         return {
             layout: 'column',
             anchor: '100%',
+            border: false,
             defaults: {
                 border: false,
                 columnWidth: '.5',
                 layout: 'form'
             },
-            items: [
-                {
-                items: [column1]
+            items: [{
+                items: column1
             }, {
-                items: [column2]
+                items: column2
             }]
         }
     };

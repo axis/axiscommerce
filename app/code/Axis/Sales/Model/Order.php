@@ -89,6 +89,7 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         $orderRow->txn_id = 0; //@todo
         $orderRow->order_status_id = 0;
         $orderRow->ip_address = $_SERVER['REMOTE_ADDR'];
+        $orderRow->customer_comment = $storage->customer_comment;
 
         /* build delivery & billing arrays */
         $addressFormatId = Axis::config('core/store/addressFormat');

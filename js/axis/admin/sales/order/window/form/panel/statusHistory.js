@@ -38,40 +38,38 @@ Ext.onReady(function(){
         mode: 'local'
     });
 
-    var cm = new Ext.grid.ColumnModel([
-        {
-            header: 'Order Status'.l(),
-            dataIndex: 'status_name',
-            width: 150,
-            menuDisabled: true
-        }, {
-            header: 'Comments'.l(),
-            id: 'comments',
-            dataIndex: 'comments',
-            menuDisabled: true
-        }, {
-            header: 'Date added'.l(),
-            dataIndex: 'created_on',
-            width: 100,
-            menuDisabled: true,
-            renderer: function(v) {
-                return Ext.util.Format.date(v);
-            }
-        }, {
-            header: 'Notified'.l(),
-            dataIndex: 'notified',
-            width: 70,
-            menuDisabled: true,
-            renderer: function (value, meta, record) {
-                var image = '/images/icons/delete.png';
-                if (record.get('notified')) {
-                     image = '/images/icons/accept.png';
-                }
-
-                return '<img alt="icons/accept.png" src="' + Axis.skinUrl + image + '">';
-            }
+    var cm = new Ext.grid.ColumnModel([{
+        header: 'Order Status'.l(),
+        dataIndex: 'status_name',
+        width: 150,
+        menuDisabled: true
+    }, {
+        header: 'Comment'.l(),
+        id: 'comments',
+        dataIndex: 'comments',
+        menuDisabled: true
+    }, {
+        header: 'Date added'.l(),
+        dataIndex: 'created_on',
+        width: 100,
+        menuDisabled: true,
+        renderer: function(v) {
+            return Ext.util.Format.date(v);
         }
-    ])
+    }, {
+        header: 'Notified'.l(),
+        dataIndex: 'notified',
+        width: 70,
+        menuDisabled: true,
+        renderer: function (value, meta, record) {
+            var image = '/images/icons/delete.png';
+            if (record.get('notified')) {
+                 image = '/images/icons/accept.png';
+            }
+
+            return '<img alt="icons/accept.png" src="' + Axis.skinUrl + image + '">';
+        }
+    }])
     cm.defaultSortable = true;
 
     var gridHistory = new Ext.grid.GridPanel({
@@ -81,13 +79,9 @@ Ext.onReady(function(){
         id: 'grid-history',
         autoScroll: true,
         border: false,
-        autoHeight: true,
-        viewConfig: {
-            emptyText: 'No records found'.l()
-        }
-
+        autoHeight: true
     });
-    
+
     var tabStatusHistory = new Ext.Panel({
         id: 'tab-status-history',
         title: 'Status History'.l(),

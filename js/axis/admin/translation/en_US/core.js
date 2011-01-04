@@ -447,6 +447,8 @@ Locale.module('core', {
     'Status Update': 'Status Update',
     'Customer comments': 'Customer comments',
     'Admin comments': 'Admin comments',
+    'Customer comment': 'Customer comment',
+    'Admin comment': 'Admin comment',
     'Value of {property}': 'Value of {property}',
     'Select Attributes to Add': 'Select Attributes to Add',
     'Shipping': 'Shipping',
