@@ -78,9 +78,7 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
              */
             $billing = $checkout->getBilling();
 
-            if (!$billing->hasPassword()
-                && $billing->hasRegisterPassword()) {
-
+            if (!$billing->hasPassword() && $billing->hasRegisterPassword()) {
                 $billing->password = $billing->register_password;
                 $billing->password_confirm = $billing->register_password;
                 $billing->register_password = null;

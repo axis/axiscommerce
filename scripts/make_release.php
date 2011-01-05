@@ -25,7 +25,9 @@ class ReleaseMaker
             'var/*/*',
             'var/axis_sample_data_latest.sql',
             '.gitignore',
-            '.project'
+            '.project',
+            '.buildpath',
+            'nbproject'
         ),
         // path that will be copied despite of exclude rules
         'include' => array(
