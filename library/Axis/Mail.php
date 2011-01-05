@@ -45,19 +45,17 @@ class Axis_Mail extends Zend_Mail
     public function __construct($charset = 'UTF-8')
     {
         parent::__construct($charset);
-//        $this->view = new Zend_View();
         $this->view = Axis::app()->getBootstrap()
             ->getResource('layout')
             ->getView();
 
         /* for use in ->render('../[script.php]')  */
-        $this->view->setLfiProtection(false);
+        // $this->view->setLfiProtection(false);
 
         $this->view->addScriptPath(
             Axis::config('system/path') . '/app/design/mail'
         );
-        $sites               = Axis_Collect_Site::collect();
-        $this->view->site    = $sites[Axis::getSiteId()];
+        $this->view->site    = Axis::getSite()->name;
         $this->view->company = Axis::single('core/site')->getCompanyInfo();
     }
 
@@ -217,37 +215,18 @@ class Axis_Mail extends Zend_Mail
     }
 
     /**
+     * Sends this email using the given transport or a previously
+     * set DefaultTransport or the internal mail function if no
+     * default transport had been set.
      *
      * @param Zend_Mail_Transport_Abstract $transport
-     * @param bool $report
-     * @return bool
+     * @return Axis_Mail
      */
     public function send($transport = null, $report = true)
     {
         if (null === $transport) {
             $transport = $this->getTransport();
         }
-
-        try {
-            @parent::send($transport);
-            if ($report) {
-                Axis::message()->addSuccess(
-                    Axis::translate('core')->__(
-                        'Mail was sended successfully'
-                    )
-                );
-            }
-        } catch (Zend_Mail_Transport_Exception $e) {
-            if ($report) {
-                Axis::message()->addError(
-                    Axis::translate('core')->__(
-                        'Mail sending was failed.'
-                    ) . ' ' . $e->getMessage()
-                );
-            }
-            error_log($e->getMessage());
-            return false;
-        }
-        return true;
+        return @parent::send($transport);
     }
 }

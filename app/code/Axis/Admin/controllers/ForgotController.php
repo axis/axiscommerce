@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -40,12 +40,12 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
         parent::init();
     }
 
-    protected function _generatePassword() 
+    protected function _generatePassword()
     {
         mt_srand((double)microtime(1)*1000000);
         return md5(mt_rand());
     }
-    
+
     public function registerAction()
     {
         $this->layout->disableLayout();
@@ -64,7 +64,7 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
         }
         if (Axis::single('admin/user')->hasEmail($email)) {
             $hash = $this->_generatePassword();
-            $link = $this->view->href('forgot') . '?hash=' . $hash;  
+            $link = $this->view->href('forgot') . '?hash=' . $hash;
             $mail = new Axis_Mail();
             $mail->setConfig(array(
                 'event'   => 'forgot_password',
@@ -81,16 +81,19 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
                 'to'      => $email,
                 'from' => array('name' => Axis::config()->core->store->owner)
             ));
-            if ($mail->send()) {
+            try {
+                $mail->send();
                 Axis::single('admin/UserForgotPassword')->save(array(
                     'hash' => $hash,
                     'user_id' => Axis::single('admin/user')
                         ->getIdByEmail($email)
                 ));
                 Axis::message()->addSuccess(
-                    Axis::translate('admin')->__(
-                        'See your mailbox to proceed'
-                    )
+                    Axis::translate('admin')->__('See your mailbox to proceed')
+                );
+            } catch (Zend_Mail_Transport_Exception $e) {
+                Axis::message()->addError(
+                    Axis::translate('core')->__('Mail sending was failed.')
                 );
             }
         } else {
@@ -113,12 +116,12 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
 
             $this->_redirect('/');
             return;
-            
+
         }
-        $this->view->username = $username; 
+        $this->view->username = $username;
         $this->render();
     }
-    
+
     public function confirmAction()
     {
         $data = $this->_getAllParams();
@@ -152,13 +155,13 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
             $this->_redirect('forgot/register');
             return;
         }
-            
+
         Axis::single('admin/user')->update(array(
-            'password' => md5($data['password'])), 
+            'password' => md5($data['password'])),
             $this->db->quoteInto('username = ?', $data['username'])
         );
         Axis::single('admin/userForgotPassword')->delete(
-            $this->db->quoteInto('hash = ?', $data['hash']) 
+            $this->db->quoteInto('hash = ?', $data['hash'])
         );
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
@@ -166,5 +169,5 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
         ));
         $this->_redirect('auth');
     }
-    
+
 }

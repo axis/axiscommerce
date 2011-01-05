@@ -817,6 +817,15 @@
             <action>*</action>
         </page>
     </layer>
+    <layer multiple="1">
+        <priority>100</priority>
+        <layout>default_1column</layout>
+        <page>
+            <module>tag</module>
+            <controller>index</controller>
+            <action>index</action>
+        </page>
+    </layer>
     <cms_block multiple="1">
         <content>
             <![CDATA[<ul class="list-horizontal list-pipe info-menu no-bullet no-indent">

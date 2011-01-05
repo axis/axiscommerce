@@ -130,9 +130,8 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
 
     public function successAction()
     {
-        $this->view->pageTitle = Axis::translate('checkout')->__(
-            'Checkout Success'
-        );
+        $this->view->pageTitle = Axis::translate('checkout')->__('Checkout Success');
+        $this->view->meta()->setTitle($this->view->pageTitle);
          /* analytic ZA4OT*/
         Axis::config()->analytics->main->checkoutSuccess = true;
 

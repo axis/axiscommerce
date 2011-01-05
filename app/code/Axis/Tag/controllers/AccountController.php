@@ -55,6 +55,7 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Account
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('account')->__('My Tags');
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $this->view->tags = Axis::single('tag/customer')->getMyWithWeight();
         $this->view->tags()->enableWeight();
         $this->render();

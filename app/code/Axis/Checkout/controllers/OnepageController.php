@@ -43,10 +43,7 @@ class Axis_Checkout_OnepageController extends Axis_Checkout_Controller_Checkout
             ),
             '/checkout/cart'
         );
-        $this->view->meta()->setTitle(
-            Axis::translate('checkout')->__(
-                'Checkout Process'
-        ));
+        $this->view->meta()->setTitle($this->view->pageTitle);
     }
 
     public function indexAction()

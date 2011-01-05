@@ -64,20 +64,33 @@ class Axis_Account_Model_Observer
             'to' => $data['customer']->email
         ));
         if ($isC) {
-            $mail->send();
+            try {
+                $mail->send();
+                Axis::message()->addSuccess(
+                    Axis::translate('core')->__('Mail was sended successfully')
+                );
+            } catch (Zend_Mail_Transport_Exception $e) {
+                Axis::message()->addError(
+                    Axis::translate('core')->__('Mail sending was failed.')
+                );
+            }
         }
 
         $mailNotice = new Axis_Mail();
         $isC = $mailNotice->setConfig(array(
             'event'   => 'account_new-owner',
-            'subject' => 'Created new account',
+            'subject' => Axis::translate('account')->__('New Account Created'),
             'data'    => array('customer' => $data['customer']->toArray()),
             'to'      => Axis_Collect_MailBoxes::getName(
                 Axis::config()->sales->order->email
             )
         ));
         if ($isC) {
-            $mailNotice->send(null, false);
+            try {
+                $mailNotice->send();
+            } catch (Zend_Mail_Transport_Exception $e) {
+
+            }
         }
     }
 }

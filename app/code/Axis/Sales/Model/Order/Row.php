@@ -126,19 +126,22 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
     }
 
     /**
-     * Notify customer
-     * @return unknown_type
+     * Notify customer about order status changes or comments
+     *
+     * @return bool
      */
     protected function _notify($comments)
     {
-        $order      = Axis::single('sales/order')->find($this->id)->current();
         $customerId = Axis::single('sales/order')->getCustomerId($this->id);
         $customer   = Axis::single('account/customer')->find($customerId)->current();
-        $status     = Axis::single('sales/order_status_text')->find(
+        $status     = Axis::single('sales/order_status_text')
+            ->find(
                 $this->order_status_id,
                 Axis_Locale::getLanguageId()
-            )->current()
+            )
+            ->current()
             ->toArray();
+
         $status = $status['status_name'];
         $to = $customer->toArray();
         $to = $to['email'];
@@ -151,13 +154,25 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             'data'    => array(
                 'firstname' => $customer->firstname,
                 'lastname'  => $customer->lastname,
-                'order'     => $order->toArray(),
+                'order'     => $this->toArray(),
                 'comments'  => $comments,
                 'status'    => $status
             ),
             'to' =>  $to
         ));
-        return $mail->send();
+        try {
+            $mail->send();
+            Axis::message()->addSuccess(
+                Axis::translate('core')->__('Mail was sended successfully')
+            );
+            return true;
+        } catch (Zend_Mail_Transport_Exception $e) {
+            Axis::message()->addError(
+                Axis::translate('core')->__('Mail sending was failed.')
+                . ' ' . $e->getMessage()
+            );
+            return false;
+        }
     }
 
     /**

@@ -44,10 +44,7 @@ class Axis_Account_WishlistController extends Axis_Account_Controller_Account
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('account')->__('My Wishlist');
-        $this->view->meta()->setTitle(
-            Axis::translate('account')->__(
-                'My Wishlist'
-        ));
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $this->view->wishlist = Axis::single('account/wishlist')
             ->findByCustomerId(Axis::getCustomerId());
         $this->render();

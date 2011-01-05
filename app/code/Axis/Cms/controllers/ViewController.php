@@ -112,9 +112,7 @@ class Axis_Cms_ViewController extends Axis_Core_Controller_Front
         $content = $currentCategory->getContent();
 
         $this->view->category = array();
-        $title = empty($content['title']) ?
-            $this->_getParam('cat') : $content['title'];
-        $this->view->pageTitle = $title;
+        $this->view->pageTitle = $content['title'];
         $this->view->crumbs()->add(
             Axis::translate('cms')->__('Pages'),
             '/pages'

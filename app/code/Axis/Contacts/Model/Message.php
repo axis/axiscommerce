@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Contacts
  * @subpackage  Axis_Contacts_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Contacts
  * @subpackage  Axis_Contacts_Model
@@ -34,19 +34,19 @@
 class Axis_Contacts_Model_Message extends Axis_Db_Table
 {
     /**
-     * The default table name 
+     * The default table name
      */
     protected $_name = 'contacts_message';
     protected $_selectClass = 'Axis_Contacts_Model_Message_Select';
-    
+
     public function getList($departmentId = false, $params = array())
     {
         $select = $this->getAdapter()->select();
         $select->from(array('c' => $this->_prefix . 'contacts_message'))
-            ->join(array('d' => $this->_prefix . 'contacts_department'), 
+            ->join(array('d' => $this->_prefix . 'contacts_department'),
                 'd.id = c.department_id',
                 array('department_name' => 'name'));
-        
+
         if (!empty($params['sort']))
             $select->order($params['sort'] . ' ' . $params['dir']);
         if (!empty($params['limit'])) {
@@ -58,9 +58,9 @@ class Axis_Contacts_Model_Message extends Axis_Db_Table
         if (isset($params['filter']) && is_array($params['filter'])) {
             foreach ($params['filter'] as $filter) {
                 switch ($filter['data']['type']) {
-                    case 'numeric': 
+                    case 'numeric':
                     case 'date':
-                        $condition = $filter['data']['comparison'] == 'eq' ? '=' : 
+                        $condition = $filter['data']['comparison'] == 'eq' ? '=' :
                             ($filter['data']['comparison'] == 'noteq' ? '<>' :
                             ($filter['data']['comparison'] == 'lt' ? '<' : '>'));
                         $select->where("c.{$filter['field']} $condition ?", $filter['data']['value']);
@@ -78,10 +78,10 @@ class Axis_Contacts_Model_Message extends Axis_Db_Table
         }
         return $select->query()->fetchAll();
     }
-    
+
     /**
      * Adds message to database and send it to department email
-     * 
+     *
      * @param string $from
      * @param string $subject
      * @param string $message
@@ -100,23 +100,30 @@ class Axis_Contacts_Model_Message extends Axis_Db_Table
             'site_id'       => Axis::getSiteId(),
             'created_at'    => Axis_Date::now()->toSQLString()
         ));
-        
+
         $department = Axis::single('contacts/department')
             ->find($departmentId)
             ->current();
-        
+
         $to = $department->email;
-        
+
         $mail = new Axis_Mail();
         $mail->setConfig(array(
             'event'   => 'contact_us',
             'subject' => $subject,
-            'data'    => array('text' => $message, 'custom_info' => $extraInfo),
+            'data'    => array(
+                'text'          => $message,
+                'custom_info'   => $extraInfo
+            ),
             'to'      => $to,
-            'from'    => $from 
+            'from'    => $from
         ));
-        @$mail->send();
-        
+        try {
+            $mail->send();
+        } catch (Zend_Mail_Transport_Exception $e) {
+
+        }
+
         return $this;
     }
 }

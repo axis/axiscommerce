@@ -44,7 +44,8 @@ class Axis_Tag_IndexController extends Axis_Core_Controller_Front
 
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('tag')->__('Customer tags');
+        $this->view->pageTitle = Axis::translate('tag')->__('Tags');
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $this->view->tags = Axis::single('tag/customer')->getAllWithWeight();
         $this->render();
     }
@@ -80,6 +81,7 @@ class Axis_Tag_IndexController extends Axis_Core_Controller_Front
         $this->view->pageTitle = Axis::translate('tag')->__(
             "Products associated with tag '%s'", $tagName
         );
+        $this->view->meta()->setTitle($this->view->pageTitle);
 
         foreach ($tagIds as $tagId) {
             $rowset = Axis::single('tag/customer')->findProductsByTagId($tagId);

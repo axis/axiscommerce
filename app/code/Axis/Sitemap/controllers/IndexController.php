@@ -53,6 +53,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
         $this->view->pageTitle = Axis::translate('sitemap')->__(
             'Site Map Categories'
         );
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $items = Axis::single('catalog/category')
             ->getFlatTree($this->_langId, $this->_siteId, true);
         $this->view->items = current($items);
@@ -68,6 +69,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
         $this->view->pageTitle = Axis::translate('sitemap')->__(
             'Site Map All Products'
         );
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $items = array();
         $productRowset = Axis::single('sitemap/file')
             ->getAllActiveProducts($this->_langId, array($this->_siteId));
@@ -86,6 +88,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
         $this->view->pageTitle = Axis::translate('sitemap')->__(
             'Site Map All Pages'
         );
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $result = array();
         $categories = Axis::single('cms/category')->getActiveCategory();
 
