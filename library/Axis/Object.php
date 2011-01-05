@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @author      Axis Core Team <core@axiscommerce.com>
@@ -38,7 +38,7 @@ class Axis_Object implements ArrayAccess
     protected $_data = array();
 
     /**
-     *  
+     *
      * @param array $data
      */
     public function  __construct($data = null)
@@ -70,7 +70,6 @@ class Axis_Object implements ArrayAccess
         if (null === $key) {
             return $this->_data;
         }
-        $key = $this->_underscore($key);
 
         if (isset($this->_data[$key])) {
             return $this->_data[$key];
@@ -82,14 +81,9 @@ class Axis_Object implements ArrayAccess
      * @param string $key
      * @return mixed
      */
-    public function /*&*/ __get($key)
+    public function __get($key)
     {
         return $this->getData($key);
-//        $key = $this->_underscore($key);
-//        if (false === isset($this->_data[$key])) {
-//            $this->_data[$key] = new self();
-//        }
-//        return $this->_data[$key];
     }
 
      /**
@@ -100,17 +94,10 @@ class Axis_Object implements ArrayAccess
      */
     public function setData($key, $value)
     {
-//        if (is_array($value)) {
-//            $value = new self($value);
-//        }
-        if (empty($value)) {
-            return $this;
-        }
-        $key = $this->_underscore($key);
         $this->_data[$key] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $name
@@ -144,7 +131,7 @@ class Axis_Object implements ArrayAccess
         if (!array_key_exists($key, $this->_data)) {
             throw new Axis_Exception("Specified property \"$key\" is not in the object");
         }
-        
+
         unset($this->_data[$key]);
         return $this;
     }
@@ -204,25 +191,28 @@ class Axis_Object implements ArrayAccess
     /**
      *
      * @param string $name
-     * @param mixed $argunents
+     * @param mixed $arguments
      * @return mixed
      */
-    public function __call($name, $argunents)
+    public function __call($name, $arguments)
     {
+        $key = $this->_underscore(substr($name, 3));
+
         switch (substr($name, 0, 3)) {
             case 'get':
-                return $this->getData(substr($name, 3));
+                return $this->getData($key);
                 break;
             case 'set':
-                if (!count($argunents)) {
-                    $argunents[] = null;
+                if (!count($arguments)) {
+                    $arguments[] = null;
                 }
-                return $this->setData(substr($name, 3), $argunents[0]);
+                return $this->setData($key, $arguments[0]);
                 break;
             case 'has':
-                return (bool) $this->getData(substr($name, 3));
+                return (bool) $this->getData($key);
                 break;
         }
+
         throw new Axis_Exception(Axis::translate('core')->__(
             "Call to undefined method '%s'", get_class($this) . '::' . $name
         ));

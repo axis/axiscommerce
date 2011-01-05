@@ -110,17 +110,20 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
 
         $this->log(
             "\tRun  SetExpressCheckout \n " .
-            "\tAMT :" . number_format($amount, 2) . "\n" .
+            "\tAMT: " . number_format($amount, 2) . "\n" .
             "\tReturn URL : " . $returnUrl . "\n" .
             "\tCancel Url : " . $cancelUrl . "\n" .
-            "\tOptions : " . Zend_Debug::dump($options, null, false) . "\n" .
-            "\tResponse : " . Zend_Debug::dump($response, null, false)
+            "\tOptions: " . Zend_Debug::dump($options, null, false) . "\n" .
+            "\tResponse: " . Zend_Debug::dump($response, null, false)
         );
 
         if ($response['ACK'] != 'Success') {
-            $message = "\n\tFailure SetExpressCheckout\n";
-            $this->log($message);
-            Axis_Message::getInstance()->addError($message);
+            $this->log(
+                "Response : " . Zend_Debug::dump($response, null, false)
+            );
+            foreach ($this->getMessages($response) as $severity => $messages) {
+                Axis::message()->batchAdd($messages, $severity);
+            }
             return false;
         }
 
@@ -142,8 +145,8 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
         );
         $this->log(
             "Run  GetExpressCheckoutDetails \n"
-          . "Token :" . $this->getStorage()->token . "\n"
-          . "Respopnse : " . Zend_Debug::dump($response, null, false)
+            . "Token: " . $this->getStorage()->token . "\n"
+            . "Response: " . Zend_Debug::dump($response, null, false)
         );
         if ($response['ACK'] != 'Success') {
             $message = "\n\tFailure GetExpressCheckoutDetails\n";
@@ -178,9 +181,9 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             return false;
         }
 
-        if (!isset($response['ADDRESSSTATUS']) 
+        if (!isset($response['ADDRESSSTATUS'])
             || $response['ADDRESSSTATUS'] == 'None' ) {
-            
+
             return false;
         }
 
@@ -213,7 +216,7 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
         if (!$delivery instanceof Axis_Address) {
             return false;
         }
-        
+
         $options = array_merge($options, array(
             'SHIPTONAME'   => $delivery->firstname . ' ' . $delivery->lastname,
             'SHIPTOSTREET' => $delivery->street_address,
@@ -223,7 +226,7 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             'SHIPTOZIP'    => $delivery->postcode,
             'SHIPTOCOUNTRYCODE' => $delivery->country['iso_code_2']
         ));
-        
+
         if (is_array($this->getStorage()->payer)
             && count(array_diff(array_values($delivery->toArray()),
                 array_values($this->getStorage()->payer))) > 8
@@ -242,7 +245,7 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             unset($options['SHIPTOPHONE']);
         }
         // if State is not supplied, repeat the city so that it's not blank, otherwise PayPal croaks
-        if ((!isset($options['SHIPTOSTATE']) || trim($options['SHIPTOSTATE']) == '') 
+        if ((!isset($options['SHIPTOSTATE']) || trim($options['SHIPTOSTATE']) == '')
             && !isset($options['SHIPTOCITY']) && $options['SHIPTOCITY'] != '') {
 
             $options['SHIPTOSTATE'] = $options['SHIPTOCITY'];
@@ -260,24 +263,21 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
         );
 
         $this->log(
-            "\tRun  DoExpressCheckoutPayment \t\n" .
-            "\tToken : " . $this->getStorage()->token . "\n" .
-            "\tPayerId : " . $this->getStorage()->payer['payer_id'] . "\n" .
-            "\tAMT : " . $amount . "\n" .
-            "\tOptions : " . Zend_Debug::dump($options, null, false) .
-            "\tRespopnse : " . Zend_Debug::dump($response, null, false)
-
+            "\tRun DoExpressCheckoutPayment \t\n" .
+            "\tToken: " . $this->getStorage()->token . "\n" .
+            "\tPayerId: " . $this->getStorage()->payer['payer_id'] . "\n" .
+            "\tAMT: " . $amount . "\n" .
+            "\tOptions: " . Zend_Debug::dump($options, null, false) .
+            "\tResponse: " . Zend_Debug::dump($response, null, false)
         );
-//        Zend_Debug::dump($this->getStorage()->token);
-//        Zend_Debug::dump($this->getStorage()->payer['payer_id']);
-//        Zend_Debug::dump($options);
-//        Zend_Debug::dump($amount);
-//        Zend_Debug::dump($response);
-//        die;
+
         if ($response['ACK'] != 'Success') {
-            $message = "\n\tFailure DoExpressCheckoutPayment\n";
-            $this->log($message);
-            Axis_Message::getInstance()->addError($message);
+            $this->log(
+                "Response : " . Zend_Debug::dump($response, null, false)
+            );
+            foreach ($this->getMessages($response) as $severity => $messages) {
+                Axis::message()->batchAdd($messages, $severity);
+            }
             return false;
         }
         return $response;
@@ -301,7 +301,7 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
     }
 
     public function preProcess()
-    {        
+    {
         $this->getStorage()->markflow = true;
         $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
         $url = $view->href('/paymentpaypal/express-checkout/index', true);

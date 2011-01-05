@@ -2,7 +2,6 @@
 "Already registered?","Already registered?"
 "Card Number","Card Number"
 "Card Owner's Name","Card Owner's Name"
-"Checkout Success Sample Text ...","Checkout Success Sample Text ..."
 "Checkout as Guest","Checkout as Guest"
 "Checkout as a Guest or Register","Checkout as a Guest or Register"
 "Credit Card Type","Credit Card Type"
@@ -111,3 +110,4 @@
 "Sort Order","Sort Order"
 "ShippingTax","ShippingTax"
 "You can add some additional information for our manager","You can add some additional information for our manager"
+"You can view your order history by going to the %s page","You can view your order history by going to the %s page"

@@ -1062,6 +1062,7 @@ a.review-stars { outline: none; }
 .checkout-box .cart-total { font: bold 1.1em Verdana, Geneva, Arial, Helvetica, sans-serif;
     margin: .8em 0; color: #e76d00; }
 .checkout-box .btn-checkout { float: right; }
+.checkout-cart-index .btn-express-checkout { float: right; margin-top: 15px; }
 
 /* Wishlist page */
 #wishlist-table .date { font-size: .9em; }

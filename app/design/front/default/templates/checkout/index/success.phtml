@@ -1,23 +1,26 @@
 <?php echo $this->title($this->pageTitle) ?>
+<?php $customerId = Axis::getCustomerId(); ?>
 <p>
     <strong>
     <?php echo $this->translate('checkout')->__("Thank You! We Appreciate your Business!")?>
     </strong>
 </p>
 <p>
-    <?php echo $this->translate('checkout')->__("Your Order Number is")?>: <?php echo $this->order->id;?>
+    <?php echo $this->translate('checkout')->__("Your Order Number is")?>: <?php echo $this->order->number;?>
+    <?php if ($customerId) : ?>
     <a href="<?php echo $this->href('/account/order/view/orderId/' . $this->order->id, true) ?>">
         <?php echo $this->translate('checkout')->__('View')?>
     </a>
+    <?php endif; ?>
 </p>
-<p>
-    <?php echo $this->translate('checkout')->__("Checkout Success Sample Text ...");?>
-</p>
+<?php if ($customerId) : ?>
 <p>
     <?php echo $this->translate('checkout')->__("Thank you for shopping. Please click the Log Off link to ensure that your receipt and purchase information is not visible to the next person using this computer.")?>
 </p>
 <p>
-    <?php echo $this->translate('checkout')->__('You can view your order history by going to the "%s" page and by clicking on "View All Orders".
-    Please direct any questions you have to customer service.',
-    "<a href=\" {$this->href('/account/order', true)}\">{$this->translate('checkout')->__('My Account Orders')}</a>")?>
+    <?php echo $this->translate('checkout')->__(
+        "You can view your order history by going to the %s page",
+        "<a href=\"{$this->href('/account/order', true)}\">{$this->translate('checkout')->__('My Account Orders')}</a>")
+    ?>
 </p>
+<?php endif; ?>

@@ -8,17 +8,17 @@
     <meta name="robots" content="<?php echo $this->escape($this->meta()->getRobots()) ?>" />
     <link rel="icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
     <link rel="shortcut icon" href="<?php echo $this->skinUrl('favicon.ico') ?>" type="image/x-icon" />
-    
+
     {{headStyle}}
     {{headLink}}
     <script type="text/javascript">
     var Axis = {
-        baseUrl: '<?php echo $this->baseUrl ?>', 
+        baseUrl: '<?php echo $this->baseUrl ?>',
         langUrl: '<?php echo Axis_Locale::getLanguageUrl() ?>'
     };
     </script>
     {{headScript}}
-    
+
     <?php $this->headLink()
         ->setProxy('axis_core')
         ->appendStylesheet('stylesheet.css')
@@ -27,7 +27,7 @@
 
     <?php $this->headScript()
         ->setProxy('axis_core')
-        ->appendFile('js/jquery/jquery-1.3.2.min.js')
+        ->appendFile('js/jquery/jquery-1.4.4.min.js')
         ->appendFile('js/jquery/jquery.validate.min.js')
         ->appendFile('js/axis/core/script.js')
         ->appendFile('/js/axis/core/messageStack.js') ?>
