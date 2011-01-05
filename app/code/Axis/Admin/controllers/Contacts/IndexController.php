@@ -203,9 +203,19 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
             'from'    => array('email' => $from)
         ));
 
-        return $this->_helper->json->sendJson(array(
-            'success' => $mail->send()
-        ));
+        try {
+            $mail->send();
+            Axis::message()->addSuccess(
+                Axis::translate('core')->__('Mail was sended successfully')
+            );
+            $this->_helper->json->sendSuccess();
+        } catch (Zend_Mail_Transport_Exception $e) {
+            Axis::message()->addError(
+                Axis::translate('core')->__('Mail sending was failed.')
+                . ' ' . $e->getMessage()
+            );
+            $this->_helper->json->sendFailure();
+        }
     }
 
     public function setStatusAction()

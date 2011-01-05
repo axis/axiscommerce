@@ -49,8 +49,12 @@ class Axis_Sales_Model_Observer
                 Axis::config()->sales->order->email
             )
         ));
-        return $mail->send();
-
+        try {
+            $mail->send();
+            return true;
+        } catch (Zend_Mail_Transport_Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -69,6 +73,17 @@ class Axis_Sales_Model_Observer
             ),
             'to' =>  $order->customer_email
         ));
-        return $mail->send();
+        try {
+            $mail->send();
+            Axis::message()->addSuccess(
+                Axis::translate('core')->__('Mail was sended successfully')
+            );
+            return true;
+        } catch (Zend_Mail_Transport_Exception $e) {
+            Axis::message()->addError(
+                Axis::translate('core')->__('Mail sending was failed.')
+            );
+            return false;
+        }
     }
 }

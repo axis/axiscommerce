@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
@@ -33,8 +33,8 @@
  */
 class Axis_Account_ForgotController extends Axis_Core_Controller_Front
 {
-    
-    protected function _generatePassword() 
+
+    protected function _generatePassword()
     {
         mt_srand((double)microtime(1)*1000000);
         return md5(mt_rand());
@@ -44,16 +44,15 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
     {
         parent::init();
         $this->view->crumbs()->add(
-            Axis::translate('account')->__('Forgot'), '/account/auth/forgot'
+            Axis::translate('account')->__('Auth'), '/account/auth'
         );
     }
 
     public function registerAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Forgot password'
-        );
-        
+        $this->view->pageTitle = Axis::translate('account')->__('Forgot password');
+        $this->view->meta()->setTitle($this->view->pageTitle);
+
         $username = $this->_getParam('username', null);
         if (empty($username)) {
              $this->render();
@@ -63,14 +62,13 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
 
         if ($customerId
             && ($customer = Axis::single('account/customer')->find($customerId)->current())
-            && Axis::getSiteId() === $customer->site_id
-            ) {
+            && Axis::getSiteId() === $customer->site_id) {
 
             $hash = $this->_generatePassword();
             $link = $this->view->href('/account/forgot', true)
                   . '?hash=' . $hash;
-            
-            $mail = new Axis_Mail();               
+
+            $mail = new Axis_Mail();
             $mail->setConfig(array(
                 'event'   => 'forgot_password',
                 'subject' => 'Forgot Your Password',
@@ -82,7 +80,8 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
                 'to'   => $username,
                 'from' => array('name' => Axis::config()->core->store->owner)
             ));
-            if (@$mail->send()) {
+            try {
+                $mail->send();
                 Axis::single('account/customer_forgotPassword')->save(array(
                     'hash' => $hash,
                     'customer_id' => $customerId
@@ -90,6 +89,10 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
                 Axis::message()->addSuccess(Axis::translate('core')->__(
                     'Message was sended to you. Check your mailbox'
                 ));
+            } catch (Zend_Mail_Transport_Exception $e) {
+                Axis::message()->addError(
+                    Axis::translate('core')->__('Mail sending was failed.')
+                );
             }
         } else {
             Axis::message()->addError(Axis::translate('account')->__(
@@ -98,11 +101,11 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
         }
         $this->render();
     }
-    
+
     public function indexAction()
     {
         if (!$hash = $this->_getParam('hash', null)) {
-        	$this->_redirect('account/forgot/register');
+            $this->_redirect('account/forgot/register');
         };
 
         $this->view->pageTitle = Axis::translate('account')->__(
@@ -111,7 +114,7 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
         $this->view->hash = $hash;
         $this->render();
     }
-    
+
     public function confirmAction()
     {
         $params = $this->_getAllParams();
@@ -136,19 +139,19 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             ));
             $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
             return;
-            
-        } 
+
+        }
         Axis::single('account/customer')->update(array(
             'password' => md5($params['password'])),
             $this->db->quoteInto('email = ?',
                 $modelForgotPass->getEmailByHash($params['hash'])
             )
         );
-        
+
         $modelForgotPass->delete(
             $this->db->quoteInto('hash = ?', $params['hash'])
         );
-        
+
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
     }
 }

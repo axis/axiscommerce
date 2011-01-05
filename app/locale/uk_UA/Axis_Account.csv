@@ -1,5 +1,5 @@
 "'%s' was not found in database","'%s' не знайдено в базі даних"
-"By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.","Створюючи рахунок в нашому магазині, ви зможете пройти через процес перевірки швидше, зберігати кілька адрес для доставки, переглядати та відслідковувати ваші замовлення у своєму профілі а також багато іншого."
+"By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.","Створивши обліковий запис в нашому магазині, ви зможете швидше оформити замовлення, зберігати кілька адрес для доставки, переглядати та відслідковувати ваші замовлення а також багато іншого."
 "Can't save customer","Не вдається зберегти клієнта"
 "If you have an account with us, please log in.","Якщо у Вас вже є обліковий запис у нас, будь-ласка, увійдіть."
 "New Customers","Нові клієнти"
@@ -144,3 +144,4 @@
 "Default Customer Group (default:'General')","Група користувача по-замовчуванню (по-замовчуванню:'General')"
 "Customer '%s' not found","Користувача '%s' не знайдено"
 "Your account is not active. Please contact site administrator for more details","Ваш профіль неактивований. Зв'яжіться із адміністратором сайту для вирішення проблеми"
+"New Account Created","Зареєстрований новий користувач"
