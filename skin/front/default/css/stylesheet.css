@@ -479,11 +479,12 @@ dl.attributes-list dd { padding-left: 10px; }
 /* account page */
 .login-box .col-1,
 .login-box .col-2 { border: 1px solid #ddd; }
-.login-box .content { padding: 18px 22px; }
+.login-box .content { padding: 18px 22px; min-height: 150px; }
 .login-box h4 { font-weight: bold; font-size: 0.9em; padding-bottom: 0.6em;
     margin-bottom: 0.8em; border-bottom: 1px solid #ddd; }
 .login-box .input-text { width: 250px; }
-.login-box .button-set { margin: 0; padding: 12px 10px; border-top: 1px solid #ddd; }
+.login-box .button-set { margin: 0; padding: 7px 8px; border-top: 1px solid #ddd; }
+.login-box .button-set a { line-height: 29px; }
 
 /* LI grid listing */
 .grid-row { clear: left; }
