@@ -111,6 +111,7 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
         $this->view->pageTitle = Axis::translate('account')->__(
             'Retrieve Forgotten Password'
         );
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $this->view->hash = $hash;
         $this->render();
     }

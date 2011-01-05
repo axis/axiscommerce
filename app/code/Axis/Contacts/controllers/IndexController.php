@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Contacts
  * @subpackage  Axis_Contacts_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Contacts
  * @subpackage  Axis_Contacts_Controller
@@ -37,7 +37,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
     public function indexAction()
     {
         $form = Axis::single('contacts/form_message');
-        
+
         if ($this->_request->isPost()) {
             $data = $this->_request->getPost();
             if ($form->isValid($data)) {
@@ -50,9 +50,9 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                     }
                 }
                 Axis::single('contacts/message')->add(
-                    $data['email'], 
-                    $data['subject'], 
-                    $data['message'], 
+                    $data['email'],
+                    $data['subject'],
+                    $data['message'],
                     $data['department'],
                     $customInfo
                 );
@@ -75,10 +75,11 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                 $customer->firstname . ' ' . $customer->lastname
             );
         }
-        
+
         $this->view->pageTitle = Axis::translate('contacts')->__(
             'Contact Us'
         );
+        $this->view->meta()->setTitle($this->view->pageTitle);
         $this->view->form = $form;
         $this->render();
     }
