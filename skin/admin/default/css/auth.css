@@ -15,10 +15,11 @@ p { margin: 0.8em 0; }
 .axis-form .input-text { border: 1px solid #b4b4b4; padding: 5px 3px; width: 200px; }
 .axis-form .input-text:focus { border-left-color: #777; border-top-color: #777; }
 .axis-form .btn-submit { margin-top: 5px; }
+.axis-form p { clear: both; }
 
 /* messagestack */
 #messages {
-    width:100%; 
+    width:100%;
     overflow:hidden;
     zoom: 1;
 }
@@ -34,7 +35,7 @@ p { margin: 0.8em 0; }
     border-color: #999;
     background-color: #fdfdfd;
 }
-ul.error-msg, 
+ul.error-msg,
 ul.notice-msg,
 ul.success-msg {
     background-position: 10px 7px;
@@ -62,7 +63,7 @@ ul.success-msg {
 /*buttons*/
 .alt-button, .button {
     position: relative;
-    margin: 0px 2px; 
+    margin: 0px 2px;
     text-decoration: none;
     border: 1px solid #1c67a1;
     padding: 5px 10px;

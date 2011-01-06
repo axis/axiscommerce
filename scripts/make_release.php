@@ -27,7 +27,8 @@ class ReleaseMaker
             '.gitignore',
             '.project',
             '.buildpath',
-            'nbproject'
+            'nbproject',
+            '.settings'
         ),
         // path that will be copied despite of exclude rules
         'include' => array(

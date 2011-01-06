@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="login-window">
-        <div class="head"><h2>Login</h2><p class="powered">Powered by Axis</p></div>
+        <div class="head"><h2><?php echo $this->translate('account')->__('Login') ?></h2><p class="powered"><?php echo $this->translate('core')->__('Powered by %s v. %s', 'Axis', Axis::app()->getVersion()) ?></p></div>
         <div class="content">
             <?php echo $this->message(); ?>
             <form class="form-login axis-form" action="<?php echo $this->href('/auth/login');?>" method="post">
@@ -27,7 +27,7 @@
                 <input class="input-text required" type="password" id="password" name="password" />
                 </p>
                 <p><a href="<?php echo $this->href('/forgot/register');?>"><?php echo $this->translate('admin')->__('Forgot your password?')?></a></p>
-                <button type="submit" class="button btn-submit"><span>Login</span></button>
+                <button type="submit" class="button btn-submit"><span><?php echo $this->translate('account')->__('Login') ?></span></button>
             </form>
         </div>
     </div>
