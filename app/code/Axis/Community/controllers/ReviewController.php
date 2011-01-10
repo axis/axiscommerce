@@ -417,7 +417,9 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
      */
     private function _getListingParams()
     {
-        if ($this->_hasParam('dir')) {
+        if ($this->_hasParam('dir')
+            && in_array($this->_getParam('dir'), array('asc', 'desc'))) {
+
             $dir = $this->_getParam('dir');
         } elseif (Axis::session('review')->dir) {
             $dir = Axis::session('review')->dir;
@@ -426,7 +428,9 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         }
         Axis::session('review')->dir = $dir;
 
-        if ($this->_hasParam('order')) {
+        if ($this->_hasParam('order')
+            && in_array($this->_getParam('order'), array('date', 'rating'))) {
+
             switch ($this->_getParam('order')) {
                 case 'date':
                     $order = 'cr.date_created';
@@ -452,8 +456,8 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             }
         } elseif (Axis::session('review')->limit) {
             $limit = Axis::session('review')->limit;
-        } elseif (is_numeric(Axis::config()->community->review->perPageDefault)) {
-            $limit = Axis::config()->community->review->perPageDefault;
+        } elseif (is_numeric(Axis::config('community/review/perPageDefault'))) {
+            $limit = Axis::config('community/review/perPageDefault');
         } else {
             $limit = 10;
         }
@@ -467,9 +471,9 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
 
         return array(
             'order' => $order,
-            'dir' => $dir,
+            'dir'   => $dir,
             'limit' => $limit,
-            'page' => $page
+            'page'  => $page
         );
     }
 
@@ -479,7 +483,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     private function _getPerPage()
     {
         $paging = array();
-        foreach (explode(',', Axis::config()->community->review->perPage) as $perPage) {
+        foreach (explode(',', Axis::config('community/review/perPage')) as $perPage) {
             $paging[$this->view->url(array('limit' => $perPage, 'page' => null))] = $perPage;
         }
         return $paging;

@@ -54,6 +54,7 @@ class Axis_View_Helper_Message
             foreach ($this->_messages as $type => $messageArray) {
                 $result .= "<ul class='{$type}-msg' title='{$type}'>";
                 foreach ($messageArray as $message) {
+                    $message = $this->view->escape($message);
                     $result .= "<li>{$message}</li>";
                 }
                 $result .= "</ul>";
@@ -62,5 +63,10 @@ class Axis_View_Helper_Message
         }
 
         return $result;
+    }
+
+    public function setView($view)
+    {
+        $this->view = $view;
     }
 }

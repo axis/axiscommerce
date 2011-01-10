@@ -28,7 +28,7 @@ $productUrl = $this->hurl(array(
     'controller' => 'catalog',
     'action' => 'product'
 ), false, true);
-$author = empty($review['author']) ? 'Guest' : $review['author'];
+$author = empty($review['author']) ? 'Guest' : $this->escape($review['author']);
 ?>
 <li class="review">
     <div class="product-image">
@@ -77,7 +77,8 @@ $author = empty($review['author']) ? 'Guest' : $review['author'];
             title="<?php echo $this->translate('community')->__("View all reviews for %s", $review['product_name']) ?>"
         ><small><?php echo $this->translate('community')->__("View all reviews") ?></small></a>
         <span class="review-date"><small><?php echo $this->translate('community')->__("Reviewed on %s by %s", $review['date_created'], $author) ?></small></span>
-        <h5 class="review-title"><a href="<?php echo $this->href("review/detail/id/{$review['id']}") ?>" title="Read review"><?php echo $review['title'] ?></a></h5>
+        <h5 class="review-title"><a href="<?php echo $this->href("review/detail/id/{$review['id']}") ?>"
+            title="<?php echo $this->translate('community')->__("Read review") ?>"><?php echo $review['title'] ?></a></h5>
         <?php if (isset($review['ratings'])): ?>
             <?php echo $this->ratings($review['ratings'], $this->href("review/detail/id/{$review['id']}")) ?>
         <?php endif ?>
