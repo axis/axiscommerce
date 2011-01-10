@@ -10,20 +10,20 @@
 <?php echo $this->render('index/result/paging.phtml') ?>
 
 <ul class="product-listing product-listing-list">
-    <?php foreach ($this->results as $result) :
-        switch ($result['type']) {
-                case 'page':
-                    $this->page = $result;
-                    echo $this->render('index/result/page.phtml');
-                    break;
-                case 'product':
-                default:
-                    $this->product = $result;
-                    echo $this->render('index/result/product.phtml');
-                    break;
-            }
-        
-     endforeach; ?>
+<?php foreach ($this->results as $result) :
+    switch ($result['type']) {
+        case 'page':
+            $this->page = $result;
+            echo $this->render('index/result/page.phtml');
+            break;
+        case 'product':
+        default:
+            $this->product = $result;
+            echo $this->render('index/result/product.phtml');
+            break;
+    }
+
+ endforeach; ?>
 </ul>
 
 <?php echo $this->render('index/result/paging.phtml') ?>

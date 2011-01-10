@@ -144,7 +144,8 @@ abstract class Axis_HumanUri_Adapter_Abstract
 
     public function setParam($key, $value)
     {
-        $this->_params[$key] = $value;
+        $filter = new Zend_Filter_HtmlEntities();
+        $this->_params[$key] = $filter->filter($value);
     }
 
     public function getParams()

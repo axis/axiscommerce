@@ -3,26 +3,27 @@
 <?php echo $this->render('review/list/toolbar.phtml') ?>
 <form id="form-compare" method="post" action="<?php echo $this->href('review/compare') ?>">
 <ol class="review-list">
-<?php foreach ($this->data['reviews'] as $review) : 
+<?php foreach ($this->data['reviews'] as $review) :
 $productUrl = $this->hurl(array(
     'product' => array('value' => $review['product_id'], 'seo' => $review['product_key_word']),
     'controller' => 'catalog',
     'action' => 'product'
 ), false, true);
 
+$authorName = $this->escape($review['author']);
 if (empty($review['customer_id'])):
-    $author = empty($review['author']) ? 'Guest' : $review['author'];
+    $author = empty($review['author']) ? 'Guest' : $authorName;
 else:
     $authorUrl = $this->href("review/customer/id/{$review['customer_id']}");
-    $authorTitle = $this->translate('community')->__("View all reviews written by %s", $review['author']);
-    $author = "<a href='" . $authorUrl . "' title='" . $authorTitle . "' class='review-author'>{$review['author']}</a>";
+    $authorTitle = $this->translate('community')->__("View all reviews written by %s", $authorName);
+    $author = "<a href='" . $authorUrl . "' title='" . $authorTitle . "' class='review-author'>{$authorName}</a>";
 endif;
 
 ?>
 <li class="review">
     <div class="product-image">
         <a href="<?php echo $productUrl;?>"
-            title="<?php echo $this->escape($review['product_image_title']) ?>" 
+            title="<?php echo $this->escape($review['product_image_title']) ?>"
         ><?php
             echo $this->imager('/product' . $review['product_image_thumbnail'], array(
                 'width'  => $this->config()->image->product->widthSmall,
@@ -42,8 +43,8 @@ endif;
             title="<?php echo $this->translate('community')->__('Select to compare') ?>"/>
     </div>
     <div class="product-common">
-        <?php echo $this->price($review['product_price'], 
-            !empty($review['product_price_discount']) ? 
+        <?php echo $this->price($review['product_price'],
+            !empty($review['product_price_discount']) ?
                 $review['product_price_discount'] : false
         ) ?>
         <?php if (Axis::single('community/review')->canAdd()) : ?>
@@ -67,9 +68,9 @@ endif;
             title="<?php echo $this->translate('community')->__("View all reviews for %s", $review['product_name']) ?>"
         ><small><?php echo $this->translate('community')->__("View all reviews") ?></small></a>
         <span class="review-date"><small><?php echo $this->translate('community')->__("Reviewed on %s by %s", $review['date_created'], $author) ?></small></span>
-        <h5 class="review-title"><a href="<?php echo $this->href("review/detail/id/{$review['id']}") ?>" 
+        <h5 class="review-title"><a href="<?php echo $this->href("review/detail/id/{$review['id']}") ?>"
             title="<?php echo $this->translate('community')->__('Read review') ?>"
-            ><?php echo $review['title'] ?></a></h5>
+            ><?php echo $this->escape($review['title']) ?></a></h5>
         <?php if (isset($review['ratings'])): ?>
             <?php echo $this->ratings($review['ratings'], $this->href("review/detail/id/{$review['id']}")) ?>
         <?php endif ?>
@@ -82,6 +83,6 @@ endif;
 </ol>
 </form>
 <?php echo $this->render('review/list/toolbar.phtml') ?>
-<?php else: 
+<?php else:
     echo $this->translate('community')->__("Review not found");
 endif;?>
