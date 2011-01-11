@@ -120,6 +120,7 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
                 Axis::message()->addError($error);
             }
         } else {
+            Zend_Session::regenerateId();
             Axis::dispatch('account_customer_login_success', array('username' => $email));
             Axis::single('checkout/cart')->merge();
             Axis::single('checkout/checkout')->getStorage()->asGuest = null;
