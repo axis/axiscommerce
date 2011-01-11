@@ -176,21 +176,47 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         } elseif (!is_writable($cacheDir)) {
             chmod($cacheDir, 0777);
         }
-        Zend_Session::start(array(
+
+        Zend_Session::setOptions(array(
             'cookie_lifetime' => 864000, // 10 days
             'name'            => 'axisid',
             'strict'          => 'off',
-            'save_path'       => $cacheDir
+            'save_path'       => $cacheDir,
+            'cookie_httponly' => true
         ));
+
+        try {
+            Zend_Session::start();
+        } catch (Zend_Session_Exception $e) {
+            Zend_Session::destroy(); // ZF doesn't allow to start session after destroying
+            if (!headers_sent()) {
+                $host  = $_SERVER['HTTP_HOST'];
+                $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+                header("Location: http://$host$uri/");
+            }
+            exit();
+        }
         return Axis::session();
+    }
+
+    protected function _initSessionValidators()
+    {
+        $this->bootstrap('DbAdapter');
+        $sessionConfig = Axis::config('core/session');
+        if (!$sessionConfig instanceof Axis_Config) {
+            return;
+        }
+        if ($sessionConfig->remoteAddressValidation) {
+            Zend_Session::registerValidator(new Axis_Session_Validator_RemoteAddress());
+        }
+        if ($sessionConfig->httpUserAgentValidation) {
+            Zend_Session::registerValidator(new Zend_Session_Validator_HttpUserAgent());
+        }
     }
 
     protected function _initLayout()
     {
         $this->bootstrap('Session');
-        /**
-         * Init Layouts
-         */
         return Axis_Layout::startMvc();
         // see Axis_Controller_Action method initView && initLayout
         //(have params can access only after dispatch)
@@ -220,9 +246,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     protected function _initCache()
     {
-        if (null === Axis::db()) {
-            $this->bootstrap('DbAdapter');
-        }
+        $this->bootstrap('DbAdapter');
         //create default cache
         $cache = Axis_Core_Model_Cache::getCache();
         //create database metacache
