@@ -110,8 +110,7 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 
     public function removeAction()
     {
-        $itemId = $this->_getParam('scItemId', 0);
-        Axis::single('checkout/cart')->deleteItem($itemId);
+        Axis::single('checkout/cart')->deleteItem($this->_getParam('scItemId', 0));
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
     }
 

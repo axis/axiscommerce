@@ -64,12 +64,9 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
      */
     protected function _hasCartId()
     {
-        if (!isset(Axis::session()->cartId)
-            || null === Axis::session()->cartId) {
+        if (empty(Axis::session()->cartId)
+            || !$this->find(Axis::session()->cartId)->current()) {
 
-            return false;
-        }
-        if (!$this->hasId(Axis::session()->cartId)) {
             return false;
         }
         return true;
@@ -259,7 +256,6 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
 
         // Check for clon exists
         if (false !== ($clon = $this->_getClon($productId, $attributes))) {
-
             $this->updateItem($clon['id'], $clon['quantity'] + $quantity);
             return true;
         }
@@ -312,10 +308,14 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
             ->find($itemId)
             ->current();
 
+        if (!$item || $item->shopping_cart_id != $this->getCartId()) {
+            return;
+        }
+
         if (!$product = Axis::single('catalog/product')
                 ->find($item->product_id)->current()) {
 
-            $this->deleteItem($itemId);
+            $item->delete();
             Axis::message()->addError(
                 Axis::translate('checkout')->__(
                     "Product '%s' is not found in stock. product_id = %s",
@@ -327,7 +327,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
         }
 
         if ($quantity == 0) {
-            $this->deleteItem($itemId);
+            $item->delete();
             return true;
         }
 
@@ -366,7 +366,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
                     );
                 }
             } else {
-                $this->deleteItem($itemId);
+                $item->delete();
                 Axis::message()->addError(
                     Axis::translate('checkout')->__(
                         "Product '%s' is out of stock",
@@ -392,17 +392,20 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
     }
 
     /**
-     *
      * @param int $itemId Id of cart_product_row (it's not a product_id)
+     * @return mixed
      */
     public function deleteItem($itemId)
     {
-        Axis::dispatch('checkout_cart_remove_product_success', array(
-            'cart_product_id' => $itemId
-        ));
-        return Axis::single('checkout/cart_product')->delete(
-            $this->getAdapter()->quoteInto('id = ?', $itemId)
-        );
+        $row = Axis::model('checkout/cart_product')
+            ->find($itemId)
+            ->current();
+
+        if (!$row || $row->shopping_cart_id != $this->getCartId()) {
+            return false;
+        }
+
+        return $row->delete();
     }
 
     /**
