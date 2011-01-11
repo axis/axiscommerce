@@ -290,3 +290,6 @@
 "%d record(s) was saved successfully", "%d запись(и) были успешно сохранены"
 "Please enable JavaScript in your browser.", "Пожалуйста, включите JavaScript в вашем браузере."
 "Column %s should be unique","Колонка %s должна быть уникальная"
+"Session","Сессия"
+"Remote Address (IP) Validation","Проверять удаленный адрес пользователя (ip)"
+"User Agent (Browser) Validation","Проверять агент пользователя (браузер)"

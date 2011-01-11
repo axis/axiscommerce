@@ -18,8 +18,7 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Checkout
- * @subpackage  Axis_Checkout_Model
+ * @package     Axis_Session
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,21 +26,36 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Checkout
- * @subpackage  Axis_Checkout_Model
+ * @package     Axis_Session
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Checkout_Model_Cart_Product_Row extends Axis_Db_Table_Row
+class Axis_Session_Validator_RemoteAddress extends Zend_Session_Validator_Abstract
 {
-    public function getProduct()
+
+    /**
+     * Setup() - this method will get the current user agent and store it in the session
+     * as 'valid data'
+     *
+     * @return void
+     */
+    public function setup()
     {
-        return Axis::model('catalog/product')->find($this->product_id)->current();
+        $this->setValidData((isset($_SERVER['REMOTE_ADDR'])
+            ? $_SERVER['REMOTE_ADDR'] : null));
     }
 
-    protected function _postDelete()
+    /**
+     * Validate() - this method will determine if the current user agent matches the
+     * user agent we stored when we initialized this variable.
+     *
+     * @return bool
+     */
+    public function validate()
     {
-        Axis::dispatch('checkout_cart_product_remove_success', array(
-            'cart_product' => $this
-        ));
+        $currentAddress = (isset($_SERVER['REMOTE_ADDR'])
+            ? $_SERVER['REMOTE_ADDR'] : null);
+
+        return $currentAddress === $this->getValidData();
     }
+
 }

@@ -297,3 +297,6 @@
 "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section","Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section"
 "Please enable JavaScript in your browser.","Активуйте JavaScript у вашому браузері."
 "Column %s should be unique","Колонка %s повинна бути унікальною"
+"Session","Сесія"
+"Remote Address (IP) Validation","Перевіряти віддалену адресу користувача (ip)"
+"User Agent (Browser) Validation","Перевіряти агент користувача (браузер)"
