@@ -18,30 +18,25 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Checkout
- * @subpackage  Axis_Checkout_Model
+ * @package     Axis_Core
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Checkout
- * @subpackage  Axis_Checkout_Model
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Checkout_Model_Cart_Product_Row extends Axis_Db_Table_Row
+class Axis_Core_Upgrade_0_1_8 extends Axis_Core_Model_Migration_Abstract
 {
-    public function getProduct()
+    protected $_version = '0.1.8';
+    protected $_info = 'Session validators added';
+
+    public function up()
     {
-        return Axis::model('catalog/product')->find($this->product_id)->current();
+        Axis::single('core/config_field')
+            ->add('core/session/remoteAddressValidation', 'Core/Session/Remote Address (IP) Validation', 0, 'bool')
+            ->add('core/session/httpUserAgentValidation', 'Core/Session/User Agent (Browser) Validation', 0, 'bool');
     }
 
-    protected function _postDelete()
+    public function down()
     {
-        Axis::dispatch('checkout_cart_product_remove_success', array(
-            'cart_product' => $this
-        ));
+        Axis::single('core/config_field')->remove('core/session');
     }
 }

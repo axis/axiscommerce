@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
@@ -34,7 +34,7 @@
 class Axis_Account_Model_Form_Signup extends Axis_Form
 {
     protected $_translatorModule = 'account';
-    
+
     public function __construct($options = array())
     {
         $default = array(
@@ -43,10 +43,10 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                  . Axis_Locale::getLanguageUrl() . '/account/auth/register'
         );
         $default = array_merge($default, $options);
-        
+
         parent::__construct($default);
         $db = Axis::db();
-             
+
         $this->addElement('text', 'email', array(
             'required'  => true,
             'label'     => 'Email',
@@ -85,7 +85,7 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             'label' => 'Lastname',
             'class' => 'input-text required'
         ));
-        
+
         $this->addDisplayGroup(
             array('email', 'password', 'password_confirm', 'firstname', 'lastname'),
             'login',
@@ -96,16 +96,16 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             ->addRow(array('email'), 'row1', array('colsetClass' => 'col2-set'))
             ->addRow(array('password', 'password_confirm'), 'row2')
             ->addRow(array('firstname', 'lastname'), 'row3');
-        
+
         $this->getDisplayGroup('login')
             ->getRow('row1')
             ->addColumn(array('email'), 'col1');
-        
+
         $this->getDisplayGroup('login')
             ->getRow('row2')
             ->addColumn(array('password'), 'col1')
             ->addColumn(array('password_confirm'), 'col2');
-        
+
         $this->getDisplayGroup('login')
             ->getRow('row3')
             ->addColumn(array('firstname'), 'col1')
@@ -123,10 +123,10 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             );
             if ($row['field_type'] == 'textarea') {
                 $config['rows'] = 6;
-                $config['cols'] = 60; 
+                $config['cols'] = 60;
             }
             $this->addElement($row['field_type'], $field, $config);
-            
+
             if ($row['required']) {
                 $this->getElement($field)
                      ->addValidator('NotEmpty')
@@ -162,7 +162,7 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             }
             $groupsFields[$row['customer_field_group_id']][$row['id']] = $field;
         }
-        
+
         /* add field groups */
         if (count($groupsFields)) {
             $groups = Axis::single('account/customer_fieldGroup')
@@ -170,31 +170,31 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                     array_keys($groupsFields), Axis_Locale::getLanguageId()
                 );
 
-	        foreach ($groups as $row) {
-	            $groupName = empty($row['name']) ?
+            foreach ($groups as $row) {
+                $groupName = empty($row['name']) ?
                         $row['id'] : $row['name'];
-	            $this->addDisplayGroup(
-                    array_values($groupsFields[$row['id']]), 
+                $this->addDisplayGroup(
+                    array_values($groupsFields[$row['id']]),
                     $groupName,
                     array(
                         'legend' => $row['group_label'],
                         'colsetClass' => 'col2-set'
                     )
-	            );
-	            $this->getDisplayGroup($groupName)
+                );
+                $this->getDisplayGroup($groupName)
                     ->setDisableTranslator(true)
                     ->addColumn(
                             array_values($groupsFields[$row['id']]), 'col'
                         );
-	        }
+            }
         }
-        
+
         $this->addElement('button', 'submit', array(
             'type' => 'submit',
             'class' => 'button',
             'label' => 'Register'
         ));
-        
+
         $this->addActionBar(array('submit'));
     }
 }

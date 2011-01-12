@@ -74,28 +74,25 @@ class Axis_View_Helper_Address
         }
 
         $template = str_replace('EOL', $EOL, $template);
+
         $matches = array();
         preg_match_all('/{{if (.+)(?:\.(.+))?}}(.+){{\/if}}/U', $template, $matches);
-
         foreach ($matches[0] as $key => $condition) {
             $replaced = empty($matches[2][$key]) ?
                 (empty($address[$matches[1][$key]]) ? '' : $matches[3][$key]) :
                 (empty($address[$matches[1][$key]][$matches[2][$key]]) ?
-                    '' : $matches[3][$key])
+                    '' : $matches[3][$key]);
 
-            ;
             $template = str_replace($condition, $replaced, $template);
         }
-        preg_match_all('/{{(.+)(?:\.(.+))?}}/U', $template, $matches);
 
+        preg_match_all('/{{(.+)(?:\.(.+))?}}/U', $template, $matches);
         foreach ($matches[0] as $key => $condition) {
            $replaced = empty($matches[2][$key]) ?
                $address[$matches[1][$key]] :
                    $address[$matches[1][$key]][$matches[2][$key]];
 
-           $template = str_replace(
-               $condition, $replaced, $template
-           );
+           $template = str_replace($condition, $this->view->escape($replaced), $template);
         }
         return $template;
     }

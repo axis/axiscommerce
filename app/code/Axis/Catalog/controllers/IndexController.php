@@ -124,9 +124,11 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         }
 
         if ($this->hurl->hasParam('price')) {
-            list($from, $to) = explode(',', $this->hurl->getParam('price'));
-            $select->where('cp.price >= ?', $from)
-                ->where('cp.price <= ?', $to);
+            $price = explode(',', $this->hurl->getParam('price'));
+            $select->where('cp.price >= ?', $price[0]);
+            if (!empty($price[1])) {
+                $select->where('cp.price <= ?', $price[1]);
+            }
         }
 
         if ($this->hurl->hasParam('attributes')) {

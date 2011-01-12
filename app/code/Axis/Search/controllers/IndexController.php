@@ -54,33 +54,17 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
             return;
         }
 
-        /*$cacheDir = Axis::config()->system->path . '/var/cache/search/';
-        if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0777, true)) {
-            throw new Axis_Exception(
-                Axis::translate('search')->__(
-                    "Can't create folder %s. Permission denied", $cacheDir
-            ));
-        }
-        if (!is_writable($cacheDir) && !@chmod($cacheDir, 0777)) {
-            throw new Axis_Exception(
-                Axis::translate('search')->__(
-                    "Can't write to folder %s. Permission denied", $cacheDir
-            ));
-        }*/
-
         try {
             $lucene = Axis::single('search/lucene');
+            $result = array();
+            $query  = $lucene->createFuzzyQuery($queryStr);
+            $result = $lucene->findFuzzy($query);
         } catch (Exception $e) {
             Axis::message()->addError($e->getMessage());
             $this->view->results = array();
             $this->render();
             return;
         }
-
-        $result = array();
-        $query = $lucene->createFuzzyQuery($queryStr);
-
-        $result = $lucene->findFuzzy($query);
 
         Axis::single('search/log')->logging(array(
             'num_results' => count($result),
@@ -92,8 +76,19 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
             return;
         }
 
-        if ($this->_hasParam('limit')) {
-            $limit = $this->_getParam('limit');
+        $paging['perPage'] = array();
+        $perPageArray = explode(',', Axis::config('catalog/listing/perPage'));
+        foreach ($perPageArray as $perPage) {
+            $url = $this->view->url(array(
+                'limit' => $perPage, 'page' => null, 'q' => $queryStr
+            ));
+            $paging['perPage'][$url] = $perPage;
+        }
+
+        if ($this->_hasParam('limit')
+            && !in_array($this->_getParam('limit'), $perPageArray)) {
+
+            $limit = (int) $this->_getParam('limit');
         } elseif (Axis::session('catalog')->limit) {
             $limit = Axis::session('catalog')->limit;
         } else {
@@ -104,15 +99,7 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
         $paging['page']  = $page = (int) $this->_getParam('page', 1);
         $paging['count'] = count($result);
 
-        $paging['perPage'] = array();
-        foreach (explode(',', Axis::config('catalog/listing/perPage')) as $perPage) {
-            $url = $this->view->url(array(
-                'limit' => $perPage, 'page' => null, 'q' => $queryStr
-            ));
-            $paging['perPage'][$url] = $perPage;
-        }
-
-        Axis::session('catalog')->limit = $limit;
+        // Axis::session('catalog')->limit = $limit;
         if ('all' === $limit) {
             $paging['limit'] = $paging['count'];
             $limit = $paging['count'];

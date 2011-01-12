@@ -100,10 +100,10 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
 
         // by price
         if ($this->hurl->hasParam('price')) {
-            list($from, $to) = explode(',', $this->hurl->getParam('price'));
+            $price = explode(',', $this->hurl->getParam('price'));
             $filters['price'] = array(
-                'from'  => $from,
-                'to'    => $to
+                'from'  => $price[0],
+                'to'    => !empty($price[1]) ? $price[1] : null
             );
         }
 

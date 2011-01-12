@@ -7,10 +7,13 @@
     class="remove"
     title="<?php echo $this->translate('catalog')->__('Remove filter') ?>"><?php echo $this->translate('catalog')->__('Remove filter') ?></a>
     <span class="filter-name"><?php echo $this->translate('catalog')->__('Price')?>:</span> <?php
-        list($from, $to) =  explode(',', $hurl->getParam('price'));
-        echo $this->currency($from)
-            . ' - '
-            . $this->currency($to);
+        $price = explode(',', $hurl->getParam('price'));
+        echo $this->currency($price[0]) . ' &mdash; ';
+        if (!empty($price[1])) {
+            echo $this->currency($price[1]);
+        } else {
+            echo '&#8734;'; // infinity symbol
+        }
     ?>
 </li>
 <?php endif; ?>
@@ -50,7 +53,7 @@ foreach ($this->box->getData('filters/price/groups') as $price) :
        'price' => $priceFrom . ',' . $priceTo,
        'page' => ''
     )) . '">'
-        . $this->currency($priceFrom) . ' - ' . $this->currency($priceTo)
+        . $this->currency($priceFrom) . ' &mdash; ' . $this->currency($priceTo)
         . '</a> (' . $price['cnt'] . ')</li>';
 endforeach; ?>
     </ul>

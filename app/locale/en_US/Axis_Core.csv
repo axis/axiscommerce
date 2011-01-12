@@ -296,3 +296,6 @@
 "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section","Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section"
 "Please enable JavaScript in your browser.","Please enable JavaScript in your browser."
 "Column %s should be unique","Column %s should be unique"
+"Session","Session"
+"Remote Address (IP) Validation","Remote Address (IP) Validation"
+"User Agent (Browser) Validation","User Agent (Browser) Validation"
