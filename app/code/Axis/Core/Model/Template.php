@@ -143,9 +143,9 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             );
         }
 
-        $boxes = Axis::single('core/template_box')
-            ->fetchAll('template_id = ' . $templateId)
-            ->toArray();
+        $boxes = Axis::single('core/template_box')->select()
+            ->where('template_id = ?', $templateId)
+            ->fetchAll();
 
         $cms_block = array();
         foreach ($boxes as &$box) {
@@ -161,26 +161,26 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             }
             foreach ($box_to_page as $item) {
                 $box['pages'][] = array(
-                    'id' => $item->page_id,
-                    'module' => $pages[$item->page_id]['module'],
-                    'controller' => $pages[$item->page_id]['controller'],
-                    'action' => $pages[$item->page_id]['action'],
-                    'box_show' => $item->box_show,
-                    'block' => $item->block,
-                    'template' => $item->template,
+                    'id'            => $item->page_id,
+                    'module'        => $pages[$item->page_id]['module'],
+                    'controller'    => $pages[$item->page_id]['controller'],
+                    'action'        => $pages[$item->page_id]['action'],
+                    'box_show'      => $item->box_show,
+                    'block'         => $item->block,
+                    'template'      => $item->template,
                     'tab_container' => $item->tab_container
                 );
             }
         }
         $template['boxes'] = $boxes;
 
-        $layers = Axis::single('core/template_layout_page')
+        $layouts = Axis::single('core/template_layout_page')
             ->fetchAll('template_id = ' . $templateId)
             ->toArray();
-        foreach ($layers as &$layer) {
+        foreach ($layouts as &$layer) {
             $layer['page'] = $pages[$layer['page_id']];
         }
-        $template['layers'] = $layers;
+        $template['layouts'] = $layouts;
 
         $template['cms_block'] = $cms_block;
         return $template;

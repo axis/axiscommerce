@@ -91,19 +91,17 @@ class Axis_Layout extends Zend_Layout
             $templateId = Axis::config()->design->main->frontTemplateId;
         }
 
-        $mTemplate = Axis::model('core/template');
-
-        $templateRow = $mTemplate->fetchRow(
-            $mTemplate->select()->where('id = ?', $templateId)
-        );
+        $templateRow = Axis::model('core/template')
+            ->find($templateId)
+            ->current();
 
         if (!$templateRow) {
             Axis::message()->addError(Axis::translate('core')->__(
                 "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
             ));
             self::$_template = array(
-                'name'              => 'default',
-                'default_layout'    => 'default_3columns'
+                'name'           => 'default',
+                'default_layout' => 'default_3columns'
             );
         } else {
             self::$_template = $templateRow->toArray();
@@ -164,7 +162,16 @@ class Axis_Layout extends Zend_Layout
                 $pageId = $row['page_id'];
                 $layout = $row['layout'];
             }
-
+//            if (strpos($layout, '/')) {
+//                $parentPageId = Axis::model('core/page')->getPageIdByRequest($layout);
+//                $parentPageIdLayout = Axis::single('core/template_layout_page')
+//                    ->select()
+//                    ->where('template_id = ?', $templateId)
+//                    ->where('page_id = ?', $parentPageId)
+//                    ->fetchRow();
+//                Zend_Debug::dump($parentPageIdLayout, $parentPageId);
+//                $layout = $parentPageIdLayout['layout'];
+//            }
             if (empty($layout)) {
                 $layout = $this->_getDefaultLayout();
             }
@@ -230,14 +237,14 @@ class Axis_Layout extends Zend_Layout
                     }
 
                     $assignments[$block][$row['id']] = array(
-                        'boxCategory' => ucfirst($namespace),
-                        'boxModule'   => ucfirst($module),
-                        'boxName'     => ucfirst($box),
-                        'template' => $row['template'],
+                        'boxCategory'  => ucfirst($namespace),
+                        'boxModule'    => ucfirst($module),
+                        'boxName'      => ucfirst($box),
+                        'template'     => $row['template'],
                         'tabContainer' => $row['tab_container'],
-                        'sort_order' => $row['sort_order'],
-                        'page_id'  => $row['page_id'],
-                        'show'     => $row['box_show']
+                        'sort_order'   => $row['sort_order'],
+                        'page_id'      => $row['page_id'],
+                        'show'         => $row['box_show']
                     );
                     if (!empty($row['config'])) {
                         $assignments[$block][$row['id']]['config'] = $row['config'];
