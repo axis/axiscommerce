@@ -63,10 +63,12 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
     /**
      * Initialize View object
      *
+     * @param string $area
+     * @param string $template
      * @return Zend_View_Interface
      * @see Zend_Controller_Action initView()
      */
-    public function initView($area = null, array $template = null)
+    public function initView($area = null, $template = null)
     {
         if (null === $area) {
             $area = Zend_Registry::get('area');
@@ -95,7 +97,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $request = $this->getRequest();
         $systemPath = Axis::config('system/path');
 
-        $view->templateName = $template['name'];
+        $view->templateName = $template;
         $view->area         = $area;
         $module = $request->getModuleName();
         list($namespace, $module) = explode('_', $module, 2);
@@ -103,7 +105,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $view->moduleName = $module;
 
         $view->path = $systemPath;
-        $view->skinPath = $systemPath . '/skin/' . $area . '/' . $template['name'];
+        $view->skinPath = $systemPath . '/skin/' . $area . '/' . $template;
 
         $currentUrl = $request->getScheme() . '://'
              . $request->getHttpHost()
@@ -129,7 +131,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $view->setScriptPath(array());
 
         $fallbackList = array_unique(array(
-            $template['name'],
+            $template,
             /* @TODO user defined default: $view->defaultTemplate */
             'fallback',
             'default'
@@ -156,10 +158,13 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
     }
 
     /**
-     * Init layout
+     *
+     * @param Axis_View|null $view
+     * @param string $area
+     * @param string $template
+     * @return Axis_Layout
      */
-    public function initLayout(
-        $view = null, $area = null, array $template = null)
+    public function initLayout($view = null, $area = null, $template = null)
     {
         if (null === $view) {
             $view = $this->view;
@@ -174,11 +179,8 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $this->layout = Axis_Layout::getMvcInstance();
 
         $this->layout->setView($view)->setOptions(array('layoutPath' =>
-                Axis::config()->system->path
-                . '/app/design/'
-                . $area . '/'
-                . $template['name']
-                . '/layouts'
+            Axis::config()->system->path .
+            '/app/design/' . $area . '/' . $template . '/layouts'
         ));
 
         return $this->layout;
@@ -197,7 +199,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $area = ($module === 'Axis_Admin') ? 'admin' : 'front';
         Zend_Registry::set('area', $area);
         $template = Axis_Layout::getTemplate($area);
-
         $this->initView($area, $template);
         $this->initLayout($this->view, $area, $template);
         $this->_siteId = Axis::getSiteId();

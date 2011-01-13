@@ -93,33 +93,6 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
     }
 
     /**
-     * Retrieve the information about boxes within provided pages and template
-     *
-     *  @param int $templateId
-     *  @param  array $pagesIds
-     *  @return array Boxes and inforamtion about them
-     */
-    public function getCustomInfo($templateId, $pagesIds)
-    {
-        return $this->select(array('id', 'class', 'block', 'config'))
-            ->joinInner('core_template_box_page',
-                'ctbp.box_id = ctb.id',
-                array('box_show',
-                    'sort_order',
-                    'other_block' => 'block',
-                    'template',
-                    'tab_container',
-                    'page_id'
-                )
-            )->where('ctb.template_id = ?', $templateId)
-            ->where('ctb.box_status = 1')
-            ->where('ctbp.page_id IN(?)', $pagesIds)
-            ->order('ctb.sort_order')
-            ->fetchAll()
-            ;
-    }
-
-    /**
      * Save or insert box data
      *
      * @param int $templateId
