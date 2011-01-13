@@ -67,15 +67,18 @@ class Axis_Layout extends Zend_Layout
     /**
      * Static method for initialization with MVC support
      *
-     * @static
      * @param  string|array|Zend_Config $options
-     * @return Axis_Layout
+     * @return Zend_Layout
      */
     public static function startMvc($options = null)
     {
         if (null === self::$_mvcInstance) {
             self::$_mvcInstance = new self($options, true);
-        } else {
+        }
+
+        if (is_string($options)) {
+            self::$_mvcInstance->setLayoutPath($options);
+        } elseif (is_array($options) || $options instanceof Zend_Config) {
             self::$_mvcInstance->setOptions($options);
         }
 
