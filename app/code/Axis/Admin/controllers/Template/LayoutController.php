@@ -42,7 +42,7 @@ class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $select = Axis::model('core/template_layout_page')->select('*')
+        $select = Axis::model('core/template_page')->select('*')
             ->calcFoundRows()
             ->addFilters($this->_getParam('filter', array()))
             ->limit(
@@ -82,7 +82,7 @@ class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
         $data = Zend_Json::decode($this->_getParam('data'));
 
         return $this->_helper->json->sendJson(array('success' =>
-            Axis::single('core/template_layout_page')->save(
+            Axis::single('core/template_page')->save(
                 (int) $this->_getParam('tId', 0), $data
             )
         ));
@@ -100,7 +100,7 @@ class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        Axis::single('core/template_layout_page')->delete(
+        Axis::single('core/template_page')->delete(
             $this->db->quoteInto('id IN(?)', $ids)
         );
 

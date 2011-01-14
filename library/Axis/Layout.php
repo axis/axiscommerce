@@ -119,11 +119,11 @@ class Axis_Layout extends Zend_Layout
 
         return self::$_template;
     }
-
-    public function setAssignments($assignments)
-    {
-        $this->_assignments = $assignments;
-    }
+//
+//    public function setAssignments($assignments)
+//    {
+//        $this->_assignments = $assignments;
+//    }
 
     /**
      * Compares requests
@@ -158,7 +158,7 @@ class Axis_Layout extends Zend_Layout
             $pages = $this->getPagesByRequest();
             $templateId = Axis::config()->design->main->frontTemplateId;
 
-            $rows = Axis::single('core/template_layout_page')->select()
+            $rows = Axis::single('core/template_page')->select()
                 ->where('template_id = ?', $templateId)
                 ->where('page_id IN(?)', array_keys($pages))
                 ->fetchAll();
@@ -198,26 +198,34 @@ class Axis_Layout extends Zend_Layout
         return self::DEFAULT_LAYOUT;
     }
 
-    /**
+    protected function _initPages()
+    {
+        Axis_FirePhp::log(__METHOD__ . '  '  . __LINE__);
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        list($namespace, $module) = explode('_', $request->getModuleName(), 2);
+        $this->_pages = Axis::single('core/page')->getPagesByRequest(
+            strtolower($module),
+            $request->getControllerName(),
+            $request->getActionName()
+        );
+    }
+
+        /**
      *
      * @return array
      */
     public function getPagesByRequest()
     {
+        Axis_FirePhp::log(__METHOD__ . '  '  . __LINE__);
         if (null === $this->_pages) {
-            $request = Zend_Controller_Front::getInstance()->getRequest();
-            list($namespace, $module) = explode('_', $request->getModuleName(), 2);
-            $this->_pages = Axis::single('core/page')->getPagesByRequest(
-                strtolower($module),
-                $request->getControllerName(),
-                $request->getActionName()
-            );
+            $this->_initPages();
         }
         return $this->_pages;
     }
 
-    private function _buildAssignments()
+    private function _initAssignments()
     {
+        Axis_FirePhp::log(__METHOD__ . '  '  . __LINE__);
         $pages = $this->getPagesByRequest();
         $assignments = array();
         $tabAssignments = array();
@@ -290,15 +298,12 @@ class Axis_Layout extends Zend_Layout
 
     protected function _getAssignments($blockName = '')
     {
+        Axis_FirePhp::log(__METHOD__ . '  '  . __LINE__);
         if (null === $this->_assignments) {
-            $this->_buildAssignments();
+            $this->_initAssignments();
         }
-
-        if (empty($blockName) || !array_key_exists($blockName, $this->_assignments)) {
-            return array();
-        }
-
-        return $this->_assignments[$blockName];
+        return isset($this->_assignments[$blockName]) ?
+            $this->_assignments[$blockName] : array();
     }
 
     public function __get($key)
@@ -342,7 +347,9 @@ class Axis_Layout extends Zend_Layout
                 $afterContent .= $boxContent;
             }
         }
-
+        Axis_FirePhp::log(
+            $key . ' >>>> ' . $beforeContent . ' >>>> ' . parent::__get($key) . ' >>>> ' . $afterContent
+        );
         return $beforeContent . parent::__get($key) . $afterContent;
     }
 

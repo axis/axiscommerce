@@ -174,7 +174,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         }
         $template['boxes'] = $boxes;
 
-        $layouts = Axis::single('core/template_layout_page')
+        $layouts = Axis::single('core/template_page')
             ->fetchAll('template_id = ' . $templateId)
             ->toArray();
         foreach ($layouts as &$layer) {
@@ -376,7 +376,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         }
         foreach ($layers as $layer) {
             $page = $layer['page'];
-            Axis::single('core/template_layout_page')->insert(array(
+            Axis::single('core/template_page')->insert(array(
                 'template_id' => $templateId,
                 'page_id'     => $existPages[$page['module'] . '/'
                                  . $page['controller'] . '/'
