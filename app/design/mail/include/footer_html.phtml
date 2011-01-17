@@ -1,0 +1,20 @@
+<?php echo $this->render('include/copyright.phtml') ?>
+
+<table cellspacing="0" cellpadding="5" border="0" width="650" style="margin-top:10px; padding:5px;background: #eee; border: 1px solid #bbb" class="disclaimer">
+    <tr>
+        <td class="disclaimer1" style="padding:5px;font-size:10px;color:#666;">
+            <?php
+                echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.');?><br/> <?php
+                echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to') . '  ' . $this->company['support_email']
+            ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="disclaimer2" style="padding:5px;font-size:10px;color:#666;">
+            <?php
+                echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.');?><br/> <?php
+                echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.');
+            ?>
+        </td>
+    </tr>
+</table>

@@ -78,15 +78,13 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
                     'lastname' => Axis::single('admin/user')
                         ->getLastnameByEmail($email)
                 ),
-                'to'      => $email,
-                'from' => array('name' => Axis::config()->core->store->owner)
+                'to' => $email
             ));
             try {
                 $mail->send();
                 Axis::single('admin/UserForgotPassword')->save(array(
                     'hash' => $hash,
-                    'user_id' => Axis::single('admin/user')
-                        ->getIdByEmail($email)
+                    'user_id' => Axis::single('admin/user')->getIdByEmail($email)
                 ));
                 Axis::message()->addSuccess(
                     Axis::translate('admin')->__('See your mailbox to proceed')

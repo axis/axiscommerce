@@ -54,12 +54,8 @@ class Axis_Account_Model_Observer
                 $data['customer']->lastname
             ),
             'data' => array(
-                'firstname' => $data['customer']->firstname,
-                'lastname'  => $data['customer']->lastname,
-                'customer'  => array(
-                    'email'     => $data['customer']->email,
-                    'password'  => $data['password']
-                )
+                'customer' => $data['customer'],
+                'password' => $data['password']
             ),
             'to' => $data['customer']->email
         ));
@@ -80,9 +76,11 @@ class Axis_Account_Model_Observer
         $isC = $mailNotice->setConfig(array(
             'event'   => 'account_new-owner',
             'subject' => Axis::translate('account')->__('New Account Created'),
-            'data'    => array('customer' => $data['customer']->toArray()),
+            'data'    => array(
+                'customer' => $data['customer']
+            ),
             'to'      => Axis_Collect_MailBoxes::getName(
-                Axis::config()->sales->order->email
+                Axis::config('core/company/administratorEmail')
             )
         ));
         if ($isC) {

@@ -1,51 +1,11 @@
-<?php echo $this->translate('core')->__('Dear') . ', ';
-    if ($this->firstname && $this->lastname) {
-        echo $this->firstname . ' ' . $this->lastname;
-    } else {
-        echo $this->translate('core')->__('customer');
-    }
-?> 
- 
-<?php echo $this->translate('core')->__('Hello, you have new order, on') . ' ' . $this->site ?> 
+<?php echo $this->translate('sales')->__('An order has been created on %s', $this->site) ?>
 
-<?php echo $this->translate('core')->__('Billing Address') .  PHP_EOL;?>
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  
-<?php echo $this->address($this->order['billing'], PHP_EOL); ?>
-<?php echo $this->translate('core')->__('Payment Method'); ?> : <?php echo $this->order['payment_method']; ?> 
 
-<?php echo $this->translate('core')->__('Delivery Address') .  PHP_EOL; ?>
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  
-<?php echo $this->address($this->order['delivery'], PHP_EOL); ?>
-<?php echo $this->translate('core')->__('Shipping Method');?> : <?php echo $this->order['shipping_method'];?> 
- 
-<?php echo $this->translate('core')->__('Bought products')?> 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-<?php foreach ($this->order->getProducts() as $product) : ?>
-    <?php echo $this->translate('core')->__('Product Name') . ' : ' . $product['name'];?> 
-    <?php if (!empty($product['attributes'])) {
-        echo $this->translate('core')->__('Attributes') . ' : '; 
-            foreach ($product['attributes'] as $attr) { ?>
-            <?php echo $attr['product_option'] . ': ' . $attr['product_option_value'];?>
-    <?php }} ?>
-<?php echo $this->translate('core')->__('Price') . ' : ' . strip_tags($this->price($product['final_price']));?> 
-    <?php echo $this->translate('core')->__('Quantity') . ' : ' . $product['quantity']?> 
-    <?php echo $this->translate('core')->__('Final price'). ' : ' . strip_tags($this->price($product['quantity'] * $product['final_price']));?> 
-<?php endforeach; ?> 
-    <?php echo $this->translate('core')->__('Order total')?> :  
-    <?php foreach ($this->order->getTotals() as $total) : ?>
-    <?php echo $total['title']?> : <?php echo strip_tags($this->price($total['value']))?>  
-    <?php endforeach; ?>
-    
-    <?php echo $this->translate('core')->__('Total')?> : <?php echo strip_tags($this->price($this->order['order_total']))?> 
- 
-<?php echo $this->translate('core')->__('Custom Info about this order')?> <?php echo $this->href('/admin/sales_order/index/orderId/') . $this->order['id']?>
+<?php $route = Axis::config('core/backend/route') ?>
+<?php echo $this->translate('account')->__('View Order') ?>: <?php echo $this->href($route . '/sales_order/index/orderId/', true, false) . $this->order['id']?>
 
-<?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toString('Y'); ?> <?php echo $this->site ?> 
-<?php echo $this->translate('core')->__("Powered by %s v. %s", "Axis", Axis::app()->getVersion()) ?>
-  
-<?php echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.') ?> 
-<?php echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to')
-    . '  ' . $this->from ?> 
-  
-<?php echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.')?>  
-<?php echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.')?>
+
+<?php echo $this->render('sales/invoice_txt.phtml') ?>
+
+
+<?php echo $this->render('include/footer_txt.phtml') ?>

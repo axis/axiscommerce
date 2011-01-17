@@ -200,7 +200,9 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
                 'lastname'  => $lastname
             ),
             'to'      => $data['email'],
-            'from'    => array('email' => $from)
+            'from'    => array(
+                'email' => $from
+            )
         ));
 
         try {

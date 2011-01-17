@@ -45,16 +45,8 @@ class Axis_Mail extends Zend_Mail
     public function __construct($charset = 'UTF-8')
     {
         parent::__construct($charset);
-        $this->view = Axis::app()->getBootstrap()
-            ->getResource('layout')
-            ->getView();
-
-        /* for use in ->render('../[script.php]')  */
-        // $this->view->setLfiProtection(false);
-
-        $this->view->addScriptPath(
-            Axis::config('system/path') . '/app/design/mail'
-        );
+        $this->view = Axis::app()->getBootstrap()->getResource('layout')->getView();
+        $this->view->addScriptPath(Axis::config('system/path') . '/app/design/mail');
         $this->view->site    = Axis::getSite()->name;
         $this->view->company = Axis::single('core/site')->getCompanyInfo();
     }
@@ -66,83 +58,101 @@ class Axis_Mail extends Zend_Mail
     * @param array
     * <pre>
     * array(
-    *      ['event' => string]
-    *      'subject' => string,
-    *      'data' => array(
-    *          'text' =>
+    *      'event'      => string                   [optional]
+    *      'subject'    => string,
+    *      'data'       => array(
+    *          'text'   =>
     *          'blabla' =>
     *          ....
     *      ),
-    *      'to' => email,
-    *      ['from' => mixed (string(email) or array('email', 'name'))],
-    *      ['type' => enum('txt', 'html')],
-    *      ['charset' =>   ],
-    *      'report' => true|false
+    *      'to'         => email,
+    *      'from'       => mixed (string|array('email' => '', 'name' => '')), [optional]
+    *      'type'       => string 'txt'|'html',     [optional]
+    *      'charset'    => string                   [optional],
+    *      'attachments' => array()
     *  )
     * </pre>
     *  @return bool
     */
     public function setConfig(array $config)
     {
-        if (isset($config['event'])) {
-            $mailTemplateId = Axis::single('core/template_mail')
-                ->getIdByEvent($config['event']);
-            if (false === $mailTemplateId) {
-                return false;
-            }
-            $mailTemplate = Axis::single('core/template_mail')
-                ->find($mailTemplateId)->current()->toArray();
-            if (!is_array($mailTemplate)
-                || !count($mailTemplate)
-                || !$mailTemplate['status']) {
-
-                return false;
-            }
-            $type = $mailTemplate['type'];
-            if (isset($config['type'])) {
-                $type = $config['type'];
-            }
-            $from = array('email' => Axis_Collect_MailBoxes::getName(
-                $mailTemplate['from']), 'name' => $mailTemplate['name']
-            );
-
-            $siteIds = explode(',', $mailTemplate['site']);
-
-            if (isset($config['siteId'])
-                && !in_array(Axis::getSiteId(), $siteIds)) {
-
-                return false;
-            }
-        }
-        if (isset($config['from']['email'])) {
-            $from['email'] = $config['from']['email'];
-        }
-        if (isset($config['from']['name'])) {
-            $from['name'] = $config['from']['name'];
-        }
+        $from = array();
         if (isset($config['from']) && is_string($config['from'])) {
             $from = $config['from'];
+        } else {
+            if (isset($config['from']['email'])) {
+                $from['email'] = $config['from']['email'];
+            }
+            if (isset($config['from']['name'])) {
+                $from['name'] = $config['from']['name'];
+            }
         }
-        $config['subject'] = $this->view->site . ' : ' . $config['subject'];
+
+        if (isset($config['event'])) {
+            $mailTemplate = Axis::model('core/template_mail')->select('*')
+                ->where('ctm.event = ?', $config['event'])
+                ->fetchRow();
+
+            if (false === $mailTemplate || !$mailTemplate['status']) {
+                return false;
+            }
+
+            $siteIds = explode(',', $mailTemplate['site']);
+            if (isset($config['siteId'])) {
+                if (!in_array($config['siteId'], $siteIds)) {
+                    return false;
+                }
+            } elseif (!in_array(Axis::getSiteId(), $siteIds)) {
+                return false;
+            }
+
+            $type = isset($config['type']) ? $config['type'] : $mailTemplate['type'];
+
+            if (is_array($from)) {
+                if (!isset($from['email'])) {
+                    $from['email'] = Axis_Collect_MailBoxes::getName($mailTemplate['from']);
+                }
+            }
+        }
+
         $this->setSubject($config['subject']);
-        $this->view->subject = $config['subject'];
         $this->addTo($config['to']);
-        if (is_array($from)){
+
+        $siteName = $this->view->site;
+        if (isset($config['siteId']) && $config['siteId'] != Axis::getSiteId()) {
+            $siteName = Axis::model('core/site')->find($config['siteId'])->current()->name;
+        }
+        $this->view->siteName = $siteName;
+        if (is_array($from)) {
+            if (!isset($from['name'])) {
+                $from['name'] = $siteName;
+            }
             $this->setFrom($from['email'], $from['name']);
             $this->view->from = $from['email'];
         } else {
            $this->setFrom($from);
            $this->view->from = $from;
         }
+
+        $this->view->assign($config['data']);
+
         if (isset($config['event'])) {
-            if ($type == 'html') {
-                $this->renderHtml($mailTemplate['template'], $config['data']);
+            if ('html' == $type) {
+                $this->renderHtml($mailTemplate['template']);
             } else {
-                $this->renderText($mailTemplate['template'], $config['data']);
+                $this->renderText($mailTemplate['template']);
             }
         } else {
             $this->setBodyText($config['data']['text']);
         }
+
+        if (isset($config['attachments'])) {
+            foreach ($config['attachments'] as $name => $file) {
+                $attachment = $this->createAttachment($this->view->render($file));
+                $attachment->filename = $name;
+            }
+        }
+
         return true;
     }
 
@@ -152,12 +162,9 @@ class Axis_Mail extends Zend_Mail
      * @param array $data
      * @return Axis_Mail
      */
-    public function renderText($template, array $data)
+    public function renderText($template)
     {
-        $this->view->assign($data);
-        $this->setBodyText(
-            $this->view->render(strval($template) . '_txt.phtml')
-        );
+        $this->setBodyText($this->view->render($template . '_txt.phtml'));
         return $this;
     }
 
@@ -167,12 +174,9 @@ class Axis_Mail extends Zend_Mail
      * @param array $data
      * @return Axis_Mail
      */
-    public function renderHtml($template, array $data)
+    public function renderHtml($template)
     {
-        $this->view->assign($data);
-        $this->setBodyHtml(
-            $this->view->render(strval($template) . '_html.phtml')
-        );
+        $this->setBodyHtml($this->view->render($template . '_html.phtml'));
         return $this;
     }
 
@@ -222,7 +226,7 @@ class Axis_Mail extends Zend_Mail
      * @param Zend_Mail_Transport_Abstract $transport
      * @return Axis_Mail
      */
-    public function send($transport = null, $report = true)
+    public function send($transport = null)
     {
         if (null === $transport) {
             $transport = $this->getTransport();

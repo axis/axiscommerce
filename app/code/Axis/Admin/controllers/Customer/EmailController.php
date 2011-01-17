@@ -55,7 +55,9 @@ class Axis_Admin_Customer_EmailController extends Axis_Admin_Controller_Back
                 'lastname'  => $customer->lastname
             ),
             'to'      => $data['email'],
-            'from'    => array('email' => $from)
+            'from'    => array(
+                'email' => $from
+            )
         ));
         try {
             $mail->send();

@@ -132,33 +132,21 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
      */
     protected function _notify($comments)
     {
-        $customerId = Axis::single('sales/order')->getCustomerId($this->id);
-        $customer   = Axis::single('account/customer')->find($customerId)->current();
-        $status     = Axis::single('sales/order_status_text')
-            ->find(
-                $this->order_status_id,
-                Axis_Locale::getLanguageId()
-            )
+        $status = Axis::single('sales/order_status_text')
+            ->find($this->order_status_id, Axis_Locale::getLanguageId())
             ->current()
             ->toArray();
 
-        $status = $status['status_name'];
-        $to = $customer->toArray();
-        $to = $to['email'];
-
         $mail = new Axis_Mail();
-
         $mail->setConfig(array(
             'event'   => 'change_order_status-customer',
-            'subject' => 'Your order change status notify',
+            'subject' => Axis::translate('sales')->__('Status of your order has been changed'),
             'data'    => array(
-                'firstname' => $customer->firstname,
-                'lastname'  => $customer->lastname,
-                'order'     => $this->toArray(),
-                'comments'  => $comments,
-                'status'    => $status
+                'order'     => $this,
+                'comment'   => $comments,
+                'status'    => $status['status_name']
             ),
-            'to' =>  $to
+            'to' => $this->customer_email
         ));
         try {
             $mail->send();

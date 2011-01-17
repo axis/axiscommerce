@@ -80,51 +80,15 @@ class Axis_Contacts_Model_Message extends Axis_Db_Table
     }
 
     /**
-     * Adds message to database and send it to department email
+     * Adds message to database
      *
-     * @param string $from
-     * @param string $subject
-     * @param string $message
-     * @param int $departmentId
-     * @param string $extraInfo (fieldName: fieldValue,)
-     * @return Axis_Contacts_Model_Message Provides fluent interface
+     * @param string $data Row data
+     * @return int The primary key value
      */
-    public function add($from, $subject, $message, $departmentId, $extraInfo)
+    public function save(array $data)
     {
-        $this->insert(array(
-            'email'         => $from,
-            'subject'       => $subject,
-            'message'       => $message,
-            'custom_info'   => $extraInfo,
-            'department_id' => $departmentId,
-            'site_id'       => Axis::getSiteId(),
-            'created_at'    => Axis_Date::now()->toSQLString()
-        ));
-
-        $department = Axis::single('contacts/department')
-            ->find($departmentId)
-            ->current();
-
-        $to = $department->email;
-
-        $mail = new Axis_Mail();
-        $mail->setConfig(array(
-            'event'   => 'contact_us',
-            'subject' => $subject,
-            'data'    => array(
-                'text'          => $message,
-                'custom_info'   => $extraInfo
-            ),
-            'to'      => $to,
-            'from'    => $from
-        ));
-        try {
-            $mail->send();
-        } catch (Zend_Mail_Transport_Exception $e) {
-
-        }
-
-        return $this;
+        $data['created_at'] = Axis_Date::now()->toSQLString();
+        return $this->createRow($data)->save();
     }
 }
 

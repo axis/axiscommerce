@@ -44,9 +44,11 @@ class Axis_Sales_Model_Observer
         $mail->setConfig(array(
             'event'   => 'order_new-owner',
             'subject' => Axis::translate('sales')->__('Order created'),
-            'data'    => array('order' => $order),
-            'to'      =>  Axis_Collect_MailBoxes::getName(
-                Axis::config()->sales->order->email
+            'data'    => array(
+                'order' => $order
+            ),
+            'to'      => Axis_Collect_MailBoxes::getName(
+                Axis::config('sales/order/email')
             )
         ));
         try {
@@ -71,7 +73,10 @@ class Axis_Sales_Model_Observer
             'data'    => array(
                 'order' => $order
             ),
-            'to' =>  $order->customer_email
+            'to' => $order->customer_email,
+            'attachments' => array(
+                'invoice.html' => 'sales/invoice_print.phtml'
+            )
         ));
         try {
             $mail->send();

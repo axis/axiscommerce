@@ -38,7 +38,7 @@ class Axis_View_Helper_Href
         $this->_enabledSsl = Axis::config('core/backend/ssl');
     }
 
-    public function href($href = '', $useAdmin = true, $ssl = true)
+    public function href($href = '', $ssl = true, $useAdmin = true)
     {
         $admin = $this->view->adminUrl;
         if (!$useAdmin) {

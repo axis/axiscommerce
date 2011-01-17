@@ -36,7 +36,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
 
     public function indexAction()
     {
-        $form = Axis::single('contacts/form_message');
+        $form = Axis::model('contacts/form_message');
 
         if ($this->_request->isPost()) {
             $data = $this->_request->getPost();
@@ -49,13 +49,33 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                             . ': ' . $element->getValue() . "\n";
                     }
                 }
-                Axis::single('contacts/message')->add(
-                    $data['email'],
-                    $data['subject'],
-                    $data['message'],
-                    $data['department'],
-                    $customInfo
-                );
+                $data['custom_info'] = $customInfo;
+                $data['site_id']     = Axis::getSiteId();
+                Axis::model('contacts/message')->save($data);
+
+                $department = Axis::single('contacts/department')
+                    ->find($data['department'])
+                    ->current();
+
+                if ($department) {
+                    $mail = new Axis_Mail();
+                    $mail->setConfig(array(
+                        'event'   => 'contact_us',
+                        'subject' => $data['subject'],
+                        'data'    => $data,
+                        'to'      => $department->email,
+                        'from'    => array(
+                            'name'  => $data['name'],
+                            'email' => $data['email']
+                        )
+                    ));
+                    try {
+                        $mail->send();
+                    } catch (Zend_Mail_Transport_Exception $e) {
+
+                    }
+                }
+
                 Axis::message()->addSuccess(
                     Axis::translate('contacts')->__(
                         'Your message was successfully added'

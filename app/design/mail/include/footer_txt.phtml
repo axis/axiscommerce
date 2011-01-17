@@ -1,0 +1,6 @@
+------------------------------------------
+<?php echo $this->company['name'] ?>
+
+<?php echo $this->companyEmail ? $this->companyEmail : $this->company['sales_email']?>
+
+<?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toString('Y'); ?> <?php echo $this->siteName ?>

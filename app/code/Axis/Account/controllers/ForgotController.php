@@ -65,20 +65,18 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             && Axis::getSiteId() === $customer->site_id) {
 
             $hash = $this->_generatePassword();
-            $link = $this->view->href('/account/forgot', true)
-                  . '?hash=' . $hash;
+            $link = $this->view->href('account/forgot', true) . '?hash=' . $hash;
 
             $mail = new Axis_Mail();
             $mail->setConfig(array(
                 'event'   => 'forgot_password',
-                'subject' => 'Forgot Your Password',
+                'subject' => Axis::translate('account')->__('Forgotten Password'),
                 'data'    => array(
-                    'link' => $link,
+                    'link'      => $link,
                     'firstname' => $customer->firstname,
-                    'lastname' => $customer->lastname
+                    'lastname'  => $customer->lastname
                 ),
-                'to'   => $username,
-                'from' => array('name' => Axis::config()->core->store->owner)
+                'to' => $username
             ));
             try {
                 $mail->send();
@@ -106,7 +104,7 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
     {
         if (!$hash = $this->_getParam('hash', null)) {
             $this->_redirect('account/forgot/register');
-        };
+        }
 
         $this->view->pageTitle = Axis::translate('account')->__(
             'Retrieve Forgotten Password'
