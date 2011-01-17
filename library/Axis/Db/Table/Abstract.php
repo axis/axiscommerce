@@ -505,14 +505,14 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
         return $row->setFromArray($data);
     }
 
-    /**
-     *
-     * @param array $rowData
-     * @return mixed The primary key value(s), as an associative array if the
-     *     key is compound, or a scalar if the key is single-column.
-     */
-    public function save(array $rowData)
-    {
-        return $this->getRow($rowData)->save();
-    }
+//    /**
+//     *
+//     * @param array $rowData
+//     * @return mixed The primary key value(s), as an associative array if the
+//     *     key is compound, or a scalar if the key is single-column.
+//     */
+//    public function save(array $rowData)
+//    {
+//        return $this->getRow($rowData)->save();
+//    }
 }
