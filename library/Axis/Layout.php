@@ -152,7 +152,7 @@ class Axis_Layout extends Zend_Layout
         }
 
         if (null !== $this->_layout) {
-            //this->helper->layout->setLayout() support
+            //add this->helper->layout->setLayout() support
             $this->_axisLayout = 'layout' . substr($this->_layout, strpos($this->_layout, '_'));
         } elseif (null === $this->_axisLayout) {
             $pages = $this->getPagesByRequest();
@@ -161,6 +161,7 @@ class Axis_Layout extends Zend_Layout
             $rows = Axis::single('core/template_page')->select()
                 ->where('template_id = ?', $templateId)
                 ->where('page_id IN(?)', array_keys($pages))
+                ->order('priority DESC')
                 ->fetchAll();
 
             $layout = '';
