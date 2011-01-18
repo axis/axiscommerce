@@ -62,23 +62,27 @@ class Axis_Sales_Model_Order_Creditcard extends Axis_Db_Table
                     str_repeat('X', (strlen($full_number) - 8)) .
                     substr($full_number, -4);
 
-                $mail = new Axis_Mail();
-                $mail->setConfig(array(
-                    'subject' => Axis::translate('sales')->__('Order #%s. Credit card number'),
-                    'data'    => array(
-                        'text' => Axis::translate('sales')->__(
-                            'Order #%s, Credit card middle digits: %s',
-                            $order->number,
-                            substr($full_number, 4, (strlen($full_number) - 8))
-                        )
-                    ),
-                    'to' => Axis_Collect_MailBoxes::getName(
-                        Axis::config('sales/order/email')
-                    )
-                ));
                 try {
+                    $mail = new Axis_Mail();
+                    $mail->setLocale(Axis::config('locale/main/language_admin'));
+                    $configResult = $mail->setConfig(array(
+                        'subject' => Axis::translate('sales')->__('Order #%s. Credit card number'),
+                        'data'    => array(
+                            'text' => Axis::translate('sales')->__(
+                                'Order #%s, Credit card middle digits: %s',
+                                $order->number,
+                                substr($full_number, 4, (strlen($full_number) - 8))
+                            )
+                        ),
+                        'to' => Axis_Collect_MailBoxes::getName(
+                            Axis::config('sales/order/email')
+                        )
+                    ));
                     $mail->send();
-                    $ret = true;
+
+                    if (!$configResult) {
+                        $ret = false;
+                    }
                 } catch (Zend_Mail_Transport_Exception $e) {
                     $ret = false;
                 }

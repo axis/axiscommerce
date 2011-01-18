@@ -132,27 +132,35 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
      */
     protected function _notify($comments)
     {
+        $languageId = Axis::model('locale/language')->getIdByLocale($this->locale);
+        if (!$languageId) {
+            $languageId = Axis_Locale::getLanguageId();
+        }
         $status = Axis::single('sales/order_status_text')
-            ->find($this->order_status_id, Axis_Locale::getLanguageId())
+            ->find($this->order_status_id, $languageId)
             ->current()
             ->toArray();
 
-        $mail = new Axis_Mail();
-        $mail->setConfig(array(
-            'event'   => 'change_order_status-customer',
-            'subject' => Axis::translate('sales')->__('Status of your order has been changed'),
-            'data'    => array(
-                'order'     => $this,
-                'comment'   => $comments,
-                'status'    => $status['status_name']
-            ),
-            'to' => $this->customer_email
-        ));
         try {
+            $mail = new Axis_Mail();
+            $mail->setLocale($this->locale);
+            $configResult = $mail->setConfig(array(
+                'event'   => 'change_order_status-customer',
+                'subject' => Axis::translate('sales')->__('Status of your order has been changed'),
+                'data'    => array(
+                    'order'     => $this,
+                    'comment'   => $comments,
+                    'status'    => $status['status_name']
+                ),
+                'to' => $this->customer_email
+            ));
             $mail->send();
-            Axis::message()->addSuccess(
-                Axis::translate('core')->__('Mail was sended successfully')
-            );
+
+            if ($configResult) {
+                Axis::message()->addSuccess(
+                    Axis::translate('core')->__('Mail was sended successfully')
+                );
+            }
             return true;
         } catch (Zend_Mail_Transport_Exception $e) {
             Axis::message()->addError(

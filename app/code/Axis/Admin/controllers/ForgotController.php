@@ -65,30 +65,34 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
         if (Axis::single('admin/user')->hasEmail($email)) {
             $hash = $this->_generatePassword();
             $link = $this->view->href('forgot') . '?hash=' . $hash;
-            $mail = new Axis_Mail();
-            $mail->setConfig(array(
-                'event'   => 'forgot_password',
-                'subject' => Axis::translate('admin')->__(
-                    'Forgot Your Backend Password'
-                ),
-                'data'    => array(
-                    'link' => $link,
-                    'firstname' => Axis::single('admin/user')
-                        ->getFirstnameByEmail($email),
-                    'lastname' => Axis::single('admin/user')
-                        ->getLastnameByEmail($email)
-                ),
-                'to' => $email
-            ));
+
             try {
-                $mail->send();
-                Axis::single('admin/UserForgotPassword')->save(array(
-                    'hash' => $hash,
-                    'user_id' => Axis::single('admin/user')->getIdByEmail($email)
+                $mail = new Axis_Mail();
+                $configResult = $mail->setConfig(array(
+                    'event'   => 'forgot_password',
+                    'subject' => Axis::translate('admin')->__(
+                        'Forgot Your Backend Password'
+                    ),
+                    'data'    => array(
+                        'link' => $link,
+                        'firstname' => Axis::single('admin/user')
+                            ->getFirstnameByEmail($email),
+                        'lastname' => Axis::single('admin/user')
+                            ->getLastnameByEmail($email)
+                    ),
+                    'to' => $email
                 ));
-                Axis::message()->addSuccess(
-                    Axis::translate('admin')->__('See your mailbox to proceed')
-                );
+                $mail->send();
+
+                if ($configResult) {
+                    Axis::single('admin/UserForgotPassword')->save(array(
+                        'hash' => $hash,
+                        'user_id' => Axis::single('admin/user')->getIdByEmail($email)
+                    ));
+                    Axis::message()->addSuccess(
+                        Axis::translate('admin')->__('See your mailbox to proceed')
+                    );
+                }
             } catch (Zend_Mail_Transport_Exception $e) {
                 Axis::message()->addError(
                     Axis::translate('core')->__('Mail sending was failed.')

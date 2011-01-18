@@ -65,6 +65,10 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
             unset($data['password']);
         }
 
+        if (!isset($data['locale'])) {
+            $data['locale'] = Axis_Locale::getLocale()->toString();
+        }
+
         $row->setFromArray($data);
         $row->modified_at = Axis_Date::now()->toSQLString();
 

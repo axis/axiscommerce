@@ -39,6 +39,20 @@ class Axis_Mail extends Zend_Mail
     public $view;
 
     /**
+     * Locale code. This locale is used during template rendering and subject translation
+     *
+     * @var string
+     */
+    protected $_locale = null;
+
+    /**
+     * Flag that is using for disable mail sending
+     *
+     * @var bool
+     */
+    protected $_disabled = false;
+
+    /**
      *
      * @param string $charset
      */
@@ -94,15 +108,18 @@ class Axis_Mail extends Zend_Mail
                 ->fetchRow();
 
             if (false === $mailTemplate || !$mailTemplate['status']) {
+                $this->_disabled = true;
                 return false;
             }
 
             $siteIds = explode(',', $mailTemplate['site']);
             if (isset($config['siteId'])) {
                 if (!in_array($config['siteId'], $siteIds)) {
+                    $this->_disabled = true;
                     return false;
                 }
             } elseif (!in_array(Axis::getSiteId(), $siteIds)) {
+                $this->_disabled = true;
                 return false;
             }
 
@@ -228,9 +245,31 @@ class Axis_Mail extends Zend_Mail
      */
     public function send($transport = null)
     {
+        if (null !== $this->_locale) {
+            $this->setLocale($this->_locale);
+            $this->_locale = null;
+        }
+
+        if (true === $this->_disabled) {
+            return $this;
+        }
+
         if (null === $transport) {
             $transport = $this->getTransport();
         }
+
         return @parent::send($transport);
+    }
+
+    /**
+     * Set the locale to be used for email template and subject
+     * Locale will be automatically switched back after calling the send method
+     *
+     * @param string $locale Locale code
+     */
+    public function setLocale($locale)
+    {
+        $this->_locale = Axis_Locale::getLocale()->toString();
+        Axis_Locale::setLocale($locale);
     }
 }

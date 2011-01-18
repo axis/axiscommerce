@@ -45,50 +45,49 @@ class Axis_Account_Model_Observer
      */
     public function notifyCustomerRegistration($data)
     {
-        $mail = new Axis_Mail();
-        $isC = $mail->setConfig(array(
-            'event' => 'account_new-customer',
-            'subject' => Axis::translate('account')->__(
-                "Welcome, %s %s",
-                $data['customer']->firstname,
-                $data['customer']->lastname
-            ),
-            'data' => array(
-                'customer' => $data['customer'],
-                'password' => $data['password']
-            ),
-            'to' => $data['customer']->email
-        ));
-        if ($isC) {
-            try {
-                $mail->send();
+        try {
+            $mail = new Axis_Mail();
+            $mail->setLocale($data['customer']->locale);
+            $configResult = $mail->setConfig(array(
+                'event' => 'account_new-customer',
+                'subject' => Axis::translate('account')->__(
+                    "Welcome, %s %s",
+                    $data['customer']->firstname,
+                    $data['customer']->lastname
+                ),
+                'data' => array(
+                    'customer' => $data['customer'],
+                    'password' => $data['password']
+                ),
+                'to' => $data['customer']->email
+            ));
+            $mail->send();
+            if ($configResult) {
                 Axis::message()->addSuccess(
                     Axis::translate('core')->__('Mail was sended successfully')
                 );
-            } catch (Zend_Mail_Transport_Exception $e) {
-                Axis::message()->addError(
-                    Axis::translate('core')->__('Mail sending was failed.')
-                );
             }
+        } catch (Zend_Mail_Transport_Exception $e) {
+            Axis::message()->addError(
+                Axis::translate('core')->__('Mail sending was failed.')
+            );
         }
 
-        $mailNotice = new Axis_Mail();
-        $isC = $mailNotice->setConfig(array(
-            'event'   => 'account_new-owner',
-            'subject' => Axis::translate('account')->__('New Account Created'),
-            'data'    => array(
-                'customer' => $data['customer']
-            ),
-            'to'      => Axis_Collect_MailBoxes::getName(
-                Axis::config('core/company/administratorEmail')
-            )
-        ));
-        if ($isC) {
-            try {
-                $mailNotice->send();
-            } catch (Zend_Mail_Transport_Exception $e) {
-
-            }
+        try {
+            $mailNotice = new Axis_Mail();
+            $mailNotice->setLocale(Axis::config('locale/main/language_admin'));
+            $mailNotice->setConfig(array(
+                'event'   => 'account_new-owner',
+                'subject' => Axis::translate('account')->__('New Account Created'),
+                'data'    => array(
+                    'customer' => $data['customer']
+                ),
+                'to' => Axis_Collect_MailBoxes::getName(
+                    Axis::config('core/company/administratorEmail')
+                )
+            ));
+            $mailNotice->send();
+        } catch (Zend_Mail_Transport_Exception $e) {
         }
     }
 }

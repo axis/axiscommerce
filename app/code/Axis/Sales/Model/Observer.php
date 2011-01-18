@@ -40,18 +40,19 @@ class Axis_Sales_Model_Observer
      */
     public function notifyAdminNewOrder(Axis_Sales_Model_Order_Row $order)
     {
-        $mail = new Axis_Mail();
-        $mail->setConfig(array(
-            'event'   => 'order_new-owner',
-            'subject' => Axis::translate('sales')->__('Order created'),
-            'data'    => array(
-                'order' => $order
-            ),
-            'to'      => Axis_Collect_MailBoxes::getName(
-                Axis::config('sales/order/email')
-            )
-        ));
         try {
+            $mail = new Axis_Mail();
+            $mail->setLocale(Axis::config('locale/main/language_admin'));
+            $mail->setConfig(array(
+                'event'   => 'order_new-owner',
+                'subject' => Axis::translate('sales')->__('Order created'),
+                'data'    => array(
+                    'order' => $order
+                ),
+                'to' => Axis_Collect_MailBoxes::getName(
+                    Axis::config('sales/order/email')
+                )
+            ));
             $mail->send();
             return true;
         } catch (Zend_Mail_Transport_Exception $e) {
@@ -66,23 +67,26 @@ class Axis_Sales_Model_Observer
      */
     public function notifyCustomerNewOrder(Axis_Sales_Model_Order_Row $order)
     {
-        $mail = new Axis_Mail();
-        $mail->setConfig(array(
-            'event'   => 'order_new-customer',
-            'subject' => Axis::translate('sales')->__('Your order'),
-            'data'    => array(
-                'order' => $order
-            ),
-            'to' => $order->customer_email,
-            'attachments' => array(
-                'invoice.html' => 'sales/invoice_print.phtml'
-            )
-        ));
         try {
+            $mail = new Axis_Mail();
+            $configResult = $mail->setConfig(array(
+                'event'   => 'order_new-customer',
+                'subject' => Axis::translate('sales')->__('Your order'),
+                'data'    => array(
+                    'order' => $order
+                ),
+                'to' => $order->customer_email,
+                'attachments' => array(
+                    'invoice.html' => 'sales/invoice_print.phtml'
+                )
+            ));
             $mail->send();
-            Axis::message()->addSuccess(
-                Axis::translate('core')->__('Mail was sended successfully')
-            );
+
+            if ($configResult) {
+                Axis::message()->addSuccess(
+                    Axis::translate('core')->__('Mail was sended successfully')
+                );
+            }
             return true;
         } catch (Zend_Mail_Transport_Exception $e) {
             Axis::message()->addError(

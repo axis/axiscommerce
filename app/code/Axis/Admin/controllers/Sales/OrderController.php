@@ -197,6 +197,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
             ->current();
         if (!$orderRow instanceof Axis_Sales_Model_Order_Row) {
             unset($params['order']['id']);
+            $params['order']['locale'] = Axis::config('locale/main/locale');
             $orderRow = Axis::single('sales/order')
                 ->createRow($params['order']);
         } else {

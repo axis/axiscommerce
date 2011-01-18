@@ -58,21 +58,21 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                     ->current();
 
                 if ($department) {
-                    $mail = new Axis_Mail();
-                    $mail->setConfig(array(
-                        'event'   => 'contact_us',
-                        'subject' => $data['subject'],
-                        'data'    => $data,
-                        'to'      => $department->email,
-                        'from'    => array(
-                            'name'  => $data['name'],
-                            'email' => $data['email']
-                        )
-                    ));
                     try {
+                        $mail = new Axis_Mail();
+                        $mail->setLocale(Axis::config('locale/main/language_admin'));
+                        $mail->setConfig(array(
+                            'event'   => 'contact_us',
+                            'subject' => $data['subject'],
+                            'data'    => $data,
+                            'to'      => $department->email,
+                            'from'    => array(
+                                'name'  => $data['name'],
+                                'email' => $data['email']
+                            )
+                        ));
                         $mail->send();
                     } catch (Zend_Mail_Transport_Exception $e) {
-
                     }
                 }
 
