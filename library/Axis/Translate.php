@@ -65,14 +65,12 @@ class Axis_Translate extends Zend_Translate
             $filename   = $this->_getFileName($locale);
         }
 
-        parent::__construct(array_merge(array(
+        parent::__construct(array(
             'adapter'   => self::AN_CSV,
             'content'   => $filename,
             'locale'    => $locale,
-            'options'   => array(
-                'delimiter' => ','
-            )
-        ), $options));
+            'delimiter' => ','
+        ));
     }
 
     /**
