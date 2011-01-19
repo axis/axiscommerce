@@ -367,7 +367,9 @@ Ext.onReady(function() {
         name: 'sendmail',
         autoScroll: true,
         bodyStyle: 'padding: 5px',
-        defaults: {width: 300},
+        defaults: {
+            anchor: '100%'
+        },
         border: false,
         items: [{
             fieldLabel: 'Email'.l(),
@@ -380,7 +382,7 @@ Ext.onReady(function() {
             fieldLabel: 'Subject'.l(),
             name: 'subject',
             xtype: 'textfield',
-            allowBlank: true
+            allowBlank: false
         }, {
             fieldLabel: 'Message'.l(),
             name: 'message',
@@ -403,7 +405,9 @@ Ext.onReady(function() {
         labelWidth: 80,
         name : 'fdepart',
         autoScroll: true,
-        defaults: {anchor: '95%'},
+        defaults: {
+            anchor: '100%'
+        },
         border: false,
         autoHeight: true,
         reader: new Ext.data.JsonReader({
@@ -412,6 +416,7 @@ Ext.onReady(function() {
             ['name', 'email']
         ),
         items: [new Ext.form.ComboBox({
+            allowBlank: false,
             triggerAction: 'all',
             displayField: 'name',
             typeAhead: true,
@@ -421,10 +426,10 @@ Ext.onReady(function() {
             name: 'email',
             store: mailStore
         }), {
+            allowBlank: false,
             fieldLabel: 'Name'.l(),
             name: 'name',
-            xtype: 'textfield',
-            allowBlank: true
+            xtype: 'textfield'
         }]
     });
 

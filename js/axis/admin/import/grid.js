@@ -18,9 +18,9 @@
  */
 
 Ext.onReady(function(){
-    
+
     Ext.QuickTips.init();
-    
+
     var profile = new Ext.data.Record.create([
         'id',
         'type',
@@ -33,7 +33,7 @@ Ext.onReady(function(){
         'db_password',
         'table_prefix'
     ])
-    
+
     var ds = new Ext.data.Store({
         url: Axis.getUrl('import_index/get-list'),
         reader: new Ext.data.JsonReader({
@@ -42,7 +42,7 @@ Ext.onReady(function(){
         }, profile),
         autoLoad: true
     })
-    
+
     var cm = new Ext.grid.ColumnModel([
         {
             header: 'Name'.l(),
@@ -73,7 +73,7 @@ Ext.onReady(function(){
         }
     ])
     cm.defaultSortable = true;
-    
+
     var grid = new Axis.grid.GridPanel({
         cm: cm,
         ds: ds,
@@ -104,31 +104,31 @@ Ext.onReady(function(){
             handler: reload
         }]
     });
-    
+
     new Axis.Panel({
         items: [
             grid
         ]
     });
-    
+
     function reload(){
         ds.reload();
-    } 
-    
+    }
+
     grid.on('rowdblclick', function(grid, rowIndex, e){
         editProfile();
     })
-    
+
     function editProfile(){
         var selected = grid.getSelectionModel().getSelected();
-        
+
         if (!selected)
             return;
-            
+
         var win = Ext.getCmp('window_profile');
         win.setTitle(selected.get('name') + ' [' + selected.get('type') + ']');
         win.show();
-        
+
         Ext.getCmp('form_profile_edit').getForm().setValues({
             'profile[type]': selected.get('type'),
             'profile[name]': selected.get('name'),
@@ -140,10 +140,10 @@ Ext.onReady(function(){
             'profile[id]': selected.get('id')
         });
     }
-    
+
     function removeProfile(){
         var selected = grid.getSelectionModel().getSelections();
-        
+
         if (!selected.length || !confirm('Are you sure?'.l())) {
             return;
         }
@@ -158,9 +158,10 @@ Ext.onReady(function(){
             success: reload
         })
     }
-    
+
     function addProfile(){
         var win = Ext.getCmp('window_profile');
+        Ext.getCmp('form_profile_edit').getForm().clear();
         win.setTitle('Add'.l())
         win.show();
     }

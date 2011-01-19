@@ -19,6 +19,10 @@
 
 Ext.onReady(function(){
 
+    Ext.QuickTips.init();
+
+    Ext.form.Field.prototype.msgTarget = 'qtip';
+
     var customer_object = Ext.data.Record.create([
         {name: 'id', type: 'int'},
         {name: 'email', type: 'string'}
