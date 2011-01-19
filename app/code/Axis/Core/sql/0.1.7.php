@@ -181,14 +181,14 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9;
 
         INSERT INTO `{$installer->getTable('core_template_mail')}` (`id`, `name`, `template`, `event`, `status`, `from`, `site`, `type`) VALUES
-            (1, 'Store', 'default', 'default', 1, 'email1', '1', 'html'),
-            (2, 'Contact Us', 'contact-us', 'contact_us', 1, 'email1', '1', 'html'),
-            (3, 'Forgot Password', 'forgot', 'forgot_password', 1, 'email1', '1', 'html'),
-            (4, 'Notice customer', 'account_new-customer', 'account_new-customer', 1, 'email1', '1', 'html'),
-            (5, 'Notice owner', 'account_new-owner', 'account_new-owner', 1, 'email1', '1', 'html'),
-            (6, 'Notice customer', 'order_new-customer', 'order_new-customer', 1, 'email1', '1', 'html'),
-            (7, 'Notice owner', 'order_new-owner', 'order_new-owner', 1, 'email1', '1', 'html'),
-            (8, 'Cusromer notify change order status', 'change_order_status-customer', 'change_order_status-customer', 1, 'email1', '1', 'html');
+            (1, 'Store', 'default', 'default', 1, 'email2', '1', 'html'),
+            (2, 'Contact Us', 'contact-us', 'contact_us', 1, 'email2', '1', 'html'),
+            (3, 'Forgot Password', 'forgot', 'forgot_password', 1, 'email2', '1', 'html'),
+            (4, 'Notice customer', 'account_new-customer', 'account_new-customer', 1, 'email2', '1', 'html'),
+            (5, 'Notice owner', 'account_new-owner', 'account_new-owner', 1, 'email2', '1', 'html'),
+            (6, 'Notice customer', 'order_new-customer', 'order_new-customer', 1, 'email2', '1', 'html'),
+            (7, 'Notice owner', 'order_new-owner', 'order_new-owner', 1, 'email2', '1', 'html'),
+            (8, 'Cusromer notify change order status', 'change_order_status-customer', 'change_order_status-customer', 1, 'email2', '1', 'html');
 
         /* Admin tables */
 
@@ -456,9 +456,9 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/company/phone', 'Phone', '')
             ->add('core/company/fax', 'Fax', '')
             ->add('core/company/administratorEmail', 'Administrator email',  'email1', 'select', array('model' => 'MailBoxes'))
-            ->add('core/company/customerRelationEmail', 'Customer relations email',  'email1', 'select', array('model' => 'MailBoxes'))
-            ->add('core/company/salesDepartmentEmail', 'Sales department email',  'email1', 'select', array('model' => 'MailBoxes'))
-            ->add('core/company/supportEmail', 'Support email', 'email1', 'select', array('model' => 'MailBoxes'))
+            ->add('core/company/customerRelationEmail', 'Customer relations email',  'email3', 'select', array('model' => 'MailBoxes'))
+            ->add('core/company/salesDepartmentEmail', 'Sales department email',  'email4', 'select', array('model' => 'MailBoxes'))
+            ->add('core/company/supportEmail', 'Support email', 'email5', 'select', array('model' => 'MailBoxes'))
 
             ->add('core/cache/default_lifetime', 'core/Cache/Default Lifetime', '86400')
             ->add('core/translation/autodetect', 'core/Translation/Autodetect new words',  '0', 'bool', 'Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)')
@@ -469,7 +469,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/minify/css_admin', 'Enable css merging on the backend', '0', 'bool')
 
             ->add('mail', 'Mail', null, null, array('translation_module' => 'Axis_Core'))
-            ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email1', 'select', array('model' => 'MailBoxes'))
+            ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email2', 'select', array('model' => 'MailBoxes'))
             ->add('mail/main/transport', 'Mail transport', 'sendmail', 'select', 'Mail Transport (smtp or sendmail)', array('config_options' => 'smtp,sendmail'))
             ->add('mail/smtp/host', 'Mail/Smtp/Host', 'host.smtp.com')
             ->add('mail/smtp/user', 'User', 'test+axiscommerce.com', 'handler', '', array('model' => 'Crypt'))

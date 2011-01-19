@@ -1,13 +1,14 @@
-<?php echo $this->translate('core')->__('Notice'); ?> 
-<?php echo $this->translate('core')->__('New customer account created on ') . $this->site?> 
-<?php echo $this->translate('core')->__('See Details Info');?> : <?php echo $this->href('/admin/customer_index/edit/customerId/') . $this->customer['id']?> 
- 
-<?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toString('Y') ?> <?php echo $this->site ?> 
-<?php echo $this->translate('core')->__("Powered by %s v. %s", "Axis", Axis::app()->getVersion()) ?>
-  
-<?php echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.') ?> 
-<?php echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to')
-    . '  ' . $this->from ?> 
-  
-<?php echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.')?>  
-<?php echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.')?>
+<?php echo $this->translate('account')->__('New customer was registered on %s', $this->siteName) ?>
+
+
+<?php echo $this->translate('account')->__('Firstname') ?>: <?php echo $this->escape($this->customer->firstname) ?>
+
+<?php echo $this->translate('account')->__('Lastname') ?>: <?php echo $this->escape($this->customer->lastname) ?>
+
+<?php echo $this->translate('account')->__('Email') ?>: <?php echo $this->customer->email ?>
+
+<?php $route = Axis::config('core/backend/route') ?>
+<?php echo $this->translate('core')->__('See Details Info');?>: <?php echo $this->href("{$route}/customer_index/index/customerId/", true, false) . $this->customer->id ?>
+
+
+<?php echo $this->render('include/footer_txt.phtml') ?>
