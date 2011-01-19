@@ -266,12 +266,12 @@ class Axis
      * @param string $name
      * @return Axis_Translate
      */
-    public static function translate($name = 'Axis_Core')
+    public static function translate($module = 'Axis_Core')
     {
-        if (false === strpos($name, '_')) {
-            $name = 'Axis' . '_' . ucfirst($name);
+        if (false === strpos($module, '_')) {
+            $module = 'Axis' . '_' . ucfirst($module);
         }
-        $name = str_replace(' ', '_', ucwords(str_replace('_', ' ', $name)));
-        return Axis_Translate::getInstance($name);
+        $module = str_replace(' ', '_', ucwords(str_replace('_', ' ', $module)));
+        return Axis_Translate::getInstance($module);
     }
 }

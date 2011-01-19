@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Form
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Form
  * @author      Axis Core Team <core@axiscommerce.com>
@@ -35,28 +35,28 @@ class Axis_Form extends Zend_Form
      * @var Axis_Form_ActionBar
      */
     private $_actionBar = null;
-    
+
     /**
      * Array of Axis_Form_Row
      * @var array
      */
     private $_rows = array();
-    
+
     /**
      * Array of Axis_Form_Column
      * @var array
      */
     private $_cols = array();
-    
-    protected $_translatorModule = 'core';
-    
+
+    protected $_translatorModule = 'Axis_Core';
+
     public function init()
     {
         $this->setDefaultDisplayGroupClass('Axis_Form_DisplayGroup');
         $this->addPrefixPath('Axis_Form_Decorator', 'Axis/Form/Decorator', 'decorator');
-        $this->setTranslator(Axis::translate($this->_translatorModule)->getTranslator());
+        $this->setTranslator(Axis::translate($this->_translatorModule)->getAdapter());
     }
-    
+
     public function loadDefaultDecorators()
     {
         $this->setDecorators(array(
@@ -68,10 +68,10 @@ class Axis_Form extends Zend_Form
             array('Form', array('class' => 'axis-form'))
         ));
     }
-    
+
     /**
      * Add action bar with set of buttons to form
-     * 
+     *
      * @param array $elements
      * @return Axis_Form
      */
@@ -81,7 +81,7 @@ class Axis_Form extends Zend_Form
             require_once 'Zend/Form/Exception.php';
             throw new Zend_Form_Exception('Cannot assign more then one action bars to one form');
         }
-        
+
         foreach ($elements as $element) {
             if (isset($this->_elements[$element])) {
                 $add = $this->getElement($element);
@@ -95,18 +95,18 @@ class Axis_Form extends Zend_Form
             require_once 'Zend/Form/Exception.php';
             throw new Zend_Form_Exception('No valid elements specified for actionbar');
         }
-        
+
         $options = array('elements' => $group);
-        
+
         $this->_actionBar = new Axis_Form_ActionBar(
-            'actionbar', 
+            'actionbar',
             $this->getPluginLoader(self::DECORATOR),
             $options
         );
-        
+
         return $this;
     }
-    
+
     /**
      * @return Axis_Form_ActionBar
      */
@@ -114,7 +114,7 @@ class Axis_Form extends Zend_Form
     {
         return $this->_actionBar;
     }
-    
+
     public function addColumn(array $elements, $name, $options = null)
     {
         $group = array();
@@ -149,13 +149,13 @@ class Axis_Form extends Zend_Form
         } else {
             $class = 'Axis_Form_Column';//$this->getDefaultRowsetClass();
         }
-        
+
         if (!class_exists($class)) {
             require_once 'Zend/Loader.php';
             Zend_Loader::loadClass($class);
         }
         $this->_cols[$name] = new $class(
-            $name, 
+            $name,
             $this->getPluginLoader(self::DECORATOR),
             $options
         );
@@ -166,11 +166,11 @@ class Axis_Form extends Zend_Form
 
         return $this;
     }
-    
+
     /**
      * Retrieve a column
-     * 
-     * @param  string $name 
+     *
+     * @param  string $name
      * @return Axis_Form_Column
      */
     public function getColumn($name)
@@ -181,7 +181,7 @@ class Axis_Form extends Zend_Form
         }
         return null;
     }
-    
+
     /**
      * Returns array of columns
      * @return array
@@ -190,7 +190,7 @@ class Axis_Form extends Zend_Form
     {
         return $this->_cols;
     }
-    
+
     /**
      * Checks is there are some columns in row
      * @return bool
@@ -199,13 +199,13 @@ class Axis_Form extends Zend_Form
     {
         return (bool) count($this->_cols);
     }
-    
+
     public function addRow($elements, $name, $options = null)
     {
         if (!is_array($elements)) {
             $elements = array($elements);
         }
-        
+
         $group = array();
         foreach ($elements as $element) {
             if (isset($this->_elements[$element])) {
@@ -238,13 +238,13 @@ class Axis_Form extends Zend_Form
         } else {
             $class = 'Axis_Form_Row';//$this->getDefaultRowsetClass();
         }
-        
+
         if (!class_exists($class)) {
             require_once 'Zend/Loader.php';
             Zend_Loader::loadClass($class);
         }
         $this->_rows[$name] = new $class(
-            $name, 
+            $name,
             $this->getPluginLoader(self::DECORATOR),
             $options
         );
@@ -255,11 +255,11 @@ class Axis_Form extends Zend_Form
 
         return $this;
     }
-    
+
     /**
      * Retrieve a row
-     * 
-     * @param  string $name 
+     *
+     * @param  string $name
      * @return Axis_Form_Row
      */
     public function getRow($name)
@@ -271,28 +271,28 @@ class Axis_Form extends Zend_Form
 
         return null;
     }
-    
+
     public function getRows()
     {
         return $this->_rows;
     }
-    
+
     public function hasRows()
     {
         return (bool) count($this->_rows);
     }
-    
+
     /**
      * Create an element
      *
-     * Acts as a factory for creating elements. Elements created with this 
-     * method will not be attached to the form, but will contain element 
-     * settings as specified in the form object (including plugin loader 
+     * Acts as a factory for creating elements. Elements created with this
+     * method will not be attached to the form, but will contain element
+     * settings as specified in the form object (including plugin loader
      * prefix paths, default decorators, etc.).
-     * 
-     * @param  string $type 
-     * @param  string $name 
-     * @param  array|Zend_Config $options 
+     *
+     * @param  string $type
+     * @param  string $name
+     * @param  array|Zend_Config $options
      * @return Zend_Form_Element
      */
     public function createElement($type, $name, $options = null)
@@ -329,7 +329,7 @@ class Axis_Form extends Zend_Form
 
         $class = $this->getPluginLoader(self::ELEMENT)->load($type);
         $element = new $class($name, $options);
-        
+
         switch ($type) {
             case 'submit': case 'button':
                 $element->clearDecorators()
@@ -349,7 +349,7 @@ class Axis_Form extends Zend_Form
 
         return $element;
     }
-    
+
     /**
      * Validate the form
      * Overloaded to load validation translations from core module
@@ -364,13 +364,13 @@ class Axis_Form extends Zend_Form
             throw new Zend_Form_Exception(__CLASS__ . '::' . __METHOD__ . ' expects an array');
         }
         $translator = $this->getTranslator();
-        $elementsTranslator = Axis::translate('core')->getTranslator();
+        $elementsTranslator = Axis::translate('Axis_Core')->getAdapter();
         $valid      = true;
-        
+
         if ($this->isArray()) {
             $data = $this->_dissolveArrayValue($data, $this->getElementsBelongTo());
         }
-        
+
         foreach ($this->getElements() as $key => $element) {
             $element->setTranslator($elementsTranslator);
             if (!isset($data[$key])) {
@@ -387,14 +387,14 @@ class Axis_Form extends Zend_Form
                 $valid = $form->isValid($data) && $valid;
             }
         }
-        
+
         $this->_errorsExist = !$valid;
-        
+
         // If manually flagged as an error, return invalid status
         if ($this->_errorsForced) {
             return false;
         }
-        
+
         return $valid;
     }
 
@@ -414,10 +414,10 @@ class Axis_Form extends Zend_Form
         }
 
         $translator        = $this->getTranslator();
-        $elementsTranslator = Axis::translate('core')->getTranslator();
+        $elementsTranslator = Axis::translate('Axis_Core')->getAdapter();
         $valid             = true;
         $validatedSubForms = array();
-        
+
         foreach ($data as $key => $value) {
             if (null !== ($element = $this->getElement($key))) {
                 if (null !== $elementsTranslator) {
@@ -441,7 +441,7 @@ class Axis_Form extends Zend_Form
                 $valid = $subForm->isValidPartial($data) && $valid;
             }
         }
-        
+
         $this->_errorsExist = !$valid;
         return $valid;
     }
