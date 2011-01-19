@@ -56,9 +56,13 @@ class Axis_Admin_Catalog_ProductOptionValuesetController extends Axis_Admin_Cont
     {
         $this->_helper->layout->disableLayout();
 
-        return $this->_helper->json->sendJson(array(
-            'success' => Axis::single('catalog/product_option_ValueSet')
-                ->save(array($this->_getAllParams()))
+        $rowId = Axis::single('catalog/product_option_ValueSet')
+            ->save(array($this->_getAllParams()));
+
+        return $this->_helper->json->sendSuccess(array(
+            'data' => array(
+                'id' => $rowId
+            )
         ));
     }
 

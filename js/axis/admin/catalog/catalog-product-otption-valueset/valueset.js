@@ -55,9 +55,11 @@ var Set = {
     save: function() {
         Set.form.getForm().submit({
             url: Axis.getUrl('catalog_product-option-valueset/save-set'),
-            success: function() {
+            success: function(form, action) {
+                var response = Ext.decode(action.response.responseText);
                 Set.window.hide();
                 Set.grid.getStore().reload();
+                Value.load(response.data.id);
             }
         });
     },
@@ -70,7 +72,6 @@ var Set = {
         }
 
         var data = {};
-
         for (var i = 0; i < selectedItems.length; i++) {
             if (!selectedItems[i]['data']['id']) {
                 continue;
@@ -80,9 +81,13 @@ var Set = {
 
         Ext.Ajax.request({
             url: Axis.getUrl('catalog_product-option-valueset/delete-sets'),
-            params: {data: Ext.encode(data)},
+            params: {
+                data: Ext.encode(data)
+            },
             callback: function() {
+                delete Value.grid.getStore().baseParams.setId;
                 Set.grid.getStore().reload();
+                Value.grid.getStore().reload();
             }
         });
     }
@@ -108,7 +113,7 @@ var Value = {
         }
         var newValue = new Value.record(defaults);
         Value.grid.getStore().insert(0, newValue);
-        Value.grid.startEditing(0, 1);
+        Value.grid.startEditing(0, 2);
     },
 
     save: function() {
@@ -328,23 +333,22 @@ Ext.onReady(function(){
             text: 'Delete'.l(),
             icon: Axis.skinUrl + '/images/icons/delete.png',
             cls: 'x-btn-text-icon',
-            handler : function(){
-                var selectedItems = Value.grid.getSelectionModel().selections.items;
+            handler : function() {
+                var selectedItems = Value.grid.getSelectionModel().getSelections();
 
-                if (!selectedItems.length)
+                if (!selectedItems.length || !confirm('Are you sure?'.l())) {
                     return;
-
-                if (!confirm('Are you sure?'.l()))
-                    return;
+                }
 
                 var data = {};
-
                 for (var i = 0; i < selectedItems.length; i++) {
                     data[i] = selectedItems[i].id;
                 }
                 Ext.Ajax.request({
                     url: Axis.getUrl('catalog_product-option-valueset/delete-values'),
-                    params: {data: Ext.encode(data)},
+                    params: {
+                        data: Ext.encode(data)
+                    },
                     callback: function() {
                         Value.grid.getStore().commitChanges();
                         Value.grid.getStore().reload();
@@ -356,6 +360,9 @@ Ext.onReady(function(){
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             cls: 'x-btn-text-icon',
             handler: function(){
+                if (!Value.grid.getStore().baseParams.setId) {
+                    return alert('Select the valueset on the left panel'.l());
+                }
                 Value.grid.getStore().reload();
             }
         }]
