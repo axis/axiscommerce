@@ -295,7 +295,7 @@ Ext.onReady(function() {
                     }),
                     displayField: 'title',
                     valueField: 'id',
-                    value: 2,
+                    initialValue: 2,
                     mode: 'local',
                     triggerAction: 'all'
                 }]
@@ -309,14 +309,14 @@ Ext.onReady(function() {
                     xtype: 'textfield',
                     fieldLabel: 'Precision'.l(),
                     name: 'currency[currency_precision]',
-                    value: 2,
+                    initialValue: 2,
                     allowBlank: true,
                     maxLength: 2
                 }, {
                     xtype: 'textfield',
                     fieldLabel: 'Rate'.l(),
                     name: 'currency[rate]',
-                    value: 1,
+                    initialValue: 1,
                     allowBlank: true,
                     maxLength: 8
                 }, {
@@ -334,7 +334,7 @@ Ext.onReady(function() {
                     }),
                     displayField: 'title',
                     valueField: 'id',
-                    value: 8,
+                    initialValue: 8,
                     mode: 'local',
                     triggerAction: 'all'
                 }]
@@ -342,7 +342,7 @@ Ext.onReady(function() {
         }, {
             xtype: 'hidden',
             name: 'currency[id]',
-            value: ''
+            initialValue: ''
         }]
     })
 
