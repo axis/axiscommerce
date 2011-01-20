@@ -247,8 +247,8 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
 
         $product->setCategoryAssignments($categories['ids'])
             ->setStock($this->_getParam('stock'))
-            ->setSpecial($this->_getParam('special'))
             ->setDescription($this->_getParam('description'))
+            ->setSpecial($this->_getParam('special'))
             ->setUrl($this->_getParam('key_word'), $categories['site_ids']);
 
         $jsonParams = array('image', 'variation', 'modifier', 'property');
