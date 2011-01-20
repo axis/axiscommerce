@@ -62,29 +62,27 @@ class Axis_Sales_Model_Order_Creditcard extends Axis_Db_Table
                     str_repeat('X', (strlen($full_number) - 8)) .
                     substr($full_number, -4);
 
-                $message = Axis::translate('sales')->__(
-                    'Please direct this email to the Accounting department so that it may'
-                    . ' be filed along with the online order it relates to: '
-                    . "\n\n" . 'OrderId: %s' . "\n\n" . 'Middle Digits: %s' . "\n\n",
-                    $order->id,
-                    substr($full_number, 4, (strlen($full_number) - 8))
-                );
-                $mail = new Axis_Mail();
-                $mail->setConfig(array(
-                    'subject' => 'Credit card number. Order ' . $order->id,
-                    'data'    => array('text' => $message),
-                    'to'      => Axis_Collect_MailBoxes::getName(
-                        Axis::config()->sales->order->email
-                    ),
-                    'from'    => array(
-                        'email' => $order->customer_email,
-                        'name' => $order->payment_method
-                    ),
-                    'type' => 'txt'
-                ));
                 try {
+                    $mail = new Axis_Mail();
+                    $mail->setLocale(Axis::config('locale/main/language_admin'));
+                    $configResult = $mail->setConfig(array(
+                        'subject' => Axis::translate('sales')->__('Order #%s. Credit card number'),
+                        'data'    => array(
+                            'text' => Axis::translate('sales')->__(
+                                'Order #%s, Credit card middle digits: %s',
+                                $order->number,
+                                substr($full_number, 4, (strlen($full_number) - 8))
+                            )
+                        ),
+                        'to' => Axis_Collect_MailBoxes::getName(
+                            Axis::config('sales/order/email')
+                        )
+                    ));
                     $mail->send();
-                    $ret = true;
+
+                    if (!$configResult) {
+                        $ret = false;
+                    }
                 } catch (Zend_Mail_Transport_Exception $e) {
                     $ret = false;
                 }

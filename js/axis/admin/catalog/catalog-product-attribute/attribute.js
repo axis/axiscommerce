@@ -28,6 +28,15 @@ var Attribute = {
 
     form: null,
 
+    types: [
+        [0, 'Select'],
+        [1, 'String'],
+        [2, 'Radio'],
+        [3, 'Checkbox'],
+        [4, 'Textarea']//,
+        // [5, 'File']
+    ],
+
     add: function () {
         Attribute.form.getForm().clear();
         Attribute.window.setTitle('New Attribute'.l());
@@ -49,14 +58,7 @@ var Attribute = {
 
 Ext.onReady(function() {
     Attribute.inputTypeStore = new Ext.data.Store({
-        data: [
-            [0, 'Select'],
-            [1, 'String'],
-            [2, 'Radio'],
-            [3, 'Checkbox'],
-            [4, 'Textarea'],
-            [5, 'File']
-        ],
+        data: Attribute.types,
         reader: new Ext.data.ArrayReader({
             idIndex: 0
         }, [

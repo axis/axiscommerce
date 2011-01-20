@@ -102,6 +102,7 @@
 "customer","користувач"
 "Name","Ім'я"
 " %s is not writable"," %s немає прав для запису"
+"Mail was sended successfully","Лист успішно надіслано"
 "Mail sending was failed.","Неможливо надіслати пошту."
 "Please repeat the same password","Повторіть пароль, будь-ласка"
 "'%value%' has not only alphabetic and digit characters","'%value%' містить не тільки літери та цифри"

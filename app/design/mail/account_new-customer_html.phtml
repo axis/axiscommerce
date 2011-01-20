@@ -1,126 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=$CHARSET" />
+    <head>
+        <?php $this->companyEmail = $this->company['support_email']; ?>
+        <?php echo $this->render('include/html_head.phtml'); ?>
+    </head>
 
-<style type="text/css">
-    a:link {color:#0066cc;}
-    a:hover {background-color:#eeeecc; color:#0066cc;}
-    a:visited {color:#0066cc;}
-    a img {border:none;}
-    .holder {background-color:#f9f9f9; border:1px solid #9a9a9a; font-size:9px; text-align:left; width:550px;}
-    .header {font-size:10px; padding:0px; width:550px;}
-    .content {font-size:10px; padding:5px; width:550px;}
-    .content-line {padding:5px;}
-    .footer {border-top:1px solid #9a9a9a; font-size:9px; margin-top:10px; text-align:center; width:550px;}
-    .extra-info {background-color:#cccc99; border:1px solid #9a9a9a; font-size:10px; margin-top:10px; padding:5px; width:550px;}
-    .extra-info-bold {font-weight:bold;}
-    .disclaimer {background-color:#f9f9f9; border:1px solid #cccccc; font-size:10px; margin-top:10px; padding:5px; width:550px;}
-    .disclaimer1 {color:#666666; padding:5px;}
-    .disclaimer1 a:link {color:#666666;}
-    .disclaimer1 a:visited {color:#666666;}
-    .disclaimer2 {color:#666666; padding:5px;}
-    .copyright {border-bottom:0px solid #9a9a9a; padding:5px;}
-    body { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; padding: 0px; margin: 0px;}
-    td { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif;}
-    #logo img {border:none;}
-</style>
+    <body>
+        <div style="margin:0px; padding:0px; background-color:#ffffff; ">
+        <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin:10px 0px; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; margin-bottom:10px;">
+            <tr>
+                <td align="center" valign="top">
+                    <?php echo $this->render('include/header.phtml'); ?>
 
-</head>
+                    <table cellspacing="0" cellpadding="20" border="0" width="650" style="background:#fff;margin-top:10px;" class="content">
+                        <tr>
+                            <td style="padding:0px;text-align:left;">
+                                <p style="margin: 1px 0 4px;"><strong>
+                                    <?php echo $this->translate('account')->__(
+                                        'Welcome, %s %s',
+                                        $this->escape($this->customer->firstname),
+                                        $this->escape($this->customer->lastname)
+                                    ); ?>
+                                </strong></p>
+                                <p style="margin: 1px 0 4px;"><?php echo $this->translate('account')->__('You have been registered on %s', $this->siteName); ?></p>
 
-<body>
-    <div style="margin:0px; padding:0px; background-color:#ffffff; ">
-    <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin:10px 0px; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; margin-bottom:10px;">
-        <tr>
-            <td align="center" valign="top">
-                <table cellspacing="0" cellpadding="0" border="0" width="650" style="background: #fff; padding:0px;"  class="header">
-                    <tr>
-                        <td valign="top" id="logo">
-                            <a href="<?php echo $this->href('/')?>">
-                                <?php echo $this->image('logo_mail.gif', 'style="border:none;"');?>
-                            </a>
-                        </td>
-                        <td valign="top" align="right" style="padding-left: 0px">
-                            <?php echo '   ' . $this->company['name']?>
-                            <br/>
-                            <?php echo  $this->company['email']?>
-                            <br/>
-                            <?php echo  $this->company['phone']?>
-                        </td>
-                    </tr>
-                </table>
-            
-                <table cellspacing="0" cellpadding="20" border="0" width="650" style="background: #fff;margin-top:10px; border: 1px solid #bbb" class="footer">
-                    <tr>
-                        <td class="content" style="padding:5px;text-align:left;">
-                        <!-- Content Section -->
-                            <strong>
-                                <?php echo $this->translate('core')->__('Dear') . ', ';
-                                    if ($this->firstname && $this->lastname) {
-                                        echo $this->firstname . ' ' . $this->lastname;
-                                    } else {
-                                        echo $this->translate('core')->__('customer');
-                                    }
+                                <?php
+                                    $loginLink = $this->href('account/auth', true, false);
+                                    $loginWord = $this->translate('account')->__('Login');
                                 ?>
-                            </strong>
-                            <br/>
-                            <?php echo $this->translate('core')->__('Welcome to') . ' ' . $this->site ?>
-                            <br/>
-                            <?php echo $this->translate('core')->__('To log in when visiting our site just click')?>
-                            <a href="<?php echo $this->href('/account/auth', true)?>" style="color:#1E7EC8;"
-                            ><?php echo $this->translate('core')->__('Login')?></a> 
-                             
-                            <p style="border:1px solid #BEBCB7; padding:13px 18px; background:#F8F7F5; ">
-                                <?php echo $this->translate('core')->__('Use the following values when prompted to log in'); ?>:<br/>
-                                <?php echo $this->translate('core')->__('E-mail')?>: <?php echo $this->customer['email'] ?><br/>
-                                <?php echo $this->translate('core')->__('Password')?>: <?php echo $this->customer['password'] ?>
-                            <p>
-                            <p><?php echo $this->translate('core')->__('When you log in to your account, you will be able to do the following');?>:</p>
-                            <ul>
-                                <li><?php echo $this->translate('core')->__('Proceed through checkout faster when making a purchase');?></li>
-                                <li><?php echo $this->translate('core')->__('Check the status of orders');?></li>
-                                <li><?php echo $this->translate('core')->__('View last orders');?></li>
-                                <li><?php echo $this->translate('core')->__('Make changes to your account information');?></li>
-                                <li><?php echo $this->translate('core')->__('Change your password');?></li>
-                            </ul>
-                        <!-- Content Section End-->
-                        </td>
-                    </tr>
-                </table>
-                
-                <table cellspacing="0" cellpadding="20" border="0" width="650" style="background: #eee; border: 1px solid #bbb;margin-top:10px;" class="footer">
-                    <tr>
-                        <td class="copyright" style="padding:5px;">
-                            <?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toString('Y') ?> 
-                            <a href=" <?php echo $this->href('/');?> " target="_blank"><?php echo $this->site ?></a>.
-                            <?php echo $this->translate('core')->__("Powered by %s v. %s", "<a href='http://www.axiscommerce.com' title='Axis'>Axis</a>", Axis::app()->getVersion()) ?>
-                        </td>
-                    </tr>
-                </table>
-    
-        
-                <table cellspacing="0" cellpadding="20" border="0" width="650" style="background: #eee; margin-top:10px; padding:5px;border: 1px solid #bbb" class="disclaimer">
-                    <tr>
-                        <td class="disclaimer1" style="padding:5px;">
-                            <?php 
-                                echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.');?><br/> <?php
-                                echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to') . '  ' . $this->from 
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="disclaimer2" style="padding:5px;">
-                            <?php 
-                                echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.');?><br/> <?php
-                                echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.');
-                            ?>
-                        </td>
-                    </tr>
-                </table>
-        
-            </td>
-        </tr>
-    </table>
-    </div>  
-</body>
+
+                                <p style="margin: 1px 0 4px;"><?php echo $this->translate('core')->__(
+                                    'You can %s to the account, using the following values',
+                                    "<a href='{$this->href('account/auth', true, false)}' style='color:#1e7ec8;'>{$loginWord}</a>"
+                                ); ?>:</p>
+                                <p style="margin: 1px 0 4px;"><?php echo $this->translate('account')->__('Email')?>: <?php echo $this->customer->email ?></p>
+                                <p style="margin: 1px 0 4px;"><?php echo $this->translate('account')->__('Password')?>: <?php echo $this->password ?></p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <?php echo $this->render('include/footer_html.phtml'); ?>
+                </td>
+            </tr>
+        </table>
+        </div>
+    </body>
 </html>
-                        

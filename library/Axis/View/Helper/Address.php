@@ -73,8 +73,6 @@ class Axis_View_Helper_Address
             unset($address['zone']);
         }
 
-        $template = str_replace('EOL', $EOL, $template);
-
         $matches = array();
         preg_match_all('/{{if (.+)(?:\.(.+))?}}(.+){{\/if}}/U', $template, $matches);
         foreach ($matches[0] as $key => $condition) {
@@ -94,7 +92,8 @@ class Axis_View_Helper_Address
 
            $template = str_replace($condition, $this->view->escape($replaced), $template);
         }
-        return $template;
+
+        return str_replace('EOL', $EOL, $template);
     }
 
     public function setView($view)

@@ -51,15 +51,15 @@ class Axis_Core_Model_Cache extends Axis_Db_Table
         if (!Zend_Registry::isRegistered('cache')
             || !(Zend_Registry::get('cache') instanceof Zend_Cache_Core))
         {
-            $defaultLifetime = Axis::single('core/config_value')
+            $defaultLifetime = Axis::model('core/config_value')
                 ->select('value')
                 ->where("path = 'core/cache/default_lifetime'")
                 ->where('site_id IN (0, ?)', Axis::getSiteId())
                 ->fetchOne();
 
             $frontendOptions = array(
-                'lifetime' => $defaultLifetime,
-                'automatic_serialization' => true
+                'lifetime'                  => $defaultLifetime,
+                'automatic_serialization'   => true
             );
             $cacheDir = Axis::config()->system->path . '/var/cache';
             if (!is_readable($cacheDir)) {
@@ -67,11 +67,15 @@ class Axis_Core_Model_Cache extends Axis_Db_Table
             } elseif(!is_writable($cacheDir)) {
                 chmod($cacheDir, 0777);
             }
+            if (!is_writable($cacheDir)) {
+                echo "Cache directory should be writable. Run 'chmod -R 0777 path/to/var'";
+                exit();
+            }
             $backendOptions = array(
-                'cache_dir' => $cacheDir,
-                'hashed_directory_level' => 1,
-                'file_name_prefix' => 'axis_cache',
-                'hashed_directory_umask' => 0777
+                'cache_dir'                 => $cacheDir,
+                'hashed_directory_level'    => 1,
+                'file_name_prefix'          => 'axis_cache',
+                'hashed_directory_umask'    => 0777
             );
             Zend_Registry::set('cache', Zend_Cache::factory(
                 'Core', 'Axis_Cache_Backend_File',

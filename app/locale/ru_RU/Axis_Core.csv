@@ -102,6 +102,7 @@
 "customer", "посетитель"
 "Name", "Имя"
 " %s is not writable", "%s не для записи"
+"Mail was sended successfully","Письмо успешно отправлено"
 "Mail sending was failed.", "Невозможно отправить почту"
 "Please repeat the same password", "Повторите пароль пожалуйста"
 "'%value%' has not only alphabetic and digit characters", "\'%value%\' содержит не только буквы и цифры"

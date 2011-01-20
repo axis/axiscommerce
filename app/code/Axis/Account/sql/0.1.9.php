@@ -18,39 +18,39 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_View
- * @subpackage  Axis_View_Helper_Admin
+ * @package     Axis_Account
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_View
- * @subpackage  Axis_View_Helper_Admin
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_View_Helper_Href
+class Axis_Account_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
 {
-    public function __construct()
+    protected $_version = '0.1.9';
+    protected $_info = 'Locale column added to customer row';
+
+    public function up()
     {
-        $this->_enabledSsl = Axis::config('core/backend/ssl');
+        $installer = Axis::single('install/installer');
+
+        $installer->run("
+
+        ALTER TABLE `{$installer->getTable('account_customer')}`
+            ADD COLUMN `locale` CHAR(5) NOT NULL DEFAULT 'en_US' AFTER `group_id`;
+
+        ");
+
+        Axis_Core_Model_Cache::getCache()->clean();
     }
 
-    public function href($href = '', $ssl = true, $useAdmin = true)
+    public function down()
     {
-        $admin = $this->view->adminUrl;
-        if (!$useAdmin) {
-            $admin = '';
-        }
-        return (($ssl && $this->_enabledSsl) ? $this->view->secureUrl : $this->view->baseUrl)
-            . $admin . '/'
-            . ltrim($href, '/ ');
-    }
+        $installer = Axis::single('install/installer');
 
-    public function setView($view)
-    {
-        $this->view = $view;
+        $installer->run("
+
+        ALTER TABLE `{$installer->getTable('account_customer')}`
+             DROP COLUMN `locale`;
+
+        ");
     }
 }

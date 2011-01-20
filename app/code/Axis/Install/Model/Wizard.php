@@ -283,36 +283,55 @@ class Axis_Install_Model_Wizard
      */
     private function _installStore()
     {
-        Axis::single('core/site')->insert(array(
-            'base' => $this->_session->store_baseUrl,
-            'secure' => $this->_session->store_secureUrl,
-            'name' => 'Main Store' //@todo get from form
+        $storeName = str_replace(
+            array('http://', 'https://', 'www.'),
+            '',
+            $this->_session->store_baseUrl
+        );
+        Axis::model('core/site')->insert(array(
+            'base'      => $this->_session->store_baseUrl,
+            'secure'    => $this->_session->store_secureUrl,
+            'name'      => $storeName
         ));
 
-        Axis::single('core/config_value')->update(array(
+        $mConfigValue = Axis::model('core/config_value');
+        $mConfigValue->update(array(
             'value' => trim($this->_session->store_adminUrl, '/ ')
         ), "path = 'core/backend/route'");
 
-        Axis::single('core/config_value')->update(array(
+        $mConfigValue->update(array(
             'value' => $this->_session->use_ssl
         ), "path = 'core/backend/ssl'");
 
-        Axis::single('core/config_value')->update(array(
+        $mConfigValue->update(array(
             'value' => $this->_session->use_ssl
         ), "path = 'core/frontend/ssl'");
 
-        Axis::single('core/config_value')->update(array(
+        $mConfigValue->update(array(
             'value' => $this->_session->user_firstname . ' '
-            . $this->_session->user_lastname
+                . $this->_session->user_lastname
         ), "path = 'core/store/owner'");
 
-        Axis::single('core/config_value')->update(array(
-            'value' => $this->_session->user_email
-        ), "path = 'mail/mailboxes/email1'");
+        $mailboxes = array(
+            $this->_session->user_email,
+            'notifications@' . $storeName,
+            'relations@' . $storeName,
+            'sales@' . $storeName,
+            'support@' . $storeName
+        );
 
-        Axis::single('core/config_value')->update(array(
-            'value' => 'email1'
-        ), "path = 'core/company/administratorEmail'");
+        $i = 1;
+        foreach ($mailboxes as $email) {
+            $mConfigValue->update(array(
+                'value' => $email
+            ), "path = 'mail/mailboxes/email{$i}'");
+            $i++;
+        }
+        for ($i = count($mailboxes) + 1; $i < 16; $i++) {
+            $mConfigValue->update(array(
+                'value' => 'no-reply@' . $storeName
+            ), "path = 'mail/mailboxes/email{$i}'");
+        }
 
         return $this;
     }
@@ -324,39 +343,42 @@ class Axis_Install_Model_Wizard
      */
     private function _installLocale()
     {
-        /* setting default store values */
-        Axis::single('core/config_value')->update(array(
+        $mConfigValue = Axis::model('core/config_value');
+
+        $mConfigValue->update(array(
             'value' => current($this->_session->locale['timezone'])
         ), "path = 'locale/main/timezone'");
 
-        Axis::single('core/config_value')->update(array(
+        $mConfigValue->update(array(
             'value' => current($this->_session->locale['locale'])
         ), "path = 'locale/main/locale'");
 
-        Axis::single('core/config_value')->update(array(
+        $mConfigValue->update(array(
             'value' => current($this->_session->locale['currency'])
         ), "path = 'locale/main/currency'");
 
-        Axis::single('core/config_value')->update(array(
+        $mConfigValue->update(array(
             'value' => current($this->_session->locale['currency'])
         ), "path = 'locale/main/baseCurrency'");
 
         /* setting languages and currencies available on frontend */
+        $mLanguage = Axis::model('locale/language');
         foreach ($this->_session->locale['locale'] as $locale) {
             $code = current(explode('_', $locale));
             $language = Zend_Locale::getTranslation($code, 'language', $locale);
             if (!$language) {
                 $language = Zend_Locale::getTranslation($code, 'language', 'en_US');
             }
-            Axis::single('locale/language')->insert(array(
-                'code' => $code,
-                'language' => ucfirst($language),
-                'locale' => $locale
+            $mLanguage->insert(array(
+                'code'      => $code,
+                'language'  => ucfirst($language),
+                'locale'    => $locale
             ));
         }
 
         reset($this->_session->locale['locale']);
 
+        $mCurrency = Axis::single('locale/currency');
         foreach ($this->_session->locale['currency'] as $currency) {
             $title = Zend_Locale::getTranslation(
                 $currency, 'NameToCurrency', current($this->_session->locale['locale'])
@@ -364,14 +386,14 @@ class Axis_Install_Model_Wizard
             if (!$title) {
                 $title = Zend_Locale::getTranslation($currency, 'NameToCurrency', 'en_US');
             }
-            Axis::single('locale/currency')->insert(array(
-                'code' => $currency,
-                'currency_precision' => 2,
-                'display' => 2,
-                'format' => current($this->_session->locale['locale']),
-                'position' =>  8,
-                'title' => $title ? ucfirst($title) : $currency,
-                'rate' => 1
+            $mCurrency->insert(array(
+                'code'                  => $currency,
+                'currency_precision'    => 2,
+                'display'               => 2,
+                'format'                => current($this->_session->locale['locale']),
+                'position'              => 8,
+                'title'                 => $title ? ucfirst($title) : $currency,
+                'rate'                  => 1
             ));
         }
         return $this;
@@ -386,8 +408,9 @@ class Axis_Install_Model_Wizard
     {
         $date = date("Y-m-d H:i:s");
 
-        Axis::single('admin/user')->delete('id = 1');
-        Axis::single('admin/user')->insert(array(
+        $mAdminUser = Axis::model('admin/user');
+        $mAdminUser->delete('id = 1');
+        $mAdminUser->insert(array(
             'id'            => 1,
             'role_id'       => 1,
             'firstname'     => $this->_session->user_firstname,

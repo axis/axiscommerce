@@ -90,6 +90,7 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         $orderRow->order_status_id = 0;
         $orderRow->ip_address = $_SERVER['REMOTE_ADDR'];
         $orderRow->customer_comment = $storage->customer_comment;
+        $orderRow->locale = Axis_Locale::getLocale()->toString();
 
         /* build delivery & billing arrays */
         $addressFormatId = Axis::config('core/store/addressFormat');

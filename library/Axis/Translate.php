@@ -29,50 +29,48 @@
  * @package     Axis_Translate
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Translate
+class Axis_Translate extends Zend_Translate
 {
     /**
-     *
-     * @var Axis_Translate
+     * @var array of Axis_Translate
      */
-    private static $_instance;
-
-    /**
-     * Translators
-     *
-     * @var array of Zend_Translate
-     */
-    private static $_translators = null;
+    private static $_instance = array();
 
     /**
      *
      * @var string
      */
-    private $_locale;
-
-    /**
-     *
-     * @var string
-     */
-    private static $_module = 'Axis_Core';
+    private $_module;
 
     /**
      * Current module
      *
-     * @param string $module [optional]
+     * @param  array $options
      */
-    public function __construct($module = 'Axis_Core')
+    public function __construct($options = array())
     {
-        $this->_locale = Axis_Locale::getLocale()->toString();
-        self::$_module = $module;
+        if ('install' === Zend_Registry::get('area')
+            || !Axis::config('core/translation/autodetect')) {
 
-        if ('install' !== Zend_Registry::get('area')
-            && Axis::config('core/translation/autodetect')) {
-
-            return;
+            self::setCache(Axis::cache());
         }
 
-        Zend_Translate::setCache(Axis::cache());
+        $this->_module = $options['module'];
+
+        $locale     = $this->getLocale();
+        $filename   = $this->_getFileName($locale);
+
+        if (!is_readable($filename)) {
+            $locale     = Axis_Locale::DEFAULT_LOCALE;
+            $filename   = $this->_getFileName($locale);
+        }
+
+        parent::__construct(array(
+            'adapter'   => self::AN_CSV,
+            'content'   => $filename,
+            'locale'    => $locale,
+            'delimiter' => ','
+        ));
     }
 
     /**
@@ -84,50 +82,38 @@ class Axis_Translate
      */
     public static function getInstance($module = 'Axis_Core')
     {
-        if (null === self::$_instance) {
-            self::$_instance = new self($module);
-        } elseif (self::$_module !== $module) {
-            if ('install' !== Zend_Registry::get('area')
-                && !in_array($module, array_keys(Axis::app()->getModules()))) {
-
-                throw new Axis_Exception(
-                    'Translate error : module ' . $module . ' not exist'
-                );
-            }
-            self::$_module = $module;
+        if (false === isset(self::$_instance[$module])) {
+            self::$_instance[$module] = new self(array(
+                'module' => $module
+            ));
         }
-        return self::$_instance;
+        return self::$_instance[$module];
     }
 
     /**
-     * Return instance of Zend_Translate_Adapter
+     * Return adapter with loaded translations
+     * for current locale and module
      *
-     * @param string $module
-     * @return Zend_Translate_Adapter|null
+     * @return Zend_Translate_Adapter_Csv
      */
-    public function getTranslator($module = null)
+    public function getAdapter()
     {
-        if (null === $module) {
-            $module = self::$_module;
-        }
-        if (!isset(self::$_translators[$module])
-           ||(!self::$_translators[$module] instanceof Zend_Translate)) {
+        $locale     = $this->getLocale();
+        $adapter    = parent::getAdapter();
 
-            $filename = $this->_getFileName($this->_locale, $module);
-
-            if (!is_readable($filename)) {
-                return null;
+        if (!$adapter->isAvailable($locale)) {
+            $filename = $this->_getFileName($locale);
+            if (is_readable($filename)) {
+                $adapter->addTranslation(array(
+                    'content'   => $filename,
+                    'locale'    => $locale
+                ));
             }
-
-            $translator = new Zend_Translate(
-                Zend_Translate::AN_CSV,
-                $filename,
-                $this->_locale,
-                array('delimiter' => ',')
-            );
-            self::$_translators[$module] = $translator;
+        } else {
+            $adapter->setLocale($locale);
         }
-        return self::$_translators[$module];
+
+        return $adapter;
     }
 
     /**
@@ -136,12 +122,13 @@ class Axis_Translate
      * @param string $module
      * @return string
      */
-    protected function _getFileName($locale, $module)
+    protected function _getFileName($locale)
     {
-        return AXIS_ROOT . '/app/locale/' . $locale . '/' . $module . '.csv';
+        return AXIS_ROOT . '/app/locale/' . $locale . '/' . $this->_module . '.csv';
     }
 
     /**
+     * Translates given text
      *
      * @param array $args
      * @return string
@@ -152,28 +139,21 @@ class Axis_Translate
 
         if ('install' !== Zend_Registry::get('area')
             && Axis::config('core/translation/autodetect')
-            && (null === $this->getTranslator() // translate file not exist
-                || !$this->getTranslator()->isTranslated($text, false, $this->_locale))) {
+            && !$this->getAdapter()->isTranslated($text)) {
 
-            $this->addTranslate($text, self::$_module);
-        }
-        if (null === $this->getTranslator()) {
-            return @vsprintf($text, $args);
+            $this->writeTranslationToFile($text);
         }
 
+        $translated = $this->getAdapter()->translate($text);
         if (!count($args)) {
-            return $this->getTranslator()->_($text, $this->_locale);
+            return $translated;
         }
-        return @vsprintf(
-            $this->getTranslator()->_($text, $this->_locale),
-            $args
-        );
+        return @vsprintf($translated, $args);
     }
 
     /**
-     * Translate text
+     * Translates given text
      *
-     * @param array
      * @return string
      */
     public function __()
@@ -181,66 +161,14 @@ class Axis_Translate
         return $this->translate(func_get_args());
     }
 
+    /**
+     * Retrieve the code of current Axis locale
+     *
+     * @return string
+     */
     public function getLocale()
     {
-        return $this->_locale;
-    }
-
-    /*
-    protected static function _loadTranslation($module, $locale = '')
-    {
-        if (empty($locale)) {
-            $locale = self::$_instance->_locale;
-        }
-
-        $filename = self::_getFileName($locale, $module);
-        if (!is_readable($filename)) {
-            self::$_instance->getTranslator()
-                ->addTranslation($filename, $locale);
-        }
-        self::$_module = $module;
-    }
-   // */
-
-    /**
-     *
-     * @param string $filename
-     * @param string $locale
-     * @param array $options
-     * @return array
-     */
-    protected function _loadTranslationData(
-            $filename, $locale, array $options = array())
-    {
-        $result = array();
-        if (!$file = @fopen($filename, 'rb')) {
-            throw new Axis_Exception(
-                'Error opening translation file \'' . $filename . '\'.'
-            );
-        }
-
-        while(($data = fgetcsv(
-                $file,
-                $options['length'],
-                $options['delimiter'],
-                $options['enclosure'])
-            ) !== false) {
-
-            if (substr($data[0], 0, 1) === '#') {
-                continue;
-            }
-            if (!isset($data[1])) {
-                continue;
-            }
-            if (count($data) == 2) {
-                $result[$locale][$data[0]] = $data[1];
-            } else {
-                $singular = array_shift($data);
-                $result[$locale][$singular] = $data;
-            }
-        }
-        fclose($file);
-        return isset($result[$locale]) ? $result[$locale] : array();
+        return Axis_Locale::getLocale()->toString();
     }
 
     /**
@@ -252,16 +180,11 @@ class Axis_Translate
      * @return bool
      */
 
-    public function addTranslate($text, $module, $locale = null)
+    public function writeTranslationToFile($text, $module)
     {
-        if (null === $locale) {
-            $locale = $this->_locale;
-        }
-
-        $filename = $this->_getFileName($locale, $module);
+        $filename = $this->_getFileName($this->getLocale());
 
         if (!is_readable($filename)) {
-
             $dir = dirname($filename);
             if (!is_readable($dir)) {
                 mkdir($dir, 0777, true);
@@ -285,72 +208,9 @@ class Axis_Translate
             );
         }
 
-        fwrite($file, '"' . $text . '","' . $text . "\"\n");
+        fwrite($file, "\n\"{$text}\",\"{$text}\"");
         fclose($file);
 
         return true;
-    }
-
-    /**
-     * Returns the set cache
-     *
-     * @return Zend_Cache_Core The set cache
-     */
-    public static function getCache()
-    {
-        return self::$_translators[self::$_module]->getCache();
-    }
-
-    /**
-     * Sets a cache for all instances of Axis_Translate
-     *
-     * @param  Zend_Cache_Core $cache Cache to store to
-     * @return void
-     */
-    public static function setCache(Zend_Cache_Core $cache)
-    {
-        if (!self::$_translators[self::$_module] instanceof Zend_Translate) {
-            return false;
-        }
-        return self::$_translators[self::$_module]->setCache($cache);
-    }
-
-    /**
-     * Returns true when a cache is set
-     *
-     * @return boolean
-     */
-    public static function hasCache()
-    {
-        if (!self::$_translators[self::$_module] instanceof Zend_Translate) {
-            return false;
-        }
-        return self::$_translators[self::$_module]->hasCache();
-    }
-
-    /**
-     * Removes any set cache
-     *
-     * @return void
-     */
-    public static function removeCache()
-    {
-        if (!self::$_translators[self::$_module] instanceof Zend_Translate) {
-            return false;
-        }
-        return self::$_translators[self::$_module]->removeCache();
-    }
-
-    /**
-     * Clears all set cache data
-     *
-     * @return void
-     */
-    public static function clearCache()
-    {
-        if (!self::$_translators[self::$_module] instanceof Zend_Translate) {
-            return false;
-        }
-        return self::$_translators[self::$_module]->clearCache();
     }
 }

@@ -37,31 +37,31 @@ class Axis_Admin_Customer_EmailController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         $data = $this->_getAllParams();
-        $customerId = Axis::single('account/customer')
-            ->getIdByEmail($data['email']);
-        $customer = Axis::single('account/customer')
-            ->find($customerId)->current();
-
-        $from = Axis_Collect_MailBoxes::getName(
-            Axis::config()->mail->main->mtcFrom
+        $customer = Axis::model('account/customer')->fetchRow(
+            Axis::db()->quoteInto('email = ?', $data['email'])
         );
-        $mail = new Axis_Mail();
-        $mail->setConfig(array(
-            'event'   => 'default',
-            'subject' => $data['subject'],
-            'data'    => array(
-                'text'      => $data['message'],
-                'firstname' => $customer->firstname,
-                'lastname'  => $customer->lastname
-            ),
-            'to'      => $data['email'],
-            'from'    => array('email' => $from)
-        ));
+
         try {
+            $mail = new Axis_Mail();
+            $mail->setLocale($customer->locale);
+            $configResult = $mail->setConfig(array(
+                'event'   => 'default',
+                'subject' => $data['subject'],
+                'data'    => array(
+                    'text'      => $data['message'],
+                    'firstname' => $customer->firstname,
+                    'lastname'  => $customer->lastname,
+                    'customer'  => $customer
+                ),
+                'to' => $data['email']
+            ));
             $mail->send();
-            Axis::message()->addSuccess(
-                Axis::translate('core')->__('Mail was sended successfully')
-            );
+
+            if ($configResult) {
+                Axis::message()->addSuccess(
+                    Axis::translate('core')->__('Mail was sended successfully')
+                );
+            }
         } catch (Zend_Mail_Transport_Exception $e) {
             Axis::message()->addError(
                 Axis::translate('core')->__('Mail sending was failed.')

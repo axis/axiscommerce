@@ -124,7 +124,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table
             'site'      => $company['site'],
             'zone'      => Axis_Collect_Zone::getName($company['zone']),
             'street_address' => $company['street'],
-            'customerRelationEmail' => Axis_Collect_MailBoxes::getName(
+            'customer_relation_email' => Axis_Collect_MailBoxes::getName(
                 $company['customerRelationEmail']
             ),
             'sales_email' => Axis_Collect_MailBoxes::getName(

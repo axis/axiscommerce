@@ -172,42 +172,45 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
 
         $data = $this->_getAllParams();
 
-        $from = Axis::single('contacts/department')
+        $from = Axis::model('contacts/department')
             ->find($data['depId'])
             ->current()
             ->email;
 
-        $customerId = Axis::single('account/customer')
-            ->getIdByEmail($data['email']);
-        $customer = Axis::single('account/customer')
-            ->find($customerId)
-            ->current();
+        $customer = Axis::model('account/customer')->fetchRow(
+            Axis::db()->quoteInto('email = ?', $data['email'])
+        );
 
         //@todo if null need firstname = full name from custom_info fields
-        $firstname = null !== $customer ? $customer->firstname : 'Guest';
-        $lastname  = null !== $customer ? $customer->lastname : '';
-
-        $mail = new Axis_Mail();
-
-        $mail->setConfig(array(
-            'event'   => 'default',
-            'subject' => $data['subject'],
-            'data'    => array(
-                'text' => $data['message'],
-                'custom_info' => "",
-                'reply'     => true,
-                'firstname' => $firstname,
-                'lastname'  => $lastname
-            ),
-            'to'      => $data['email'],
-            'from'    => array('email' => $from)
-        ));
+        $firstname = $customer ? $customer->firstname : null;
+        $lastname  = $customer ? $customer->lastname : null;
 
         try {
+            $mail = new Axis_Mail();
+            if ($customer) {
+                $mail->setLocale($customer->locale);
+            }
+            $configResult = $mail->setConfig(array(
+                'event'   => 'default',
+                'subject' => $data['subject'],
+                'data'    => array(
+                    'text'      => $data['message'],
+                    'firstname' => $firstname,
+                    'lastname'  => $lastname,
+                    'customer'  => $customer
+                ),
+                'to'      => $data['email'],
+                'from'    => array(
+                    'email' => $from
+                )
+            ));
             $mail->send();
-            Axis::message()->addSuccess(
-                Axis::translate('core')->__('Mail was sended successfully')
-            );
+
+            if ($configResult) {
+                Axis::message()->addSuccess(
+                    Axis::translate('core')->__('Mail was sended successfully')
+                );
+            }
             $this->_helper->json->sendSuccess();
         } catch (Zend_Mail_Transport_Exception $e) {
             Axis::message()->addError(

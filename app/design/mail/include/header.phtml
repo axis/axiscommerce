@@ -1,0 +1,12 @@
+<table cellspacing="0" cellpadding="0" border="0" width="650" style="background: #fff; padding:0px;" class="header">
+    <tr>
+        <td valign="top" id="logo">
+            <a href="<?php echo $this->href('', false, false) ?>"><?php echo $this->image('logo_mail.gif', 'style="border:none;"alt="' . $this->siteName . '"') ?></a>
+        </td>
+        <td valign="top" align="right" style="padding-left: 0px">
+            <p style="margin: 1px 0 4px;"><?php echo $this->company['name']?></p>
+            <p style="margin: 1px 0 4px;"><?php echo $this->companyEmail ? $this->companyEmail : $this->company['sales_email']?></p>
+            <p style="margin: 1px 0 4px;"><?php echo $this->company['phone']?></p>
+        </td>
+    </tr>
+</table>

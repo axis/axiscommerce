@@ -43,6 +43,13 @@ class Axis_Locale
      */
     public static function setLocale($locale = 'auto')
     {
+        if (Zend_Registry::isRegistered('Zend_Locale')) {
+            $currentLocale = Zend_Registry::get('Zend_Locale');
+            if ($locale === $currentLocale->toString()) {
+                return;
+            }
+        }
+
         if (Zend_Registry::isRegistered('area')
             && 'install' == Zend_Registry::get('area')) {
 
