@@ -28,6 +28,7 @@ Ext.onReady(function() {
         record: Ext.data.Record.create([
             {name: 'id', type: 'int'},
             {name: 'page_id', type: 'int'},
+            {name: 'parent_page_id', type: 'int'},
             {name: 'layout'},
             {name: 'priority', type: 'int'}
         ]),
@@ -111,6 +112,16 @@ Ext.onReady(function() {
         data: Axis.pages
     });
 
+    var dsParentPages = new Ext.data.JsonStore({
+        id: 'id',
+        fields: ['id', 'name'],
+        data: Axis.pages
+    });
+
+    dsParentPages.insert(
+        0, new dsParentPages.recordType({id: 0, name: 'None'.l()})
+    );
+
     var ds = new Ext.data.Store({
         baseParams: {
             limit: 25
@@ -128,25 +139,44 @@ Ext.onReady(function() {
         }
     });
 
-    var existLayoutStore = new Ext.data.Store({
+    var dsLayout = new Ext.data.Store({
         url:  Axis.getUrl('template_layout/list-collect'),
         reader: new Ext.data.JsonReader({
             root: 'data'
-        }, ['name']),
-        autoLoad: true
-    })
+        }, ['id', 'name']),
+        autoLoad: true,
+        listeners: {
+            load: function(store, records, options) {
+                store.insert(
+                    0, new store.recordType({id: '', name: 'None'.l()})
+                );
+            }
+        }
+    });
 
-    var layoutCombo = new Ext.form.ComboBox({
-        id: 'layoutCombo',
+    var comboLayout = new Ext.form.ComboBox({
+        id: 'comboLayout',
         triggerAction: 'all',
         displayField: 'name',
         typeAhead: true,
         mode: 'local',
-        valueField: 'name',
+        valueField: 'id',
         editable: false,
-        store: existLayoutStore
-    })
+        store: dsLayout
+    });
 
+    var rendererColumnPage = function(value) {
+        if (value == '0' || value == '') {
+            return 'None';
+        } else {
+            for (var i in Axis.pages) {
+               if (Axis.pages[i]['id'] == value) {
+                   return Axis.pages[i]['name'];
+               }
+            }
+            return value;
+        }
+    };
     var cm = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
@@ -159,7 +189,13 @@ Ext.onReady(function() {
             header: "Layout".l(),
             dataIndex: 'layout',
             width: 200,
-            editor: layoutCombo
+            editor: comboLayout,
+            renderer: function (value) {
+                if (value == '0' || value == '') {
+                    return 'None';
+                }
+                return value;
+            }
         }, {
             header: "Page".l(),
             dataIndex: 'page_id',
@@ -174,20 +210,38 @@ Ext.onReady(function() {
                 valueField: 'id',
                 mode: 'local'
             }),
-            renderer: function(value) {
-                if (value == '0' || value == '') {
-                    return 'None';
-                } else {
-                    for (var i in Axis.pages) {
-                       if (Axis.pages[i]['id'] == value) {
-                           return Axis.pages[i]['name'];
-                       }
-                    }
-                    return value;
-                }
-            },
+            renderer: rendererColumnPage,
             filter: {
                 name: 'page_id',
+                store: new Ext.data.Store({
+                    data: Axis.pages,
+                    reader: new Ext.data.JsonReader({
+                        idProperty: 'id',
+                        fields: [
+                            {name: 'id', type: 'int'},
+                            {name: 'name'}
+                        ]
+                    })
+                })
+            }
+        },{
+            header: "Parent Page".l(),
+            dataIndex: 'parent_page_id',
+            id: 'parent_page',
+            width: 200,
+            editor: new Ext.form.ComboBox({
+                typeAhead: true,
+                triggerAction: 'all',
+                lazyRender: true,
+                store: dsParentPages,
+                editable: false,
+                displayField: 'name',
+                valueField: 'id',
+                mode: 'local'
+            }),
+            renderer: rendererColumnPage,
+            filter: {
+                name: 'parent_page_id',
                 store: new Ext.data.Store({
                     data: Axis.pages,
                     reader: new Ext.data.JsonReader({

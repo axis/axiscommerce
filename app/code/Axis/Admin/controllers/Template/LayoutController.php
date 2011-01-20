@@ -55,10 +55,12 @@ class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
                 . $this->_getParam('dir', 'DESC')
             );
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        $this->_helper->json->sendSuccess(
+            array(
+                'data'  => $select->fetchAll(),
+                'count' => $select->foundRows()
+            )
+        );
     }
 
     public function listCollectAction()
@@ -68,7 +70,10 @@ class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
         $result = array();
         $i = 0;
         foreach ($layouts as $layout) {
-            $result[$i]['name'] = $layout;
+            $result[$i] = array(
+                'id'   => $layout,
+                'name' => $layout
+            );
             $i++;
         }
 
@@ -80,12 +85,14 @@ class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $data = Zend_Json::decode($this->_getParam('data'));
-
-        return $this->_helper->json->sendJson(array('success' =>
-            Axis::single('core/template_page')->save(
-                (int) $this->_getParam('tId', 0), $data
-            )
-        ));
+        $templateId = (int) $this->_getParam('tId', 0);
+        $model = Axis::model('core/template_page');
+        foreach ($data as $rowData) {
+            $model->save(array_merge($rowData, array(
+                'template_id' => $templateId
+            )));
+        }
+        return $this->_helper->json->sendSuccess();
     }
 
     public function deleteAction()

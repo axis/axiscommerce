@@ -37,6 +37,10 @@ class Axis_Core_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
             ALTER TABLE `{$installer->getTable('core_template_layout_page')}`
                 RENAME TO `{$installer->getTable('core_template_page')}`;
 
+            ALTER TABLE `{$installer->getTable('core_template_page')}`
+                ADD COLUMN `parent_page_id` MEDIUMINT(8) UNSIGNED AFTER `layout`;
+
+
         ");
 
     }
@@ -49,6 +53,9 @@ class Axis_Core_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
 
             ALTER TABLE `{$installer->getTable('core_template_page')}`
                 RENAME TO `{$installer->getTable('core_template_layout_page')}`;
+
+            ALTER TABLE `{$installer->getTable('core_template_page')}`
+                DROP COLUMN `parent_page_id`;
 
         ");
     }
