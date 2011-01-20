@@ -112,19 +112,21 @@ class Axis_Admin_Catalog_ProductOptionValuesetController extends Axis_Admin_Cont
             $result[$row['id']]['name_' . $row['language_id']] = $row['name'];
         }
 
-        foreach ($filters as $filter) {
-            if ('name' != $filter['field']) {
-                continue;
-            }
-            $values = Axis::model('catalog/product_option_value_text')->select('*')
-                ->where('cpovt.option_value_id IN (?)', array_keys($result))
-                ->fetchAll();
+        if (count($result)) {
+            foreach ($filters as $filter) {
+                if ('name' != $filter['field']) {
+                    continue;
+                }
+                $values = Axis::model('catalog/product_option_value_text')->select('*')
+                    ->where('cpovt.option_value_id IN (?)', array_keys($result))
+                    ->fetchAll();
 
-            foreach ($values as $value) {
-                $result[$value['option_value_id']]['name_' . $value['language_id']] = $value['name'];
-            }
+                foreach ($values as $value) {
+                    $result[$value['option_value_id']]['name_' . $value['language_id']] = $value['name'];
+                }
 
-            break;
+                break;
+            }
         }
 
         return $this->_helper->json->sendSuccess(array(

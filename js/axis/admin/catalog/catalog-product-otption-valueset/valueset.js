@@ -316,7 +316,8 @@ Ext.onReady(function(){
             columns: valueCols
         }),
         viewConfig: {
-            forceFit: true
+            forceFit: true,
+            emptyText: 'No records found'.l()
         },
         plugins: [new Axis.grid.Filter()],
         tbar: [{
