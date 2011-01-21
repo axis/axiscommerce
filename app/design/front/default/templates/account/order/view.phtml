@@ -37,11 +37,11 @@
 <table id="shopping-cart-table" class="data-table">
 <thead>
 <tr>
-    <th><?php echo $this->translate('account')->__('Product')?></th>
-    <th><?php echo $this->translate('account')->__('Attributes')?></th>
-    <th><?php echo $this->translate('account')->__('Price')?></th>
-    <th><?php echo $this->translate('account')->__('Quantity')?></th>
-    <th><?php echo $this->translate('account')->__('Final price')?></th>
+    <th><?php echo $this->translate('catalog')->__('Product')?></th>
+    <th><?php echo $this->translate('catalog')->__('Attributes')?></th>
+    <th><?php echo $this->translate('catalog')->__('Price')?></th>
+    <th><?php echo $this->translate('catalog')->__('Quantity')?></th>
+    <th><?php echo $this->translate('checkout')->__('Final price')?></th>
 </tr>
 </thead>
 <tfoot>
@@ -99,7 +99,7 @@
 <?php endforeach; ?>
 
 <tr>
-    <td colspan="4" class="a-right"><?php echo $this->translate('account')->__('Total')?>:&nbsp;</td>
+    <td colspan="4" class="a-right"><?php echo $this->translate('checkout')->__('Total')?>:&nbsp;</td>
     <td><?php echo $this->currency($this->order['order_total'])?></td>
 </tr>
 </table>

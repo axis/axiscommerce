@@ -66,7 +66,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Shipping', 'translation_module' => 'Axis_Admin'))
 
             ->add('payment/Paypal_Direct', 'Payment Methods/Paypal Direct', null, null, array('translation_module' => 'Axis_PaymentPaypal'))
-            ->add('payment/Paypal_Direct/title', 'Payment Methods/Paypal Direct/Title', 'Paypal Direct', 'string', 'Title')
+            ->add('payment/Paypal_Direct/title', 'Payment Methods/Paypal Direct/Title', 'PayPal Direct', 'string', 'Title')
             ->add('payment/Paypal_Direct/enabled', 'Enabled', 0, 'bool', array('translation_module' => 'Axis_Core'))
             ->add('payment/Paypal_Direct/geozone', 'Allowed Payment Zone',  '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('payment/Paypal_Direct/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'))
@@ -83,7 +83,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Direct/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Shipping', 'translation_module' => 'Axis_Admin'))
 
             ->add('payment/Paypal_Express', 'Payment Methods/Paypal Express', null, null, array('translation_module' => 'Axis_PaymentPaypal'))
-            ->add('payment/Paypal_Express/title', 'Payment Methods/Paypal Express/Title', 'Paypal Express', 'string', 'Title')
+            ->add('payment/Paypal_Express/title', 'Payment Methods/Paypal Express/Title', 'PayPal Express', 'string', 'Title')
             ->add('payment/Paypal_Express/enabled', 'Enabled', 0, 'bool', array('translation_module' => 'Axis_Core'))
             ->add('payment/Paypal_Express/server', 'Live or Sandbox', 'sandbox', 'select', 'Live: Used to process Live transactions Sandbox: For developers and testing', array('config_options' => 'live,sandbox'))
             ->add('payment/Paypal_Express/mode', 'PayPal Api Mode', 'nvp', 'select', 'set mode Paypal Express Checkout payments (nvp, payflow)', array('config_options' => 'nvp,payflow'))

@@ -5,7 +5,7 @@
 <table id="wishlist-table" class="data-table">
     <thead>
         <tr>
-            <th><?php echo $this->translate('account')->__('Product'); ?></th>
+            <th><?php echo $this->translate('catalog')->__('Product'); ?></th>
             <th><?php echo $this->translate('account')->__('Comment'); ?></th>
             <th><?php echo $this->translate('account')->__('Added on'); ?></th>
             <th><?php echo $this->translate('account')->__('Action'); ?></th>
@@ -39,7 +39,7 @@
                title="<?php echo $this->escape($imageTitle) ?>"
             >
             <?php echo $this->imager('/product' . $imagePath, array(
-                'width'  => Axis::config()->image->product->widthThumbnail, 
+                'width'  => Axis::config()->image->product->widthThumbnail,
                 'height' => Axis::config()->image->product->heightThumbnail,
                 'seo' => $wl['product']['image_seo_name'],
                 'alt' => $this->escape($imageTitle)
@@ -48,15 +48,15 @@
             <h4 class="product-name"><a href="<?php echo $this->escape($productUrl);?>"
                 title="<?php echo $wl['product']['name'] ?>"
                 ><?php echo $wl['product']['name'] ?></a></h4>
-            
+
             <?php echo $this->price($wl['product']['price'],
                 !empty($wl['product']['discount_price']) ?
                     $wl['product']['discount_price'] : false
             ) ?>
-            
+
         </td>
         <td class="comment"><?php echo $this->formTextarea(
-            'comment['.$wl['id'].']', 
+            'comment['.$wl['id'].']',
             $wl['wish_comment'],
             array('cols' => 25, 'rows' => 5)
         ); ?></td>
