@@ -79,9 +79,9 @@ endif;
         <h5 class="review-title"><a href="<?php echo $this->href("review/detail/id/{$review['id']}") ?>"
             title="<?php echo $this->translate('community')->__("Read review") ?>"><?php echo $review['title'] ?></a></h5>
         <span class="review-date"><small><?php echo $this->translate('community')->__("Reviewed on %s by %s", $review['date_created'], $author) ?></small></span>
-        <p class="review-pros"><strong><?php echo $this->translate('community')->__("Pros") ?>: </strong><?php echo $this->escape($review['pros']) ?></p>
-        <p class="review-cons"><strong><?php echo $this->translate('community')->__("Cons") ?>: </strong><?php echo $this->escape($review['cons']) ?></p>
-        <p class="review-summary"><strong><?php echo $this->translate('community')->__("Summary") ?>: </strong><?php echo $this->escape($review['summary']) ?></p>
+        <p class="review-pros"><strong><?php echo $this->translate('community')->__("Pros") ?>: </strong><?php echo nl2br($this->escape($review['pros'])) ?></p>
+        <p class="review-cons"><strong><?php echo $this->translate('community')->__("Cons") ?>: </strong><?php echo nl2br($this->escape($review['cons'])) ?></p>
+        <p class="review-summary"><strong><?php echo $this->translate('community')->__("Summary") ?>: </strong><?php echo nl2br($this->escape($review['summary'])) ?></p>
     </div>
     <?php if (isset($review['ratings'])): ?>
         <?php echo $this->ratings($review['ratings'], $this->href("review/detail/id/{$review['id']}"), false) ?>
