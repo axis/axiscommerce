@@ -8,30 +8,30 @@
 </div>
 
 <?php if ($addressCount = count($this->addressList)) : ?>
-<?php 
+<?php
 $i = 0;
 $columnCount = 3;
 foreach ($this->addressList as $address) : ?>
-    <?php if ($i%$columnCount == 0): 
+    <?php if ($i%$columnCount == 0):
         $column = 1;
-    ?> 
+    ?>
         <div class="col<?php echo $columnCount ?>-set address-row">
     <?php endif; ?>
-    
+
     <div class="col-<?php echo $column ?>">
         <div class="address">
             <h5 class="address-title">
                 <?php if ($address->id == $this->defaultBillingAddresId) : ?>
-                    <?php echo $this->translate('account')->__('Default billing')?>
+                    <?php echo $this->translate('account')->__('Default Billing Address')?>
                 <?php endif; ?>
                 <?php if ($address->id == $this->defaultShippingAddresId) : ?>
-                    <?php echo $this->translate('account')->__('Default shipping')?>
+                    <?php echo $this->translate('account')->__('Default Shipping Address')?>
                 <?php endif; ?>
                 <?php if ($address->id != $this->defaultBillingAddresId &&
                           $address->id != $this->defaultShippingAddresId) : ?>
                       <?php echo $this->translate('account')->__('Address')?> <?php echo $i+1; ?>
                 <?php endif; ?>
-            </h5> 
+            </h5>
             <address>
                 <?php echo $this->address($address);?>
             </address>
@@ -39,17 +39,17 @@ foreach ($this->addressList as $address) : ?>
                 <a href="<?php echo $this->href('/account/address-book/edit/id/' . $address->id, true);?>"
                    class="f-left"
                 ><?php echo $this->translate('account')->__('Edit');?></a>
-                <a onclick="return confirm('<?php echo $this->translate('account')->__('Delete address?')?>');" 
+                <a onclick="return confirm('<?php echo $this->translate('account')->__('Delete address?')?>');"
                    href="<?php echo $this->href('/account/address-book/delete/id/' . $address->id, true);?>"
                 ><?php echo $this->translate('account')->__('Delete');?></a>
             </div>
         </div>
     </div>
     <?php $i++; $column++;
-    
+
     if ($i%$columnCount == 0 || $i == $addressCount): ?>
         </div>
-    <?php endif; 
+    <?php endif;
 endforeach; ?>
 
 <?php else: ?>

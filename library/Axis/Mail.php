@@ -134,6 +134,7 @@ class Axis_Mail extends Zend_Mail
 
         $this->setSubject($config['subject']);
         $this->addTo($config['to']);
+        $this->view->to = $config['to'];
 
         $siteName = $this->view->site;
         if (isset($config['siteId']) && $config['siteId'] != Axis::getSiteId()) {

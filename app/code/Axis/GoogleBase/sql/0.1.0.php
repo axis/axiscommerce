@@ -46,7 +46,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('admin/menu')
             ->add('Marketing', null, 40, 'Axis_Admin')
-            ->add('Marketing->Google Base', 'gbase_index', 20, 'Axis_Admin');
+            ->add('Marketing->Google Base', 'gbase_index', 20, 'Axis_GoogleBase');
 
         Axis::single('admin/acl_resource')
             ->add('admin/gbase', 'Google Base')

@@ -5,6 +5,6 @@
 "Zone was deleted successfully", "Зона была успешно удалена "
 "States / Provinces","Штаты / Области"
 "Zones", "Зоны"
-"An error has been occured while trying to save '%s' zone. 'priority' field should be unique", "При попытке сохранения зоны \'%s\' произошла ошибка. Поле \'priority\' должно быть уникальным."
+"An error has been occured while trying to save '%s' zone. 'priority' field should be unique", "При попытке сохранения зоны '%s' произошла ошибка. Поле 'priority' должно быть уникальным."
 "Locations / Taxes", "Места / Налоги"
 "Geozones","Геозоны"

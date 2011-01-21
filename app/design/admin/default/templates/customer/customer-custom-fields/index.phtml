@@ -37,7 +37,7 @@ echo $this->formText('groupName', '', array('size' => '18'));
 //Sort Order field
 echo $this->formText('sortOrder', '', array('size' => '2'));
 //group is_active field
-echo $this->formSelect('groupAct', null, null, array('0' => 'Disabled', '1' => 'Enabled')); 
+echo $this->formSelect('groupAct', null, null, array('0' => 'Disabled', '1' => 'Enabled'));
 ?>
 
 <table cellpadding="0" cellspacing="0" width="100%" id="ext-cmp-layout">
@@ -48,11 +48,11 @@ echo $this->formSelect('groupAct', null, null, array('0' => 'Disabled', '1' => '
                     <label><?php echo $this->translate('account')->__('Group title') ?>: </label>
                     <?php echo $this->formText("groupTitle$langId", ''); ?>
                 </div>
-            <?php } ?> 
+            <?php } ?>
         </div>
      </td></tr>
 </table>
-    
+
 <table cellpadding="0" cellspacing="0" width="100%" id="ext-cmp-layout">
     <tr><td><div id="fields-grid" class="form-wrapper"></div></td></tr>
 </table>
@@ -60,18 +60,18 @@ echo $this->formSelect('groupAct', null, null, array('0' => 'Disabled', '1' => '
 <script type="text/javascript">
 
 var ds, gs, temp_groupId, validatorStore, typeStore;
-var editing_new_group = false;  
-   
+var editing_new_group = false;
+
 var groupId = '<?php reset($this->fieldGroups); echo key($this->fieldGroups); ?>';
 var langId = '<?php echo $this->languageId;?>';
-    
+
 var groupTab = [
 <?php
-    $js = ''; 
+    $js = '';
     foreach ($this->languages as $langId => $language) {
         $language = addslashes($language);
         $js .= "{
-        contentEl: 'langTabItem$langId', 
+        contentEl: 'langTabItem$langId',
         title: '$language'
         },\n";
     }
@@ -90,7 +90,7 @@ isActive2 = new Ext.grid.CheckColumn({
     width: 60
 });
 
-//column model 
+//column model
 valuesetColumn = [
 <?php
 $js = "
@@ -140,7 +140,7 @@ var valuesetRow = [
 ?>
 ];
 
-//new valueset value 
+//new valueset value
 var valuesetRowClear = {
 <?php
 $js = "

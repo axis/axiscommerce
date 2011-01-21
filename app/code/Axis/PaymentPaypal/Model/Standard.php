@@ -34,7 +34,7 @@
 class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstract
 {
     protected $_code = 'Paypal_Standard';
-    protected $_title = 'Paypal Standard';
+    protected $_title = 'PayPal Standard';
 
     public function pending(Axis_Sales_Model_Order_Row $order)
     {

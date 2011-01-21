@@ -6,7 +6,7 @@
      ?>
         <dt>
             <label>
-            <?php if (!empty($property['description'])) : ?> 
+            <?php if (!empty($property['description'])) : ?>
                 <acronym title="<?php echo $this->escape($property['description']) ?>"
                     ><?php echo $this->escape($property['name']) ?></acronym>
             <?php else: ?>
@@ -16,8 +16,8 @@
         </dt>
         <dd>
             <?php
-               $value =  $this->escape($property['value']);
-               echo $value ? $value :$this->translate('catalog')->__('empty');
+               $value = $this->escape($property['value']);
+               echo $value ? $value :$this->translate('catalog')->__('Empty');
             ?>
         </dd>
     <?php endforeach ?>

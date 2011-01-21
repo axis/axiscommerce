@@ -24,7 +24,7 @@ for ($i = $today['year']; $i < $today['year'] + 10; $i++) {
 <?php echo $this->formSelect('order[payment_method][expiresmonth]', null, null, $expires_month) . '&nbsp;'
     . $this->formSelect('order[payment_method][expiresyear]', null, null, $expires_year) ?>
 <br/>
-<?php echo$this->translate('checkout')->__('CVV')?>
+<?php echo$this->translate('checkout')->__('Cvv')?>
 <?php echo $this->formText('order[payment_method][cvv]', null, array(
     'autocomplete' => 'off',
     'class' => 'input-text'

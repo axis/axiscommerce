@@ -497,7 +497,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('design/main/frontTemplateId', 'Design/General/Front Template', '1', 'select', array('model' => 'Template'))
             ->add('design/main/adminTemplateId', 'Admin Template',  '1', 'select', array('model' => 'Template'))
             ->add('design/htmlHead/defaultTitle', 'Design/HTML Head/Default Title', 'Default Title')
-            ->add('design/htmlHead/defaultDescription', 'Default Description', 'Default description',  'text', 'Default description')
+            ->add('design/htmlHead/defaultDescription', 'Default Description', 'Default Description',  'text')
             ->add('design/htmlHead/defaultKeywords', 'Default Keywords',  'Axis, store', 'text')
             ->add('design/htmlHead/titlePrefix', 'Title Prefix')
             ->add('design/htmlHead/titleSuffix', 'Title Suffix')
