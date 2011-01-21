@@ -216,12 +216,17 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
             return null;
         }
 
+        $currency = Axis::single('locale/currency');
+        $row['price_max'] = $currency->to($row['price_max']);
+        $row['price_min'] = $currency->to($row['price_min']);
+        $rate = $currency->getData('', 'rate');
+
         //Return rounded number, example: 80->10, 120->100, 895->100, 1024->1000
         $roundTo = pow(10, strlen((string) floor($row['price_max'] - $row['price_min'])) - 1);
         $select->reset();
         $select->from('catalog_product', array(
                 'cnt'         => 'COUNT(DISTINCT cp.id)',
-                'price_group' => new Zend_Db_Expr("floor(cp.price / $roundTo) * $roundTo")
+                'price_group' => new Zend_Db_Expr("floor(cp.price * $rate / $roundTo) * $roundTo")
             ))
             ->joinCategory()
             ->addCommonFilters($filters)
