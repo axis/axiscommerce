@@ -147,10 +147,14 @@ class Axis_Db_Table_Row extends Zend_Db_Table_Row_Abstract
     {
         $frontend = Axis::single('Axis_Cache_Frontend_Query');
 
-        if (func_num_args()) {
-            $args = serialize(func_get_args());
-            return $frontend->setInstance($this, $args);
+        $primaryKeys = array();
+        foreach ($this->_primary as $primary) {
+            $primaryKeys[$primary] = $this->{$primary};
         }
-        return $frontend->setInstance($this);
+
+        $args = func_get_args();
+        $args = array_merge($primaryKeys, $args);
+
+        return $frontend->setInstance($this, serialize($args));
     }
 }
