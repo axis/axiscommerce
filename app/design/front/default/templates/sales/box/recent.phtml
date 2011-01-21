@@ -10,6 +10,14 @@
             <th><?php echo $this->translate('sales')->__('Actions')?></th>
         </tr>
     </thead>
+    <tfoot>
+        <tr>
+            <td colspan="6" align="right">
+                <a href="<?php echo $this->href('/account/order/index', true) ?>"
+                    ><?php echo $this->translate('sales')->__('View All')?></a>
+            </td>
+        </tr>
+    </tfoot>
     <tbody>
     <?php
     $index = 0;
@@ -43,13 +51,5 @@
     </tr>
     <?php endforeach; ?>
     </tbody>
-    <tfoot>
-    <tr>
-        <td colspan="6" align="right">
-            <a href="<?php echo $this->href('/account/order/index', true) ?>"
-                ><?php echo $this->translate('sales')->__('View All')?></a>
-        </td>
-    </tr>
-    </tfoot>
 </table>
 <?php endif; ?>
