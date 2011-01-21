@@ -90,4 +90,19 @@ class Axis_Account_Model_Observer
         } catch (Zend_Mail_Transport_Exception $e) {
         }
     }
+
+    /**
+     *
+     * @param Axis_Account_Box_Navigation $box 
+     */
+    public function prepareAccountNavigationBox(Axis_Account_Box_Navigation $box)
+    {
+        $view = $box->getView();
+        $box->addItem($view->href('account', true), 'My Account', 'link-account', 10)
+            ->addItem($view->href('account/info/change', true), 'Change Info', 'link-change-info', 20)
+            ->addItem($view->href('account/address-book', true), 'Address Book', 'link-address-book', 30)
+            ->addItem($view->href('account/order', true), 'My Orders', 'link-orders', 40)
+            ->addItem($view->href('account/wishlist', true), 'My Wishlist', 'link-wishlist', 50)
+            ->addItem($view->href('account/auth/logout', true), 'Logout', 'link-logout', 100);
+    }
 }

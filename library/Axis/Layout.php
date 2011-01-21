@@ -31,12 +31,14 @@
  */
 class Axis_Layout extends Zend_Layout
 {
+    const DEFAULT_TEMPLATE = 'default';
+    const DEFAULT_LAYOUT   = 'default_3columns';
 
     /**
      * @static
      * @var string
      */
-    private static $_template;
+    private static $_templateName;
 
     /**
      * Box to Block assignment
@@ -47,26 +49,36 @@ class Axis_Layout extends Zend_Layout
 
     protected $_tabAssignments;
 
+    /**
+     * Assoc pages array
+     *
+     * @var array
+     */
     protected $_pages;
 
+    /**
+     *
+     * @var string
+     */
     protected $_layout = null;
 
     protected $_axisLayout = null;
 
-    protected $_defaultLayout = 'default_3columns';
-
     /**
      * Static method for initialization with MVC support
      *
-     * @static
      * @param  string|array|Zend_Config $options
-     * @return Axis_Layout
+     * @return Zend_Layout
      */
     public static function startMvc($options = null)
     {
         if (null === self::$_mvcInstance) {
             self::$_mvcInstance = new self($options, true);
-        } else {
+        }
+
+        if (is_string($options)) {
+            self::$_mvcInstance->setLayoutPath($options);
+        } elseif (is_array($options) || $options instanceof Zend_Config) {
             self::$_mvcInstance->setOptions($options);
         }
 
@@ -78,44 +90,40 @@ class Axis_Layout extends Zend_Layout
      *
      * @static
      * @param string ['front' || 'admin']
-     * @return array
+     * @return string
      */
-    public static function getTemplate($area = 'front')
+    public static function getTemplateName($area = 'front')
     {
-        if (null !== self::$_template) {
-            return self::$_template;
+        if (null !== self::$_templateName) {
+            return self::$_templateName;
         }
-        if ($area == 'admin') {
+        if ('admin' === $area) {
             $templateId = Axis::config()->design->main->adminTemplateId;
         } else {
             $templateId = Axis::config()->design->main->frontTemplateId;
         }
-
-        $mTemplate = Axis::model('core/template');
-
-        $templateRow = $mTemplate->fetchRow(
-            $mTemplate->select()->where('id = ?', $templateId)
-        );
+        
+        $templateRow = Axis::single('core/template')
+            ->find($templateId)
+            ->current();
 
         if (!$templateRow) {
-            Axis::message()->addError(Axis::translate('core')->__(
-                "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
+            Axis::message()->addError(
+                Axis::translate('core')->__(
+                    "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
             ));
-            self::$_template = array(
-                'name'              => 'default',
-                'default_layout'    => 'default_3columns'
-            );
+            self::$_templateName = self::DEFAULT_TEMPLATE;
         } else {
-            self::$_template = $templateRow->toArray();
+            self::$_templateName = $templateRow->name;
         }
 
-        return self::$_template;
+        return self::$_templateName;
     }
-
-    public function setAssignments($assignments)
-    {
-        $this->_assignments = $assignments;
-    }
+//
+//    public function setAssignments($assignments)
+//    {
+//        $this->_assignments = $assignments;
+//    }
 
     /**
      * Compares requests
@@ -124,8 +132,10 @@ class Axis_Layout extends Zend_Layout
      * @param array $rewriteNode
      * @return bool
      */
-    private function _catRewrite($node, $rewriteNode)
+    private function _catRewrite($pageId, $rewritePageId)
     {
+        $node = $this->_pages[$pageId];
+        $rewriteNode = $this->_pages[$rewritePageId];
         if ((0 > strcmp($node['module_name'], $rewriteNode['module_name'])) ||
             (0 > strcmp($node['controller_name'], $rewriteNode['controller_name'])) ||
             (0 > strcmp($node['action_name'], $rewriteNode['action_name'])))
@@ -135,141 +145,203 @@ class Axis_Layout extends Zend_Layout
         return false;
     }
 
+    protected function _initLayout()
+    {
+        $pages = $this->getPages();
+        $templateId = Axis::config('design/main/frontTemplateId');
+
+        $rows = Axis::single('core/template_page')->select()
+            ->where('template_id = ?', $templateId)
+            ->where('page_id IN(?)', array_keys($pages))
+            ->order('priority DESC')
+            ->fetchAll();
+
+        $layout = '';
+        $pageId = null;
+        foreach ($rows as $row) {
+            if (null !== $pageId &&
+                !$this->_catRewrite($pageId, $row['page_id'])) {
+
+                continue;
+            }
+            $pageId = $row['page_id'];
+            $layout = $row['layout'];
+        }
+
+        if (empty ($layout)) {
+            $layout = Axis::single('core/template_page')->select('layout')
+                ->where('template_id = ?', $templateId)
+                ->where('page_id = ? ', $row['parent_page_id'])
+                ->fetchOne();
+
+        }
+
+        if (empty($layout)) {
+            $layout = self::DEFAULT_LAYOUT;
+            $template = Axis::single('core/template')
+                ->find($templateId)
+                ->current();
+            if ($template instanceof Axis_Db_Table_Row
+                && !empty($template->default_layout)) {
+
+                $layout = $template->default_layout;
+            }
+            
+        }
+
+        $this->_axisLayout = 'layout' . substr($layout, strpos($layout, '_'));
+    }
+
+
     public function getLayout()
     {
-        if (Zend_Registry::get('area') == 'admin') {
+        if ('admin' === Zend_Registry::get('area')) {
             return 'layout';
         }
 
         if (null !== $this->_layout) {
+            //add this->helper->layout->setLayout() support
             $this->_axisLayout = 'layout' . substr($this->_layout, strpos($this->_layout, '_'));
         } elseif (null === $this->_axisLayout) {
-            $pages = $this->getMatchedPages();
-            $templateId = Axis::config()->design->main->frontTemplateId;
-
-            $rows = Axis::single('core/template_layout_page')
-                ->select()
-                ->where('template_id = ?', $templateId)
-                ->where('page_id IN(?)', array_keys($pages))
-                ->fetchAll();
-
-            $layout = '';
-            $pageId = null;
-            foreach ($rows as $row) {
-                if (null !== $pageId &&
-                    !$this->_catRewrite($pages[$pageId], $pages[$row['page_id']])) {
-
-                    continue;
-                }
-                $pageId = $row['page_id'];
-                $layout = $row['layout'];
-            }
-
-            if (empty($layout)) {
-                $layout = $this->_getDefaultLayout();
-            }
-
-            $this->_axisLayout = 'layout' . substr($layout, strpos($layout, '_'));
+            $this->_initLayout();
         }
 
         return $this->_axisLayout;
     }
 
-    private function _getDefaultLayout()
+    protected function _initPages()
     {
-        $template = Axis::single('core/template')
-            ->find(Axis::config()->design->main->frontTemplateId)
-            ->current();
-        if ($template instanceof Axis_Db_Table_Row
-            && !empty($template->default_layout)) {
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        list($namespace, $module) = explode('_', $request->getModuleName(), 2);
+        $pages = Axis::single('core/page')->getPagesByRequest(
+            strtolower($module),
+            $request->getControllerName(),
+            $request->getActionName()
+        );
 
-            return $template->default_layout;
+        function _sort($node, $rewriteNode)
+        {
+            if ((0 > strcmp($node['module_name'], $rewriteNode['module_name'])) ||
+                (0 > strcmp($node['controller_name'], $rewriteNode['controller_name'])) ||
+                (0 > strcmp($node['action_name'], $rewriteNode['action_name'])))
+            {
+                return true;
+            }
+            return false;
         }
-        return $this->_defaultLayout;
+        uasort($pages, '_sort');
+        $this->_pages = $pages;
     }
 
-    public function getMatchedPages()
+    /**
+     *
+     * @return array
+     */
+    public function getPages()
     {
         if (null === $this->_pages) {
-            $request = Zend_Controller_Front::getInstance()->getRequest();
-            list($namespace, $module) = explode('_', $request->getModuleName(), 2);
-            $this->_pages = Axis::single('core/page')->getPagesByRequest(
-                strtolower($module),
-                $request->getControllerName(),
-                $request->getActionName()
-            );
+            $this->_initPages();
         }
         return $this->_pages;
     }
 
-    protected function _getAssignments($blockName = '')
+    private function _initAssignments()
     {
-        if (null === $this->_assignments) {
-            $pages = $this->getMatchedPages();
-            $assignments = array();
-            $tabAssignments = array();
-            if (count($pages)) {
-                $rows = Axis::single('core/template_box')->getCustomInfo(
-                    Axis::config()->design->main->frontTemplateId,
-                    array_keys($pages)
-                );
-                foreach ($rows as $row) {
-                    $block = !empty($row['other_block']) ? $row['other_block'] : $row['block'];
-
-                    if (isset($assignments[$block][$row['id']])) {
-                        $page_id = $assignments[$block][$row['id']]['page_id'];
-                        if (!$this->_catRewrite($pages[$page_id], $pages[$row['page_id']])) {
-                            continue;
-                        }
-                    }
-
-                    list($namespace, $module, $box) = explode('_', $row['class']); // example: Axis_Locale_Currency
-
-                    if (!isset($module) || !isset($box)) {
-                        continue;
-                    }
-
-                    $assignments[$block][$row['id']] = array(
-                        'boxCategory' => ucfirst($namespace),
-                        'boxModule'   => ucfirst($module),
-                        'boxName'     => ucfirst($box),
-                        'template' => $row['template'],
-                        'tabContainer' => $row['tab_container'],
-                        'sort_order' => $row['sort_order'],
-                        'page_id'  => $row['page_id'],
-                        'show'     => $row['box_show']
-                    );
-                    if (!empty($row['config'])) {
-                        $assignments[$block][$row['id']]['config'] = $row['config'];
-                    }
-
-                    if (strstr($row['class'], 'Axis_Cms_Block_')) {
-                        $static_block = trim(str_replace('Axis_Cms_Block_', '', $row['class']));
-                        if (empty($static_block)) {
-                            continue;
-                        }
-                        $assignments[$block][$row['id']]['staticBlock'] = $static_block;
-                    }
-                    if (null !== $row['tab_container']) {
-                        $tabAssignments[$block][$row['id']] = $assignments[$block][$row['id']];
-                    }
+        $pages = $this->getPages();
+        if (!count($pages)) {
+            return;
+        }
+        // add parent page
+        $strongPage = current($pages);
+        $templateId = Axis::config()->design->main->frontTemplateId;
+        $parentPage = Axis::single('core/page')->select('*')
+            ->join('core_template_page', 'cp.id = ctp.parent_page_id')
+            ->where('ctp.template_id = ?', $templateId)
+            ->where('ctp.page_id = ?', $strongPage['id'])
+            ->fetchRow();
+        if ($parentPage) {
+            $this->_pages[$parentPage['id']] = $parentPage;
+        }
+        $assignments = array();
+        $tabAssignments = array();
+        
+        $rows = Axis::single('core/template_box')->select(
+                array('id', 'class', 'block', 'config')
+            )->joinInner('core_template_box_page',
+                'ctbp.box_id = ctb.id',
+                array('box_show',
+                    'sort_order',
+                    'other_block' => 'block',
+                    'template',
+                    'tab_container',
+                    'page_id'
+                )
+            )->where('ctb.template_id = ?', $templateId)
+            ->where('ctb.box_status = 1')
+            ->where('ctbp.page_id IN(?)', array_keys($this->_pages))
+            ->order('ctb.sort_order')
+            ->fetchAll()
+            ;
+        foreach ($rows as $row) {
+            
+            $container = empty($row['other_block']) ?
+                $row['block'] : $row['other_block'];
+            $blockId = $row['id'];
+            if (isset($assignments[$container][$blockId])) {
+                $pageId = $assignments[$container][$blockId]['page_id'];
+                if (!$this->_catRewrite($pageId, $row['page_id'])) {
+                    continue;
                 }
             }
-            $this->_assignments = &$assignments;
-            $this->_tabAssignments = &$tabAssignments;
-            Axis_Core_Box_Abstract::setView($this->getView());
-        }
 
-        if (empty($blockName) || !array_key_exists($blockName, $this->_assignments)) {
-            return array();
-        }
+            list($namespace, $module, $box) = explode('_', $row['class']); // example: Axis_Locale_Currency
 
-        return $this->_assignments[$blockName];
+            if (!isset($module) || !isset($box)) {
+                continue;
+            }
+
+            $assignments[$container][$blockId] = array(
+                'boxCategory'  => ucfirst($namespace),
+                'boxModule'    => ucfirst($module),
+                'boxName'      => ucfirst($box),
+                'template'     => $row['template'],
+                'tabContainer' => $row['tab_container'],
+                'sort_order'   => $row['sort_order'],
+                'page_id'      => $row['page_id'],
+                'show'         => $row['box_show']
+            );
+            if (!empty($row['config'])) {
+                $assignments[$container][$blockId]['config'] = $row['config'];
+            }
+
+            if (strstr($row['class'], 'Axis_Cms_Block_')) {
+                $staticBlock = trim(str_replace('Axis_Cms_Block_', '', $row['class']));
+                if (empty($staticBlock)) {
+                    continue;
+                }
+                $assignments[$container][$blockId]['staticBlock'] = $staticBlock;
+            }
+            if (null !== $row['tab_container']) {
+                $tabAssignments[$container][$blockId] = $assignments[$container][$blockId];
+            }
+        }
+        $this->_assignments = &$assignments;
+        $this->_tabAssignments = &$tabAssignments;
+        Axis_Core_Box_Abstract::setView($this->getView());
+    }
+
+    protected function _getAssignments($container = '')
+    {
+        if (null === $this->_assignments) {
+            $this->_initAssignments();
+        }
+        return isset($this->_assignments[$container]) ?
+            $this->_assignments[$container] : array();
     }
 
     public function __get($key)
     {
-        if (Zend_Registry::get('area') == 'admin') {
+        if ('admin' === Zend_Registry::get('area')) {
             return parent::__get($key);
         }
 
@@ -308,7 +380,6 @@ class Axis_Layout extends Zend_Layout
                 $afterContent .= $boxContent;
             }
         }
-
         return $beforeContent . parent::__get($key) . $afterContent;
     }
 

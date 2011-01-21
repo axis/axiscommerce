@@ -54,16 +54,20 @@ class Axis_Cms_Model_Block extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        if (!isset($data['id']) || !$row = $this->find($data['id'])->current()) {
-            $row = $this->createRow();
+        if (isset($data['id']) && !$data['id']) {
+            unset($data['id']);
         }
-        unset($data['id']);
-        $row->setFromArray($data);
+        $row = $this->getRow($data);
         $row->save();
-
-        $mContent = Axis::model('cms/block_content');
-        foreach ($data['content'] as $languageId => $values) {
-            $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
+        $languages = Axis_Collect_Language::collect();
+        $model = Axis::model('cms/block_content');
+        foreach ($languages as $languageId => $language) {
+            if (!isset($data['content'][$languageId])) {
+                continue;
+            }
+            $model->getRow($row->id, $languageId)
+                ->setFromArray($data['content'][$languageId])
+                ->save();
         }
 
         return $row->id;

@@ -83,6 +83,15 @@ abstract class Axis_Core_Box_Abstract
         self::$view = $view;
     }
 
+    /**
+     *
+     * @return Zend_View
+     */
+    public function getView()
+    {
+        return self::$view;
+    }
+
     public function __construct($config = array())
     {
         if (null === self::$view) {

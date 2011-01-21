@@ -245,7 +245,7 @@ Ext.onReady(function() {
             name: 'name',
             anchor: '98%',
             allowBlank:false
-        }, Ext.getCmp('layoutCombo').cloneConfig({
+        }, Ext.getCmp('comboLayout').cloneConfig({
             fieldLabel: 'Default layout'.l(),
             anchor: '98%',
             allowBlank: false,

@@ -33,19 +33,7 @@
  */
 class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back 
 {
-    /**
-     * Template model
-     *
-     * @var Axis_Admin_Model_Template
-     */
-    protected $_table;
     
-    public function init()
-    {
-        parent::init();
-        $this->_table = Axis::single('core/template');
-    }
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Templates');
@@ -68,7 +56,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
 
     public function getNodesAction()
     {
-        $nodes = $this->_table->fetchAll();
+        $nodes = Axis::model('core/template')->fetchAll();
         
         foreach ($nodes as $item) {
             $result[] = array(
@@ -123,7 +111,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
         
-        $this->_table->delete($this->db->quoteInto('id = ? ', $id));
+        Axis::model('core/template')->delete($this->db->quoteInto('id = ? ', $id));
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
@@ -138,23 +126,24 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
         
         return $this->_helper->json->sendSuccess(array(
-            'data' => $this->_table->getListXmlFiles()
+            'data' => Axis::model('core/template')->getListXmlFiles()
         ));
     }
 
     public function importAction()
     {
         $this->_helper->layout->disableLayout();
-        
+        $templateName = $this->_getParam('templateName');
+        $model = Axis::model('core/template');
         if (!$this->_getParam('overwrite_existing') && 
-            !$this->_table->validateBeforeImport($this->_getParam('templateName'))) {
+            !$model->validateBeforeImport($templateName)) {
             
             return $this->_helper->json->sendFailure(array(
                 'errorCode' => 'template_exists'
             ));
         }
         
-        if (!$this->_table->importTemplateFromXmlFile($this->_getParam('templateName'))) {
+        if (!$model->importTemplateFromXmlFile($templateName)) {
             return $this->_helper->json->sendFailure();
         }
         Axis::message()->addSuccess(
@@ -169,13 +158,16 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         $templateId = $this->_getParam('templateId');
-        $template = $this->_table->getFullInfo($templateId);
+        $template = Axis::model('core/template')->getFullInfo($templateId);
         $this->view->template = $template;
+        Axis_FirePhp::log($template['layouts']);
+        return $this->_helper->json->sendSuccess();
         $script = $this->getViewScript('xml', false);
         $xml = $this->view->render($script);
 
         $filename = Axis::config()->system->path . '/var/templates/' . $template['name'] . '.xml';
         if (@file_put_contents($filename, $xml)) {
+            chmod($filename, 0666);
             Axis::message()->addSuccess(
                 Axis::translate('admin')->__(
                     'Template was exported successfully'
