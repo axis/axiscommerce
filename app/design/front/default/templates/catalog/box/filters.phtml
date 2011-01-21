@@ -1,5 +1,8 @@
 <ul id="filters">
-<?php $hurl = Axis_HumanUri::getInstance(); ?>
+<?php
+$hurl       = Axis_HumanUri::getInstance();
+$currency   = Axis::single('locale/currency')->getCurrency();
+?>
 
 <?php if ($hurl->hasParam('price')) : ?>
 <li class="filter-box selected-filter">
@@ -8,9 +11,9 @@
     title="<?php echo $this->translate('catalog')->__('Remove filter') ?>"><?php echo $this->translate('catalog')->__('Remove filter') ?></a>
     <span class="filter-name"><?php echo $this->translate('catalog')->__('Price')?>:</span> <?php
         $price = explode(',', $hurl->getParam('price'));
-        echo $this->currency($price[0]) . ' &mdash; ';
+        echo $currency->toCurrency($price[0]) . ' &mdash; ';
         if (!empty($price[1])) {
-            echo $this->currency($price[1]);
+            echo $currency->toCurrency($price[1]);
         } else {
             echo '&#8734;'; // infinity symbol
         }
@@ -53,7 +56,7 @@ foreach ($this->box->getData('filters/price/groups') as $price) :
        'price' => $priceFrom . ',' . $priceTo,
        'page' => ''
     )) . '">'
-        . $this->currency($priceFrom) . ' &mdash; ' . $this->currency($priceTo)
+        . $currency->toCurrency($priceFrom) . ' &mdash; ' . $currency->toCurrency($priceTo)
         . '</a> (' . $price['cnt'] . ')</li>';
 endforeach; ?>
     </ul>
@@ -80,10 +83,9 @@ endforeach; ?>
 <?php endif; ?>
 
 <?php if ($this->box->hasData('filters/attributes')) :
-echo '<li class="filter-box" id="filter-attributes">
-    <h3 class="filter-name">' . $this->translate('catalog')->__('Attributes') . '</h3><ul>';
+echo '<li class="filter-box" id="filter-attributes">';
     foreach ($this->box->getData('filters/attributes') as $optionId => $values) :
-        echo '<li><h4 class="filter-name">' . $values[0]['option_name'] . '</h4><ul>';
+        echo '<h3 class="filter-name">' . $values[0]['option_name'] . '</h3><ul>';
         foreach ($values as $value) :
             echo '<li><a rel="nofollow" href="' . $this->hurl(array(
                 'attributes' => array(
@@ -95,8 +97,8 @@ echo '<li class="filter-box" id="filter-attributes">
                 'page' => ''
             )) . '">' . $value['value_name'] . '</a> (' . $value['cnt'] . ')</li>';
         endforeach;
-        echo '</ul></li>';
+        echo '</ul>';
     endforeach;
-echo '</ul></li>';
+echo '</li>';
 endif; ?>
 </ul>
