@@ -21,6 +21,7 @@
 "Transaction Currency", "Валюта транзакции"
 "Transaction Type", "Тип транзакции"
 "VERSION", "VERSION"
+"PayPal Standard","PayPal Standard"
 "PayPal NVP Api", "PayPal NVP Api"
 "PayPal Payflow Api", "PayPal Payflow Api"
 "Title", "Заголовок"
