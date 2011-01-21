@@ -1,0 +1,39 @@
+<?php $date = new Axis_Date($this->order['date_purchased_on']); ?>
+<?php echo $this->translate('core')->__('Order')?> #<?php echo $this->order['number'] ?> :: <?php echo $date->toString(); ?>
+
+
+<?php echo $this->translate('core')->__('Billing Address') .  PHP_EOL; ?>
+------------------------------------------
+<?php echo $this->address($this->order->getBilling(), "\r\n"); ?>
+
+<?php echo $this->translate('core')->__('Delivery Address') .  PHP_EOL; ?>
+------------------------------------------
+<?php echo $this->address($this->order->getDelivery(), "\r\n"); ?>
+
+------------------------------------------
+<?php echo $this->translate('checkout')->__('Payment Method'); ?>: <?php echo $this->escape($this->order['payment_method']); ?>
+
+<?php echo $this->translate('checkout')->__('Shipping Method');?>: <?php echo $this->escape($this->order['shipping_method']); ?>
+
+
+------------------------------------------------------------------------
+<?php foreach ($this->order->getProducts() as $product) : ?>
+    <?php echo $this->escape($product['name']); ?>
+    <?php
+    if (!empty($product['attributes'])) :
+        foreach ($product['attributes'] as $attr) :
+            echo $this->escape($attr['product_option']) . ': ' . $this->escape($attr['product_option_value']) . '\r\n';
+        endforeach;
+    endif;
+?>
+    <?php echo $this->currency($product['final_price']); ?>
+    <?php echo $this->translate('sales')->__('Qty') . ': ' . $product['quantity'] ?>
+    <?php echo $this->translate('checkout')->__('Subtotal'). ': ' . $this->currency($product['quantity'] * $product['final_price']); ?>
+    <?php echo "\r\n" ?>
+<?php endforeach; ?>
+------------------------------------------------------------------------
+<?php foreach ($this->order->getTotals() as $total) : ?>
+    <?php echo $this->translate('checkout')->__($total['title']) ?>: <?php echo $this->currency($total['value']) . "\r\n" ?>
+<?php endforeach; ?>
+
+    <?php echo $this->translate('checkout')->__('Total')?>: <?php echo $this->currency($this->order['order_total']) ?>

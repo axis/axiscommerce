@@ -48,6 +48,8 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
     }
 
     /**
+     * Add product description to select
+     *
      * @param integer $languageId [optional]
      * @return Axis_Catalog_Model_Product_Select
      */
@@ -63,6 +65,12 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
         );
     }
 
+    /**
+     * Add image data to every product row of select
+     *
+     * @param integer $languageId [optional]
+     * @return Axis_Catalog_Model_Product_Select
+     */
     public function addImages($languageId = null)
     {
         if (null === $languageId) {
@@ -233,6 +241,11 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
            ->where('cp.new_from IS NOT NULL OR cp.new_to IS NOT NULL');
     }
 
+    /**
+     * Add filter to get products that is not linked to any category
+     *
+     * @return Axis_Catalog_Model_Product_Select
+     */
     public function addFilterByUncategorized()
     {
         $mProductToCategory = Axis::single('catalog/product_category');
@@ -305,12 +318,7 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
             }
         }
 
-        if (isset($filters['price']['from'])) {
-            $this->where('cp.price >= ?', $filters['price']['from']);
-        }
-        if (isset($filters['price']['to'])) {
-             $this->where('cp.price <= ?', $filters['price']['to']);
-        }
+        $this->addFilterByPrice($filters['price']);
 
         if (count($filters['attributes'])) {
             $this->addFilterByAttributes($filters['attributes']);
@@ -319,6 +327,41 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
         return $this;
     }
 
+    /**
+     * Add filter by price to select
+     *
+     * @param int|array $from
+     * <pre>
+     * array(
+     *  from    => int,
+     *  to      => int
+     * )
+     * </pre>
+     * @param int       $to
+     * @return Axis_Catalog_Model_Product_Select
+     */
+    public function addFilterByPrice($from = null, $to = null)
+    {
+        if (is_array($from)) {
+            $to     = empty($from['to'])    ? null : $from['to'];
+            $from   = empty($from['from'])  ? null : $from['from'];
+        }
+
+        $currency = Axis::single('locale/currency');
+        if ($from) {
+            $this->where('cp.price >= ?', $currency->from($from));
+        }
+        if ($to) {
+             $this->where('cp.price <= ?', $currency->from($to));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $attributes
+     * @return Axis_Catalog_Model_Product_Select
+     */
     public function addFilterByAttributes($attributes)
     {
         $joinedAttrs = array();
@@ -340,6 +383,11 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
         return $this;
     }
 
+    /**
+     * Joins category table to select
+     *
+     * @return Axis_Catalog_Model_Product_Select
+     */
     public function joinCategory()
     {
         return $this->joinLeft('catalog_product_category', 'cp.id = cpc.product_id')

@@ -1,4 +1,4 @@
-<?php 
+<?php
 for ($i = 1; $i < 13; $i++) {
     $expires_month[sprintf('%02d', $i)] = strftime('%B - (%m)', mktime(0, 0, 0, $i, 1, 2000));
 }
@@ -17,28 +17,28 @@ for ($i = $today['year'], $limit = $today['year'] + 10; $i <= $limit; $i++) {
             'autocomplete' => 'off',
             'class' => 'input-text'
         )) ?></dd>
-        
+
         <dt><?php echo $this->translate('checkout')->__('CC Number')?></dt>
         <dd><?php echo $this->formText($this->payment->getCode() . '-CcNumber', null, array(
             'autocomplete' => 'off',
             'class' => 'input-text'
         )) ?></dd>
-        
+
         <dt><?php echo $this->translate('checkout')->__('Credit Card Type')?></dt>
         <dd><?php echo $this->ccIcons($this->payment->getCCTypes(), $this->payment->getCode())->__toString() ?></dd>
-        
+
         <dt><?php echo $this->translate('checkout')->__('Expires Date')?></dt>
         <dd><?php echo $this->formSelect($this->payment->getCode() . '-CcExpiresMonth', null, null, $expires_month) . '&nbsp;'
                      . $this->formSelect($this->payment->getCode() . '-CcExpiresYear', null, null, $expires_year) ?>
         </dd>
         <?php if ($this->payment->config('enabledCvv')) : ?>
-        <dt><?php echo$this->translate('checkout')->__('CVV')?></dt>
+        <dt><?php echo$this->translate('checkout')->__('Cvv')?></dt>
         <dd>
             <?php echo $this->formText($this->payment->getCode() . '-CcCvv', null, array(
                 'autocomplete' => 'off',
                 'class' => 'input-text'
             )) ?>
-            <a class="cc-help" onclick="return toggleCvv(this)" href="#"><?php echo $this->translate('checkout')->__('CVV Help') ?></a> 
+            <a class="cc-help" onclick="return toggleCvv(this)" href="#"><?php echo $this->translate('checkout')->__('CVV Help') ?></a>
         </dd>
         <?php endif; ?>
     </dl>

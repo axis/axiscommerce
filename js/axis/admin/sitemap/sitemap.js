@@ -27,7 +27,12 @@ Ext.onReady(function (){
     Ext.QuickTips.init();
     var sitemap = {
         addnew: function () {
-            jQuery('#sitemap-form')[0].clear();
+            $(':input','#sitemap-form')
+                .not(':button, :submit, :reset, :hidden')
+                .val('')
+                .removeAttr('checked')
+                .removeAttr('selected');
+
             sitemapId = -1;
             getWindow().show();
             jQuery('#sitemap').show();
@@ -393,14 +398,12 @@ Ext.onReady(function (){
 
     function getWindow() {
         if (!editWin) {
-            editWin = new Ext.Window({
+            editWin = new Axis.Window({
                 title: 'Sitemap'.l(),
                 contentEl: 'sitemap',
-                layout: 'fit',
                 width: 310,
-                closeAction: 'hide',
+                height: 250,
                 plain: true,
-                autoScroll:true,
                 buttons: [{
                     text: 'Save'.l(),
                     handler: function() {

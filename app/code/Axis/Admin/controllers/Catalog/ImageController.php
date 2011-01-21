@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -40,17 +40,17 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
     private function _getPath($path)
     {
         $root = Axis::config()->system->path . '/media';
-        
+
         $path = trim($path, '/\\');
         $path = Axis::config()->system->path . '/' . $path;
-        
+
         $path = str_replace('\\', '/', realpath($path));
         if (file_exists($path) && strpos($path, $root) === 0) {
             return $path;
         }
         return false;
     }
-    
+
     /**
      * @param string $path
      * @return string
@@ -66,7 +66,7 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
         }
         return 'file';
     }
-    
+
     /**
      * @param string $path
      * @param string $mode ['all', 'file', 'folder']
@@ -88,17 +88,17 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
                 )
             );
         }
-        
+
         foreach ($di as $f) {
             $s = $f->getFilename();
             if ($s[0] == '.') {
                 continue;
             }
-            
+
             $path = str_replace('\\', '/', $f->getPathname());
-            
+
             $isDir = $f->isDir();
-            
+
             if (($isDir && $mode != 'file') || (!$isDir && $mode != 'folder')) {
                 $item = array(
                     'text'          => $f->getBasename(),
@@ -106,6 +106,7 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
                     'path'          => str_replace(Axis::config('system/path') . '/', '', $path),
                     'absolute_url'  => $this->view->href(
                             str_replace(Axis::config('system/path'), '', $path),
+                            true,
                             false
                         ),
                     'iconCls'       => $this->_getIcon($path),
@@ -117,15 +118,15 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
                 }
                 $items[] = $item;
             }
-            
+
             if ($isDir && $recursive) {
                 $items += $this->_scanFolder($path, $mode, $recursive, $items);
             }
         }
-        
+
         return $items;
     }
-    
+
     /**
      * @param string $path
      * @return bool
@@ -136,13 +137,13 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
         if (false === strpos($path, Axis::config()->system->path . '/media')) {
             return false;
         }
-            
+
         if (is_dir($path)) {
             $path = rtrim($path, '/');
             $dir = dir($path);
             while (false !== ($file = $dir->read())) {
                 if ($file != '.' && $file != '..') {
-                    (!is_link("$path/$file") && is_dir("$path/$file")) ? 
+                    (!is_link("$path/$file") && is_dir("$path/$file")) ?
                         $this->_delete("$path/$file") : unlink("$path/$file");
                 }
             }
@@ -152,10 +153,10 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
         } else {
             unlink($path);
         }
-        
+
         return false;
     }
-    
+
     private function _getAction()
     {
         $result = array();
@@ -166,14 +167,14 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
                             (bool) $this->_getParam('recursive', false)
                       );
         }
-        
+
         return $this->_helper->json->sendJson($result, false, false);
     }
-    
+
     private function _uploadAction()
     {
         $this->_helper->layout->disableLayout();
-        
+
         $result = array();
         foreach ($_FILES as $key => $values) {
             if (strpos($key, 'ext-gen') !== 0) {
@@ -184,7 +185,7 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
                 $file = $uploader
                     ->setUseDispersion(false)
                     ->save(Axis::config()->system->path . '/' . $this->_getParam('path'));
-                
+
                 $result = array(
                     'success' => true,
                     'data' => array(
@@ -201,10 +202,10 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
                 );
             }
         }
-        
+
         return $this->getResponse()->appendBody(Zend_Json_Encoder::encode($result));
     }
-    
+
     public function _deleteAction()
     {
         if ($this->_getParam('batch', 0)) {
@@ -213,43 +214,43 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
             }
             return $this->_helper->json->sendSuccess();
         }
-        
+
         if (!$this->_delete(Axis::config()->system->path . '/' . $this->_getParam('file'))) {
             return $this->_helper->json->sendFailure();
         }
-        
+
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function _newdirAction()
     {
         if (!@mkdir(Axis::config()->system->path . '/' . $this->_getParam('dir'), 0777, true)) {
             return $this->_helper->json->sendFailure();
         }
-        
+
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function _renameAction()
     {
         if (!@rename(
                 Axis::config()->system->path . '/' . $this->_getParam('oldname'),
                 Axis::config()->system->path . '/' . $this->_getParam('newname')
            )) {
-           
+
            return $this->_helper->json->sendFailure();
        }
-       
+
        return $this->_helper->json->sendSuccess();
     }
-    
+
     public function treePanelAction()
     {
         $this->_helper->layout->disableLayout();
-        
+
         $cmd = $this->_getParam('cmd');
         $method = '_' . $cmd . 'Action';
-        
+
         if (!method_exists($this, $method)) {
             Axis::message()->addError(Axis::translate('catalog')->__(
                 'Method %s not exist', $method
@@ -259,7 +260,7 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
                 'messages' => Axis::message()->get()
             )));
         }
-        
+
         return $this->$method();
     }
 }

@@ -107,9 +107,12 @@ Ext.onReady(function() {
             dataIndex: 'input_type',
             renderer: AttributeGrid.renderType,
             filter: {
-                store: Attribute.inputTypeStore,
+                store: new Ext.data.ArrayStore({
+                    data: Attribute.types,
+                    fields: ['id', 'name']
+                }),
                 resetValue: 'reset',
-                displayField: 'title',
+                displayField: 'name',
                 valueField: 'id'
             }
         }, {

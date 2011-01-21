@@ -18,20 +18,20 @@
  */
 
 Ext.onReady(function() {
-    
+
     Ext.each(customFormReader, function(el) {
         CustomerWindow.formFields.push(el);
     });
-    
+
     CustomerWindow.addTab({
         title: 'Custom Fields'.l(),
         bodyStyle: 'padding: 10px',
         defaults: {
             allowBlank: false,
-            anchor: '-20',
+            anchor: '100%',
             xtype: 'textfield'
         },
         items: customFormFields // see index.phtml
     }, 20);
-    
+
 });

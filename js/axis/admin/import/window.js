@@ -51,6 +51,7 @@ Ext.onReady(function(){
     }, {
         fieldLabel: 'Hostname'.l(),
         xtype: 'textfield',
+        initialValue: 'localhost',
         name: 'profile[host]',
         allowBlank: true,
         maxLength: 255
@@ -63,6 +64,7 @@ Ext.onReady(function(){
     }, {
         fieldLabel: 'Username'.l(),
         xtype: 'textfield',
+        initialValue: 'root',
         name: 'profile[db_user]',
         allowBlank: true,
         maxLength: 255
@@ -107,7 +109,7 @@ Ext.onReady(function(){
         xtype: 'fieldset',
         id: 'general_fields',
         defaults: {
-            anchor: '98%'
+            anchor: '100%'
         },
         items: [{
             fieldLabel: 'Site'.l(),
@@ -135,31 +137,31 @@ Ext.onReady(function(){
         }
     }, advice];
 
-    var form = new Ext.form.FormPanel({
-        border: false,
-        labelAlign: 'left',
+    var form = new Axis.FormPanel({
         id: 'form_profile_edit',
+        bodyStyle: 'padding: 5px 0 0 0;',
         defaults: {
             anchor: '100%'
         },
         items: [{
             xtype: 'tabpanel',
             id: 'tabpanel',
+            anchor: Ext.isWebKit ? 'undefined 100%' : '100% 100%',
             deferredRender: false,
             layoutOnTabChange: true,
             activeTab: 0,
             border: false,
             plain: true,
             defaults: {
-                autoHeight: true,
                 bodyStyle:'padding:10px',
-                border: false,
-                layout:'form'
+                autoScroll: true,
+                hideMode: 'offsets',
+                layout: 'form'
             },
             items: [{
                 title: 'Connection'.l(),
                 defaults: {
-                    anchor: '98%'
+                    anchor: '100%'
                 },
                 id: 'connect_information',
                 items: connection_fields
@@ -168,7 +170,7 @@ Ext.onReady(function(){
                 disabled: true,
                 id: 'general_information',
                 defaults: {
-                    anchor: '98%'
+                    anchor: '100%'
                 },
                 items: general_fields
             }, {
@@ -176,14 +178,14 @@ Ext.onReady(function(){
                 id: 'locale',
                 disabled: true,
                 defaults: {
-                    anchor: '98%'
+                    anchor: '100%'
                 }
             }, {
                 title: 'Log'.l(),
                 id: 'process',
                 disabled: true,
                 defaults: {
-                    anchor: '98%'
+                    anchor: '100%'
                 },
                 items: [{
                     xtype:'box',
@@ -198,19 +200,13 @@ Ext.onReady(function(){
         }]
     });
 
-    var window = new Ext.Window({
+    var window = new Axis.Window({
         title: 'Profile'.l(),
         items: form,
-        closeAction: 'hide',
-        resizable: true,
         maximizable: true,
         id: 'window_profile',
-        constrainHeader: true,
-        autoScroll: true,
-        bodyStyle: 'background: white; padding-top: 10px;',
         width: 560,
         height: 505,
-        minWidth: 260,
         buttons: [{
             text: 'Connect'.l(),
             id: 'connectButton',
@@ -233,7 +229,6 @@ Ext.onReady(function(){
     });
     window.on('hide', function(){
         removeImportReady();
-        form.getForm().clear();
     });
 
     function importData() {

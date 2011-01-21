@@ -1,8 +1,8 @@
 <table id="wishlist-table" class="data-table">
     <thead>
         <tr>
-            <th><?php echo $this->translate('account')->__('Product'); ?></th>
-            <th><?php echo $this->translate('account')->__('Price'); ?></th>
+            <th><?php echo $this->translate('catalog')->__('Product'); ?></th>
+            <th><?php echo $this->translate('catalog')->__('Price'); ?></th>
             <th><?php echo $this->translate('account')->__('Comment'); ?></th>
             <th><?php echo $this->translate('account')->__('Added on'); ?></th>
             <th><?php echo $this->translate('account')->__('Action'); ?></th>
@@ -19,7 +19,7 @@
         </tr>
     </tfoot>
 <?php
-$index = 0; 
+$index = 0;
 foreach ($this->box->getData('wishlist') as $wl):
     $index++;
     if ($index > 5) { break; }
@@ -29,14 +29,14 @@ foreach ($this->box->getData('wishlist') as $wl):
         'action' => 'product'
     ), false, true);
     ?>
-    
+
     <tr>
         <td class="name">
             <h4 class="product-name"><a href="<?php echo $this->escape($productUrl);?>"
                 title="<?php echo $wl['product']['name'] ?>"
                 ><?php echo $wl['product']['name'] ?></a></h4>
-        </td>    
-        <td class="price"> 
+        </td>
+        <td class="price">
             <?php echo $this->price($wl['product']['price'],
                 !empty($wl['product']['discount_price']) ?
                     $wl['product']['discount_price'] : false

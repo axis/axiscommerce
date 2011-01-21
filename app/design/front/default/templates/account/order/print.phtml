@@ -15,12 +15,12 @@ echo Axis_Date::timestamp(strtotime($this->order['date_purchased_on']))
             <?php echo $this->address($this->order['billing']); ?>
         </address>
         <div class="foot">
-            <h5><?php echo $this->translate('account')->__('Payment Method'); ?>:</h5> 
+            <h5><?php echo $this->translate('account')->__('Payment Method'); ?>:</h5>
             <p><?php echo $this->order['payment_method']; ?></p>
             <?php  echo $this->paymentForm($this->order['payment_method_code'], 'view')?>
         </div>
     </div>
-    
+
     <div class="col-2 shipping-address address">
         <div class="head">
             <h4 class="address-title"><?php echo $this->translate('account')->__('Delivery Address'); ?>
@@ -47,11 +47,11 @@ echo Axis_Date::timestamp(strtotime($this->order['date_purchased_on']))
 <table class="data-table" id="shopping-cart-table">
 <thead>
 <tr>
-    <th><?php echo $this->translate('account')->__('Product')?></th>
-    <th><?php echo $this->translate('account')->__('SKU')?></th>
-    <th><?php echo $this->translate('account')->__('Price')?></th>
-    <th><?php echo $this->translate('account')->__('Quantity')?></th>
-    <th><?php echo $this->translate('account')->__('Subtotal')?></th>
+    <th><?php echo $this->translate('catalog')->__('Product')?></th>
+    <th><?php echo $this->translate('catalog')->__('Sku')?></th>
+    <th><?php echo $this->translate('catalog')->__('Price')?></th>
+    <th><?php echo $this->translate('catalog')->__('Quantity')?></th>
+    <th><?php echo $this->translate('checkout')->__('Subtotal')?></th>
 </tr>
 </thead>
 
@@ -60,11 +60,11 @@ echo Axis_Date::timestamp(strtotime($this->order['date_purchased_on']))
 <tr valign="top">
     <td>
         <?php echo $product['name'];?>
-        
-        <?php if (!empty($product['attributes'])) :?> 
+
+        <?php if (!empty($product['attributes'])) :?>
             <div class="attributes">
                <?php foreach ($product['attributes'] as $attr) : ?>
-                <p>    
+                <p>
                     <small>
                         <?php echo $attr['product_option'] . ': ' . $attr['product_option_value'];?>
                     </small>
@@ -74,7 +74,7 @@ echo Axis_Date::timestamp(strtotime($this->order['date_purchased_on']))
         <?php endif; ?>
     </td>
     <td>
-        <?php echo  $product['sku'];?>
+        <?php echo $product['sku'];?>
     </td>
     <td><?php echo $this->currency($product['final_price']);?></td>
     <td class="a-center"><?php echo $product['quantity']?></td>
@@ -83,7 +83,6 @@ echo Axis_Date::timestamp(strtotime($this->order['date_purchased_on']))
 
 <?php endforeach; ?>
 
-<!-- Totals List -->
 <?php foreach ($this->order['totals'] as $total) : ?>
 
     <tr>
@@ -92,10 +91,9 @@ echo Axis_Date::timestamp(strtotime($this->order['date_purchased_on']))
     </tr>
 
 <?php endforeach; ?>
-<!-- Totals List End -->
 
 <tr>
-    <td colspan="4" class="a-right"><?php echo $this->translate('account')->__('Total')?>:&nbsp;</td>
+    <td colspan="4" class="a-right"><?php echo $this->translate('checkout')->__('Total')?>:&nbsp;</td>
     <td><?php echo $this->currency($this->order['order_total'])?></td>
 </tr>
 

@@ -1,201 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=$CHARSET" />
+    <head>
+        <?php echo $this->render('include/html_head.phtml'); ?>
+        <style type="text/css">
+        .table-order {margin-top: 10px;}
+        .table-order td,
+        .table-order th {width: 50%;}
+        .order-header * {background-color:#7d7a7a;color:#fff;}
+        .info-title * {background-color:#e8e8e8;}
+        .no-border td {border:none;height:10px;}
+        .table-products {margin-top: 10px;clear:both;}
+        .table-products td,
+        .table-products th {width: 25%;}
+        .table-totals {margin-top:10px;clear:both;}
+        .table-totals td {padding:2px;}
+        </style>
+    </head>
 
-<style type="text/css">
-    a:link {color:#0066cc;}
-    a:hover {background-color:#eeeecc; color:#0066cc;}
-    a:visited {color:#0066cc;}
-    a img {border:none;}
-    .holder {background-color:#f9f9f9; border:1px solid #9a9a9a; font-size:9px; text-align:left; width:550px;}
-    .header {font-size:10px; padding:0px; width:550px;}
-    .content {font-size:10px; padding:5px; width:550px;}
-    .content-line {padding:5px;}
-    .footer {border-top:1px solid #9a9a9a; font-size:9px; margin-top:10px; text-align:center; width:550px;}
-    .extra-info {background-color:#cccc99; border:1px solid #9a9a9a; font-size:10px; margin-top:10px; padding:5px; width:550px;}
-    .extra-info-bold {font-weight:bold;}
-    .disclaimer {background-color:#f9f9f9; border:1px solid #cccccc; font-size:10px; margin-top:10px; padding:5px; width:550px;}
-    .disclaimer1 {color:#666666; padding:5px;}
-    .disclaimer1 a:link {color:#666666;}
-    .disclaimer1 a:visited {color:#666666;}
-    .disclaimer2 {color:#666666; padding:5px;}
-    .copyright {border-bottom:0px solid #9a9a9a; padding:5px;}
-    body { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; padding: 0px; margin: 0px;}
-    td { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif;}
-    #logo img {border:none;}
-</style>
+    <body>
+        <div style="margin:0px; padding:0px; background-color:#ffffff; ">
+        <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin:10px 0px; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; margin-bottom:10px;">
+            <tr>
+                <td align="center" valign="top">
+                    <?php echo $this->render('include/header.phtml'); ?>
 
-</head>
+                    <table cellspacing="0" cellpadding="5" border="0" width="650" style="background: #fff;margin-top:10px;" class="content">
+                        <tr>
+                            <td style="padding:0px;text-align:left;">
+                                <h3 style="margin: 1px 0 4px;"><strong>
+                                    <?php $name = $this->escape(
+                                        $this->order->getBilling()->getFirstname()
+                                        . ' '
+                                        . $this->order->getBilling()->getLastname()
+                                    ) ?>
+                                    <?php echo $this->translate('account')->__('Hello, %s', $name)?>
+                                </strong></h3>
+                                <p style="margin: 1px 0 4px;"><?php echo $this->translate('core')->__('Thank you for your order from %s', $this->site) ?></p>
+                                <?php if ($this->order->customer_id): ?>
+                                    <p style="margin: 1px 0 4px;"><?php echo $this->translate('sales')->__('You can check the status of your order by <a %s>logging into your account</a>', 'href="' . $this->href('account/order', true, false) . '" style="color:#1E7EC8;"'); ?></p>
+                                <?php endif; ?>
 
-<body>
-    <div style="margin:0px; padding:0px; background-color:#ffffff; ">
-    <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin:10px 0px; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; margin-bottom:10px;">
-        <tr>
-            <td align="center" valign="top">
-                <table cellspacing="0" cellpadding="0" border="0" width="650" style="background: #fff; padding:0px;"  class="header">
-                    <tr>
-                        <td valign="top" id="logo">
-                            <a href="<?php echo $this->href('/')?>"><?php echo $this->image('logo_mail.gif', 'style="border:none;"');?></a>
-                        </td>
-                        <td valign="top" align="right" style="padding-left: 0px">
-                            <?php echo '   ' . $this->company['name']?>
-                            <br/>
-                            <?php echo  $this->company['email']?>
-                            <br/>
-                            <?php echo  $this->company['phone']?>
-                        </td>
-                    </tr>
-                </table>
-            
-                <table cellspacing="0" cellpadding="20" border="0" width="650" style="background: #fff;margin-top:10px; border: 1px solid #bbb" class="footer">
-                    <tr>
-                        <td class="content" style="padding:5px;text-align:left;">
-                            <!-- Content Section -->
-                            <strong>
-                                <?php echo $this->translate('core')->__('Hello') . ', ';
-                                    echo $this->order->getBilling()->getFirstname() . ' '
-                                        . $this->order->getBilling()->getLastname();
-                                ?>
-                            </strong>
-                            <br/>
-                            <?php echo $this->translate('core')->__('Thank you for your order from %s', $this->site)?>
-                            <?php echo $this->translate('core')->__('Once your package ships we will send an email with a link to track your order.'); ?>
-                            <?php echo $this->translate('core')->__('You can check the status of your order by <a %s>logging into your account</a>', 'href="' . $this->href('/account/order', true) . '" style="color:#1E7EC8;"'); ?>
-                            <br/>
-                            <a href="<?php echo $this->href('/account/order/view/orderId/' . $this->order->id, true)?>" style="color:#1E7EC8;"
-                            ><?php echo $this->translate('core')->__('Your last order')?></a>
-                            
-                            <br clear="all"/>
-                            <table cellspacing="0" cellpadding="10" width="100%" class="two-columns"> 
-                                <tr class="dark-brown" style="background-color: #7D7A7A; color:#FFF;">
-                                    <th colspan="2">
-                                        <?php echo $this->translate('core')->__('Order')?> # <?php 
-                                        echo $this->order['number'] ?> :: <?php echo $this->translate('core')->__('Order Date')?>: <?php
-                                        echo Axis_Date::timestamp(strtotime($this->order['date_purchased_on']))
-                                            ->toPhpString("D M j Y"); ?><br/>
-                                    </th>
-                                </tr>
-                                <tr class="brown upper-text" style="background-color: #E8E8E8;text-transform: uppercase;">
-                                    <td><?php echo $this->translate('core')->__('Billing Address');?></td>
-                                    <td><?php echo $this->translate('core')->__('Delivery Address');?></td>
-                                </tr>
-                                
-                                <tr>
-                                    <td>
-                                        <?php echo $this->address($this->order->getBilling()) ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $this->address($this->order->getDelivery()) ?>
-                                    </td>
-                                </tr>
-                                <tr class="no-border" style=" border:none;height:20px;">
-                                    <td colspan="2"></td>
-                                </tr>
-                               
-                                <tr class="brown" style="background-color: #E8E8E8;">
-                                    <td><?php echo $this->translate('core')->__('Payment Method');?></td>
-                                    <td><?php echo $this->translate('core')->__('Shipping Method');?></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <?php echo $this->order['payment_method'] ?><br/>
-                                    </td>
-                                    <td>
-                                        <?php echo $this->order['shipping_method'] ?><br/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <?php echo $this->paymentForm($this->order['payment_method_code'], 'view', 'front')?><br/>
-                                    </td>
-                                    <td>
-                                        <?php echo $this->shippingForm($this->order['shipping_method_code'], 'view', 'front')?><br/> 
-                                    </td>
-                                </tr>
-                            </table> 
-                            <br clear="all" />
-                            <!-- Products List -->
-                            <table cellspacing="0" cellpadding="10" width="100%" class="four-columns  margin-top">
-                                <tr class="brown" style="background-color: #E8E8E8;">
-                                    <td style="width:25px;"><?php echo $this->translate('core')->__('QTY');?></td>
-                                    <td><?php echo $this->translate('core')->__('Products');?></td>
-                                    <td><?php echo $this->translate('core')->__('SKU');?></td>
-                                    <td><?php echo $this->translate('core')->__('Subtotal');?></td>
-                                </tr>
-                                <?php foreach ($this->order->getProducts() as $product) : ?>
-                                    <tr>
-                                        <td style="width:25px;"><?php echo $product['quantity'] ?></td>
-                                        <td><?php echo $product['name'] ?>
-                                        <?php if (isset($product['attributes'])): ?>
-                                            <br/>
-                                            <?php
-                                            foreach ($product['attributes'] as $attr) {
-                                                echo $attr['product_option'] . ': ' 
-                                                   . $this->escape($attr['product_option_value']) . "<br />\n"; 
-                                            }?>
-                                            
-                                        <?php endif; ?>
-                                        </td>
-                                        <td><?php echo $this->escape($product['sku']) ?></td>
-                                        <td><?php echo $this->currency($product['quantity'] * $product['final_price']) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </table>
-                            <table cellspacing="0" width="100%" style="margin-top:10px;text-align:right;" class="a-right no-border no-padding margin-top"> 
-                                <!-- Totals List -->
-                                <?php foreach ($this->order->getTotals() as $total) : ?>
-                                
-                                    <tr>
-                                        <td class="a-right" ><?php echo $total['title']?>:&nbsp;</td>
-                                        <td style="width:20%; text-align:left; padding-left:30px;"><?php echo $this->currency($total['value'])?></td>
-                                    </tr>
-                                
-                                <?php endforeach; ?>
-                            <!-- Totals List End -->
-                                <tr>
-                                    <td><?php echo $this->translate('core')->__('Total');?> : </td>
-                                    <td style="width:20%; text-align:left; padding-left:30px;"><?php echo $this->currency($this->order['order_total']) ?></td>
-                                </tr>
-                            </table>
-                            <!-- Products List End -->
-                            <!-- Content Section End-->
-                        </td>
-                    </tr>
-                </table>
-                
-                <table cellspacing="0" cellpadding="20" border="0" width="650" style="background: #eee; border: 1px solid #bbb;margin-top:10px;" class="footer">
-                    <tr>
-                        <td class="copyright" style="padding:5px;">
-                            <?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toPhpString('Y'); ?>
-                            <a href=" <?php echo $this->href('/')?> " target="_blank"><?php echo $this->site ?></a>.
-                            <?php echo $this->translate('core')->__("Powered by %s v. %s", "<a href='http://www.axiscommerce.com' title='Axis'>Axis</a>", Axis::app()->getVersion()) ?>
-                        </td>
-                    </tr>
-                </table>
-    
-        
-                <table cellspacing="0" cellpadding="20" border="0" width="650" style="margin-top:10px; padding:5px;background: #eee; border: 1px solid #bbb" class="disclaimer">
-                    <tr>
-                        <td class="disclaimer1" style="padding:5px;">
-                            <?php 
-                                echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.');?><br/> <?php
-                                echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to') . '  ' . $this->from 
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="disclaimer2" style="padding:5px;">
-                            <?php 
-                                echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.');?><br/> <?php
-                                echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.');
-                            ?>
-                        </td>
-                    </tr>
-                </table>
-        
-            </td>
-        </tr>
-    </table>
-    </div>  
-</body>
+                                <?php echo $this->render('sales/invoice_html.phtml'); ?>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <?php echo $this->render('include/footer_html.phtml'); ?>
+                </td>
+            </tr>
+        </table>
+        </div>
+    </body>
 </html>

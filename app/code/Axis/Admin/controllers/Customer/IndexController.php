@@ -265,7 +265,7 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
         // if customer is new
         if ($customer->id != $customerData['id']) {
             Axis::message()->addSuccess(Axis::translate('Axis_Account')->__(
-                'Account was created successfully'
+                'Customer account was created successfully'
             ));
             Axis::dispatch('account_customer_register_success', array(
                 'customer' => $customer,

@@ -118,6 +118,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
                 hideLabel       : true,
                 mode            : 'local',
                 name            : column.dataIndex,
+                submitValue     : false,
                 triggerAction   : 'all',
                 valueField      : 'id'
             };

@@ -94,6 +94,5 @@
 "Crypt key", "Ключ шифрования"
 "Installing. Please wait...", "Идет инсталяция. Пожалуйста подождите..."
 "Your server must have mod_rewrite module loaded to go futher", "Для продолжения на вашем сервере должен быть включен mod_rewrite"
-"Server configuration doesn't meet the Axis needs","Конфигурация сервера не отвечает требованиям Axis"
 "File Permissions","Файловая система"
 "IMPORTANT! Make sure you keep it in a safe place.","ВАЖНО! Сохраните ключ в надежном месте"

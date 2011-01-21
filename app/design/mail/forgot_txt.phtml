@@ -1,21 +1,11 @@
-<?php echo $this->translate('core')->__('Dear') . ', ';
-    if ($this->firstname && $this->lastname) {
-        echo $this->firstname . ' ' . $this->lastname;
-    } else {
-        echo $this->translate('core')->__('customer');
-    }
-?> 
- 
-<?php echo $this->translate('core')->__('If you want to change your password, go to %s', $this->link) ?> 
-<?php echo $this->translate('core')->__('This link is valid for only 24 hours.') ?> 
-<?php echo $this->translate('core')->__('Until') . ': ' . Axis_Date::now()->addDay(1)->toString('YYYY-MM-dd HH:mm')?>
+<?php echo $this->translate('account')->__('Hello, %s', $this->escape($this->firstname . ' ' . $this->lastname)) ?>
 
-<?php echo $this->translate('core')->__('Copyright')?> (c) <?php echo Axis_Date::now()->toString('Y'); ?> <?php echo $this->site ?> 
-<?php echo $this->translate('core')->__("Powered by %s v. %s", "Axis", Axis::app()->getVersion()) ?>
-  
-<?php echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.') ?> 
-<?php echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to')
-    . '  ' . $this->from ?> 
-  
-<?php echo $this->translate('core')->__('This email is sent in accordance with the US CAN-SPAM Law in effect 01/01/2004.')?>  
-<?php echo $this->translate('core')->__('Removal requests can be sent to this address and will be honored and respected.')?>
+
+<?php echo $this->translate('account')->__('You have submitted a forgot password request.') ?>
+
+<?php echo $this->translate('account')->__('If you want to change your password, follow this link: %s', $this->link) ?>
+
+<?php echo $this->translate('account')->__('This link is valid for only %d hours, until %s.', 24, Axis_Date::now()->addDay(1)->toString()) ?>
+
+
+<?php echo $this->render('include/footer_txt.phtml') ?>

@@ -1,0 +1,15 @@
+<?php echo $this->render('include/copyright.phtml') ?>
+
+<table cellspacing="0" cellpadding="5" border="0" width="650" style="margin-top:10px; padding:5px;background: #eee; border: 1px solid #bbb" class="disclaimer">
+    <tr>
+        <td class="disclaimer1" style="padding:5px;font-size:10px;color:#666;">
+            <?php echo $this->translate('core')->__('This email address was given to us by you or by one of our customers.'); ?><br/>
+            <?php echo $this->translate('core')->__('If you feel that you have received this email in error, please send an email to') . '  ' . $this->company['support_email']; ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="disclaimer2" style="padding:5px;font-size:10px;color:#666;">
+            <?php echo $this->translate('core')->__('Please note that this message was sent to the following e-mail address: %s', $this->to); ?>
+        </td>
+    </tr>
+</table>

@@ -37,7 +37,7 @@ Ext.onReady(function() {
         bodyStyle: 'padding: 10px',
         defaults: {
             allowBlank: false,
-            anchor: '-20',
+            anchor: '100%',
             border: false,
             xtype: 'textfield'
         },

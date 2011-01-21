@@ -65,30 +65,32 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             && Axis::getSiteId() === $customer->site_id) {
 
             $hash = $this->_generatePassword();
-            $link = $this->view->href('/account/forgot', true)
-                  . '?hash=' . $hash;
+            $link = $this->view->href('account/forgot', true) . '?hash=' . $hash;
 
-            $mail = new Axis_Mail();
-            $mail->setConfig(array(
-                'event'   => 'forgot_password',
-                'subject' => 'Forgot Your Password',
-                'data'    => array(
-                    'link' => $link,
-                    'firstname' => $customer->firstname,
-                    'lastname' => $customer->lastname
-                ),
-                'to'   => $username,
-                'from' => array('name' => Axis::config()->core->store->owner)
-            ));
             try {
-                $mail->send();
-                Axis::single('account/customer_forgotPassword')->save(array(
-                    'hash' => $hash,
-                    'customer_id' => $customerId
+                $mail = new Axis_Mail();
+                $configResult = $mail->setConfig(array(
+                    'event'   => 'forgot_password',
+                    'subject' => Axis::translate('account')->__('Forgotten Password'),
+                    'data'    => array(
+                        'link'      => $link,
+                        'firstname' => $customer->firstname,
+                        'lastname'  => $customer->lastname
+                    ),
+                    'to' => $username
                 ));
-                Axis::message()->addSuccess(Axis::translate('core')->__(
-                    'Message was sended to you. Check your mailbox'
-                ));
+
+                if ($configResult) {
+                    $mail->send();
+
+                    Axis::single('account/customer_forgotPassword')->save(array(
+                        'hash'          => $hash,
+                        'customer_id'   => $customerId
+                    ));
+                    Axis::message()->addSuccess(Axis::translate('core')->__(
+                        'Message was sended to you. Check your mailbox'
+                    ));
+                }
             } catch (Zend_Mail_Transport_Exception $e) {
                 Axis::message()->addError(
                     Axis::translate('core')->__('Mail sending was failed.')
@@ -106,7 +108,7 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
     {
         if (!$hash = $this->_getParam('hash', null)) {
             $this->_redirect('account/forgot/register');
-        };
+        }
 
         $this->view->pageTitle = Axis::translate('account')->__(
             'Retrieve Forgotten Password'
