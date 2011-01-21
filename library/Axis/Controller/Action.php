@@ -92,7 +92,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             $area = Zend_Registry::get('area');
         }
         if (null === $template) {
-            $template = Axis_Layout::getTemplate($area);
+            $template = Axis_Layout::getTemplateName($area);
         }
 
         $request = $this->getRequest();
@@ -157,7 +157,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $view->doctype('XHTML1_STRICT');
 
         $view->setEncoding('UTF-8');
-
+        //$view = Axis::app()->getBootstrap()->getResource('View');
         $this->view = $view;
 
         //for compatibility
@@ -183,7 +183,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             $area = Zend_Registry::get('area');
         }
         if (null === $template) {
-            $template = Axis_Layout::getTemplate($area);
+            $template = Axis_Layout::getTemplateName($area);
         }
 
         $this->layout = Axis_Layout::getMvcInstance();
@@ -210,7 +210,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $module = $this->getRequest()->getParam('module');
         $area = ($module === 'Axis_Admin') ? 'admin' : 'front';
         Zend_Registry::set('area', $area);
-        $template = Axis_Layout::getTemplate($area);
+        $template = Axis_Layout::getTemplateName($area);
         $this->initView($area, $template);
         $this->initLayout($this->view, $area, $template);
         

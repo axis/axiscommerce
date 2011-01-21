@@ -38,7 +38,7 @@ class Axis_Layout extends Zend_Layout
      * @static
      * @var string
      */
-    private static $_template;
+    private static $_templateName;
 
     /**
      * Box to Block assignment
@@ -92,18 +92,18 @@ class Axis_Layout extends Zend_Layout
      * @param string ['front' || 'admin']
      * @return string
      */
-    public static function getTemplate($area = 'front')
+    public static function getTemplateName($area = 'front')
     {
-        if (null !== self::$_template) {
-            return self::$_template;
+        if (null !== self::$_templateName) {
+            return self::$_templateName;
         }
         if ('admin' === $area) {
             $templateId = Axis::config()->design->main->adminTemplateId;
         } else {
             $templateId = Axis::config()->design->main->frontTemplateId;
         }
-
-        $templateRow = Axis::model('core/template')
+        
+        $templateRow = Axis::single('core/template')
             ->find($templateId)
             ->current();
 
@@ -112,12 +112,12 @@ class Axis_Layout extends Zend_Layout
                 Axis::translate('core')->__(
                     "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
             ));
-            self::$_template = self::DEFAULT_TEMPLATE;
+            self::$_templateName = self::DEFAULT_TEMPLATE;
         } else {
-            self::$_template = $templateRow->name;
+            self::$_templateName = $templateRow->name;
         }
 
-        return self::$_template;
+        return self::$_templateName;
     }
 //
 //    public function setAssignments($assignments)
@@ -145,6 +145,54 @@ class Axis_Layout extends Zend_Layout
         return false;
     }
 
+    protected function _initLayout()
+    {
+        $pages = $this->getPages();
+        $templateId = Axis::config('design/main/frontTemplateId');
+
+        $rows = Axis::single('core/template_page')->select()
+            ->where('template_id = ?', $templateId)
+            ->where('page_id IN(?)', array_keys($pages))
+            ->order('priority DESC')
+            ->fetchAll();
+
+        $layout = '';
+        $pageId = null;
+        foreach ($rows as $row) {
+            if (null !== $pageId &&
+                !$this->_catRewrite($pageId, $row['page_id'])) {
+
+                continue;
+            }
+            $pageId = $row['page_id'];
+            $layout = $row['layout'];
+        }
+
+        if (empty ($layout)) {
+            $layout = Axis::single('core/template_page')->select('layout')
+                ->where('template_id = ?', $templateId)
+                ->where('page_id = ? ', $row['parent_page_id'])
+                ->fetchOne();
+
+        }
+
+        if (empty($layout)) {
+            $layout = self::DEFAULT_LAYOUT;
+            $template = Axis::single('core/template')
+                ->find($templateId)
+                ->current();
+            if ($template instanceof Axis_Db_Table_Row
+                && !empty($template->default_layout)) {
+
+                $layout = $template->default_layout;
+            }
+            
+        }
+
+        $this->_axisLayout = 'layout' . substr($layout, strpos($layout, '_'));
+    }
+
+
     public function getLayout()
     {
         if ('admin' === Zend_Registry::get('area')) {
@@ -155,69 +203,42 @@ class Axis_Layout extends Zend_Layout
             //add this->helper->layout->setLayout() support
             $this->_axisLayout = 'layout' . substr($this->_layout, strpos($this->_layout, '_'));
         } elseif (null === $this->_axisLayout) {
-            $pages = $this->getPagesByRequest();
-            $templateId = Axis::config()->design->main->frontTemplateId;
-
-            $rows = Axis::single('core/template_page')->select()
-                ->where('template_id = ?', $templateId)
-                ->where('page_id IN(?)', array_keys($pages))
-                ->order('priority DESC')
-                ->fetchAll();
-
-            $layout = '';
-            $pageId = null;
-            foreach ($rows as $row) {
-                if (null !== $pageId &&
-                    !$this->_catRewrite($pageId, $row['page_id'])) {
-
-                    continue;
-                }
-                $pageId = $row['page_id'];
-                $layout = $row['layout'];
-            }
-
-            if (empty($layout)) {
-                $layout = $this->_getDefaultLayout();
-            }
-
-            $this->_axisLayout = 'layout' . substr($layout, strpos($layout, '_'));
+            $this->_initLayout();
         }
 
         return $this->_axisLayout;
     }
 
-    private function _getDefaultLayout()
-    {
-        $template = Axis::single('core/template')
-            ->find(Axis::config()->design->main->frontTemplateId)
-            ->current();
-        if ($template instanceof Axis_Db_Table_Row
-            && !empty($template->default_layout)) {
-
-            return $template->default_layout;
-        }
-        return self::DEFAULT_LAYOUT;
-    }
-
     protected function _initPages()
     {
-        Axis_FirePhp::log(__METHOD__ . '  '  . __LINE__);
         $request = Zend_Controller_Front::getInstance()->getRequest();
         list($namespace, $module) = explode('_', $request->getModuleName(), 2);
-        $this->_pages = Axis::single('core/page')->getPagesByRequest(
+        $pages = Axis::single('core/page')->getPagesByRequest(
             strtolower($module),
             $request->getControllerName(),
             $request->getActionName()
         );
+
+        function _sort($node, $rewriteNode)
+        {
+            if ((0 > strcmp($node['module_name'], $rewriteNode['module_name'])) ||
+                (0 > strcmp($node['controller_name'], $rewriteNode['controller_name'])) ||
+                (0 > strcmp($node['action_name'], $rewriteNode['action_name'])))
+            {
+                return true;
+            }
+            return false;
+        }
+        uasort($pages, '_sort');
+        $this->_pages = $pages;
     }
 
-        /**
+    /**
      *
      * @return array
      */
-    public function getPagesByRequest()
+    public function getPages()
     {
-        Axis_FirePhp::log(__METHOD__ . '  '  . __LINE__);
         if (null === $this->_pages) {
             $this->_initPages();
         }
@@ -226,14 +247,24 @@ class Axis_Layout extends Zend_Layout
 
     private function _initAssignments()
     {
-        Axis_FirePhp::log(__METHOD__ . '  '  . __LINE__);
-        $pages = $this->getPagesByRequest();
-        $assignments = array();
-        $tabAssignments = array();
+        $pages = $this->getPages();
         if (!count($pages)) {
             return;
         }
+        // add parent page
+        $strongPage = current($pages);
         $templateId = Axis::config()->design->main->frontTemplateId;
+        $parentPage = Axis::single('core/page')->select('*')
+            ->join('core_template_page', 'cp.id = ctp.parent_page_id')
+            ->where('ctp.template_id = ?', $templateId)
+            ->where('ctp.page_id = ?', $strongPage['id'])
+            ->fetchRow();
+        if ($parentPage) {
+            $this->_pages[$parentPage['id']] = $parentPage;
+        }
+        $assignments = array();
+        $tabAssignments = array();
+        
         $rows = Axis::single('core/template_box')->select(
                 array('id', 'class', 'block', 'config')
             )->joinInner('core_template_box_page',
@@ -247,15 +278,17 @@ class Axis_Layout extends Zend_Layout
                 )
             )->where('ctb.template_id = ?', $templateId)
             ->where('ctb.box_status = 1')
-            ->where('ctbp.page_id IN(?)', array_keys($pages))
+            ->where('ctbp.page_id IN(?)', array_keys($this->_pages))
             ->order('ctb.sort_order')
             ->fetchAll()
             ;
         foreach ($rows as $row) {
-            $block = !empty($row['other_block']) ? $row['other_block'] : $row['block'];
-
-            if (isset($assignments[$block][$row['id']])) {
-                $pageId = $assignments[$block][$row['id']]['page_id'];
+            
+            $container = empty($row['other_block']) ?
+                $row['block'] : $row['other_block'];
+            $blockId = $row['id'];
+            if (isset($assignments[$container][$blockId])) {
+                $pageId = $assignments[$container][$blockId]['page_id'];
                 if (!$this->_catRewrite($pageId, $row['page_id'])) {
                     continue;
                 }
@@ -267,7 +300,7 @@ class Axis_Layout extends Zend_Layout
                 continue;
             }
 
-            $assignments[$block][$row['id']] = array(
+            $assignments[$container][$blockId] = array(
                 'boxCategory'  => ucfirst($namespace),
                 'boxModule'    => ucfirst($module),
                 'boxName'      => ucfirst($box),
@@ -278,18 +311,18 @@ class Axis_Layout extends Zend_Layout
                 'show'         => $row['box_show']
             );
             if (!empty($row['config'])) {
-                $assignments[$block][$row['id']]['config'] = $row['config'];
+                $assignments[$container][$blockId]['config'] = $row['config'];
             }
 
             if (strstr($row['class'], 'Axis_Cms_Block_')) {
-                $static_block = trim(str_replace('Axis_Cms_Block_', '', $row['class']));
-                if (empty($static_block)) {
+                $staticBlock = trim(str_replace('Axis_Cms_Block_', '', $row['class']));
+                if (empty($staticBlock)) {
                     continue;
                 }
-                $assignments[$block][$row['id']]['staticBlock'] = $static_block;
+                $assignments[$container][$blockId]['staticBlock'] = $staticBlock;
             }
             if (null !== $row['tab_container']) {
-                $tabAssignments[$block][$row['id']] = $assignments[$block][$row['id']];
+                $tabAssignments[$container][$blockId] = $assignments[$container][$blockId];
             }
         }
         $this->_assignments = &$assignments;
@@ -297,14 +330,13 @@ class Axis_Layout extends Zend_Layout
         Axis_Core_Box_Abstract::setView($this->getView());
     }
 
-    protected function _getAssignments($blockName = '')
+    protected function _getAssignments($container = '')
     {
-        Axis_FirePhp::log(__METHOD__ . '  '  . __LINE__);
         if (null === $this->_assignments) {
             $this->_initAssignments();
         }
-        return isset($this->_assignments[$blockName]) ?
-            $this->_assignments[$blockName] : array();
+        return isset($this->_assignments[$container]) ?
+            $this->_assignments[$container] : array();
     }
 
     public function __get($key)
@@ -348,9 +380,6 @@ class Axis_Layout extends Zend_Layout
                 $afterContent .= $boxContent;
             }
         }
-        Axis_FirePhp::log(
-            $key . ' >>>> ' . $beforeContent . ' >>>> ' . parent::__get($key) . ' >>>> ' . $afterContent
-        );
         return $beforeContent . parent::__get($key) . $afterContent;
     }
 
