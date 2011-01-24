@@ -53,7 +53,7 @@ $priceMax       = isset($price[1]) ? $price[1] : null;
 foreach ($this->box->getData('filters/price/groups') as $price) :
     $priceFrom  = $price['price_group'];
     $priceTo    = $price['price_group'] + $priceSubstract - 0.01;
-    if ($priceMax && $priceTo > $priceMax) {
+    if (null !== $priceMax && $priceTo > $priceMax) {
         $priceTo = $priceMax;
     }
     echo  '<li><a rel="nofollow" href="' . $this->hurl(array(
