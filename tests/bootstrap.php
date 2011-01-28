@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Test
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 define('AXIS_ROOT', realpath(dirname('../')));
@@ -50,17 +50,17 @@ Axis::$siteId = $config['system']['siteId'];
 
 $bootstrapConfig = array(
     'bootstrap' => array(
-        'path' => AXIS_ROOT . '/library/Axis/Bootstrap/Test.php',
+        'path'  => AXIS_ROOT . '/library/Axis/Bootstrap/Test.php',
         'class' => 'Axis_Bootstrap_Test'
     ),
     'phpSettings' => array(
         'display_startup_errors' => true,
-        'display_errors' => true
+        'display_errors'         => true
     )
 );
 
 $application = new Zend_Application(APPLICATION_ENV, $bootstrapConfig);
 
 $application->bootstrap(
-    array('Loader', 'Config', 'DbAdapter', 'Cache', 'Locale', 'App')
+    array('Loader', 'Config', 'DbAdapter', 'Cache', 'Locale', 'Area', 'Translate')
 );

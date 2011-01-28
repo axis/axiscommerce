@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Bootstrap
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,17 +31,6 @@
  */
 class Axis_Bootstrap_Test extends Axis_Bootstrap
 {
-    protected function _initLoader()
-    {
-        require_once 'Zend/Loader/Autoloader.php';
-        $autoloader = Zend_Loader_Autoloader::getInstance();
-        $autoloader->registerNamespace(array(
-            'Axis',
-            'Image'
-        ));
-        return $autoloader;
-    }
-
     protected function _initConfig()
     {
         $this->bootstrap('Loader');
@@ -51,10 +40,14 @@ class Axis_Bootstrap_Test extends Axis_Bootstrap
         return Axis::config();
     }
 
-    protected function _initApp()
+    protected function _initArea()
     {
         $this->bootstrap('Session');
         Zend_Registry::set('area', 'front');
+    }
+
+    protected function _initTranslate()
+    {
         Axis::translate();
     }
 }
