@@ -32,7 +32,6 @@
  */
 abstract class Axis_Controller_Action extends Zend_Controller_Action
 {
-    protected $_siteId;
     protected $_nsMain;
 
     /**
@@ -202,7 +201,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         parent::init();
 
         $this->db = Axis::db();
-        $this->_siteId = Axis::getSiteId();
 
         $module = $this->getRequest()->getParam('module');
         $area = ($module === 'Axis_Admin') ? 'admin' : 'front';

@@ -279,7 +279,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $this->layout->disableLayout();
 
-        $siteId = $this->_getParam('siteId', $this->_siteId);
+        $siteId = $this->_getParam('siteId', Axis::getSiteId());
 
         $data = Zend_Json::decode($this->_getParam('data'));
         $tableProduct = Axis::single('catalog/product');

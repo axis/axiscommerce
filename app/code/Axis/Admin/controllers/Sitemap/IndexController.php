@@ -62,7 +62,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
          * Get products
          */
         $this->view->products = Axis::single('sitemap/file')
-            ->getAllActiveProducts($config['lang_id'], array($config['site_id']));
+            ->getAllActiveProducts($config['lang_id'], $config['site_id']);
 
         $changefreq['products'] = $conf->products->frequency;
         $priority['products']   = $conf->products->priority;
