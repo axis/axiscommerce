@@ -55,7 +55,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
         $items = Axis::single('catalog/category')
-            ->getFlatTree($this->_langId, $this->_siteId, true);
+            ->getFlatTree(Axis_Locale::getLanguageId(), $this->_siteId, true);
         $this->view->items = current($items);
         $this->view->items['siteId'] = $this->_siteId;
         $this->render();
@@ -71,8 +71,9 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
         $items = array();
-        $productRowset = Axis::single('sitemap/file')
-            ->getAllActiveProducts($this->_langId, array($this->_siteId));
+        $productRowset = Axis::single('sitemap/file')->getAllActiveProducts(
+            Axis_Locale::getLanguageId(), array($this->_siteId)
+        );
         foreach ($productRowset as $item) {
             $item['lvl'] = 1 ;
             $items[] = $item;

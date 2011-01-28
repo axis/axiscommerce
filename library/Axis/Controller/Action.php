@@ -33,7 +33,6 @@
 abstract class Axis_Controller_Action extends Zend_Controller_Action
 {
     protected $_lang;
-    protected $_langId;
     protected $_siteId;
     protected $_nsMain;
 
@@ -205,7 +204,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
 
         $this->db = Axis::db();
         $this->_siteId = Axis::getSiteId();
-        $this->_langId = Axis_Locale::getLanguageId();
 
         $module = $this->getRequest()->getParam('module');
         $area = ($module === 'Axis_Admin') ? 'admin' : 'front';

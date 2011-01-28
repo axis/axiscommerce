@@ -42,7 +42,7 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
         $this->view->fieldValidators = array();
 
         $this->view->fieldGroups = Axis::model('account/Customer_FieldGroup')
-            ->getGroups($this->_langId);
+            ->getGroups(Axis_Locale::getLanguageId());
         $this->render();
     }
     
