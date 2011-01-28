@@ -32,7 +32,6 @@
  */
 abstract class Axis_Controller_Action extends Zend_Controller_Action
 {
-    protected $_lang;
     protected $_siteId;
     protected $_nsMain;
 
