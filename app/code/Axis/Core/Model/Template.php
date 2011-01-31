@@ -33,6 +33,8 @@
  */
 class Axis_Core_Model_Template extends Axis_Db_Table
 {
+    const DEFAULT_TEMPLATE = 'default';
+
     protected $_name = 'core_template';
 
     /**

@@ -44,8 +44,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $module = $this->getRequest()->getParam('module');
         $area = ($module === 'Axis_Admin') ? 'admin' : 'front';
         Zend_Registry::set('area', $area);
-        $template = Axis_Layout::getTemplateName($area);
-        $this->initView($area, $template);
+        $this->initView($area);
         
         if ('front' === $area
             && $this->_hasParam('locale')
@@ -69,11 +68,10 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
      * Initialize View object
      *
      * @param string $area
-     * @param string $theme
      * @return Zend_View_Interface
      * @see Zend_Controller_Action initView()
      */
-    public function initView($area = null, $theme = null)
+    public function initView($area = null)
     {
         //$view = parent::initView();
         require_once 'Zend/View/Interface.php';
@@ -96,8 +94,25 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         if (null === $area) {
             $area = Zend_Registry::get('area');
         }
-        if (null === $theme) {
-            $theme = Axis_Layout::getTemplateName($area);
+
+        if ('admin' === $area) {
+            $templateId = Axis::config('design/main/adminTemplateId');
+        } else {
+            $templateId = Axis::config('design/main/frontTemplateId');
+        }
+
+        $template = Axis::single('core/template')
+            ->find($templateId)
+            ->current();
+
+        if (!$template) {
+            Axis::message()->addError(
+                Axis::translate('core')->__(
+                    "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
+            ));
+            $theme = Axis_Core_Model_Template::DEFAULT_TEMPLATE;
+        }  else {
+            $theme = $template->name;
         }
 
         $request = $this->getRequest();
