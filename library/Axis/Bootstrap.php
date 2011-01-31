@@ -218,7 +218,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap('Session');
         return Axis_Layout::startMvc();
-        // see Axis_Controller_Action method initView && initLayout
+        // see Axis_Controller_Action method initView
         //(have params can access only after dispatch)
     }
 
