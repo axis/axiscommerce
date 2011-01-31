@@ -33,26 +33,37 @@
 abstract class Axis_Controller_Action extends Zend_Controller_Action
 {
     /**
-     *
-     * @param  string $app
-     * @return string
+     *  Main init
      */
-    private function _getScriptsPath($app)
+    public function init()
     {
-        if ('front' === $app) {
-            list($namespace, $module) = explode(
-                '_', strtolower($this->getRequest()->getModuleName()), 2
-            );
+        parent::init();
+
+        $this->db = Axis::db();
+
+        $module = $this->getRequest()->getParam('module');
+        $area = ($module === 'Axis_Admin') ? 'admin' : 'front';
+        Zend_Registry::set('area', $area);
+        $template = Axis_Layout::getTemplateName($area);
+        $this->initView($area, $template);
+        $this->initLayout($this->view, $area, $template);
+        
+        if ('front' === $area
+            && $this->_hasParam('locale')
+            && Axis_Controller_Router_Route::hasLocaleInUrl()) {
+
+            $locale = $this->_getParam('locale');
+        } elseif (isset(Axis::session()->locale)) {
+            $locale = Axis::session()->locale;
         } else {
-            $controller = $this->getRequest()->getControllerName();
-            if (false === strpos($controller, '_')) {
-                $module = 'core';
-            } else {
-                $controllerArray = explode('_', $controller);
-                $module = current($controllerArray);
-            }
+            $locale = Axis_Locale::getDefaultLocale();
         }
-        return $module;
+        Axis_Locale::setLocale($locale);
+        
+        Axis::translate();
+
+        //$this->_helper->removeHelper('json');
+        $this->_helper->addHelper(new Axis_Controller_Action_Helper_Json());
     }
 
     /**
@@ -82,7 +93,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         if ($view->templateName) {
             return $view;
         }
-        
+
         if (null === $area) {
             $area = Zend_Registry::get('area');
         }
@@ -120,7 +131,16 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         //$view->defaultTemplate = 'default';
 
         //Initialize Zend_View stack
-        $module = $this->_getScriptsPath($area);
+        if ('front' === $area) {
+            $modulePath = strtolower($module);
+        } else {
+            $controller = $request->getControllerName();
+
+            $modulePath = 'core';
+            if (strpos($controller, '_')) {
+                list($modulePath) = explode('_', $controller);
+            }
+        }
 
         $view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
         $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
@@ -139,7 +159,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             }
             if (is_readable($templatePath . '/templates')) {
                 $view->addScriptPath($templatePath . '/templates');
-                $view->addScriptPath($templatePath . '/templates/' . $module);
+                $view->addScriptPath($templatePath . '/templates/' . $modulePath);
             }
             if (is_readable($templatePath . '/layouts')) {
                 $view->addScriptPath($templatePath . '/layouts');
@@ -189,40 +209,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         ));
 
         return $this->layout;
-    }
-
-    /**
-     *  Main init
-     */
-    public function init()
-    {
-        parent::init();
-
-        $this->db = Axis::db();
-
-        $module = $this->getRequest()->getParam('module');
-        $area = ($module === 'Axis_Admin') ? 'admin' : 'front';
-        Zend_Registry::set('area', $area);
-        $template = Axis_Layout::getTemplateName($area);
-        $this->initView($area, $template);
-        $this->initLayout($this->view, $area, $template);
-        
-        if ('front' === $area
-            && $this->_hasParam('locale')
-            && Axis_Controller_Router_Route::hasLocaleInUrl()) {
-
-            $locale = $this->_getParam('locale');
-        } elseif (isset(Axis::session()->locale)) {
-            $locale = Axis::session()->locale;
-        } else {
-            $locale = Axis_Locale::getDefaultLocale();
-        }
-        Axis_Locale::setLocale($locale);
-        
-        Axis::translate();
-
-        //$this->_helper->removeHelper('json');
-        $this->_helper->addHelper(new Axis_Controller_Action_Helper_Json());
     }
 
     /**
