@@ -218,7 +218,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
 
         $currency = Axis::single('locale/currency');
         $row['price_max'] = $currency->to($row['price_max']);
-        $row['price_min'] = $currency->to($row['price_min']);
+        $row['price_min'] = $row['price_min'] > 0 ? $currency->to($row['price_min']) : 1;
         $rate = $currency->getData('', 'rate');
 
         //Return rounded number, example: 80->10, 120->100, 895->100, 1024->1000
