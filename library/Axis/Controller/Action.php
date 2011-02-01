@@ -58,8 +58,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         }
         Axis_Locale::setLocale($locale);
         
-        Axis::translate();
-
         //$this->_helper->removeHelper('json');
         $this->_helper->addHelper(new Axis_Controller_Action_Helper_Json());
     }

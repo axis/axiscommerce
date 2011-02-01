@@ -42,12 +42,6 @@ class Axis_Bootstrap_Test extends Axis_Bootstrap
 
     protected function _initArea()
     {
-        $this->bootstrap('Session');
         Zend_Registry::set('area', 'front');
-    }
-
-    protected function _initTranslate()
-    {
-        Axis::translate();
     }
 }
