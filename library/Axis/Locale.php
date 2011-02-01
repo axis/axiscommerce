@@ -49,10 +49,7 @@ class Axis_Locale
                 return;
             }
         }
-//        Zend_Debug::dump(Axis_Area::isBackend());
-//        Zend_Debug::dump(Axis_Area::isFrontend());
-//        Zend_Debug::dump(Axis_Area::isInstaller());
-//        die;
+
         if (Axis_Area::isInstaller()) {
 
             $session = Axis::session('install');

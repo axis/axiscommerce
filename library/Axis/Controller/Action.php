@@ -40,13 +40,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         parent::init();
 
         $this->db = Axis::db();
-
-        $module = $this->getRequest()->getParam('module');
-        if ($module === 'Axis_Admin') {
-            Axis_Area::backend();
-        } else {
-            Axis_Area::frontend();
-        }
         $this->initView();
         
         if (Axis_Area::isFrontend()
@@ -91,7 +84,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             return $view;
         }
 
-        $area = Axis_Area::getArea();
         if (Axis_Area::isBackend()) {
             $templateId = Axis::config('design/main/adminTemplateId');
         } else {
@@ -104,7 +96,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $systemPath = Axis::config('system/path');
 
         $view->templateName = $theme;
-        $view->area         = $area;
+        $view->area = $area = Axis_Area::getArea();
         list($namespace, $module) = explode('_', $request->getModuleName(), 2);
         $view->namespace    = $namespace;
         $view->moduleName   = $module;
@@ -133,7 +125,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             $modulePath = strtolower($module);
         } else {
             $controller = $request->getControllerName();
-
             $modulePath = 'core';
             if (strpos($controller, '_')) {
                 list($modulePath) = explode('_', $controller);
@@ -144,23 +135,23 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
         $view->setScriptPath(array());
 
-        $fallbackList = array_unique(array(
+        $themes = array_unique(array(
             $theme,
             /* @TODO user defined default: $view->defaultTemplate */
             'fallback',
             'default'
         ));
-        foreach (array_reverse($fallbackList) as $fallback) {
-            $templatePath = $systemPath . '/app/design/' . $area . '/' . $fallback;
-            if (is_readable($templatePath . '/helpers')) {
-                $view->addHelperPath($templatePath . '/helpers', 'Axis_View_Helper');
+        foreach (array_reverse($themes) as $_theme) {
+            $themePath = $systemPath . '/app/design/' . $area . '/' . $_theme;
+            if (is_readable($themePath . '/helpers')) {
+                $view->addHelperPath($themePath . '/helpers', 'Axis_View_Helper');
             }
-            if (is_readable($templatePath . '/templates')) {
-                $view->addScriptPath($templatePath . '/templates');
-                $view->addScriptPath($templatePath . '/templates/' . $modulePath);
+            if (is_readable($themePath . '/templates')) {
+                $view->addScriptPath($themePath . '/templates');
+                $view->addScriptPath($themePath . '/templates/' . $modulePath);
             }
-            if (is_readable($templatePath . '/layouts')) {
-                $view->addScriptPath($templatePath . '/layouts');
+            if (is_readable($themePath . '/layouts')) {
+                $view->addScriptPath($themePath . '/layouts');
             }
         }
 
