@@ -119,7 +119,7 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
 
     protected function _initArea()
     {
-        Zend_Registry::set('area', 'install');
+        Axis_Area::installer();
     }
 
     protected function _initFrontController()

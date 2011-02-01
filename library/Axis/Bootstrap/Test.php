@@ -42,6 +42,6 @@ class Axis_Bootstrap_Test extends Axis_Bootstrap
 
     protected function _initArea()
     {
-        Zend_Registry::set('area', 'front');
+        Axis_Area::frontend();
     }
 }

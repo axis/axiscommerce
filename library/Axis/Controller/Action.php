@@ -42,11 +42,14 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $this->db = Axis::db();
 
         $module = $this->getRequest()->getParam('module');
-        $area = ($module === 'Axis_Admin') ? 'admin' : 'front';
-        Zend_Registry::set('area', $area);
-        $this->initView($area);
+        if ($module === 'Axis_Admin') {
+            Axis_Area::backend();
+        } else {
+            Axis_Area::frontend();
+        }
+        $this->initView();
         
-        if ('front' === $area
+        if (Axis_Area::isFrontend()
             && $this->_hasParam('locale')
             && Axis_Controller_Router_Route::hasLocaleInUrl()) {
 
@@ -65,11 +68,10 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
     /**
      * Initialize View object
      *
-     * @param string $area
      * @return Zend_View_Interface
      * @see Zend_Controller_Action initView()
      */
-    public function initView($area = null)
+    public function initView()
     {
 //        $view = parent::initView();
         require_once 'Zend/View/Interface.php';
@@ -89,11 +91,8 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             return $view;
         }
 
-        if (null === $area) {
-            $area = Zend_Registry::get('area');
-        }
-
-        if ('admin' === $area) {
+        $area = Axis_Area::getArea();
+        if (Axis_Area::isBackend()) {
             $templateId = Axis::config('design/main/adminTemplateId');
         } else {
             $templateId = Axis::config('design/main/frontTemplateId');
@@ -130,7 +129,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         //$view->defaultTemplate = 'default';
 
         //Initialize Zend_View stack
-        if ('front' === $area) {
+        if (Axis_Area::isFrontend()) {
             $modulePath = strtolower($module);
         } else {
             $controller = $request->getControllerName();

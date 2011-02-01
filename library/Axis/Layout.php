@@ -154,7 +154,7 @@ class Axis_Layout extends Zend_Layout
 
     public function getLayout()
     {
-        if ('admin' === Zend_Registry::get('area')) {
+        if (Axis_Area::isBackend()) {
             return 'layout';
         }
 
@@ -300,7 +300,7 @@ class Axis_Layout extends Zend_Layout
 
     public function __get($key)
     {
-        if ('admin' === Zend_Registry::get('area')) {
+        if (Axis_Area::isBackend()) {
             return parent::__get($key);
         }
 
