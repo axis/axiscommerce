@@ -73,7 +73,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
      */
     public function initView($area = null)
     {
-        //$view = parent::initView();
+//        $view = parent::initView();
         require_once 'Zend/View/Interface.php';
         if (!$this->getInvokeArg('noViewRenderer')
             && $this->_helper->hasHelper('viewRenderer')) {
@@ -101,19 +101,7 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             $templateId = Axis::config('design/main/frontTemplateId');
         }
 
-        $template = Axis::single('core/template')
-            ->find($templateId)
-            ->current();
-
-        if (!$template) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
-            ));
-            $theme = Axis_Core_Model_Template::DEFAULT_TEMPLATE;
-        }  else {
-            $theme = $template->name;
-        }
+        $theme = Axis::single('core/template')->getTemplateNameById($templateId);
 
         $request = $this->getRequest();
         $systemPath = Axis::config('system/path');

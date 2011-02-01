@@ -433,4 +433,15 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         return true;
     }
 
+    public function getTemplateNameById($id)
+    {
+        if (!$row = $this->find($id)->current()) {
+            Axis::message()->addError(
+                Axis::translate('core')->__(
+                    "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
+            ));
+            return Axis_Core_Model_Template::DEFAULT_TEMPLATE;
+        }
+        return $row->name;
+    }
 }
