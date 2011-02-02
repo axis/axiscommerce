@@ -86,6 +86,7 @@ class Axis_Admin_Model_Acl_Resource extends Axis_Db_Table
         
         return $this;
     }
+
     /**
      *
      * @param  string $resource
@@ -94,6 +95,25 @@ class Axis_Admin_Model_Acl_Resource extends Axis_Db_Table
     public function remove($resource)
     {
         $this->delete("resource_id LIKE '{$resource}%'");
+        return $this;
+    }
+
+    /**
+     * Rename acl resource
+     *
+     * @param string $oldResource
+     * @param string $newResource
+     * @return Axis_Admin_Model_Acl_Resource
+     */
+    public function rename($oldResource, $newResource)
+    {
+
+        $select = $this->select()->where('resource_id = ?', $oldResource);
+        $row = $this->fetchAll($select)->current();
+        if ($row) {
+            $row->resource_id = $newResource;
+            $row->save();
+        }
         return $this;
     }
 }
