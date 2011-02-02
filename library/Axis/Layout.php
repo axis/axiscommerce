@@ -151,7 +151,6 @@ class Axis_Layout extends Zend_Layout
         $this->_axisLayout = 'layout' . substr($layout, strpos($layout, '_'));
     }
 
-
     public function getLayout()
     {
         if (Axis_Area::isBackend()) {
@@ -160,7 +159,8 @@ class Axis_Layout extends Zend_Layout
 
         if (null !== $this->_layout) {
             //add this->helper->layout->setLayout() support
-            $this->_axisLayout = 'layout' . substr($this->_layout, strpos($this->_layout, '_'));
+//            $this->_axisLayout = 'layout' . substr($this->_layout, strpos($this->_layout, '_'));
+            $this->_axisLayout = $this->_layout;
         } elseif (null === $this->_axisLayout) {
             $this->_initLayout();
         }
