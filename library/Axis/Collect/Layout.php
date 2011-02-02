@@ -47,7 +47,7 @@ class Axis_Collect_Layout implements Axis_Collect_Interface
     {
         if (null === self::$_collection) {
             $designPath = Axis::config()->system->path . '/app/design/front';
-            $skins = Axis_Collect_Skin::collect();
+            $skins = Axis_Collect_Theme::collect();
             $layouts = array();
             foreach ($skins as $skin) {
                 $path = $designPath . '/' . $skin . '/layouts';
