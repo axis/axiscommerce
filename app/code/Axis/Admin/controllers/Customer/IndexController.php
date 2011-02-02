@@ -49,8 +49,8 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
         $value = Axis::single('account/Customer_ValueSet_Value');
 
         $fields = Axis::single('account/customer_field');
-        $fieldGroups = Axis::single('account/Customer_FieldGroup');
-        $fieldGroups = $fieldGroups->getGroups($this->_langId);
+        $fieldGroups = Axis::single('account/Customer_FieldGroup')
+            ->getGroups(Axis_Locale::getLanguageId());
 
         foreach ($fieldGroups as $fieldGroup){
             //getting all fields

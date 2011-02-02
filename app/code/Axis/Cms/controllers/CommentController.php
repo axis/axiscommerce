@@ -118,8 +118,9 @@ class Axis_Cms_CommentController extends Axis_Core_Controller_Front
             ->setDescription($content['meta_description'])
             ->setKeywords($content['meta_keyword']);
 
-        $layout = substr($currentPage->layout, strpos($currentPage->layout, '_'));
-        $this->_helper->layout->setLayout('layout' . $layout);
+        $layout = $currentPage->layout;
+        $layout = 'layout' . substr($layout, strpos($layout, '_'));
+        $this->_helper->layout->setLayout($layout);
 
         $this->render();
     }

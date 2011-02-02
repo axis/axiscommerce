@@ -218,7 +218,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap('Session');
         return Axis_Layout::startMvc();
-        // see Axis_Controller_Action method initView && initLayout
+        // see Axis_Controller_Action method initView
         //(have params can access only after dispatch)
     }
 
@@ -315,18 +315,23 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Router');
         $front = Zend_Controller_Front::getInstance();
         //$front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
-        // Настройка front контроллера, указание
-        // базового директорий контролеров, правил маршрутизации
         //$front->throwExceptions(false);
         $front->setDefaultModule('Axis_Core');
         $front->setControllerDirectory(Axis::app()->getControllers());
         //$front->setRouter($router);
         $front->setParam('noViewRenderer', true);
         $front->registerPlugin(
-            new Axis_Controller_Plugin_ErrorHandler_Override()
+            new Axis_Controller_Plugin_ErrorHandler_Override(), 10
         );
 
         return $front; // this is *VERY* important
+    }
+
+    protected function _initArea()
+    {
+        $this->bootstrap('FrontController');
+        $front = $this->getResource('FrontController');
+        $front->registerPlugin(new Axis_Controller_Plugin_Area(), 20);
     }
 
     protected function _initDebug()

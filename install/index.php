@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Install
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -38,8 +38,8 @@ if (!class_exists('Zend_Loader')) {
         . realpath('../library');
     exit();
 }
-$autoloadeer = Zend_Loader_Autoloader::getInstance();
-$autoloadeer->setFallbackAutoloader(true);
+$autoloader = Zend_Loader_Autoloader::getInstance();
+$autoloader->setFallbackAutoloader(true);
 
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV',
@@ -64,7 +64,7 @@ $bootstrapConfig = array(
 $application = new Axis_Application(APPLICATION_ENV, $bootstrapConfig);
 
 $application->bootstrap(array(
-    'Application', 'Area', 'Session', 'Cache', 'Locale', 'View'
+    'Application', 'Area', 'Session', 'Cache', 'Locale', 'Layout'
 ));
 if (is_readable(AXIS_ROOT . '/app/etc/config.php')) {
     $application->bootstrap('DbAdapter');

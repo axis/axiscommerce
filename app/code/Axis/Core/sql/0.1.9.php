@@ -26,7 +26,7 @@
 class Axis_Core_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.9';
-    protected $_info = 'Session validators added';
+    protected $_info = 'Rename table core_template_layout_page to core_template_page';
 
     public function up()
     {
@@ -39,7 +39,6 @@ class Axis_Core_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
 
             ALTER TABLE `{$installer->getTable('core_template_page')}`
                 ADD COLUMN `parent_page_id` MEDIUMINT(8) UNSIGNED AFTER `layout`;
-
 
         ");
 

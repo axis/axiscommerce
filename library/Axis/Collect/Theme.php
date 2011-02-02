@@ -29,7 +29,7 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_Skin implements Axis_Collect_Interface
+class Axis_Collect_Theme implements Axis_Collect_Interface
 {
     /**
      *
@@ -38,16 +38,16 @@ class Axis_Collect_Skin implements Axis_Collect_Interface
      */
     public static function collect()
     {
-        $path = Axis::config()->system->path . '/app/design/front';
+        $path = Axis::config('system/path') . '/app/design/front';
         $dh = opendir($path);
-        $skins = array();
+        $themes = array();
         while (($file = readdir($dh))) {
             if ($file[0] == '.')
                 continue;
-            $skins[$file] = $file;
+            $themes[$file] = $file;
         }
         closedir($dh);
-        return $skins;
+        return $themes;
     }
 
     /**

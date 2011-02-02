@@ -49,7 +49,7 @@ class Axis_Translate extends Zend_Translate
      */
     public function __construct($options = array())
     {
-        if ('install' === Zend_Registry::get('area')
+        if (Axis_Area::isInstaller()
             || !Axis::config('core/translation/autodetect')) {
 
             self::setCache(Axis::cache());
@@ -137,7 +137,7 @@ class Axis_Translate extends Zend_Translate
     {
         $text = array_shift($args);
 
-        if ('install' !== Zend_Registry::get('area')
+        if (!Axis_Area::isInstaller()
             && Axis::config('core/translation/autodetect')
             && !$this->getAdapter()->isTranslated($text)) {
 

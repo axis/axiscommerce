@@ -74,10 +74,11 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
         $this->view->sites = Axis_Collect_Site::collect();
         $this->view->customerGroups = Axis_Collect_CustomerGroup::collect();
         $this->view->manufactures = Axis_Collect_Manufacturer::collect();
+        $languageId = Axis_Locale::getLanguageId();
         $this->view->categoryTrees = Axis::single('catalog/category')
-            ->getFlatTree($this->_langId);
+            ->getFlatTree($languageId);
         $this->view->attributes = Axis::single('catalog/product_option')
-            ->getValueSets($this->_langId);
+            ->getValueSets($languageId);
     }
 
     public function editAction()

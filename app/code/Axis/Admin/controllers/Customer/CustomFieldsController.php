@@ -38,14 +38,11 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
         $this->view->pageTitle = Axis::translate('account')->__(
             'Custom Customer Fields'
         );
-        $this->view->fieldGroups = array();
         $this->view->fieldTypes = array();
         $this->view->fieldValidators = array();
 
-        $this->view->languageId = $this->_langId;
-        $this->view->languages = Axis_Collect_Language::collect();
-        $this->view->fieldGroups = Axis::single('account/Customer_FieldGroup')
-            ->getGroups($this->_langId);
+        $this->view->fieldGroups = Axis::model('account/Customer_FieldGroup')
+            ->getGroups(Axis_Locale::getLanguageId());
         $this->render();
     }
     
@@ -75,14 +72,13 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
         return $this->_helper->json->sendJson($result, false, false);
     }
     
-    public function getGroupPairsAction()
+    public function getGroupsAction()
     {
         $this->getHelper('layout')->disableLayout();
-        
-        return $this->_helper->json->sendSuccess(array(
-            'data'  => Axis::single('account/Customer_FieldGroup')
-                ->getGroupsArray($this->_langId)
-        ));
+        $data = Axis::model('account/Customer_FieldGroup')->getGroups(
+            Axis_Locale::getLanguageId()
+        );
+        return $this->_helper->json->setData($data)->sendSuccess();
     }
 
     public function getFieldsAction()

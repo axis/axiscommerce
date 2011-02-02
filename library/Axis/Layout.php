@@ -31,14 +31,7 @@
  */
 class Axis_Layout extends Zend_Layout
 {
-    const DEFAULT_TEMPLATE = 'default';
     const DEFAULT_LAYOUT   = 'default_3columns';
-
-    /**
-     * @static
-     * @var string
-     */
-    private static $_templateName;
 
     /**
      * Box to Block assignment
@@ -85,41 +78,7 @@ class Axis_Layout extends Zend_Layout
         return self::$_mvcInstance;
     }
 
-    /**
-     * Return current template
-     *
-     * @static
-     * @param string ['front' || 'admin']
-     * @return string
-     */
-    public static function getTemplateName($area = 'front')
-    {
-        if (null !== self::$_templateName) {
-            return self::$_templateName;
-        }
-        if ('admin' === $area) {
-            $templateId = Axis::config()->design->main->adminTemplateId;
-        } else {
-            $templateId = Axis::config()->design->main->frontTemplateId;
-        }
-        
-        $templateRow = Axis::single('core/template')
-            ->find($templateId)
-            ->current();
-
-        if (!$templateRow) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
-            ));
-            self::$_templateName = self::DEFAULT_TEMPLATE;
-        } else {
-            self::$_templateName = $templateRow->name;
-        }
-
-        return self::$_templateName;
-    }
-//
+//    
 //    public function setAssignments($assignments)
 //    {
 //        $this->_assignments = $assignments;
@@ -192,16 +151,16 @@ class Axis_Layout extends Zend_Layout
         $this->_axisLayout = 'layout' . substr($layout, strpos($layout, '_'));
     }
 
-
     public function getLayout()
     {
-        if ('admin' === Zend_Registry::get('area')) {
+        if (Axis_Area::isBackend()) {
             return 'layout';
         }
 
         if (null !== $this->_layout) {
             //add this->helper->layout->setLayout() support
-            $this->_axisLayout = 'layout' . substr($this->_layout, strpos($this->_layout, '_'));
+//            $this->_axisLayout = 'layout' . substr($this->_layout, strpos($this->_layout, '_'));
+            $this->_axisLayout = $this->_layout;
         } elseif (null === $this->_axisLayout) {
             $this->_initLayout();
         }
@@ -341,7 +300,7 @@ class Axis_Layout extends Zend_Layout
 
     public function __get($key)
     {
-        if ('admin' === Zend_Registry::get('area')) {
+        if (Axis_Area::isBackend()) {
             return parent::__get($key);
         }
 

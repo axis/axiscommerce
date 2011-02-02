@@ -46,11 +46,11 @@ class Axis_Collect_Layout implements Axis_Collect_Interface
     public static function collect()
     {
         if (null === self::$_collection) {
-            $designPath = Axis::config()->system->path . '/app/design/front';
-            $skins = Axis_Collect_Skin::collect();
+            $designPath = Axis::config('system/path') . '/app/design/front';
+            $themes = Axis_Collect_Theme::collect();
             $layouts = array();
-            foreach ($skins as $skin) {
-                $path = $designPath . '/' . $skin . '/layouts';
+            foreach ($themes as $theme) {
+                $path = $designPath . '/' . $theme . '/layouts';
                 if (!file_exists($path)) {
                     continue;
                 }
@@ -61,7 +61,7 @@ class Axis_Collect_Layout implements Axis_Collect_Interface
 
                         continue;
                     }
-                    $layout =  $skin . '_' . substr($file, 7, -6);
+                    $layout =  $theme . '_' . substr($file, 7, -6);
                     $layouts[$layout] = $layout;
                 }
                 closedir($dh);

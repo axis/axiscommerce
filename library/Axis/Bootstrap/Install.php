@@ -41,7 +41,7 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
         return $autoloader;
     }
 
-    protected function _initView()
+    protected function _initLayout()
     {
         return Zend_Layout::startMvc();
     }
@@ -119,7 +119,7 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
 
     protected function _initArea()
     {
-        Zend_Registry::set('area', 'install');
+        Axis_Area::installer();
     }
 
     protected function _initFrontController()

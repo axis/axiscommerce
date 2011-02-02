@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Controller
+ * @package     Axis_Controller
+ * @subpackage  Plugin
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,30 +27,23 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Controller
+ * @package     Axis_Controller
+ * @subpackage  Plugin
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
+class Axis_Controller_Plugin_Area extends Zend_Controller_Plugin_Abstract
 {
-
-    public function listAction()
+    /**
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @return void
+     */
+    public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-        $this->_helper->layout->disableLayout();
-        $layouts = Axis_Collect_Layout::collect();
-
-        $result = array();
-        $i = 0;
-        foreach ($layouts as $layout) {
-            $result[$i] = array(
-                'id'   => $layout,
-                'name' => $layout
-            );
-            $i++;
+        if ('Axis_Admin' === $request->getParam('module')) {
+            Axis_Area::backend();
+            return;
         }
-
-        return $this->_helper->json->sendSuccess(array(
-            'data' => $result
-        ));
+        Axis_Area::frontend();
     }
 }

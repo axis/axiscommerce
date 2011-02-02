@@ -201,13 +201,15 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
              */
             $option = $modelProductOption->find($id)->current();
 
+            $languageId = Axis_Locale::getLanguageId();
             $optionText = $option->findDependentRowset(
                 'Axis_Catalog_Model_Product_Option_Text',
                 'Option',
-                $modelProductOption->select()->where('language_id = ?', $this->_langId)
+                $modelProductOption->select()
+                ->where('language_id = ?', $languageId)
             )->current();
 
-            $values = $option->getValuesArrayByLanguage($this->_langId);
+            $values = $option->getValuesArrayByLanguage($languageId);
 
             foreach ($values as $value) {
                 $items[] = array(
@@ -277,7 +279,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $this->layout->disableLayout();
 
-        $siteId = $this->_getParam('siteId', $this->_siteId);
+        $siteId = $this->_getParam('siteId', Axis::getSiteId());
 
         $data = Zend_Json::decode($this->_getParam('data'));
         $tableProduct = Axis::single('catalog/product');
@@ -406,14 +408,14 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
                     Zend_Json::encode($values) : current($values);
             }
         }
-
+        $languageId = Axis_Locale::getLanguageId();
         /* collect & fill labels */
         // options
         if (sizeof($optionIds)) {
             $optionText = Axis::single('catalog/product_option_text')
                 ->select()
                 ->where('option_id IN(?)', $optionIds)
-                ->where('language_id = ?', $this->_langId)
+                ->where('language_id = ?', $languageId)
                 ->fetchAssoc();
         }
         // values
@@ -421,7 +423,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             $optionValueText = Axis::single('catalog/product_option_value_text')
                 ->select()
                 ->where('option_value_id IN(?)', $optionValueIds)
-                ->where('language_id = ?', $this->_langId)
+                ->where('language_id = ?', $languageId)
                 ->fetchAssoc();
         }
         uasort($attributes, array($this, '_sortAttributes'));
