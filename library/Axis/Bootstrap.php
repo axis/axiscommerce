@@ -290,7 +290,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         if (!($router instanceof Axis_Controller_Router_Rewrite)) {
             throw new Axis_Exception('Incorrect routes');
         }
-        Zend_Controller_Front::getInstance()->setRouter($router);
         return $router;
     }
 
@@ -298,6 +297,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap('Router');
         $front = Zend_Controller_Front::getInstance();
+        
+        $router = $this->getResource('Router');
+        $front->setRouter($router);
         //$front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
         //$front->throwExceptions(false);
         $front->setDefaultModule('Axis_Core');
