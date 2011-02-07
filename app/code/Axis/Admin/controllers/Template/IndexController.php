@@ -160,12 +160,9 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
         $templateId = $this->_getParam('templateId');
         $template = Axis::model('core/template')->getFullInfo($templateId);
         $this->view->template = $template;
-        Axis_FirePhp::log($template['layouts']);
-        return $this->_helper->json->sendSuccess();
         $script = $this->getViewScript('xml', false);
         $xml = $this->view->render($script);
-
-        $filename = Axis::config()->system->path . '/var/templates/' . $template['name'] . '.xml';
+        $filename = Axis::config('system/path') . '/var/templates/' . $template['name'] . '.xml';
         if (@file_put_contents($filename, $xml)) {
             chmod($filename, 0666);
             Axis::message()->addSuccess(

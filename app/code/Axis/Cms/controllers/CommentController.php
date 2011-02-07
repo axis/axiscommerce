@@ -33,6 +33,35 @@
  */
 class Axis_Cms_CommentController extends Axis_Core_Controller_Front
 {
+    protected function _addCommentForm($pageId)
+    {
+        $form = Axis::model('cms/form_comment', array('pageId' => $pageId));
+        if ($this->_request->isPost()) {
+            $data = $this->_getAllParams();
+            if ($form->isValid($data)) {
+                Axis::single('cms/page_comment')->insert(array(
+                    'author'      => $data['author'],
+                    'email'       => $data['email'],
+                    'status'      => 0,
+                    'content'     => $data['content'],
+                    'created_on'  => Axis_Date::now()->toSQLString(),
+                    'cms_page_id' => $pageId
+                ));
+                Axis::dispatch('cms_comment_add_success', $data);
+                Axis::message()->addSuccess(
+                    Axis::translate('cms')->__(
+                        'Comment successfully added'
+                ));
+                $this->_redirect(
+                    $this->getRequest()->getServer('HTTP_REFERER')
+                );
+            } else {
+                $form->populate($data);
+            }
+        }
+        $this->view->formComment = $form;
+    }
+
     public function addAction()
     {
         $pageId = $this->_getParam('page');
@@ -84,31 +113,7 @@ class Axis_Cms_CommentController extends Axis_Core_Controller_Front
                 $i++;
             }
 
-            $form = Axis::model('cms/form_comment', array('pageId' => $pageId));
-            if ($this->_request->isPost()) {
-                $data = $this->_getAllParams();
-                if ($form->isValid($data)) {
-                    Axis::single('cms/page_comment')->insert(array(
-                        'author' => $data['author'],
-                        'email' => $data['email'],
-                        'status' => 0,
-                        'content' => $data['content'],
-                        'created_on' => Axis_Date::now()->toSQLString(),
-                        'cms_page_id' => $pageId
-                    ));
-                    Axis::dispatch('cms_comment_add_success', $data);
-                    Axis::message()->addSuccess(
-                        Axis::translate('cms')->__(
-                            'Comment successfully added'
-                    ));
-                    $this->_redirect(
-                        $this->getRequest()->getServer('HTTP_REFERER')
-                    );
-                } else {
-                    $form->populate($data);
-                }
-            }
-            $this->view->formComment = $form;
+            $this->_addCommentForm($pageId);
         }
 
         $metaTitle = $content['meta_title'] == '' ?
@@ -119,7 +124,6 @@ class Axis_Cms_CommentController extends Axis_Core_Controller_Front
             ->setKeywords($content['meta_keyword']);
 
         $layout = $currentPage->layout;
-        $layout = 'layout' . substr($layout, strpos($layout, '_'));
         $this->_helper->layout->setLayout($layout);
 
         $this->render();

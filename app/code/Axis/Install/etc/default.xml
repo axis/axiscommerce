@@ -2,7 +2,7 @@
 <template>
     <name>default</name>
     <is_active>1</is_active>
-    <default_layout>default_3columns</default_layout>
+    <default_layout>layout_3columns</default_layout>
         <box multiple="1">
         <class>Axis_Core_Template</class>
         <block>beforeBodyEnd</block>
@@ -665,7 +665,7 @@
             </page>
             </box>
             <layout multiple="1">
-        <layout>default_2columns-left</layout>
+        <layout>layout_2columns-left</layout>
         <page>
             <module>account</module>
             <controller>*</controller>
@@ -674,7 +674,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>account</module>
             <controller>auth</controller>
@@ -683,7 +683,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>account</module>
             <controller>forgot</controller>
@@ -692,7 +692,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>sitemap</module>
             <controller>*</controller>
@@ -701,7 +701,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_2columns-right</layout>
+        <layout>layout_2columns-right</layout>
         <page>
             <module>contacts</module>
             <controller>*</controller>
@@ -710,7 +710,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_2columns-right</layout>
+        <layout>layout_2columns-right</layout>
         <page>
             <module>core</module>
             <controller>index</controller>
@@ -719,7 +719,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>core</module>
             <controller>error</controller>
@@ -728,7 +728,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_3columns</layout>
+        <layout>layout_3columns</layout>
         <page>
             <module>catalog</module>
             <controller>index</controller>
@@ -737,7 +737,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_2columns-right</layout>
+        <layout>layout_2columns-right</layout>
         <page>
             <module>catalog</module>
             <controller>index</controller>
@@ -746,7 +746,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>catalog</module>
             <controller>product-compare</controller>
@@ -755,7 +755,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_2columns-left</layout>
+        <layout>layout_2columns-left</layout>
         <page>
             <module>community</module>
             <controller>*</controller>
@@ -764,7 +764,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_2columns-right</layout>
+        <layout>layout_2columns-right</layout>
         <page>
             <module>poll</module>
             <controller>*</controller>
@@ -773,7 +773,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
             <controller>onepage</controller>
@@ -782,7 +782,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
             <controller>wizard</controller>
@@ -791,7 +791,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
             <controller>cart</controller>
@@ -800,7 +800,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
             <controller>index</controller>
@@ -809,7 +809,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>paymentpaypal</module>
             <controller>*</controller>
@@ -818,7 +818,7 @@
                 <priority>100</priority>
     </layout>
         <layout multiple="1">
-        <layout>default_1column</layout>
+        <layout>layout_1column</layout>
         <page>
             <module>*</module>
             <controller>*</controller>
