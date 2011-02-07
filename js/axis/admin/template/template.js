@@ -34,6 +34,7 @@ Ext.onReady(function() {
         },
         create: function() {
             templateForm.getForm().clear();
+            Ext.getCmp('comboLayout').getStore().load();
             templateWin.show();
         },
         edit: function() {
@@ -41,8 +42,8 @@ Ext.onReady(function() {
             if (tree.getSelectionModel().getSelectedNode() && tree.getSelectionModel().getSelectedNode().isSelected()) {
                 var templateId = tree.getSelectionModel().getSelectedNode().id;
                 templateForm.getForm().load({
-                    url:   Axis.getUrl('template_index/get-info/'),
-                    params: {templateId: tree.getSelectionModel().getSelectedNode().id},
+                    url:   Axis.getUrl('template_index/load/'),
+                    params: {templateId: templateId},
                     method: 'post'
                 });
                 templateWin.show();
@@ -249,18 +250,22 @@ Ext.onReady(function() {
             fieldLabel: 'Default layout'.l(),
             anchor: '98%',
             allowBlank: false,
-            name: 'default_layout'
+            name: 'default_layout',
+            hiddenName: 'default_layout',
+            displayField: 'name',
+            valueField: 'id',
+            editable: false
         }), {
             fieldLabel: 'Active'.l(),
             xtype: 'checkbox',
             checked: true,
             name: 'is_active'
         }, {
-            fieldLabel: 'Assignments'.l(),
-            readOnly: true,
-            anchor: '98%',
-            name: 'assignments'
-        }, {
+//            fieldLabel: 'Assignments'.l(),
+//            readOnly: true,
+//            anchor: '98%',
+//            name: 'assignments'
+//        }, {
             xtype: 'hidden',
             name: 'id'
         }]
@@ -269,7 +274,7 @@ Ext.onReady(function() {
     var templateWin =  new Ext.Window({
         layout: 'fit',
         width: 400,
-        height: 220,
+        height: 160,
         plain: false,
         title: 'Template',
         closeAction: 'hide',

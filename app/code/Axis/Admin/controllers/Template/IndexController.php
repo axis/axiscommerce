@@ -83,26 +83,28 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
         ));
     }
     
-    public function getInfoAction() 
+    public function loadAction()
     {
         $this->_helper->layout->disableLayout();
         
         $templateId = $this->_getParam('templateId');
-        
-        $this->_helper->json->sendSuccess(array(
-            'data' => Axis::single('core/template')->getInfo($templateId)
-        ));           
+
+        $data = Axis::single('core/template')->find($templateId)
+            ->current()
+            ->toArray();
+        $this->_helper->json->setData($data)->sendSuccess();
     }
     
     public function deleteAction()
     {
         $this->_helper->layout->disableLayout();
         
-        $id = $this->_getParam('templateId', false);
-        
-        $usedTemplates = Axis::single('core/template')->getUsed();
-        
-        if (!$id || in_array($id, $usedTemplates)) {
+        $themeId = $this->_getParam('templateId');
+        if ($themeId) {
+            return $this->_helper->json->sendFailure();
+        }
+        $modelTheme = Axis::model('core/template');
+        if ($modelTheme->isUsed($themeId)) {
             Axis::message()->addError(
                 Axis::translate('admin')->__(
                     "Template is used already and can't be deleted"
@@ -111,7 +113,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
         
-        Axis::model('core/template')->delete($this->db->quoteInto('id = ? ', $id));
+        $modelTheme->delete($this->db->quoteInto('id = ? ', $themeId));
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(

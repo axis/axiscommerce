@@ -39,49 +39,17 @@ class Axis_Core_Model_Template extends Axis_Db_Table
 
     /**
      * Retrieve the array of currently using templates
-     *
-     * @return array(site_id => template_id)
+     * @param int $templateId
+     * @return bool
      */
-    public function getUsed()
+    public function isUsed($templateId)
     {
-        $frontTemplates = Axis::single('core/config_value')->getValues('design/main/frontTemplateId');
-        $adminTemplates = Axis::single('core/config_value')->getValues('design/main/adminTemplateId');
-        return $frontTemplates + $adminTemplates;
-    }
-
-    /**
-     * Retrieve information about template
-     *
-     * @param int $id
-     * @return array
-     */
-    public function getInfo($id = '')
-    {
-        if (!is_numeric($id) || !$template = $this->find($id)->current()) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'Template not found'
-            ));
-            return array();
-        }
-
-        $templateAssignments = '';
-        $usedTemplates = $this->getUsed();
-
-        if (in_array($template->id, $usedTemplates)) {
-            $sites = Axis_Collect_Site::collect();
-            $sites[0] = 'Global';
-            foreach ($usedTemplates as $siteId => $templateId){
-                if ($template->id == $templateId && isset($sites[$siteId]))
-                    $templateAssignments .= $sites[$siteId] . ', ';
-            }
-            $templateAssignments = substr($templateAssignments, 0, -2);
-        }
-
-        $result = $template->toArray();
-        $result['assignments'] = $templateAssignments;
-
-        return $result;
+        return (bool) Axis::single('core/config_value')->select()
+            ->where("path = 'design/main/frontTemplateId' OR path = 'design/main/adminTemplateId'")
+            ->where('value = ?', $templateId)
+            ->fetchOne()
+            ;
+        return false;
     }
 
     /**
