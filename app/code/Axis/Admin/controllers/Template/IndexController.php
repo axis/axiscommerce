@@ -37,33 +37,27 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Templates');
-		
-        $pages = array();
-        $orderBy = array('module_name', 'controller_name', 'action_name');
-        foreach (Axis::single('core/page')->fetchAll(null, $orderBy) as $row) {
-            $pages[] = array(
-                'id' => $row->id,
-                'name' => $row->module_name . '/' . $row->controller_name . '/' . $row->action_name
-            );
-        }
-        
+
+        $pages = Axis::model('core/page')->select(array(
+                'id', 'name' => "CONCAT(module_name, '/', controller_name, '/', action_name)"
+            ))->order(array('module_name', 'controller_name', 'action_name'))
+            ->fetchAll();
+
         $this->view->pages = $pages;
-        
         $this->view->boxClasses = Axis::single('core/template_box')->getList();
-        
         $this->render();
     }
 
     public function getNodesAction()
     {
-        $nodes = Axis::model('core/template')->fetchAll();
+        $rowset = Axis::model('core/template')->fetchAll();
         
-        foreach ($nodes as $item) {
+        foreach ($rowset as $row) {
             $result[] = array(
-                'text' => $item->name,
-                'id'   => $item->id,
-                'leaf' => false,
-                'cls' => $item->is_active ? '' : 'disabledNode',
+                'text'     => $row->name,
+                'id'       => $row->id,
+                'leaf'     => false,
+                'cls'      => '',
                 'children' => array(),
                 'expanded' => true
             );

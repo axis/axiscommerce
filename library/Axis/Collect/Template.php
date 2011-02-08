@@ -40,7 +40,6 @@ class Axis_Collect_Template implements Axis_Collect_Interface
     {
         return Axis::single('core/template')
                 ->select(array('id', 'name'))
-                ->where('is_active != 0')
                 ->fetchPairs();
     }
 

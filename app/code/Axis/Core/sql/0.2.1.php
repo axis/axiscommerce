@@ -50,6 +50,12 @@ class Axis_Core_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
             $row->layout = _getRealLayout($row->layout);
             $row->save();
         }
+
+        $installer = Axis::single('install/installer');
+
+        $installer->run("
+            ALTER TABLE `{$installer->getTable('core_template')}` DROP COLUMN `is_active`;
+        ");
     }
 
     public function down()

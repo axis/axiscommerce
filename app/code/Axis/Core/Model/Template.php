@@ -68,18 +68,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             return false;
         }
 
-        if (isset($data['is_active'])) {
-            $data['is_active'] = 1;
-        } else {
-            $data['is_active'] = 0;
-        }
-
-        if (!$row = $this->find($data['id'])->current()) {
-            unset($data['id']);
-            $row = $this->createRow();
-        }
-        $row->setFromArray($data);
-        $row->save();
+        $this->getRow($data)->save();
 
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
@@ -299,7 +288,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
      */
     public function importTemplateFromXmlFile($xmlFileName)
     {
-        function _getConcatPage(array $page ) {
+        function _getConcatPage(array $page) {
             return $page['module'] . '/' . $page['controller'] . '/' . $page['action'];
         }
 

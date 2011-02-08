@@ -256,16 +256,6 @@ Ext.onReady(function() {
             valueField: 'id',
             editable: false
         }), {
-            fieldLabel: 'Active'.l(),
-            xtype: 'checkbox',
-            checked: true,
-            name: 'is_active'
-        }, {
-//            fieldLabel: 'Assignments'.l(),
-//            readOnly: true,
-//            anchor: '98%',
-//            name: 'assignments'
-//        }, {
             xtype: 'hidden',
             name: 'id'
         }]
