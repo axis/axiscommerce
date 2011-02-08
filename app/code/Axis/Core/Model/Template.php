@@ -67,9 +67,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             ));
             return false;
         }
-
         $this->getRow($data)->save();
-
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Template was saved successfully'
@@ -168,66 +166,16 @@ class Axis_Core_Model_Template extends Axis_Db_Table
     }
 
     /**
-     *   @copyright http://ua.php.net/manual/ru/class.dir.php#79448
-     *   getDirTree(string $dir [, bool $showfiles]);
-     *   $dir of the folder you want to list, be sure to have an ending /
-     *   $showfiles set to 'false' if files shouldnt be listed in the output array
-     *  @param string $dir
-     *  @param bool $p [optional]
-     *  @return array
-     */
-    private function _getDirTree($dir, $p = true)
-    {
-        $d = dir($dir);$x = array();
-        while (false !== ($r = $d->read())) {
-            if($r[0] != "." &&  $r != "." && $r != ".." &&
-               ((false == $p && is_dir($dir.$r)) || true == $p)) {
-
-               $x[$r] = (is_dir($dir . $r) ? array() : (is_file($dir . $r) ? true : false));
-            }
-        }
-        foreach ($x as $key => $value) {
-            if (/*is_dir($dir.$key."/")*/ is_readable($dir . $key . '.xml')) {
-                $x[$key] = $dir . $key . '.xml';
-                //$this->_getDirTree($dir.$key."/",$p);
-            }
-        }
-        ksort($x);
-        return $x;
-    }
-
-    /**
      *
-     * @return array
-     */
-    public function getListXmlFiles()
-    {
-        $existTemplate = array();
-        foreach ($this->fetchAll()->toArray() as $template) {
-            $existTemplate[] =  $template['name'];
-        }
-        $dir = Axis::config()->system->path . '/var/templates/';
-        $templates = array();
-
-
-        foreach ($this->_getDirTree($dir) as $key => $value) {
-            if (!in_array($key, $existTemplate))
-                $templates[] = array('template' => $key/*, 'file' => $value*/);
-        }
-        return $templates;
-    }
-
-    /**
-     *
-     * @param string $templateName
+     * @param string $themeNameXml
      * @return string
      */
-    private function  _parseXml($templateName)
+    private function  _parseXml($themeNameXml)
     {
-        if (!is_readable($templateName)) {
-            $templateName = Axis::config()->system->path . '/var/templates/' . $templateName;
+        if (!is_readable($themeNameXml)) {
+            $themeNameXml = Axis::config('system/path') . '/var/templates/' . $themeNameXml;
         }
-        if (!is_readable($templateName)) {
+        if (!is_readable($themeNameXml)) {
             return false;
         }
 
@@ -261,7 +209,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             }
         }
         $xml = new XMLReader();
-        $xml->open($templateName);
+        $xml->open($themeNameXml);
         $assoc = _xml2assoc($xml);
         $xml->close();
         return current($assoc);

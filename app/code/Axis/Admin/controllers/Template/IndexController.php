@@ -121,25 +121,36 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         
-        return $this->_helper->json->sendSuccess(array(
-            'data' => Axis::model('core/template')->getListXmlFiles()
-        ));
+        $data = array();
+        $handler = opendir(Axis::config('system/path') . '/var/templates/');
+        while ($file = readdir($handler)) {
+            if (is_dir($file)) {
+                continue;
+            }
+            $pathinfo = pathinfo($file);
+            if ('xml' !== $pathinfo['extension']) {
+                continue;
+            }
+            $data[] = array('template' => $file);
+        }
+        closedir($handler);
+        return $this->_helper->json->setData($data)->sendSuccess();
     }
 
     public function importAction()
     {
         $this->_helper->layout->disableLayout();
-        $templateName = $this->_getParam('templateName');
+        $themeNameXml = $this->_getParam('templateName');
         $model = Axis::model('core/template');
         if (!$this->_getParam('overwrite_existing') && 
-            !$model->validateBeforeImport($templateName)) {
+            !$model->validateBeforeImport($themeNameXml)) {
             
             return $this->_helper->json->sendFailure(array(
                 'errorCode' => 'template_exists'
             ));
         }
         
-        if (!$model->importTemplateFromXmlFile($templateName)) {
+        if (!$model->importTemplateFromXmlFile($themeNameXml)) {
             return $this->_helper->json->sendFailure();
         }
         Axis::message()->addSuccess(
