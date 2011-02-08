@@ -51,9 +51,8 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
     public function getNodesAction()
     {
         $rowset = Axis::model('core/template')->fetchAll();
-        
         foreach ($rowset as $row) {
-            $result[] = array(
+            $data[] = array(
                 'text'     => $row->name,
                 'id'       => $row->id,
                 'leaf'     => false,
@@ -63,7 +62,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             );
         }
         
-        $this->_helper->json->sendJson($result, false, false);
+        $this->_helper->json->sendRaw($data);
     }
     
     public function saveAction()

@@ -144,7 +144,7 @@ class Axis_Admin_Location_GeozoneController extends Axis_Admin_Controller_Back
         $data = Axis::single('location/geozone_zone')->find($id)
             ->current()
             ->toArray();
-        $this->_helper->json->sendJson($data, false, false);
+        $this->_helper->json->sendRaw($data);
     }
 
     public function saveAssignAction()

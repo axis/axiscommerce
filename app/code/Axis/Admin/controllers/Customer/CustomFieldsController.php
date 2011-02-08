@@ -56,7 +56,7 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
             $result[] = array($i++, $key, $value);
         }
         
-        return $this->_helper->json->sendJson($result, false, false);
+        return $this->_helper->json->sendRaw($result);
     }
     
     public function getTypeAction()
@@ -69,7 +69,7 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
             $result[] = array($i++, $key, $value);
         }
         
-        return $this->_helper->json->sendJson($result, false, false);
+        return $this->_helper->json->sendRaw($result);
     }
     
     public function getGroupsAction()
@@ -184,7 +184,7 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
             );
         }
         
-        $this->_helper->json->sendJson($result, false, false);
+        $this->_helper->json->sendRaw($result);
     }
     
     public function getValuesAction()
