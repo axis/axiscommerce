@@ -89,7 +89,7 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
             );
         }
 
-        $this->_helper->json->sendJson($result, false, false);
+        $this->_helper->json->sendRaw($result);
     }
 
     public function saveCategoryAction()

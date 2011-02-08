@@ -100,8 +100,8 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
         $node = $this->_getParam('node', '0');
 
-        $this->_helper->json->sendJson(
-            Axis::single('core/config_field')->getNodes($node), false, false
+        $this->_helper->json->sendRaw(
+            Axis::single('core/config_field')->getNodes($node)
         );
     }
 

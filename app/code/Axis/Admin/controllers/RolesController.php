@@ -67,17 +67,17 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
             );
         }
 
-        $this->_helper->json->sendJson($result, false, false);
+        $this->_helper->json->sendRaw($result);
     }
 
     public function getParentAllowsAction()
     {
         $parents = Zend_Json::decode($this->_getParam('parents'));
-        if (!count($parents)) {
-            return $this->_helper->json->sendJson(array(), false, false);
+        $allows = array();
+        if (count($parents)) {
+            $allows = $this->acl->getParentRolesAllows($parents);
         }
-        $allows = $this->acl->getParentRolesAllows($parents);
-        $this->_helper->json->sendJson($allows, false, false);
+        $this->_helper->json->sendRaw($allows);
     }
 
     public function addAction()
@@ -110,8 +110,7 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
         $result['possibleParents'] = (object) $this->_roles->getPossibleParents($roleId);
         $result['parents'] = $this->_roles->getParents($roleId);
 
-        $result['parentAllows'] =
-            $this->acl->getParentRolesAllows($result['parents']);
+        $result['parentAllows'] = $this->acl->getParentRolesAllows($result['parents']);
         $result['rules'] = $this->_roles->getRules($roleId);
         $this->_helper->json->sendSuccess(array(
             'data' => $result

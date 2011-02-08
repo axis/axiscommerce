@@ -250,9 +250,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
             $form = Axis::single('account/Form_Address');
 
             if (!$form->isValid($params)) {
-                $this->_helper->json->sendJson(
-                    $form->getMessages(), false, false
-                );
+                $this->_helper->json->sendRaw($form->getMessages());
             }
             $address = array(
                  'firstname'      => $params['firstname'],

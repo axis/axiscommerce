@@ -86,15 +86,13 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
                 ->setAddress($params);
 
             if ($this->getRequest()->isXmlHttpRequest()) {
-                $this->_helper->json->sendJson(true, false, false);
+                $this->_helper->json->sendRaw(true);
                 return;
             }
             $this->_redirect('account/address-book');
         } else {
             if ($this->getRequest()->isXmlHttpRequest()) {
-                $this->_helper->json->sendJson(
-                    $form->getMessages(), false, false
-                );
+                $this->_helper->json->sendRaw($form->getMessages());
                 return;
             }
             $form->populate($params);

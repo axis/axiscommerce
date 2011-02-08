@@ -213,7 +213,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
 
             foreach ($values as $value) {
                 $items[] = array(
-                    'text' => $value['name'],
+                    'text'        => $value['name'],
                     'option_name' => $optionText ? $optionText->name : $option->code,
                     'option_code' => $option->code,
                     'value_name'  => $value['name'],
@@ -227,7 +227,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             }
         }
 
-        $this->_helper->json->sendJson($items, false, false);
+        $this->_helper->json->sendRaw($items);
     }
 
     public function saveProductAction()
