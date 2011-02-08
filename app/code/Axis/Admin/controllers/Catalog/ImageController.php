@@ -162,13 +162,13 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
         $result = array();
         if ($path = $this->_getPath($this->_getParam('path'))) {
             $result = $this->_scanFolder(
-                            $path,
-                            $this->_getParam('mode', 'all'),
-                            (bool) $this->_getParam('recursive', false)
-                      );
+                $path,
+                $this->_getParam('mode', 'all'),
+                (bool) $this->_getParam('recursive', false)
+            );
         }
 
-        return $this->_helper->json->sendJson($result, false, false);
+        return $this->_helper->json->sendRaw($result);
     }
 
     private function _uploadAction()

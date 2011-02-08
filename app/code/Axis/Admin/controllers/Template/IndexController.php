@@ -56,20 +56,20 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
 
     public function getNodesAction()
     {
-        $nodes = Axis::model('core/template')->fetchAll();
+        $rowset = Axis::model('core/template')->fetchAll();
         
-        foreach ($nodes as $item) {
-            $result[] = array(
-                'text' => $item->name,
-                'id'   => $item->id,
-                'leaf' => false,
-                'cls' => $item->is_active ? '' : 'disabledNode',
+        foreach ($rowset as $row) {
+            $data[] = array(
+                'text'     => $row->name,
+                'id'       => $row->id,
+                'leaf'     => false,
+                'cls'      => $row->is_active ? '' : 'disabledNode',
                 'children' => array(),
                 'expanded' => true
             );
         }
         
-        $this->_helper->json->sendJson($result, false, false);
+        $this->_helper->json->sendRaw($data);
     }
     
     public function saveAction()
