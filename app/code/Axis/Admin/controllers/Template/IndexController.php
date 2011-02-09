@@ -167,22 +167,21 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
         $template = Axis::model('core/template')->getFullInfo($templateId);
         $this->view->template = $template;
         $script = $this->getViewScript('xml', false);
-        $xml = $this->view->render($script);
-        $filename = Axis::config('system/path') . '/var/templates/' . $template['name'] . '.xml';
-        if (@file_put_contents($filename, $xml)) {
-            chmod($filename, 0666);
-            Axis::message()->addSuccess(
-                Axis::translate('admin')->__(
-                    'Template was exported successfully'
-                )
-            );
-            return $this->_helper->json->sendSuccess();
-        }
-        Axis::message()->addError(
-            Axis::translate('admin')->__(
-                "Can't write to file %s", $filename
-            )
-        );
-        return $this->_helper->json->sendFailure();
+        
+        $content = $this->view->render($script);
+        $filename = $template['name'] . '.xml';
+
+        $this->getResponse()
+            ->clearAllHeaders()
+            ->setHeader('Content-Description','File Transfer', true)
+            ->setHeader('Content-Type','application/octet-stream', true)
+            ->setHeader('Content-Disposition','attachment; filename=' . $filename, true)
+            ->setHeader('Content-Transfer-Encoding','binary', true)
+            ->setHeader('Expires','0', true)
+            ->setHeader('Cache-Control','must-revalidate, post-check=0, pre-check=0', true)
+            ->setHeader('Pragma','public', true)
+//            ->setHeader('Content-Length: ', filesize($content), true)
+            ;
+        $this->getResponse()->setBody($content);
     }
 }

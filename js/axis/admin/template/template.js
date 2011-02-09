@@ -120,20 +120,15 @@ Ext.onReady(function() {
         },
         exportT: function() {
             var template = tree.getSelectionModel().getSelectedNode();
-            if (!template)
+            if (!template) {
                 return;
-
-            if (!confirm('Export this template?'))
+            }
+            if (!confirm('Export this template?')) {
                 return;
-
-            Ext.Ajax.request({
-                url: Axis.getUrl('template_index/export'),
-                params: {templateId: template.id},
-                method: 'post',
-                callback: function(request, success, response) {
-                    rootNode.reload();
-                }
-            });
+            }
+            window.location = Axis.getUrl('template_index/export')
+                + '/templateId/'
+                + template.id;
         }
     }
 
