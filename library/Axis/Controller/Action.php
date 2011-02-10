@@ -165,6 +165,8 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         //backend $this->_helper->removeHelper('json');
         $this->_helper->addHelper(new Axis_Controller_Action_Helper_Json());
 
+        Axis_FirePhp::log('Axis_Core_Box_Abstract::setView');
+        Axis_Core_Box_Abstract::setView($view);
         return $view;
     }
 
