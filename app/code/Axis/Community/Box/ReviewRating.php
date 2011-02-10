@@ -72,7 +72,7 @@ class Axis_Community_Box_ReviewRating extends Axis_Core_Box_Abstract
         $this->ratings +=
             Axis::single('community/review')->cache()->getAverageProductRating(
                 $productIds,
-                self::$view->config('community/review/merge_average')
+                $this->getView()->config('community/review/merge_average')
             );
     }
 }

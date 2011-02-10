@@ -169,21 +169,14 @@ class Axis_Layout extends Zend_Layout
         return $beforeContent . parent::__get($key) . $afterContent;
     }
 
-    private function _getBoxContent($boxConfig)
+    private function _getBoxContent($config)
     {
-        $boxClass = $boxConfig['boxCategory'] . '_' . $boxConfig['boxModule'] . '_Box_' . $boxConfig['boxName'];
-        if ($box = $this->getView()->box($boxClass, $boxConfig)) {
-            $html = null;
-            $obStartLevel = ob_get_level();
-            try {
-                $html = $box->toHtml();
-            } catch (Exception $e) {
-                while (ob_get_level() > $obStartLevel) {
-                    $html .= ob_get_clean();
-                }
-                throw $e;
-            }
-            return $html;
+        $boxClass = Axis::getClass(
+            $config['boxCategory'] . '_' . $config['boxModule'] . '/' .$config['boxName'] , 'Box'
+        );
+        $box = $this->getView()->box($boxClass, $config);
+        if ($box) {
+            return $box->toHtml();
         }
         return '';
     }

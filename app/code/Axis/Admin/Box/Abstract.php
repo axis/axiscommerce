@@ -42,18 +42,15 @@ abstract class Axis_Admin_Box_Abstract extends Axis_Core_Box_Abstract
 
             return '';
         }
-        self::$view->box = $this;
+        $this->getView()->box = $this;
         
-        if (empty($this->_data['template'])) {
-            $templateName = $this->_data['boxName'];
-            $templateName[0] = strtolower($templateName[0]);
-            $this->template = $templateName . '.phtml';
+        if (!$this->hasData('template')) {
+            $this->template = lcfirst($this->_data['boxName']) . '.phtml';
         }
-        
+        $path = 'box/box.phtml';
         if ($this->disableWrapper) {
-            $boxPath = 'box/' . $this->template;
-            return self::$view->render($boxPath);
+            $path = 'box/' . $this->template;
         }
-        return self::$view->render('box/box.phtml');
+        return $this->getView()->render($path);
     }
 }
