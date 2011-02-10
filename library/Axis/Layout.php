@@ -171,10 +171,7 @@ class Axis_Layout extends Zend_Layout
 
     private function _getBoxContent($config)
     {
-        $boxClass = Axis::getClass(
-            $config['boxCategory'] . '_' . $config['boxModule'] . '/' .$config['boxName'] , 'Box'
-        );
-        $box = $this->getView()->box($boxClass, $config);
+        $box = $this->getView()->box($config);
         if ($box) {
             return $box->toHtml();
         }

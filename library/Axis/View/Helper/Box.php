@@ -36,29 +36,32 @@ class Axis_View_Helper_Box
     /**
      * Return the singleton instance of box object
      *
-     * @param string $boxClass locale/currency|Axis_Locale_Box_Currency
-     * @param array $config [optional]
+     * @param mixed string|array $boxClass
      * @return Axis_Core_Box_Abstract
      * @throws Axis_Exception
      */
-    public function box($boxClass, $config = array())
+    public function box($boxClass)
     {
-        $boxClass = Axis::getClass($boxClass, 'Box');
-
-        $tempClass = str_replace('_Box', '', $boxClass);
-        foreach (array('boxCategory', 'boxModule', 'boxName') as $option) {
-            if ($option === 'boxName') {
-                if (empty($tempClass)) {
-                    echo $boxClass;die;
-                }
-                $config[$option] = $tempClass;
-                break;
+        if (is_array($boxClass)) {
+            $config = $boxClass;
+            $boxClass = $config['boxCategory']
+                . '_' . $config['boxModule']
+                . '/' .$config['boxName'];
+        } else {
+            if (strstr($boxClass, '_')) {
+                list($namespace, $module) = explode('_', $boxClass, 2);
+            } else {
+                $namespace = 'Axis';
+                $module = $boxClass;
             }
-            $optionLength = strpos($tempClass, '_');
-            $config[$option] = substr($tempClass, 0, $optionLength);
-            $tempClass = substr($tempClass, $optionLength + 1);
+            list($module, $name) = explode('/', $module, 2);
+            $config = array(
+                'boxCategory' => $namespace,
+                'boxModule'   => $module,
+                'boxName'     => $name
+            );
         }
-
+        $boxClass = Axis::getClass($boxClass, 'Box');
         if (@!class_exists($boxClass)) {
             $response = Zend_Controller_Front::getInstance()->getResponse();
             if (!count($response->getException())) {
