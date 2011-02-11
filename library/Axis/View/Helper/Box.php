@@ -36,38 +36,33 @@ class Axis_View_Helper_Box
     /**
      * Return the singleton instance of box object
      *
-     * @param mixed string|array $boxClass
+     * @param mixed string|array $box
      * @return Axis_Core_Box_Abstract
      * @throws Axis_Exception
      */
-    public function box($boxClass)
+    public function box($box)
     {
-        if (is_array($boxClass)) {
-            $config = $boxClass;
-            $boxClass = $config['boxCategory']
+        if (is_array($box)) {
+            $config = $box;
+            $box = $config['boxCategory']
                 . '_' . $config['boxModule']
                 . '/' .$config['boxName'];
+            $box = Axis::getClass($box, 'Box');
         } else {
-            if (strstr($boxClass, '_')) {
-                list($namespace, $module) = explode('_', $boxClass, 2);
-            } else {
-                $namespace = 'Axis';
-                $module = $boxClass;
-            }
-            list($module, $name) = explode('/', $module, 2);
+            $box = Axis::getClass($box, 'Box');
+            list($namespace, $module, $_box_, $name) = explode('_', $box);
             $config = array(
                 'boxCategory' => $namespace,
                 'boxModule'   => $module,
                 'boxName'     => $name
             );
         }
-        $boxClass = Axis::getClass($boxClass, 'Box');
-        if (@!class_exists($boxClass)) {
+        if (@!class_exists($box)) {
             $response = Zend_Controller_Front::getInstance()->getResponse();
             if (!count($response->getException())) {
                 $exception = new Axis_Exception(
                     Axis::translate('core')->__(
-                        'Class %s not found', $boxClass
+                        'Class %s not found', $box
                     )
                 );
                 $response->setException($exception);
@@ -78,9 +73,9 @@ class Axis_View_Helper_Box
             }
         }
 
-        if (Zend_Registry::isRegistered($boxClass)) {
-            return Zend_Registry::get($boxClass)->updateData($config, true);
+        if (Zend_Registry::isRegistered($box)) {
+            return Zend_Registry::get($box)->updateData($config, true);
         }
-        return Axis::single($boxClass, $config);
+        return Axis::single($box, $config);
     }
 }

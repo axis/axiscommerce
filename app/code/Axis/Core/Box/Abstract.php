@@ -99,6 +99,7 @@ abstract class Axis_Core_Box_Abstract
                 Axis_Layout::getMvcInstance()->getView()
             );
         }
+        // why not get_class($this)
         if (!$this->_isAllowed = in_array(
                 $config['boxCategory'] . '_' . $config['boxModule'],
                 array_keys(Axis::app()->getModules()))) {
