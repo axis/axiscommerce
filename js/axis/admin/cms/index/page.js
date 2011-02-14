@@ -62,7 +62,7 @@ Ext.onReady(function() {
         url: Axis.getUrl('template_layout/list'),
         reader: new Ext.data.JsonReader({
             root: 'data'
-        }, ['name']),
+        }, ['id', 'name']),
         autoLoad: true
     });
 

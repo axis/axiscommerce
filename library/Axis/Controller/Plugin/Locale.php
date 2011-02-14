@@ -31,7 +31,7 @@
  * @subpackage  Plugin
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Controller_Plugin_Area extends Zend_Controller_Plugin_Abstract
+class Axis_Controller_Plugin_Locale extends Zend_Controller_Plugin_Abstract
 {
     /**
      *
@@ -40,10 +40,16 @@ class Axis_Controller_Plugin_Area extends Zend_Controller_Plugin_Abstract
      */
     public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
     {
-        if ('Axis_Admin' === $request->getParam('module')) {
-            Axis_Area::backend();
-            return;
+        if (Axis_Area::isFrontend()
+            && null !== $request->getParam('locale')//_hasParam('locale')
+            && Axis_Controller_Router_Route::hasLocaleInUrl()) {
+
+            $locale = $request->getParam('locale');
+        } elseif (isset(Axis::session()->locale)) {
+            $locale = Axis::session()->locale;
+        } else {
+            $locale = Axis_Locale::getDefaultLocale();
         }
-        Axis_Area::frontend();
+        Axis_Locale::setLocale($locale);
     }
 }

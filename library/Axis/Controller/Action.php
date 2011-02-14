@@ -41,21 +41,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
 
         $this->db = Axis::db();
         $this->initView();
-        
-        if (Axis_Area::isFrontend()
-            && $this->_hasParam('locale')
-            && Axis_Controller_Router_Route::hasLocaleInUrl()) {
-
-            $locale = $this->_getParam('locale');
-        } elseif (isset(Axis::session()->locale)) {
-            $locale = Axis::session()->locale;
-        } else {
-            $locale = Axis_Locale::getDefaultLocale();
-        }
-        Axis_Locale::setLocale($locale);
-        
-        //$this->_helper->removeHelper('json');
-        $this->_helper->addHelper(new Axis_Controller_Action_Helper_Json());
     }
 
     /**
@@ -176,6 +161,9 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
             ->setOptions(array('layoutPath' =>
                 $systemPath . '/app/design/' . $area . '/' . $theme . '/layouts'
         ));
+
+        //backend $this->_helper->removeHelper('json');
+        $this->_helper->addHelper(new Axis_Controller_Action_Helper_Json());
 
         return $view;
     }

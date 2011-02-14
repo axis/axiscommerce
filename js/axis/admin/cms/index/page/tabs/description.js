@@ -87,7 +87,7 @@ Ext.onReady(function() {
                     hiddenName: 'layout',
                     store: Page.layoutStore,
                     displayField: 'name',
-                    valueField: 'name',
+                    valueField: 'id',
                     mode: 'local',
                     editable: false,
                     emptyText: 'Select layout'.l(),

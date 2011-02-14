@@ -18,32 +18,25 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Controller
- * @subpackage  Plugin
+ * @package     Axis_Admin
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Controller
- * @subpackage  Plugin
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Controller_Plugin_Area extends Zend_Controller_Plugin_Abstract
+class Axis_Admin_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 {
-    /**
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return void
-     */
-    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
+    protected $_version = '0.1.1';
+    protected $_info = 'rename action';
+
+    public function up()
     {
-        if ('Axis_Admin' === $request->getParam('module')) {
-            Axis_Area::backend();
-            return;
-        }
-        Axis_Area::frontend();
+        Axis::single('admin/acl_resource')->rename(
+            'admin/template_index/get-info', 'admin/template_index/load'
+        );
+    }
+
+    public function down()
+    {
+
     }
 }

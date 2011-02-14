@@ -46,27 +46,39 @@ class Axis_Collect_Layout implements Axis_Collect_Interface
     public static function collect()
     {
         if (null === self::$_collection) {
-            $designPath = Axis::config('system/path') . '/app/design/front';
             $themes = Axis_Collect_Theme::collect();
             $layouts = array();
+            $designPath = Axis::config('system/path') . '/app/design/front';
             foreach ($themes as $theme) {
                 $path = $designPath . '/' . $theme . '/layouts';
                 if (!file_exists($path)) {
                     continue;
                 }
-                $dh = opendir($path);
-                while (($file = readdir($dh))) {
+                $dir = opendir($path);
+                while (($file = readdir($dir))) {
                     if (is_dir($path . '/' . $file)
                         || substr($file, 0, 7) != 'layout_') {
 
                         continue;
                     }
-                    $layout =  $theme . '_' . substr($file, 7, -6);
-                    $layouts[$layout] = $layout;
+                    $layout = substr($file, 0, -6);
+                    if (isset($layouts[$layout])) {
+                        $layouts[$layout]['themes'][] = $theme;
+                        continue;
+                    }
+                    $layouts[$layout] = array(
+                        'name' => $layout,
+                        'themes' => array($theme)
+                    );
                 }
-                closedir($dh);
             }
-            self::$_collection = $layouts;
+            $collection = array();
+            foreach ($layouts as $key => $layout) {
+                $collection[$key] = $layout['name'] 
+                    . ' (' . implode(', ', $layout['themes']) . ')';
+            }
+
+            self::$_collection = $collection;
         }
         return self::$_collection;
     }

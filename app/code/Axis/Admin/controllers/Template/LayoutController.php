@@ -37,20 +37,56 @@ class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
     public function listAction()
     {
         $this->_helper->layout->disableLayout();
-        $layouts = Axis_Collect_Layout::collect();
-
-        $result = array();
-        $i = 0;
-        foreach ($layouts as $layout) {
-            $result[$i] = array(
-                'id'   => $layout,
-                'name' => $layout
-            );
-            $i++;
+        if ($this->_hasParam('templateId')) {
+            $templateId = $this->_getParam('templateId');
+            $theme = Axis::single('core/template')->getTemplateNameById($templateId);
+            $themes = array_unique(array(
+                $theme,
+                /* @TODO user defined default: $view->defaultTemplate */
+                'fallback',
+                'default'
+            ));
+        } else {
+            $themes = Axis_Collect_Theme::collect();
         }
 
-        return $this->_helper->json->sendSuccess(array(
-            'data' => $result
-        ));
+//        $layouts = Axis_Collect_Layout::collect();
+
+        $layouts = array();
+        $designPath = Axis::config('system/path') . '/app/design/front';
+        foreach ($themes as $theme) {
+            $path = $designPath . '/' . $theme . '/layouts';
+            if (!file_exists($path)) {
+                continue;
+            }
+            $dir = opendir($path);
+            while (($file = readdir($dir))) {
+                if (is_dir($path . '/' . $file)
+                    || substr($file, 0, 7) != 'layout_') {
+
+                    continue;
+                }
+                $layout = substr($file, 0, -6);
+                if (isset($layouts[$layout])) {
+                    $layouts[$layout]['themes'][] = $theme;
+                    continue;
+                }
+                $layouts[$layout] = array(
+                    'name' => $layout,
+                    'themes' => array($theme)
+                );
+            }
+        }
+
+        $data = array();
+        foreach ($layouts as $key => $layout) {
+            $name = $layout['name'] . ' (' . implode(', ', $layout['themes']) . ')';
+            $data[] = array(
+                'id'   => $key,
+                'name' => $name
+            );
+        }
+
+        return $this->_helper->json->setData($data)->sendSuccess();
     }
 }

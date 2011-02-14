@@ -18,32 +18,28 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Controller
- * @subpackage  Plugin
+ * @package     Axis_Cms
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Controller
- * @subpackage  Plugin
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Controller_Plugin_Area extends Zend_Controller_Plugin_Abstract
+class Axis_Cms_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 {
-    /**
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return void
-     */
-    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
+    protected $_version = '0.1.3';
+    protected $_info = '';
+
+    public function up()
     {
-        if ('Axis_Admin' === $request->getParam('module')) {
-            Axis_Area::backend();
-            return;
+        $rowset = Axis::model('cms/page')->fetchAll();
+        foreach ($rowset as $row) {
+            list($theme, $layout) = explode('_', $row->layout, 2);
+            $row->layout = 'layout_' . $layout;
+            $row->save();
         }
-        Axis_Area::frontend();
+    }
+
+    public function down()
+    {
+
     }
 }

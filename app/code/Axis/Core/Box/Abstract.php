@@ -57,13 +57,13 @@ abstract class Axis_Core_Box_Abstract
      * @static
      * @var Zend_View
      */
-    public static $view;
+    protected static $_view;
 
     /**
      *
      * @var bool
      */
-    protected $_isAllowed = true;
+    protected $_enabled = true;
 
     /**
      * Temporary container for array of called boxes.
@@ -80,7 +80,7 @@ abstract class Axis_Core_Box_Abstract
      */
     public static function setView($view)
     {
-        self::$view = $view;
+        self::$_view = $view;
     }
 
     /**
@@ -89,18 +89,22 @@ abstract class Axis_Core_Box_Abstract
      */
     public function getView()
     {
-        return self::$view;
+        return self::$_view;
     }
 
     public function __construct($config = array())
     {
-        if (null === self::$view) {
-            self::$view = Zend_Layout::getMvcInstance()->getView();
+        if (null === self::$_view) {
+            $this->setView(
+                Axis_Layout::getMvcInstance()->getView()
+            );
         }
-        if (!$this->_isAllowed = in_array(
-                $config['boxCategory'] . '_' . $config['boxModule'],
-                array_keys(Axis::app()->getModules()))) {
-
+        // why not get_class($this)
+        $this->_enabled = in_array(
+            $config['boxNamespace'] . '_' . $config['boxModule'],
+            array_keys(Axis::app()->getModules())
+        );
+        if (!$this->_enabled) {
             return;
         }
         $this->updateData($config, true);
@@ -109,21 +113,20 @@ abstract class Axis_Core_Box_Abstract
 
     public function toHtml()
     {
-        if (!$this->_isAllowed
+        if (!$this->_enabled
             || false === $this->initData()
-            || !$this->hasContent() ) {
+            || !$this->hasContent()) {
 
             return '';
         }
-
-        if (empty($this->_data['template'])) {
-            $templateName = $this->getData('boxName');
-            $templateName[0] = strtolower($templateName[0]);
-            $this->setData('template', strtolower($this->getData('boxModule'))
-                . '/box/' . $templateName . '.phtml');
+        $template = $this->getData('template');
+        if (empty($template)) {
+            $template = strtolower($this->getData('boxModule')) . '/box/'
+                . lcfirst($this->getData('boxName')) . '.phtml';
+            $this->setData('template', $template);
         }
 
-        self::$view->box = $this;
+        $this->getView()->box = $this;
         if (!Zend_Registry::isRegistered('axis_box/stack')) {
             Zend_Registry::set('axis_box/stack', array($this));
         } else {
@@ -132,24 +135,35 @@ abstract class Axis_Core_Box_Abstract
             Zend_Registry::set('axis_box/stack', $this->_stack);
         }
 
-        if (!empty($this->_data['tabContainer'])) {
-            $result = self::$view->render('core/box/tab.phtml');
+        if (!empty($this->_data['tab_container'])) {
+            $path = 'core/box/tab.phtml';
         } elseif ($this->getData('disableWrapper')) {
-            $result = self::$view->render($this->getData('template'));
+            $path = $this->getData('template');
         } else {
-            $result = self::$view->render('core/box/box.phtml');
+            $path = 'core/box/box.phtml';
+        }
+
+        $html = null;
+        $obStartLevel = ob_get_level();
+        try {
+            $html = $this->getView()->render($path);
+        } catch (Exception $e) {
+            while (ob_get_level() > $obStartLevel) {
+                $html .= ob_get_clean();
+            }
+            throw $e;
         }
 
         $this->_stack = Zend_Registry::get('axis_box/stack');
         array_pop($this->_stack);
         Zend_Registry::set('axis_box/stack', $this->_stack);
         if ($count = count($this->_stack)) {
-            self::$view->box = $this->_stack[$count - 1];
+            $this->getView()->box = $this->_stack[$count - 1];
         } else {
-            unset(self::$view->box);
+            unset($this->getView()->box);
         }
 
-        return $result;
+        return $html;
     }
 
     public function getData($key = null, $default = null)
@@ -191,7 +205,7 @@ abstract class Axis_Core_Box_Abstract
                 'class'          => $this->_class,
                 'url'            => $this->_url,
                 'disableWrapper' => $this->_disableWrapper,
-                'tabContainer'   => $this->_tabContainer,
+                'tab_container'  => $this->_tabContainer,
                 'template'       => $this->_template
             ));
         }
@@ -213,12 +227,12 @@ abstract class Axis_Core_Box_Abstract
     public function hasData($key)
     {
         if (strstr($key, '/')) {
-            $brunch = $this->_data;
+            $branch = $this->_data;
             foreach (explode('/', $key) as $key) {
-                if (!is_array($brunch) || !isset($brunch[$key])) {
+                if (!is_array($branch) || !isset($branch[$key])) {
                     return false;
                 }
-                $brunch = $brunch[$key];
+                $branch = $branch[$key];
             }
             return true;
         } else {
@@ -257,7 +271,7 @@ abstract class Axis_Core_Box_Abstract
     public function init() {}
 
     /**
-     * @return mixed null|mixed
+     * @return mixed void|mixed
      */
     public function initData()
     {

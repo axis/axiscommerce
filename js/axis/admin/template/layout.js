@@ -35,6 +35,10 @@ Ext.onReady(function() {
 
         loadGrid: function(templateId) {
             Layout.templateId = templateId;
+            dsLayout.load({params: {
+                templateId: templateId
+            }});
+
             ds.baseParams['filter[template][field]'] = 'template_id';
             ds.baseParams['filter[template][value]'] = templateId;
             ds.reload();
@@ -144,7 +148,6 @@ Ext.onReady(function() {
         reader: new Ext.data.JsonReader({
             root: 'data'
         }, ['id', 'name']),
-        autoLoad: true,
         listeners: {
             load: function(store, records, options) {
                 store.insert(
@@ -167,7 +170,7 @@ Ext.onReady(function() {
 
     var rendererColumnPage = function(value) {
         if (value == '0' || value == '') {
-            return 'None';
+            return 'None'.l();
         } else {
             for (var i in Axis.pages) {
                if (Axis.pages[i]['id'] == value) {
@@ -192,7 +195,7 @@ Ext.onReady(function() {
             editor: comboLayout,
             renderer: function (value) {
                 if (value == '0' || value == '') {
-                    return 'None';
+                    return 'None'.l();
                 }
                 return value;
             }
