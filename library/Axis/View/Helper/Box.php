@@ -44,7 +44,7 @@ class Axis_View_Helper_Box
     {
         if (is_array($box)) {
             $config = $box;
-            $box = $config['boxCategory']
+            $box = $config['boxNamespace']
                 . '_' . $config['boxModule']
                 . '/' .$config['boxName'];
             $box = Axis::getClass($box, 'Box');
@@ -52,9 +52,9 @@ class Axis_View_Helper_Box
             $box = Axis::getClass($box, 'Box');
             list($namespace, $module, $_box_, $name) = explode('_', $box);
             $config = array(
-                'boxCategory' => $namespace,
-                'boxModule'   => $module,
-                'boxName'     => $name
+                'boxNamespace' => $namespace,
+                'boxModule'    => $module,
+                'boxName'      => $name
             );
         }
         if (@!class_exists($box)) {

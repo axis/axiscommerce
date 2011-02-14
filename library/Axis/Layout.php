@@ -102,7 +102,7 @@ class Axis_Layout extends Zend_Layout
                 foreach ($tabset as $tabBoxId => $_tabConfig) {
                     $blockContent .= $this->_getBlockContent($_tabConfig);
                 }
-                $blockContent = "<div class='tab-container box tabs-{$_config['tabContainer']}'>{$blockContent}</div>";
+                $blockContent = "<div class='tab-container box tabs-{$_config['tab_container']}'>{$blockContent}</div>";
             } else {
                 $blockContent = $this->_getBlockContent($_config);
                 $sortOrder = $_config['sort_order'];
@@ -119,7 +119,7 @@ class Axis_Layout extends Zend_Layout
 
     private function _getBlockContent(array $config)
     {
-        if (!$config['show']) {
+        if (!$config['box_show']) {
             return '';
         }
         $block = $this->getView()->box($config);

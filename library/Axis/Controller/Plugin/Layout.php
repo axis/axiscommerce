@@ -199,14 +199,14 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 continue;
             }
             $assign = array(
-                'boxCategory'  => ucfirst($namespace),
-                'boxModule'    => ucfirst($module),
-                'boxName'      => ucfirst($box),
-                'template'     => $block['template'],
-                'tabContainer' => $block['tab_container'],
-                'sort_order'   => $block['sort_order'],
-                'page_id'      => $block['page_id'],
-                'show'         => $block['box_show']
+                'boxNamespace'  => ucfirst($namespace),
+                'boxModule'     => ucfirst($module),
+                'boxName'       => ucfirst($box),
+                'template'      => $block['template'],
+                'tab_container' => $block['tab_container'],
+                'sort_order'    => $block['sort_order'],
+                'page_id'       => $block['page_id'],
+                'box_show'      => $block['box_show']
             );
             if (!empty($block['config'])) {
                 $assign['config'] = $block['config'];

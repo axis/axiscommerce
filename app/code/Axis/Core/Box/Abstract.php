@@ -63,7 +63,7 @@ abstract class Axis_Core_Box_Abstract
      *
      * @var bool
      */
-    protected $_isAllowed = true;
+    protected $_enabled = true;
 
     /**
      * Temporary container for array of called boxes.
@@ -100,10 +100,11 @@ abstract class Axis_Core_Box_Abstract
             );
         }
         // why not get_class($this)
-        if (!$this->_isAllowed = in_array(
-                $config['boxCategory'] . '_' . $config['boxModule'],
-                array_keys(Axis::app()->getModules()))) {
-
+        $this->_enabled = in_array(
+            $config['boxNamespace'] . '_' . $config['boxModule'],
+            array_keys(Axis::app()->getModules())
+        );
+        if (!$this->_enabled) {
             return;
         }
         $this->updateData($config, true);
@@ -112,7 +113,7 @@ abstract class Axis_Core_Box_Abstract
 
     public function toHtml()
     {
-        if (!$this->_isAllowed
+        if (!$this->_enabled
             || false === $this->initData()
             || !$this->hasContent()) {
 
@@ -120,10 +121,8 @@ abstract class Axis_Core_Box_Abstract
         }
         $template = $this->getData('template');
         if (empty($template)) {
-            $template = strtolower($this->getData('boxModule'))
-                . '/box/'
-                . lcfirst($this->getData('boxName'))
-                . '.phtml';
+            $template = strtolower($this->getData('boxModule')) . '/box/'
+                . lcfirst($this->getData('boxName')) . '.phtml';
             $this->setData('template', $template);
         }
 
@@ -136,7 +135,7 @@ abstract class Axis_Core_Box_Abstract
             Zend_Registry::set('axis_box/stack', $this->_stack);
         }
 
-        if (!empty($this->_data['tabContainer'])) {
+        if (!empty($this->_data['tab_container'])) {
             $path = 'core/box/tab.phtml';
         } elseif ($this->getData('disableWrapper')) {
             $path = $this->getData('template');
@@ -206,7 +205,7 @@ abstract class Axis_Core_Box_Abstract
                 'class'          => $this->_class,
                 'url'            => $this->_url,
                 'disableWrapper' => $this->_disableWrapper,
-                'tabContainer'   => $this->_tabContainer,
+                'tab_container'  => $this->_tabContainer,
                 'template'       => $this->_template
             ));
         }
