@@ -41,13 +41,6 @@ class Axis_Layout extends Zend_Layout
     protected $_assignments;
 
     /**
-     * Assoc pages array
-     *
-     * @var array
-     */
-    protected $_pages;
-
-    /**
      *
      * @var string
      */
@@ -74,25 +67,6 @@ class Axis_Layout extends Zend_Layout
         return self::$_mvcInstance;
     }
 
-    /**
-     *
-     * @return array
-     */
-    public function getPages()
-    {
-        return $this->_pages;
-    }
-
-    /**
-     * @param array $pages
-     * @return Axis_Layout
-     */
-    public function setPages($pages)
-    {
-        $this->_pages = $pages;
-        return $this;
-    }
-    
     /**
      * @param array $assignments
      * @return Axis_Layout

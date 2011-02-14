@@ -33,6 +33,37 @@
  */
 class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
 {
+    /**
+     * Assoc pages array
+     *
+     * @var array
+     */
+    protected $_pages;
+
+    /**
+     *
+     * @return array
+     */
+    public function getPages()
+    {
+        return $this->_pages;
+    }
+
+    /**
+     * @param array $pages
+     * @return void
+     */
+    public function setPages($pages)
+    {
+        $this->_pages = $pages;
+    }
+
+    /**
+     *
+     * @param array $node
+     * @param array $rewriteNode
+     * @return bool
+     */
     private function _sortPages($node, $rewriteNode)
     {
         if ((0 > strcmp($node['module_name'], $rewriteNode['module_name'])) ||
@@ -54,7 +85,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
         );
 
         uasort($pages, array($this, '_sortPages'));
-        $this->getLayout()->setPages($pages);
+        $this->setPages($pages);
     }
 
     protected function _initLayout()
@@ -69,7 +100,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             $layout->setLayout($layoutName);
             return;
         }
-        $pages = $layout->getPages();
+        $pages = $this->getPages();
         $themeId = Axis::config('design/main/frontTemplateId');
 
         $dataset = Axis::single('core/template_page')->select()
@@ -111,7 +142,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
     
     protected function _initBlockAssigns()
     {
-        $pages = $this->getLayout()->getPages();
+        $pages = $this->getPages();
         if (!count($pages)) {
             return;
         }
@@ -120,7 +151,8 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
 
         // add parent page
         $strongPage = current($pages);
-        $themeId = Axis::config()->design->main->frontTemplateId;
+        $themeId = Axis::config('design/main/frontTemplateId');
+        
         $parentPage = Axis::single('core/page')->select('*')
             ->join('core_template_page', 'cp.id = ctp.parent_page_id')
             ->where('ctp.template_id = ?', $themeId)
