@@ -34,13 +34,11 @@ class Axis_Layout extends Zend_Layout
     const DEFAULT_LAYOUT   = 'default_3columns';
 
     /**
-     * Box to Block assignment
+     * Blocks assignment
      *
      * @var array
      */
     protected $_assignments;
-
-    protected $_tabAssignments;
 
     /**
      * Assoc pages array
@@ -106,16 +104,6 @@ class Axis_Layout extends Zend_Layout
     }
 
     /**
-     * @param array $assignments
-     * @return Axis_Layout
-     */
-    public function setTabAssigments(array $assignments)
-    {
-        $this->_tabAssignments = $assignments;
-        return $this;
-    }
-
-    /**
      *
      * @return array
      */
@@ -130,71 +118,55 @@ class Axis_Layout extends Zend_Layout
         if (Axis_Area::isBackend()) {
             return parent::__get($key);
         }
-
-        $beforeContent = $afterContent = '';
-        Zend_Registry::set('rendered_boxes', array());
+        $before = $after = '';
         foreach ($this->getBlocks($key) as $blockId => $_config) {
 
-            if (in_array($blockId, Zend_Registry::get('rendered_boxes')) ||
-                !$this->_isBoxEnabled($_config))
-            {
-                continue;
-            }
-            $blockContent = $this->_getBoxContent($_config);
-
-            if (!empty($_config['tabContainer'])) {
-                foreach ($this->_tabAssignments[$key] as $tabBoxId => $tabBoxConfig) {
-                    if ($tabBoxId == $blockId
-                        || $_config['tabContainer'] != $tabBoxConfig['tabContainer']
-                        || !$this->_isBoxEnabled($tabBoxConfig))
-                    {
-                        continue;
-                    }
-
-                    $blockContent .= $this->_getBoxContent($tabBoxConfig);
-
-                    $rendered_boxes = Zend_Registry::get('rendered_boxes');
-                    $rendered_boxes[] = $tabBoxId;
-                    Zend_Registry::set('rendered_boxes', $rendered_boxes);
+            if (is_string($blockId)) { //tabset
+                $blockContent = '';
+                $tabset       = $_config;
+                $_config      = current($tabset);
+                foreach ($tabset as $tabBoxId => $_tabConfig) {
+                    $blockContent .= $this->_getBlockContent($_tabConfig);
                 }
-                $this->_wrapContentIntoTabs($blockContent, $_config['tabContainer']);
+                $blockContent = "<div class='tab-container box tabs-{$_config['tabContainer']}'>{$blockContent}</div>";
+            } else {
+                $blockContent = $this->_getBlockContent($_config);
+                $sortOrder = $_config['sort_order'];
             }
 
             if ($_config['sort_order'] < 0) {
-                $beforeContent .= $blockContent;
+                $before .= $blockContent;
             } else {
-                $afterContent .= $blockContent;
+                $after .= $blockContent;
             }
         }
-        return $beforeContent . parent::__get($key) . $afterContent;
+        return $before . parent::__get($key) . $after;
     }
 
-    private function _getBoxContent($config)
+    private function _getBlockContent(array $config)
     {
-        $box = $this->getView()->box($config);
-        if ($box) {
-            return $box->toHtml();
+        if (!$this->_isBlockEnabled($config)) {
+            return '';
+        }
+        $block = $this->getView()->box($config);
+        if ($block) {
+            return $block->toHtml();
         }
         return '';
     }
 
-    private function _isBoxEnabled($boxConfig)
+    private function _isBlockEnabled(array $config)
     {
-        if (!$boxConfig['show']) {
+        if (!$config['show']) {
             return false;
         }
-        if (strpos($boxConfig['boxModule'], 'Payment') === 0 /*|| strpos($box['module'], 'Shipping') === 0*/) {
+        if (strpos($config['boxModule'], 'Payment') === 0 /*|| strpos($box['module'], 'Shipping') === 0*/) {
             $method = Axis::single(
-                $boxConfig['boxModule'] . '/' . str_replace('Button', '', $boxConfig['boxName'])
+                $config['boxModule'] . '/' . str_replace('Button', '', $config['boxName'])
             );
             return $method->isEnabled();
         }
         return true;
-    }
-
-    private function _wrapContentIntoTabs(&$content, $class)
-    {
-        $content = "<div class='tab-container box tabs-{$class}'>{$content}</div>";
     }
 
     /**

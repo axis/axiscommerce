@@ -108,7 +108,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
 
         $layout->setLayout($layoutName);
     }
-
+    
     protected function _initBlockAssigns()
     {
         $pages = $this->getLayout()->getPages();
@@ -152,6 +152,13 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 $block['block'] : $block['other_block'];
             $blockId = $block['id'];
 
+            if (isset($assigns[$container][$blockId])) {
+                $oldPage = $pages[$assigns[$container][$blockId]['page_id']];
+                $newPage = $pages[$block['page_id']];
+                if (!$this->_sortPages($oldPage, $newPage)) {
+                    continue;
+                }
+            }
 
             // example: Axis_Locale_Currency
             list($namespace, $module, $box) = explode('_', $block['class']);
@@ -159,14 +166,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             if (!isset($module) || !isset($box)) {
                 continue;
             }
-            if (isset($assigns[$container][$blockId])) {
-                $pageId = $assigns[$container][$blockId]['page_id'];
-                if (!$this->_sortPages($pages[$pageId], $pages[$block['page_id']])) {
-                    continue;
-                }
-            }
-
-            $assigns[$container][$blockId] = array(
+            $assign = array(
                 'boxCategory'  => ucfirst($namespace),
                 'boxModule'    => ucfirst($module),
                 'boxName'      => ucfirst($box),
@@ -177,7 +177,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 'show'         => $block['box_show']
             );
             if (!empty($block['config'])) {
-                $assigns[$container][$blockId]['config'] = $block['config'];
+                $assign['config'] = $block['config'];
             }
 
             if (strstr($block['class'], 'Axis_Cms_Block_')) {
@@ -185,16 +185,17 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 if (empty($staticBlock)) {
                     continue;
                 }
-                $assigns[$container][$blockId]['staticBlock'] = $staticBlock;
+                $assign['staticBlock'] = $staticBlock;
             }
-            if (!empty($block['tab_container'])) {
-                $tabAssigns[$container][$blockId] = $assigns[$container][$blockId];
+            $tabContainer = $block['tab_container'];
+            if (!empty($tabContainer)) {
+                $assigns[$container][$tabContainer][$blockId] = $assign;
+            } else {
+                $assigns[$container][$blockId] = $assign;
             }
         }
-//        Axis_FirePhp::log($assigns);
-//        Axis_FirePhp::log($tabAssigns);
-        $this->getLayout()->setAssigments($assigns)
-            ->setTabAssigments($tabAssigns);
+
+        $this->getLayout()->setAssigments($assigns);
     }
 
     /**
@@ -205,7 +206,6 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
      */
     public function postDispatch(Zend_Controller_Request_Abstract $request)
     {
-        Axis_FirePhp::log(__METHOD__);
         $this->_initPages();
         $this->_initLayout();
         $this->_initBlockAssigns();
