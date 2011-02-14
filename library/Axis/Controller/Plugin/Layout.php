@@ -97,7 +97,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
         }
         if (Axis_Area::isBackend()) {
             $layoutName = 'layout';
-            $layout->setLayout($layoutName);
+            $layout->setLayout($layoutName, false);
             return;
         }
         $pages = $this->getPages();
@@ -137,7 +137,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             }
         }
 
-        $layout->setLayout($layoutName);
+        $layout->setLayout($layoutName, false);
     }
     
     protected function _initBlockAssigns()

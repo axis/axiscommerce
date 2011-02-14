@@ -168,15 +168,15 @@ class Axis_Layout extends Zend_Layout
 
         $view = $this->getView();
 
-        // if (null !== ($path = $this->getViewScriptPath())) {
-        //     if (method_exists($view, 'addScriptPath')) {
-        //         $view->addScriptPath($path);
-        //     } else {
-        //         $view->setScriptPath($path);
-        //     }
-        // } elseif (null !== ($path = $this->getViewBasePath())) {
-        //     $view->addBasePath($path, $this->_viewBasePrefix);
-        // }
+//         if (null !== ($path = $this->getViewScriptPath())) {
+//             if (method_exists($view, 'addScriptPath')) {
+//                 $view->addScriptPath($path);
+//             } else {
+//                 $view->setScriptPath($path);
+//             }
+//         } elseif (null !== ($path = $this->getViewBasePath())) {
+//             $view->addBasePath($path, $this->_viewBasePrefix);
+//         }
 
         return $view->render($name);
     }
