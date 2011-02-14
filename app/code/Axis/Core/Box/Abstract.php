@@ -114,7 +114,7 @@ abstract class Axis_Core_Box_Abstract
     {
         if (!$this->_isAllowed
             || false === $this->initData()
-            || !$this->hasContent() ) {
+            || !$this->hasContent()) {
 
             return '';
         }

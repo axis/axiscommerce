@@ -119,7 +119,7 @@ class Axis_Layout extends Zend_Layout
 
     private function _getBlockContent(array $config)
     {
-        if (!$this->_isBlockEnabled($config)) {
+        if (!$config['show']) {
             return '';
         }
         $block = $this->getView()->box($config);
@@ -127,20 +127,6 @@ class Axis_Layout extends Zend_Layout
             return $block->toHtml();
         }
         return '';
-    }
-
-    private function _isBlockEnabled(array $config)
-    {
-        if (!$config['show']) {
-            return false;
-        }
-        if (strpos($config['boxModule'], 'Payment') === 0 /*|| strpos($box['module'], 'Shipping') === 0*/) {
-            $method = Axis::single(
-                $config['boxModule'] . '/' . str_replace('Button', '', $config['boxName'])
-            );
-            return $method->isEnabled();
-        }
-        return true;
     }
 
     /**
