@@ -107,8 +107,9 @@ abstract class Axis_Core_Box_Abstract
         if (!$this->_enabled) {
             return;
         }
-        $this->updateData($config, true);
-        $this->init();
+        $this->refresh()
+            ->updateData($config)
+            ->init();
     }
 
     public function toHtml()
@@ -187,19 +188,21 @@ abstract class Axis_Core_Box_Abstract
         return $this;
     }
 
-    public function updateData(array $data, $reset = false)
+    public function refresh()
     {
-        if ($reset) {
-            $this->_data = array_merge($this->_data, array(
-                'title'          => $this->_title,
-                'class'          => $this->_class,
-                'url'            => $this->_url,
-                'disableWrapper' => $this->_disableWrapper,
-                'tab_container'  => $this->_tabContainer,
-                'template'       => $this->_template
-            ));
-        }
+        $this->_data = array_merge($this->_data, array(
+            'title'          => $this->_title,
+            'class'          => $this->_class,
+            'url'            => $this->_url,
+            'disableWrapper' => $this->_disableWrapper,
+            'tab_container'  => $this->_tabContainer,
+            'template'       => $this->_template
+        ));
+        return $this;
+    }
 
+    public function updateData(array $data)
+    {
         if (!empty($data['config'])) {
             $additional = $data['config'];
             unset($data['config']);
