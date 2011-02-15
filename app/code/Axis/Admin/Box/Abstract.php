@@ -36,7 +36,7 @@ abstract class Axis_Admin_Box_Abstract extends Axis_Core_Box_Abstract
 {
     public function toHtml()
     {
-        if (!$this->_isAllowed
+        if (!$this->_enabled
             || false === $this->initData() 
             || !$this->hasContent()) {
 
