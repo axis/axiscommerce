@@ -121,8 +121,9 @@ abstract class Axis_Core_Box_Abstract
         }
         $template = $this->getData('template');
         if (empty($template)) {
-            $template = strtolower($this->getData('boxModule')) . '/box/'
-                . lcfirst($this->getData('boxName')) . '.phtml';
+            $template = $this->getData('boxName') . '.phtml';
+            $template = strtolower(substr($template, 0, 1)) . substr($template, 1);
+            $template = strtolower($this->getData('boxModule')) . '/box/' . $template;
             $this->setData('template', $template);
         }
 
