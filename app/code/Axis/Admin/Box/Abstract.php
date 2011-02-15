@@ -45,7 +45,9 @@ abstract class Axis_Admin_Box_Abstract extends Axis_Core_Box_Abstract
         $this->getView()->box = $this;
         
         if (!$this->hasData('template')) {
-            $this->template = lcfirst($this->_data['boxName']) . '.phtml';
+            $template = $this->getData('boxName') . '.phtml';
+            $template = strtolower(substr($template, 0, 1)) . substr($template, 1);
+            $this->setData('template', $template);
         }
         $path = 'box/box.phtml';
         if ($this->disableWrapper) {
