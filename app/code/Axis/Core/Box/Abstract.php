@@ -72,7 +72,7 @@ abstract class Axis_Core_Box_Abstract
      *
      * @var array
      */
-    private $_stack = array();
+    private static $_stack = array();
 
     /**
      * @static
@@ -127,14 +127,7 @@ abstract class Axis_Core_Box_Abstract
             $this->setData('template', $template);
         }
 
-        $this->getView()->box = $this;
-        if (!Zend_Registry::isRegistered('axis_box/stack')) {
-            Zend_Registry::set('axis_box/stack', array($this));
-        } else {
-            $this->_stack = Zend_Registry::get('axis_box/stack');
-            $this->_stack[] = $this;
-            Zend_Registry::set('axis_box/stack', $this->_stack);
-        }
+        $this->getView()->box = self::$_stack[] = $this;
 
         if (!empty($this->_data['tab_container'])) {
             $path = 'core/box/tab.phtml';
@@ -155,15 +148,11 @@ abstract class Axis_Core_Box_Abstract
             throw $e;
         }
 
-        $this->_stack = Zend_Registry::get('axis_box/stack');
-        array_pop($this->_stack);
-        Zend_Registry::set('axis_box/stack', $this->_stack);
-        if ($count = count($this->_stack)) {
-            $this->getView()->box = $this->_stack[$count - 1];
-        } else {
-            unset($this->getView()->box);
+        unset($this->getView()->box);
+        array_pop(self::$_stack);
+        if (count(self::$_stack)) {
+            $this->getView()->box = end(self::$_stack);
         }
-
         return $html;
     }
 
