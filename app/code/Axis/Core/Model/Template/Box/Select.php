@@ -36,7 +36,7 @@ class Axis_Core_Model_Template_Box_Select extends Axis_Db_Table_Select
     /**
      * Adds all names of categories where the page lies in, devided by commas
      *
-     * @return Axis_Cms_Model_Page_Comment_Select
+     * @return Axis_Core_Model_Template_Box_Select
      */
     public function addPageIds()
     {
@@ -68,7 +68,7 @@ class Axis_Core_Model_Template_Box_Select extends Axis_Db_Table_Select
      *      )
      *  )
      * </pre>
-     * @return Axis_Cms_Model_Page_Comment_Select
+     * @return Axis_Core_Model_Template_Box_Select
      */
     public function addFilters(array $filters)
     {
