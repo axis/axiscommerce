@@ -82,7 +82,7 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
                         $params
                     );
                 }
-                return call_user_func(array(self::$view, $helper), $params);
+                return call_user_func(array($this->getView(), $helper), $params);
                 break;
         }
        

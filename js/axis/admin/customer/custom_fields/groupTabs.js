@@ -165,7 +165,7 @@ function saveGroup(){
                                 
                 //changing tab text
                 var active = Ext.query('.active', '#axis-tabs');
-                active[0].firstChild.nodeValue = data['groupTitle'+langId];
+                active[0].firstChild.nodeValue = data['groupTitle' + Axis.language];
                 //reloading grid
                 gs.reload();
                 ds.proxy.conn.url = Axis.getUrl('customer_custom-fields/get-fields/groupId/' + groupId + '/');
@@ -214,7 +214,7 @@ function deleteGroup() {
                 Ext.get('tab-' + groupId).parent().remove();
                 
                 Ext.Ajax.request({
-                    url: Axis.getUrl('customer_custom-fields/get-group-pairs'),
+                    url: Axis.getUrl('customer_custom-fields/get-groups'),
                     success: function(response) {
                         var data = eval('('+ response.responseText +')');
                         

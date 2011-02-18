@@ -32,45 +32,26 @@
  */
 abstract class Axis_Controller_Action extends Zend_Controller_Action
 {
-    protected $_lang;
-    protected $_langId;
-    protected $_siteId;
-    protected $_nsMain;
-
     /**
-     *
-     * @param  string $app
-     * @return string
+     *  Main init
      */
-    private function _getScriptsPath($app)
+    public function init()
     {
-        if ('front' === $app) {
-            list($namespace, $module) = explode(
-                '_', strtolower($this->getRequest()->getModuleName()), 2
-            );
-        } else {
-            $controller = $this->getRequest()->getControllerName();
-            if (false === strpos($controller, '_')) {
-                $module = 'core';
-            } else {
-                $controllerArray = explode('_', $controller);
-                $module = current($controllerArray);
-            }
-        }
-        return $module;
+        parent::init();
+
+        $this->db = Axis::db();
+        $this->initView();
     }
 
     /**
      * Initialize View object
      *
-     * @param string $area
-     * @param string $template
      * @return Zend_View_Interface
      * @see Zend_Controller_Action initView()
      */
-    public function initView($area = null, $template = null)
+    public function initView()
     {
-        //$view = parent::initView();
+//        $view = parent::initView();
         require_once 'Zend/View/Interface.php';
         if (!$this->getInvokeArg('noViewRenderer')
             && $this->_helper->hasHelper('viewRenderer')) {
@@ -87,26 +68,26 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         if ($view->templateName) {
             return $view;
         }
-        
-        if (null === $area) {
-            $area = Zend_Registry::get('area');
+
+        if (Axis_Area::isBackend()) {
+            $templateId = Axis::config('design/main/adminTemplateId');
+        } else {
+            $templateId = Axis::config('design/main/frontTemplateId');
         }
-        if (null === $template) {
-            $template = Axis_Layout::getTemplateName($area);
-        }
+
+        $theme = Axis::single('core/template')->getTemplateNameById($templateId);
 
         $request = $this->getRequest();
         $systemPath = Axis::config('system/path');
 
-        $view->templateName = $template;
-        $view->area         = $area;
-        $module = $request->getModuleName();
-        list($namespace, $module) = explode('_', $module, 2);
-        $view->namespace  = $namespace;
-        $view->moduleName = $module;
+        $view->templateName = $theme;
+        $view->area = $area = Axis_Area::getArea();
+        list($namespace, $module) = explode('_', $request->getModuleName(), 2);
+        $view->namespace    = $namespace;
+        $view->moduleName   = $module;
 
-        $view->path = $systemPath;
-        $view->skinPath = $systemPath . '/skin/' . $area . '/' . $template;
+        $view->path         = $systemPath;
+        $view->skinPath     = $systemPath . '/skin/' . $area . '/' . $theme;
 
         $currentUrl = $request->getScheme() . '://'
              . $request->getHttpHost()
@@ -125,29 +106,37 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         //$view->defaultTemplate = 'default';
 
         //Initialize Zend_View stack
-        $module = $this->_getScriptsPath($area);
+        if (Axis_Area::isFrontend()) {
+            $modulePath = strtolower($module);
+        } else {
+            $controller = $request->getControllerName();
+            $modulePath = 'core';
+            if (strpos($controller, '_')) {
+                list($modulePath) = explode('_', $controller);
+            }
+        }
 
         $view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
         $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
         $view->setScriptPath(array());
 
-        $fallbackList = array_unique(array(
-            $template,
+        $themes = array_unique(array(
+            $theme,
             /* @TODO user defined default: $view->defaultTemplate */
             'fallback',
             'default'
         ));
-        foreach (array_reverse($fallbackList) as $fallback) {
-            $templatePath = $systemPath . '/app/design/' . $area . '/' . $fallback;
-            if (is_readable($templatePath . '/helpers')) {
-                $view->addHelperPath($templatePath . '/helpers', 'Axis_View_Helper');
+        foreach (array_reverse($themes) as $_theme) {
+            $themePath = $systemPath . '/app/design/' . $area . '/' . $_theme;
+            if (is_readable($themePath . '/helpers')) {
+                $view->addHelperPath($themePath . '/helpers', 'Axis_View_Helper');
             }
-            if (is_readable($templatePath . '/templates')) {
-                $view->addScriptPath($templatePath . '/templates');
-                $view->addScriptPath($templatePath . '/templates/' . $module);
+            if (is_readable($themePath . '/templates')) {
+                $view->addScriptPath($themePath . '/templates');
+                $view->addScriptPath($themePath . '/templates/' . $modulePath);
             }
-            if (is_readable($templatePath . '/layouts')) {
-                $view->addScriptPath($templatePath . '/layouts');
+            if (is_readable($themePath . '/layouts')) {
+                $view->addScriptPath($themePath . '/layouts');
             }
         }
 
@@ -164,72 +153,19 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
         $viewRenderer->setView($view);
 
-        return $view;
-    }
-
-    /**
-     *
-     * @param Axis_View|null $view
-     * @param string $area
-     * @param string $template
-     * @return Axis_Layout
-     */
-    public function initLayout($view = null, $area = null, $template = null)
-    {
-        if (null === $view) {
-            $view = $this->view;
-        }
-        if (null === $area) {
-            $area = Zend_Registry::get('area');
-        }
-        if (null === $template) {
-            $template = Axis_Layout::getTemplateName($area);
-        }
+        // init layout
 
         $this->layout = Axis_Layout::getMvcInstance();
 
-        $this->layout->setView($view)->setOptions(array('layoutPath' =>
-            Axis::config()->system->path .
-            '/app/design/' . $area . '/' . $template . '/layouts'
+        $this->layout->setView($view)
+            ->setOptions(array('layoutPath' =>
+                $systemPath . '/app/design/' . $area . '/' . $theme . '/layouts'
         ));
 
-        return $this->layout;
-    }
-
-    /**
-     *  Main init
-     */
-    public function init()
-    {
-        parent::init();
-
-        $this->db = Axis::db();
-        $this->_siteId = Axis::getSiteId();
-        $this->_langId = Axis_Locale::getLanguageId();
-
-        $module = $this->getRequest()->getParam('module');
-        $area = ($module === 'Axis_Admin') ? 'admin' : 'front';
-        Zend_Registry::set('area', $area);
-        $template = Axis_Layout::getTemplateName($area);
-        $this->initView($area, $template);
-        $this->initLayout($this->view, $area, $template);
-        
-        if ('front' === $area
-            && $this->_hasParam('locale')
-            && Axis_Controller_Router_Route::hasLocaleInUrl()) {
-
-            $locale = $this->_getParam('locale');
-        } elseif (isset(Axis::session()->locale)) {
-            $locale = Axis::session()->locale;
-        } else {
-            $locale = Axis_Locale::getDefaultLocale();
-        }
-        Axis_Locale::setLocale($locale);
-        
-        Axis::translate();
-
-        //$this->_helper->removeHelper('json');
+        //backend $this->_helper->removeHelper('json');
         $this->_helper->addHelper(new Axis_Controller_Action_Helper_Json());
+
+        return $view;
     }
 
     /**

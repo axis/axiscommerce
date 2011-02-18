@@ -139,9 +139,7 @@ class Axis_Checkout_OnepageController extends Axis_Checkout_Controller_Checkout
         $params = $this->_request->getPost();
 
         if (!$formAddress->isValid($params)) {
-            return $this->_helper->json->sendJson(
-                $formAddress->getMessages(), false, false
-            );
+            return $this->_helper->json->sendRaw($formAddress->getMessages());
         }
         $address = $params;
         if ($this->_getParam('use_as_delivery', false)) {
@@ -180,9 +178,7 @@ class Axis_Checkout_OnepageController extends Axis_Checkout_Controller_Checkout
         $params = $this->_request->getPost();
 
         if (!$formAddress->isValid($params)) {
-            return $this->_helper->json->sendJson(
-                $formAddress->getMessages(), false, false
-            );
+            return $this->_helper->json->sendRaw($formAddress->getMessages());
         }
 
         return $this->_helper->json->sendJson(array(

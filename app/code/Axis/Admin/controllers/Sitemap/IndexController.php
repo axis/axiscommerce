@@ -62,7 +62,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
          * Get products
          */
         $this->view->products = Axis::single('sitemap/file')
-            ->getAllActiveProducts($config['lang_id'], array($config['site_id']));
+            ->getAllActiveProducts($config['lang_id'], $config['site_id']);
 
         $changefreq['products'] = $conf->products->frequency;
         $priority['products']   = $conf->products->priority;
@@ -208,11 +208,11 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             ), $this->db->quoteInto('id = ?', $data['id']));
         } else { // else insert new
             $data['id'] = Axis::single('sitemap/file')->insert(array(
-                'filename' => $alpha->filter($data['filename']),
+                'filename'     => $alpha->filter($data['filename']),
                 'generated_at' => Axis_Date::now()->toSQLString(),
-                'usage_at' => '0000-00-00',//Axis_Date::now()->toSQLString(),
-                'site_id' => $data['site_ids'],
-                'status' => 0
+                'usage_at'     => '0000-00-00',//Axis_Date::now()->toSQLString(),
+                'site_id'      => $data['site_ids'],
+                'status'       => 0
             ));
         }
         //seaech engines saving
@@ -225,7 +225,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         }
         // generate xml sitemap
         $config = Axis::single('sitemap/file')->find($data['id'])->current()->toArray();
-        $config['lang_id'] = $this->_langId;
+        $config['lang_id'] = Axis_Locale::getLanguageId();
         $this->_helper->json->sendJson(array(
             'success' => $this->_generateXmlSitemap($config)
         ));
@@ -353,7 +353,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
                 $this->db->quoteInto('id = ?', $id)
             );
             $config = Axis::single('sitemap/file')->find($id)->current()->toArray();
-            $config['lang_id'] = $this->_langId;
+            $config['lang_id'] = Axis_Locale::getLanguageId();
             $this->_generateXmlSitemap($config);
             $tableSitemapToEngine->save(explode(',', $item['engines']), $id);
         }

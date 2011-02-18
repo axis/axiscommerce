@@ -1,58 +1,63 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Box
+ * @package     Axis_Collect
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Box
+ * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
- * @abstract
  */
-abstract class Axis_Admin_Box_Abstract extends Axis_Core_Box_Abstract
+class Axis_Collect_Theme implements Axis_Collect_Interface
 {
-    public function toHtml()
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function collect()
     {
-        if (!$this->_enabled
-            || false === $this->initData() 
-            || !$this->hasContent()) {
+        $path = Axis::config('system/path') . '/app/design/front';
+        $dh = opendir($path);
+        $themes = array();
+        while (($file = readdir($dh))) {
+            if ($file[0] == '.')
+                continue;
+            $themes[$file] = $file;
+        }
+        closedir($dh);
+        return $themes;
+    }
 
-            return '';
-        }
-        $this->getView()->box = $this;
-        
-        if (!$this->hasData('template')) {
-            $template = $this->getData('boxName') . '.phtml';
-            $template = strtolower(substr($template, 0, 1)) . substr($template, 1);
-            $this->setData('template', $template);
-        }
-        $path = 'box/box.phtml';
-        if ($this->disableWrapper) {
-            $path = 'box/' . $this->template;
-        }
-        return $this->getView()->render($path);
+    /**
+     *
+     * @static
+     * @param string $id
+     * @return string
+     */
+    public static function getName($id)
+    {
+        return $id;
     }
 }

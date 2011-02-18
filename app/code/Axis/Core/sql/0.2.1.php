@@ -23,39 +23,43 @@
  * @license     GNU Public License V3.0
  */
 
-class Axis_Core_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
+class Axis_Core_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_version = '0.1.9';
-    protected $_info = 'Rename table core_template_layout_page to core_template_page';
+    protected $_version = '0.2.1';
+    protected $_info = '';
 
     public function up()
     {
+        function _getRealLayout($layout)
+        {
+            if (empty($layout)) {
+                return;
+            }
+            list($theme, $layout) = explode('_', $layout, 2);
+            return 'layout_' . $layout;
+        }
+        
+        $rowset = Axis::single('core/template')->fetchAll();
+        foreach ($rowset as $row) {
+            $row->default_layout = _getRealLayout($row->default_layout);
+            $row->save();
+        }
+
+        $rowset = Axis::single('core/template_page')->fetchAll();
+        foreach ($rowset as $row) {
+            $row->layout = _getRealLayout($row->layout);
+            $row->save();
+        }
+
         $installer = Axis::single('install/installer');
 
         $installer->run("
-
-            ALTER TABLE `{$installer->getTable('core_template_layout_page')}`
-                RENAME TO `{$installer->getTable('core_template_page')}`;
-
-            ALTER TABLE `{$installer->getTable('core_template_page')}`
-                ADD COLUMN `parent_page_id` MEDIUMINT(8) UNSIGNED AFTER `layout`;
-
+            ALTER TABLE `{$installer->getTable('core_template')}` DROP COLUMN `is_active`;
         ");
-
     }
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
-        $installer->run("
-
-            ALTER TABLE `{$installer->getTable('core_template_page')}`
-                RENAME TO `{$installer->getTable('core_template_layout_page')}`;
-
-            ALTER TABLE `{$installer->getTable('core_template_page')}`
-                DROP COLUMN `parent_page_id`;
-
-        ");
+        
     }
 }

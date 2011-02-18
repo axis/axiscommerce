@@ -94,8 +94,8 @@ class Axis_Cms_ViewController extends Axis_Core_Controller_Front
             ->setDescription($content['meta_description'])
             ->setKeywords($content['meta_keyword']);
 
-        $layout = substr($rowPage->layout, strpos($rowPage->layout, '_'));
-        $this->_helper->layout->setLayout('layout' . $layout);
+        $layout = $rowPage->layout;
+        $this->_helper->layout->setLayout($layout);
         $this->render();
     }
 

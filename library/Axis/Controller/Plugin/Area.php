@@ -1,58 +1,49 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Box
+ * @package     Axis_Controller
+ * @subpackage  Plugin
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Box
+ * @package     Axis_Controller
+ * @subpackage  Plugin
  * @author      Axis Core Team <core@axiscommerce.com>
- * @abstract
  */
-abstract class Axis_Admin_Box_Abstract extends Axis_Core_Box_Abstract
+class Axis_Controller_Plugin_Area extends Zend_Controller_Plugin_Abstract
 {
-    public function toHtml()
+    /**
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @return void
+     */
+    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
     {
-        if (!$this->_enabled
-            || false === $this->initData() 
-            || !$this->hasContent()) {
-
-            return '';
+        if ('Axis_Admin' === $request->getParam('module')) {
+            Axis_Area::backend();
+            return;
         }
-        $this->getView()->box = $this;
-        
-        if (!$this->hasData('template')) {
-            $template = $this->getData('boxName') . '.phtml';
-            $template = strtolower(substr($template, 0, 1)) . substr($template, 1);
-            $this->setData('template', $template);
-        }
-        $path = 'box/box.phtml';
-        if ($this->disableWrapper) {
-            $path = 'box/' . $this->template;
-        }
-        return $this->getView()->render($path);
+        Axis_Area::frontend();
     }
 }

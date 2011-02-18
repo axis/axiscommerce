@@ -36,35 +36,33 @@ class Axis_View_Helper_Box
     /**
      * Return the singleton instance of box object
      *
-     * @param string $boxClass locale/currency|Axis_Locale_Box_Currency
-     * @param array $config [optional]
+     * @param mixed string|array $box
      * @return Axis_Core_Box_Abstract
      * @throws Axis_Exception
      */
-    public function box($boxClass, $config = array())
+    public function box($box)
     {
-        $boxClass = Axis::getClass($boxClass, 'Box');
-
-        $tempClass = str_replace('_Box', '', $boxClass);
-        foreach (array('boxCategory', 'boxModule', 'boxName') as $option) {
-            if ($option === 'boxName') {
-                if (empty($tempClass)) {
-                    echo $boxClass;die;
-                }
-                $config[$option] = $tempClass;
-                break;
-            }
-            $optionLength = strpos($tempClass, '_');
-            $config[$option] = substr($tempClass, 0, $optionLength);
-            $tempClass = substr($tempClass, $optionLength + 1);
+        if (is_array($box)) {
+            $config = $box;
+            $box = $config['boxNamespace']
+                . '_' . $config['boxModule']
+                . '/' .$config['boxName'];
+            $box = Axis::getClass($box, 'Box');
+        } else {
+            $box = Axis::getClass($box, 'Box');
+            list($namespace, $module, $_box_, $name) = explode('_', $box);
+            $config = array(
+                'boxNamespace' => $namespace,
+                'boxModule'    => $module,
+                'boxName'      => $name
+            );
         }
-
-        if (@!class_exists($boxClass)) {
+        if (@!class_exists($box)) {
             $response = Zend_Controller_Front::getInstance()->getResponse();
             if (!count($response->getException())) {
                 $exception = new Axis_Exception(
                     Axis::translate('core')->__(
-                        'Class %s not found', $boxClass
+                        'Class %s not found', $box
                     )
                 );
                 $response->setException($exception);
@@ -75,9 +73,9 @@ class Axis_View_Helper_Box
             }
         }
 
-        if (Zend_Registry::isRegistered($boxClass)) {
-            return Zend_Registry::get($boxClass)->updateData($config, true);
+        if (Zend_Registry::isRegistered($box)) {
+            return Zend_Registry::get($box)->updateData($config, true);
         }
-        return Axis::single($boxClass, $config);
+        return Axis::single($box, $config);
     }
 }

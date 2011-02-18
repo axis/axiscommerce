@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Controller
+ * @subpackage  Plugin
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,38 +27,29 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Controller
+ * @subpackage  Plugin
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_Skin implements Axis_Collect_Interface
+class Axis_Controller_Plugin_Locale extends Zend_Controller_Plugin_Abstract
 {
     /**
      *
-     * @static
-     * @return array
+     * @param Zend_Controller_Request_Abstract $request
+     * @return void
      */
-    public static function collect()
+    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
     {
-        $path = Axis::config()->system->path . '/app/design/front';
-        $dh = opendir($path);
-        $skins = array();
-        while (($file = readdir($dh))) {
-            if ($file[0] == '.')
-                continue;
-            $skins[$file] = $file;
-        }
-        closedir($dh);
-        return $skins;
-    }
+        if (Axis_Area::isFrontend()
+            && null !== $request->getParam('locale')//_hasParam('locale')
+            && Axis_Controller_Router_Route::hasLocaleInUrl()) {
 
-    /**
-     *
-     * @static
-     * @param string $id
-     * @return string
-     */
-    public static function getName($id)
-    {
-        return $id;
+            $locale = $request->getParam('locale');
+        } elseif (isset(Axis::session()->locale)) {
+            $locale = Axis::session()->locale;
+        } else {
+            $locale = Axis_Locale::getDefaultLocale();
+        }
+        Axis_Locale::setLocale($locale);
     }
 }

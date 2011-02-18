@@ -38,15 +38,17 @@ echo $this->formText('groupName', '', array('size' => '18'));
 echo $this->formText('sortOrder', '', array('size' => '2'));
 //group is_active field
 echo $this->formSelect('groupAct', null, null, array('0' => 'Disabled', '1' => 'Enabled'));
+
+$_languages = Axis_Collect_Language::collect();
 ?>
 
 <table cellpadding="0" cellspacing="0" width="100%" id="ext-cmp-layout">
     <tr><td>
         <div id="language-tabs" class="form-wrapper">
-            <?php foreach ($this->languages as $langId => $language) { ?>
-                <div id="langTabItem<?php echo $langId; ?>" class="x-hide-display simple-fields">
+            <?php foreach ($_languages as $languageId => $language) { ?>
+                <div id="langTabItem<?php echo $languageId; ?>" class="x-hide-display simple-fields">
                     <label><?php echo $this->translate('account')->__('Group title') ?>: </label>
-                    <?php echo $this->formText("groupTitle$langId", ''); ?>
+                    <?php echo $this->formText("groupTitle$languageId", ''); ?>
                 </div>
             <?php } ?>
         </div>
@@ -63,15 +65,14 @@ var ds, gs, temp_groupId, validatorStore, typeStore;
 var editing_new_group = false;
 
 var groupId = '<?php reset($this->fieldGroups); echo key($this->fieldGroups); ?>';
-var langId = '<?php echo $this->languageId;?>';
 
 var groupTab = [
 <?php
     $js = '';
-    foreach ($this->languages as $langId => $language) {
+    foreach ($_languages as $languageId => $language) {
         $language = addslashes($language);
         $js .= "{
-        contentEl: 'langTabItem$langId',
+        contentEl: 'langTabItem$languageId',
         title: '$language'
         },\n";
     }
@@ -100,11 +101,11 @@ $js = "
        width: 30
     },
     isActive2,";
-    foreach ($this->languages as $langId => $language) {
+    foreach ($_languages as $languageId => $language) {
         $language = addslashes($language);
         $js .= "{
             header: 'Value*" . $language . "',
-            dataIndex: 'label" . $langId . "',
+            dataIndex: 'label" . $languageId . "',
             width: 100,
             editor: new Ext.form.TextField({
                 allowBlank: true
@@ -131,9 +132,9 @@ var valuesetRow = [
     'id',
     'is_active',
     'customer_valueset_id',";
-    foreach ($this->languages as $langId => $language) {
+    foreach ($_languages as $languageId => $language) {
         $language = addslashes($language);
-        $js .= "'label" . $langId . "',";
+        $js .= "'label" . $languageId . "',";
     }
     $js .= "'sort_order'";
     echo $js;
@@ -146,9 +147,9 @@ var valuesetRowClear = {
 $js = "
     'new': true,
     is_active: 1,";
-    foreach ($this->languages as $langId => $language) {
+    foreach ($_languages as $languageId => $language) {
         $language = addslashes($language);
-        $js .= "label" . $langId . ": '',";
+        $js .= "label" . $languageId . ": '',";
     }
     $js .= "sort_order: '3'";
     echo $js;
@@ -158,9 +159,9 @@ $js = "
 var fieldTitle = [
 <?php
 $js = "";
-foreach ($this->languages as $langId => $language) {
+foreach ($_languages as $languageId => $language) {
     $language = addslashes($language);
-    $js .= "{name: 'data[field_label" . $langId . "]',";
+    $js .= "{name: 'data[field_label" . $languageId . "]',";
     $js .= "fieldLabel: '" . $language . "',";
     $js .= "xtype: 'textfield',";
     $js .= "anchor: '98%'},";
@@ -174,9 +175,9 @@ var Field = Ext.data.Record.create([
     {name: 'name', type: 'string'},
     <?php
         $fields = "";
-        foreach ($this->languages as $langId => $language) {
+        foreach ($_languages as $languageId => $language) {
             $language = addslashes($language);
-            $fields .= "{name: 'field_label$langId',  type: 'string'},\n";
+            $fields .= "{name: 'field_label$languageId',  type: 'string'},\n";
         }
         echo $fields;
     ?>
@@ -208,9 +209,9 @@ function fillForm(row, defaults){
         Ext.getCmp('fieldForm').getForm().setValues({
         <?php
             $fields = "";
-            foreach ($this->languages as $langId => $language) {
+            foreach ($_languages as $languageId => $language) {
                 $language = addslashes($language);
-                $fields .= "'data[field_label$langId]': row.get('field_label$langId'),\n";
+                $fields .= "'data[field_label$languageId]': row.get('field_label$languageId'),\n";
             }
             echo $fields;
         ?>

@@ -40,7 +40,7 @@ class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
 
     public function getSupportedTypesAction()
     {
-        $this->_helper->json->sendJson($this->_supportedTypes, false, false);
+        $this->_helper->json->sendRaw($this->_supportedTypes);
     }
 
     public function indexAction()

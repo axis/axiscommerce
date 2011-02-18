@@ -37,6 +37,8 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
     {
         $this->view->pageTitle = Axis::translate('poll')->__('Polls');
         $this->view->meta()->setTitle($this->view->pageTitle);
+        $languageId = Axis_Locale::getLanguageId();
+
 
         $questionIds = array();
         if ($this->_hasParam('questionId'))  {
@@ -46,11 +48,11 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
         $modelAnswer = Axis::single('poll/answer');
 
         $questions = Axis::single('poll/question')->getQuestions(
-            $this->_langId, $questionIds
+            $languageId, $questionIds
         );
 
         $answers = array();
-        foreach ($modelAnswer->getAnswers($this->_langId) as $answer) {
+        foreach ($modelAnswer->getAnswers($languageId) as $answer) {
             $answers[$answer['question_id']][] = $answer;
         }
 

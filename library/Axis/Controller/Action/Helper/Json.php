@@ -91,6 +91,17 @@ class Axis_Controller_Action_Helper_Json extends Zend_Controller_Action_Helper_J
 
     /**
      * Encode JSON response and immediately send
+     *
+     * @param mixed $data
+     * @return string|void
+     */
+    public function sendRaw($data)
+    {
+        return $this->sendJson($data, false, false);
+    }
+
+    /**
+     * Encode JSON response and immediately send
      * with success => true.
      * @param  mixed   $data
      * @param  boolean|array $keepLayouts

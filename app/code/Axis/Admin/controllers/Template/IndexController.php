@@ -37,39 +37,32 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Templates');
-		
-        $pages = array();
-        $orderBy = array('module_name', 'controller_name', 'action_name');
-        foreach (Axis::single('core/page')->fetchAll(null, $orderBy) as $row) {
-            $pages[] = array(
-                'id' => $row->id,
-                'name' => $row->module_name . '/' . $row->controller_name . '/' . $row->action_name
-            );
-        }
-        
+
+        $pages = Axis::model('core/page')->select(array(
+                'id', 'name' => "CONCAT(module_name, '/', controller_name, '/', action_name)"
+            ))->order(array('module_name', 'controller_name', 'action_name'))
+            ->fetchAll();
+
         $this->view->pages = $pages;
-        
         $this->view->boxClasses = Axis::single('core/template_box')->getList();
-        
         $this->render();
     }
 
     public function getNodesAction()
     {
-        $nodes = Axis::model('core/template')->fetchAll();
-        
-        foreach ($nodes as $item) {
-            $result[] = array(
-                'text' => $item->name,
-                'id'   => $item->id,
-                'leaf' => false,
-                'cls' => $item->is_active ? '' : 'disabledNode',
+        $rowset = Axis::model('core/template')->fetchAll();
+        foreach ($rowset as $row) {
+            $data[] = array(
+                'text'     => $row->name,
+                'id'       => $row->id,
+                'leaf'     => false,
+                'cls'      => '',
                 'children' => array(),
                 'expanded' => true
             );
         }
         
-        $this->_helper->json->sendJson($result, false, false);
+        $this->_helper->json->sendRaw($data);
     }
     
     public function saveAction()
@@ -83,26 +76,28 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
         ));
     }
     
-    public function getInfoAction() 
+    public function loadAction()
     {
         $this->_helper->layout->disableLayout();
         
         $templateId = $this->_getParam('templateId');
-        
-        $this->_helper->json->sendSuccess(array(
-            'data' => Axis::single('core/template')->getInfo($templateId)
-        ));           
+
+        $data = Axis::single('core/template')->find($templateId)
+            ->current()
+            ->toArray();
+        $this->_helper->json->setData($data)->sendSuccess();
     }
     
     public function deleteAction()
     {
         $this->_helper->layout->disableLayout();
         
-        $id = $this->_getParam('templateId', false);
-        
-        $usedTemplates = Axis::single('core/template')->getUsed();
-        
-        if (!$id || in_array($id, $usedTemplates)) {
+        $themeId = $this->_getParam('templateId');
+        if ($themeId) {
+            return $this->_helper->json->sendFailure();
+        }
+        $modelTheme = Axis::model('core/template');
+        if ($modelTheme->isUsed($themeId)) {
             Axis::message()->addError(
                 Axis::translate('admin')->__(
                     "Template is used already and can't be deleted"
@@ -111,7 +106,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
         
-        Axis::model('core/template')->delete($this->db->quoteInto('id = ? ', $id));
+        $modelTheme->delete($this->db->quoteInto('id = ? ', $themeId));
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
@@ -125,25 +120,36 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         
-        return $this->_helper->json->sendSuccess(array(
-            'data' => Axis::model('core/template')->getListXmlFiles()
-        ));
+        $data = array();
+        $handler = opendir(Axis::config('system/path') . '/var/templates/');
+        while ($file = readdir($handler)) {
+            if (is_dir($file)) {
+                continue;
+            }
+            $pathinfo = pathinfo($file);
+            if ('xml' !== $pathinfo['extension']) {
+                continue;
+            }
+            $data[] = array('template' => $file);
+        }
+        closedir($handler);
+        return $this->_helper->json->setData($data)->sendSuccess();
     }
 
     public function importAction()
     {
         $this->_helper->layout->disableLayout();
-        $templateName = $this->_getParam('templateName');
+        $themeNameXml = $this->_getParam('templateName');
         $model = Axis::model('core/template');
         if (!$this->_getParam('overwrite_existing') && 
-            !$model->validateBeforeImport($templateName)) {
+            !$model->validateBeforeImport($themeNameXml)) {
             
             return $this->_helper->json->sendFailure(array(
                 'errorCode' => 'template_exists'
             ));
         }
         
-        if (!$model->importTemplateFromXmlFile($templateName)) {
+        if (!$model->importTemplateFromXmlFile($themeNameXml)) {
             return $this->_helper->json->sendFailure();
         }
         Axis::message()->addSuccess(
@@ -160,26 +166,22 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
         $templateId = $this->_getParam('templateId');
         $template = Axis::model('core/template')->getFullInfo($templateId);
         $this->view->template = $template;
-        Axis_FirePhp::log($template['layouts']);
-        return $this->_helper->json->sendSuccess();
         $script = $this->getViewScript('xml', false);
-        $xml = $this->view->render($script);
+        
+        $content = $this->view->render($script);
+        $filename = $template['name'] . '.xml';
 
-        $filename = Axis::config()->system->path . '/var/templates/' . $template['name'] . '.xml';
-        if (@file_put_contents($filename, $xml)) {
-            chmod($filename, 0666);
-            Axis::message()->addSuccess(
-                Axis::translate('admin')->__(
-                    'Template was exported successfully'
-                )
-            );
-            return $this->_helper->json->sendSuccess();
-        }
-        Axis::message()->addError(
-            Axis::translate('admin')->__(
-                "Can't write to file %s", $filename
-            )
-        );
-        return $this->_helper->json->sendFailure();
+        $this->getResponse()
+            ->clearAllHeaders()
+            ->setHeader('Content-Description','File Transfer', true)
+            ->setHeader('Content-Type','application/octet-stream', true)
+            ->setHeader('Content-Disposition','attachment; filename=' . $filename, true)
+            ->setHeader('Content-Transfer-Encoding','binary', true)
+            ->setHeader('Expires','0', true)
+            ->setHeader('Cache-Control','must-revalidate, post-check=0, pre-check=0', true)
+            ->setHeader('Pragma','public', true)
+//            ->setHeader('Content-Length: ', filesize($content), true)
+            ;
+        $this->getResponse()->setBody($content);
     }
 }
