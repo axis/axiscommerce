@@ -4,34 +4,34 @@
     <div class="product-media">
         <?php echo $this->render('index/product/media.phtml'); ?>
     </div>
-    
+
     <div class="product-quick-view">
         <h2 class="product-name">
             <span><?php echo $this->escape($this->product['description']['name']);?></span>
         </h2>
-        
+
         <?php echo $this->box('community/ReviewRating')
             ->setProductId($this->product['id'])
             ->setProductUrl($this->product['human_url'])
             ->toHtml()
         ?>
-        
+
         <?php if ($this->product['description']['short_description'] != '') : ?>
-        <div class="quick-overview">        
+        <div class="quick-overview">
             <span class="product-headline">
                 <?php echo $this->translate('catalog')->__('Quick Overview')?>
             </span>
             <div class="overview-text">
                 <?php echo $this->product['description']['short_description'] ?>
-            </div> 
+            </div>
         </div>
-        <?php endif;?> 
-        
-        <?php echo $this->price($this->product['price'], 
+        <?php endif;?>
+
+        <?php echo $this->price($this->product['price']['price'],
             !empty($this->product['price_discount']) ?
                 $this->product['price_discount'] : false
         ) ?>
-        
+
         <form method="post" action="<?php echo $this->href('/checkout/cart/add', true);?>" >
             <div>
             <?php echo $this->formHidden('productId', $this->product['id']);?>
