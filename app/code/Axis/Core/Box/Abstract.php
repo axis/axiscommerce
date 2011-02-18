@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-abstract class Axis_Core_Box_Abstract
+abstract class Axis_Core_Box_Abstract extends Axis_Object
 {
     /**
      * @var string
@@ -101,7 +101,7 @@ abstract class Axis_Core_Box_Abstract
         }
         // why not get_class($this)
         $this->_enabled = in_array(
-            $config['boxNamespace'] . '_' . $config['boxModule'],
+            $config['box_namespace'] . '_' . $config['box_module'],
             array_keys(Axis::app()->getModules())
         );
         if (!$this->_enabled) {
@@ -122,17 +122,17 @@ abstract class Axis_Core_Box_Abstract
         }
         $template = $this->getData('template');
         if (empty($template)) {
-            $template = $this->getData('boxName') . '.phtml';
+            $template = $this->box_name . '.phtml';
             $template = strtolower(substr($template, 0, 1)) . substr($template, 1);
-            $template = strtolower($this->getData('boxModule')) . '/box/' . $template;
-            $this->setData('template', $template);
+            $template = strtolower($this->box_module) . '/box/' . $template;
+            $this->template = $template;
         }
 
         $this->getView()->box = self::$_stack[] = $this;
 
         if (!empty($this->_data['tab_container'])) {
             $path = 'core/box/tab.phtml';
-        } elseif ($this->getData('disableWrapper')) {
+        } elseif ($this->disable_wrapper) {
             $path = $this->getData('template');
         } else {
             $path = 'core/box/box.phtml';
@@ -157,66 +157,6 @@ abstract class Axis_Core_Box_Abstract
         return $html;
     }
 
-    public function getData($key = null, $default = null)
-    {
-        if (null === $key) {
-            return $this->_data;
-        }
-        if (strstr($key, '/')) {
-            $result = $this->_data;
-            foreach (explode('/', $key) as $key) {
-                if (!is_array($result) || !isset($result[$key])) {
-                    return $default;
-                }
-                $result = $result[$key];
-            }
-            return $result;
-        }
-        return isset($this->_data[$key]) ? $this->_data[$key] : $default;
-    }
-
-    /**
-     * Add key => value pair to data array
-     *
-     * @param string $key
-     * @param mixed $value
-     * @return Axis_Core_Box_Abstract Provides fluent interface
-     */
-    public function setData($key, $value)
-    {
-        $this->_data[$key] = $value;
-        return $this;
-    }
-
-    public function refresh()
-    {
-        $this->_data = array_merge($this->_data, array(
-            'title'          => $this->_title,
-            'class'          => $this->_class,
-            'url'            => $this->_url,
-            'disableWrapper' => $this->_disableWrapper,
-            'tab_container'  => $this->_tabContainer,
-            'template'       => $this->_template
-        ));
-        return $this;
-    }
-
-    public function updateData(array $data)
-    {
-        if (!empty($data['config'])) {
-            $additional = $data['config'];
-            unset($data['config']);
-            foreach(explode(',', $additional) as $opt) {
-                list($key, $value) = explode(':', $opt);
-                $data[$key] = $value;
-            }
-        }
-        foreach ($data as $key => $value) {
-            $this->_data[$key] = $value;
-        }
-        return $this;
-    }
-
     public function hasData($key)
     {
         if (strstr($key, '/')) {
@@ -232,35 +172,82 @@ abstract class Axis_Core_Box_Abstract
             return isset($this->_data[$key]);
         }
     }
-
-    public function __get($key)
+    
+    public function getData($key = null, $default = null)
     {
-        return $this->getData($key);
-    }
-
-    public function __set($key, $value)
-    {
-        $this->_data[$key] = $value;
-    }
-
-    public function __call($name, $arguments)
-    {
-        $key = substr($name, 3);
-        $key[0] = strtolower($key[0]);
-        switch (substr($name, 0, 3)) {
-            case 'has':
-                return $this->hasData($key);
-            case 'get':
-                return $this->getData($key);
-            case 'set':
-                $this->setData($key, $arguments[0]);
-                return $this;
+        if (null === $key) {
+            return $this->_data;
         }
-        throw new Axis_Exception(Axis::translate('core')->__(
-            "Call to undefined method '%s'", get_class($this) . '::' . $name
-        ));
+        if (strstr($key, '/')) {
+            $_data = $this->_data;
+            foreach (explode('/', $key) as $key) {
+                if (!is_array($_data) || !isset($_data[$key])) {
+                    return $default;
+                }
+                $_data = $_data[$key];
+            }
+            return $_data;
+        }
+        return isset($this->_data[$key]) ? $this->_data[$key] : $default;
     }
 
+    public function refresh()
+    {
+        $this->_data = array_merge($this->_data, array(
+            'title'           => $this->_title,
+            'class'           => $this->_class,
+            'url'             => $this->_url,
+            'disable_wrapper' => $this->_disableWrapper,
+            'tab_container'   => $this->_tabContainer,
+            'template'        => $this->_template
+        ));
+        return $this;
+    }
+
+    public function updateData(array $data)
+    {
+        if (!empty($data['config'])) {
+            $_configs = $data['config'];
+            unset($data['config']);
+            foreach(explode(',', $_configs) as $_config) {
+                list($key, $value) = explode(':', $_config);
+                $data[$key] = $value;
+            }
+        }
+        foreach ($data as $key => $value) {
+            $key = $this->_underscore($key);
+            $this->setData($key, $value);
+        }
+        return $this;
+    }
+
+//    public function __call($name, $arguments)
+//    {
+////        $parent = parent::__call($name, $arguments);
+//        $key = substr($name, 3);
+//        $key[0] = strtolower($key[0]);
+//        switch (substr($name, 0, 3)) {
+//            case 'has':
+////                Axis_FirePhp::log($parent);
+////                Axis_FirePhp::log($this->hasData($key));
+//                return $this->hasData($key);
+//            case 'get':
+////                Axis_FirePhp::log($parent);
+////                Axis_FirePhp::log($this->getData($key));
+//                return $this->getData($key);
+//            case 'set':
+//                if ($key !== $this->_underscore($key)) {
+////                    Axis_FirePhp::log($key);
+////                    Axis_FirePhp::log($this->_underscore($key));
+//                }
+//                $this->setData($key, $arguments[0]);
+//                return $this;
+//        }
+//        throw new Axis_Exception(Axis::translate('core')->__(
+//            "Call to undefined method '%s'", get_class($this) . '::' . $name
+//        ));
+//    }
+    
     public function init() {}
 
     /**
