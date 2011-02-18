@@ -243,7 +243,7 @@ Ext.onReady(function() {
             allowBlank: true
         },{
             xtype: 'textfield',
-            fieldLabel: 'Option example: 1,34,"option3"'.l(),
+            fieldLabel: "Option example: 1,34,'option3'".l(),
             name: 'config_options',
             maxLenth: 45,
             allowBlank: true
