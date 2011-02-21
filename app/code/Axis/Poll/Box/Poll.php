@@ -71,11 +71,11 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
             $totalVoteCount = $questionRow->getTotalVoteCount();
         }
         $this->updateData(array(
-            'question'      => $question,
-            'answers'       => $question['answers'],
-            'results'       => $results,
-            'status'        => $this->_showResult,
-            'totalCount'    => $totalVoteCount
+            'question'    => $question,
+            'answers'     => $question['answers'],
+            'results'     => $results,
+            'status'      => $this->_showResult,
+            'total_count' => $totalVoteCount
         ));
     }
 

@@ -43,10 +43,26 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
      * @var string
      */
     protected $_class = '';
+
+    /**
+     * @var string
+     */
+    protected $_url = '';
+
     /**
      * @var bool
      */
     protected $_disableWrapper = false;
+
+    /**
+     * @var string
+     */
+    protected $_tabContainer = null;
+
+    /**
+     * @var string
+     */
+    protected $_template = null;
 
     /**
      * @var array
@@ -159,6 +175,13 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
 
     public function hasData($key)
     {
+        if ($key !== strtolower($key)
+            || strstr($key, '/')
+            || '_' === substr($key, 0, 1)) {
+
+            Axis_FirePhp::log($key);
+            Axis_FirePhp::callstack();
+        }
         if (strstr($key, '/')) {
             $branch = $this->_data;
             foreach (explode('/', $key) as $key) {
@@ -177,6 +200,13 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     {
         if (null === $key) {
             return $this->_data;
+        }
+        if ($key !== strtolower($key)
+            || strstr($key, '/')
+            || '_' === substr($key, 0, 1)) {
+
+            Axis_FirePhp::log($key);
+            Axis_FirePhp::callstack();
         }
         if (strstr($key, '/')) {
             $_data = $this->_data;
@@ -220,33 +250,6 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         }
         return $this;
     }
-
-//    public function __call($name, $arguments)
-//    {
-////        $parent = parent::__call($name, $arguments);
-//        $key = substr($name, 3);
-//        $key[0] = strtolower($key[0]);
-//        switch (substr($name, 0, 3)) {
-//            case 'has':
-////                Axis_FirePhp::log($parent);
-////                Axis_FirePhp::log($this->hasData($key));
-//                return $this->hasData($key);
-//            case 'get':
-////                Axis_FirePhp::log($parent);
-////                Axis_FirePhp::log($this->getData($key));
-//                return $this->getData($key);
-//            case 'set':
-//                if ($key !== $this->_underscore($key)) {
-////                    Axis_FirePhp::log($key);
-////                    Axis_FirePhp::log($this->_underscore($key));
-//                }
-//                $this->setData($key, $arguments[0]);
-//                return $this;
-//        }
-//        throw new Axis_Exception(Axis::translate('core')->__(
-//            "Call to undefined method '%s'", get_class($this) . '::' . $name
-//        ));
-//    }
     
     public function init() {}
 
