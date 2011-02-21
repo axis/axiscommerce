@@ -209,7 +209,14 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 'box_show'      => $block['box_show']
             );
             if (!empty($block['config'])) {
-                $assign['config'] = $block['config'];
+                foreach(explode(',', $block['config']) as $_config) {
+
+                    list($key, $value) = explode(':', $_config);
+                    $key = strtolower(preg_replace( //underscore
+                        array('/(.)([A-Z])/', '/(.)(\d+)/'), "$1_$2", $key
+                    ));
+                    $assign[$key] = $value;
+                }
             }
 
             if (strstr($block['class'], 'Axis_Cms_Block_')) {

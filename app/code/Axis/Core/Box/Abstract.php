@@ -175,38 +175,23 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
 
     public function hasData($key)
     {
-        if ($key !== strtolower($key)
-            || strstr($key, '/')
-            || '_' === substr($key, 0, 1)) {
-
-            Axis_FirePhp::log($key);
-            Axis_FirePhp::callstack();
-        }
         if (strstr($key, '/')) {
-            $branch = $this->_data;
+            $_data = $this->_data;
             foreach (explode('/', $key) as $key) {
-                if (!is_array($branch) || !isset($branch[$key])) {
+                if (!is_array($_data) || !isset($_data[$key])) {
                     return false;
                 }
-                $branch = $branch[$key];
+                $_data = $_data[$key];
             }
             return true;
-        } else {
-            return isset($this->_data[$key]);
-        }
+        } 
+        return isset($this->_data[$key]);
     }
     
     public function getData($key = null, $default = null)
     {
         if (null === $key) {
             return $this->_data;
-        }
-        if ($key !== strtolower($key)
-            || strstr($key, '/')
-            || '_' === substr($key, 0, 1)) {
-
-            Axis_FirePhp::log($key);
-            Axis_FirePhp::callstack();
         }
         if (strstr($key, '/')) {
             $_data = $this->_data;
@@ -236,16 +221,8 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
 
     public function updateData(array $data)
     {
-        if (!empty($data['config'])) {
-            $_configs = $data['config'];
-            unset($data['config']);
-            foreach(explode(',', $_configs) as $_config) {
-                list($key, $value) = explode(':', $_config);
-                $data[$key] = $value;
-            }
-        }
+        //@todo why not setFromArray?
         foreach ($data as $key => $value) {
-            $key = $this->_underscore($key);
             $this->setData($key, $value);
         }
         return $this;

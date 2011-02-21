@@ -66,7 +66,8 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
         $this->setShowResult(null);
         if ($this->_showResult) {
             $questionRow = Axis::single('poll/question')
-                ->find($this->_questionId)->current();
+                ->find($this->_questionId)
+                ->current();
             $results = $questionRow->getResults();
             $totalVoteCount = $questionRow->getTotalVoteCount();
         }
