@@ -1,13 +1,11 @@
 <?php
 $hasVisibleProperties = false;
-if (count($this->product['properties'])) {
-    foreach ($this->product['properties'] as $property) {
-        if (!$property['visible']) {
-            continue;
-        }
-        $hasVisibleProperties = true;
-        break;
+foreach ($this->product['properties'] as $property) {
+    if (!$property['visible']) {
+        continue;
     }
+    $hasVisibleProperties = true;
+    break;
 }
 
 if ($hasVisibleProperties) : ?>
