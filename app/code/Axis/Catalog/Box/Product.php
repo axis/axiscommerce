@@ -38,17 +38,19 @@ class Axis_Catalog_Box_Product extends Axis_Catalog_Box_Product_Abstract
 
     public function initData()
     {
-        if (!$this->productId) {
+        if (!$this->product_id) {
             return false;
         }
         
         if ($this->product instanceof Zend_Db_Table_Row
-            && $this->product->id === $this->productId) {
+            && $this->product->id === $this->product_id) {
             
             return true;
         }
+        $product = Axis::single('catalog/product')->find($this->product_id)
+            ->current();
         
-        if (!$product = Axis::single('catalog/product')->find($this->productId)->current()) {
+        if (!$product) {
             return false;
         }
         

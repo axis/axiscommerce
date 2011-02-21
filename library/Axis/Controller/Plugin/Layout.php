@@ -199,9 +199,9 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 continue;
             }
             $assign = array(
-                'boxNamespace'  => ucfirst($namespace),
-                'boxModule'     => ucfirst($module),
-                'boxName'       => ucfirst($box),
+                'box_namespace' => ucfirst($namespace),
+                'box_module'    => ucfirst($module),
+                'box_name'      => ucfirst($box),
                 'template'      => $block['template'],
                 'tab_container' => $block['tab_container'],
                 'sort_order'    => $block['sort_order'],
@@ -209,7 +209,14 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 'box_show'      => $block['box_show']
             );
             if (!empty($block['config'])) {
-                $assign['config'] = $block['config'];
+                foreach(explode(',', $block['config']) as $_config) {
+
+                    list($key, $value) = explode(':', $_config);
+                    $key = strtolower(preg_replace( //underscore
+                        array('/(.)([A-Z])/', '/(.)(\d+)/'), "$1_$2", $key
+                    ));
+                    $assign[$key] = $value;
+                }
             }
 
             if (strstr($block['class'], 'Axis_Cms_Block_')) {
@@ -217,7 +224,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 if (empty($staticBlock)) {
                     continue;
                 }
-                $assign['staticBlock'] = $staticBlock;
+                $assign['static_block'] = $staticBlock;
             }
             $tabContainer = $block['tab_container'];
             if (!empty($tabContainer)) {

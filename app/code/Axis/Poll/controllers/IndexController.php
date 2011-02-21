@@ -87,11 +87,13 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
     protected function _ajaxSaveResponse($questionId)
     {
         $this->_helper->layout->disableLayout();
-        $htmlBoxContent = $this->view->box('poll/poll', array(
-            'questionId' => $questionId,
-            'showResult' => true,
-            'disableWrapper' => true
-        ))->toHtml();
+        $htmlBoxContent = $this->view->box('poll/poll')->refresh()
+            ->updateData(array(
+                'question_id'     => $questionId,
+                'show_result'     => true,
+                'disable_wrapper' => true
+            ))
+            ->toHtml();
 
         return $this->_helper->json->sendSuccess(
             array('content' => $htmlBoxContent)
@@ -103,15 +105,16 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
         $this->_helper->layout->disableLayout();
         $questionId = current($this->_getParam('questionId'));
 
-        $oldCookieValues = Axis::single('poll/vote')->getQuestionIdsFromCookie();
+        $modelPollVote = Axis::single('poll/vote');
+        $oldCookieValues = $modelPollVote->getQuestionIdsFromCookie();
 
         $inCookie = in_array($questionId, $oldCookieValues);
 
         if (!$inCookie) {
-            Axis::single('poll/vote')->addToCookie($questionId, $this->view->baseUrl());
+            $modelPollVote->addToCookie($questionId, $this->view->baseUrl());
         }
 
-        if ($inCookie || Axis::single('poll/vote')->hasVoteInTable($questionId)) {
+        if ($inCookie || $modelPollVote->hasVoteInTable($questionId)) {
             Axis::message()->addError(Axis::translate('poll')->__(
                 'You have voted in this poll already'
             ));
@@ -135,14 +138,13 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
             ->current()
             ->isMultiQuestion();
 
-        $tableAnswer = Axis::single('poll/answer');
+        $modelAnswer = Axis::single('poll/answer');
         if (!empty($votes)) {
-            $modelVote = Axis::single('poll/vote');
             foreach ($votes as $voteId) {
                 //  checking answer depend.. question
-                if ($tableAnswer->getAttitude($questionId, $voteId)) {
-                    $data['answer_id'] = $voteId  ;
-                    $modelVote->insert($data);
+                if ($modelAnswer->getAttitude($questionId, $voteId)) {
+                    $data['answer_id'] = $voteId;
+                    $modelPollVote->insert($data);
                 }
                 if (!$isMulti) {
                     break;

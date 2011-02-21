@@ -44,17 +44,17 @@ class Axis_View_Helper_Box
     {
         if (is_array($box)) {
             $config = $box;
-            $box = $config['boxNamespace']
-                . '_' . $config['boxModule']
-                . '/' .$config['boxName'];
+            $box = $config['box_namespace']
+                . '_' . $config['box_module']
+                . '/' .$config['box_name'];
             $box = Axis::getClass($box, 'Box');
         } else {
             $box = Axis::getClass($box, 'Box');
             list($namespace, $module, $_box_, $name) = explode('_', $box);
             $config = array(
-                'boxNamespace' => $namespace,
-                'boxModule'    => $module,
-                'boxName'      => $name
+                'box_namespace' => $namespace,
+                'box_module'    => $module,
+                'box_name'      => $name
             );
         }
         if (@!class_exists($box)) {
@@ -74,7 +74,7 @@ class Axis_View_Helper_Box
         }
 
         if (Zend_Registry::isRegistered($box)) {
-            return Zend_Registry::get($box)->updateData($config, true);
+            return Zend_Registry::get($box)->refresh()->updateData($config);
         }
         return Axis::single($box, $config);
     }

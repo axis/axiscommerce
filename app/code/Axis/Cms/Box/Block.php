@@ -39,12 +39,12 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
     
     public function initData()
     {
-        if (!isset($this->_data['staticBlock'])) {
+        if (!$this->hasStaticBlock()) {
             return false;
         }
         
         $content = Axis::single('cms/block')->getContentByName(
-            $this->_data['staticBlock']
+            $this->getStaticBlock()
         );
         
         if (!$content) {

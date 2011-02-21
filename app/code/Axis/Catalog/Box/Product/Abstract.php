@@ -36,7 +36,7 @@ abstract class Axis_Catalog_Box_Product_Abstract extends Axis_Core_Box_Abstract
 {
     protected function _getProductId()
     {
-        $productId = $this->productId;
+        $productId = $this->product_id;
         if (is_numeric($productId)){
             return $productId;
         }
@@ -49,6 +49,6 @@ abstract class Axis_Catalog_Box_Product_Abstract extends Axis_Core_Box_Abstract
 
     public function init() 
     {
-        $this->productId = $this->_getProductId();
+        $this->product_id = $this->_getProductId();
     }
 }

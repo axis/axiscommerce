@@ -39,38 +39,40 @@ class Axis_Community_Box_ReviewRating extends Axis_Core_Box_Abstract
 
     public function init()
     {
-        $this->reviewCount = array();
+        $this->review_count = array();
         $this->ratings = array();
     }
 
     public function initData()
     {
-        if (!$this->hasData('productId')) {
+        if (!$this->hasData('product_id')) {
             return true;
         }
-        if (!is_array($this->reviewCount)) {
+        if (!is_array($this->review_count)) {
             return true;
         }
         /* if review already loaded */
-        if (in_array($this->productId, array_keys($this->reviewCount))) {
+        if (in_array($this->product_id, array_keys($this->review_count))) {
             return true;
         }
 
-        if (!is_array($this->productIds)) {
-            $this->productIds= array($this->productId);
-        } elseif (!in_array($this->productId, $this->productIds)) {
-            $productIds = $this->productIds;
-            $productIds[] = $this->productId;
-            $this->productIds = $productIds;
+        if (!is_array($this->product_ids)) {
+            $this->setProductIds(array($this->product_id));
+        } elseif (!in_array($this->product_id, $this->getProductIds())) {
+            $productIds = $this->product_ids;
+            $productIds[] = $this->product_id;
+            $this->setProductIds($productIds);
         }
+        $productIds = array_diff(
+            $this->getProductIds(), array_keys($this->review_count)
+        );
 
-        $productIds = array_diff($this->productIds, array_keys($this->reviewCount));
+        $modelCommunityReview = Axis::single('community/review');
+        $this->review_count += $modelCommunityReview->cache()
+            ->getCountByProductId($productIds);
 
-        $this->reviewCount +=
-            Axis::single('community/review')->cache()->getCountByProductId($productIds);
-
-        $this->ratings +=
-            Axis::single('community/review')->cache()->getAverageProductRating(
+        $this->ratings += $modelCommunityReview->cache()
+            ->getAverageProductRating(
                 $productIds,
                 $this->getView()->config('community/review/merge_average')
             );

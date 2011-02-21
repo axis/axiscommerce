@@ -38,18 +38,18 @@ class Axis_Tag_Box_Product extends Axis_Catalog_Box_Product_Abstract
     
     public function initData()
     {
-        if (!$this->productId) {
+        if (!$this->product_id) {
             return false;
         }
         
-        if ($this->productId == $this->lastProductId
+        if ($this->product_id == $this->last_product_id
             && $this->hasTags()) {
             
             return true;
         }
         
-        $this->lastProductId = $this->productId;
+        $this->last_product_id = $this->product_id;
         $this->tags = Axis::single('tag/customer')
-            ->getByProductId($this->productId);
+            ->getByProductId($this->product_id);
     }
 }
