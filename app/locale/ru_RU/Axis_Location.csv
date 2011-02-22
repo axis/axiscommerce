@@ -1,5 +1,5 @@
 "Countries", "Страны"
-"Country "%s" has been saved succesfully", "Страна "%s" была успешно сохранена"
+"Country '%s' has been saved succesfully", "Страна '%s' была успешно сохранена"
 "Country was deleted successfully", "Страна была успешно удалена"
 "No zone found to delete", "Зона для удаления не найдена"
 "Zone was deleted successfully", "Зона была успешно удалена "
