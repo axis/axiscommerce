@@ -1,23 +1,24 @@
-<?php if ($this->box->getData('reviewCount/' . $this->box->productId)) : ?>
+<?php
+    $_box = $this->box;
+    $productId = $_box->product_id;
+//    $reviewCount = $_box->review_count[$productId];
+    if (isset($_box->review_count[$productId]) 
+        && $reviewCount = $_box->review_count[$productId]) : ?>
     <p class="review-view">
-        <a href="<?php echo $this->href('review/product/') . $this->box->productUrl ?>"
-            title="<?php echo $this->translate('community')->__("View all user reviews (%d)", 
-                $this->box->getData('reviewCount/'.$this->box->productId)
-            ) ?>">
-            <?php echo $this->translate('community')->__("View all user reviews (%d)", 
-                $this->box->getData('reviewCount/'.$this->box->productId)
-            ) ?>
+        <a href="<?php echo $this->href('review/product/') . $_box->product_url ?>"
+            title="<?php echo $this->translate('community')->__("View all user reviews (%d)", $reviewCount)?>">
+            <?php echo $this->translate('community')->__("View all user reviews (%d)", $reviewCount)?>
         </a></p>
-    <?php if ($this->box->hasData('ratings/'.$this->box->productId)) : ?>
+    <?php if (isset($_box->ratings[$productId])) : ?>
         <?php echo $this->ratings(
-            $this->box->getData('ratings/'.$this->box->productId), 
-            $this->href('review/product/' . $this->box->productUrl), 
-            $this->box->hasData('smallStars') && $this->box->getData('smallStars')
+            $_box->ratings[$productId],
+            $this->href('review/product/' . $_box->product_url),
+            $_box->hasData('small_stars') && $_box->getData('small_stars')
         ) ?>
     <?php endif; ?>
 <?php else: ?>
     <p class="review-add">
-        <a href="<?php echo $this->href('review/add/product/') . $this->box->productId ?>"
+        <a href="<?php echo $this->href('review/add/product/') . $productId ?>"
             rel="nofollow">
             <?php echo $this->translate('community')->__('Be the first to review this product') ?>
         </a></p>

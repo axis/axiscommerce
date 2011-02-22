@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-abstract class Axis_Core_Box_Abstract
+abstract class Axis_Core_Box_Abstract extends Axis_Object
 {
     /**
      * @var string
@@ -43,10 +43,26 @@ abstract class Axis_Core_Box_Abstract
      * @var string
      */
     protected $_class = '';
+
+    /**
+     * @var string
+     */
+    protected $_url = '';
+
     /**
      * @var bool
      */
     protected $_disableWrapper = false;
+
+    /**
+     * @var string
+     */
+    protected $_tabContainer = null;
+
+    /**
+     * @var string
+     */
+    protected $_template = null;
 
     /**
      * @var array
@@ -101,14 +117,15 @@ abstract class Axis_Core_Box_Abstract
         }
         // why not get_class($this)
         $this->_enabled = in_array(
-            $config['boxNamespace'] . '_' . $config['boxModule'],
+            $config['box_namespace'] . '_' . $config['box_module'],
             array_keys(Axis::app()->getModules())
         );
         if (!$this->_enabled) {
             return;
         }
-        $this->updateData($config, true);
-        $this->init();
+        $this->refresh()
+            ->updateData($config)
+            ->init();
     }
 
     public function toHtml()
@@ -121,17 +138,17 @@ abstract class Axis_Core_Box_Abstract
         }
         $template = $this->getData('template');
         if (empty($template)) {
-            $template = $this->getData('boxName') . '.phtml';
+            $template = $this->box_name . '.phtml';
             $template = strtolower(substr($template, 0, 1)) . substr($template, 1);
-            $template = strtolower($this->getData('boxModule')) . '/box/' . $template;
-            $this->setData('template', $template);
+            $template = strtolower($this->box_module) . '/box/' . $template;
+            $this->template = $template;
         }
 
         $this->getView()->box = self::$_stack[] = $this;
 
         if (!empty($this->_data['tab_container'])) {
             $path = 'core/box/tab.phtml';
-        } elseif ($this->getData('disableWrapper')) {
+        } elseif ($this->disable_wrapper) {
             $path = $this->getData('template');
         } else {
             $path = 'core/box/box.phtml';
@@ -156,108 +173,61 @@ abstract class Axis_Core_Box_Abstract
         return $html;
     }
 
+    public function hasData($key)
+    {
+        if (strstr($key, '/')) {
+            $_data = $this->_data;
+            foreach (explode('/', $key) as $key) {
+                if (!is_array($_data) || !isset($_data[$key])) {
+                    return false;
+                }
+                $_data = $_data[$key];
+            }
+            return true;
+        } 
+        return isset($this->_data[$key]);
+    }
+    
     public function getData($key = null, $default = null)
     {
         if (null === $key) {
             return $this->_data;
         }
         if (strstr($key, '/')) {
-            $result = $this->_data;
+            $_data = $this->_data;
             foreach (explode('/', $key) as $key) {
-                if (!is_array($result) || !isset($result[$key])) {
+                if (!is_array($_data) || !isset($_data[$key])) {
                     return $default;
                 }
-                $result = $result[$key];
+                $_data = $_data[$key];
             }
-            return $result;
+            return $_data;
         }
         return isset($this->_data[$key]) ? $this->_data[$key] : $default;
     }
 
-    /**
-     * Add key => value pair to data array
-     *
-     * @param string $key
-     * @param mixed $value
-     * @return Axis_Core_Box_Abstract Provides fluent interface
-     */
-    public function setData($key, $value)
+    public function refresh()
     {
-        $this->_data[$key] = $value;
-        return $this;
-    }
-
-    public function updateData(array $data, $reset = false)
-    {
-        if ($reset) {
-            $this->_data = array_merge($this->_data, array(
-                'title'          => $this->_title,
-                'class'          => $this->_class,
-                'url'            => $this->_url,
-                'disableWrapper' => $this->_disableWrapper,
-                'tab_container'  => $this->_tabContainer,
-                'template'       => $this->_template
-            ));
-        }
-
-        if (!empty($data['config'])) {
-            $additional = $data['config'];
-            unset($data['config']);
-            foreach(explode(',', $additional) as $opt) {
-                list($key, $value) = explode(':', $opt);
-                $data[$key] = $value;
-            }
-        }
-        foreach ($data as $key => $value) {
-            $this->_data[$key] = $value;
-        }
-        return $this;
-    }
-
-    public function hasData($key)
-    {
-        if (strstr($key, '/')) {
-            $branch = $this->_data;
-            foreach (explode('/', $key) as $key) {
-                if (!is_array($branch) || !isset($branch[$key])) {
-                    return false;
-                }
-                $branch = $branch[$key];
-            }
-            return true;
-        } else {
-            return isset($this->_data[$key]);
-        }
-    }
-
-    public function __get($key)
-    {
-        return $this->getData($key);
-    }
-
-    public function __set($key, $value)
-    {
-        $this->_data[$key] = $value;
-    }
-
-    public function __call($name, $arguments)
-    {
-        $key = substr($name, 3);
-        $key[0] = strtolower($key[0]);
-        switch (substr($name, 0, 3)) {
-            case 'has':
-                return $this->hasData($key);
-            case 'get':
-                return $this->getData($key);
-            case 'set':
-                $this->setData($key, $arguments[0]);
-                return $this;
-        }
-        throw new Axis_Exception(Axis::translate('core')->__(
-            "Call to undefined method '%s'", get_class($this) . '::' . $name
+        $this->_data = array_merge($this->_data, array(
+            'title'           => $this->_title,
+            'class'           => $this->_class,
+            'url'             => $this->_url,
+            'disable_wrapper' => $this->_disableWrapper,
+            'tab_container'   => $this->_tabContainer,
+            'template'        => $this->_template
         ));
+        return $this;
     }
 
+    public function updateData(array $data)
+    {
+        //@todo why not setFromArray?
+        foreach ($data as $key => $value) {
+            $this->setData($key, $value);
+        }
+        return $this;
+    }
+    
     public function init() {}
 
     /**

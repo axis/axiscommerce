@@ -57,7 +57,7 @@ endif;?>
     <div class="content">
         <?php
         $form = new Axis_Community_Model_Form_Review(array(
-            'productId' => $this->box->getData('productId')
+            'productId' => $this->box->product_id
         ));
         echo $form->render($this);
 

@@ -48,8 +48,8 @@ class Axis_View_Helper_Translate
         if (null === $module) {
             if (null !== $this->view->box) {
                 //box
-                $module = $this->view->box->boxNamespace . '_'
-                        . $this->view->box->boxModule;
+                $module = $this->view->box->box_namespace . '_'
+                        . $this->view->box->box_module;
             } elseif (null !== $this->view->module) {
                 //controller render
                 $module = $this->view->namespace . '_'

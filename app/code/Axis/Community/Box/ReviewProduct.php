@@ -38,25 +38,25 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
     
     public function initData()
     {
-        if (!$this->productId) {
+        if (!$this->product_id) {
             return false;
         }
         
-        if ($this->lastProductId == $this->productId
+        if ($this->last_product_id == $this->product_id
             && $this->hasReviews() && $this->hasCount()) {
             
             return true;
         }
         
         $data = Axis::single('community/review')->getTinyList(
-            'cr.product_id = ' . (int)$this->productId,
+            'cr.product_id = ' . (int)$this->product_id,
             $this->order ? $this->order : 'cr.date_created',
             $this->dir   ? $this->dir : 'DESC',
             $this->limit ? $this->limit : 5,
             $this->page  ? $this->page : null
         );
         
-        $this->lastProductId = $this->productId;
+        $this->last_product_id = $this->product_id;
         $this->reviews = $data['reviews'];
         $this->count = $data['count'];
     }

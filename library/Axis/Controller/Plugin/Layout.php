@@ -199,9 +199,9 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 continue;
             }
             $assign = array(
-                'boxNamespace'  => ucfirst($namespace),
-                'boxModule'     => ucfirst($module),
-                'boxName'       => ucfirst($box),
+                'box_namespace' => ucfirst($namespace),
+                'box_module'    => ucfirst($module),
+                'box_name'      => ucfirst($box),
                 'template'      => $block['template'],
                 'tab_container' => $block['tab_container'],
                 'sort_order'    => $block['sort_order'],
@@ -209,7 +209,14 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 'box_show'      => $block['box_show']
             );
             if (!empty($block['config'])) {
-                $assign['config'] = $block['config'];
+                foreach(explode(',', $block['config']) as $_config) {
+
+                    list($key, $value) = explode(':', $_config);
+                    $key = strtolower(preg_replace( //underscore
+                        array('/(.)([A-Z])/', '/(.)(\d+)/'), "$1_$2", $key
+                    ));
+                    $assign[$key] = $value;
+                }
             }
 
             if (strstr($block['class'], 'Axis_Cms_Block_')) {
@@ -217,7 +224,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 if (empty($staticBlock)) {
                     continue;
                 }
-                $assign['staticBlock'] = $staticBlock;
+                $assign['static_block'] = $staticBlock;
             }
             $tabContainer = $block['tab_container'];
             if (!empty($tabContainer)) {
@@ -238,9 +245,54 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
      */
     public function postDispatch(Zend_Controller_Request_Abstract $request)
     {
+        $layout = $this->getLayout();
+        $helper = $this->getLayoutActionHelper();
+
+        // Return early if forward detected
+        if (!$request->isDispatched()
+            || $this->getResponse()->isRedirect()
+            || ($layout->getMvcSuccessfulActionOnly()
+                && (!empty($helper) && !$helper->isActionControllerSuccessful())))
+        {
+            return;
+        }
+
+        // Return early if layout has been disabled
+        if (!$layout->isEnabled()) {
+            return;
+        }
+
         $this->_initPages();
         $this->_initLayout();
         $this->_initBlockAssigns();
-        return parent::postDispatch($request);
+
+        $response   = $this->getResponse();
+        $content    = $response->getBody(true);
+        $contentKey = $layout->getContentKey();
+
+        if (isset($content['default'])) {
+            $content[$contentKey] = $content['default'];
+        }
+        if ('default' != $contentKey) {
+            unset($content['default']);
+        }
+
+        $layout->assign($content);
+
+        $fullContent = null;
+        $obStartLevel = ob_get_level();
+        try {
+            $fullContent = $layout->render();
+            $response->setBody($fullContent);
+        } catch (Exception $e) {
+            while (ob_get_level() > $obStartLevel) {
+                $fullContent .= ob_get_clean();
+            }
+            $request->setParam('layoutFullContent', $fullContent);
+            $request->setParam('layoutContent', $layout->content);
+            $response->setBody(null);
+            throw $e;
+        }
+
     }
 }
