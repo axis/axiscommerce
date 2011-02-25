@@ -47,7 +47,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     /**
      * @var string
      */
-    protected $_url = '';
+    protected $_url = null;
 
     /**
      * @var bool

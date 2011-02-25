@@ -217,11 +217,12 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initDbAdapter()
     {
         $this->bootstrap('Config');
+        $config = $this->getResource('Config');
         $db = Zend_Db::factory('Pdo_Mysql', array(
-            'host'           => Axis::config()->db->host,
-            'username'       => Axis::config()->db->username,
-            'password'       => Axis::config()->db->password,
-            'dbname'         => Axis::config()->db->dbname,
+            'host'           => $config->db->host,
+            'username'       => $config->db->username,
+            'password'       => $config->db->password,
+            'dbname'         => $config->db->dbname,
             'driver_options' => array(
                 //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
                 1002 => 'SET NAMES UTF8'
@@ -289,19 +290,18 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap('Router');
         $front = Zend_Controller_Front::getInstance();
-        
+
         $router = $this->getResource('Router');
         $front->setRouter($router);
-        //$front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
-        //$front->throwExceptions(false);
+//        $front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
+//        $front->throwExceptions(false);
         $front->setDefaultModule('Axis_Core');
         $front->setControllerDirectory(Axis::app()->getControllers());
-        //$front->setRouter($router);
-        $front->setParam('noViewRenderer', true);
+//        $front->setParam('noViewRenderer', true);
         $front->registerPlugin(
             new Axis_Controller_Plugin_ErrorHandler_Override(), 10
         );
-        
+
         return $front; // this is *VERY* important
     }
 
@@ -332,17 +332,32 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 30);
     }
 
-    protected function _initLayout()
+    protected function _initView()
     {
         $this->bootstrap('Area');
+        $view = new Zend_View();
+        $viewRenderer = new Axis_Controller_Action_Helper_ViewRenderer();
+        $viewRenderer->setNeverRender()
+            ->setNoController()
+            ->setView($view)
+            ->autoAddBasePaths(false);
+        Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
+
+        $front = $this->getResource('FrontController');
+        $front->registerPlugin(new Axis_Controller_Plugin_View($view), 40);
+
+        return $view;
+    }
+
+    protected function _initLayout()
+    {
+        $this->bootstrap('View');
         $layout = Axis_Layout::startMvc();
         $front = $this->getResource('FrontController');
         $front->unregisterPlugin('Zend_Layout_Controller_Plugin_Layout');
         $front->registerPlugin(new Axis_Controller_Plugin_Layout($layout), 99);
-        
+
         return $layout;
-        // see Axis_Controller_Action method initView
-        //(have params can access only after dispatch)
     }
 
     protected function _initDebug()
