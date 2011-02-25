@@ -78,10 +78,10 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
      * @param Zend_Controller_Request_Abstract $request
      * @return void
      */
-    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
+    public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
         $view = $this->getView();
-        
+
         if (Axis_Area::isBackend()) {
             $templateId = Axis::config('design/main/adminTemplateId');
         } else {
@@ -103,7 +103,7 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         $currentUrl = $request->getScheme() . '://'
              . $request->getHttpHost()
              . $request->getRequestUri();
-
+        
         $site = Axis::getSite();
 
         $view->baseUrl      = $site ?
@@ -116,7 +116,6 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         //@TODO every template shoud have own defaults
         //$view->defaultTemplate = 'default';
 
-        //Initialize Zend_View stack
         if (Axis_Area::isFrontend()) {
             $modulePath = strtolower($module);
         } else {
@@ -157,7 +156,7 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         $view->doctype('XHTML1_STRICT');
 
         $view->setEncoding('UTF-8');
-        
+
         $layout = Axis_Layout::getMvcInstance();
 
         $layout->setView($view)->setLayoutPath(

@@ -36,7 +36,6 @@ class SandboxController extends Axis_Core_Controller_Front
 
     public function indexAction()
     {
-        Zend_Debug::dump($this->view);
 //        Zend_Debug::dump();
         $this->view->meta()->setTitle('片　视 频　地');
         Axis_FirePhp::timeStamp('333');
