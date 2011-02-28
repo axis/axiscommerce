@@ -93,7 +93,7 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
                 'show_result'     => true,
                 'disable_wrapper' => true
             ))
-            ->toHtml();
+            ->render();
 
         return $this->_helper->json->sendSuccess(
             array('content' => $htmlBoxContent)

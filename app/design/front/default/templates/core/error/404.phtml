@@ -3,17 +3,21 @@
 <p><?php echo $this->translate('core')->__('Sorry, the page you requested not found.') ?></p>
 
 <div class="box">
-    <ul class="disc">        <li><?php echo $this->translate('core')->__(
+    <ul class="disc">
+        <li><?php echo $this->translate('core')->__(
             'There might be a typing error in the address.'
         ) ?></li>
         <li><?php echo $this->translate('core')->__(
             'If you clicked on a link, it may be out of date.'
-        ) ?></li>    </ul>
+        ) ?></li>
+    </ul>
 </div>
 
 <div class="box">
     <p><?php echo $this->translate('core')->__('Please try following:') ?></p>
-    <ul class="disc">        <li><?php echo $this->translate('core')->__('Retype the address.') ?></li>        <li>
+    <ul class="disc">
+        <li><?php echo $this->translate('core')->__('Retype the address.') ?></li>
+        <li>
             <?php echo $this->translate('core')->__(
                 "Go to our <a href='%s'>home page</a>.", $this->baseUrl
             ) ?>
@@ -22,6 +26,7 @@
             <?php echo $this->translate('core')->__(
                 'Try to find page you want, using our search.'
             ) ?>
-            <?php echo $this->box('search/search')->setDisableWrapper(true)->toHtml() ?>
-        </li>    </ul>
+            <?php echo $this->box('search/search')->setDisableWrapper(true) ?>
+        </li>
+    </ul>
 </div>

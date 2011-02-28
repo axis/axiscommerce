@@ -123,12 +123,16 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         if (!$this->_enabled) {
             return;
         }
-        $this->refresh()
+        $this->_enabled = $this->refresh()
             ->updateData($config)
             ->init();
     }
 
-    public function toHtml()
+    /**
+     *
+     * @return string
+     */
+    public function render()
     {
         if (!$this->_enabled
             || false === $this->initData()
@@ -173,6 +177,20 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         return $html;
     }
 
+    /**
+     *
+     * @return string
+     */
+    public function  __toString()
+    {
+        return $this->render();
+    }
+
+    /**
+     *
+     * @param string $key
+     * @return bool
+     */
     public function hasData($key)
     {
         if (strstr($key, '/')) {
@@ -187,7 +205,13 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         } 
         return isset($this->_data[$key]);
     }
-    
+
+    /**
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
     public function getData($key = null, $default = null)
     {
         if (null === $key) {
@@ -206,6 +230,10 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         return isset($this->_data[$key]) ? $this->_data[$key] : $default;
     }
 
+    /**
+     *
+     * @return Axis_Core_Box_Abstract 
+     */
     public function refresh()
     {
         $this->_data = array_merge($this->_data, array(
@@ -219,6 +247,11 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         return $this;
     }
 
+    /**
+     *
+     * @param array $data
+     * @return Axis_Core_Box_Abstract 
+     */
     public function updateData(array $data)
     {
         //@todo why not setFromArray?

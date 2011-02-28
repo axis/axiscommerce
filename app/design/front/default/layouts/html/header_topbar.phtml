@@ -1,15 +1,13 @@
 <div class="header-top-wrapper">
     <div class="header-top">
-    <?php echo $this->box('locale/language')->setDisableWrapper(true)->toHtml() ?>
+    <?php echo $this->box('locale/language')->setDisableWrapper(true); ?>
     <ul class="quick-links">
         <?php echo $this->box('checkout/cart')
             ->setTemplate('checkout/box/cartTop.phtml')
-            ->setDisableWrapper(true)
-            ->toHtml(); ?>
+            ->setDisableWrapper(true); ?>
         <?php echo $this->box('account/navigation')
             ->setTemplate('account/box/navigationTop.phtml')
-            ->setDisableWrapper(true)
-            ->toHtml() ?>
+            ->setDisableWrapper(true); ?>
         <li class="link-checkout"><a rel="nofollow" href="<?php echo $this->href('checkout/onepage', true) ?>"
             ><?php echo $this->translate('checkout')->__('Checkout') ?></a></li>
     </ul>

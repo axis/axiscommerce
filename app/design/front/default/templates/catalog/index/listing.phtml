@@ -69,8 +69,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                 ) ?>
                 
                 <?php echo $reviewSummaryBox->setProductId($product['id'])
-                    ->setProductUrl($product['key_word'])
-                    ->toHtml() ?>
+                    ->setProductUrl($product['key_word']) ?>
                 
                 <div class="product-description">
                     <?php if ($product['short_description'] != '') :
@@ -153,8 +152,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                     
                     <?php echo $reviewSummaryBox->setProductId($product['id'])
                         ->setProductUrl($product['key_word'])
-                        ->setSmallStars(true)
-                        ->toHtml() ?>
+                        ->setSmallStars(true) ?>
                     
                     <?php if ($product['is_saleable']): ?>
                         <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(

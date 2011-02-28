@@ -124,7 +124,7 @@ class Axis_Layout extends Zend_Layout
         }
         $block = $this->getView()->box($config);
         if ($block) {
-            return $block->toHtml();
+            return $block->render();
         }
         return '';
     }

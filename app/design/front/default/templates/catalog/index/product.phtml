@@ -13,7 +13,6 @@
         <?php echo $this->box('community/ReviewRating')
             ->setProductId($this->product['id'])
             ->setProductUrl($this->product['human_url'])
-            ->toHtml()
         ?>
         
         <?php if ($this->product['description']['short_description'] != '') : ?>
