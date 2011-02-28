@@ -155,7 +155,7 @@
         <class>Axis_Catalog_New</class>
         <block>content</block>
         <sortOrder>30</sortOrder>
-        <config>productsCount:2,title:New products,columnsCount:2</config>
+        <config>products_count:2,title:New products,columns_count:2</config>
         <status>1</status>
                     <page multiple="1">
                 <module>core</module>
@@ -171,7 +171,7 @@
         <class>Axis_Catalog_Featured</class>
         <block>content</block>
         <sortOrder>100</sortOrder>
-        <config>productsCount:3,title:Store hottest products</config>
+        <config>products_count:3,title:Store hottest products</config>
         <status>1</status>
                     <page multiple="1">
                 <module>core</module>
@@ -219,7 +219,7 @@
         <class>Axis_Cms_Navigation</class>
         <block>left</block>
         <sortOrder>100</sortOrder>
-        <config>disableWrapper:true</config>
+        <config>disable_wrapper:true</config>
         <status>1</status>
                     <page multiple="1">
                 <module>*</module>
@@ -253,7 +253,7 @@
         <class>Axis_Cms_Block_header_links</class>
         <block>header</block>
         <sortOrder>100</sortOrder>
-        <config>disableWrapper:true</config>
+        <config>disable_wrapper:true</config>
         <status>1</status>
                     <page multiple="1">
                 <module>*</module>
@@ -285,7 +285,7 @@
         <class>Axis_Discount_Special</class>
         <block>content</block>
         <sortOrder>10</sortOrder>
-        <config>productsCount:2,title:Season sale,columnsCount:2</config>
+        <config>products_count:2,title:Season sale,columns_count:2</config>
         <status>1</status>
                     <page multiple="1">
                 <module>core</module>
@@ -381,7 +381,7 @@
         <class>Axis_Search_Search</class>
         <block>header</block>
         <sortOrder>100</sortOrder>
-        <config>disableWrapper:true</config>
+        <config>disable_wrapper:true</config>
         <status>1</status>
                     <page multiple="1">
                 <module>*</module>
@@ -445,7 +445,7 @@
         <class>Axis_Catalog_Navigation</class>
         <block>header</block>
         <sortOrder>127</sortOrder>
-        <config>disableWrapper:true,template:catalog/box/navigationTop.phtml</config>
+        <config>disable_wrapper:true,template:catalog/box/navigationTop.phtml</config>
         <status>1</status>
                     <page multiple="1">
                 <module>*</module>
@@ -595,7 +595,7 @@
         <class>Axis_Catalog_Bestseller</class>
         <block>content</block>
         <sortOrder>40</sortOrder>
-        <config>productsCount:2,title:Bestsellers,columnsCount:2</config>
+        <config>products_count:2,title:Bestsellers,columns_count:2</config>
         <status>1</status>
                     <page multiple="1">
                 <module>core</module>
@@ -611,7 +611,7 @@
         <class>Axis_Catalog_Popular</class>
         <block>right</block>
         <sortOrder>10</sortOrder>
-        <config>productsCount:5,title:Popular products,template:catalog/box/highlight/sidebar.phtml</config>
+        <config>products_count:5,title:Popular products,template:catalog/box/highlight/sidebar.phtml</config>
         <status>1</status>
                     <page multiple="1">
                 <module>core</module>
