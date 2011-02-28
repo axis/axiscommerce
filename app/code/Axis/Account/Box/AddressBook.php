@@ -59,6 +59,7 @@ class Axis_Account_Box_AddressBook extends Axis_Account_Box_Abstract
         }
         
         $this->updateData($data);
+        return true;
     }
     
     public function hasContent()

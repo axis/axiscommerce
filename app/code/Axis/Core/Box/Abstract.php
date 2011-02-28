@@ -227,11 +227,17 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         }
         return $this;
     }
-    
-    public function init() {}
 
     /**
-     * @return mixed void|mixed
+     * @return bool
+     */
+    public function init()
+    {
+        return true;
+    }
+
+    /**
+     * @return bool
      */
     public function initData()
     {

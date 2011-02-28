@@ -46,6 +46,7 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
             return false;
         }
         $this->setData('items', $tree[$siteId]);
+        return true;
     }
 
     public function hasContent()

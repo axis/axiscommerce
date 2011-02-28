@@ -39,14 +39,15 @@ class Axis_Cms_Box_Navigation extends Axis_Core_Box_Abstract
     public function init()
     {
         $categories = Axis::single('cms/category')->getRootCategories();
-        $pages = Axis::single('cms/page')->getBoxPages();
+        $pages      = Axis::single('cms/page')->getBoxPages();
         if (!count($categories) && !count($pages)) {
             return false;
         }
-        $this->updateData(array(
+        $this->setFromArray(array(
             'categories' => $categories,
-            'pages' => $pages
+            'pages'      => $pages
         ));
+        return true;
     }
     
     public function hasContent()

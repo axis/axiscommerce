@@ -69,5 +69,6 @@ class Axis_Admin_Box_Greeting extends Axis_Admin_Box_Abstract
             'order_count' => $orderCount,
             'user_info'   => Axis::single('admin/user')->find($userId)->current()
         ));
+        return true;
     }   
 }

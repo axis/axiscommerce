@@ -43,6 +43,7 @@ class Axis_Locale_Box_Language extends Axis_Core_Box_Abstract
             return false;
         }
         $this->languages = $languages;
+        return true;
     }
     
     public function hasContent()
