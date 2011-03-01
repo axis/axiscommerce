@@ -57,6 +57,6 @@ class Axis_Catalog_Box_Popular extends Axis_Catalog_Box_Product_Listing
         }
 
         $this->products = $list['data'];
-        return true;
+        return $this->hasProducts();
     }
 }

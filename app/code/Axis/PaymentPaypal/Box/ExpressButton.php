@@ -36,7 +36,7 @@ class Axis_PaymentPaypal_Box_ExpressButton extends Axis_Core_Box_Abstract
     protected $_title = '';
     protected $_disableWrapper = true;
 
-    public function  hasContent()
+    protected function _beforeRender()
     {
         return Axis::single('PaymentPaypal/Express')->isEnabled();
     }

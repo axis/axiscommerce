@@ -89,13 +89,4 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
        
        return '';
     }
-
-    /**
-     *
-     * @return bool
-     */
-    public function hasContent()
-    {
-        return $this->hasData('content');
-    }
 }

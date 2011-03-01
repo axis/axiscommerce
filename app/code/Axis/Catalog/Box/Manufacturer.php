@@ -47,7 +47,7 @@ class Axis_Catalog_Box_Manufacturer extends Axis_Core_Box_Abstract
         return true;
     }
     
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasData('manufacturers');
     }

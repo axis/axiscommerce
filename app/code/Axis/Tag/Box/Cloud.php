@@ -63,9 +63,4 @@ class Axis_Tag_Box_Cloud extends Axis_Core_Box_Abstract
         $this->tags = $tags;
         return true;
     }
-    
-    public function hasContent()
-    {        
-        return $this->hasTags();
-    }
 }

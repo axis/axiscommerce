@@ -58,11 +58,11 @@ class Axis_Account_Box_AddressBook extends Axis_Account_Box_Abstract
             }
         }
         
-        $this->updateData($data);
+        $this->setFromArray($data);
         return true;
     }
-    
-    public function hasContent()
+
+    protected function _beforeRender()
     {
         return $this->hasDelivery() || $this->hasBilling();
     }

@@ -36,9 +36,7 @@ abstract class Axis_Admin_Box_Abstract extends Axis_Core_Box_Abstract
 {
     public function render()
     {
-        if (!$this->_enabled
-            || false === $this->_beforeRender()
-            || !$this->hasContent()) {
+        if (!$this->_enabled || !$this->_beforeRender()) {
 
             return '';
         }

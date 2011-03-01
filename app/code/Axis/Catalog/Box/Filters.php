@@ -77,7 +77,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         return false;
     }
 
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasData('filters');
     }

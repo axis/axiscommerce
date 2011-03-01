@@ -57,6 +57,6 @@ class Axis_Catalog_Box_New extends Axis_Catalog_Box_Product_Listing
         }
 
         $this->products = $list['data'];
-        return true;
+        return $this->hasProducts();
     }
 }

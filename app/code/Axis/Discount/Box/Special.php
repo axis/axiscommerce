@@ -53,6 +53,6 @@ class Axis_Discount_Box_Special extends Axis_Catalog_Box_Product_Listing
             ->fetchProducts($ids);
 
         $this->products = $products;
-        return true;
+        return $this->hasProducts();
     }
 }

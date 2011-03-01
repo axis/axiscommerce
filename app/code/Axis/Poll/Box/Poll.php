@@ -80,9 +80,4 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
         ));
         return true;
     }
-
-    public function hasContent()
-    {
-        return (bool)$this->_questionId;
-    }
 }
