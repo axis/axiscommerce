@@ -36,7 +36,7 @@ class Axis_Catalog_Box_Bestseller extends Axis_Catalog_Box_Product_Listing
     protected $_title = 'Bestsellers';
     protected $_class = 'box-bestseller';
 
-    public function initData()
+    protected function _beforeRender()
     {
         $select = Axis::model('catalog/product')->select('id')
             ->addFilterByAvailability()
@@ -57,5 +57,6 @@ class Axis_Catalog_Box_Bestseller extends Axis_Catalog_Box_Product_Listing
         }
 
         $this->products = $list['data'];
+        return true;
     }
 }

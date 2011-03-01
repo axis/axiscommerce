@@ -43,7 +43,7 @@ class Axis_Tag_Box_Account extends Axis_Account_Box_Abstract
             return false;
         }
         $this->tags = $tags;
-        return true;
+        return $this->hasTags();
     }
     
     public function hasContent()

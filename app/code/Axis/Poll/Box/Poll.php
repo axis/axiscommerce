@@ -40,7 +40,7 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
     private $_questionId;
     private $_showResult = false;
 
-    public function initData()
+    protected function _beforeRender()
     {
         $modelQuestion = Axis::single('poll/question');
         if ($this->hasQuestionId()) {
@@ -71,13 +71,14 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
             $results = $questionRow->getResults();
             $totalVoteCount = $questionRow->getTotalVoteCount();
         }
-        $this->updateData(array(
+        $this->setFromArray(array(
             'question'    => $question,
             'answers'     => $question['answers'],
             'results'     => $results,
             'status'      => $this->_showResult,
             'total_count' => $totalVoteCount
         ));
+        return true;
     }
 
     public function hasContent()

@@ -36,7 +36,7 @@ class Axis_Catalog_Box_Popular extends Axis_Catalog_Box_Product_Listing
     protected $_title = 'Popular';
     protected $_class = 'box-popular';
 
-    public function initData()
+    protected function _beforeRender()
     {
         $select = Axis::model('catalog/product')->select('id')
             ->addFilterByAvailability()
@@ -57,5 +57,6 @@ class Axis_Catalog_Box_Popular extends Axis_Catalog_Box_Product_Listing
         }
 
         $this->products = $list['data'];
+        return true;
     }
 }

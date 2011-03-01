@@ -123,7 +123,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         if (!$this->_enabled) {
             return;
         }
-        $this->_enabled = $this->refresh()
+        $this->refresh()
             ->updateData($config)
             ->init();
     }
@@ -135,7 +135,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     public function render()
     {
         if (!$this->_enabled
-            || false === $this->initData()
+            || false === $this->_beforeRender()
             || !$this->hasContent()) {
 
             return '';
@@ -272,7 +272,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     /**
      * @return bool
      */
-    public function initData()
+    protected function _beforeRender()
     {
         return true;
     }

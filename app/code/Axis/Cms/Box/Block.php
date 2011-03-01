@@ -37,7 +37,7 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
     protected $_class = 'box-static-block';
     protected $_disableWrapper = true;
     
-    public function initData()
+    protected function _beforeRender()
     {
         if (!$this->hasStaticBlock()) {
             return false;
@@ -60,6 +60,7 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
         }
 
         $this->setData('content', $content);
+        return true;
     }
 
     /**
