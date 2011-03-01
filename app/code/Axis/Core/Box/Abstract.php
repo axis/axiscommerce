@@ -246,20 +246,6 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     }
 
     /**
-     *
-     * @param array $data
-     * @return Axis_Core_Box_Abstract 
-     */
-    public function updateData(array $data)
-    {
-        //@todo why not setFromArray?
-        foreach ($data as $key => $value) {
-            $this->setData($key, $value);
-        }
-        return $this;
-    }
-
-    /**
      * @return bool
      */
     public function init()

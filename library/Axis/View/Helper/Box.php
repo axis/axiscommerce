@@ -74,7 +74,7 @@ class Axis_View_Helper_Box
         }
 
         if (Zend_Registry::isRegistered($box)) {
-            return Zend_Registry::get($box)->refresh()->updateData($config);
+            return Zend_Registry::get($box)->refresh()->setFromArray($config);
         }
         return Axis::single($box, $config);
     }
