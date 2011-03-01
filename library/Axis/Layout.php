@@ -117,12 +117,16 @@ class Axis_Layout extends Zend_Layout
         return $before . parent::__get($key) . $after;
     }
 
-    private function _getBlockContent(array $config)
+    private function _getBlockContent(array $conf)
     {
-        if (!$config['box_show']) {
+        if (!$conf['box_show']) {
             return '';
         }
-        $block = $this->getView()->box($config);
+        
+        $block = $this->getView()->box(
+            "{$conf['box_namespace']}_{$conf['box_module']}/{$conf['box_name']}"
+        )->setFromArray($conf);
+        
         if ($block) {
             return $block->render();
         }

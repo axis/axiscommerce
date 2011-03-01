@@ -135,7 +135,6 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     public function render()
     {
         if (!$this->_enabled || !$this->_beforeRender()) {
-
             return '';
         }
         $template = $this->getData('template');
