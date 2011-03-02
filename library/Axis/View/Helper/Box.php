@@ -43,32 +43,10 @@ class Axis_View_Helper_Box
     public function box($block)
     {
         $block = Axis::getClass($block, 'Box');
-        list($namespace, $module, $_box_, $name) = explode('_', $block);
-        $config = array(
-            'box_namespace' => $namespace,
-            'box_module'    => $module,
-            'box_name'      => $name
-        );
         
-        if (@!class_exists($block)) {
-            $response = Zend_Controller_Front::getInstance()->getResponse();
-            if (!count($response->getException())) {
-                $exception = new Axis_Exception(
-                    Axis::translate('core')->__(
-                        'Class %s not found', $block
-                    )
-                );
-                $response->setException($exception);
-
-                throw $exception;
-            } else {
-                return;
-            }
-        }
-
         if (Zend_Registry::isRegistered($block)) {
             return Zend_Registry::get($block)->refresh();
         }
-        return Axis::single($block, $config);
+        return Axis::single($block);
     }
 }

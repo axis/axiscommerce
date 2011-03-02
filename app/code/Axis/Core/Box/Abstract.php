@@ -115,14 +115,20 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
                 Axis_Layout::getMvcInstance()->getView()
             );
         }
-        // why not get_class($this)
+        
+        list($namespace, $module, , $name) = explode('_', get_class($this));
         $this->_enabled = in_array(
-            $config['box_namespace'] . '_' . $config['box_module'],
+            $namespace . '_' . $module,
             array_keys(Axis::app()->getModules())
         );
         if (!$this->_enabled) {
             return;
         }
+        $config = array_merge(array(
+            'box_namespace' => $namespace,
+            'box_module'    => $module,
+            'box_name'      => $name
+        ), $config);
         $this->_enabled = $this->refresh()
             ->setFromArray($config)
             ->init();
@@ -139,9 +145,14 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         }
         $template = $this->getData('template');
         if (empty($template)) {
-            $template = $this->box_name . '.phtml';
-            $template = strtolower(substr($template, 0, 1)) . substr($template, 1);
-            $template = strtolower($this->box_module) . '/box/' . $template;
+            if (false === function_exists('lcfirst') ) {
+                function lcfirst($str) {
+                    return (string)(strtolower(substr($str, 0, 1)) . substr($str, 1));
+                }
+            }
+
+            $template = strtolower($this->getData('box_module')) . '/box/'
+                . lcfirst($this->getData('box_name')) . '.phtml';
             $this->template = $template;
         }
 
