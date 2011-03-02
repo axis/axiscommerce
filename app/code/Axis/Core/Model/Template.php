@@ -289,12 +289,12 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             $pages = $box['page'];
             foreach ($pages as $page) {
                 $modelTemplateBoxPage->insert(array(
-                        'box_id'   => $boxId,
-                        'page_id'  => $existPages[_getConcatPage($page)],
-                        'box_show' => $page['show'],
-                        'block'    => $page['block'],
-                        'template' => $page['template'],
-                        'tab_container' => $page['tab_container']
+                    'box_id'   => $boxId,
+                    'page_id'  => $existPages[_getConcatPage($page)],
+                    'box_show' => $page['show'],
+                    'block'    => $page['block'],
+                    'template' => $page['template'],
+                    'tab_container' => $page['tab_container']
                 ));
             }
         }

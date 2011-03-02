@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <template>
     <name>default</name>
-    <is_active>1</is_active>
     <default_layout>layout_3columns</default_layout>
         <box multiple="1">
         <class>Axis_Core_Template</class>
