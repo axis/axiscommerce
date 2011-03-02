@@ -88,12 +88,12 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
     {
         $this->_helper->layout->disableLayout();
         $htmlBoxContent = $this->view->box('poll/poll')->refresh()
-            ->updateData(array(
+            ->setFromArray(array(
                 'question_id'     => $questionId,
                 'show_result'     => true,
                 'disable_wrapper' => true
             ))
-            ->toHtml();
+            ->render();
 
         return $this->_helper->json->sendSuccess(
             array('content' => $htmlBoxContent)

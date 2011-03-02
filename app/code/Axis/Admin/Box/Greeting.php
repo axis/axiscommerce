@@ -62,7 +62,7 @@ class Axis_Admin_Box_Greeting extends Axis_Admin_Box_Abstract
         
         $userId = Zend_Auth::getInstance()->getIdentity();
         
-        $this->updateData(array(
+        $this->setFromArray(array(
             'today_date'  => $todayDate,
             'mail_count'  => $mailCount,
             'order_total' => $orderTotal,

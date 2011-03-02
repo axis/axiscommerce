@@ -43,8 +43,7 @@ foreach ($this->box->getData('products') as $prodId => $product) :
                 
                 <?php echo $reviewSummaryBox->setProductId($product['id'])
                     ->setProductUrl($product['key_word'])
-                    ->setSmallStars(true)
-                    ->toHtml() ?>
+                    ->setSmallStars(true) ?>
                 
                 <?php echo $this->price($product['price'], 
                     !empty($product['price_discount']) ? 

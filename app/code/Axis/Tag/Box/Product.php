@@ -36,7 +36,7 @@ class Axis_Tag_Box_Product extends Axis_Catalog_Box_Product_Abstract
     protected $_title = 'Tags';
     protected $_class = 'box-tag';
     
-    public function initData()
+    protected function _beforeRender()
     {
         if (!$this->product_id) {
             return false;
@@ -49,7 +49,9 @@ class Axis_Tag_Box_Product extends Axis_Catalog_Box_Product_Abstract
         }
         
         $this->last_product_id = $this->product_id;
-        $this->tags = Axis::single('tag/customer')
-            ->getByProductId($this->product_id);
+        $this->tags = Axis::single('tag/customer')->getByProductId(
+            $this->product_id
+        );
+        return true;
     }
 }

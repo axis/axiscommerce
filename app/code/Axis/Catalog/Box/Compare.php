@@ -63,7 +63,7 @@ class Axis_Catalog_Box_Compare extends Axis_Core_Box_Abstract
         return true;
     }
 
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasItems();
     }

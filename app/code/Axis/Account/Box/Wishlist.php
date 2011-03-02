@@ -52,7 +52,7 @@ class Axis_Account_Box_Wishlist extends Axis_Account_Box_Abstract
     /**
      * @return bool
      */
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasWishlist();
     }

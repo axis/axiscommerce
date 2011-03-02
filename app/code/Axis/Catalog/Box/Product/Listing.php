@@ -57,12 +57,4 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
         }
         return $this->columns_count;
     }
-
-    /**
-     * @return boolean
-     */
-    public function hasContent()
-    {
-        return (bool) count($this->products);
-    }
 }

@@ -36,46 +36,17 @@ class Axis_View_Helper_Box
     /**
      * Return the singleton instance of box object
      *
-     * @param mixed string|array $box
+     * @param string $block
      * @return Axis_Core_Box_Abstract
      * @throws Axis_Exception
      */
-    public function box($box)
+    public function box($block)
     {
-        if (is_array($box)) {
-            $config = $box;
-            $box = $config['box_namespace']
-                . '_' . $config['box_module']
-                . '/' .$config['box_name'];
-            $box = Axis::getClass($box, 'Box');
-        } else {
-            $box = Axis::getClass($box, 'Box');
-            list($namespace, $module, $_box_, $name) = explode('_', $box);
-            $config = array(
-                'box_namespace' => $namespace,
-                'box_module'    => $module,
-                'box_name'      => $name
-            );
+        $block = Axis::getClass($block, 'Box');
+        
+        if (Zend_Registry::isRegistered($block)) {
+            return Zend_Registry::get($block)->refresh();
         }
-        if (@!class_exists($box)) {
-            $response = Zend_Controller_Front::getInstance()->getResponse();
-            if (!count($response->getException())) {
-                $exception = new Axis_Exception(
-                    Axis::translate('core')->__(
-                        'Class %s not found', $box
-                    )
-                );
-                $response->setException($exception);
-
-                throw $exception;
-            } else {
-                return;
-            }
-        }
-
-        if (Zend_Registry::isRegistered($box)) {
-            return Zend_Registry::get($box)->refresh()->updateData($config);
-        }
-        return Axis::single($box, $config);
+        return Axis::single($block);
     }
 }

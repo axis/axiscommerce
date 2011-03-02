@@ -49,8 +49,8 @@ class Axis_Cms_Box_Navigation extends Axis_Core_Box_Abstract
         ));
         return true;
     }
-    
-    public function hasContent()
+
+    protected function _beforeRender()
     {
         return $this->hasCategories() || $this->hasPages();
     }

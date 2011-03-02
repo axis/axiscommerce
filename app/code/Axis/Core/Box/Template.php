@@ -41,7 +41,7 @@ class Axis_Core_Box_Template extends Axis_Core_Box_Abstract
      *
      * @return bool
      */
-    public function hasContent()
+    protected function  _beforeRender()
     {
         return $this->hasData('template');
     }

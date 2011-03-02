@@ -49,7 +49,7 @@ class Axis_Locale_Box_Currency extends Axis_Core_Box_Abstract
         return true;
     }
     
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasCurrency();
     }

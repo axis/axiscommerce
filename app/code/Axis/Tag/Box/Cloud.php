@@ -40,7 +40,7 @@ class Axis_Tag_Box_Cloud extends Axis_Core_Box_Abstract
     private $_countTags = 30;
     private $_lastCount = null;
     
-    public function initData()
+    protected function _beforeRender()
     {
         if ($this->hasData('count')) {
             $this->_countTags = $this->getData('count');
@@ -62,10 +62,5 @@ class Axis_Tag_Box_Cloud extends Axis_Core_Box_Abstract
         }
         $this->tags = $tags;
         return true;
-    }
-    
-    public function hasContent()
-    {        
-        return $this->hasTags();
     }
 }

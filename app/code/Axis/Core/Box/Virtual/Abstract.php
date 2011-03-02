@@ -37,7 +37,7 @@ class Axis_Core_Box_Virtual_Abstract extends Axis_Core_Box_Abstract
      *
      * @return string
      */
-    public function toHtml()
+    public function render()
     {
         return '';
     }

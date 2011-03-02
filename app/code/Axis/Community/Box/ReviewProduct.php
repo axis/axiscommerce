@@ -36,7 +36,7 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
     protected $_title = 'Reviews';
     protected $_class = 'box-review-product';
     
-    public function initData()
+    protected function _beforeRender()
     {
         if (!$this->product_id) {
             return false;
@@ -59,5 +59,6 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
         $this->last_product_id = $this->product_id;
         $this->reviews = $data['reviews'];
         $this->count = $data['count'];
+        return true;
     }
 }
