@@ -82,7 +82,7 @@ class Axis_Cache_Frontend_Box extends Axis_Cache_Frontend_Abstract
             $result = $cache->load($id);
             $output = $result[0];
             $return = $result[1];
-            $box->updateData($result[2]);//<---
+            $box->setFromArray($result[2]);//<---
         } else {
             // A cache is not available
             ob_start();

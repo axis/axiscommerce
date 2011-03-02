@@ -41,9 +41,10 @@ class Axis_Community_Box_ReviewRating extends Axis_Core_Box_Abstract
     {
         $this->review_count = array();
         $this->ratings = array();
+        return true;
     }
 
-    public function initData()
+    protected function _beforeRender()
     {
         if (!$this->hasData('product_id')) {
             return true;
@@ -76,5 +77,6 @@ class Axis_Community_Box_ReviewRating extends Axis_Core_Box_Abstract
                 $productIds,
                 $this->getView()->config('community/review/merge_average')
             );
+        return true;
     }
 }

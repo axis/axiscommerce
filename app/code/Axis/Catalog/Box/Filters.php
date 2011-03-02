@@ -41,7 +41,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
     {
         $this->hurl = Axis_HumanUri::getInstance();
 
-        $result = array();
+        $filterSet = array();
         $filters = $this->_getActiveFilters();
 
         // Get category filters
@@ -50,34 +50,34 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         $result['category'] = Axis::single('catalog/category')->find($catId)->current()->getChildItems(false, true);*/
 
         // Get price filters
-        $result['price'] = $this->_getPriceFilters($filters);
+        $filterSet['price'] = $this->_getPriceFilters($filters);
 
         // Get manufacturer filters
         if (!$this->hurl->hasParam('manufacturer')) {
-            $result['manufacturer'] = $this->_getManufacturerFilters($filters);
+            $filterSet['manufacturer'] = $this->_getManufacturerFilters($filters);
         }
 
         // Attribute filters
-        $result['attributes'] = $this->_getAttributeFilters($filters);
+        $filterSet['attributes'] = $this->_getAttributeFilters($filters);
 
         if ((count($filters) && !$this->hurl->hasParam('cat'))
             || (1 < count($filters) && $this->hurl->hasParam('cat'))) { // we don't show categories in filters
 
-            $this->filters = $result;
-            return;
+            $this->filters = $filterSet;
+            return true;
         }
 
-        foreach($result as $filter) {
+        foreach($filterSet as $filter) {
             if (count($filter)) {
-                $this->filters = $result;
-                return;
+                $this->filters = $filterSet;
+                return true;
             }
         }
 
         return false;
     }
 
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasData('filters');
     }

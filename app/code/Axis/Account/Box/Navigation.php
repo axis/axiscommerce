@@ -63,5 +63,6 @@ class Axis_Account_Box_Navigation extends Axis_Account_Box_Abstract
             ksort($this->_items);
             $this->items = $this->_items;
         }
+        return true;
     }
 }

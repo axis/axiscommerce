@@ -115,32 +115,44 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
                 Axis_Layout::getMvcInstance()->getView()
             );
         }
-        // why not get_class($this)
+        
+        list($namespace, $module, , $name) = explode('_', get_class($this));
         $this->_enabled = in_array(
-            $config['box_namespace'] . '_' . $config['box_module'],
+            $namespace . '_' . $module,
             array_keys(Axis::app()->getModules())
         );
         if (!$this->_enabled) {
             return;
         }
-        $this->refresh()
-            ->updateData($config)
+        $config = array_merge(array(
+            'box_namespace' => $namespace,
+            'box_module'    => $module,
+            'box_name'      => $name
+        ), $config);
+        $this->_enabled = $this->refresh()
+            ->setFromArray($config)
             ->init();
     }
 
-    public function toHtml()
+    /**
+     *
+     * @return string
+     */
+    public function render()
     {
-        if (!$this->_enabled
-            || false === $this->initData()
-            || !$this->hasContent()) {
-
+        if (!$this->_enabled || !$this->_beforeRender()) {
             return '';
         }
         $template = $this->getData('template');
         if (empty($template)) {
-            $template = $this->box_name . '.phtml';
-            $template = strtolower(substr($template, 0, 1)) . substr($template, 1);
-            $template = strtolower($this->box_module) . '/box/' . $template;
+            if (false === function_exists('lcfirst') ) {
+                function lcfirst($str) {
+                    return (string)(strtolower(substr($str, 0, 1)) . substr($str, 1));
+                }
+            }
+
+            $template = strtolower($this->getData('box_module')) . '/box/'
+                . lcfirst($this->getData('box_name')) . '.phtml';
             $this->template = $template;
         }
 
@@ -173,6 +185,20 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         return $html;
     }
 
+    /**
+     *
+     * @return string
+     */
+    public function  __toString()
+    {
+        return $this->render();
+    }
+
+    /**
+     *
+     * @param string $key
+     * @return bool
+     */
     public function hasData($key)
     {
         if (strstr($key, '/')) {
@@ -187,7 +213,13 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         } 
         return isset($this->_data[$key]);
     }
-    
+
+    /**
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
     public function getData($key = null, $default = null)
     {
         if (null === $key) {
@@ -206,6 +238,10 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         return isset($this->_data[$key]) ? $this->_data[$key] : $default;
     }
 
+    /**
+     *
+     * @return Axis_Core_Box_Abstract 
+     */
     public function refresh()
     {
         $this->_data = array_merge($this->_data, array(
@@ -219,21 +255,10 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         return $this;
     }
 
-    public function updateData(array $data)
-    {
-        //@todo why not setFromArray?
-        foreach ($data as $key => $value) {
-            $this->setData($key, $value);
-        }
-        return $this;
-    }
-    
-    public function init() {}
-
     /**
-     * @return mixed void|mixed
+     * @return bool
      */
-    public function initData()
+    public function init()
     {
         return true;
     }
@@ -241,7 +266,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     /**
      * @return bool
      */
-    public function hasContent()
+    protected function _beforeRender()
     {
         return true;
     }

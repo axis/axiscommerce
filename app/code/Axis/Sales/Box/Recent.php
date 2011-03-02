@@ -45,12 +45,10 @@ class Axis_Sales_Box_Recent extends Axis_Account_Box_Abstract
            return false;
         }
         $this->orders = $orders;
+        return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasOrders();
     }

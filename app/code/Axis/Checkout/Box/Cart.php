@@ -34,17 +34,17 @@
 class Axis_Checkout_Box_Cart extends Axis_Core_Box_Abstract
 {
     protected $_title = 'Shopping Cart';
-    
     protected $_class = 'box-shopping-cart';
-    
     protected $_url = 'checkout/cart';
     
     public function init()
     {
-        $this->updateData(array(
-            'items' => Axis::single('checkout/cart')->getProducts(),
-            'sum' => Axis::single('checkout/cart')->getTotalPrice(),
-            'count' => Axis::single('checkout/cart')->getCount()
+        $modelCheckoutCart = Axis::single('checkout/cart');
+        $this->setFromArray(array(
+            'items' => $modelCheckoutCart->getProducts(),
+            'sum'   => $modelCheckoutCart->getTotalPrice(),
+            'count' => $modelCheckoutCart->getCount()
         ));
+        return true;
     }
 }

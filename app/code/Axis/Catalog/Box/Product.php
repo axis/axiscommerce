@@ -36,7 +36,7 @@ class Axis_Catalog_Box_Product extends Axis_Catalog_Box_Product_Abstract
     protected $_title = 'Description';
     protected $_class = 'box-product-info';
 
-    public function initData()
+    protected function _beforeRender()
     {
         if (!$this->product_id) {
             return false;
@@ -55,5 +55,6 @@ class Axis_Catalog_Box_Product extends Axis_Catalog_Box_Product_Abstract
         }
 
         $this->product = $product;
+        return true;
     }
 }

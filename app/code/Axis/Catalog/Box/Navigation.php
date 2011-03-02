@@ -46,10 +46,6 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
             return false;
         }
         $this->setData('items', $tree[$siteId]);
-    }
-
-    public function hasContent()
-    {
-        return true; // home link and custom csm block links are always shown
+        return true;
     }
 }

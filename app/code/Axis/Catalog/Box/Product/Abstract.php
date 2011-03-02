@@ -57,5 +57,6 @@ abstract class Axis_Catalog_Box_Product_Abstract extends Axis_Core_Box_Abstract
                 $this->product = $product;
             }
         }
+        return true;
     }
 }
