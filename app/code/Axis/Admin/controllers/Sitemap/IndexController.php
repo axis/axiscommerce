@@ -61,7 +61,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         /*
          * Get products
          */
-        $this->view->products = Axis::single('sitemap/file')
+        $this->view->products = Axis::single('catalog/product_category')
             ->getAllActiveProducts($config['lang_id'], $config['site_id']);
 
         $changefreq['products'] = $conf->products->frequency;
@@ -240,10 +240,10 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             $this->view->siteMapId = $this->_getParam('siteMapId');
         }
         $params = array(
-            'start' => (int) $this->_getParam('start', 0),
-            'limit' => (int) $this->_getParam('limit', 20),
-            'sort' => $field->filter($this->_getParam('sort', 'id')),
-            'dir' => $field->filter($this->_getParam('dir', 'DESC')),
+            'start'   => (int) $this->_getParam('start', 0),
+            'limit'   => (int) $this->_getParam('limit', 20),
+            'sort'    => $field->filter($this->_getParam('sort', 'id')),
+            'dir'     => $field->filter($this->_getParam('dir', 'DESC')),
             'filters' => $this->_getParam('filter', array())
         );
         $dataset = Axis::single('sitemap/file')->getList($params);

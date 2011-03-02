@@ -63,4 +63,44 @@ class Axis_Catalog_Model_Product_Category extends Axis_Db_Table
             ->where('ccd.language_id = ?', $languageId)
             ->fetchAssoc();
     }
+
+    /**
+     * Retrieve the list of all available products
+     *
+     * @param int $languageId
+     * @param array $siteIds
+     * @return array
+     */
+    public function getAllActiveProducts($languageId, $siteIds = array())
+    {
+        $today = Axis_Date::now()->toPhpString('Y-m-d');
+
+        $select = Axis::single('catalog/product_category')->select()
+            ->distinct()
+            ->from('catalog_product_category', array())
+            ->joinLeft('catalog_product',
+                'cp.id = cpc.product_id',
+                array('id'))
+            ->joinLeft('catalog_product_description',
+                "cpd.product_id = cp.id AND cpd.language_id = {$languageId}",
+                array('name'))
+            ->joinLeft('catalog_hurl',
+                "ch.key_id = cp.id AND ch.key_type='p'",
+                array('key_word'))
+            ->where('cp.is_active = 1')
+            ->where('cp.date_available IS NULL OR cp.date_available <= ?', $today);
+
+        if ($siteIds) {
+            if (!is_array($siteIds)) {
+                $siteIds = array($siteIds);
+            }
+            $select->joinLeft(
+                'catalog_category',
+                'cpc.category_id = cc.id'
+            )
+            ->where('cc.site_id IN (?)', $siteIds);
+        }
+
+        return $select->fetchAll();
+    }
 }

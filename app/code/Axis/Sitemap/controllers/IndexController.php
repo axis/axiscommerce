@@ -71,17 +71,16 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
             'Site Map All Products'
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
-        $items = array();
+        $products = array();
         $siteId = Axis::getSiteId();
-        $productRowset = Axis::single('sitemap/file')->getAllActiveProducts(
-            Axis_Locale::getLanguageId(), $siteId
-        );
-        foreach ($productRowset as $item) {
-            $item['lvl'] = 1 ;
-            $items[] = $item;
+        $productRowset = Axis::single('catalog/product_category')
+            ->getAllActiveProducts(Axis_Locale::getLanguageId(), $siteId);
+        foreach ($productRowset as $product) {
+            $product['lvl'] = 1 ;
+            $products[] = $product;
         }
 
-        $this->view->items = $items;
+        $this->view->items = $products;
         $this->view->items['siteId'] = $siteId;
         $this->render();
     }
