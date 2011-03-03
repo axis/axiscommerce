@@ -438,7 +438,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
         }
         $data['price'] = $product->getPriceRules();
         $this->view->product = $data;
-        $formHtml = $this->view->render('sales-order/get-product-attribute-form.phtml');
+        $formHtml = $this->view->render('order/get-product-attribute-form.phtml');
         return $this->_helper->json
            ->setData(array('form' => $formHtml, 'variations' => $variations))
            ->sendSuccess();
