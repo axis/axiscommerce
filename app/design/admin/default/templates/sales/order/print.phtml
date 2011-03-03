@@ -109,16 +109,16 @@ table tr td, table tr th {
         <?php $this->i = $i; ?>
         <?php if ($this->invoice == 'true') :?>
             <?php newPage($i); ?>
-            <?php echo $this->render('/sales-order/print/invoice.phtml');?>
+            <?php echo $this->render('/order/print/invoice.phtml');?>
         <?php endif; ?>
         <?php if ($this->packingslip == 'true') :?>
             <?php newPage($i); ?>
-            <?php echo $this->render('/sales-order/print/packingslip.phtml') ?>
+            <?php echo $this->render('/order/print/packingslip.phtml') ?>
         <?php endif; ?>
     <?php endforeach; ?>
     <?php if ($this->label == 'true') :?>
         <?php // newPage($i); ?>
-        <?php echo $this->render('/sales-order/print/label.phtml') ?>
+        <?php echo $this->render('/order/print/label.phtml') ?>
     <?php endif; ?>
 
     <script type="text/javascript">
