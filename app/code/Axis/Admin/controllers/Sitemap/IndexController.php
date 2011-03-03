@@ -235,31 +235,34 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
     public function listAction()
     {
         $this->layout->disableLayout();
-        $field = new Axis_Filter_DbField();
         if ($this->_hasParam('siteMapId')) {
             $this->view->siteMapId = $this->_getParam('siteMapId');
         }
-        $params = array(
-            'start'   => (int) $this->_getParam('start', 0),
-            'limit'   => (int) $this->_getParam('limit', 20),
-            'sort'    => $field->filter($this->_getParam('sort', 'id')),
-            'dir'     => $field->filter($this->_getParam('dir', 'DESC')),
-            'filters' => $this->_getParam('filter', array())
-        );
-        $dataset = Axis::single('sitemap/file')->getList($params);
+
+        $filter = $this->_getParam('filter', array());
+        $limit  = $this->_getParam('limit', 20);
+        $start  = $this->_getParam('start', 0);
+        $sort   = $this->_getParam('sort', 'id');
+        $dir    = $this->_getParam('dir', 'DESC');
+        $select = Axis::single('sitemap/file')->select()
+            ->calcFoundRows()
+            ->addFilters($filter)
+            ->limit($limit, $start)
+            ->order("{$sort} {$dir}")
+            ;
+
         $data = array();
         $engineNames = Axis::single('sitemap/file_engine')
             ->getEnginesNamesAssigns();
 
-        foreach ($dataset as $item) {
-            $item['engines'] =    isset($engineNames[$item['id']]) ?
+        foreach ($select->fetchAll() as $item) {
+            $item['engines'] = isset($engineNames[$item['id']]) ?
                 implode(',', array_keys($engineNames[$item['id']])) : '';
             $data[] = $item;
         }
-        $this->_helper->json->sendJson(array(
-            'sitemap' => $data,
-            'count' => Axis::single('sitemap/file')->getCount($params)
-        ));
+        $this->_helper->json->setSitemap($data)
+            ->setCount($select->foundRows())
+             ->sendSuccess();
     }
 
     public function removeAction()
