@@ -1,8 +1,14 @@
+<?php 
+$categories = $this->box->getData('categories', array());
+$pages = $this->box->getData('pages', array());
+?>
 <div class="box base-mini box-cms-navigation">
     <div class="head">
         <span class="title">
-            <?php if (count($this->box->categories)) : ?>
-                <a href="<?php echo $this->href('pages') ?>"><?php echo $this->translate('cms')->__($this->box->title);?></a>
+            <?php if (count($categories)) : ?>
+                <a href="<?php echo $this->href('pages') ?>">
+                    <?php echo $this->translate('cms')->__($this->box->title);?>
+                </a>
             <?php else : ?>
                 <?php echo $this->translate('cms')->__($this->box->title);?>
             <?php endif; ?>
@@ -10,21 +16,22 @@
     </div>
     <div class="content">
         <ul class="cms-page-list no-bullet no-indent">
-            <?php foreach ($this->box->getData('categories') as $cat) : ?>
+            <?php foreach ($categories as $_category) : ?>
             <li class="icon-folder">
                 <a href="<?php echo $this->url(array(
-                    'cat' => $cat['link']), 
+                    'cat' => $_category['link']),
                     'cms_category', true); ?>"
-                ><?php echo ($cat['title'] == '' ? $cat['link'] : $cat['title']); ?>
+                ><?php echo empty($_category['title'])
+                    ? $_category['link'] : $_category['title']; ?>
                 </a>
             </li>
             <?php endforeach; ?>
-            <?php foreach ($this->box->getData('pages') as $page) : ?>
+            <?php foreach ($pages as $_page) : ?>
             <li class="icon-page">
                 <a href="<?php echo $this->url(array(                                    
-                    'page' => $page['link']
+                    'page' => $_page['link']
                     ), 'cms_page', true); ?>"
-                ><?php echo ($page['title'] == '' ? $page['link'] : $page['title']); ?>
+                ><?php echo ($_page['title'] == '' ? $_page['link'] : $_page['title']); ?>
                 </a>
             </li>
             <?php endforeach; ?>
