@@ -45,50 +45,50 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    private function _generateXmlSitemap($config)
+    private function _generateXmlSitemap($row)
     {
         /*
          * Get categories
          */
         $this->view->categories = current(Axis::single('catalog/category')
-            ->getFlatTree($config['lang_id'], $config['site_id'], true)
+            ->getFlatTree($row['lang_id'], $row['site_id'], true)
         );
-        $conf = Axis::config()->sitemap;
+        $config = Axis::config()->sitemap;
 
-        $changefreq['categories'] = $conf->categories->frequency ;
-        $priority['categories'] = $conf->categories->priority ;
+        $changefreq['categories'] = $config->categories->frequency ;
+        $priority['categories'] = $config->categories->priority ;
 
         /*
          * Get products
          */
         $this->view->products = Axis::single('catalog/product_category')
-            ->getAllActiveProducts($config['lang_id'], $config['site_id']);
+            ->getAllActiveProducts($row['lang_id'], $row['site_id']);
 
-        $changefreq['products'] = $conf->products->frequency;
-        $priority['products']   = $conf->products->priority;
+        $changefreq['products'] = $config->products->frequency;
+        $priority['products']   = $config->products->priority;
 
         /*
          * Get cms pages
          */
-        $tableCmsCategory = Axis::single('cms/category');
-        $categories       = $tableCmsCategory->getActiveCategory();
+        $modelCmsCategory = Axis::single('cms/category');
+        $categories       = $modelCmsCategory->getActiveCategory();
 
         $categoryIds = array ();
         foreach ($categories as $category) {
              $categoryIds[] = $category['id'];
         }
         $pages = array();
-        if ($conf->cms->showPages) {
+        if ($config->cms->showPages) {
             $pages = Axis::single('cms/page')
-                ->getPageListByActiveCategory($categoryIds, $config['lang_id']);
+                ->getPageListByActiveCategory($categoryIds, $row['lang_id']);
         }
         $this->view->pages     = $pages;
         $this->view->pagesCats = $categories;
-        $changefreq['pages'] = $conf->cms->frequency;
-        $priority['pages']   = $conf->cms->priority;
+        $changefreq['pages'] = $config->cms->frequency;
+        $priority['pages']   = $config->cms->priority;
 
         $this->view->serverName = Axis::single('core/site')
-            ->find($config['site_id'])
+            ->find($row['site_id'])
             ->current()
             ->base;
 
@@ -97,28 +97,28 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
 
         $script = $this->getViewScript('xml', false);
         $xml = $this->view->render($script);
-
-        $dir = Axis::config()->system->path . '/' ;
-        if (!is_dir($dir) && !mkdir($dir)) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'Dir %s not exist', $dir
-                )
-            );
-            return false;
-        }
-        $filename = $dir . $config['filename'] . '.xml';
-        if (@file_put_contents($filename, $xml)) {
-
-            return true;
-        }
-        Axis::message()->addError(
-            Axis::translate('core')->__(
-                'Error write file : %s dir chmod 755 need', $filename
-            )
-        );
-
-        return false;
+        return $xml;
+//        $dir = Axis::config()->system->path . '/' ;
+//        if (!is_dir($dir) && !mkdir($dir)) {
+//            Axis::message()->addError(
+//                Axis::translate('core')->__(
+//                    'Dir %s not exist', $dir
+//                )
+//            );
+//            return false;
+//        }
+//        $filename = $dir . $config['filename'] . '.xml';
+//        if (@file_put_contents($filename, $xml)) {
+//
+//            return true;
+//        }
+//        Axis::message()->addError(
+//            Axis::translate('core')->__(
+//                'Error write file : %s dir chmod 755 need', $filename
+//            )
+//        );
+//
+//        return false;
     }
 
     private function _pingEngine($engineUrl, $xmlUrl)
@@ -164,8 +164,8 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         }
         $alpha = new Zend_Filter_Alnum();
 
-        if (($alpha->filter($data['filename']) != $data['filename'])
-            || ($data['filename'] == '')) {
+        $filename = $alpha->filter($data['filename']);
+        if (empty($data['filename']) || ($filename !== $data['filename'])) {
 
             Axis::message()->addError(
                 Axis::translate('core')->__(
@@ -175,16 +175,15 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
 
-        $filename = Axis::config()->system->path . '/'
-                  . $alpha->filter($data['filename']) . '.xml';
+        $filename = Axis::config('system/path') . '/' . $filename . '.xml';
 
-        $rows = Axis::single('sitemap/file')->find($data['id']);
+        $rowset = Axis::single('sitemap/file')->find($data['id']);
 
-        if ($rows->count()) {
-            $config = $rows->current();
+        if ($rowset->count()) {
+            $row = $rowset->current();
             /* remove old file */
-            $oldFilename = Axis::config()->system->path . '/'
-                         . $config->filename . '.xml';
+            $oldFilename = Axis::config('system/path') . '/'
+                         . $row->filename . '.xml';
 
             if (is_file($oldFilename)) {
                 unlink($oldFilename);
@@ -199,7 +198,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        if ($rows->count()) {// if edit, then update
+        if ($rowset->count()) {// if edit, then update
             Axis::single('sitemap/file')->update(array(
                 'filename' =>  $alpha->filter($data['filename']),
                 'generated_at' => Axis_Date::now()->toSQLString(),
@@ -224,11 +223,26 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
                 ->save($data['engine_ids'], $data['id']);
         }
         // generate xml sitemap
-        $config = Axis::single('sitemap/file')->find($data['id'])->current()->toArray();
-        $config['lang_id'] = Axis_Locale::getLanguageId();
-        $this->_helper->json->sendJson(array(
-            'success' => $this->_generateXmlSitemap($config)
-        ));
+        $row = Axis::single('sitemap/file')->find($data['id'])->current()->toArray();
+        $row['lang_id'] = Axis_Locale::getLanguageId();
+        
+//        $this->_helper->json->sendJson(array(
+//            'success' => $this->_generateXmlSitemap($row)
+//        ));
+
+        $content = $this->_generateXmlSitemap($row);
+        $this->getResponse()
+            ->clearAllHeaders()
+            ->setHeader('Content-Description','File Transfer', true)
+            ->setHeader('Content-Type','application/octet-stream', true)
+            ->setHeader('Content-Disposition','attachment; filename=' . $filename, true)
+            ->setHeader('Content-Transfer-Encoding','binary', true)
+            ->setHeader('Expires','0', true)
+            ->setHeader('Cache-Control','must-revalidate, post-check=0, pre-check=0', true)
+            ->setHeader('Pragma','public', true)
+//            ->setHeader('Content-Length: ', filesize($content), true)
+            ;
+        $this->getResponse()->setBody($content);
 
     }
 
@@ -274,7 +288,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         }
         foreach ($ids as $id) {
             $row = Axis::single('sitemap/file')->find($id)->current();
-            $filename = Axis::config()->system->path . '/'
+            $filename = Axis::config('system/path') . '/' 
                       . $row->filename . '.xml';
             if (file_exists($filename))
                 @unlink($filename);

@@ -129,6 +129,17 @@ Ext.onReady(function (){
             });
         },
         save: function () {
+
+            editWin.hide();
+            jQuery('#sitemap-form-site').get(0).checked = false;
+            jQuery('#sitemap-form-filename').val('');
+            jQuery('#sitemap-form-savepath').val('');
+//            storeSitemap.reload();
+            window.location =  Axis.getUrl('sitemap_index/save')
+                + '/id/'+ sitemapId
+                + '/?' + jQuery('#sitemap-form').serialize();
+            
+            return;
             Ext.Ajax.request({
                 url : Axis.getUrl('sitemap_index/save'),
                 form: 'sitemap-form',
