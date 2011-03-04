@@ -1286,7 +1286,7 @@ a.review-stars { outline: none; }
 .account-address-book-index .box-account .link-address-book,
 .account-order-index .box-account .link-orders,
 .account-wishlist-index .box-account .link-wishlist,
-.account-tag-index .box-account .link-tags { font-weight: bold; }
+.tag-account-index .box-account .link-tags { font-weight: bold; }
 
 /* Credit cards */
 .card-icon {
