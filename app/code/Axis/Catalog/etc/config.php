@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Catalog
  * @copyright   Copyright 2008-2010 Axis
@@ -49,6 +49,53 @@ $config = array(
                     'type' => 'model',
                     'model' => 'catalog/product_attribute_value',
                     'method' => 'removeByLanguage'
+                )
+            ),
+            'catalog_product_save_after' => array(
+                'notify' => array(
+                    'type' => 'model',
+                    'model' => 'catalog/observer',
+                    'method' => 'onProductUpdate'
+                ),
+                'update_price_index' => array(
+                    'type' => 'model',
+                    'model' => 'catalog/observer',
+                    'method' => 'updatePriceIndexOnProductSave'
+                )
+            ),
+            'catalog_product_move_after' => array(
+                'update_price_index' => array(
+                    'type' => 'model',
+                    'model' => 'catalog/observer',
+                    'method' => 'updatePriceIndexOnProductMove'
+                )
+            ),
+            'catalog_product_remove_after' => array(
+                'update_price_index' => array(
+                    'type' => 'model',
+                    'model' => 'catalog/observer',
+                    'method' => 'updatePriceIndexOnProductRemove'
+                )
+            ),
+            'discount_save_after' => array(
+                'update_price_index' => array(
+                    'type' => 'model',
+                    'model' => 'catalog/observer',
+                    'method' => 'updatePriceIndexOnDiscountSave'
+                )
+            ),
+            'discount_delete_after' => array(
+                'update_price_index' => array(
+                    'type' => 'model',
+                    'model' => 'catalog/observer',
+                    'method' => 'updatePriceIndexOnDiscountDelete'
+                )
+            ),
+            'account_group_save_after' => array(
+                'update_price_index' => array(
+                    'type' => 'model',
+                    'model' => 'catalog/observer',
+                    'method' => 'updatePriceIndexOnCustomerGroupAdd'
                 )
             )
         )

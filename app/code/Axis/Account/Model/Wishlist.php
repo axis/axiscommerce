@@ -90,6 +90,7 @@ class Axis_Account_Model_Wishlist extends Axis_Db_Table
 
         $products = Axis::single('catalog/product')->select('*')
             ->addCommonFields()
+            ->addFinalPrice()
             ->where('cp.id IN (?)', $productIds)
             ->fetchProducts($productIds);
 

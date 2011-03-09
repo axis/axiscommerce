@@ -104,8 +104,11 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
 
         $this->view->pageTitle = Axis::translate('catalog')->__('Catalog');
 
-        $select = Axis::model('catalog/product')->select('id')
-            ->addFilterByAvailability()
+        /**
+         * @var Axis_Catalog_Model_Product_Select
+         */
+        $select = Axis::model('catalog/product')->select('id');
+        $select->addFilterByAvailability()
             ->joinCategory()
             ->where('cc.site_id = ?', Axis::getSiteId());
 
@@ -123,11 +126,12 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             );
         }
 
+        // $select->addPrice();
         if ($this->hurl->hasParam('price')) {
             $price  = explode(',', $this->hurl->getParam('price'));
             $from   = $price[0];
             $to     = isset($price[1]) ? $price[1] : null;
-            $select->addFilterByPrice($from, $to);
+            $select->addFilterByFinalPrice($from, $to);
         }
 
         if ($this->hurl->hasParam('attributes')) {
@@ -188,11 +192,11 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
 
         switch ($paging['order']) {
             case 'name':
-                $order = 'cpd.name';
-                $select->addDescription();
+                $select->addDescription()
+                    ->order('cpd.name' . ' ' . $paging['dir']);
                 break;
             case 'price':
-                $order = 'cp.price';
+                $select->orderByFinalPrice($paging['dir']);
                 break;
         }
 
@@ -200,7 +204,6 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
                 $paging['limit'] == 'all' ? 0 :  $paging['limit'],
                 ($paging['page'] - 1) * ($paging['limit'] == 'all' ? 0 : $paging['limit'])
             )
-            ->order($order . ' ' . $paging['dir'])
             ->fetchList();
 
         $paging['count'] = $productList['count'];

@@ -48,6 +48,7 @@ class Axis_Catalog_ProductCompareController extends Axis_Core_Controller_Front
         $products = Axis::single('catalog/product')
             ->select('*')
             ->addCommonFields()
+            ->addFinalPrice()
             ->where('cp.id IN (?)', $productIds)
             ->fetchProducts($productIds);
 

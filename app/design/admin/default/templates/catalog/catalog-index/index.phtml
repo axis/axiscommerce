@@ -46,9 +46,9 @@ if (in_array('Axis_Community', array_keys(Axis::app()->getModules()))) {
 
 $this->setButtons(array(
     array(
-        'title' => Axis::translate('Axis_Admin')->__('Back'),
-        'onclick' => 'history.back()',
-        'class' => 'alt-button'
+        'title'     => Axis::translate('Axis_Admin')->__('Update Price Indexes'),
+        'onclick'   => 'Product.updatePriceIndex()',
+        'class'     => 'alt-button'
     )
 ));
 ?>

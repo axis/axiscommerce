@@ -201,11 +201,13 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
      */
     protected function _getPriceFilters(array $filters)
     {
-        $select = Axis::single('catalog/product')->select();
-        $select->from('catalog_product', array(
-                'cnt'       => 'COUNT(cp.price)',
-                'price_max' => 'MAX(cp.price)',
-                'price_min' => 'MIN(cp.price)'
+        $select = Axis::single('catalog/product')->select(
+            array('cnt' => 'COUNT(cp.price)')
+        );
+        $select->joinPriceIndex()
+            ->columns(array(
+                'price_max' => 'MAX(cppi.final_max_price)',
+                'price_min' => 'MIN(cppi.final_min_price)'
             ))
             ->joinCategory()
             ->addCommonFilters($filters);
@@ -219,19 +221,20 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         $currency = Axis::single('locale/currency');
         $row['price_max'] = $currency->to($row['price_max']);
         $row['price_min'] = $row['price_min'] > 0 ? $currency->to($row['price_min']) : 1;
-        $rate = $currency->getData('', 'rate');
+        $rate = $currency->getData(null, 'rate');
 
         //Return rounded number, example: 80->10, 120->100, 895->100, 1024->1000
         $roundTo = pow(10, strlen((string) floor($row['price_max'] - $row['price_min'])) - 1);
         $select->reset();
         $select->from('catalog_product', array(
                 'cnt'         => 'COUNT(DISTINCT cp.id)',
-                'price_group' => new Zend_Db_Expr("floor(cp.price * $rate / $roundTo) * $roundTo")
+                'price_group' => new Zend_Db_Expr("floor(cppi.final_min_price * $rate / $roundTo) * $roundTo")
             ))
+            ->joinPriceIndex()
             ->joinCategory()
             ->addCommonFilters($filters)
             ->group('price_group')
-            ->order('cp.price');
+            ->order('cppi.final_min_price');
 
         $priceGroups = $select->fetchAll();
 

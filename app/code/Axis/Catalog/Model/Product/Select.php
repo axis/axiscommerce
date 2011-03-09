@@ -173,24 +173,127 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
             $languageId = Axis_Locale::getLanguageId();
         }
 
-        return $this->joinLeft('catalog_product_manufacturer',
+        return $this->joinLeft(
+                'catalog_product_manufacturer',
                 'cp.manufacturer_id = cpm.id',
                 array(
                     'manufacturer_id'    => 'id',
                     'manufacturer_name'  => 'name',
                     'manufacturer_image' => 'image'
-                ))
-            ->joinLeft('catalog_product_manufacturer_description',
-                'cpm.id = cpmd.manufacturer_id AND cpmd.language_id = ' . $languageId,
+                )
+            )
+            ->joinLeft(
+                'catalog_product_manufacturer_description',
+                'cpm.id = cpmd.manufacturer_id AND cpmd.language_id = '
+                . $languageId,
                 array(
                     'manufacturer_title'       => 'title',
                     'manufacturer_description' => 'description'
-                ))
-            ->joinLeft('catalog_hurl',
-                "cpm.id = ch.key_id AND ch.key_type = 'm' AND ch.site_id = " . Axis::getSiteId(),
+                )
+            )
+            ->joinLeft(
+                'catalog_hurl',
+                "cpm.id = ch.key_id AND ch.key_type = 'm' AND ch.site_id = "
+                . Axis::getSiteId(),
                 array(
                     'manufacturer_url' => 'key_word'
-                ));
+                )
+            );
+    }
+
+    /**
+     * Add product price to select:
+     * <pre>
+     *  min_price, max_price                - prices without applied discounts
+     *  final_min_price, final_max_price    - prices with applied discounts
+     * </pre>
+     *
+     * @param array $options Options that final price may depends on
+     * <pre>
+     * array(
+     *  site_id             => int
+     *  customer_group_id   => int
+     *  date                => date
+     * )
+     * </pre>
+     * @return Axis_Catalog_Model_Product_Select
+     */
+    public function addFinalPrice(array $options = array())
+    {
+        $this->joinPriceIndex($options);
+        $this->columns(array(
+            'cppi.min_price',       'cppi.max_price',
+            'cppi.final_min_price', 'cppi.final_max_price'
+        ));
+
+        return $this;
+    }
+
+    /**
+     * Joins the price index table to select
+     *
+     * @param array $conditions[optional] Conditions to use in ON clause
+     * <pre>
+     * array(
+     *  site_id             => int
+     *  customer_group_id   => int
+     *  date                => date
+     * )
+     * </pre>
+     * @return Axis_Catalog_Model_Product_Select
+     */
+    public function joinPriceIndex(array $conditions = array())
+    {
+        $from = $this->getPart('from');
+        if (isset($from['cppi'])) {
+            return $this;
+        }
+
+        $this->joinInner(
+            'catalog_product_price_index',
+            'cppi.product_id = cp.id'
+        );
+
+        $conditions = array_merge(array(
+            'time'              => Axis_Date::now()->getDate()->getTimestamp(),
+            'site_id'           => Axis::getSiteId(),
+            'customer_group_id' => Axis::model('account/customer')
+                                        ->getGroupId(Axis::getCustomerId())
+        ), $conditions);
+        foreach ($conditions as $key => $value) {
+            if ('time' === $key) {
+                $this->where('cppi.time_from <= ?', $value)
+                    ->where('cppi.time_to >= ?', $value);
+                continue;
+            }
+            $this->where("cppi.{$key} = ?", $value);
+        }
+        return $this;
+    }
+
+
+    /**
+     * Sort select by final price (price with applied discounts)
+     *
+     * @param string $dir desc|asc     Direction to sort
+     * @param array $options[optional] Options that final price may depends on
+     * <pre>
+     * array(
+     *  site_id             => int
+     *  customer_group_id   => int
+     *  date                => date
+     * )
+     * </pre>
+     * @return Axis_Catalog_Model_Product_Select
+     */
+    public function orderByFinalPrice($dir, array $options = array())
+    {
+        $this->joinPriceIndex($options);
+
+        $orderBy = ('desc' === strtolower($dir) ?
+            'cppi.final_max_price' : 'cppi.final_min_price');
+
+        return $this->order($orderBy . ' ' . $dir);
     }
 
     /**
@@ -318,7 +421,9 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
             }
         }
 
-        $this->addFilterByPrice($filters['price']);
+        if (count($filters['price'])) {
+            $this->addFilterByFinalPrice($filters['price']);
+        }
 
         if (count($filters['attributes'])) {
             $this->addFilterByAttributes($filters['attributes']);
@@ -333,15 +438,17 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
      * @param int|array $from
      * <pre>
      * array(
-     *  from    => int,
-     *  to      => int
+     *  from    => float,
+     *  to      => float
      * )
      * </pre>
-     * @param int       $to
+     * @param int $to
      * @return Axis_Catalog_Model_Product_Select
      */
-    public function addFilterByPrice($from = null, $to = null)
+    public function addFilterByFinalPrice($from = null, $to = null)
     {
+        $this->joinPriceIndex();
+
         if (is_array($from)) {
             $to     = empty($from['to'])    ? null : $from['to'];
             $from   = empty($from['from'])  ? null : $from['from'];
@@ -349,10 +456,16 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
 
         $currency = Axis::single('locale/currency');
         if ($from) {
-            $this->where('cp.price >= ?', $currency->from($from));
+            $this->where(
+                'cppi.final_min_price >= ? OR cppi.final_max_price >= ?',
+                $currency->from($from)
+            );
         }
         if ($to) {
-             $this->where('cp.price <= ?', $currency->from($to));
+             $this->where(
+                'cppi.final_min_price <= ? OR cppi.final_max_price <= ?',
+                $currency->from($to)
+             );
         }
 
         return $this;
@@ -409,12 +522,32 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
             if (!isset($result[$product['id']])) {
                 $result[$product['id']] = array();
                 $result[$product['id']]['is_saleable'] = $product['in_stock'] && $product['quantity'] > 0;
+                if (isset($product['min_price'])) {
+                    // in admin listing we don't need to get the min/max prices
+                    $result[$product['id']]['prices'] = array(
+                        'min_price'         => $product['min_price'],
+                        'max_price'         => $product['max_price'],
+                        'final_min_price'   => $product['final_min_price'],
+                        'final_max_price'   => $product['final_max_price']
+                    );
+                } else {
+                    $result[$product['id']]['prices'] = array(
+                        'min_price'         => 0,
+                        'max_price'         => 0,
+                        'final_min_price'   => 0,
+                        'final_max_price'   => 0
+                    );
+                }
                 foreach ($product as $key => $value) {
                     if (in_array($key, array(
                             'variation_id',
                             'modifier',
                             'option_id',
-                            'option_value_id'
+                            'option_value_id',
+                            'min_price',
+                            'max_price',
+                            'final_min_price',
+                            'final_max_price'
                         ))
                         || strpos($key, 'variation') === 0
                         || strpos($key, 'attribute') === 0) {
@@ -483,12 +616,10 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
             return array();
         }
 
-        $images = Axis::single('catalog/product_image')->getList(array_keys($products));
+        $images = Axis::model('catalog/product_image')->getList(array_keys($products));
         foreach ($images as $productId => $productImages) {
             $products[$productId]['images'] = $productImages;
         }
-
-        Axis::single('discount/discount')->fillDiscount($products);
 
         $productObj = new Axis_Object(array(
             'products' => $products
@@ -519,6 +650,7 @@ class Axis_Catalog_Model_Product_Select extends Axis_Db_Table_Select
         $products = $this->reset()
             ->from('catalog_product', '*')
             ->addCommonFields()
+            ->addFinalPrice()
             ->where('cp.id IN (?)', $ids)
             ->fetchProducts($ids);
 

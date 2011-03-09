@@ -46,10 +46,7 @@ foreach ($this->tagItems as $item) :
                 <h4 class="product-name"><a href="<?php echo $productUrl;?>"
                     title="<?php echo $this->escape($product['name']);?>"
                     ><?php echo $this->escape($product['name']);?></a></h4>
-                <?php echo $this->price($product['price'],
-                    !empty($product['price_discount']) ?
-                        $product['price_discount'] : false
-                ) ?>
+                <?php echo $this->price($product['prices']) ?>
 
                 <?php if ($product['is_saleable']): ?>
                     <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(

@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Discount
  * @subpackage  Axis_Discount_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Discount
  * @subpackage  Axis_Discount_Model
@@ -34,22 +34,17 @@
 class Axis_Discount_Model_Eav extends Axis_Db_Table
 {
     protected $_name = 'discount_eav';
-    protected $_primary = array('discount_id', 'entity', 'value');
 
+    protected $_primary = array('discount_id', 'entity', 'value');
 
     public function insert(array $data)
     {
-        $row = $this->find($data['discount_id'], $data['entity'], $data['value'])
-            ->current();
-        if ($row instanceof Axis_Db_Table_Row) {
-            return;
-        }
         if (substr($data['entity'], 0, strlen('date')) === 'date') {
             $data['value'] = strtotime($data['value']);
         }
         return parent::insert($data);
     }
-    
+
     /**
      *
      * @param int $discountId
