@@ -39,13 +39,13 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
     public function init()
     {
         $siteId = Axis::getSiteId();
-        $tree = Axis::single('catalog/category')->cache()
+        $tree = Axis::model('catalog/category')->cache()
             ->getFlatTree(Axis_Locale::getLanguageId(), $siteId, true);
 
-        if (false === isset($tree[$siteId]) || empty($tree)) {
-            return false;
+        if (isset($tree[$siteId])) {
+            $this->setData('items', $tree[$siteId]);
         }
-        $this->setData('items', $tree[$siteId]);
+
         return true;
     }
 }
