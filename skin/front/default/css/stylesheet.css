@@ -609,13 +609,13 @@ span.filter-name { color: #555; font-size: 12px; font-weight: bold; float: left;
 
 .price-box .old-price {}
 .price-box .old-price .label {}
-.price-box .old-price .price {}
+.price-box .old-price .price { color: #bbb; text-decoration: line-through; }
 
 .price-box .special-price {}
 .price-box .special-price .label {}
 .price-box .special-price .price {}
 
-.price-box .save-price {}
+.price-box .save-price { font-size: 0.8em; font-weight: bold; }
 .price-box .save-price .label {}
 .price-box .save-price .price {}
 
@@ -658,6 +658,7 @@ span.filter-name { color: #555; font-size: 12px; font-weight: bold; float: left;
 .product-listing-list .product-name {}
 .product-listing-list .product-description { margin: 3px 0px; clear: both; }
 .product-listing-list .product-image { display: block; text-decoration: none !important; }
+.product-listing-list .price-box .save-price { margin: 10px; }
 .product-listing-list .btn-add-to-cart { margin: 5px 5px 0 0; }
 .product-listing-list .add-to { clear: none; margin: 0; }
 .product-listing-list .out-of-stock { float: left; margin: 8px 12px 0 0; }
@@ -672,6 +673,7 @@ span.filter-name { color: #555; font-size: 12px; font-weight: bold; float: left;
 .layout-1column .product-listing-table td { width: 295px; }
 .product-listing-table .product-name { text-transform: uppercase; }
 .product-listing-table .add-to { float: left; }
+.product-listing-table .price-box .save-price { margin: 5px 0 7px; }
 .product-listing-table .btn-add-to-cart { }
 .product-listing-table .add-to { }
 .product-listing-table .out-of-stock { margin: .3em 0 0; }
@@ -1284,7 +1286,7 @@ a.review-stars { outline: none; }
 .account-address-book-index .box-account .link-address-book,
 .account-order-index .box-account .link-orders,
 .account-wishlist-index .box-account .link-wishlist,
-.account-tag-index .box-account .link-tags { font-weight: bold; }
+.tag-account-index .box-account .link-tags { font-weight: bold; }
 
 /* Credit cards */
 .card-icon {

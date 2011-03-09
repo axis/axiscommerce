@@ -136,11 +136,9 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
 
     private function _getModifierValue($value, $type)
     {
-        if (floatval($value) == 0)
-            return '';
         switch ($type) {
             case 'by':
-                return ($value > 0 ? '+' : '-') . $value;
+                return ($value >= 0 ? '+' : '-') . $value;
             case 'percent':
                 return $value . '%';
             case 'to':

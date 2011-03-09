@@ -177,6 +177,11 @@ class Axis_Catalog_Model_Product_Stock_Row extends Axis_Db_Table_Row
         if ($this->decimal) {
             $quantity = floor($quantity);
         }
+
+        $product = Axis::single('catalog/product')
+            ->find($this->product_id)
+            ->current();
+
         if ($variationId) {
             $variation = Axis::single('catalog/product_variation')
                 ->find($variationId)
@@ -186,25 +191,25 @@ class Axis_Catalog_Model_Product_Stock_Row extends Axis_Db_Table_Row
                 $variation->quantity = $quantity;
                 $variation->save();
                 Axis::dispatch('catalog_product_update_quantity', array(
-                    'product' => $variation,
-                    'stock' => $this,
-                    'old_quantity' => $oldQuantity
+                    'new_quantity'  => $variation->quantity,
+                    'old_quantity'  => $oldQuantity,
+                    'variation'     => $variation,
+                    'product'       => $product,
+                    'stock'         => $this
                 ));
                 return true;
             }
             return false;
         }
 
-        $product = Axis::single('catalog/product')
-            ->find($this->product_id)
-            ->current();
         $oldQuantity = $product->quantity;
         $product->quantity = $quantity;
         $product->save();
         Axis::dispatch('catalog_product_update_quantity', array(
-            'product' => $product,
-            'stock' => $this,
-            'old_quantity' => $oldQuantity
+            'new_quantity'  => $product->quantity,
+            'old_quantity'  => $oldQuantity,
+            'product'       => $product,
+            'stock'         => $this
         ));
         return true;
     }

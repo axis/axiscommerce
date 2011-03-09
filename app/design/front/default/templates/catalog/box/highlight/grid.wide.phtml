@@ -16,7 +16,7 @@ foreach ($this->box->getData('products') as $prodId => $product) :
     <?php if ($i%$columnCount==0): ?>
        <tr>
     <?php endif; ?>
-    
+
     <td>
         <div class="product-item">
             <div class="product-image">
@@ -28,11 +28,11 @@ foreach ($this->box->getData('products') as $prodId => $product) :
                 ?>
                 <a href="<?php echo $url ?>"
                     title="<?php echo $this->escape($imageTitle) ?>"
-                ><?php 
+                ><?php
                 echo $this->imager('/product' . $imagePath, array(
-                    'width'  => $this->config()->image->product->widthSmall, 
-                    'height' => $this->config()->image->product->heightSmall, 
-                    'alt' => $this->escape($imageTitle), 
+                    'width'  => $this->config()->image->product->widthSmall,
+                    'height' => $this->config()->image->product->heightSmall,
+                    'alt' => $this->escape($imageTitle),
                     'seo' => $product['image_seo_name']
                 ));?></a>
             </div>
@@ -40,16 +40,13 @@ foreach ($this->box->getData('products') as $prodId => $product) :
                 <h4 class="product-name"><a href="<?php echo $url;?>"
                     title="<?php echo $this->escape($product['name']) ?>"
                     ><?php echo $this->escape($product['name']) ?></a></h4>
-                
+
                 <?php echo $reviewSummaryBox->setProductId($product['id'])
                     ->setProductUrl($product['key_word'])
                     ->setSmallStars(true) ?>
-                
-                <?php echo $this->price($product['price'], 
-                    !empty($product['price_discount']) ? 
-                        $product['price_discount'] : false
-                ) ?>
-                
+
+                <?php echo $this->price($product['prices']) ?>
+
                 <?php if ($product['is_saleable']): ?>
                     <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(
                         'class' => 'button btn-add-to-cart',
@@ -62,19 +59,19 @@ foreach ($this->box->getData('products') as $prodId => $product) :
             </div>
         </div>
     </td>
-    
-    <?php $i++; 
-    
+
+    <?php $i++;
+
     if ($i%$columnCount==0) : ?>
        </tr>
     <?php endif;
-    
+
 endforeach;
 
 if ($i % $columnCount != 0) :
     for($i; $i % $columnCount; $i++) : ?>
         <td class="empty-cell">&nbsp;</td>
-    <?php 
+    <?php
     endfor;?>
     </tr>
 <?php endif; ?>

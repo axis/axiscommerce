@@ -111,15 +111,13 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 $data[$col] = intval($data[$col]);
             }
         }
-        $oldBackorder = $row->backorder;
-        $oldInStock   = $row->in_stock;
+        $oldStockData = $row->toArray();
         $row->setFromArray($data);
         $row->save();
         Axis::dispatch('catalog_product_update_stock', array(
-            'product'       => $this,
-            'stock'         => $row,
-            'old_backorder' => $oldBackorder,
-            'old_in_stock'  => $oldInStock
+            'product'   => $this,
+            'old_data'  => $oldStockData,
+            'stock'     => $row
         ));
         return $this;
     }
@@ -184,14 +182,16 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
      */
     public function setSpecial($data)
     {
-        $existSpecialDiscountId = Axis::single('discount/eav')
+        $existSpecialDiscountId = Axis::model('discount/eav')
             ->getDiscountIdBySpecialAndProductId($this->id);
+
+        $mDiscount = Axis::model('discount/discount');
         if ($existSpecialDiscountId) {
-            Axis::single('discount/discount')
-                ->delete('id = ' . $existSpecialDiscountId);
+            $mDiscount->delete('id = ' . $existSpecialDiscountId);
         }
+
         if (!empty($data['price'])) {
-            Axis::single('discount/discount')->setSpecialPrice(
+            $mDiscount->setSpecialPrice(
                 $this->id,
                 $data['price'],
                 $data['from_date_exp'],

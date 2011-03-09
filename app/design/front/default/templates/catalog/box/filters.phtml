@@ -49,9 +49,13 @@ endif; ?>
     <ul>
 <?php
 $priceSubstract = $this->box->getData('filters/price/roundTo');
-$priceMax       = isset($price[1]) ? $price[1] : null;
+$priceMin       = (isset($price[0]) && !empty($price[0])) ? $price[0] : 0;
+$priceMax       = (isset($price[1]) && !empty($price[1])) ? $price[1] : null;
 foreach ($this->box->getData('filters/price/groups') as $price) :
     $priceFrom  = $price['price_group'];
+    if ($priceFrom < $priceMin) {
+        $priceFrom = $priceMin;
+    }
     $priceTo    = $price['price_group'] + $priceSubstract - 0.01;
     if (null !== $priceMax && $priceTo > $priceMax) {
         $priceTo = $priceMax;
@@ -60,7 +64,9 @@ foreach ($this->box->getData('filters/price/groups') as $price) :
        'price' => $priceFrom . ',' . $priceTo,
        'page' => ''
     )) . '">'
-        . $currency->toCurrency($priceFrom) . ' &mdash; ' . $currency->toCurrency($priceTo)
+        . $currency->toCurrency($priceFrom)
+        . ' &mdash; '
+        . $currency->toCurrency($priceTo)
         . '</a> (' . $price['cnt'] . ')</li>';
 endforeach; ?>
     </ul>

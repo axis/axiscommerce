@@ -37,10 +37,7 @@ foreach ($this->box->getData('wishlist') as $wl):
                 ><?php echo $wl['product']['name'] ?></a></h4>
         </td>
         <td class="price">
-            <?php echo $this->price($wl['product']['price'],
-                !empty($wl['product']['discount_price']) ?
-                    $wl['product']['discount_price'] : false
-            ) ?>
+            <?php echo $this->price($wl['product']['prices']) ?>
         </td>
         <td class="comment"><?php echo $wl['wish_comment'];?></td>
         <td class="date"><?php echo $wl['created_on']; ?></td>

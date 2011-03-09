@@ -5,7 +5,7 @@
 <?php endif; ?>
 
 <?php if (!empty($this->category['image_base'])) : ?>
-<div class="category-image"><?php 
+<div class="category-image"><?php
 echo $this->imager('category' . $this->category['image_base'], array(
     'width'  => 550,
     'height' => 200,
@@ -46,31 +46,28 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                 $imageTitle = isset($product['images'][$product['image_listing']]) ?
                     $product['images'][$product['image_listing']]['title'] : '';
                 ?>
-                <a href="<?php echo $productUrl ?>" 
+                <a href="<?php echo $productUrl ?>"
                    title="<?php echo $this->escape($imageTitle) ?>"
                    class="product-image"
                 ><?php echo $this->imager('/product' . $imagePath, array(
-                    'width'  => 180, 
-                    'height' => 180, 
-                    'alt' => $this->escape($imageTitle), 
+                    'width'  => 180,
+                    'height' => 180,
+                    'alt' => $this->escape($imageTitle),
                     'seo' => $product['image_seo_name']
                 ));
                 ?></a>
             </div>
             <div class="product-content">
-                
-                <h4 class="product-name"><a href="<?php echo $productUrl ?>" 
+
+                <h4 class="product-name"><a href="<?php echo $productUrl ?>"
                     title="<?php echo $this->escape($product['name']) ?>"
                 ><?php echo $product['name'] ?></a></h4>
-                
-                <?php echo $this->price($product['price'],
-                    isset($product['price_discount']) ? 
-                        $product['price_discount'] : false
-                ) ?>
-                
+
+                <?php echo $this->price($product['prices']) ?>
+
                 <?php echo $reviewSummaryBox->setProductId($product['id'])
                     ->setProductUrl($product['key_word']) ?>
-                
+
                 <div class="product-description">
                     <?php if ($product['short_description'] != '') :
                         echo $product['short_description'];
@@ -78,7 +75,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                         echo $this->translate('catalog')->__('No description available');
                     endif ?>
                 </div>
-                
+
                 <?php if ($product['is_saleable']): ?>
                     <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(
                         'class' => 'button btn-add-to-cart',
@@ -88,7 +85,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                 <?php else: ?>
                     <div class="out-of-stock"><?php echo $this->translate('catalog')->__('Out of stock') ?></div>
                 <?php endif ?>
-                
+
                 <p class="add-to">
                     <a href="<?php echo $this->href('/account/wishlist/add/id/' . $prodId, true)?>"
                         rel="nofollow"
@@ -98,9 +95,9 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                     <br/>
                     <a href="<?php echo $this->href('/' . $this->catalogUrl . '/product-compare/add/product/') . $prodId ?>"
                         rel="nofollow"
-                        title="<?php echo $this->translate('catalog')->__('Add to Сompare') ?>" 
+                        title="<?php echo $this->translate('catalog')->__('Add to Compare') ?>"
                         class="add-to-compare"><span><span>
-                        <?php echo $this->translate('catalog')->__('Add to Сompare')?></span></span></a>
+                        <?php echo $this->translate('catalog')->__('Add to Compare')?></span></span></a>
                 </p>
             </div>
         </li>
@@ -108,7 +105,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
     </ul>
 <?php else : /* Grid listing */ ?>
     <table class="product-listing product-listing-table" id="product-listing-table">
-    <?php 
+    <?php
     $i = 0;
     $columnCount = 3;
     foreach ($this->products as $prodId => $product) :
@@ -121,7 +118,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
         <?php if ($i%$columnCount == 0) : ?>
            <tr>
         <?php endif; ?>
-        
+
             <td>
                 <div class="product-item">
                     <?php
@@ -130,30 +127,27 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                     $imageTitle = isset($product['images'][$product['image_listing']]) ?
                         $product['images'][$product['image_listing']]['title'] : '';
                     ?>
-                    <a href="<?php echo $productUrl ?>" 
+                    <a href="<?php echo $productUrl ?>"
                        class="product-image"
                        title="<?php echo $this->escape($imageTitle) ?>"
                     ><?php echo $this->imager('/product' . $imagePath, array(
                         'width'  => $this->config()->image->product->widthSmall,
                         'height' => $this->config()->image->product->heightSmall,
-                        'alt' => $this->escape($imageTitle), 
+                        'alt' => $this->escape($imageTitle),
                         'seo' => $product['image_seo_name']
                     ));
                     ?></a>
-                    
-                    <h4 class="product-name"><a href="<?php echo $productUrl ?>" 
+
+                    <h4 class="product-name"><a href="<?php echo $productUrl ?>"
                         title="<?php echo $this->escape($product['name']) ?>"
                         ><?php echo $product['name'] ?></a></h4>
-                    
-                    <?php echo $this->price($product['price'], 
-                        isset($product['price_discount']) ? 
-                            $product['price_discount'] : false
-                    ) ?>
-                    
+
+                    <?php echo $this->price($product['prices']) ?>
+
                     <?php echo $reviewSummaryBox->setProductId($product['id'])
                         ->setProductUrl($product['key_word'])
                         ->setSmallStars(true) ?>
-                    
+
                     <?php if ($product['is_saleable']): ?>
                         <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(
                             'class' => 'button btn-add-to-cart',
@@ -163,7 +157,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                     <?php else: ?>
                         <div class="out-of-stock"><?php echo $this->translate('catalog')->__('Out of stock') ?></div>
                     <?php endif ?>
-                    
+
                     <p class="add-to">
                         <a href="<?php echo $this->href('/account/wishlist/add/id/' . $prodId, true)?>"
                             rel="nofollow"
@@ -173,31 +167,31 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                         <br/>
                         <a href="<?php echo $this->href('/' . $this->catalogUrl . '/product-compare/add/product/') . $prodId ?>"
                             rel="nofollow"
-                            title="<?php echo $this->translate('catalog')->__('Add to Сompare') ?>" 
+                            title="<?php echo $this->translate('catalog')->__('Add to Compare') ?>"
                             class="add-to-compare"><span><span>
-                            <?php echo $this->translate('catalog')->__('Add to Сompare')?></span></span></a>
+                            <?php echo $this->translate('catalog')->__('Add to Compare')?></span></span></a>
                     </p>
                 </div>
             </td>
-        
+
         <?php $i++;
-        
+
         if ($i%$columnCount==0) : ?>
            </tr>
         <?php endif;
-    
+
     endforeach;
-    
+
     if ($i % $columnCount != 0) :
         for($i; $i % $columnCount; $i++): ?>
             <td class="empty-cell">&nbsp;</td>
-        <?php 
+        <?php
         endfor;?>
         </tr>
     <?php endif; ?>
-    
+
     </table>
-    
+
     <script type="text/javascript">
         decorateTable('product-listing-table');
     </script>

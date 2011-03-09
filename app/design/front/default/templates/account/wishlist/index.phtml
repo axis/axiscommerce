@@ -49,10 +49,7 @@
                 title="<?php echo $wl['product']['name'] ?>"
                 ><?php echo $wl['product']['name'] ?></a></h4>
 
-            <?php echo $this->price($wl['product']['price'],
-                !empty($wl['product']['discount_price']) ?
-                    $wl['product']['discount_price'] : false
-            ) ?>
+            <?php echo $this->price($wl['product']['prices']) ?>
 
         </td>
         <td class="comment"><?php echo $this->formTextarea(
