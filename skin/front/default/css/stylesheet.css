@@ -857,9 +857,10 @@ product-page-details { padding: 7px 12px 10px; }
     border: 1px solid #a2a2a2; border-width: 1px 1px 0; }
 .review-list .review.first { border-top: none; }
 .review-list .product-image { float: left; text-align: center; }
-.review-list .review-info { margin: 0; padding: 0 10px; width: 420px; float: left;
+.review-list .review-info { margin: 0 0 0 5px; padding: 0 10px; width: 360px; float: left;
     border: 1px solid #E7E7E7; border-width: 0 1px; }
-.review-list .product-common { float: right; width: 120px; padding: 0 0 0 5px; }
+.review-list .product-common { float: right; width: 170px; margin-right: 5px;
+    display: inline; padding: 0; }
 .review-list .product-name { color: #1E5B7E; text-decoration: none; }
 .review-list .product-name:hover { text-decoration: underline; }
 .review-list .review-title a { color: #1E5B7E; text-decoration: none; }
@@ -909,11 +910,11 @@ product-page-details { padding: 7px 12px 10px; }
 .review-product-average .content,
 .review-customer-average .content { padding: 10px 0; }
 .review-product-average .product-image { float: left; text-align: center; }
-.review-product-average .product-info { margin: 0; padding: 0 10px; width: 420px;
-    float: left; border: 1px solid #E7E7E7; border-width: 0 1px; }
+.review-product-average .product-info { margin: 0 0 0 5px; padding: 0 10px; width: 360px;
+    float: left; border: 1px solid #E7E7E7; border-width: 0 1px; display: inline; }
 .review-product-average .product-name { color: #1E5B7E; text-decoration: none; }
 .review-product-average .product-name:hover { text-decoration: underline; }
-.review-product-average .product-common { float: right; width: 142px; padding: 0 0 0 5px; }
+.review-product-average .product-common { float: right; width: 195px; padding: 0 0 0 5px; }
 .review-product-average .review-ratings { float: left; margin: .4em 0; }
 .review-product-average .review-ratings li { clear: both;}
 .review-product-average .rating-title { font-size: 1em; float: left; width: 90px;
