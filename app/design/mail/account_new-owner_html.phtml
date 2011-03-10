@@ -20,7 +20,7 @@
                                 <p style="margin: 1px 0 4px;"><?php echo $this->translate('account')->__('Lastname') ?>: <?php echo $this->escape($this->customer->lastname) ?></p>
                                 <p style="margin: 1px 0 4px;"><?php echo $this->translate('account')->__('Email') ?>: <?php echo $this->customer->email ?></p>
                                 <?php $route = Axis::config('core/backend/route') ?>
-                                <a href="<?php echo $this->href("{$route}/customer_index/index/customerId/", true, false) . $this->customer->id ?>" style="color:#1E7EC8;"
+                                <a href="<?php echo $this->href("{$route}/customer_index/index/customerId/", true, false) . $this->customer->id ?>"
                                     ><?php echo $this->translate('core')->__('See Details Info');?></a>
                             </td>
                         </tr>

@@ -37,7 +37,7 @@
                                 </strong></h3>
                                 <p style="margin: 1px 0 4px;"><?php echo $this->translate('core')->__('Thank you for your order from %s', $this->site) ?></p>
                                 <?php if ($this->order->customer_id): ?>
-                                    <p style="margin: 1px 0 4px;"><?php echo $this->translate('sales')->__('You can check the status of your order by <a %s>logging into your account</a>', 'href="' . $this->href('account/order', true, false) . '" style="color:#1E7EC8;"'); ?></p>
+                                    <p style="margin: 1px 0 4px;"><?php echo $this->translate('sales')->__('You can check the status of your order by <a %s>logging into your account</a>', 'href="' . $this->href('account/order', true, false) . '"'); ?></p>
                                 <?php endif; ?>
 
                                 <?php echo $this->render('sales/invoice_html.phtml'); ?>
