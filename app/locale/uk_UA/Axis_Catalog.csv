@@ -174,3 +174,4 @@
 "Path relative to the skin images folder: catalog/watermark.png","Шлях відносно папки малюнків активного шаблону: catalog/watermark.png"
 "Values [0 - 100]","Значення [0 - 100]"
 "Product","Продукт"
+"Item(s) %d to %d of %d","Показано %d - %d із %d"

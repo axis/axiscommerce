@@ -174,3 +174,4 @@
 "Path relative to the skin images folder: catalog/watermark.png", "Путь к изображениям в папке skin: catalog/watermark.png"
 "Values [0 - 100]", "Значения [0 - 100]"
 "Product", "Продукт"
+"Item(s) %d to %d of %d","Показано %d - %d из %d"

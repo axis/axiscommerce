@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <template>
     <name>default</name>
     <default_layout>layout_3columns</default_layout>
@@ -839,38 +839,85 @@
         </parent_page>
                 <priority>100</priority>
     </layout>
-                        <cms_block multiple="1">
-                        <content multiple="1">
-                <language_id>1</language_id>
-                <content><![CDATA[<noscript><div class="noscript-notice"><p><strong>{{helper_t(Please enable JavaScript in your browser.)}}</strong></p></div></noscript>]]></content>
-            </content>
-                        <name>noscript_notice</name>
-            <is_active>1</is_active>
-        </cms_block>
-                <cms_block multiple="1">
-                        <content multiple="1">
-                <language_id>1</language_id>
-                <content><![CDATA[<div class="demo-notice">{{helper_t(Please notice! This is a demo store. Any order placed will not be processed.)}}</div>]]></content>
-            </content>
-                        <name>demo_notice</name>
-            <is_active>1</is_active>
-        </cms_block>
-                <cms_block multiple="1">
-                        <content multiple="1">
+    <cms_block multiple="1">
+        <content multiple="1">
                 <language_id>1</language_id>
                 <content><![CDATA[<ul class="list-horizontal list-pipe info-menu no-bullet no-indent">
-        <li class="first-item">{{helper_t(Call Us)}}: <span class="blue">1-800-800-8000</span></li>
-        <li><a href="{{helper_href(/)}}">{{helper_t(Help desk)}}</a></li>
-        <li><a href="{{helper_href(/page/shipping)}}">{{helper_t(Shipping)}}</a></li>
-        <li><a href="{{helper_href(/page/privacy)}}">{{helper_t(Privacy)}}</a></li>
-        <li><a href="{{helper_href(/sitemap/index)}}">{{helper_t(Sitemap)}}</a></li>
+        <li class="first-item">Call Us: <span class="blue">1-800-800-8000</span></li>
+        <li><a href="{{helper_href(/)}}">Help desk</a></li>
+        <li><a href="{{helper_href(/page/shipping)}}">Shipping</a></li>
+        <li><a href="{{helper_href(/page/privacy)}}">Privacy</a></li>
+        <li><a href="{{helper_href(/sitemap/index)}}">Sitemap</a></li>
     </ul>]]></content>
             </content>
-                        <name>header_links</name>
+            <name>header_links</name>
             <is_active>1</is_active>
-        </cms_block>
-                <cms_block multiple="1">
-                        <content multiple="1">
+    </cms_block>
+    <cms_block multiple="1">
+        <content multiple="1">
+        <language_id>1</language_id>
+        <content><![CDATA[<div class="box box-pages">
+    <div class="head"><h3 class="title">Info</h3></div>
+    <div class="content">
+        <ul class="informational">
+            <li>
+                <ul>
+                    <li><a href="{{helper_href(page/privacy)}}">Privacy Policy</a></li>
+                    <li><a href="{{helper_href(page/terms-of-use)}}">Terms &amp; Conditions</a></li>
+                    <li><a href="{{helper_href(contacts)}}">Contact Us</a></li>
+                    <li><a href="{{helper_href(page/company-history)}}">Company history</a></li>
+                </ul>
+            </li>
+            <li>
+                <ul>
+                    <li><a href="{{helper_href(/)}}">Delivery Time</a></li>
+                    <li><a href="{{helper_href(/)}}">Shipping &amp; Rates</a></li>
+                    <li><a href="{{helper_href(/)}}">Order Return &amp; Refund</a></li>
+                </ul>
+            </li>
+            <li>
+                <ul>
+                    <li><a href="{{helper_href(page/careers/)}}">Careers at Axis Demo Store</a></li>
+                    <li><a href="{{helper_href(/)}}">Information</a></li>
+                    <li><a href="{{helper_href(/)}}">Become a Supplier</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>]]>
+        </content>
+        </content>
+        <name>footer_links</name>
+        <is_active>1</is_active>
+    </cms_block>
+    <cms_block multiple="1">
+        <content multiple="1">
+        <language_id>1</language_id>
+        <content>
+            <![CDATA[<li class="nav-contacts"><a href="{{helper_href(contacts)}}"><span>Contacts</span></a></li>]]>
+        </content>
+        </content>
+        <name>menu</name>
+        <is_active>1</is_active>
+    </cms_block>
+    <cms_block multiple="1">
+        <content multiple="1">
+        <language_id>1</language_id>
+        <content><![CDATA[<div class="box box-contacts">
+    <div class="head"><h3 class="title">Axis Demo store</h3></div>
+    <div class="content">
+        <p>Axis Demo store</p>
+        <p>USA, New York, Street Address, 10001</p>
+        <p>Phone: 1-800-000-0000</p>
+        <img class="payments" src="{{helper_skinUrl(images/payments.gif)}}" alt="MasterCard,Visa,AmericanExperess"/>
+    </div>
+</div>]]></content>
+        </content>
+        <name>footer_contacts</name>
+        <is_active>1</is_active>
+    </cms_block>
+    <cms_block multiple="1">
+        <content multiple="1">
                 <language_id>1</language_id>
                 <content><![CDATA[<div class="col3-set">
   <div class="col-1">
@@ -896,7 +943,7 @@
     <a href="{{helper_href(checkout/cart)}}" title="Canon EOS 50D" class="f-left" style="height:253px;"><img src="{{helper_skinUrl(images/media/home.callout_1.jpg)}}" alt="Canon EOS 50D"/></a>
   </div>
   <div class="f-right" style="width:330px;">
-    <a href="{{helper_href(store/htc-hero)}}" title="{{helper_t(Htc Hero Special Offer. 20% Off)}}" class="f-left" style="margin-bottom:10px;height:118px;"><img src="{{helper_skinUrl(images/media/home.callout_2.jpg)}}" alt="{{helper_t(Htc Hero Special Offer. 20% Off)}}"/></a>
+    <a href="{{helper_href(store/htc-hero)}}" title="Htc Hero Special Offer. 20% Off" class="f-left" style="margin-bottom:10px;height:118px;"><img src="{{helper_skinUrl(images/media/home.callout_2.jpg)}}" alt="Htc Hero Special Offer. 20% Off"/></a>
     <a href="{{helper_href(page/shipping)}}" title="Mac book Pro" class="f-left" style="height:125px;"><img src="{{helper_skinUrl(images/media/home.callout_3.jpg)}}" alt="MacBook Pro"/></a>
   </div>
 </div>]]></content>
@@ -907,11 +954,11 @@
         <cms_block multiple="1">
             <content multiple="1">
                 <language_id>1</language_id>
-                <content><![CDATA[<a href="{{helper_href(store/htc-hero)}}" title="{{helper_t(Htc Hero Special Offer. 20% Off)}}" style="display:block;margin-bottom:7px;height:118px;">
-<img src="{{helper_skinUrl(images/media/sidebar.callout_1.jpg)}}" alt="{{helper_t(Htc Hero Special Offer. 20% Off)}}"/>
+                <content><![CDATA[<a href="{{helper_href(store/htc-hero)}}" title="Htc Hero Special Offer. 20% Off" style="display:block;margin-bottom:7px;height:118px;">
+<img src="{{helper_skinUrl(images/media/sidebar.callout_1.jpg)}}" alt="Htc Hero Special Offer. 20% Off"/>
 </a>]]></content>
             </content>
             <name>sidebar.banner</name>
             <is_active>1</is_active>
         </cms_block>
-            </template>
+</template>
