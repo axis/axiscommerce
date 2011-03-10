@@ -121,7 +121,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             $parentPageId = $row['parent_page_id'];
         }
 
-        if (empty($layoutName)) {
+        if (empty($layoutName) && !empty($parentPageId)) {
             $layoutName = Axis::single('core/template_page')->select('layout')
                 ->where('template_id = ?', $themeId)
                 ->where('page_id = ? ', $parentPageId)
@@ -139,7 +139,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
 
         $layout->setLayout($layoutName, false);
     }
-    
+
     protected function _initBlockAssigns()
     {
         $pages = $this->getPages();
@@ -152,7 +152,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
         // add parent page
         $strongPage = current($pages);
         $themeId = Axis::config('design/main/frontTemplateId');
-        
+
         $parentPage = Axis::single('core/page')->select('*')
             ->join('core_template_page', 'cp.id = ctp.parent_page_id')
             ->where('ctp.template_id = ?', $themeId)

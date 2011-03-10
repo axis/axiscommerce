@@ -58,8 +58,8 @@ var Product = {
 
     updatePriceIndex: function(skipConfirm, skipSession) {
         if (!skipConfirm
-            && !confirm("Are you sure want to delete old price indexes " +
-            "and create new for all products?\nThis can take a while.".l())) {
+            && !confirm(("Are you sure want to delete old price indexes " +
+            "and create new for all products?\nThis can take a while.").l())) {
 
             return;
         }

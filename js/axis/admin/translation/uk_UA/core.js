@@ -500,5 +500,6 @@ Locale.module("core", {
     "New Сategory": "Нова категорія",
     "New Page": "Нова сторінка",
     "Install All": "Встановити всі",
-    "Upgrade All": "Оновити всі"
+    "Upgrade All": "Оновити всі",
+    "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while.": "Ви дійсно бажаєте видалити всі індекси та створити нові?\nЦе може зайняти деякий час."
 });

@@ -500,5 +500,6 @@ Locale.module("core", {
     "New Сategory": "New Сategory",
     "New Page": "New Page",
     "Install All": "Install All",
-    "Upgrade All": "Upgrade All"
+    "Upgrade All": "Upgrade All",
+    "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while.": "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while."
 });

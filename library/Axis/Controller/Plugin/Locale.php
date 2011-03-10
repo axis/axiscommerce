@@ -42,7 +42,7 @@ class Axis_Controller_Plugin_Locale extends Zend_Controller_Plugin_Abstract
     {
         if (Axis_Area::isFrontend()
             && null !== $request->getParam('locale')//_hasParam('locale')
-            && Axis_Controller_Router_Route::hasLocaleInUrl()) {
+            /*&& Axis_Controller_Router_Route::hasLocaleInUrl()*/) {
 
             $locale = $request->getParam('locale');
         } elseif (isset(Axis::session()->locale)) {
