@@ -49,6 +49,7 @@ class Axis_Discount_Box_Special extends Axis_Catalog_Box_Product_Listing
 
         $products = Axis::single('catalog/product')->select('*')
             ->addCommonFields()
+            ->addFinalPrice()
             ->where('cp.id IN (?)', $ids)
             ->fetchProducts($ids);
 
