@@ -216,9 +216,9 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
                 ->current()
                 ->name;
 
-            Axis::message()->addError(
+            Axis::message()->addNotice(
                 Axis::translate('checkout')->__(
-                    'Set required attribute : %s', $productOptionName
+                    'Set required attribute: %s', $productOptionName
                 )
             );
             return false;

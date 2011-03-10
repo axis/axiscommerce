@@ -79,7 +79,7 @@
 "Select delivery address", "Выбрать адрес доставки"
 "Selected payment method in not allowed", "Выбранный платежный адрес запрещен"
 "Selected shipping method in not allowed", "Выбранный способ доставки запрещен"
-"Set required attribute : %ss", "Установить необходимый атрибут: %ss"
+"Set required attribute: %s", "Укажите обязательный атрибут: %s"
 "Ship to same address", "Отправить на тот же адрес"
 "Shipping Method", "Способ доставки"
 "Shopping Cart - %s item(s)", "Корзина - %s продукт(а/ов)"
