@@ -13,6 +13,7 @@ class ReleaseMaker
     private $_rules = array(
         // path that will not be copied,
         'exclude' => array(
+            'app/code/Axis/Core/controllers/SandboxController.php',
             'app/code/Example',
             'app/design/front/fallback/*',
             'skin/front/fallback/*',

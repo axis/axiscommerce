@@ -60,6 +60,8 @@ class Axis_View_Helper_Message
                 $result .= "</ul>";
             }
             $result .= "</div>";
+
+            $this->_messages = array();
         }
 
         return $result;
