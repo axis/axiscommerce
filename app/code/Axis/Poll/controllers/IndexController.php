@@ -37,6 +37,8 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
     {
         $this->view->pageTitle = Axis::translate('poll')->__('Polls');
         $this->view->meta()->setTitle($this->view->pageTitle);
+        $languageId = Axis_Locale::getLanguageId();
+
 
         $questionIds = array();
         if ($this->_hasParam('questionId'))  {
@@ -46,11 +48,11 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
         $modelAnswer = Axis::single('poll/answer');
 
         $questions = Axis::single('poll/question')->getQuestions(
-            $this->_langId, $questionIds
+            $languageId, $questionIds
         );
 
         $answers = array();
-        foreach ($modelAnswer->getAnswers($this->_langId) as $answer) {
+        foreach ($modelAnswer->getAnswers($languageId) as $answer) {
             $answers[$answer['question_id']][] = $answer;
         }
 
@@ -85,11 +87,13 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
     protected function _ajaxSaveResponse($questionId)
     {
         $this->_helper->layout->disableLayout();
-        $htmlBoxContent = $this->view->box('poll/poll', array(
-            'questionId' => $questionId,
-            'showResult' => true,
-            'disableWrapper' => true
-        ))->toHtml();
+        $htmlBoxContent = $this->view->box('poll/poll')->refresh()
+            ->setFromArray(array(
+                'question_id'     => $questionId,
+                'show_result'     => true,
+                'disable_wrapper' => true
+            ))
+            ->render();
 
         return $this->_helper->json->sendSuccess(
             array('content' => $htmlBoxContent)
@@ -101,15 +105,16 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
         $this->_helper->layout->disableLayout();
         $questionId = current($this->_getParam('questionId'));
 
-        $oldCookieValues = Axis::single('poll/vote')->getQuestionIdsFromCookie();
+        $modelPollVote = Axis::single('poll/vote');
+        $oldCookieValues = $modelPollVote->getQuestionIdsFromCookie();
 
         $inCookie = in_array($questionId, $oldCookieValues);
 
         if (!$inCookie) {
-            Axis::single('poll/vote')->addToCookie($questionId, $this->view->baseUrl());
+            $modelPollVote->addToCookie($questionId, $this->view->baseUrl());
         }
 
-        if ($inCookie || Axis::single('poll/vote')->hasVoteInTable($questionId)) {
+        if ($inCookie || $modelPollVote->hasVoteInTable($questionId)) {
             Axis::message()->addError(Axis::translate('poll')->__(
                 'You have voted in this poll already'
             ));
@@ -133,14 +138,13 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
             ->current()
             ->isMultiQuestion();
 
-        $tableAnswer = Axis::single('poll/answer');
+        $modelAnswer = Axis::single('poll/answer');
         if (!empty($votes)) {
-            $modelVote = Axis::single('poll/vote');
             foreach ($votes as $voteId) {
                 //  checking answer depend.. question
-                if ($tableAnswer->getAttitude($questionId, $voteId)) {
-                    $data['answer_id'] = $voteId  ;
-                    $modelVote->insert($data);
+                if ($modelAnswer->getAttitude($questionId, $voteId)) {
+                    $data['answer_id'] = $voteId;
+                    $modelPollVote->insert($data);
                 }
                 if (!$isMulti) {
                     break;

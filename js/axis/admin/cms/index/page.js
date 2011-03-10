@@ -59,10 +59,10 @@ var Page = {
 Ext.onReady(function() {
 
     Page.layoutStore = new Ext.data.Store({
-        url: Axis.getUrl('template_layout/list-collect'),
+        url: Axis.getUrl('template_layout/list'),
         reader: new Ext.data.JsonReader({
             root: 'data'
-        }, ['name']),
+        }, ['id', 'name']),
         autoLoad: true
     });
 

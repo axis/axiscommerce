@@ -19,7 +19,7 @@
                                     <?php echo $this->translate('account')->__('Hello, %s', $this->escape($this->firstname . ' ' . $this->lastname)) ?>
                                 </strong></h3>
                                 <p style="margin: 1px 0 4px;"><?php echo $this->translate('account')->__('You have submitted a forgot password request.') ?></p>
-                                <?php $link = '<a href="' . $this->link . '" style="color:#1E7EC8;">' . $this->link . '</a>'; ?>
+                                <?php $link = '<a href="' . $this->link . '">' . $this->link . '</a>'; ?>
                                 <p style="margin: 1px 0 4px;"><?php echo $this->translate('account')->__('If you want to change your password, follow this link: %s', $link) ?></p>
                                 <p style="margin: 1px 0 4px;"><?php echo $this->translate('account')->__('This link is valid for only %d hours, until %s.', 24, Axis_Date::now()->addDay(1)->toString()) ?></p>
                             </td>

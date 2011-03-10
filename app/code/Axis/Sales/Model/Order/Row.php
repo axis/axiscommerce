@@ -87,7 +87,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         $message = Axis::translate('sales')->__(
             "Order status was changed to %s", $status
         );
-        if ($status == 'failed' && Zend_Registry::get('area') == 'front') {
+        if ($status == 'failed' && Axis_Area::isFrontend()) {
             Axis::message()->addError($message);
             if (!$retMethod) {
                 Axis::message()->addError($comments);

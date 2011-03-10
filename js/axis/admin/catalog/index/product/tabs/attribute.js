@@ -18,25 +18,25 @@
  */
 
 var AttributeGrid = {
-    
+
     /**
      * @property {Axis.grid.GridPanel} el
      */
     el: null,
-    
+
     /**
      * @param {Array} records Ext.data.Record
      */
     add: function(records) {
-        
+
         if (!records.length) {
             return;
         }
-        
+
         if (!ProductWindow.attributeDetailsWindow) {
             ProductWindow.attributeDetailsWindow = new Axis.AttributeDetails();
         }
-        
+
         ProductWindow.attributeDetailsWindow.purgeListeners();
         ProductWindow.attributeDetailsWindow.on('okpress', function(defaults) {
             var attributes = [];
@@ -45,15 +45,15 @@ var AttributeGrid = {
                     && r.get('input_type') != 1 // string
                     && r.get('input_type') != 4 // textarea
                     && r.get('input_type') != 5) { //file
-                    
+
                     return;
                 }
-                
+
                 if ((null !== r.get('parent') && AttributeGrid.el.store
                         .find('option_value_id', r.get('value_id')) == -1)
                     || (null === r.get('parent') && AttributeGrid.el.store
                         .find('option_id', r.get('option_id')) == -1)) {
-                    
+
                     var record = new AttributeGrid.el.store.recordType({
                         option_name             : r.get('option_name'),
                         value_name              : r.get('value_name'),
@@ -77,7 +77,7 @@ var AttributeGrid = {
             var sortState = AttributeGrid.el.store.getSortState();
             AttributeGrid.el.store.sort(sortState.field, sortState.direction);
         });
-        
+
         ProductWindow.attributeDetailsWindow
             .setSkuPrefix(ProductWindow.form.getForm().findField('product[sku]').getValue())
             .hideField('sku_prefix')
@@ -85,27 +85,27 @@ var AttributeGrid = {
             .hideField('cost')
             .show();
     },
-    
+
     clearData: function() {
         AttributeGrid.el.store.loadData([]);
     },
-    
+
     loadData: function(data) {
         AttributeGrid.el.store.loadData(data.modifiers);
     },
-    
+
     getData: function() {
         var modified = AttributeGrid.el.store.getModifiedRecords();
-        
+
         if (!modified.length) {
             return;
         }
-        
+
         var data = {};
         for (var i = modified.length - 1; i >= 0; i--) {
             data[modified[i]['id']] = modified[i]['data'];
         }
-        
+
         return {
             'modifier': data
         };
@@ -113,7 +113,7 @@ var AttributeGrid = {
 }
 
 Ext.onReady(function() {
-    
+
     var ds = new Ext.data.GroupingStore({
         groupField: 'option_name',
         mode: 'local',
@@ -138,13 +138,13 @@ Ext.onReady(function() {
             ]
         })
     });
-    
+
     var remove = new Axis.grid.CheckColumn({
         dataIndex: 'remove',
         header: 'Delete'.l(),
         width: 60
     });
-    
+
     var cm = new Ext.grid.ColumnModel({
         defaults: {
             groupable: false,
@@ -189,7 +189,7 @@ Ext.onReady(function() {
             width: 60
         }, remove]
     });
-    
+
     AttributeGrid.el = ProductWindow.attributeGrid = new Axis.grid.EditorGridPanel({
         autoExpandColumn: 'value_name',
         border: false,
@@ -197,7 +197,7 @@ Ext.onReady(function() {
         ds: ds,
         sm: new Ext.grid.RowSelectionModel(),
         view: new Ext.grid.GroupingView({
-            groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})',
+            groupTextTpl: '[{[values.rs[0].get("option_id")]}] {text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})',
             showGroupName: false
         }),
         id: 'grid-product-window-attribute-list',
@@ -220,8 +220,8 @@ Ext.onReady(function() {
             }
         }]
     });
-    
+
     ProductWindow.addTab(AttributeGrid.el, 80);
     ProductWindow.dataObjects.push(AttributeGrid);
-    
+
 });

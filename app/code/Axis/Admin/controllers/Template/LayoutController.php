@@ -33,90 +33,60 @@
  */
 class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
 {
-    /**
-     * @var Axis_Core_Model_Template_Layout_Page
-     */
-    protected $_table;
-
-    private $_templateId;
-
-    public function init()
-    {
-        parent::init();
-        $this->getHelper('layout')->disableLayout();
-        $this->_table = Axis::single('core/template_layout_page');
-        $this->_templateId = (int) $this->_getParam('tId', 0);
-    }
 
     public function listAction()
     {
-        $select = Axis::model('core/template_layout_page')->select('*')
-            ->calcFoundRows()
-            ->addFilters($this->_getParam('filter', array()))
-            ->limit(
-                $this->_getParam('limit', 25),
-                $this->_getParam('start', 0)
-            )
-            ->order(
-                $this->_getParam('sort', 'id')
-                . ' '
-                . $this->_getParam('dir', 'DESC')
-            );
-
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
-    }
-
-    public function listCollectAction()
-    {
-        $layouts = Axis_Collect_Layout::collect();
-
-        $result = array();
-        $i = 0;
-        foreach ($layouts as $layout) {
-            $result[$i]['name'] = $layout;
-            $i++;
-        }
-
-        return $this->_helper->json->sendSuccess(array(
-            'data' => $result
-        ));
-    }
-
-    public function saveAction()
-    {
         $this->_helper->layout->disableLayout();
-
-        $data = Zend_Json::decode($this->_getParam('data'));
-
-        return $this->_helper->json->sendJson(array('success' =>
-            Axis::single('core/template_layout_page')->save(
-                $this->_templateId, $data
-            )
-        ));
-    }
-
-    public function deleteAction()
-    {
-        $ids = Zend_Json::decode($this->_getParam('data'));
-
-        if (!count($ids)) {
-            Axis::message()->addError(
-                Axis::translate('admin')->__(
-                    'No data to delete'
-                )
-            );
-            return $this->_helper->json->sendFailure();
+        if ($this->_hasParam('templateId')) {
+            $templateId = $this->_getParam('templateId');
+            $theme = Axis::single('core/template')->getTemplateNameById($templateId);
+            $themes = array_unique(array(
+                $theme,
+                /* @TODO user defined default: $view->defaultTemplate */
+                'fallback',
+                'default'
+            ));
+        } else {
+            $themes = Axis_Collect_Theme::collect();
         }
-        $this->_table->delete($this->db->quoteInto('id IN(?)', $ids));
 
-        Axis::message()->addSuccess(
-            Axis::translate('admin')->__(
-                'Data was deleted successfully'
-            )
-        );
-        return $this->_helper->json->sendSuccess();
+//        $layouts = Axis_Collect_Layout::collect();
+
+        $layouts = array();
+        $designPath = Axis::config('system/path') . '/app/design/front';
+        foreach ($themes as $theme) {
+            $path = $designPath . '/' . $theme . '/layouts';
+            if (!file_exists($path)) {
+                continue;
+            }
+            $dir = opendir($path);
+            while (($file = readdir($dir))) {
+                if (is_dir($path . '/' . $file)
+                    || substr($file, 0, 7) != 'layout_') {
+
+                    continue;
+                }
+                $layout = substr($file, 0, -6);
+                if (isset($layouts[$layout])) {
+                    $layouts[$layout]['themes'][] = $theme;
+                    continue;
+                }
+                $layouts[$layout] = array(
+                    'name' => $layout,
+                    'themes' => array($theme)
+                );
+            }
+        }
+
+        $data = array();
+        foreach ($layouts as $key => $layout) {
+            $name = $layout['name'] . ' (' . implode(', ', $layout['themes']) . ')';
+            $data[] = array(
+                'id'   => $key,
+                'name' => $name
+            );
+        }
+
+        return $this->_helper->json->setData($data)->sendSuccess();
     }
 }

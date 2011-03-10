@@ -81,7 +81,7 @@ Ext.onReady(function(){
     gs = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
             method: 'get',
-            url: Axis.getUrl('customer_custom-fields/get-group-pairs')
+            url: Axis.getUrl('customer_custom-fields/get-groups')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',

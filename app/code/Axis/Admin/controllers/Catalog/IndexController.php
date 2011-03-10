@@ -65,7 +65,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
         }
 
         $mProduct = Axis::model('catalog/product');
-        $select = $mProduct->select('id');
+        $select = $mProduct->select('id')->distinct()->calcFoundRows();
 
         if ($category instanceof Axis_Db_Table_Row) {
             $select
@@ -80,7 +80,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             // user wanted to filter by non-existing category
         }
 
-        $list = $select->addDescription()
+        $select->addDescription()
             ->addFilters($this->_getParam('filter', array()))
             ->limit(
                 $this->_getParam('limit', 10),
@@ -90,12 +90,26 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
                 $this->_getParam('sort', 'id')
                 . ' '
                 . $this->_getParam('dir', 'DESC')
-            )
-            ->fetchList();
+            );
+
+        if (!$ids = $select->fetchCol()) {
+            return $this->_helper->json->sendSuccess(array(
+                'count' => 0,
+                'data'  => array()
+            ));
+        }
+
+        $count = $select->foundRows();
+
+        $products = $select->reset()
+            ->from('catalog_product', '*')
+            ->addCommonFields()
+            ->where('cp.id IN (?)', $ids)
+            ->fetchProducts($ids);
 
         return $this->_helper->json->sendSuccess(array(
-            'data'  => array_values($list['data']),
-            'count' => $list['count']
+            'data'  => array_values($products),
+            'count' => $count
         ));
     }
 
@@ -201,17 +215,19 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
              */
             $option = $modelProductOption->find($id)->current();
 
+            $languageId = Axis_Locale::getLanguageId();
             $optionText = $option->findDependentRowset(
                 'Axis_Catalog_Model_Product_Option_Text',
                 'Option',
-                $modelProductOption->select()->where('language_id = ?', $this->_langId)
+                $modelProductOption->select()
+                ->where('language_id = ?', $languageId)
             )->current();
 
-            $values = $option->getValuesArrayByLanguage($this->_langId);
+            $values = $option->getValuesArrayByLanguage($languageId);
 
             foreach ($values as $value) {
                 $items[] = array(
-                    'text' => $value['name'],
+                    'text'        => $value['name'],
                     'option_name' => $optionText ? $optionText->name : $option->code,
                     'option_code' => $option->code,
                     'value_name'  => $value['name'],
@@ -225,19 +241,24 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             }
         }
 
-        $this->_helper->json->sendJson($items, false, false);
+        $this->_helper->json->sendRaw($items);
     }
 
     public function saveProductAction()
     {
         $this->_helper->layout->disableLayout();
 
-        $prodId = (int)$this->_getParam('product_id', 0);
+        $id = (int)$this->_getParam('product_id', 0);
         $productRow = array();
-        $productRow[$prodId] = $this->_getParam('product');
+        $productRow[$id] = $this->_getParam('product');
 
         try {
-            $product = Axis::single('catalog/product')->save($productRow);
+            $mProduct = Axis::model('catalog/product');
+            $oldProductData = null;
+            if ($id && $oldProduct = $mProduct->find($id)->current()) {
+                $oldProductData = $oldProduct->toArray();
+            }
+            $product = $mProduct->save($productRow);
         } catch (Axis_Exception $e) {
             Axis::message()->addError($e->getMessage());
             return $this->_helper->json->sendFailure();
@@ -258,15 +279,10 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             }
         }
 
-        if (!$prodId) {
-            Axis::dispatch('catalog_product_add_success', array(
-                'product' => $product
-            ));
-        } else {
-            Axis::dispatch('catalog_product_update_success', array(
-                'product' => $product
-            ));
-        }
+        Axis::dispatch('catalog_product_save_after', array(
+            'old_data'  => $oldProductData,
+            'product'   => $product
+        ));
 
         $this->_helper->json->sendSuccess(array(
             'data' => array('product_id' => $product->id))
@@ -277,17 +293,19 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $this->layout->disableLayout();
 
-        $siteId = $this->_getParam('siteId', $this->_siteId);
+        $siteId = $this->_getParam('siteId', Axis::getSiteId());
 
         $data = Zend_Json::decode($this->_getParam('data'));
         $tableProduct = Axis::single('catalog/product');
 
         foreach ($data as $id => $values) {
             $product = $tableProduct->find($id)->current();
+            $oldProductData = $product->toArray();
             $product->setFromArray($values);
             $product->save();
-            Axis::dispatch('catalog_product_update_success', array(
-                'product' => $product
+            Axis::dispatch('catalog_product_save_after', array(
+                'old_data'  => $oldProductData,
+                'product'   => $product
             ));
         }
 
@@ -406,14 +424,14 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
                     Zend_Json::encode($values) : current($values);
             }
         }
-
+        $languageId = Axis_Locale::getLanguageId();
         /* collect & fill labels */
         // options
         if (sizeof($optionIds)) {
             $optionText = Axis::single('catalog/product_option_text')
                 ->select()
                 ->where('option_id IN(?)', $optionIds)
-                ->where('language_id = ?', $this->_langId)
+                ->where('language_id = ?', $languageId)
                 ->fetchAssoc();
         }
         // values
@@ -421,7 +439,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             $optionValueText = Axis::single('catalog/product_option_value_text')
                 ->select()
                 ->where('option_value_id IN(?)', $optionValueIds)
-                ->where('language_id = ?', $this->_langId)
+                ->where('language_id = ?', $languageId)
                 ->fetchAssoc();
         }
         uasort($attributes, array($this, '_sortAttributes'));
@@ -538,28 +556,41 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $productIds = Zend_Json_Decoder::decode($this->_getParam('prodIds'));
         $categoryId = $this->_getParam('catId');
+
+        Axis::model('catalog/product_category')->delete(array(
+            $this->db->quoteInto('category_id = ? ', $categoryId),
+            $this->db->quoteInto('product_id IN (?)', $productIds)
+        ));
+
+        Axis::dispatch('catalog_product_remove_after', array(
+            'product_ids' => $productIds,
+            'category_ids' => array($categoryId)
+        ));
+
         return $this->_helper->json->sendJson(array(
-            'status' => Axis::single('catalog/product_category')->delete(array(
-                $this->db->quoteInto('category_id = ? ', $categoryId),
-                $this->db->quoteInto('product_id IN(?)', $productIds)
-            ))
+            'status' => true
         ));
     }
 
     public function removeProductFromSiteAction()
     {
         $productIds = Zend_Json_Decoder::decode($this->_getParam('prodIds'));
-        $siteId = $this->_getParam('siteId');
         $categoryIds = Axis::single('catalog/category')
-            ->getSiteCategories($siteId);
+            ->getSiteCategories($this->_getParam('siteId'));
 
-        return $this->_helper->json->sendJson(array(
-            'status' => Axis::single('catalog/product_category')->delete(array(
-                $this->db->quoteInto('category_id IN(?)', $categoryIds),
-                $this->db->quoteInto('product_id IN(?)', $productIds)
-            ))
+        Axis::single('catalog/product_category')->delete(array(
+            $this->db->quoteInto('category_id IN(?)', $categoryIds),
+            $this->db->quoteInto('product_id IN(?)', $productIds)
         ));
 
+        Axis::dispatch('catalog_product_remove_after', array(
+            'product_ids' => $productIds,
+            'category_ids' => $categoryIds
+        ));
+
+        return $this->_helper->json->sendJson(array(
+            'status' => true
+        ));
     }
 
     public function moveProductsAction()
@@ -616,13 +647,16 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             $processed[$productId] = true;
         }
 
+        Axis::dispatch('catalog_product_move_after', array(
+            'product_ids' => array_keys($processed),
+            'category_id' => $categoryId
+        ));
+
         $this->_helper->json->sendSuccess();
     }
 
     public function updateSearchIndexAction()
     {
-//        $this->_helper->layout->disableLayout();
-
         @require_once(
             Axis::config()->system->path . '/scripts/searchIndexMaker.php'
         );
@@ -632,8 +666,51 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
                 'Search indexes updated successfully'
         ));
 
-//        return $this->_helper->json->sendSuccess();
         $referUrl = $this->getRequest()->getServer('HTTP_REFERER', 'cache');
         $this->_redirect($referUrl);
+    }
+
+    public function updatePriceIndexAction()
+    {
+        $this->_helper->layout->disableLayout();
+
+        $mPriceIndex    = Axis::model('catalog/product_price_index');
+        $session        = Axis::session('price_index');
+
+        if (!$this->_getParam('skip_session', false)) {
+            $session->page = 1;
+            $session->processed = 0;
+            $mPriceIndex->delete("id > 0");
+        }
+
+        $select = Axis::model('catalog/product')
+            ->select('*')
+            ->calcFoundRows()
+            ->limitPage($session->page, $this->_getParam('limit', 50));
+
+        $products   = $select->fetchAssoc();
+        $count      = $select->foundRows();
+
+        $mPriceIndex->updateIndexesByProducts($products);
+        $session->processed += count($products);
+
+        $session->page++;
+        Axis::message()->addSuccess(
+            Axis::translate('catalog')->__(
+                "%d of %d product(s) was processed",
+                $session->processed,
+                $count
+            )
+        );
+
+        $completed = false;
+        if ($count == $session->processed) {
+            $completed = true;
+            $session->unsetAll();
+        }
+
+        $this->_helper->json->sendSuccess(array(
+            'completed' => $completed
+        ));
     }
 }

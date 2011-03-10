@@ -68,8 +68,8 @@ Ext.onReady(function(){
             Box.window.load({
                 url: Axis.getUrl('template_box/edit/'),
                 params: {
-                    boxId: id,
-                    tId: Box.templateId
+                    id: id,
+                    template_id: Box.templateId
                 },
                 callback: function() {
                     Ext.ux.Table.colorize();
@@ -135,7 +135,7 @@ Ext.onReady(function(){
                 url: Axis.getUrl('template_box/batch-save'),
                 params: {
                     data: Ext.encode(data),
-                    tId: Box.templateId
+                    template_id: Box.templateId
                 },
                 callback: function() {
                     ds.commitChanges();

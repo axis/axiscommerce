@@ -97,6 +97,7 @@ class Axis_Tag_IndexController extends Axis_Core_Controller_Front
         if (count($productIds)) {
             $products = Axis::single('catalog/product')->select('*')
                 ->addCommonFields()
+                ->addFinalPrice()
                 ->where('cp.id IN (?)', $productIds)
                 ->fetchProducts($productIds);
 

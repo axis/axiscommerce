@@ -54,10 +54,11 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
             'Site Map Categories'
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
+        $siteId = Axis::getSiteId();
         $items = Axis::single('catalog/category')
-            ->getFlatTree($this->_langId, $this->_siteId, true);
+            ->getFlatTree(Axis_Locale::getLanguageId(), $siteId, true);
         $this->view->items = current($items);
-        $this->view->items['siteId'] = $this->_siteId;
+        $this->view->items['siteId'] = $siteId;
         $this->render();
     }
 
@@ -71,15 +72,17 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
         $items = array();
-        $productRowset = Axis::single('sitemap/file')
-            ->getAllActiveProducts($this->_langId, array($this->_siteId));
+        $siteId = Axis::getSiteId();
+        $productRowset = Axis::single('sitemap/file')->getAllActiveProducts(
+            Axis_Locale::getLanguageId(), $siteId
+        );
         foreach ($productRowset as $item) {
             $item['lvl'] = 1 ;
             $items[] = $item;
         }
 
         $this->view->items = $items;
-        $this->view->items['siteId'] = $this->_siteId;
+        $this->view->items['siteId'] = $siteId;
         $this->render();
     }
 

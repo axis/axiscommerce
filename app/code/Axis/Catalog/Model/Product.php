@@ -58,8 +58,7 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
     public function save($data)
     {
         foreach ($data as $id => $values) {
-            $isExist = Axis::single('catalog/product')
-                ->select()
+            $isExist = $this->select()
                 ->where('sku = ?', $values['sku'])
                 ->where('id <> ?', $id)
                 ->fetchOne();
@@ -89,25 +88,15 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
                 $row->modified_on = new Zend_Db_Expr('NULL');
             } else {
                 $row->modified_on = Axis_Date::now()->toSQLString();
-                $oldQuantity = $row->quantity;
-                $row->quantity = $values['quantity'];
-                Axis::dispatch('catalog_product_update_quantity', array(
-                    'product' => $row,
-                    'stock' => Axis::single('catalog/product_stock')->find($id)->current(),
-                    'old_quantity' => $oldQuantity
-                ));
             }
             if (empty($values['weight'])) {
                 $values['weight'] = 0;
             }
             $row->setFromArray($values);
-            //$row->is_active = $values['is_active'];
             $row->save();
         }
         Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-            )
+            Axis::translate('core')->__('Data was saved successfully')
         );
         return $row;
     }

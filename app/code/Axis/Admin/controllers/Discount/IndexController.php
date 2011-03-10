@@ -74,10 +74,11 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
         $this->view->sites = Axis_Collect_Site::collect();
         $this->view->customerGroups = Axis_Collect_CustomerGroup::collect();
         $this->view->manufactures = Axis_Collect_Manufacturer::collect();
+        $languageId = Axis_Locale::getLanguageId();
         $this->view->categoryTrees = Axis::single('catalog/category')
-            ->getFlatTree($this->_langId);
+            ->getFlatTree($languageId);
         $this->view->attributes = Axis::single('catalog/product_option')
-            ->getValueSets($this->_langId);
+            ->getValueSets($languageId);
     }
 
     public function editAction()
@@ -109,7 +110,7 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
 
     public function saveAction()
     {
-        $this->layout->disableLayout();
+        $this->_helper->layout->disableLayout();
         $params = $this->_getAllParams();
         $discountId = Axis::single('discount/discount')->save($params);
 
@@ -118,6 +119,7 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
                 "Discount '%s' successefull saved", $params['discountName']
             )
         );
+
         $this->_helper->json->sendSuccess(array(
             'id' => $discountId
         ));
@@ -125,16 +127,25 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
 
     public function deleteAction()
     {
-        $this->layout->disableLayout();
-        $discountIds = Zend_Json::decode($this->_getParam('data'));
-        if (!sizeof($discountIds)) {
-            return;
+        $this->_helper->layout->disableLayout();
+
+        $ids = Zend_Json::decode($this->_getParam('data'));
+        $mDiscount = Axis::model('discount/discount');
+
+        $discounts = $mDiscount->find($ids);
+        foreach ($discounts as $discount) {
+            $discountData = $discount->toArray();
+            $discountData['products'] = $discount->getApplicableProducts();
+
+            $discount->delete();
+
+            Axis::dispatch('discount_delete_after', array(
+                'discount_data' => $discountData
+            ));
         }
 
         $this->_helper->json->sendJson(array(
-            'success' => (bool) Axis::single('discount/discount')->delete(
-                $this->db->quoteInto('id IN(?)', $discountIds)
-            )
+            'success' => true
         ));
     }
 }

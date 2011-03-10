@@ -84,10 +84,7 @@ class Axis_Core_Model_Page extends Axis_Db_Table
     public function getPagesByRequest($module = '*', $controller = '*', $action = '*')
     {
         if (strpos($module, '/')) {
-            $request = explode('/', $module);
-            $module = $request[0];
-            $controller = $request[1];
-            $action = $request[2];
+            list($module, $controller, $action) = explode('/', $module, 3);
         }
         
         return $this->select()

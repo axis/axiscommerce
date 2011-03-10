@@ -39,48 +39,21 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
      *
      * @param string $path
      * @param int $siteId
-     * @return <type>
+     * @return mixed
      */
     public function getValue($path, $siteId)
     {
-        $where = array(
-            $this->getAdapter()->quoteInto('path = ?', $path),
-            $this->getAdapter()->quoteInto(
-                'site_id IN(?)', array_unique(array('0', $siteId))
-            )
-        );
-        $row = $this->fetchRow($where, 'site_id desc');
+        $select = $this->select()->where('path = ?', $path)
+            ->where('site_id IN(?)', array_unique(array(0, $siteId)))
+            ->order('site_id desc')
+            ;
+        $row = $this->fetchRow($select);
         if ($row) {
             return $row->value;
         }
         return '';
     }
 
-    /**
-     *
-     * @param string $path
-     * @param array $siteIds
-     * @return array
-     */
-    public function getValues($path, $siteIds = null)
-    {
-        
-        if (!$siteIds) {
-            $siteIds = array_keys(Axis_Collect_Site::collect());
-        }
-        $siteIds[count($siteIds) + 1] = 0;
-        
-        $select = $this->getAdapter()->select();
-        $select->from(array('cv' => $this->_prefix . 'core_config_value'),
-            array('site_id', 'value')
-        );
-        $select->where($this->getAdapter()->quoteInto('path = ?', $path))
-               ->where($this->getAdapter()->quoteInto('site_id IN(?)', 
-                   array_unique($siteIds))
-        );
-        return $this->getAdapter()->fetchPairs($select->__toString());
-    }
-    
     /**
      * Update config value
      * 
@@ -89,7 +62,7 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
      */
     public function save($data)
     {
-        if (!$row = $this->fetchRow($this->_prefix . 'core_config_value' . '.`path` = "' . $data['path'] . '"')) {
+        if (!$row = $this->fetchRow('path = "' . $data['path'] . '"')) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     "Config field '%s' was not found", $data['path']

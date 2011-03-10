@@ -38,8 +38,8 @@ class Axis_Catalog_Box_Compare extends Axis_Core_Box_Abstract
 
     public function init()
     {
-        $mCompare = Axis::single('catalog/product_compare');
-        $ids = $mCompare->getItems();
+        $modelCompare = Axis::single('catalog/product_compare');
+        $ids = $modelCompare->getItems();
 
         if (!count($ids)) {
             return false;
@@ -52,17 +52,18 @@ class Axis_Catalog_Box_Compare extends Axis_Core_Box_Abstract
 
         // if compare session has old product ids that are not in the db now
         foreach (array_diff($ids, array_keys($products)) as $id) {
-            $mCompare->remove($id);
+            $modelCompare->remove($id);
         }
 
-        if (!$mCompare->hasItems()) {
+        if (!$modelCompare->hasItems()) {
             return false;
         }
 
         $this->items = $products;
+        return true;
     }
 
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasItems();
     }

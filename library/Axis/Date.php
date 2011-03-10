@@ -50,6 +50,18 @@ class Axis_Date extends Zend_Date
     }
 
     /**
+     * Returns a clone of $this, with the time part set to 00:00:00.
+     *
+     * @param  string|Zend_Locale  $locale  OPTIONAL Locale for parsing input
+     * @return Axis_Date
+     */
+    public function getDate($locale = null)
+    {
+        // supress notice about PCRE without UTF8 support
+        return @parent::getDate($locale);
+    }
+
+    /**
      * Returns the Axis_Date with determined timestamp
      *
      * @static

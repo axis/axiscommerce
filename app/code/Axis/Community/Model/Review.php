@@ -62,25 +62,14 @@ class Axis_Community_Model_Review extends Axis_Db_Table
         $select = $this->select('*')
             ->calcFoundRows()
             ->distinct()
-            ->joinLeft('catalog_product',
-                'cr.product_id = cp.id',
-                array('product_price' => 'price'))
-            ->joinLeft('catalog_product_image',
-                'cp.image_thumbnail = cpi.id',
-                array('product_image_thumbnail' => 'path')
+            ->joinLeft(
+                'catalog_product',
+                'cr.product_id = cp.id'
             )
-            ->joinLeft('catalog_product_image_title',
-                'cpit.image_id = cpi.id AND cpit.language_id = ' . Axis_Locale::getLanguageId(),
-                array('product_image_title' => 'title')
+            ->joinLeft(
+                'catalog_hurl',
+                "cp.id = ch.key_id AND ch.key_type = 'p'"
             )
-            ->joinLeft('catalog_product_description',
-                'cp.id = cpd.product_id AND cpd.language_id = ' . Axis_Locale::getLanguageId(),
-                array('product_name' => 'name',
-                    'product_image_seo_name' => 'image_seo_name')
-            )
-            ->joinLeft('catalog_hurl',
-                "cp.id = ch.key_id AND ch.key_type = 'p'",
-                array('product_key_word' => 'key_word'))
             ->order($order . ' ' . $dir);
 
         if ($order == 'rating') {
@@ -111,20 +100,17 @@ class Axis_Community_Model_Review extends Axis_Db_Table
 
         $products = array();
         foreach ($reviews as $review) {
-            $products[$review['product_id']] = array(
-                'price' => $review['product_price']
-            );
+            $products[$review['product_id']] = $review['product_id'];
         }
-        Axis::single('discount/discount')->fillDiscount($products);
+        $products = Axis::model('catalog/product')
+            ->select('*')
+            ->addCommonFields()
+            ->addFinalPrice()
+            ->where('cp.id IN (?)', $products)
+            ->fetchProducts($products);
 
         foreach ($reviews as &$review) {
-            if (!isset($products[$review['product_id']]) ||
-                !isset($products[$review['product_id']]['price_discount'])) {
-
-                continue;
-            }
-            $review['product_price_discount'] =
-                $products[$review['product_id']]['price_discount'];
+            $review['product'] = $products[$review['product_id']];
         }
 
         $ratings = $this->loadRating(array_keys($reviews));

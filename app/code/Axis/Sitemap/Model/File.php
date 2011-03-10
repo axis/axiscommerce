@@ -99,7 +99,7 @@ class Axis_Sitemap_Model_File extends Axis_Db_Table
      * @param array $siteIds
      * @return array
      */
-    public function getAllActiveProducts($languageId, $siteIds = false)
+    public function getAllActiveProducts($languageId, $siteIds = array())
     {
         $today = Axis_Date::now()->toPhpString('Y-m-d');
 
@@ -119,6 +119,9 @@ class Axis_Sitemap_Model_File extends Axis_Db_Table
             ->where('cp.date_available IS NULL OR cp.date_available <= ?', $today);
 
         if ($siteIds) {
+            if (!is_array($siteIds)) {
+                $siteIds = array($siteIds);
+            }
             $select->joinLeft(
                 'catalog_category',
                 'cpc.category_id = cc.id'

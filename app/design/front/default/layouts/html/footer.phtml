@@ -1,11 +1,11 @@
 <div class="footer-top-wrapper">
     <div class="footer-top">
-        <?php echo $this->box('tag/cloud')->setCount(13)->toHtml() ?>
-        <?php echo $this->box('cms/block')->setStaticBlock('footer_links')->toHtml() ?>
-        <?php echo $this->box('cms/block')->setStaticBlock('footer_contacts')->toHtml() ?>
+        <?php echo $this->box('tag/cloud')->setCount(13) ?>
+        <?php echo $this->box('cms/block')->setStaticBlock('footer_links') ?>
+        <?php echo $this->box('cms/block')->setStaticBlock('footer_contacts') ?>
     </div>
 </div>
 
-<?php echo $this->box('cms/block')->setStaticBlock('copyright')->toHtml() ?>
+<?php echo $this->box('cms/block')->setStaticBlock('copyright') ?>
 
 <p class="bug-report"><?php echo $this->translate('core')->__("Report any %s you've found", "<a href='http://github.com/axis/axiscommerce/issues' onclick='window.open(this.href); return false;' title='" . $this->translate('core')->__('Report') . "'>" . $this->translate('core')->__('Bugs or Issues') . "</a>") ?></p>

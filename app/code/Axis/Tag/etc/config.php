@@ -27,6 +27,15 @@ $config = array(
         'package' => 'Axis_Tag',
         'name' => 'Tag',
         'version' => '0.1.1',
-        'required' => 0
+        'required' => 0,
+        'events' => array(
+            'account_box_navigation_prepare' => array(
+                'prepare_menu' => array(
+                    'type' => 'model',
+                    'model' => 'tag/observer',
+                    'method' => 'prepareAccountNavigationBox'
+                )
+            )
+        )
     )
 );

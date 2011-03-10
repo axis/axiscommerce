@@ -36,7 +36,7 @@ class Axis_Discount_Box_Special extends Axis_Catalog_Box_Product_Listing
     protected $_title = 'Special Products';
     protected $_class = 'box-special';
 
-    public function initData()
+    protected function _beforeRender()
     {
         $ids = Axis::single('discount/discount')->cache()->getSpecialProducts(
             Axis_HumanUri::getInstance()->getParamValue('cat'),
@@ -49,9 +49,11 @@ class Axis_Discount_Box_Special extends Axis_Catalog_Box_Product_Listing
 
         $products = Axis::single('catalog/product')->select('*')
             ->addCommonFields()
+            ->addFinalPrice()
             ->where('cp.id IN (?)', $ids)
             ->fetchProducts($ids);
 
         $this->products = $products;
+        return $this->hasProducts();
     }
 }

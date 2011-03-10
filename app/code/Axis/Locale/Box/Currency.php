@@ -38,17 +38,18 @@ class Axis_Locale_Box_Currency extends Axis_Core_Box_Abstract
     
     public function init()
     {
-        $currency = Axis_Collect_Currency::collect();
-        if (count($currency) <= 1) {
-            return;
+        $currencies = Axis_Collect_Currency::collect();
+        if (count($currencies) <= 1) {
+            return false;
         }
-        $this->updateData(array(
+        $this->setFromArray(array(
             'currencyCode' => Axis::single('locale/currency')->getCode(),
-            'currency' => $currency
+            'currency' => $currencies
         ));
+        return true;
     }
     
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasCurrency();
     }

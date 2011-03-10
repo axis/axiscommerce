@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-abstract class Axis_Core_Box_Abstract
+abstract class Axis_Core_Box_Abstract extends Axis_Object
 {
     /**
      * @var string
@@ -43,10 +43,26 @@ abstract class Axis_Core_Box_Abstract
      * @var string
      */
     protected $_class = '';
+
+    /**
+     * @var string
+     */
+    protected $_url = null;
+
     /**
      * @var bool
      */
     protected $_disableWrapper = false;
+
+    /**
+     * @var string
+     */
+    protected $_tabContainer = null;
+
+    /**
+     * @var string
+     */
+    protected $_template = null;
 
     /**
      * @var array
@@ -57,13 +73,13 @@ abstract class Axis_Core_Box_Abstract
      * @static
      * @var Zend_View
      */
-    public static $view;
+    protected static $_view;
 
     /**
      *
      * @var bool
      */
-    protected $_isAllowed = true;
+    protected $_enabled = true;
 
     /**
      * Temporary container for array of called boxes.
@@ -72,7 +88,7 @@ abstract class Axis_Core_Box_Abstract
      *
      * @var array
      */
-    private $_stack = array();
+    private static $_stack = array();
 
     /**
      * @static
@@ -80,177 +96,169 @@ abstract class Axis_Core_Box_Abstract
      */
     public static function setView($view)
     {
-        self::$view = $view;
+        self::$_view = $view;
+    }
+
+    /**
+     *
+     * @return Zend_View
+     */
+    public function getView()
+    {
+        return self::$_view;
     }
 
     public function __construct($config = array())
     {
-        if (null === self::$view) {
-            self::$view = Zend_Layout::getMvcInstance()->getView();
+        if (null === self::$_view) {
+            $this->setView(
+                Axis_Layout::getMvcInstance()->getView()
+            );
         }
-        if (!$this->_isAllowed = in_array(
-                $config['boxCategory'] . '_' . $config['boxModule'],
-                array_keys(Axis::app()->getModules()))) {
-
+        
+        list($namespace, $module, , $name) = explode('_', get_class($this));
+        $this->_enabled = in_array(
+            $namespace . '_' . $module,
+            array_keys(Axis::app()->getModules())
+        );
+        if (!$this->_enabled) {
             return;
         }
-        $this->updateData($config, true);
-        $this->init();
+        $config = array_merge(array(
+            'box_namespace' => $namespace,
+            'box_module'    => $module,
+            'box_name'      => $name
+        ), $config);
+        $this->_enabled = $this->refresh()
+            ->setFromArray($config)
+            ->init();
     }
 
-    public function toHtml()
+    /**
+     *
+     * @return string
+     */
+    public function render()
     {
-        if (!$this->_isAllowed
-            || false === $this->initData()
-            || !$this->hasContent() ) {
-
+        if (!$this->_enabled || !$this->_beforeRender()) {
             return '';
         }
+        $template = $this->getData('template');
+        if (empty($template)) {
+            if (false === function_exists('lcfirst') ) {
+                function lcfirst($str) {
+                    return (string)(strtolower(substr($str, 0, 1)) . substr($str, 1));
+                }
+            }
 
-        if (empty($this->_data['template'])) {
-            $templateName = $this->getData('boxName');
-            $templateName[0] = strtolower($templateName[0]);
-            $this->setData('template', strtolower($this->getData('boxModule'))
-                . '/box/' . $templateName . '.phtml');
+            $template = strtolower($this->getData('box_module')) . '/box/'
+                . lcfirst($this->getData('box_name')) . '.phtml';
+            $this->template = $template;
         }
 
-        self::$view->box = $this;
-        if (!Zend_Registry::isRegistered('axis_box/stack')) {
-            Zend_Registry::set('axis_box/stack', array($this));
+        $this->getView()->box = self::$_stack[] = $this;
+
+        if (!empty($this->_data['tab_container'])) {
+            $path = 'core/box/tab.phtml';
+        } elseif ($this->disable_wrapper) {
+            $path = $this->getData('template');
         } else {
-            $this->_stack = Zend_Registry::get('axis_box/stack');
-            $this->_stack[] = $this;
-            Zend_Registry::set('axis_box/stack', $this->_stack);
+            $path = 'core/box/box.phtml';
         }
 
-        if (!empty($this->_data['tabContainer'])) {
-            $result = self::$view->render('core/box/tab.phtml');
-        } elseif ($this->getData('disableWrapper')) {
-            $result = self::$view->render($this->getData('template'));
-        } else {
-            $result = self::$view->render('core/box/box.phtml');
+        $html = null;
+        $obStartLevel = ob_get_level();
+        try {
+            $html = $this->getView()->render($path);
+        } catch (Exception $e) {
+            while (ob_get_level() > $obStartLevel) {
+                $html .= ob_get_clean();
+            }
+            throw $e;
         }
 
-        $this->_stack = Zend_Registry::get('axis_box/stack');
-        array_pop($this->_stack);
-        Zend_Registry::set('axis_box/stack', $this->_stack);
-        if ($count = count($this->_stack)) {
-            self::$view->box = $this->_stack[$count - 1];
-        } else {
-            unset(self::$view->box);
+        unset($this->getView()->box);
+        array_pop(self::$_stack);
+        if (count(self::$_stack)) {
+            $this->getView()->box = end(self::$_stack);
         }
-
-        return $result;
+        return $html;
     }
 
+    /**
+     *
+     * @return string
+     */
+    public function  __toString()
+    {
+        return $this->render();
+    }
+
+    /**
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function hasData($key)
+    {
+        if (strstr($key, '/')) {
+            $_data = $this->_data;
+            foreach (explode('/', $key) as $key) {
+                if (!is_array($_data) || !isset($_data[$key])) {
+                    return false;
+                }
+                $_data = $_data[$key];
+            }
+            return true;
+        } 
+        return isset($this->_data[$key]);
+    }
+
+    /**
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
     public function getData($key = null, $default = null)
     {
         if (null === $key) {
             return $this->_data;
         }
         if (strstr($key, '/')) {
-            $result = $this->_data;
+            $_data = $this->_data;
             foreach (explode('/', $key) as $key) {
-                if (!is_array($result) || !isset($result[$key])) {
+                if (!is_array($_data) || !isset($_data[$key])) {
                     return $default;
                 }
-                $result = $result[$key];
+                $_data = $_data[$key];
             }
-            return $result;
+            return $_data;
         }
         return isset($this->_data[$key]) ? $this->_data[$key] : $default;
     }
 
     /**
-     * Add key => value pair to data array
      *
-     * @param string $key
-     * @param mixed $value
-     * @return Axis_Core_Box_Abstract Provides fluent interface
+     * @return Axis_Core_Box_Abstract 
      */
-    public function setData($key, $value)
+    public function refresh()
     {
-        $this->_data[$key] = $value;
-        return $this;
-    }
-
-    public function updateData(array $data, $reset = false)
-    {
-        if ($reset) {
-            $this->_data = array_merge($this->_data, array(
-                'title'          => $this->_title,
-                'class'          => $this->_class,
-                'url'            => $this->_url,
-                'disableWrapper' => $this->_disableWrapper,
-                'tabContainer'   => $this->_tabContainer,
-                'template'       => $this->_template
-            ));
-        }
-
-        if (!empty($data['config'])) {
-            $additional = $data['config'];
-            unset($data['config']);
-            foreach(explode(',', $additional) as $opt) {
-                list($key, $value) = explode(':', $opt);
-                $data[$key] = $value;
-            }
-        }
-        foreach ($data as $key => $value) {
-            $this->_data[$key] = $value;
-        }
-        return $this;
-    }
-
-    public function hasData($key)
-    {
-        if (strstr($key, '/')) {
-            $brunch = $this->_data;
-            foreach (explode('/', $key) as $key) {
-                if (!is_array($brunch) || !isset($brunch[$key])) {
-                    return false;
-                }
-                $brunch = $brunch[$key];
-            }
-            return true;
-        } else {
-            return isset($this->_data[$key]);
-        }
-    }
-
-    public function __get($key)
-    {
-        return $this->getData($key);
-    }
-
-    public function __set($key, $value)
-    {
-        $this->_data[$key] = $value;
-    }
-
-    public function __call($name, $arguments)
-    {
-        $key = substr($name, 3);
-        $key[0] = strtolower($key[0]);
-        switch (substr($name, 0, 3)) {
-            case 'has':
-                return $this->hasData($key);
-            case 'get':
-                return $this->getData($key);
-            case 'set':
-                $this->setData($key, $arguments[0]);
-                return $this;
-        }
-        throw new Axis_Exception(Axis::translate('core')->__(
-            "Call to undefined method '%s'", get_class($this) . '::' . $name
+        $this->_data = array_merge($this->_data, array(
+            'title'           => $this->_title,
+            'class'           => $this->_class,
+            'url'             => $this->_url,
+            'disable_wrapper' => $this->_disableWrapper,
+            'tab_container'   => $this->_tabContainer,
+            'template'        => $this->_template
         ));
+        return $this;
     }
-
-    public function init() {}
 
     /**
-     * @return mixed null|mixed
+     * @return bool
      */
-    public function initData()
+    public function init()
     {
         return true;
     }
@@ -258,7 +266,7 @@ abstract class Axis_Core_Box_Abstract
     /**
      * @return bool
      */
-    public function hasContent()
+    protected function _beforeRender()
     {
         return true;
     }

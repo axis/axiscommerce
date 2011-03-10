@@ -35,53 +35,20 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
 {
     private $_templateId;
 
-    /**
-     * Box model
-     *
-     * @var Axis_Core_Model_Template_Box
-     */
-    protected $_table;
-
     public function init()
     {
         parent::init();
-        $this->_table = Axis::single('core/template_box');
         $this->_helper->layout->disableLayout();
-        $this->_templateId = (int) $this->_getParam('tId', 0);
+        $this->_templateId = (int) $this->_getParam('template_id', 0);
     }
-
-    private function _getBoxes()
-    {
-        $boxes = array();
-        foreach (Axis::single('core/template_box')->getList() as $box) {
-            $type = 'dynamic';
-            if (strstr($box, 'Axis_Cms_Block')) {
-                $type = 'static';
-            }
-            $boxes[$type][$box] = $box;
-        }
-        return $boxes;
-    }
-
-    private function _initForm()
-    {
-        $this->view->templateBoxes = $this->_getBoxes();
-        $pageTable = Axis::single('core/page');
-        $pages = array();
-        $orderBy = array('module_name', 'controller_name', 'action_name');
-        foreach ($pageTable->fetchAll(null, $orderBy) as $row) {
-            $pages[$row->module_name][$row->controller_name][$row->id] = $row->action_name;
-        }
-        $this->view->pages = $pages;
-    }
-
+    
     public function indexAction()
     {
         $where = NULL;
         if ($this->_templateId) {
             $where = 'template_id = ' . $this->_templateId;
         }
-        $boxes = $this->_table->fetchAll($where)->toArray();
+        $boxes = Axis::single('core/template_box')->fetchAll($where)->toArray();
         Zend_Debug::dump($boxes);
     }
 
@@ -110,13 +77,29 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-
-        $params = $this->_getAllParams();
-        $boxId = $this->_getParam('boxId', 0);
-        $params['id'] = $boxId;
-        $data[$boxId] = $params;
-        Axis::model('core/template_box')->save($this->_templateId, $data);
-
+        $data = $this->_getAllParams();
+        
+        Axis::single('core/template_box')->getRow($data)->save();
+        
+        $modelAssign = Axis::model('core/template_box_page');
+        $modelAssign->delete(
+            Axis::db()->quoteInto('box_id = ?', $data['id'])
+        );
+        foreach ($data['assign'] as $pageId => $_rowData) {
+            if ('' === $_rowData['box_show']) {
+                continue;
+            }
+            foreach ($_rowData as &$_columnValue) {
+                if ('' === $_columnValue) {
+                    $_columnValue = null;
+                }
+            }
+            $modelAssign->createRow($_rowData)->save();
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Box was saved successfully'
+        ));
         return $this->_helper->json->sendSuccess();
     }
 
@@ -125,30 +108,69 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
 
         $data = Zend_Json::decode($this->_getParam('data'));
+        $modelBlock = Axis::single('core/template_box');
+        $modelAssign = Axis::model('core/template_box_page');
+        foreach ($data as $rowData) {
+            
+            $row = $modelBlock->getRow($rowData);
+            $row->template_id = $this->_templateId;
+            $row->save();
 
-        return $this->_helper->json->sendJson(array('success' =>
-            Axis::single('core/template_box')->save(
-                $this->_templateId, $data, 'batch'
-        )));
+            $assigns = array_filter(explode(',', $rowData['page_ids']));
+            $modelAssign->delete(array(
+                Axis::db()->quoteInto('box_id = ?', $row->id),
+                Axis::db()->quoteInto('page_id NOT IN (?)', $assigns)
+            ));
+            foreach ($assigns as $pageId) {
+                $_row = $modelAssign->find($row->id, $pageId)->current();
+                if (!$_row) {
+                    $_row = $modelAssign->createRow(array(
+                        'box_id'   => $row->id,
+                        'page_id'  => $pageId,
+                        'box_show' => 1
+                    ));
+                }
+                $_row->sort_order = $row->sort_order;
+                $_row->save();
+            }
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Box was saved successfully'
+        ));
+        
+        return $this->_helper->json->sendSuccess();
     }
 
     public function editAction()
     {
-        $boxId = $this->_getParam('boxId');
-        $row = $this->_table->find($boxId)->current();
-        $this->view->box = $row->toArray();
-        $this->view->boxId = $boxId;
+        $boxId = $this->_getParam('id');
+        $modelTemplateBox = Axis::model('core/template_box');
+        $this->view->box = $modelTemplateBox->find($boxId)
+            ->current()
+            ->toArray();
         $this->view->templateId = $this->_templateId;
 
-        /* assignments */
-        $boxToPage = Axis::single('core/template_box_page');
-        $assignments = array();
-        foreach ($boxToPage->fetchAll('box_id = ' . intval($boxId)) as $item) {
-            $assignments[$item->page_id] = $item->toArray();
+        $this->view->assignments = Axis::model('core/template_box_page')
+            ->select(array('page_id', '*'))
+            ->where('box_id = ?', $boxId)
+            ->fetchAssoc()
+            ;
+        $blockClasses = array();
+        foreach ($modelTemplateBox->getList() as $box) {
+            $type = 'dynamic';
+            if (strstr($box, 'Axis_Cms_Block')) {
+                $type = 'static';
+            }
+            $blockClasses[$type][$box] = $box;
         }
-        $this->view->assignments = $assignments;
+        $this->view->boxClasses = $blockClasses;
 
-        $this->_initForm();
+        $modelPage = Axis::model('core/page');
+        $this->view->pages = $modelPage->select()->order(
+            array('module_name', 'controller_name', 'action_name')
+        )->fetchAll();
+
         $this->render('form');
     }
 
@@ -165,7 +187,9 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
 
-        $this->_table->delete($this->db->quoteInto('id IN (?)', $ids));
+        Axis::single('core/template_box')->delete(
+            $this->db->quoteInto('id IN (?)', $ids)
+        );
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(

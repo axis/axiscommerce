@@ -140,7 +140,7 @@ class Axis_Account_OrderController extends Axis_Account_Controller_Account
         $this->view->order['billing']   = $order->getBilling();
         $this->view->order['delivery']  = $order->getDelivery();
 
-        $this->_helper->layout->setLayout('default_print');
+        $this->_helper->layout->setLayout('layout_print');
         $this->render();
     }
 }

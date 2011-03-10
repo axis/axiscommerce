@@ -54,5 +54,27 @@ var Product = {
                 console.log(arguments);
             }
         });
+    },
+
+    updatePriceIndex: function(skipConfirm, skipSession) {
+        if (!skipConfirm
+            && !confirm(("Are you sure want to delete old price indexes " +
+            "and create new for all products?\nThis can take a while.").l())) {
+
+            return;
+        }
+        Ext.Ajax.request({
+            url: Axis.getUrl('catalog_index/update-price-index'),
+            params: {
+                limit       : 50,
+                skip_session: skipSession
+            },
+            success: function(response, options) {
+                response = Ext.decode(response.responseText);
+                if (false == response.completed) {
+                    Product.updatePriceIndex(1, 1);
+                }
+            }
+        });
     }
 };

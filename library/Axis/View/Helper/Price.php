@@ -36,11 +36,17 @@ class Axis_View_Helper_Price
     /**
      * @var Axis_Locale_Model_Currency
      */
-    private $_currency;
+    protected $_currency;
+
+    /**
+     * @var Axis_Translate
+     */
+    protected $_translate;
 
     public function __construct()
     {
-        $this->_currency = Axis::single('locale/currency');
+        $this->_currency    = Axis::single('locale/currency');
+        $this->_translate   = Axis::translate('catalog');
     }
 
     /**
@@ -53,35 +59,83 @@ class Axis_View_Helper_Price
      */
     public function price($price, $priceDiscount = false, $code  = '')
     {
-        // @todo from - to
-        if (is_array($price)) {
-            /*$priceFrom = $this->_currency->toCurrency($price['from'], $code);
-            $priceTo = $this->_currency->toCurrency($price['to'], $code);
+        if (!is_array($price)) { // product page
+            if (false !== $priceDiscount
+                && !empty($priceDiscount)
+                && $price != $priceDiscount) {
 
-            return '<span class="price">' . $priceFrom . '</span> - <span class="price">' . $priceTo . '</span>';
-*/            $price = $price['price'];
-        } /*elseif*/
-        if (false !== $priceDiscount
-            && !empty($priceDiscount)
-            && $price != $priceDiscount) {
+                $priceSave      = $this->_currency->toCurrency($price - $priceDiscount);
+                $price          = $this->_currency->toCurrency($price, $code);
+                $priceDiscount  = $this->_currency->toCurrency($priceDiscount, $code);
 
-            $priceSave = $this->_currency->toCurrency($price - $priceDiscount);
+                return '<div class="price-box"><p class="old-price">'
+                    . '<span class="label">' . $this->_translate->__('Regular price') . ':</span> '
+                    . '<span class="price">' . $price . '</span></p>'
+                    . '<p class="special-price">'
+                    . '<span class="label">' . $this->_translate->__('Special price') . ':</span> '
+                    . '<span class="price">' . $priceDiscount . '</span></p>'
+                    . '<p class="save-price">'
+                    . '<span class="label">' . $this->_translate->__('You save') . ':</span> '
+                    . '<span class="price">' . $priceSave . '</span></p></div>';
+            }
+
             $price = $this->_currency->toCurrency($price, $code);
-            $priceDiscount = $this->_currency->toCurrency($priceDiscount, $code);
 
-            return '<div class="price-box"><p class="old-price">'
-                 . '<span class="label">' . Axis::translate('catalog')->__('Regular price') . ':</span> '
-                 . '<span class="price">' . $price . '</span></p>'
-                 . '<p class="special-price">'
-                 . '<span class="label">' . Axis::translate('catalog')->__('Special price') . ':</span> '
-             . '<span class="price">' . $priceDiscount . '</span></p>'
-                 . '<p class="save-price">'
-                 . '<span class="label">' . Axis::translate('catalog')->__('You save') . ':</span> '
-                 . '<span class="price">' . $priceSave . '</span></p></div>';
+            return '<div class="price-box"><p class="regular-price">'
+                . '<span class="label">' . $this->_translate->__('Price') . ':</span> '
+                . '<span class="price">' . $price . '</span></p></div>';
         }
-        $price = $this->_currency->toCurrency($price, $code);
+
+        // product listing
+        $minPrice = $this->_currency->toCurrency($price['min_price'], $code);
+        $maxPrice = $this->_currency->toCurrency($price['max_price'], $code);
+        $finalMinPrice = $this->_currency->toCurrency($price['final_min_price'], $code);
+        $finalMaxPrice = $this->_currency->toCurrency($price['final_max_price'], $code);
+        $finalPrice = 0;
+        $savePrice  = 0;
+
+        $regularPrice = $minPrice;
+        if ($price['min_price'] != $price['max_price']) {
+            $regularPrice .= ' &mdash; ' . $maxPrice;
+        }
+
+        if ($price['final_min_price'] != $price['min_price']
+            || $price['final_max_price'] != $price['max_price']) {
+
+            $finalPrice = $finalMinPrice;
+            if ($price['final_min_price'] != $price['final_max_price']) {
+                $finalPrice .= ' &mdash; ' . $finalMaxPrice;
+            }
+
+            $minSave = $price['min_price'] - $price['final_min_price'];
+            $maxSave = $price['max_price'] - $price['final_max_price'];
+            $minSavePrice = $this->_currency->toCurrency($minSave, $code);
+            $maxSavePrice = $this->_currency->toCurrency($maxSave, $code);
+
+            $savePrice = $minSavePrice;
+            if ($minSave != $maxSave) {
+                $savePrice = $this->_translate->__(
+                    "up to %s",
+                    $minSave > $maxSave ? $minSavePrice : $maxSavePrice
+                );
+                // $savePrice .= ' &mdash; ' . $maxSavePrice;
+            }
+        }
+
+        if ($savePrice) {
+            return '<div class="price-box"><p class="old-price">'
+                . '<span class="label">' . $this->_translate->__('Regular price') . ':</span> '
+                . '<span class="price">' . $regularPrice . '</span></p>'
+                . '<p class="special-price">'
+                . '<span class="label">' . $this->_translate->__('Special price') . ':</span> '
+                . '<span class="price">' . $finalPrice . '</span></p>'
+                . '<p class="save-price">'
+                . '<span class="label">' . $this->_translate->__('You save') . ':</span> '
+                . '<span class="price">' . $savePrice . '</span></p></div>';
+        }
+
         return '<div class="price-box"><p class="regular-price">'
-            . '<span class="label">' . Axis::translate('catalog')->__('Price') . ':</span> '
-            . '<span class="price">' . $price . '</span></p></div>';
+            . '<span class="label">' . $this->_translate->__('Price') . ':</span> '
+            . '<span class="price">' . $regularPrice . '</span></p></div>';
     }
 }

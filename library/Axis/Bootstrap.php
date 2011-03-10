@@ -214,22 +214,15 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
     }
 
-    protected function _initLayout()
-    {
-        $this->bootstrap('Session');
-        return Axis_Layout::startMvc();
-        // see Axis_Controller_Action method initView && initLayout
-        //(have params can access only after dispatch)
-    }
-
     protected function _initDbAdapter()
     {
         $this->bootstrap('Config');
+        $config = $this->getResource('Config');
         $db = Zend_Db::factory('Pdo_Mysql', array(
-            'host'           => Axis::config()->db->host,
-            'username'       => Axis::config()->db->username,
-            'password'       => Axis::config()->db->password,
-            'dbname'         => Axis::config()->db->dbname,
+            'host'           => $config->db->host,
+            'username'       => $config->db->username,
+            'password'       => $config->db->password,
+            'dbname'         => $config->db->dbname,
             'driver_options' => array(
                 //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
                 1002 => 'SET NAMES UTF8'
@@ -274,22 +267,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return Axis::cache();
     }
 
-    protected function _initLocale()
-    {
-        $this->bootstrap('Cache');
-        $defaultLocale = Axis_Locale::getDefaultLocale();
-        $locales = Axis_Locale::getLocaleList();
-
-        //set default timezone affect on date() and Axis_Date
-        Axis_Locale::setTimezone(Axis_Locale::getDefaultTimezone());
-        // pre router config
-        Axis_Controller_Router_Route::setDefaultLocale($defaultLocale);
-        Axis_Controller_Router_Route::setLocales($locales);
-
-        Axis_Controller_Router_Route_Module::setDefaultLocale($defaultLocale);
-        Axis_Controller_Router_Route_Module::setLocales($locales);
-    }
-
     protected function _initRouter()
     {
         $this->bootstrap('Cache');
@@ -306,7 +283,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         if (!($router instanceof Axis_Controller_Router_Rewrite)) {
             throw new Axis_Exception('Incorrect routes');
         }
-        Zend_Controller_Front::getInstance()->setRouter($router);
         return $router;
     }
 
@@ -314,19 +290,74 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap('Router');
         $front = Zend_Controller_Front::getInstance();
-        //$front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
-        // Настройка front контроллера, указание
-        // базового директорий контролеров, правил маршрутизации
-        //$front->throwExceptions(false);
+
+        $router = $this->getResource('Router');
+        $front->setRouter($router);
+//        $front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
+//        $front->throwExceptions(false);
         $front->setDefaultModule('Axis_Core');
         $front->setControllerDirectory(Axis::app()->getControllers());
-        //$front->setRouter($router);
-        $front->setParam('noViewRenderer', true);
+//        $front->setParam('noViewRenderer', true);
         $front->registerPlugin(
-            new Axis_Controller_Plugin_ErrorHandler_Override()
+            new Axis_Controller_Plugin_ErrorHandler_Override(), 10
         );
 
         return $front; // this is *VERY* important
+    }
+
+    protected function _initArea()
+    {
+        $this->bootstrap('FrontController');
+        $front = $this->getResource('FrontController');
+        $front->registerPlugin(new Axis_Controller_Plugin_Area(), 20);
+    }
+
+    protected function _initLocale()
+    {
+        $this->bootstrap('Area');
+        $defaultLocale = Axis_Locale::getDefaultLocale();
+        $locales = Axis_Locale::getLocaleList();
+
+        //set default timezone affect on date() and Axis_Date
+        Axis_Locale::setTimezone(Axis_Locale::getDefaultTimezone());
+        // pre router config
+        Axis_Controller_Router_Route::setDefaultLocale($defaultLocale);
+        Axis_Controller_Router_Route::setLocales($locales);
+
+        Axis_Controller_Router_Route_Module::setDefaultLocale($defaultLocale);
+        Axis_Controller_Router_Route_Module::setLocales($locales);
+
+        //set locale
+        $front = $this->getResource('FrontController');
+        $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 30);
+    }
+
+    protected function _initView()
+    {
+        $this->bootstrap('Area');
+        $view = new Zend_View();
+        $viewRenderer = new Axis_Controller_Action_Helper_ViewRenderer();
+        $viewRenderer->setNeverRender()
+            ->setNoController()
+            ->setView($view)
+            ->autoAddBasePaths(false);
+        Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
+
+        $front = $this->getResource('FrontController');
+        $front->registerPlugin(new Axis_Controller_Plugin_View($view), 40);
+
+        return $view;
+    }
+
+    protected function _initLayout()
+    {
+        $this->bootstrap('View');
+        $layout = Axis_Layout::startMvc();
+        $front = $this->getResource('FrontController');
+        $front->unregisterPlugin('Zend_Layout_Controller_Plugin_Layout');
+        $front->registerPlugin(new Axis_Controller_Plugin_Layout($layout), 99);
+
+        return $layout;
     }
 
     protected function _initDebug()

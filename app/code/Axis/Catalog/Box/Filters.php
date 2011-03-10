@@ -41,7 +41,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
     {
         $this->hurl = Axis_HumanUri::getInstance();
 
-        $result = array();
+        $filterSet = array();
         $filters = $this->_getActiveFilters();
 
         // Get category filters
@@ -50,34 +50,34 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         $result['category'] = Axis::single('catalog/category')->find($catId)->current()->getChildItems(false, true);*/
 
         // Get price filters
-        $result['price'] = $this->_getPriceFilters($filters);
+        $filterSet['price'] = $this->_getPriceFilters($filters);
 
         // Get manufacturer filters
         if (!$this->hurl->hasParam('manufacturer')) {
-            $result['manufacturer'] = $this->_getManufacturerFilters($filters);
+            $filterSet['manufacturer'] = $this->_getManufacturerFilters($filters);
         }
 
         // Attribute filters
-        $result['attributes'] = $this->_getAttributeFilters($filters);
+        $filterSet['attributes'] = $this->_getAttributeFilters($filters);
 
         if ((count($filters) && !$this->hurl->hasParam('cat'))
             || (1 < count($filters) && $this->hurl->hasParam('cat'))) { // we don't show categories in filters
 
-            $this->filters = $result;
-            return;
+            $this->filters = $filterSet;
+            return true;
         }
 
-        foreach($result as $filter) {
+        foreach($filterSet as $filter) {
             if (count($filter)) {
-                $this->filters = $result;
-                return;
+                $this->filters = $filterSet;
+                return true;
             }
         }
 
         return false;
     }
 
-    public function hasContent()
+    protected function _beforeRender()
     {
         return $this->hasData('filters');
     }
@@ -201,11 +201,13 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
      */
     protected function _getPriceFilters(array $filters)
     {
-        $select = Axis::single('catalog/product')->select();
-        $select->from('catalog_product', array(
-                'cnt'       => 'COUNT(cp.price)',
-                'price_max' => 'MAX(cp.price)',
-                'price_min' => 'MIN(cp.price)'
+        $select = Axis::single('catalog/product')->select(
+            array('cnt' => 'COUNT(cp.price)')
+        );
+        $select->joinPriceIndex()
+            ->columns(array(
+                'price_max' => 'MAX(cppi.final_max_price)',
+                'price_min' => 'MIN(cppi.final_min_price)'
             ))
             ->joinCategory()
             ->addCommonFilters($filters);
@@ -218,20 +220,21 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
 
         $currency = Axis::single('locale/currency');
         $row['price_max'] = $currency->to($row['price_max']);
-        $row['price_min'] = $currency->to($row['price_min']);
-        $rate = $currency->getData('', 'rate');
+        $row['price_min'] = $row['price_min'] > 0 ? $currency->to($row['price_min']) : 1;
+        $rate = $currency->getData(null, 'rate');
 
         //Return rounded number, example: 80->10, 120->100, 895->100, 1024->1000
         $roundTo = pow(10, strlen((string) floor($row['price_max'] - $row['price_min'])) - 1);
         $select->reset();
         $select->from('catalog_product', array(
                 'cnt'         => 'COUNT(DISTINCT cp.id)',
-                'price_group' => new Zend_Db_Expr("floor(cp.price * $rate / $roundTo) * $roundTo")
+                'price_group' => new Zend_Db_Expr("floor(cppi.final_min_price * $rate / $roundTo) * $roundTo")
             ))
+            ->joinPriceIndex()
             ->joinCategory()
             ->addCommonFilters($filters)
             ->group('price_group')
-            ->order('cp.price');
+            ->order('cppi.final_min_price');
 
         $priceGroups = $select->fetchAll();
 

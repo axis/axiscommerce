@@ -1,0 +1,121 @@
+<form method="post" id="form-box"
+      action="<?php echo $this->url(array('action' => 'save', 'id' => $this->box['id'], 'template_id' => $this->templateId));?>" >
+<dl class="general-form">
+    <dt>
+        <label for="block">
+            <?php echo $this->translate('admin')->__('Layout block');?>:
+        </label>
+    </dt>
+    <dd>
+        <?php echo $this->formText('block', isset($this->box['block']) ? $this->box['block'] : '');?>
+    </dd>
+    <dt>
+        <label for="class">
+            <?php echo $this->translate('admin')->__('Box Class');?>:
+        </label>
+    </dt>
+    <dd><?php echo $this->formSelect(
+            'class', 
+            isset($this->box['class']) ? $this->box['class'] : null, 
+            null, 
+            $this->boxClasses
+        )?>
+    </dd>
+    <dt>
+        <label for="sort_order">
+            <?php echo $this->translate('admin')->__('Order');?><small>(-128 - +127)</small>:
+        </label>
+    </dt>
+    <dd><?php echo $this->formText(
+            'sort_order', 
+            isset($this->box['sort_order']) ? $this->box['sort_order'] : null, 
+            array('size' => 3)
+        );?>
+    </dd>
+    <dt>
+        <label for="box_status">
+            <?php echo $this->translate('admin')->__('Active');?>:
+        </label>
+    </dt>
+    <dd><?php echo $this->formCheckbox('box_status', 1, 
+        array('checked' => (isset($this->box['box_status']) ? ($this->box['box_status'] ? true : false) : false)))?>
+    </dd>
+    <dt>
+        <label for="config">
+            <?php echo $this->translate('admin')->__('Config');?> <small>(option:value,...)</small>
+        </label>
+    </dt>
+    <dd><?php echo $this->formText(
+            'config', 
+            isset($this->box['config']) ? $this->box['config'] : null, 
+            array('size' => 3)
+        );?>
+    </dd>
+</dl>
+
+<table class="axis-table" cellspacing="0">
+    <tr>
+        <th><?php echo $this->translate('admin')->__('Module')
+            . $this->translate('admin')->__('Controller')
+            . $this->translate('admin')->__('Action');
+        ?></th>
+        <th><?php echo $this->translate('admin')->__('Show')?></th>
+        <th><?php echo $this->translate('admin')->__('Hide')?></th>
+        <th><?php echo $this->translate('admin')->__('Tab container')?></th>
+        <th><?php echo $this->translate('admin')->__('Separate block')?></th>
+        <th><?php echo $this->translate('admin')->__('Separate template')?></th>
+    </tr>
+    <?php foreach ($this->pages as $_page) :
+        $module     = $_page['module_name'];
+        $controller = $_page['controller_name'];
+        $action     = $_page['action_name'];
+        $pageId     = $_page['id'];
+        if (isset($this->assignments[$pageId])) {
+            $assign       = $this->assignments[$pageId];
+
+            $blockShow    = $assign['box_show'];
+            $show         = $blockShow ? true : false;
+            $hide         = !$show;
+            $block        = $assign['block'];
+            $tabContainer = $assign['tab_container'];
+            $template     = $assign['template'];
+        } else {
+            $blockShow = null;
+            $show = $hide = false;
+            $template = $block = $tabContainer = null;
+        }
+        if ('*' === $controller && '*' === $action) : ?>
+            <tr><th colspan="100"><?php echo $module ?></th></tr>
+        <?php endif; ?>
+        <tr>
+            <td><?php echo $module . '/' . $controller. '/' . $action
+                . $this->formHidden("assign[{$pageId}][box_id]", $this->box['id'])
+                . $this->formHidden("assign[{$pageId}][page_id]", $pageId)
+                . $this->formHidden("assign[{$pageId}][sort_order]", $this->box['sort_order'])
+                . $this->formHidden("assign[{$pageId}][box_show]", $blockShow)?>
+            </td>
+            <?php $onchange = "if(this.checked) {
+                    Ext.getDom('assign-{$pageId}-hide').checked = false;
+                    Ext.getDom('assign-{$pageId}-box_show').value = 1;
+                } else {
+                    Ext.getDom('assign-{$pageId}-box_show').value = null;
+                }";
+            ?>
+            <td><?php echo $this->formCheckbox("assign[{$pageId}][show]", 1, array('checked' => $show, 'onchange' => $onchange)); ?></td>
+            <?php $onchange = "
+                if(this.checked) {
+                    Ext.getDom('assign-{$pageId}-show').checked = false;
+                    Ext.getDom('assign-{$pageId}-box_show').value = 0;
+                } else {
+                    Ext.getDom('assign-{$pageId}-box_show').value = null;
+                }";
+            ?>
+            <td><?php echo $this->formCheckbox("assign[{$pageId}][hide]", 1, array('checked' => $hide, 'onchange' => $onchange)); ?></td>
+            <td><?php echo $this->formText("assign[{$pageId}][tab_container]", $tabContainer, array('size' => 8)) ?></td>
+            <td><?php echo $this->formText("assign[{$pageId}][block]", $block, array('size' => 8)) ?></td>
+            <td><?php echo $this->formText("assign[{$pageId}][template]", $template, array('size' => 8))?></td>
+        </tr>
+
+    <?php endforeach;?>
+</table>
+</form>

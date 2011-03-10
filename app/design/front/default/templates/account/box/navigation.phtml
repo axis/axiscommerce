@@ -3,8 +3,9 @@
     <?php foreach ($this->box->getItems() as $_item) :
         $_title = $this->translate('account')->__($_item->getTitle());?>
         <li class="<?php echo $_item->getCssClass()?>">
-            <a href="<?php echo $this->href($_item->getHref(), true)
-                ?>" title="<?php echo $_title?>"><?php echo $_title?></a>
+            <a href="<?php echo $_item->getHref()?>" title="<?php echo $_title?>">
+                <?php echo $_title?>
+            </a>
         </li>
     <?php endforeach;?>
 </ul>

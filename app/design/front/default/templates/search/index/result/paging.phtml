@@ -10,7 +10,7 @@ $this->paging['pages'] = $_pages;
         <?php else:
             $_current = ($this->paging['page'] - 1) * $this->paging['limit'] + 1;
         ?>
-            <strong><?php echo $this->translate('search')->__('Item(s)')?> <?php echo $_current ?> to <?php echo ($_current + count($this->results) - 1) ?> of <?php echo $this->paging['count'] ?></strong>
+            <strong><?php echo $this->translate('catalog')->__('Item(s) %d to %d of %d', $_current, $_current + count($this->results) - 1, $this->paging['count']) ?></strong>
         <?php endif ?>
     </td>
 

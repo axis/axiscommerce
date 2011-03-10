@@ -33,7 +33,7 @@
  */
 class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
 {
-    protected $_productsCount = 5;
+    protected $_productsCount = 6;
     protected $_columnsCount = 3;
 
     /**
@@ -41,10 +41,10 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
      */
     public function getProductsCount()
     {
-        if (null === $this->productsCount) {
+        if (null === $this->products_count) {
             return $this->_productsCount;
         }
-        return $this->productsCount;
+        return $this->products_count;
     }
 
     /**
@@ -52,17 +52,9 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
      */
     public function getColumnsCount()
     {
-        if (null === $this->columnsCount) {
+        if (null === $this->columns_count) {
             return $this->_columnsCount;
         }
-        return $this->columnsCount;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function hasContent()
-    {
-        return (bool) count($this->products);
+        return $this->columns_count;
     }
 }

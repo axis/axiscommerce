@@ -42,32 +42,14 @@ class Axis_Account_Model_Customer_FieldGroup extends Axis_Db_Table
      */
     public function getGroups($languageId)
     {
-        $select = $this->getAdapter()->select();
-        $select->from(
-                array('ccfg' => $this->_prefix . 'account_customer_fieldgroup'),
-                array('id' => 'id', 'is_active' => 'is_active')
+        return Axis::model('account/Customer_FieldGroup')->select('*')
+            ->joinLeft('account_customer_fieldgroup_label',
+                'acfl.customer_field_group_id = acf.id',
+                array('title' => 'group_label')
             )
-            ->joinLeft(array('ccfgl' => $this->_prefix . 'account_customer_fieldgroup_label'),
-                'ccfgl.customer_field_group_id = ccfg.id AND ccfgl.language_id = ' . intval($languageId),
-                array('title' => 'group_label'))
-            ->order('sort_order');
-        return $this->getAdapter()->fetchAssoc($select->__toString());
-    }
-
-    /**
-     *
-     * @param int $languageId
-     * @return array
-     */
-    public function getGroupsArray($languageId)
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(array('ccfg' => $this->_prefix . 'account_customer_fieldgroup'), 'id')
-            ->joinLeft(array('ccfgl' => $this->_prefix . 'account_customer_fieldgroup_label'),
-                'ccfgl.customer_field_group_id = ccfg.id AND ccfgl.language_id = ' . intval($languageId),
-                array('title' => 'group_label'))
-            ->order('sort_order');
-        return $this->getAdapter()->fetchAll($select->__toString());
+            ->where('acfl.language_id = ?', $languageId)
+            ->order('sort_order')
+            ->fetchAssoc();
     }
 
     /**

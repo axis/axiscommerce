@@ -79,7 +79,7 @@
 "Select delivery address","Виберіть адресу доставки"
 "Selected payment method in not allowed","Обраний метод платежу не допускається"
 "Selected shipping method in not allowed","Обраний метод доставки не допускається"
-"Set required attribute : %ss","Визначте обов'язкові атрибути"
+"Set required attribute: %s","Вкажіть обов'язковий атрибут: %s"
 "Ship to same address","Відправити на цю ж адресу"
 "Shipping Method","Метод доставки"
 "Shopping Cart - %s item(s)","Кошик - %s продукт(ів)"

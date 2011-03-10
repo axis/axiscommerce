@@ -50,7 +50,7 @@ echo '<tr><td><strong>' . $this->translate('catalog')->__('Price')
     .':</strong></td>';
 foreach ($this->products as $product) {
     echo '<td>'
-       . $this->price($product['price'])
+       . $this->price($product['prices'])
        . '</td>';
 }
 echo '</tr>';

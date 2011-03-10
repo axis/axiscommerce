@@ -250,7 +250,7 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             ->add("admin/customer_custom-fields/delete-fields")
             ->add("admin/customer_custom-fields/get-fields")
             ->add("admin/customer_custom-fields/get-group-info")
-            ->add("admin/customer_custom-fields/get-group-pairs")
+            ->add("admin/customer_custom-fields/get-groups")
             ->add("admin/customer_custom-fields/get-type")
             ->add("admin/customer_custom-fields/get-validator")
             ->add("admin/customer_custom-fields/get-value-sets")

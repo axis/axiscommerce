@@ -33,52 +33,23 @@
  */
 class Axis_Core_Model_Template extends Axis_Db_Table
 {
+    const DEFAULT_TEMPLATE = 'default';
+
     protected $_name = 'core_template';
 
     /**
      * Retrieve the array of currently using templates
-     *
-     * @return array(site_id => template_id)
+     * @param int $templateId
+     * @return bool
      */
-    public function getUsed() {
-        $frontTemplates = Axis::single('core/config_value')->getValues('design/main/frontTemplateId');
-        $adminTemplates = Axis::single('core/config_value')->getValues('design/main/adminTemplateId');
-        return $frontTemplates + $adminTemplates;
-    }
-
-    /**
-     * Retrieve information about template
-     *
-     * @param int $id
-     * @return array
-     */
-    public function getInfo($id = '')
+    public function isUsed($templateId)
     {
-        if (!is_numeric($id) || !$template = $this->find($id)->current()) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'Template not found'
-            ));
-            return array();
-        }
-
-        $templateAssignments = '';
-        $usedTemplates = Axis::single('core/template')->getUsed();
-
-        if (in_array($template->id, $usedTemplates)) {
-            $sites = Axis_Collect_Site::collect();
-            $sites[0] = 'Global';
-            foreach ($usedTemplates as $siteId => $templateId){
-                if ($template->id == $templateId && isset($sites[$siteId]))
-                    $templateAssignments .= $sites[$siteId] . ', ';
-            }
-            $templateAssignments = substr($templateAssignments, 0, -2);
-        }
-
-        $result = $template->toArray();
-        $result['assignments'] = $templateAssignments;
-
-        return $result;
+        return (bool) Axis::single('core/config_value')->select()
+            ->where("path = 'design/main/frontTemplateId' OR path = 'design/main/adminTemplateId'")
+            ->where('value = ?', $templateId)
+            ->fetchOne()
+            ;
+        return false;
     }
 
     /**
@@ -96,20 +67,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             ));
             return false;
         }
-
-        if (isset($data['is_active'])) {
-            $data['is_active'] = 1;
-        } else {
-            $data['is_active'] = 0;
-        }
-
-        if (!$row = $this->find($data['id'])->current()) {
-            unset($data['id']);
-            $row = $this->createRow();
-        }
-        $row->setFromArray($data);
-        $row->save();
-
+        $this->getRow($data)->save();
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Template was saved successfully'
@@ -136,150 +94,123 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         $orderBy = array('module_name', 'controller_name', 'action_name');
         foreach (Axis::single('core/page')->fetchAll(null, $orderBy) as $row) {
             $pages[$row->id] = array(
-                'id' => $row->id,
-                'module' => $row->module_name,
+                'id'         => $row->id,
+                'module'     => $row->module_name,
                 'controller' => $row->controller_name,
-                'action' => $row->action_name
+                'action'     => $row->action_name
             );
         }
 
-        $boxes = Axis::single('core/template_box')
-            ->fetchAll('template_id = ' . $templateId)
-            ->toArray();
+        $boxes = Axis::single('core/template_box')->select()
+            ->where('template_id = ?', $templateId)
+            ->fetchAll();
 
-        $cms_block = array();
+        $cmsBlocks = array();
         foreach ($boxes as &$box) {
             $box['pages'] = array();
-            $box_to_page = Axis::single('core/template_box_page')->fetchAll(array(
+            $boxToPage = Axis::single('core/template_box_page')->fetchAll(array(
                 'box_id = ' . $box['id']
             ));
 
-            if (substr($box['class'], 0, strlen('Axis_Cms_Block_')) == 'Axis_Cms_Block_') {
-                $cms_block[] = Axis::single('cms/block')->fetchRow(
-                    $this->getAdapter()->quoteInto('name = ?', substr($box['class'], strlen('Axis_Cms_Block_')))
-                )->toArray();
+            if ('Axis_Cms_Block_' === substr($box['class'], 0, strlen('Axis_Cms_Block_'))) {
+                $name = substr($box['class'], strlen('Axis_Cms_Block_'));
+                
+                $rowset = Axis::single('cms/block')->select('*')
+                    ->join('cms_block_content', 'cb.id = cbc.block_id', '*')
+                    ->where('cb.name = ?', $name)
+                    ->fetchAll();
+                $languageIds = array_keys(Axis_Collect_Language::collect());
+//                $cmsBlocks = array();
+                foreach ($rowset as $row) {
+                    
+                    if (isset($cmsBlocks[$row['id']]['content'])) {
+                        $content = $cmsBlocks[$row['id']]['content'];
+                    } else {
+                        $content = array_fill_keys($languageIds , null);
+                    }
+                    $content[$row['language_id']] = $row['content'];
+                    $row['content'] = $content;
+                    unset($row['language_id']);
+                    $cmsBlocks[$row['id']] = $row;
+                }
+
+//                $cmsBlocks[] = $cmsBlocks;
             }
-            foreach ($box_to_page as $item) {
+            foreach ($boxToPage as $item) {
                 $box['pages'][] = array(
-                    'id' => $item->page_id,
-                    'module' => $pages[$item->page_id]['module'],
-                    'controller' => $pages[$item->page_id]['controller'],
-                    'action' => $pages[$item->page_id]['action'],
-                    'box_show' => $item->box_show,
-                    'block' => $item->block,
-                    'template' => $item->template,
+                    'id'            => $item->page_id,
+                    'module'        => $pages[$item->page_id]['module'],
+                    'controller'    => $pages[$item->page_id]['controller'],
+                    'action'        => $pages[$item->page_id]['action'],
+                    'box_show'      => $item->box_show,
+                    'block'         => $item->block,
+                    'template'      => $item->template,
                     'tab_container' => $item->tab_container
                 );
             }
         }
         $template['boxes'] = $boxes;
 
-        $layers = Axis::single('core/template_layout_page')
-            ->fetchAll('template_id = ' . $templateId)
-            ->toArray();
-        foreach ($layers as &$layer) {
-            $layer['page'] = $pages[$layer['page_id']];
+        $layouts = Axis::single('core/template_page')->select()
+            ->where('template_id = ?', $templateId)
+            ->fetchAll();
+        foreach ($layouts as &$layout) {
+            $layout['page'] = $pages[$layout['page_id']];
+            if (isset($pages[$layout['parent_page_id']])) {
+                $layout['parent_page'] = $pages[$layout['parent_page_id']];
+            }
         }
-        $template['layers'] = $layers;
-
-        $template['cms_block'] = $cms_block;
+        $template['layouts'] = $layouts;
+        $template['cms_block'] = $cmsBlocks;
         return $template;
     }
 
     /**
-     *   @copyright http://ua.php.net/manual/ru/class.dir.php#79448
-     *   getDirTree(string $dir [, bool $showfiles]);
-     *   $dir of the folder you want to list, be sure to have an ending /
-     *   $showfiles set to 'false' if files shouldnt be listed in the output array
-     *  @param string $dir
-     *  @param bool $p [optional]
-     *  @return array
-     */
-    private function _getDirTree($dir, $p = true)
-    {
-        $d = dir($dir);$x = array();
-        while (false !== ($r = $d->read())) {
-            if($r[0] != "." &&  $r != "." && $r != ".." &&
-               ((false == $p && is_dir($dir.$r)) || true == $p)) {
-
-               $x[$r] = (is_dir($dir . $r) ? array() : (is_file($dir . $r) ? true : false));
-            }
-        }
-        foreach ($x as $key => $value) {
-            if (/*is_dir($dir.$key."/")*/ is_readable($dir . $key . '.xml')) {
-                $x[$key] = $dir . $key . '.xml';
-                //$this->_getDirTree($dir.$key."/",$p);
-            }
-        }
-        ksort($x);
-        return $x;
-    }
-
-    /**
      *
-     * @return array
-     */
-    public function getListXmlFiles()
-    {
-        $existTemplate = array();
-        foreach ($this->fetchAll()->toArray() as $template) {
-            $existTemplate[] =  $template['name'];
-        }
-        $dir = Axis::config()->system->path . '/var/templates/';
-        $templates = array();
-
-
-        foreach ($this->_getDirTree($dir) as $key => $value) {
-            if (!in_array($key, $existTemplate))
-                $templates[] = array('template' => $key/*, 'file' => $value*/);
-        }
-        return $templates;
-    }
-
-    /**
-     *
-     * @copyright http://ua2.php.net/manual/ru/class.xmlreader.php#83929
-     * @param string $xml
-     * @return array
-     */
-    private function _xml2assoc($xml)
-    {
-        $assoc = null;
-        while($xml->read()){
-            switch ($xml->nodeType) {
-            case XMLReader::END_ELEMENT:
-                return $assoc;
-            case XMLReader::ELEMENT:
-                if($xml->hasAttributes && $xml->getAttribute('multiple')){
-                    $assoc[$xml->name ][] = $xml->isEmptyElement ? '' : $this->_xml2assoc($xml);
-                } else {
-                    $assoc[$xml->name] = $xml->isEmptyElement ? '' : $this->_xml2assoc($xml);
-                }
-                break;
-            case XMLReader::TEXT:
-            case XMLReader::CDATA:
-                $assoc .= $xml->value;
-            }
-        }
-        return $assoc;
-    }
-
-    /**
-     *
-     * @param string $templateName
+     * @param string $themeNameXml
      * @return string
      */
-    private function  _parseXml($templateName)
+    private function  _parseXml($themeNameXml)
     {
-        if (!is_readable($templateName)) {
-            $templateName = Axis::config()->system->path . '/var/templates/' . $templateName;
+        if (!is_readable($themeNameXml)) {
+            $themeNameXml = Axis::config('system/path') . '/var/templates/' . $themeNameXml;
         }
-        if (!is_readable($templateName)) {
+        if (!is_readable($themeNameXml)) {
             return false;
         }
+
+        if (!function_exists('_xml2assoc')) {
+            /**
+             *
+             * @copyright http://ua2.php.net/manual/ru/class.xmlreader.php#83929
+             * @param string $xml
+             * @return array
+             */
+            function _xml2assoc($xml)
+            {
+                $assoc = null;
+                while($xml->read()){
+                    switch ($xml->nodeType) {
+                    case XMLReader::END_ELEMENT:
+                        return $assoc;
+                    case XMLReader::ELEMENT:
+                        if($xml->hasAttributes && $xml->getAttribute('multiple')){
+                            $assoc[$xml->name ][] = $xml->isEmptyElement ? '' : _xml2assoc($xml);
+                        } else {
+                            $assoc[$xml->name] = $xml->isEmptyElement ? '' : _xml2assoc($xml);
+                        }
+                        break;
+                    case XMLReader::TEXT:
+                    case XMLReader::CDATA:
+                        $assoc .= $xml->value;
+                    }
+                }
+                return $assoc;
+            }
+        }
         $xml = new XMLReader();
-        $xml->open($templateName);
-        $assoc = $this->_xml2assoc($xml);
+        $xml->open($themeNameXml);
+        $assoc = _xml2assoc($xml);
         $xml->close();
         return current($assoc);
     }
@@ -305,105 +236,117 @@ class Axis_Core_Model_Template extends Axis_Db_Table
      */
     public function importTemplateFromXmlFile($xmlFileName)
     {
+        function _getConcatPage(array $page) {
+            return $page['module'] . '/' . $page['controller'] . '/' . $page['action'];
+        }
+
         $template = $this->_parseXml($xmlFileName);
 
-        if (!$templateId = $this->getIdByName($template['name'])) {
-            $templateId = $this->insert(array(
-                'name' => $template['name'],
-                'is_active' => $template['is_active'],
-                'default_layout' =>  $template['default_layout']
-            ));
-        } else {
-            $this->update(array(
-                'is_active' => $template['is_active'],
-                'default_layout' =>  $template['default_layout']
-            ), 'id = ' . $templateId);
-        }
+        $template['id'] = $this->getIdByName($template['name']);
+        $templateRow = $this->getRow($template);
+        $templateRow->save();
+        $template['id'] = $templateRow->id;
 
-        $existPages = Axis::single('core/page')->getPages(true);
-        $pages = array();
-        $boxes = $template['box'];
-        $layers = $template['layer'];
-        $cmsBlocks = $template['cms_block'];
+        $modelPage = Axis::model('core/page');
+        $select = $modelPage->select(array(
+            'id', 'page' => "CONCAT(module_name, '/', controller_name, '/', action_name)"
+        ))->order(array('module_name', 'controller_name', 'action_name'));
+        $existPages = $select->fetchPairs();
+        $pages      = array();
+        $boxes      = $template['box'];
+        $layouts    = $template['layout'];
+        $cmsBlocks  = $template['cms_block'];
 
+        // import new pages
         foreach ($boxes as $box) {
             foreach ($box['page'] as $page) {
-                $pages[] = $page['module'] . '/'
-                         . $page['controller'] . '/'
-                         . $page['action'];
+                $pages[] = _getConcatPage($page);
             }
         }
-        foreach ($layers as $layer) {
-            $page = $layer['page'];
-            $pages[] = $page['module'] . '/'
-                     . $page['controller'] . '/'
-                     . $page['action'];
+        foreach ($layouts as $_row) {
+            $pages[] = _getConcatPage($_row['page']);
 
         }
         $pages = array_diff(array_unique($pages), $existPages);
+        
         foreach ($pages as $page) {
-            $page = explode('/', $page);
-            Axis::single('core/page')->insert(array(
-                'module_name' => $page[0],
-                'controller_name' => $page[1],
-                'action_name' => $page[2]
-            ));
+            $modelPage->add($page);
         }
-        $existPages = array_flip(Axis::single('core/page')->getPages(true));
+        $existPages = array_flip($select->fetchPairs());
 
+        //import boxes
+        $modelTemplateBox = Axis::model('core/template_box');
+        $modelTemplateBoxPage = Axis::model('core/template_box_page');
         foreach ($boxes as $box) {
-            $boxId = Axis::single('core/template_box')->insert(array(
-                'template_id' => $templateId,
-                'block' => $box['block'],
-                'class' => $box['class'],
-                'sort_order' => $box['sortOrder'],
-                'config' => (string)$box['config'],
-                'box_status' => $box['status']
+            $boxId = $modelTemplateBox->insert(array(
+                'template_id' => $template['id'],
+                'block'       => $box['block'],
+                'class'       => $box['class'],
+                'sort_order'  => $box['sortOrder'],
+                'config'      => (string)$box['config'],
+                'box_status'  => $box['status']
             ));
             $pages = $box['page'];
             foreach ($pages as $page) {
-                Axis::single('core/template_box_page')->insert(array(
-                        'box_id'   => $boxId,
-                        'page_id'  => $existPages[$page['module'] . '/'
-                                     . $page['controller'] . '/'
-                                     . $page['action']],
-                        'box_show' => $page['show'],
-                        'block'    => $page['block'],
-                        'template' => $page['template'],
-                        'tab_container' => $page['tab_container']
+                $modelTemplateBoxPage->insert(array(
+                    'box_id'   => $boxId,
+                    'page_id'  => $existPages[_getConcatPage($page)],
+                    'box_show' => $page['show'],
+                    'block'    => $page['block'],
+                    'template' => $page['template'],
+                    'tab_container' => $page['tab_container']
                 ));
             }
         }
-        foreach ($layers as $layer) {
-            $page = $layer['page'];
-            Axis::single('core/template_layout_page')->insert(array(
-                'template_id' => $templateId,
-                'page_id'     => $existPages[$page['module'] . '/'
-                                 . $page['controller'] . '/'
-                                 . $page['action']],
-                'layout'      => $layer['layout'],
-                'priority'    => $layer['priority']
-            ));
-        }
-
-        $languages = Axis::model('locale/language')->fetchAll();
-        $mBlock = Axis::model('cms/block');
-        foreach ($cmsBlocks as $cmsBlock) {
-            $row = $mBlock->fetchRow(
-                $this->getAdapter()->quoteInto('name = ?', $cmsBlock['name'])
-            );
-            if (!$row instanceof Zend_Db_Table_Row_Abstract) {
-                $content = array();
-                $data = $cmsBlock;
-                foreach ($languages as $language) {
-                    $content[$language['id']]['content'] = $data['content'];
-                }
-                $data['content'] = $content;
-                $mBlock->save($data);
+        //import layouts
+        $modelTemplatePage = Axis::model('core/template_page');
+        foreach ($layouts as $_row) {
+            $layout = is_null($_row['layout']) ? '' : $_row['layout'];
+            $page = _getConcatPage($_row['page']);
+            $parentPage = null;
+            if (isset($_row['parent_page'])) {
+                $parentPage = _getConcatPage($_row['parent_page']);
             }
+            $modelTemplatePage->add(
+                $layout,
+                $page,
+                $template['id'],
+                $parentPage,
+                $_row['priority']
+            );
+        }
+        //import cms blocks
+        $modelBlock = Axis::model('cms/block');
+        foreach ($cmsBlocks as $cmsBlock) {
+            $cmsBlockId = $modelBlock->getIdByName($cmsBlock['name']);
+            if ($cmsBlockId) {
+                Axis::message()->addNotice(
+                    Axis::translate('core')->__(
+                        'Cms block %s already exist', $cmsBlock['name']
+                    )
+                );
+                continue;
+            }
+            $content = array();
+            foreach ($cmsBlock['content'] as $row) {
+                $content[$row['language_id']] = $row;
+            }
+            $cmsBlock['content'] = $content;
+            $modelBlock->save($cmsBlock);
         }
 
         return true;
     }
 
+    public function getTemplateNameById($id)
+    {
+        if (!$row = $this->find($id)->current()) {
+            Axis::message()->addError(
+                Axis::translate('core')->__(
+                    "Template %s not found in 'core_template' table. Check your template values at the 'design/main' config section", $templateId
+            ));
+            return Axis_Core_Model_Template::DEFAULT_TEMPLATE;
+        }
+        return $row->name;
+    }
 }

@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
@@ -47,17 +47,17 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
     public function getList($params = array())
     {
         $select = $this->getAdapter()->select();
-        
+
         $select->from($this->_prefix . 'account_customer_group');
-        
+
         if (isset($params['sort'])&& (isset($params['dir']))) {
             $select->order($params['sort'] . ' ' . $params['dir']);
-        } 
-        
+        }
+
         if (isset($params['where'])) {
           $select->where($params['where']);
         }
-        
+
         return $this->getAdapter()->fetchAll($select->__toString());
     }
 
@@ -78,34 +78,36 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
      */
     public function save($data)
     {
-        $existsCustomerGroups = $this->getAdapter()->fetchCol(
-            "SELECT id FROM " . $this->_prefix . 'account_customer_group'
-        );
+        foreach ($data as $values) {
+            if (!isset($values['id'])
+                || !$row = $this->find($values['id'])->current()) {
 
-        $return = true;
-        foreach ($data as $groupId => $values) {
-            $row = array(
-                'name' => $values['name'],
-                'description' => $values['description']
-            );
-            
-            if (in_array($groupId, $existsCustomerGroups)
-                && Axis_Account_Model_Customer_Group::GROUP_GUEST_ID !== $groupId
-                && Axis_Account_Model_Customer_Group::GROUP_ALL_ID !== $groupId) {
-                $return = $return && $this->update(
-                    $row,
-                    $this->getAdapter()->quoteInto("id = ?", $groupId)
-                );
+                unset($values['id']);
+                $row = $this->createRow();
+                $oldGroupData = null;
             } else {
-                $return = $return && $this->insert($row);
+                if (Axis_Account_Model_Customer_Group::GROUP_GUEST_ID === $values['id']
+                    && Axis_Account_Model_Customer_Group::GROUP_ALL_ID === $values['id']) {
+                    // disallow to change system groups
+                    continue;
+                }
+                $oldGroupData = $row->toArray();
             }
+
+            $row->setFromArray($values)
+                ->save();
+
+            Axis::dispatch('account_group_save_after', array(
+                'old_data'  => $oldGroupData,
+                'group'     => $row
+            ));
         }
-        
+
         Axis::message()->addSuccess(
             Axis::translate('account')->__(
                 'Group was saved successfully'
             )
         );
-        return $return;
+        return true;
     }
 }

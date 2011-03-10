@@ -1,0 +1,88 @@
+<?php
+$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.FileTreeMenu.js');
+$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.FileTreePanel.js');
+$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.form.BrowseButton.js');
+$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.UploadPanel.js');
+$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.FileUploader.js');
+
+$this->headScript()
+    ->appendFile('js/ext-axis/src/widgets/ImageBrowser.js')
+    ->appendFile('js/ext-axis/src/widgets/FileTreePanel.js')
+    ->appendFile('js/ext-axis/src/widgets/FileUploader.js')
+    ->appendFile('js/ext-axis/src/widgets/form/ImageUploadField.js');
+
+$this->headScript()
+    ->setProxy('axis_catalog')
+    ->appendFile('js/axis/admin/catalog/index/category.js')
+    ->appendFile('js/axis/admin/catalog/index/category/grid.js')
+    ->appendFile('js/axis/admin/catalog/index/category/window.js')
+    ->appendFile('js/axis/admin/catalog/index/product.js')
+    ->appendFile('js/axis/admin/catalog/index/product/grid.js')
+    ->appendFile('js/axis/admin/catalog/index/panel.js')
+    ->appendFile('js/axis/admin/catalog/index/product/attributeWindow.js')
+    ->appendFile('js/axis/admin/catalog/index/product/modifierCombo.js')
+    ->appendFile('js/axis/admin/catalog/index/product/attributeDetails.js')
+    ->appendFile('js/axis/admin/catalog/index/product/propertyDetails.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/description.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/seo.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/inventory.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/price.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/image.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/property.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/attribute.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/variation.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/category.js');
+
+$this->headScript()
+    ->offsetSetFile(10000, 'js/axis/admin/catalog/index/product/window.js');
+
+// should be added automatically by modular admin layout system
+if (in_array('Axis_Tag', array_keys(Axis::app()->getModules()))) {
+    $this->headScript()->offsetSetFile(500, 'js/axis/admin/tag/catalog_index/tabs/tag.js');
+}
+if (in_array('Axis_Community', array_keys(Axis::app()->getModules()))) {
+    $this->headScript()->offsetSetFile(510, 'js/axis/admin/community/catalog_index/tabs/review.js');
+}
+
+$this->setButtons(array(
+    array(
+        'title'     => Axis::translate('Axis_Catalog')->__('Update Price Indexes'),
+        'onclick'   => 'Product.updatePriceIndex()',
+        'class'     => 'alt-button'
+    )
+));
+?>
+
+<script type="text/javascript">
+
+var manufacturers = [
+<?php
+$json = "{'id': null, 'name': 'None'.l()},\n";
+foreach (Axis_Collect_Manufacturer::collect() as $id => $name) :
+    $name = addslashes($name);
+    $json .= "{'id': $id, 'name': '$name'},\n";
+endforeach;
+echo substr($json, 0, -2);
+?>
+];
+
+var taxClasses = [
+<?php
+$json = "{'id': null, 'name': 'None'.l()},\n";
+foreach (Axis_Collect_TaxClass::collect() as $id => $name) :
+    $name = addslashes($name);
+    $json .= "{'id': $id, 'name': '$name'},\n";
+endforeach;
+echo substr($json, 0, -2);
+?>
+];
+
+<?php if ($this->productId) : ?>
+
+Ext.onReady(function() {
+    Product.load(<?php echo $this->productId?>);
+});
+
+<?php endif; ?>
+
+</script>

@@ -4,9 +4,9 @@
     <?php if ($this->paging['limit'] == $this->paging['count']): ?>
        <strong><?php echo $this->paging['count'] ?> <?php echo $this->translate('catalog')->__('Item(s)')?></strong>
     <?php else:
-    $_current = ($this->paging['page'] - 1) * $this->paging['limit'] + 1;
+        $_current = ($this->paging['page'] - 1) * $this->paging['limit'] + 1;
     ?>
-        <strong><?php echo $this->translate('catalog')->__('Item(s)')?> <?php echo $_current ?> to <?php echo ($_current + count($this->products) - 1) ?> of <?php echo $this->paging['count'] ?></strong>
+        <strong><?php echo $this->translate('catalog')->__('Item(s) %d to %d of %d', $_current, $_current + count($this->products) - 1, $this->paging['count'])?></strong>
     <?php endif ?>
     </td>
 

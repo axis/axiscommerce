@@ -35,8 +35,10 @@ class Axis_Log_Box_Visitor extends Axis_Core_Box_Virtual_Abstract
 {
     public function init()
     {
-        if (Axis::config()->log->main->enabled)  {
-            Axis::single('log/visitor')->updateVisitor();
+        if (!Axis::config('log/main/enabled'))  {
+            return false;
         }
+        Axis::single('log/visitor')->updateVisitor();
+        return true;
     }
 }

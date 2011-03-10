@@ -1,8 +1,20 @@
-<?php if (count($this->product['properties'])) : ?>
+<?php
+$hasVisibleProperties = false;
+foreach ($this->product['properties'] as $property) {
+    if (!$property['visible']) {
+        continue;
+    }
+    $hasVisibleProperties = true;
+    break;
+}
+
+if ($hasVisibleProperties) : ?>
 <div class="product-properties">
     <dl class="product-properties-list">
     <?php foreach ($this->product['properties'] as $property) :
-        if (!$property['visible']): continue; endif;
+        if (!$property['visible']):
+            continue;
+        endif;
      ?>
         <dt>
             <label>
@@ -16,11 +28,14 @@
         </dt>
         <dd>
             <?php
-               $value = $this->escape($property['value']);
-               echo $value ? $value :$this->translate('catalog')->__('Empty');
+                if (!empty($property['value']) || 0 == $property['value']) :
+                    echo $property['value'];
+                else:
+                    echo $this->translate('catalog')->__('Empty');
+                endif;
             ?>
         </dd>
-    <?php endforeach ?>
+    <?php endforeach; ?>
     </dl>
 </div>
 <?php endif ?>

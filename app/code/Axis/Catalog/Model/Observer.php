@@ -37,17 +37,20 @@
 class Axis_Catalog_Model_Observer
 {
     /**
-     * Send in_stock notificatations
+     * Sends catalog notificatations
+     * - catalog_product_in_stock
+     * - catalog_product_backorder
      *
      * @param array $data
-     *  Axis_Catalog_Model_Product_Row|Axis_Catalog_Model_Product_Variation_Row $product
-     *  Axis_Catalog_Model_Product_Stock_Row $stock
+     * - old_data     = Stock array data before save
+     * - stock      = Axis_Catalog_Model_Product_Stock_Row
+     * - product    = Axis_Catalog_Model_Product_Row
      * @return void
      */
     public function notifyStockUpdate($data)
     {
-        if (($data['old_in_stock'] == 0 && $data['stock']->in_stock == 1)
-            || ($data['old_backorder'] == 0 && $data['stock']->backorder == 1)
+        if (($data['old_data']['in_stock'] == 0 && $data['stock']->in_stock == 1)
+            || ($data['old_data']['backorder'] == 0 && $data['stock']->backorder == 1)
                 && $data['product']->quantity > $data['stock']->min_qty) {
 
             if ($data['stock']->in_stock) {
@@ -59,17 +62,24 @@ class Axis_Catalog_Model_Observer
     }
 
     /**
-     * Send low_stock, in_stock, out_of_stock notificatations
+     * Sends catalog notifications:
+     * - catalog_product_backorder
+     * - catalog_product_in_stock
+     * - catalog_product_low_stock
+     * - catalog_product_out_of_stock
      *
      * @param array $data
-     *  Axis_Catalog_Model_Product_Row|Axis_Catalog_Model_Product_Variation_Row $product
-     *  Axis_Catalog_Model_Product_Stock_Row $stock
+     * - old_quantity   = float
+     * - new_quantity   = float
+     * - product        = Axis_Catalog_Model_Product_Row
+     * - variation      = Axis_Db_Table_Row[optional]
+     * - stock          = Axis_Catalog_Model_Product_Stock_Row
      * @return void
      */
     public function notifyQuantityUpdate($data)
     {
         if (($data['old_quantity'] <= $data['stock']->min_qty
-            && $data['product']->quantity > $data['stock']->min_qty)
+            && $data['new_quantity'] > $data['stock']->min_qty)
                 && ($data['stock']->in_stock || $data['stock']->backorder)) {
 
             if ($data['stock']->in_stock) {
@@ -78,13 +88,150 @@ class Axis_Catalog_Model_Observer
                 Axis::dispatch('catalog_product_backorder', $data);
             }
         } elseif ($data['old_quantity'] > $data['stock']->notify_qty
-            && $data['product']->quantity <= $data['stock']->notify_qty) {
+            && $data['new_quantity'] <= $data['stock']->notify_qty) {
 
             Axis::dispatch('catalog_product_low_stock', $data);
         } elseif ($data['old_quantity'] > $data['stock']->min_qty
-            && $data['product']->quantity <= $data['stock']->min_qty) {
+            && $data['new_quantity'] <= $data['stock']->min_qty) {
 
             Axis::dispatch('catalog_product_out_of_stock', $data);
         }
+    }
+
+    /**
+     * Calls for notifyQuantityUpdate after saving existing product
+     * Sends catalog notifications:
+     * - catalog_product_backorder
+     * - catalog_product_in_stock
+     * - catalog_product_low_stock
+     * - catalog_product_out_of_stock
+     *
+     * @param array $data
+     * - old_data   = Product old data. Null if product is new
+     * - product    = Axis_Catalog_Model_Product_Row
+     */
+    public function onProductUpdate($data)
+    {
+        if (null === $data['old_data']) {
+            return;
+        }
+
+        $stock = Axis::model('catalog/product_stock')
+            ->find($data['product']->id)
+            ->current();
+
+        $this->notifyQuantityUpdate(array(
+            'old_quantity'  => $data['old_data']['quantity'],
+            'new_quantity'  => $data['product']->quantity,
+            'product'       => $data['product'],
+            'stock'         => $stock
+        ));
+    }
+
+    /**
+     * Update catalog_product_price_index table after product save
+     * Sends notifications:
+     * - catalog_product_price_update
+     *
+     * @param array $data
+     * - old_data   = Product old data. Null if product is new
+     * - product    = Axis_Catalog_Model_Product_Row
+     */
+    public function updatePriceIndexOnProductSave($data)
+    {
+        Axis::model('catalog/product_price_index')->updateIndexesByProducts(
+            array($data['product']['id'] => $data['product']->toArray())
+        );
+    }
+
+    /**
+     * Update price indexes after removing product from some categories
+     *
+     * @param array $data
+     * - product_ids    = array
+     * - category_ids   = array
+     */
+    public function updatePriceIndexOnProductRemove($data)
+    {
+        Axis::model('catalog/product_price_index')->updateIndexesByProducts(
+            Axis::model('catalog/product')
+                ->select('*')
+                ->where('id IN (?)', $data['product_ids'])
+                ->fetchAssoc()
+        );
+    }
+
+    /**
+     * Update price indexes after moving product between categories
+     *
+     * @param array $data
+     * - product_ids    = array
+     * - category_id    = int
+     */
+    public function updatePriceIndexOnProductMove($data)
+    {
+        Axis::model('catalog/product_price_index')->updateIndexesByProducts(
+            Axis::model('catalog/product')
+                ->select('*')
+                ->where('id IN (?)', $data['product_ids'])
+                ->fetchAssoc()
+        );
+    }
+
+    /**
+     * Update catalog_product_price_index table after discount save
+     * Sends notifications:
+     * - catalog_product_price_update
+     *
+     * @param array $data
+     * - old_data   = Discount old data. Null if discount is new
+     * - discount   = Axis_Discount_Model_Discount_Row
+     */
+    public function updatePriceIndexOnDiscountSave($data)
+    {
+        $oldProducts = array();
+        if (null !== $data['old_data']) {
+            if (!$data['old_data']['is_active']
+                && !$data['discount']['is_active']) {
+
+                return;
+            }
+            $oldProducts = $data['old_data']['products'];
+        }
+
+        Axis::model('catalog/product_price_index')->updateIndexesByProducts(
+            $oldProducts + $data['discount']->getApplicableProducts()
+        );
+    }
+
+    /**
+     * Updates catalog_product_price_index after dicount was deleted
+     *
+     * @param array $data
+     * - discount_data
+     */
+    public function updatePriceIndexOnDiscountDelete($data)
+    {
+        Axis::model('catalog/product_price_index')->updateIndexesByProducts(
+            $data['discount_data']['products']
+        );
+    }
+
+    /**
+     * Updates catalog_product_price_index after customer group was added
+     *
+     * @param array $data
+     * - old_data   = Customer group old data
+     * - group      = Axis_Db_Table_Row
+     */
+    public function updatePriceIndexOnCustomerGroupAdd($data)
+    {
+        if (null !== $data['old_data']) {
+            return;
+        }
+
+        Axis::model('catalog/product_price_index')->updateIndexesByCustomerGroupIds(
+            array($data['group']['id'])
+        );
     }
 }

@@ -216,9 +216,9 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
                 ->current()
                 ->name;
 
-            Axis::message()->addError(
+            Axis::message()->addNotice(
                 Axis::translate('checkout')->__(
-                    'Set required attribute : %s', $productOptionName
+                    'Set required attribute: %s', $productOptionName
                 )
             );
             return false;
@@ -389,12 +389,14 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
 
         return Axis::single('catalog/product_attribute')
             ->select(array(
+                'option_id',
+                'option_value_id',
                 'value' => "IF (cpovt.name != '', cpovt.name, cpav.attribute_value)"
             ))
             ->joinInner(
                 'catalog_product_option',
                 'cpo.id = cpa.option_id',
-                'visible'
+                array('visible', 'code')
             )
             ->joinInner(
                 'catalog_product_option_text',
@@ -414,7 +416,6 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
             ->where('cpa.modifier = 0')
             ->where('cpot.language_id = ?', $languageId)
             ->order('cpo.sort_order')
-            ->order('value')
             ->fetchAll();
     }
 
@@ -428,7 +429,7 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
             ->joinInner(
                 'catalog_product_option',
                 'cpo.id = cpa.option_id',
-                array('input_type', 'visible')
+                array('input_type', 'visible', 'code')
             )
             ->joinInner(
                 'catalog_product_option_text',
@@ -462,7 +463,7 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
             ->select('*')
             ->joinInner('catalog_product_option',
                 'cpo.id = cpa.option_id',
-                array('input_type', 'visible')
+                array('input_type', 'visible', 'code')
             )
             ->joinInner('catalog_product_option_text',
                 'cpot.option_id = cpa.option_id',

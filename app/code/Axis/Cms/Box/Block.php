@@ -37,14 +37,14 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
     protected $_class = 'box-static-block';
     protected $_disableWrapper = true;
     
-    public function initData()
+    protected function _beforeRender()
     {
-        if (!isset($this->_data['staticBlock'])) {
+        if (!$this->hasStaticBlock()) {
             return false;
         }
         
         $content = Axis::single('cms/block')->getContentByName(
-            $this->_data['staticBlock']
+            $this->getStaticBlock()
         );
         
         if (!$content) {
@@ -60,6 +60,7 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
         }
 
         $this->setData('content', $content);
+        return true;
     }
 
     /**
@@ -82,19 +83,10 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
                         $params
                     );
                 }
-                return call_user_func(array(self::$view, $helper), $params);
+                return call_user_func(array($this->getView(), $helper), $params);
                 break;
         }
        
        return '';
-    }
-
-    /**
-     *
-     * @return bool
-     */
-    public function hasContent()
-    {
-        return $this->hasData('content');
     }
 }

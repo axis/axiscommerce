@@ -464,6 +464,14 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
         $data = $primary = array();
         if (is_array($args[0])) {
             foreach ($keyNames as $key) {
+                if (false === isset($args[0][$key])) {
+                    continue;
+                }
+                if (false === is_numeric($args[0][$key])) {
+                    unset($args[0][$key]);
+                }
+            }
+            foreach ($keyNames as $key) {
                 $primary[$key] = isset($args[0][$key]) ? $args[0][$key] : -1;
             }
             $data = $args[0];
@@ -496,4 +504,15 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
         }
         return $row->setFromArray($data);
     }
+
+//    /**
+//     *
+//     * @param array $rowData
+//     * @return mixed The primary key value(s), as an associative array if the
+//     *     key is compound, or a scalar if the key is single-column.
+//     */
+//    public function save(array $rowData)
+//    {
+//        return $this->getRow($rowData)->save();
+//    }
 }

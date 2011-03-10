@@ -50,8 +50,7 @@ class Axis_Locale
             }
         }
 
-        if (Zend_Registry::isRegistered('area')
-            && 'install' == Zend_Registry::get('area')) {
+        if (Axis_Area::isInstaller()) {
 
             $session = Axis::session('install');
 
@@ -93,8 +92,7 @@ class Axis_Locale
             ->select(array('locale', 'id'))
             ->fetchPairs();
 
-        if (Zend_Registry::isRegistered('area')
-            && 'admin' == Zend_Registry::get('area')) {
+        if (Axis_Area::isBackend()) {
 
             $session->locale = $locale;
             $defaultLanguage = Axis::config('locale/main/language_admin');
@@ -150,20 +148,20 @@ class Axis_Locale
     {
         if (!Zend_Registry::isRegistered('Zend_Locale')) {
 
-            if ('front' === Zend_Registry::get('area')
+            if (Axis_Area::isFrontend()
                 && Axis_Controller_Router_Route::hasLocaleInUrl()) {
 
                 self::setLocale(Axis_Controller_Router_Route::getCurrentLocale());
 
-            } elseif ('admin' === Zend_Registry::get('area')
+            } elseif (Axis_Area::isBackend()
                 && isset(Axis::session()->locale)) {
 
                 self::setLocale(Axis::session()->locale);
-            } elseif ('install' === Zend_Registry::get('area')
+            } elseif (Axis_Area::isInstaller()
                 && isset(Axis::session('install')->current_locale)) {
 
                 self::setLocale(Axis::session('install')->current_locale);
-            } elseif ('install' === Zend_Registry::get('area')) {
+            } elseif (Axis_Area::isInstaller()) {
 
                 self::setLocale(self::DEFAULT_LOCALE);
             } else {
@@ -233,8 +231,7 @@ class Axis_Locale
     public static function getLanguageId()
     {
         if (!isset(Axis::session()->language)) {
-            if (Zend_Registry::isRegistered('area')
-                && 'admin' == Zend_Registry::get('area')) {
+            if (Axis_Area::isBackend()) {
 
                 Axis::session()->language = Axis::config('locale/main/language_admin');
             } else {

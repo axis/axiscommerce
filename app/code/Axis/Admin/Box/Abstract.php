@@ -34,26 +34,26 @@
  */
 abstract class Axis_Admin_Box_Abstract extends Axis_Core_Box_Abstract
 {
-    public function toHtml()
+    public function render()
     {
-        if (!$this->_isAllowed
-            || false === $this->initData() 
-            || !$this->hasContent()) {
+        if (!$this->_enabled || !$this->_beforeRender()) {
 
             return '';
         }
-        self::$view->box = $this;
+        $this->getView()->box = $this;
         
-        if (empty($this->_data['template'])) {
-            $templateName = $this->_data['boxName'];
-            $templateName[0] = strtolower($templateName[0]);
-            $this->template = $templateName . '.phtml';
+        if (!$this->hasData('template')) {
+            if (false === function_exists('lcfirst') ) {
+                function lcfirst($str) {
+                    return (string)(strtolower(substr($str, 0, 1)) . substr($str, 1));
+                }
+            }
+            $this->template = lcfirst($this->box_name) . '.phtml';
         }
-        
-        if ($this->disableWrapper) {
-            $boxPath = 'box/' . $this->template;
-            return self::$view->render($boxPath);
+        $path = 'box/box.phtml';
+        if ($this->disable_wrapper) {
+            $path = 'box/' . $this->template;
         }
-        return self::$view->render('box/box.phtml');
+        return $this->getView()->render($path);
     }
 }

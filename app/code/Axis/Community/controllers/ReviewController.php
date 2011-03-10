@@ -79,7 +79,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             $keywords = array();
             foreach ($this->view->data['reviews'] as $review) {
                 $productIds[] = $review['product_id'];
-                $keywords[$review['product_name']] = $review['product_name'];
+                $keywords[$review['product']['name']] = $review['product']['name'];
             }
 
             $this->view->meta()
@@ -130,12 +130,12 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             $author = empty($review['author']) ?
                 Axis::translate('community')->__('Guest') : $review['author'];
             $this->view->pageTitle = Axis::translate('community')->__(
-                "%s: Review by %s", $review['product_name'], $author
+                "%s: Review by %s", $review['product']['name'], $author
             );
             $this->view->meta()->setTitle(Axis::translate('community')->__(
-                    "%s: Review by %s", $review['product_name'], $author
+                    "%s: Review by %s", $review['product']['name'], $author
                 ))
-                ->setKeywords($review['product_name'] . ',' . $author)
+                ->setKeywords($review['product']['name'] . ',' . $author)
             ;
             $this->view->review = $review;
             $this->view->average_ratings = Axis::single('community/review')
@@ -192,7 +192,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         if (count($this->view->data['reviews'])) {
             reset($this->view->data['reviews']);
             $review = current($this->view->data['reviews']);
-            $productName = $review['product_name'];
+            $productName = $review['product']['name'];
 
             $this->view->productId = $review['product_id'];
             $this->view->average_ratings = Axis::single('community/review')
@@ -277,7 +277,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             $keywords = array();
             foreach ($this->view->data['reviews'] as $review) {
                 $productIds[] = $review['product_id'];
-                $keywords[$review['product_name']] = $review['product_name'];
+                $keywords[$review['product']['name']] = $review['product']['name'];
             }
 
             $nickname = $customerId = $this->_getParam('id');
