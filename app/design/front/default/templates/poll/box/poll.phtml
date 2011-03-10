@@ -1,4 +1,4 @@
-<?php 
+<?php
 $box      = $this->box;
 $question = $box->getData('question');
 $answers  = $box->getData('answers');
@@ -18,7 +18,7 @@ function validatePollBox(form) {
 
 function sendForm(form) {
     if (validatePollBox(form)) {
-          
+
         $.ajax({
             type: "POST",
             url : Axis.baseUrl + Axis.langUrl + '/poll/index/save',
@@ -46,9 +46,9 @@ function sendForm(form) {
                 <?php else : ?>
                     <input id="vote-<?php echo $answer['id'] ?>" name="vote[]" type="radio" value="<?php echo $answer['id'];?>" class="poll_vote" />
                 <?php endif;?>
-                    <label for="vote-<?php echo $answer['id'] ?>">
-                        <?php echo $answer['answer'];?>
-                    </label> 
+                    <label for="vote-<?php echo $answer['id'] ?>"><?php
+                        echo $answer['answer'];
+                    ?></label>
                 </li>
             <?php endforeach; ?>
             </ol>
