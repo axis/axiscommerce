@@ -1,0 +1,9 @@
+; This file is for CGI/FastCGI installations.
+; Rename it to php.ini or php5.ini, if it doesn't work
+
+magic_quotes_gpc = off
+
+extension=mcrypt.so
+
+; GoDaddy hosting fix
+;cgi.fix_pathinfo = 1
