@@ -114,7 +114,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
 
             if ('Axis_Cms_Block_' === substr($box['class'], 0, strlen('Axis_Cms_Block_'))) {
                 $name = substr($box['class'], strlen('Axis_Cms_Block_'));
-                
+
                 $rowset = Axis::single('cms/block')->select('*')
                     ->join('cms_block_content', 'cb.id = cbc.block_id', '*')
                     ->where('cb.name = ?', $name)
@@ -122,7 +122,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                 $languageIds = array_keys(Axis_Collect_Language::collect());
 //                $cmsBlocks = array();
                 foreach ($rowset as $row) {
-                    
+
                     if (isset($cmsBlocks[$row['id']]['content'])) {
                         $content = $cmsBlocks[$row['id']]['content'];
                     } else {
@@ -167,15 +167,15 @@ class Axis_Core_Model_Template extends Axis_Db_Table
 
     /**
      *
-     * @param string $themeNameXml
+     * @param string $xmlFilePath Path to the xml file
      * @return string
      */
-    private function  _parseXml($themeNameXml)
+    private function  _parseXml($xmlFilePath)
     {
-        if (!is_readable($themeNameXml)) {
-            $themeNameXml = Axis::config('system/path') . '/var/templates/' . $themeNameXml;
+        if (!is_readable($xmlFilePath)) {
+            $xmlFilePath = Axis::config('system/path') . '/var/templates/' . $xmlFilePath;
         }
-        if (!is_readable($themeNameXml)) {
+        if (!is_readable($xmlFilePath)) {
             return false;
         }
 
@@ -209,20 +209,19 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             }
         }
         $xml = new XMLReader();
-        $xml->open($themeNameXml);
+        $xml->open($xmlFilePath);
         $assoc = _xml2assoc($xml);
         $xml->close();
         return current($assoc);
     }
 
     /**
-     *
-     * @param string $xmlFileName
+     * @param string $xmlFilePath Path to imported xml file
      * @return bool
      */
-    public function validateBeforeImport($xmlFileName)
+    public function validateBeforeImport($xmlFilePath)
     {
-        $template = $this->_parseXml($xmlFileName);
+        $template = $this->_parseXml($xmlFilePath);
         if ($templateId = $this->getIdByName($template['name'])) {
             return false;
         }
@@ -231,16 +230,16 @@ class Axis_Core_Model_Template extends Axis_Db_Table
 
     /**
      *
-     * @param string $xmlFileName
+     * @param string $xmlFilePath
      * @return bool
      */
-    public function importTemplateFromXmlFile($xmlFileName)
+    public function importTemplateFromXmlFile($xmlFilePath)
     {
         function _getConcatPage(array $page) {
             return $page['module'] . '/' . $page['controller'] . '/' . $page['action'];
         }
 
-        $template = $this->_parseXml($xmlFileName);
+        $template = $this->_parseXml($xmlFilePath);
 
         $template['id'] = $this->getIdByName($template['name']);
         $templateRow = $this->getRow($template);
@@ -268,7 +267,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
 
         }
         $pages = array_diff(array_unique($pages), $existPages);
-        
+
         foreach ($pages as $page) {
             $modelPage->add($page);
         }
