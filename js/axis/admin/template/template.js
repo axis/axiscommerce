@@ -210,24 +210,18 @@ Ext.onReady(function() {
 
     var importForm = new Ext.FormPanel({
         url: Axis.getUrl('template_index/import'),
-        defaults: {width: 130},
+        fileUpload: true,
+        defaults: {
+            anchor: '100%',
+            allowBlank: false
+        },
         border: false,
         bodyStyle: 'padding: 10px 5px 0',
-        items: [new Ext.form.ComboBox({
-            triggerAction: 'all',
+        items: [{
             fieldLabel: 'Template'.l(),
-            displayField: 'template',
-            typeAhead: true,
-            name: 'templateName',
-            allowBlank: false,
-            editable: false,
-            mode: 'local',
-            forceSelection: false,
-            store: templateStore,
-            lazyRender: true,
-            anchor: '98%',
-            valueField: 'template'
-        })]
+            name: 'template',
+            xtype: 'fileuploadfield'
+        }]
     });
 
     var templateForm = new Ext.FormPanel({
