@@ -1,22 +1,46 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>';?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<?php $gmDate =  gmdate('Y-m-d');?>
-<?php foreach($this->categories as $item) :?>
+<?php $gmDate = gmdate('Y-m-d');?>
+<?php 
+
+    $oldLocale = Axis_Locale::getLocale();
+    $locales = Axis::single('locale/language')
+            ->select(array('id', 'locale'))
+            ->fetchPairs();
+
+    foreach ($locales as $languageId => &$_locale) {
+        Axis_Locale::setLocale($_locale);
+        $_locale = Axis_Locale::getLanguageUrl();
+    }
+    Axis_Locale::setLocale($oldLocale);
+?>
+<?php foreach($this->categories as $_category) :
+
+        if (!isset($locales[$_category['language_id']])) {
+            continue;
+        }
+?>
         <url>
             <loc><?php echo  htmlentities($this->hurl(array(
-                    'cat' => array('value' => $item['id'], 'seo' => $item['key_word']),
+                    'cat'        => array(
+                        'value' => $_category['id'],
+                        'seo'   => $_category['key_word']
+                    ),
+                    'locale'     => $locales[$_category['language_id']],
                     'controller' => 'catalog',
-                    'action' => 'view'
+                    'action'     => 'view'
                 ), false, true), ENT_QUOTES, "UTF-8");?></loc>
             <lastmod><?php echo $gmDate; ?></lastmod>
             <changefreq><?php echo $this->changefreq['categories']; ?></changefreq>
             <priority><?php echo $this->priority['categories']; ?></priority>
         </url>
 <?php  endforeach;?>
-<?php foreach($this->products as $item) :?>
+</urlset>
+
+<?php return;foreach($this->products as $_product) :?>
         <url>
             <loc><?php echo htmlentities($this->hurl(array(
-                    'cat' => array('value' => $item['id'], 'seo' => $item['key_word']),
+                    'cat' => array('value' => $_product['id'], 'seo' => $_product['key_word']),
                     'controller' => 'catalog',
                     'action' => 'view'
                 ), false, true), ENT_QUOTES, "UTF-8");?></loc>
@@ -25,10 +49,10 @@
             <priority><?php echo $this->priority['products'] ;?></priority>
         </url>
 <?php endforeach;?>
-<?php foreach($this->pagesCats as $item) :?>
+<?php foreach($this->pagesCats as $_category) :?>
         <url>
             <loc><?php echo 
-                $this->serverName . htmlentities($this->url(array('cat' => $item['link']), 'cms_category', true), ENT_QUOTES, "UTF-8");
+                $this->serverName . htmlentities($this->url(array('cat' => $_category['link']), 'cms_category', true), ENT_QUOTES, "UTF-8");
             ?></loc>
             <lastmod><?php echo $gmDate; ?></lastmod>
             <changefreq><?php echo $this->changefreq['pages']; ?></changefreq>
@@ -36,10 +60,10 @@
         </url>
 <?php endforeach;?>
 
-<?php foreach($this->pages as $item) :?>
+<?php foreach($this->pages as $_page) :?>
         <url>
             <loc><?php echo  $this->serverName .
-                htmlentities($this->url(array('page' => $item['link']), 'cms_page', true), ENT_QUOTES, "UTF-8" );
+                htmlentities($this->url(array('page' => $_page['link']), 'cms_page', true), ENT_QUOTES, "UTF-8" );
             ?></loc>
             <lastmod><?php echo $gmDate; ?></lastmod>
             <changefreq><?php echo $this->changefreq['pages'];?></changefreq>

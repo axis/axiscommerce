@@ -34,6 +34,8 @@
 class Axis_Catalog_Model_Product_Category extends Axis_Db_Table
 {
     protected $_name = 'catalog_product_category';
+    protected $_selectClass = 'Axis_Catalog_Model_Product_Category_Select';
+
 
     public function getCategoriesByProductIds(array $productIds)
     {
@@ -94,8 +96,7 @@ class Axis_Catalog_Model_Product_Category extends Axis_Db_Table
             if (!is_array($siteIds)) {
                 $siteIds = array($siteIds);
             }
-            $select->joinLeft(
-                'catalog_category',
+            $select->joinLeft('catalog_category',
                 'cpc.category_id = cc.id'
             )
             ->where('cc.site_id IN (?)', $siteIds);

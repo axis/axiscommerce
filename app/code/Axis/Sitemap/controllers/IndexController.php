@@ -57,9 +57,8 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
         $siteId = Axis::getSiteId();
         $items = Axis::single('catalog/category')
             ->getFlatTree(Axis_Locale::getLanguageId(), $siteId, true);
-        $this->view->items = current($items);
-        $this->view->items['siteId'] = $siteId;
-        $this->render();
+        $this->view->categories = current($items);
+        $this->render('categories');
     }
 
     public function getAllProductsAction()
@@ -71,18 +70,25 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
             'Site Map All Products'
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
-        $products = array();
         $siteId = Axis::getSiteId();
-        $productRowset = Axis::single('catalog/product_category')
-            ->getAllActiveProducts(Axis_Locale::getLanguageId(), $siteId);
-        foreach ($productRowset as $product) {
-            $product['lvl'] = 1 ;
-            $products[] = $product;
+        $products = Axis::single('catalog/product_category')->select()
+            ->distinct()
+            ->from('catalog_product_category', array())
+            ->joinLeft('catalog_product',
+                'cp.id = cpc.product_id',
+                array('id'))
+            ->addName(Axis_Locale::getLanguageId())
+            ->addKeyWord()
+            ->addActiveFilter()
+            ->addDateAvailableFilter()
+            ->addSiteFilter($siteId)
+            ->fetchAll();
+        foreach ($products as &$product) {
+            $product['lvl'] = 1;
         }
 
-        $this->view->items = $products;
-        $this->view->items['siteId'] = $siteId;
-        $this->render();
+        $this->view->products = $products;
+        $this->render('products');
     }
 
     public function getAllPagesAction()

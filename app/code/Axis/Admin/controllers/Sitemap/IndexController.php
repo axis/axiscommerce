@@ -36,8 +36,8 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('sitemap')->__('Sitemap');
-        $this->view->sitesList = Axis::single('core/site')
-            ->fetchAll()->toArray();
+        $this->view->sitesList = Axis::single('core/site')->fetchAll()
+            ->toArray();
         $this->view->sites = Axis_Collect_Site::collect();
         $this->view->engines = array_values(
             Axis::single('sitemap/file_engine')->getEngines()
@@ -45,13 +45,13 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    private function _generateXmlSitemap($row)
+    private function _generateXmlSitemap(Axis_Db_Table_Row $row, $languageId)
     {
         /*
          * Get categories
          */
         $this->view->categories = current(Axis::single('catalog/category')
-            ->getFlatTree($row['lang_id'], $row['site_id'], true)
+            ->getFlatTree($languageId, $row->site_id, true)
         );
         $config = Axis::config()->sitemap;
 
@@ -62,7 +62,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
          * Get products
          */
         $this->view->products = Axis::single('catalog/product_category')
-            ->getAllActiveProducts($row['lang_id'], $row['site_id']);
+            ->getAllActiveProducts($languageId, $row->site_id);
 
         $changefreq['products'] = $config->products->frequency;
         $priority['products']   = $config->products->priority;
@@ -80,7 +80,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         $pages = array();
         if ($config->cms->showPages) {
             $pages = Axis::single('cms/page')
-                ->getPageListByActiveCategory($categoryIds, $row['lang_id']);
+                ->getPageListByActiveCategory($categoryIds, $languageId);
         }
         $this->view->pages     = $pages;
         $this->view->pagesCats = $categories;
@@ -88,7 +88,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         $priority['pages']   = $config->cms->priority;
 
         $this->view->serverName = Axis::single('core/site')
-            ->find($row['site_id'])
+            ->find($row->site_id)
             ->current()
             ->base;
 
@@ -98,16 +98,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         $script = $this->getViewScript('xml', false);
         $xml = $this->view->render($script);
         return $xml;
-//        $dir = Axis::config()->system->path . '/' ;
-//        if (!is_dir($dir) && !mkdir($dir)) {
-//            Axis::message()->addError(
-//                Axis::translate('core')->__(
-//                    'Dir %s not exist', $dir
-//                )
-//            );
-//            return false;
-//        }
-//        $filename = $dir . $config['filename'] . '.xml';
+//        $filename = Axis::config('system/path') . '/' . $row['filename'] . '.xml';
 //        if (@file_put_contents($filename, $xml)) {
 //
 //            return true;
@@ -155,9 +146,101 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         return $info;
     }
 
+    public function getXmlAction()
+    {
+        $this->layout->disableLayout();
+
+        $filename = $this->_getParam('filename');
+        $alpha = new Zend_Filter_Alnum();
+        $filename = $alpha->filter($filename);
+        $filename .= '.xml';
+        
+        $siteId = $this->_getParam('site_id');
+
+        $this->view->categories = Axis::single('catalog/category')->select('*')
+            ->addName()
+            ->addKeyWord()
+            ->order('cc.lft')
+            ->addSiteFilter($siteId)
+            ->addDisabledFilter()
+            ->fetchAll()
+            ;
+
+        $config = Axis::config()->sitemap;
+
+        $changefreq['categories'] = $config->categories->frequency ;
+        $priority['categories'] = $config->categories->priority ;
+
+        /*
+         * Get products
+         */
+        $this->view->products = Axis::single('catalog/product_category')->select()
+            ->distinct()
+            ->from('catalog_product_category', array())
+            ->joinLeft('catalog_product',
+                'cp.id = cpc.product_id',
+                array('id'))
+            ->addName(Axis_Locale::getLanguageId())
+            ->addKeyWord()
+            ->addActiveFilter()
+            ->addDateAvailableFilter()
+            ->addSiteFilter($siteId)
+            ->fetchAll();
+
+        $changefreq['products'] = $config->products->frequency;
+        $priority['products']   = $config->products->priority;
+//
+//        /*
+//         * Get cms pages
+//         */
+//        $modelCmsCategory = Axis::single('cms/category');
+//        $categories       = $modelCmsCategory->getActiveCategory();
+//
+//        $categoryIds = array ();
+//        foreach ($categories as $category) {
+//             $categoryIds[] = $category['id'];
+//        }
+//        $pages = array();
+//        if ($config->cms->showPages) {
+//            $pages = Axis::single('cms/page')
+//                ->getPageListByActiveCategory($categoryIds, $languageId);
+//        }
+//        $this->view->pages     = $pages;
+//        $this->view->pagesCats = $categories;
+//        $changefreq['pages'] = $config->cms->frequency;
+//        $priority['pages']   = $config->cms->priority;
+//
+//        $this->view->serverName = Axis::single('core/site')
+//            ->find($siteId)
+//            ->current()
+//            ->base;
+//
+        $this->view->changefreq = $changefreq;
+        $this->view->priority   =  $priority;
+
+        $script = $this->getViewScript('xml', false);
+        $content = $this->view->render($script);
+
+        $this->getResponse()
+            ->clearAllHeaders()
+            ->setHeader('Content-Description','File Transfer', true)
+            ->setHeader('Content-Type','application/octet-stream', true)
+            ->setHeader('Content-Disposition','attachment; filename=' . $filename, true)
+            ->setHeader('Content-Transfer-Encoding','binary', true)
+            ->setHeader('Expires','0', true)
+            ->setHeader('Cache-Control','must-revalidate, post-check=0, pre-check=0', true)
+            ->setHeader('Pragma','public', true)
+//            ->setHeader('Content-Length: ', filesize($content), true)
+            ;
+        $this->getResponse()->setBody($content);
+
+
+    }
+
     public function saveAction()
     {
         $this->layout->disableLayout();
+        return;
         $data = $this->_getAllParams();
         if (!sizeof($data)) {
             return $this->_helper->json->sendFailure();
@@ -177,17 +260,10 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
 
         $filename = Axis::config('system/path') . '/' . $filename . '.xml';
 
-        $rowset = Axis::single('sitemap/file')->find($data['id']);
+        $row = Axis::single('sitemap/file')->find($data['id'])->current();
 
-        if ($rowset->count()) {
-            $row = $rowset->current();
-            /* remove old file */
-            $oldFilename = Axis::config('system/path') . '/'
-                         . $row->filename . '.xml';
-
-            if (is_file($oldFilename)) {
-                unlink($oldFilename);
-            }
+        if ($row) {
+            $row->removeFile();
         }
         /* check for file exists */
         if (is_file($filename)) {
@@ -198,7 +274,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        if ($rowset->count()) {// if edit, then update
+        if ($row->count()) {// if edit, then update
             Axis::single('sitemap/file')->update(array(
                 'filename' =>  $alpha->filter($data['filename']),
                 'generated_at' => Axis_Date::now()->toSQLString(),
@@ -223,27 +299,12 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
                 ->save($data['engine_ids'], $data['id']);
         }
         // generate xml sitemap
-        $row = Axis::single('sitemap/file')->find($data['id'])->current()->toArray();
-        $row['lang_id'] = Axis_Locale::getLanguageId();
+        $row = Axis::single('sitemap/file')->find($data['id'])->current();//->toArray();
+//        $row['lang_id'] = Axis_Locale::getLanguageId();
         
-//        $this->_helper->json->sendJson(array(
-//            'success' => $this->_generateXmlSitemap($row)
-//        ));
-
-        $content = $this->_generateXmlSitemap($row);
-        $this->getResponse()
-            ->clearAllHeaders()
-            ->setHeader('Content-Description','File Transfer', true)
-            ->setHeader('Content-Type','application/octet-stream', true)
-            ->setHeader('Content-Disposition','attachment; filename=' . $filename, true)
-            ->setHeader('Content-Transfer-Encoding','binary', true)
-            ->setHeader('Expires','0', true)
-            ->setHeader('Cache-Control','must-revalidate, post-check=0, pre-check=0', true)
-            ->setHeader('Pragma','public', true)
-//            ->setHeader('Content-Length: ', filesize($content), true)
-            ;
-        $this->getResponse()->setBody($content);
-
+        $this->_helper->json->sendJson(array(
+            'success' => $this->_generateXmlSitemap($row, Axis_Locale::getLanguageId())
+        ));
     }
 
     public function listAction()

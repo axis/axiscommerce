@@ -1,33 +1,8 @@
 <?php echo $this->title($this->pageTitle) ?>
-
-<a href="<?php echo $this->href('/sitemap');?>">
-    <?php echo $this->translate('catalog')->__('Categories')?>
-</a>
-<a href="<?php echo $this->href('/sitemap/get-all-products') ?>">
-    <?php echo $this->translate('catalog')->__('All Products')?>
-</a>
-<a href="<?php echo $this->href('/sitemap/get-all-pages')?>">
-    <?php echo $this->translate('cms')->__('Pages')?>
-</a>
-<hr/>
+<?php echo $this->render('index/nav.phtml'); ?>
 <span>
     <?php echo $this->treeCount . " " . $this->translate('core')->__("Item(s)"); ?>
 </span>
 <?php echo $this->cmsTree($this->tree); ?>
 <br/>
-<ul>
-    <li><a href="<?php echo $this->href('search') ?>"
-        rel="nofollow"
-        ><?php echo $this->translate('search')->__('Advanced Search')?></a></li>
-    <li><a href="<?php echo $this->href('checkout/cart', true) ?>"
-        rel="nofollow"
-        ><?php echo $this->translate('checkout')->__('Shopping Cart')?></a></li>
-    <li><a href="<?php echo $this->href($this->catalogUrl) ?>"
-        ><?php echo $this->translate('catalog')->__('Products')?></a></li>
-    <li><a href="<?php echo $this->href('account', true) ?>"
-        rel="nofollow"
-        ><?php echo $this->translate('account')->__('Account')?></a></li>
-    <li><a href="<?php echo $this->href('contacts') ?>"
-        rel="nofollow"
-        ><?php echo $this->translate('contacts')->__('Contact Us')?></a></li>
-</ul>
+<?php echo $this->render('index/links.phtml'); ?>

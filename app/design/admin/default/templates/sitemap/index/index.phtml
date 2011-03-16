@@ -14,7 +14,7 @@ var gridSitemap, siteMapId;
 var sites = <?php echo Zend_Json_Encoder::encode($this->sitesList);?>;
 var engines = <?php echo Zend_Json_Encoder::encode($this->engines);?>; // @todo 
 </script>
-
+<!--
 <div id="sitemap" style="display:none;">
     <form id="sitemap-form" action="">
         <fieldset style="padding: 10px; border: 0px;">
@@ -42,6 +42,7 @@ var engines = <?php echo Zend_Json_Encoder::encode($this->engines);?>; // @todo
         </fieldset>
     </form>
 </div>
+-->
 
 <div id="result" style="display:none; background-color: rgb(255, 255, 255);">
     <?php foreach ($this->engines as $engine) { ?>
