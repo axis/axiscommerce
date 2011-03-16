@@ -33,27 +33,10 @@
  */
 class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
 {
-    private $_templateId;
-
-    public function init()
-    {
-        parent::init();
-        $this->_helper->layout->disableLayout();
-        $this->_templateId = (int) $this->_getParam('template_id', 0);
-    }
-
-    public function indexAction()
-    {
-        $where = NULL;
-        if ($this->_templateId) {
-            $where = 'template_id = ' . $this->_templateId;
-        }
-        $boxes = Axis::single('core/template_box')->fetchAll($where)->toArray();
-        Zend_Debug::dump($boxes);
-    }
-
     public function listAction()
     {
+        $this->_helper->layout->disableLayout();
+
         $select = Axis::model('core/template_box')->select('*')
             ->calcFoundRows()
             ->addPageIds()
@@ -154,6 +137,8 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
 
     public function editAction()
     {
+        $this->_helper->layout->disableLayout();
+
         $id = $this->_getParam('id');
         $box = Axis::model('core/template_box')
             ->find($id)
@@ -176,6 +161,8 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
 
     public function deleteAction()
     {
+        $this->_helper->layout->disableLayout();
+
         $ids = Zend_Json_Decoder::decode($this->_getParam('data'));
 
         if (!count($ids)) {
