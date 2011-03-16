@@ -50,22 +50,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         /*
          * Get categories
          */
-        $this->view->categories = current(Axis::single('catalog/category')
-            ->getFlatTree($languageId, $row->site_id, true)
-        );
         $config = Axis::config()->sitemap;
-
-        $changefreq['categories'] = $config->categories->frequency ;
-        $priority['categories'] = $config->categories->priority ;
-
-        /*
-         * Get products
-         */
-        $this->view->products = Axis::single('catalog/product_category')
-            ->getAllActiveProducts($languageId, $row->site_id);
-
-        $changefreq['products'] = $config->products->frequency;
-        $priority['products']   = $config->products->priority;
 
         /*
          * Get cms pages
