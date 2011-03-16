@@ -41,7 +41,7 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
         $this->_templateId = (int) $this->_getParam('template_id', 0);
     }
-    
+
     public function indexAction()
     {
         $where = NULL;
@@ -78,29 +78,42 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         $data = $this->_getAllParams();
-        
-        Axis::single('core/template_box')->getRow($data)->save();
-        
-        $modelAssign = Axis::model('core/template_box_page');
-        $modelAssign->delete(
-            Axis::db()->quoteInto('box_id = ?', $data['id'])
-        );
-        foreach ($data['assign'] as $pageId => $_rowData) {
-            if ('' === $_rowData['box_show']) {
-                continue;
-            }
-            foreach ($_rowData as &$_columnValue) {
-                if ('' === $_columnValue) {
-                    $_columnValue = null;
+
+        $row = Axis::model('core/template_box')
+            ->getRow($data['box']);
+        $row->save();
+
+        $mBoxPage = Axis::model('core/template_box_page');
+        $mBoxPage->delete(Axis::db()->quoteInto('box_id = ?', $row->id));
+
+        if (isset($data['assignments'])) {
+            $assignments = Zend_Json::decode($data['assignments']);
+            foreach ($assignments as $_rowData) {
+                if (!isset($_rowData['box_id']) && $_rowData['remove']) {
+                    continue;
+                }
+
+                foreach ($_rowData as &$_columnValue) {
+                    if ('' === $_columnValue) {
+                        $_columnValue = null;
+                    }
+                }
+
+                $_rowData['box_id'] = $row->id;
+                $rowBoxPage = $mBoxPage->getRow($_rowData);
+                if ($_rowData['remove']) {
+                    $rowBoxPage->delete();
+                } else {
+                    $rowBoxPage->save();
                 }
             }
-            $modelAssign->createRow($_rowData)->save();
         }
         Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Box was saved successfully'
-        ));
-        return $this->_helper->json->sendSuccess();
+            Axis::translate('core')->__('Box was saved successfully')
+        );
+        return $this->_helper->json
+            ->setData(array('id' => $row->id))
+            ->sendSuccess();
     }
 
     public function batchSaveAction()
@@ -111,9 +124,7 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
         $modelBlock = Axis::single('core/template_box');
         $modelAssign = Axis::model('core/template_box_page');
         foreach ($data as $rowData) {
-            
             $row = $modelBlock->getRow($rowData);
-            $row->template_id = $this->_templateId;
             $row->save();
 
             $assigns = array_filter(explode(',', $rowData['page_ids']));
@@ -135,43 +146,32 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
             }
         }
         Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Box was saved successfully'
-        ));
-        
+            Axis::translate('core')->__('Box was saved successfully')
+        );
+
         return $this->_helper->json->sendSuccess();
     }
 
     public function editAction()
     {
-        $boxId = $this->_getParam('id');
-        $modelTemplateBox = Axis::model('core/template_box');
-        $this->view->box = $modelTemplateBox->find($boxId)
+        $id = $this->_getParam('id');
+        $box = Axis::model('core/template_box')
+            ->find($id)
             ->current()
             ->toArray();
-        $this->view->templateId = $this->_templateId;
 
-        $this->view->assignments = Axis::model('core/template_box_page')
-            ->select(array('page_id', '*'))
-            ->where('box_id = ?', $boxId)
-            ->fetchAssoc()
-            ;
-        $blockClasses = array();
-        foreach ($modelTemplateBox->getList() as $box) {
-            $type = 'dynamic';
-            if (strstr($box, 'Axis_Cms_Block')) {
-                $type = 'static';
-            }
-            $blockClasses[$type][$box] = $box;
+        $select = Axis::model('core/template_box_page')
+            ->select('*')
+            ->where('box_id = ?', $id);
+
+        $box['assignments'] = array();
+        foreach ($select->fetchAll() as $assignment) {
+            $box['assignments'][] = $assignment;
         }
-        $this->view->boxClasses = $blockClasses;
 
-        $modelPage = Axis::model('core/page');
-        $this->view->pages = $modelPage->select()->order(
-            array('module_name', 'controller_name', 'action_name')
-        )->fetchAll();
-
-        $this->render('form');
+        return $this->_helper->json->sendSuccess(array(
+            'data' => $box
+        ));
     }
 
     public function deleteAction()

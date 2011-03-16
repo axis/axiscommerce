@@ -501,5 +501,10 @@ Locale.module("core", {
     "New Page": "Новая страница",
     "Install All": "Установить все",
     "Upgrade All": "Обновить все",
-    "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while.": "Вы действительно желаете удалить все индексы и создать новые?\nЭто может занять некоторое время."
+    "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while.": "Вы действительно желаете удалить все индексы и создать новые?\nЭто может занять некоторое время.",
+    "Output Container": "Контейнер вывода",
+    "Use Config Value": "Использовать значение конфигурации",
+    "Container": "Контейнер",
+    "Tab": "Таб",
+    "Output Rules": "Правила вывода"
 });

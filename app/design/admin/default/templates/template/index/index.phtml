@@ -1,19 +1,23 @@
 <script type="text/javascript">
-Ext.namespace('Axis', 'Axis.Template', 'Axis.Template.Box');
+Ext.namespace('Axis', 'Axis.Template');
 Axis.pages = <?php echo Zend_Json::encode($this->pages) ?>;
-Axis.Template.Box.classes = <?php echo Zend_Json::encode($this->boxClasses) ?>;
+Axis.boxClasses = <?php echo Zend_Json::encode($this->boxClasses) ?>;
 </script>
 <?php
 $this->headScript()
     ->appendFile('js/ext-ux/multiselect/ComboSelect.js')
     ->appendFile('js/ext-axis/src/widgets/form/ComboSelect.js')
-    ->appendFile('js/axis/admin/template/box.js')
-    ->appendFile('js/axis/admin/template/layout.js')
-    ->appendFile('js/axis/admin/template/template.js')
 
-    //->appendFile('js/axis/admin/template/box/grid.js')
-    //->appendFile('js/axis/admin/template/box/window.js')
-    ;
+    ->appendFile('js/axis/admin/template/index/box.js')
+    ->appendFile('js/axis/admin/template/index/box/grid.js')
+    ->appendFile('js/axis/admin/template/index/box/tabs/general.js')
+    ->appendFile('js/axis/admin/template/index/box/tabs/output.js')
+
+    ->appendFile('js/axis/admin/template/index/layout.js')
+    ->appendFile('js/axis/admin/template/index/template.js');
+
+$this->headScript()
+    ->offsetSetFile(10000, 'js/axis/admin/template/index/box/window.js');
 
 $this->setButtons(array(
     array(
