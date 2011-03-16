@@ -88,18 +88,8 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
         $this->setPages($pages);
     }
 
-    protected function _initLayout()
+    protected function _getLayoutName()
     {
-        $layout = $this->getLayout();
-        $layoutName = $layout->getLayout();
-        if (!empty($layoutName)) {
-            return;
-        }
-        if (Axis_Area::isBackend()) {
-            $layoutName = 'layout';
-            $layout->setLayout($layoutName, false);
-            return;
-        }
         $pages = $this->getPages();
         $themeId = Axis::config('design/main/frontTemplateId');
 
@@ -136,8 +126,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 $layoutName = $theme->default_layout;
             }
         }
-
-        $layout->setLayout($layoutName, false);
+        return $layoutName;
     }
 
     protected function _initBlockAssigns()
@@ -259,9 +248,18 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             return;
         }
 
-        $this->_initPages();
-        $this->_initLayout();
-        $this->_initBlockAssigns();
+        // two logic mix
+        $layoutName = $layout->getLayout();
+        if (Axis_Area::isFrontend()) {
+            $this->_initPages();
+            if (empty($layoutName)) {
+                $layoutName = $this->_getLayoutName();
+            }
+            $this->_initBlockAssigns();
+        } elseif (empty($layoutName)) {
+            $layoutName = 'layout';
+        }
+        $layout->setLayout($layoutName, false);
 
         $response   = $this->getResponse();
         $content    = $response->getBody(true);
