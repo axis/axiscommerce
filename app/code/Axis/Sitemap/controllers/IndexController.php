@@ -54,10 +54,14 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
             'Site Map Categories'
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
-        $siteId = Axis::getSiteId();
-        $items = Axis::single('catalog/category')
-            ->getFlatTree(Axis_Locale::getLanguageId(), $siteId, true);
-        $this->view->categories = current($items);
+        
+        $this->view->categories = Axis::single('catalog/category')->select('*')
+            ->addName(Axis_Locale::getLanguageId())
+            ->addKeyWord()
+            ->order('cc.lft')
+            ->addSiteFilter(Axis::getSiteId())
+            ->addDisabledFilter()
+            ->fetchAll();
         $this->render('categories');
     }
 

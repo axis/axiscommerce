@@ -100,6 +100,9 @@ class Axis_Catalog_Model_Category_Select extends Axis_Db_Table_Select
      */
     public function addSiteFilter($siteId)
     {
+        if (null === $siteId) {
+            return $this;
+        }
         if (!is_array($siteId)) {
             $siteId = array($siteId);
         }
@@ -117,8 +120,17 @@ class Axis_Catalog_Model_Category_Select extends Axis_Db_Table_Select
     }
 
 
-    public function getParts()
+    /**
+     *
+     * @param string $column
+     * @return array
+     */
+    public function fetchAllAndSortByColumn($column)
     {
-        return $this->_parts;
+        $dataset = array();
+        foreach ($this->fetchAll() as $_row) {
+            $dataset[$_row[$column]][] = $_row;
+        }
+        return $dataset;
     }
 }

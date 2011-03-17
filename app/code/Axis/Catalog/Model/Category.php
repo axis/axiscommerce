@@ -123,36 +123,6 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     }
 
     /**
-     * @param int $languageId
-     * @param mixed(array) $siteIds
-     * @param bool $isActive
-     * @return array
-     * <pre>
-     * [site_id => array, site_id => array]
-     * </pre>
-     */
-    public function getFlatTree($languageId, $siteIds = null, $activeOnly = false)
-    {
-        $select = $this->select(array('id', 'site_id', 'lvl', 'lft', 'rgt'))
-            ->addName($languageId)
-            ->addKeyWord()
-            ->order('cc.lft')
-            ->addSiteFilter($siteIds)
-            ;
-        if ($activeOnly) {
-            $select->addDisabledFilter();
-        }
-
-        $select = $select->query();
-        $tree = array();
-        while (($row = $select->fetch())) {
-            $tree[$row['site_id']][] = $row;
-        }
-
-        return $tree;
-    }
-
-    /**
      * Retrive categories info with data to build nested tree
      * Used at the backend, so it returns disabled categories also
      *

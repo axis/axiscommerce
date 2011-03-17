@@ -65,6 +65,9 @@ class Axis_Catalog_Model_Product_Category_Select extends Axis_Db_Table_Select
      */
     public function addSiteFilter($siteId)
     {
+        if (null === $siteId) {
+            return $this;
+        }
         if (!is_array($siteId)) {
             $siteId = array($siteId);
         }

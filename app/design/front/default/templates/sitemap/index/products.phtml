@@ -1,7 +1,7 @@
 <?php echo $this->title($this->pageTitle) ?>
 <?php echo $this->render('index/nav.phtml'); ?>
 <span>
-    <?php echo count($this->products) - 1 .  " " . $this->translate('core')->__("Item(s)");?>
+    <?php echo count($this->products) .  " " . $this->translate('core')->__("Item(s)");?>
 </span>
 <ul class="tree">
     <?php echo $this->navigation($this->products);?>
