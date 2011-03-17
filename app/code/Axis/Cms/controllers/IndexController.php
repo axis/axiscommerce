@@ -38,30 +38,37 @@ class Axis_Cms_IndexController extends Axis_Core_Controller_Front
         $this->view->pageTitle = Axis::translate('cms')->__('Pages');
         $this->view->meta()->setTitle($this->view->pageTitle);
 
-        $categories = Axis::single('cms/category')->getActiveCategory();
+        $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
+            ->addCategoryContentTable()
+            ->columns(array('ccc.link', 'ccc.title'))
+            ->addActiveFilter()
+            ->addSiteFilter(Axis::getSiteId())
+            ->addLanguageIdFilter(Axis_Locale::getLanguageId())
+            ->where('ccc.link IS NOT NULL')
+            ->fetchAssoc();
 
-        $categoriesIds = array ();
+        $pages = Axis::single('cms/page')->select(array('id', 'name'))
+            ->join(array('cpca' => 'cms_page_category'),
+                'cp.id = cpca.cms_page_id',
+                'cms_category_id')
+            ->join('cms_page_content',
+                'cp.id = cpc.cms_page_id',
+                array('link', 'title'))
+            ->where('cp.is_active = 1')
+            ->where('cpc.language_id = ?', Axis_Locale::getLanguageId())
+            ->where('cpca.cms_category_id IN (?)', array_keys($categories))
+            ->fetchAssoc();
+
+        foreach ($pages as $page) {
+            $categories[$page['cms_category_id']]['pages'][$page['id']] = $page;
+        }
+
+        $tree = array();
         foreach ($categories as $category) {
-             $categoriesIds[] = $category['id'];
+            $tree[intval($category['parent_id'])][$category['id']] = $category;
         }
-        $rowset = Axis::single('cms/page')->cache()->getPageListByActiveCategory(
-            $categoriesIds, Axis_Locale::getLanguageId()
-        )      ;
-        $pages = array();
-        foreach ($rowset as $page) {
-            $pages[$page['cms_category_id']][] = $page;
-        }
-        $result = array();
-        foreach ($categories as $category) {
-            $result[intval($category['parent_id'])][$category['id']] = array(
-                'id'    => $category['id'],
-                'title' => $category['title'],
-                'link'  => $category['link'],
-                'pages' => isset($pages[$category['id']]) ?
-                    $pages[$category['id']] : null
-            );
-        }
-        $this->view->tree = $result;
+
+        $this->view->tree = $tree;
         $this->render();
     }
 }

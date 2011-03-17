@@ -55,20 +55,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         /*
          * Get cms pages
          */
-        $modelCmsCategory = Axis::single('cms/category');
-        $categories       = $modelCmsCategory->getActiveCategory();
-
-        $categoryIds = array ();
-        foreach ($categories as $category) {
-             $categoryIds[] = $category['id'];
-        }
-        $pages = array();
-        if ($config->cms->showPages) {
-            $pages = Axis::single('cms/page')
-                ->getPageListByActiveCategory($categoryIds, $languageId);
-        }
-        $this->view->pages     = $pages;
-        $this->view->pagesCats = $categories;
+        
         $changefreq['pages'] = $config->cms->frequency;
         $priority['pages']   = $config->cms->priority;
 
@@ -156,9 +143,6 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         $changefreq['categories'] = $config->categories->frequency ;
         $priority['categories'] = $config->categories->priority ;
 
-        /*
-         * Get products
-         */
         $this->view->products = Axis::single('catalog/product_category')->select()
             ->distinct()
             ->from('catalog_product_category', array())
@@ -174,26 +158,35 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
 
         $changefreq['products'] = $config->products->frequency;
         $priority['products']   = $config->products->priority;
-//
-//        /*
-//         * Get cms pages
-//         */
-//        $modelCmsCategory = Axis::single('cms/category');
-//        $categories       = $modelCmsCategory->getActiveCategory();
-//
-//        $categoryIds = array ();
-//        foreach ($categories as $category) {
-//             $categoryIds[] = $category['id'];
-//        }
-//        $pages = array();
-//        if ($config->cms->showPages) {
-//            $pages = Axis::single('cms/page')
-//                ->getPageListByActiveCategory($categoryIds, $languageId);
-//        }
-//        $this->view->pages     = $pages;
-//        $this->view->pagesCats = $categories;
-//        $changefreq['pages'] = $config->cms->frequency;
-//        $priority['pages']   = $config->cms->priority;
+
+        $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
+            ->addCategoryContentTable()
+            ->columns(array('ccc.link', 'ccc.title'))
+            ->addActiveFilter()
+            ->addSiteFilter(Axis::getSiteId())
+            ->where('ccc.language_id = ?', Axis_Locale::getLanguageId())
+            ->where('ccc.link IS NOT NULL')
+            ->fetchAssoc();
+        $this->view->pagesCats = $categories;
+        
+        $pages = array();
+        if ($config->cms->showPages) {
+            $pages = Axis::single('cms/page')->select(array('id', 'name'))
+                ->join(array('cpca' => 'cms_page_category'),
+                    'cp.id = cpca.cms_page_id',
+                    'cms_category_id')
+                ->join('cms_page_content',
+                    'cp.id = cpc.cms_page_id',
+                    array('link', 'title'))
+                ->where('cp.is_active = 1')
+                ->addLanguageIdFilter(Axis_Locale::getLanguageId())
+                ->where('cpca.cms_category_id IN (?)', array_keys($categories))
+                ->fetchAssoc();
+        }
+        $this->view->pages = $pages;
+
+        $changefreq['pages'] = $config->cms->frequency;
+        $priority['pages']   = $config->cms->priority;
 //
 //        $this->view->serverName = Axis::single('core/site')
 //            ->find($siteId)

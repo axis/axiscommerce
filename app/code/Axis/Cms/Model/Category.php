@@ -37,6 +37,8 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
 
     protected $_rowClass = 'Axis_Cms_Model_Category_Row';
 
+    protected $_selectClass = 'Axis_Cms_Model_Category_Select';
+
     protected $_primary = 'id';
 
     /**
@@ -93,19 +95,6 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
             ->where('ccc.link = ?', $link)
             ->where('cc.site_id = ?', Axis::getSiteId())
             ->fetchOne();
-    }
-
-    public function getActiveCategory()
-    {
-        return $this->select(array('id', 'parent_id'))
-            ->join('cms_category_content',
-                  'ccc.cms_category_id = cc.id',
-                  array('link', 'title')
-            )->where('cc.is_active = 1')
-            ->where('cc.site_id = ?', Axis::getSiteId())
-            ->where('ccc.language_id = ?', Axis_Locale::getLanguageId())
-            ->where('ccc.link is not null')
-            ->fetchAll();
     }
 
     /**

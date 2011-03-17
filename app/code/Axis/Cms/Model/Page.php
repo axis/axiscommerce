@@ -129,22 +129,4 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
             ->fetchAll()
             ;
     }
-
-    public function getPageListByActiveCategory($categoryIds, $languageId)
-    {
-        if (empty($categoryIds)) {
-            return array();
-        }
-        return $this->select(array('id', 'name'))
-            ->join(array('cptc' => 'cms_page_category'),
-                'cp.id = cptc.cms_page_id',
-                'cms_category_id')
-            ->join('cms_page_content',
-                'cp.id = cpc.cms_page_id',
-                array('link', 'title'))
-            ->where('cp.is_active = 1 ')
-            ->where('cpc.language_id = ?', $languageId)
-            ->where('cptc.cms_category_id IN (?)', $categoryIds)
-            ->fetchAssoc();
-    }
 }
