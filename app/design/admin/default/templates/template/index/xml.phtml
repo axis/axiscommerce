@@ -1,58 +1,66 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>';?>
-<?php $template = $this->template; ?> 
+
+<?php $template = $this->template; ?>
 <template>
     <name><?php echo $template['name']; ?></name>
     <default_layout><?php echo $template['default_layout']; ?></default_layout>
-    <?php foreach ($template['boxes'] as $box ) :?>
+<?php foreach ($template['boxes'] as $box ) :?>
     <box multiple="1">
         <class><?php echo $box['class']; ?></class>
         <block><?php echo $box['block']; ?></block>
-        <sortOrder><?php echo $box['sort_order']; ?></sortOrder>
+        <sort_order><?php echo $box['sort_order']; ?></sort_order>
         <config><?php echo $box['config']; ?></config>
-        <status><?php echo $box['box_status']; ?></status>
-        <?php foreach ($box['pages'] as $page ):?>
-            <page multiple="1">
-                <module><?php echo $page['module']; ?></module>
-                <controller><?php echo $page['controller']; ?></controller>
-                <action><?php echo $page['action']; ?></action>
-                <show><?php echo $page['box_show']; ?></show>
-                <block><?php echo $page['block']; ?></block>
-                <template><?php echo $page['template']; ?></template>
-                <tab_container><?php echo $page['tab_container']; ?></tab_container>
-            </page>
-        <?php endforeach;?>
+        <status><?php echo $box['box_status']; ?></status><?php
+        foreach ($box['pages'] as $page ):?>
+
+        <page multiple="1">
+            <module><?php echo $page['module']; ?></module>
+            <controller><?php echo $page['controller']; ?></controller>
+            <action><?php echo $page['action']; ?></action>
+            <show><?php echo $page['box_show']; ?></show>
+            <block><?php echo $page['block']; ?></block>
+            <sort_order><?php echo $page['sort_order']; ?></sort_order>
+            <template><?php echo $page['template']; ?></template>
+            <tab_container><?php echo $page['tab_container']; ?></tab_container>
+        </page><?php
+        endforeach;?>
+
     </box>
-    <?php endforeach ?>
-    <?php foreach ($template['layouts'] as $layout): ?>
+<?php endforeach ?>
+<?php foreach ($template['layouts'] as $layout): ?>
     <layout multiple="1">
         <layout><?php echo $layout['layout']; ?></layout>
         <page>
             <module><?php echo $layout['page']['module']; ?></module>
             <controller><?php echo $layout['page']['controller']; ?></controller>
             <action><?php echo $layout['page']['action']; ?></action>
-        </page>
-        <?php if (isset($layout['parent_page'])) : ?>
+        </page><?php
+        if (isset($layout['parent_page'])) : ?>
+
         <parent_page>
             <module><?php echo $layout['parent_page']['module']; ?></module>
             <controller><?php echo $layout['parent_page']['controller']; ?></controller>
             <action><?php echo $layout['parent_page']['action']; ?></action>
-        </parent_page>
-        <?php endif;?>
+        </parent_page><?php
+        endif;?>
+
         <priority><?php echo $layout['priority']; ?></priority>
     </layout>
-    <?php endforeach; ?>
-    <?php if (isset($template['cms_block']) && count($template['cms_block'])) :?>
-        <?php foreach ($template['cms_block'] as $cmsBlock ): ?>
-        <cms_block multiple="1">
-            <?php foreach ($cmsBlock['content'] as $languageId => $content ): ?>
-            <content multiple="1">
-                <language_id><?php echo $languageId;?></language_id>
-                <content><![CDATA[<?php echo $content; ?>]]></content>
-            </content>
-            <?php endforeach; ?>
-            <name><?php echo $cmsBlock['name']; ?></name>
-            <is_active><?php echo $cmsBlock['is_active']; ?></is_active>
-        </cms_block>
-        <?php endforeach; ?>
-    <?php endif;?>
+<?php endforeach; ?>
+<?php if (isset($template['cms_block']) && count($template['cms_block'])) :?>
+<?php foreach ($template['cms_block'] as $cmsBlock ): ?>
+    <cms_block multiple="1"><?php
+        foreach ($cmsBlock['content'] as $languageId => $content ): ?>
+
+        <content multiple="1">
+            <language_id><?php echo $languageId;?></language_id>
+            <content><![CDATA[<?php echo $content; ?>]]></content>
+        </content><?php
+        endforeach; ?>
+
+        <name><?php echo $cmsBlock['name']; ?></name>
+        <is_active><?php echo $cmsBlock['is_active']; ?></is_active>
+    </cms_block>
+<?php endforeach; ?>
+<?php endif;?>
 </template>

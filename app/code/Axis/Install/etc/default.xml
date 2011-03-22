@@ -2,861 +2,861 @@
 <template>
     <name>default</name>
     <default_layout>layout_3columns</default_layout>
-        <box multiple="1">
+    <box multiple="1">
         <class>Axis_Core_Template</class>
         <block>beforeBodyEnd</block>
         <sortOrder>10</sortOrder>
-        <config>template:core/box/tabScript.phtml</config>
+        <config>{"template":"core/box/tabScript.phtml"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Locale_Currency</class>
         <block>left</block>
         <sortOrder>10</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>account</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Account_Navigation</class>
         <block>left</block>
         <sortOrder>10</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>account</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Account_AddressBook</class>
         <block>content</block>
         <sortOrder>127</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>account</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Account_Wishlist</class>
         <block>content</block>
         <sortOrder>127</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>account</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_Compare</class>
         <block>right</block>
         <sortOrder>70</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>product-compare</controller>
-                <action>*</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>product-compare</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_Filters</class>
         <block>left</block>
         <sortOrder>70</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>index</controller>
-                <action>product</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>product-compare</controller>
-                <action>*</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>index</controller>
+            <action>product</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>product-compare</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_New</class>
         <block>content</block>
         <sortOrder>30</sortOrder>
-        <config>products_count:2,title:New products,columns_count:2</config>
+        <config>{"products_count":2,"title":"New products","columns_count":2,"template":"catalog/box/highlight/grid.wide.phtml","tab_container":"home"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>core</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template>catalog/box/highlight/grid.wide.phtml</template>
-                <tab_container>home</tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_Featured</class>
         <block>content</block>
         <sortOrder>100</sortOrder>
-        <config>products_count:3,title:Store hottest products</config>
+        <config>{"products_count":3,"title":"Store hottest products","template":"catalog/box/highlight/grid.phtml"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>core</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template>catalog/box/highlight/grid.phtml</template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_Manufacturer</class>
         <block>right</block>
         <sortOrder>100</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>index</controller>
-                <action>view</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>index</controller>
+            <action>view</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_Product</class>
         <block>content</block>
         <sortOrder>20</sortOrder>
-        <config></config>
+        <config>{"tab_container":"product-info"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>index</controller>
-                <action>product</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container>product-info</tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>index</controller>
+            <action>product</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Cms_Navigation</class>
         <block>left</block>
         <sortOrder>100</sortOrder>
-        <config>disable_wrapper:true</config>
+        <config>{"disable_wrapper":1}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>index</controller>
-                <action>product</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>account</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>index</controller>
+            <action>product</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Cms_Block_header_links</class>
         <block>header</block>
         <sortOrder>100</sortOrder>
-        <config>disable_wrapper:true</config>
+        <config>{"disable_wrapper":1}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Community_ReviewProduct</class>
         <block>content</block>
         <sortOrder>30</sortOrder>
-        <config></config>
+        <config>{"tab_container":"product-info"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>index</controller>
-                <action>product</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container>product-info</tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>index</controller>
+            <action>product</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Discount_Special</class>
         <block>content</block>
         <sortOrder>10</sortOrder>
-        <config>products_count:2,title:Season sale,columns_count:2</config>
+        <config>{"products_count":2,"title":"Season sale","columns_count":2,"template":"catalog/box/highlight/grid.wide.phtml","tab_container":"home"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>core</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template>catalog/box/highlight/grid.wide.phtml</template>
-                <tab_container>home</tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_GoogleAnalytics_Ga</class>
         <block>beforeBodyEnd</block>
         <sortOrder>100</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Log_Visitor</class>
         <block>content</block>
         <sortOrder>100</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_PaymentPaypal_ExpressButton</class>
         <block>content</block>
         <sortOrder>100</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>checkout</module>
-                <controller>cart</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>checkout</module>
+            <controller>cart</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Poll_Poll</class>
         <block>right</block>
         <sortOrder>110</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Sales_Recent</class>
         <block>content</block>
         <sortOrder>100</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>account</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Search_Search</class>
         <block>header</block>
         <sortOrder>100</sortOrder>
-        <config>disable_wrapper:true</config>
+        <config>{"disable_wrapper":1}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Search_Search</class>
         <block>content</block>
         <sortOrder>100</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>search</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>search</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Tag_Product</class>
         <block>content</block>
         <sortOrder>100</sortOrder>
-        <config></config>
+        <config>{"tab_container":"product-info"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>catalog</module>
-                <controller>index</controller>
-                <action>product</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container>product-info</tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>index</controller>
+            <action>product</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Tag_Account</class>
         <block>content</block>
         <sortOrder>110</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>account</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_Navigation</class>
         <block>header</block>
         <sortOrder>127</sortOrder>
-        <config>disable_wrapper:true,template:catalog/box/navigationTop.phtml</config>
+        <config>{"disable_wrapper":1,"template":"catalog/box/navigationTop.phtml"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Checkout_Cart</class>
         <block>right</block>
         <sortOrder>50</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>checkout</module>
-                <controller>cart</controller>
-                <action>*</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>checkout</module>
-                <controller>cart</controller>
-                <action>index</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>account</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>checkout</module>
+            <controller>cart</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>checkout</module>
+            <controller>cart</controller>
+            <action>index</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Cms_Block_about_us</class>
         <block>content</block>
         <sortOrder>50</sortOrder>
-        <config>title:About Us,class:box-about-us</config>
+        <config>{"title":"About Us","class":"box-about-us","tab_container":"home"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>core</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container>home</tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Cms_Block_home.banner</class>
         <block>beforeContent</block>
         <sortOrder>10</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>core</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Cms_Block_sidebar.banner</class>
         <block>right</block>
         <sortOrder>60</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>core</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Checkout_Cart</class>
         <block>left</block>
         <sortOrder>50</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>account</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>checkout</module>
-                <controller>cart</controller>
-                <action>*</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
-                <module>checkout</module>
-                <controller>cart</controller>
-                <action>index</action>
-                <show>0</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>account</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>checkout</module>
+            <controller>cart</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>checkout</module>
+            <controller>cart</controller>
+            <action>index</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_Bestseller</class>
         <block>content</block>
         <sortOrder>40</sortOrder>
-        <config>products_count:2,title:Bestsellers,columns_count:2</config>
+        <config>{"products_count":2,"title":"Bestsellers","columns_count":2,"template":"catalog/box/highlight/grid.wide.phtml","tab_container":"home"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>core</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template>catalog/box/highlight/grid.wide.phtml</template>
-                <tab_container>home</tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Catalog_Popular</class>
         <block>right</block>
         <sortOrder>10</sortOrder>
-        <config>products_count:5,title:Popular products,template:catalog/box/highlight/sidebar.phtml</config>
+        <config>{"products_count":5,"title":"Popular products","template":"catalog/box/highlight/sidebar.phtml"}</config>
         <status>1</status>
-                    <page multiple="1">
-                <module>core</module>
-                <controller>index</controller>
-                <action>index</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Account_Wishlist</class>
         <block>right</block>
         <sortOrder>100</sortOrder>
-        <config>template:account/box/wishlist/sidebar.phtml</config>
+        <config>{"template":"account/box/wishlist/sidebar.phtml"}</config>
         <status>1</status>
-                    <page multiple="1">
+        <page multiple="1">
             <module>catalog</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-                    <page multiple="1">
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
             <module>checkout</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-        <box multiple="1">
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
         <class>Axis_Tag_Cloud</class>
         <block>left</block>
         <sortOrder>100</sortOrder>
         <config></config>
         <status>1</status>
-                    <page multiple="1">
-                <module>*</module>
-                <controller>*</controller>
-                <action>*</action>
-                <show>1</show>
-                <block></block>
-                <template></template>
-                <tab_container></tab_container>
-            </page>
-            </box>
-            <layout multiple="1">
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <layout multiple="1">
         <layout>layout_2columns-left</layout>
         <page>
             <module>account</module>
             <controller>*</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>account</module>
             <controller>auth</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>account</module>
             <controller>forgot</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>sitemap</module>
             <controller>*</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_2columns-right</layout>
         <page>
             <module>contacts</module>
             <controller>*</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_2columns-right</layout>
         <page>
             <module>core</module>
             <controller>index</controller>
             <action>index</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>core</module>
             <controller>error</controller>
             <action>not-found</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_3columns</layout>
         <page>
             <module>catalog</module>
             <controller>index</controller>
             <action>view</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_2columns-right</layout>
         <page>
             <module>catalog</module>
             <controller>index</controller>
             <action>product</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>catalog</module>
             <controller>product-compare</controller>
             <action>index</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_2columns-left</layout>
         <page>
             <module>community</module>
             <controller>*</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_2columns-right</layout>
         <page>
             <module>poll</module>
             <controller>*</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
             <controller>onepage</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
             <controller>wizard</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
             <controller>cart</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
             <controller>index</controller>
             <action>success</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>paymentpaypal</module>
             <controller>*</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout>layout_1column</layout>
         <page>
             <module>*</module>
             <controller>*</controller>
             <action>*</action>
         </page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
-        <layout multiple="1">
+    <layout multiple="1">
         <layout></layout>
         <page>
             <module>tag</module>
             <controller>account</controller>
             <action>*</action>
         </page>
-                <parent_page>
+        <parent_page>
             <module>account</module>
             <controller>*</controller>
             <action>*</action>
         </parent_page>
-                <priority>100</priority>
+        <priority>100</priority>
     </layout>
     <cms_block multiple="1">
         <content multiple="1">
-                <language_id>1</language_id>
-                <content><![CDATA[<ul class="list-horizontal list-pipe info-menu no-bullet no-indent">
+            <language_id>1</language_id>
+            <content><![CDATA[<ul class="list-horizontal list-pipe info-menu no-bullet no-indent">
         <li class="first-item">Call Us: <span class="blue">1-800-800-8000</span></li>
         <li><a href="{{helper_href(/)}}">Help desk</a></li>
         <li><a href="{{helper_href(/page/shipping)}}">Shipping</a></li>
         <li><a href="{{helper_href(/page/privacy)}}">Privacy</a></li>
         <li><a href="{{helper_href(/sitemap/index)}}">Sitemap</a></li>
     </ul>]]></content>
-            </content>
-            <name>header_links</name>
-            <is_active>1</is_active>
+        </content>
+        <name>header_links</name>
+        <is_active>1</is_active>
     </cms_block>
     <cms_block multiple="1">
         <content multiple="1">
-        <language_id>1</language_id>
-        <content><![CDATA[<div class="box box-pages">
+            <language_id>1</language_id>
+            <content><![CDATA[<div class="box box-pages">
     <div class="head"><h3 class="title">Info</h3></div>
     <div class="content">
         <ul class="informational">
@@ -884,26 +884,23 @@
             </li>
         </ul>
     </div>
-</div>]]>
-        </content>
+</div>]]></content>
         </content>
         <name>footer_links</name>
         <is_active>1</is_active>
     </cms_block>
     <cms_block multiple="1">
         <content multiple="1">
-        <language_id>1</language_id>
-        <content>
-            <![CDATA[<li class="nav-contacts"><a href="{{helper_href(contacts)}}"><span>Contacts</span></a></li>]]>
-        </content>
+            <language_id>1</language_id>
+            <content><![CDATA[<li class="nav-contacts"><a href="{{helper_href(contacts)}}"><span>Contacts</span></a></li>]]></content>
         </content>
         <name>menu</name>
         <is_active>1</is_active>
     </cms_block>
     <cms_block multiple="1">
         <content multiple="1">
-        <language_id>1</language_id>
-        <content><![CDATA[<div class="box box-contacts">
+            <language_id>1</language_id>
+            <content><![CDATA[<div class="box box-contacts">
     <div class="head"><h3 class="title">Axis Demo store</h3></div>
     <div class="content">
         <p>Axis Demo store</p>
@@ -918,8 +915,8 @@
     </cms_block>
     <cms_block multiple="1">
         <content multiple="1">
-                <language_id>1</language_id>
-                <content><![CDATA[<div class="col3-set">
+            <language_id>1</language_id>
+            <content><![CDATA[<div class="col3-set">
   <div class="col-1">
     <p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Sed euismod odio consectetur augue elementum dictum non ac orci. Pellentesque nunc nunc, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
   </div>
@@ -932,7 +929,7 @@
   </div>
 </div>]]></content>
             </content>
-                        <name>about_us</name>
+            <name>about_us</name>
             <is_active>1</is_active>
         </cms_block>
         <cms_block multiple="1">

@@ -20,16 +20,17 @@
  * @license     GNU Public License V3.0
  */
 
-Ext.namespace('Axis', 'Axis.Template', 'Axis.Template.Template', 'Axis.Template.Box');
+Ext.namespace('Axis', 'Axis.Template', 'Axis.Template.Template');
 
 Ext.onReady(function() {
 
     var Template = {
         load: function(node, e) {
-            if (node.id == '0')
+            if (node.id == '0') {
                 return;
+            }
             Template.id = node.id;
-            Axis.Template.Box.loadGrid(node.id);
+            Box.Grid.load(node.id);
             Axis.Template.Layout.loadGrid(node.id);
         },
         create: function() {
@@ -196,7 +197,7 @@ Ext.onReady(function() {
         autoScroll: true,
         activeTab: 0,
         items: [
-            Axis.Template.Box.grid,
+            Box.Grid.el,
             Axis.Template.Layout.grid
         ]
     });

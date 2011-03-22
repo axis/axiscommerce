@@ -501,5 +501,15 @@ Locale.module("core", {
     "New Page": "New Page",
     "Install All": "Install All",
     "Upgrade All": "Upgrade All",
-    "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while.": "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while."
+    "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while.": "Are you sure want to delete old price indexes and create new for all products?\nThis can take a while.",
+    "Output Container": "Output Container",
+    "Use Config Value": "Use Config Value",
+    "Container": "Container",
+    "Tab": "Tab",
+    "Output Rules": "Output Rules",
+    "Add Output Rule": "Add Output Rule",
+    "Additional Configuration": "Additional Configuration",
+    "Disable Wrapper": "Disable Wrapper",
+    "Box Specific Configuration": "Box Specific Configuration",
+    "Basic Configuration": "Basic Configuration"
 });

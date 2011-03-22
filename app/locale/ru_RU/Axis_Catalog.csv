@@ -176,3 +176,6 @@
 "Product", "Продукт"
 "Item(s) %d to %d of %d","Показано %d - %d из %d"
 "Update Price Indexes","Обновить индексы цен"
+"Product Id","№ продукта"
+"Products Count","Количество продуктов"
+"Columns Count","Количество колонок"

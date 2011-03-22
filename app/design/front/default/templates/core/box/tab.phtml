@@ -3,6 +3,6 @@
         <span><?php echo $this->translate()->__($this->box->getData('title')); ?></span>
     </div>
     <div class="content">
-    <?php echo $this->render($this->box->getData('template'));?>
+    <?php echo $this->render($this->box->getTemplate()); ?>
     </div>
 </div>
