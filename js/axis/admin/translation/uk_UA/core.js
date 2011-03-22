@@ -506,5 +506,10 @@ Locale.module("core", {
     "Use Config Value": "Використовувати значення конфігурації",
     "Container": "Контейнер",
     "Tab": "Таб",
-    "Output Rules": "Правила виведення"
+    "Output Rules": "Правила виведення",
+    "Add Output Rule": "Додати правило виведення",
+    "Additional Configuration": "Додаткова конфігурація",
+    "Disable Wrapper": "Відключити обгортку",
+    "Box Specific Configuration": "Конфігурація",
+    "Basic Configuration": "Базова конфігурація"
 });

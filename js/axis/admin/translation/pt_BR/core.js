@@ -506,5 +506,10 @@ Locale.module("core", {
     "Use Config Value": "Use Config Value",
     "Container": "Container",
     "Tab": "Tab",
-    "Output Rules": "Output Rules"
+    "Output Rules": "Output Rules",
+    "Add Output Rule": "Add Output Rule",
+    "Additional Configuration": "Additional Configuration",
+    "Disable Wrapper": "Disable Wrapper",
+    "Box Specific Configuration": "Box Specific Configuration",
+    "Basic Configuration": "Basic Configuration"
 });

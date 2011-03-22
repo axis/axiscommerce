@@ -506,5 +506,10 @@ Locale.module("core", {
     "Use Config Value": "Использовать значение конфигурации",
     "Container": "Контейнер",
     "Tab": "Таб",
-    "Output Rules": "Правила вывода"
+    "Output Rules": "Правила вывода",
+    "Add Output Rule": "Дабавить правило вывода",
+    "Additional Configuration": "Дополнительная конфигурация",
+    "Disable Wrapper": "Отключить обертку",
+    "Box Specific Configuration": "Конфигурация",
+    "Basic Configuration": "Базовая конфигурация"
 });

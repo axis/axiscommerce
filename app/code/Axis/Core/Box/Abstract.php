@@ -115,7 +115,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
                 Axis_Layout::getMvcInstance()->getView()
             );
         }
-        
+
         list($namespace, $module, , $name) = explode('_', get_class($this));
         $this->_enabled = in_array(
             $namespace . '_' . $module,
@@ -124,14 +124,17 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         if (!$this->_enabled) {
             return;
         }
-        $config = array_merge(array(
+        $this->_data = array(
             'box_namespace' => $namespace,
             'box_module'    => $module,
             'box_name'      => $name
-        ), $config);
+        );
         $this->_enabled = $this->refresh()
-            ->setFromArray($config)
-            ->init();
+            ->setFromArray($config);
+
+        if (!isset($config['supress_init'])) { // used at backend box configuration
+            $this->init();
+        }
     }
 
     /**
@@ -143,25 +146,13 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         if (!$this->_enabled || !$this->_beforeRender()) {
             return '';
         }
-        $template = $this->getData('template');
-        if (empty($template)) {
-            if (false === function_exists('lcfirst') ) {
-                function lcfirst($str) {
-                    return (string)(strtolower(substr($str, 0, 1)) . substr($str, 1));
-                }
-            }
-
-            $template = strtolower($this->getData('box_module')) . '/box/'
-                . lcfirst($this->getData('box_name')) . '.phtml';
-            $this->template = $template;
-        }
 
         $this->getView()->box = self::$_stack[] = $this;
 
         if (!empty($this->_data['tab_container'])) {
             $path = 'core/box/tab.phtml';
         } elseif ($this->disable_wrapper) {
-            $path = $this->getData('template');
+            $path = $this->getTemplate();
         } else {
             $path = 'core/box/box.phtml';
         }
@@ -183,6 +174,26 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
             $this->getView()->box = end(self::$_stack);
         }
         return $html;
+    }
+
+    public function getTemplate()
+    {
+        $template = $this->getData('template');
+        if (empty($template)) {
+            if (false === function_exists('lcfirst') ) {
+                function lcfirst($str) {
+                    return (string)(strtolower(substr($str, 0, 1)) . substr($str, 1));
+                }
+            }
+
+            $template = strtolower($this->getData('box_module'))
+                . '/box/'
+                . lcfirst($this->getData('box_name'))
+                . '.phtml';
+
+            $this->template = $template;
+        }
+        return $template;
     }
 
     /**
@@ -210,7 +221,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
                 $_data = $_data[$key];
             }
             return true;
-        } 
+        }
         return isset($this->_data[$key]);
     }
 
@@ -240,18 +251,21 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
 
     /**
      *
-     * @return Axis_Core_Box_Abstract 
+     * @return Axis_Core_Box_Abstract
      */
     public function refresh()
     {
-        $this->_data = array_merge($this->_data, array(
-            'title'           => $this->_title,
-            'class'           => $this->_class,
-            'url'             => $this->_url,
-            'disable_wrapper' => $this->_disableWrapper,
-            'tab_container'   => $this->_tabContainer,
-            'template'        => $this->_template
-        ));
+        $this->_data = array_merge(
+            $this->_data,
+            array(
+                'title'           => $this->_title,
+                'class'           => $this->_class,
+                'url'             => $this->_url,
+                'disable_wrapper' => $this->_disableWrapper,
+                'tab_container'   => $this->_tabContainer,
+                'template'        => $this->_template
+            )
+        );
         return $this;
     }
 
@@ -269,5 +283,34 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     protected function _beforeRender()
     {
         return true;
+    }
+
+    /**
+     * Retrieve the default configuration values of box.
+     * Used at the beckend box edit interface
+     *
+     * @return array
+     */
+    public function getConfigurationValues()
+    {
+        return array(
+            'title'           => $this->_title,
+            'class'           => $this->_class,
+            'url'             => $this->_url,
+            'disable_wrapper' => (int) $this->_disableWrapper,
+            'tab_container'   => $this->_tabContainer,
+            'template'        => $this->getTemplate()
+        );
+    }
+
+    /**
+     * Retrieve the box specific configuration fields.
+     * Used at the beckend box edit interface
+     *
+     * @return array
+     */
+    public function getConfigurationFields()
+    {
+        return array();
     }
 }

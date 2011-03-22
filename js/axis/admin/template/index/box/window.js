@@ -52,7 +52,7 @@ Box.Window = {
                     Box.Window.clearData();
                 } else {
                     var response = Ext.decode(action.response.responseText);
-                    Box.Window.load(response.data.id);
+                    Box.load(response.data.id);
                 }
             }
         });
@@ -105,7 +105,6 @@ Box.Window = {
             }
         });
     }
-
 };
 
 Ext.onReady(function() {

@@ -62,6 +62,16 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
         $data = $this->_getAllParams();
 
+        $config = trim($data['additional_configuration']);
+        if (!empty($config)) {
+            $config = Zend_Json::decode($config);
+        } else {
+            $config = array();
+        }
+        $data['box']['config'] = Zend_Json::encode(
+            array_merge($config, $data['configuration'])
+        );
+
         $row = Axis::model('core/template_box')
             ->getRow($data['box']);
         $row->save();
@@ -107,6 +117,9 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
         $modelBlock = Axis::single('core/template_box');
         $modelAssign = Axis::model('core/template_box_page');
         foreach ($data as $rowData) {
+            if (!isset($rowData['id'])) {
+                $rowData['config'] = '{}';
+            }
             $row = $modelBlock->getRow($rowData);
             $row->save();
 
@@ -124,7 +137,6 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
                         'box_show' => 1
                     ));
                 }
-                $_row->sort_order = $row->sort_order;
                 $_row->save();
             }
         }
@@ -144,6 +156,15 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
             ->find($id)
             ->current()
             ->toArray();
+
+        list($namespace, $module, $name) = explode('_', $box['class']);
+        $boxClass   = Axis::getClass($namespace . '_' . $module . '/' . $name, 'Box');
+        $boxObject  = Axis::model($boxClass, array(
+            'supress_init' => true
+        ));
+
+        $box['configuration_fields'] = $boxObject->getConfigurationFields();
+        $box['configuration_values'] = $boxObject->getConfigurationValues();
 
         $select = Axis::model('core/template_box_page')
             ->select('*')
