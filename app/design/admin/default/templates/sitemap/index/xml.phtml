@@ -1,73 +1,77 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>';?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<?php $gmDate = gmdate('Y-m-d');?>
-<?php 
+<?php
+    $gmDate = gmdate('Y-m-d');
 
     $oldLocale = Axis_Locale::getLocale();
     $locales = Axis::single('locale/language')
             ->select(array('id', 'locale'))
             ->fetchPairs();
-
     foreach ($locales as $languageId => &$_locale) {
         Axis_Locale::setLocale($_locale);
         $_locale = Axis_Locale::getLanguageUrl();
     }
     Axis_Locale::setLocale($oldLocale);
-?>
-<?php foreach($this->categories as $_category) :
 
+    function _getUrlBlock($location, $date, $frequency, $priority)
+    { ?>
+        <url>
+            <loc><?php echo  htmlentities($location, ENT_QUOTES, "UTF-8");?></loc>
+            <lastmod><?php    echo $date; ?></lastmod>
+            <changefreq><?php echo $frequency; ?></changefreq>
+            <priority><?php   echo $priority; ?></priority>
+        </url>
+<?php }
+
+    $frequency = $this->changefreq['categories'];
+    $priority  = $this->priority['categories'];
+    foreach($this->categories as $_category) {
         if (!isset($locales[$_category['language_id']])) {
             continue;
         }
+        $url = $this->hurl(array(
+            'cat'        => array(
+                'value' => $_category['id'],
+                'seo'   => $_category['key_word']
+            ),
+            'locale'     => $locales[$_category['language_id']],
+            'controller' => 'catalog',
+            'action'     => 'view'
+        ), false, true);
+        _getUrlBlock($url, $gmDate, $frequency, $priority);
+    }
+
+    $frequency = $this->changefreq['products'];
+    $priority  = $this->priority['products'];
+    foreach($this->products as $_product) {
+        if (!isset($locales[$_product['language_id']])) {
+            continue;
+        }
+        $url = $this->hurl(array(
+            'cat' => array(
+                'value' => $_product['id'],
+                'seo' => $_product['key_word']
+            ),
+            'locale'     => $locales[$_product['language_id']],
+            'controller' => 'catalog',
+            'action' => 'view'
+        ), false, true);
+        _getUrlBlock($url, $gmDate, $frequency, $priority);
+    }
+
+    $frequency = $this->changefreq['pages'];
+    $priority  = $this->priority['pages'];
+    foreach($this->cmsCategories as $_category) {
+        $url = $this->baseUrl . $this->url(
+            array('cat' => $_category['link']), 'cms_category', true
+        );
+        _getUrlBlock($url, $gmDate, $frequency, $priority);
+    };
+
+    foreach($this->pages as $_page) {
+        $url = $this->baseUrl . $this->url(
+            array('page' => $_page['link']), 'cms_page', true
+        );
+        _getUrlBlock($url, $gmDate, $frequency, $priority); }
 ?>
-        <url>
-            <loc><?php echo  htmlentities($this->hurl(array(
-                    'cat'        => array(
-                        'value' => $_category['id'],
-                        'seo'   => $_category['key_word']
-                    ),
-                    'locale'     => $locales[$_category['language_id']],
-                    'controller' => 'catalog',
-                    'action'     => 'view'
-                ), false, true), ENT_QUOTES, "UTF-8");?></loc>
-            <lastmod><?php echo $gmDate; ?></lastmod>
-            <changefreq><?php echo $this->changefreq['categories']; ?></changefreq>
-            <priority><?php echo $this->priority['categories']; ?></priority>
-        </url>
-<?php  endforeach;?>
-</urlset>
-
-<?php return;foreach($this->products as $_product) :?>
-        <url>
-            <loc><?php echo htmlentities($this->hurl(array(
-                    'cat' => array('value' => $_product['id'], 'seo' => $_product['key_word']),
-                    'controller' => 'catalog',
-                    'action' => 'view'
-                ), false, true), ENT_QUOTES, "UTF-8");?></loc>
-            <lastmod><?php echo $gmDate; ?></lastmod>
-            <changefreq><?php echo $this->changefreq['products']; ?></changefreq>
-            <priority><?php echo $this->priority['products'] ;?></priority>
-        </url>
-<?php endforeach;?>
-<?php foreach($this->pagesCats as $_category) :?>
-        <url>
-            <loc><?php echo 
-                $this->serverName . htmlentities($this->url(array('cat' => $_category['link']), 'cms_category', true), ENT_QUOTES, "UTF-8");
-            ?></loc>
-            <lastmod><?php echo $gmDate; ?></lastmod>
-            <changefreq><?php echo $this->changefreq['pages']; ?></changefreq>
-            <priority><?php echo $this->priority['pages']; ?></priority>
-        </url>
-<?php endforeach;?>
-
-<?php foreach($this->pages as $_page) :?>
-        <url>
-            <loc><?php echo  $this->serverName .
-                htmlentities($this->url(array('page' => $_page['link']), 'cms_page', true), ENT_QUOTES, "UTF-8" );
-            ?></loc>
-            <lastmod><?php echo $gmDate; ?></lastmod>
-            <changefreq><?php echo $this->changefreq['pages'];?></changefreq>
-            <priority><?php echo $this->priority['pages'];?></priority>
-        </url>
-<?php endforeach;?>
 </urlset>
