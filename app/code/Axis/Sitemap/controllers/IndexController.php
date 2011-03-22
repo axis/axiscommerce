@@ -111,7 +111,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
             ->where('ccc.link IS NOT NULL')
             ->fetchAssoc();
 
-        if (Axis::config('sitemap/cms/showPages')) {
+        if (Axis::config('sitemap/cms/showPages') && !empty ($categories)) {
             $pages = Axis::single('cms/page')->select(array('id', 'name'))
                 ->join(array('cpca' => 'cms_page_category'),
                     'cp.id = cpca.cms_page_id',

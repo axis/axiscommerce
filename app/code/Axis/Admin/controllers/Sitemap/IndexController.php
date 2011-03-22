@@ -149,7 +149,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             ->joinLeft('catalog_product',
                 'cp.id = cpc.product_id',
                 array('id'))
-            ->addName(Axis_Locale::getLanguageId())
+            ->addName()
             ->addKeyWord()
             ->addActiveFilter()
             ->addDateAvailableFilter()
@@ -161,27 +161,26 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
 
         $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
             ->addCategoryContentTable()
-            ->columns(array('ccc.link', 'ccc.title'))
+            ->columns(array('ccc.link', 'ccc.title', 'ccc.language_id'))
             ->addActiveFilter()
-            ->addSiteFilter(Axis::getSiteId())
-            ->where('ccc.language_id = ?', Axis_Locale::getLanguageId())
+            ->addSiteFilter($siteId)
             ->where('ccc.link IS NOT NULL')
             ->fetchAssoc();
-        $this->view->pagesCats = $categories;
+        $this->view->cmsCategories = $categories;
         
         $pages = array();
-        if ($config->cms->showPages) {
+        if ($config->cms->showPages && !empty($categories)) {
             $pages = Axis::single('cms/page')->select(array('id', 'name'))
                 ->join(array('cpca' => 'cms_page_category'),
                     'cp.id = cpca.cms_page_id',
                     'cms_category_id')
                 ->join('cms_page_content',
                     'cp.id = cpc.cms_page_id',
-                    array('link', 'title'))
+                    array('link', 'title', 'language_id'))
                 ->where('cp.is_active = 1')
-                ->addLanguageIdFilter(Axis_Locale::getLanguageId())
                 ->where('cpca.cms_category_id IN (?)', array_keys($categories))
-                ->fetchAssoc();
+                ->fetchAssoc()
+                ;
         }
         $this->view->pages = $pages;
 
