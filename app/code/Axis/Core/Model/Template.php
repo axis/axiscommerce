@@ -144,6 +144,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                     'action'        => $pages[$item->page_id]['action'],
                     'box_show'      => $item->box_show,
                     'block'         => $item->block,
+                    'sort_order'    => $item->sort_order,
                     'template'      => $item->template,
                     'tab_container' => $item->tab_container
                 );
@@ -281,7 +282,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                 'template_id' => $template['id'],
                 'block'       => $box['block'],
                 'class'       => $box['class'],
-                'sort_order'  => $box['sortOrder'],
+                'sort_order'  => $box['sort_order'],
                 'config'      => (string)$box['config'],
                 'box_status'  => $box['status']
             ));
@@ -293,7 +294,9 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                     'box_show' => $page['show'],
                     'block'    => $page['block'],
                     'template' => $page['template'],
-                    'tab_container' => $page['tab_container']
+                    'tab_container' => $page['tab_container'],
+                    'sort_order'    => empty($page['sort_order']) ?
+                        new Zend_Db_Expr('NULL') : $page['sort_order']
                 ));
             }
         }
