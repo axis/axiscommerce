@@ -319,10 +319,6 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/page')
             ->add('cms/*/*');
-
-        Axis::single('core/template_box')
-            ->add('Axis_Cms_Block_noscript_notice', 'afterBodyBegin')
-            ->add('Axis_Cms_Block_demo_notice', 'afterBodyBegin');
     }
 
     public function down()

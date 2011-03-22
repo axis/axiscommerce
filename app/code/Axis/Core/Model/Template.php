@@ -283,7 +283,8 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                 'block'       => $box['block'],
                 'class'       => $box['class'],
                 'sort_order'  => $box['sort_order'],
-                'config'      => (string)$box['config'],
+                'config'      => empty($box['config']) ?
+                    '{}' : $box['config'],
                 'box_status'  => $box['status']
             ));
             $pages = $box['page'];
