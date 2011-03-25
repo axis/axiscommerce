@@ -1,7 +1,5 @@
 <?php echo $this->title($this->pageTitle) ?>
 <?php echo $this->render('index/nav.phtml'); ?>
-<ul class="tree">
-    <?php echo $this->nafigation($this->products);?>
-</ul>
+<?php echo $this->navigation()->menu($this->menu)->setUlClass('tree');?>
 <br />
 <?php echo $this->render('index/links.phtml'); ?>

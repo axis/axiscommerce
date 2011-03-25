@@ -55,13 +55,49 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
         
-        $this->view->categories = Axis::single('catalog/category')->select('*')
+        $categories = Axis::single('catalog/category')->select('*')
             ->addName(Axis_Locale::getLanguageId())
             ->addKeyWord()
             ->order('cc.lft')
             ->addSiteFilter(Axis::getSiteId())
             ->addDisabledFilter()
             ->fetchAll();
+
+        $menu = $_container = new Zend_Navigation();
+        $lvl = 0;
+        foreach ($categories as $_category) {
+
+            $uri = $this->view->hurl(array(
+                'cat' => array(
+                    'value' => $_category['id'],
+                    'seo'   => $_category['key_word']
+                ),
+                'controller' => 'catalog',
+                'action'     => 'view'
+            ), false, true);
+
+            $class = 'nav-' . str_replace('.', '-', $_category['key_word']);
+
+            $page = new Zend_Navigation_Page_Uri(array(
+                'label'   => $_category['name'],
+                'title'   => $_category['name'],
+                'uri'     => $uri,
+                'order'   => $_category['lft'],
+                'class'   => $class,
+                'visible' => 'enabled' === $_category['status'] ? true : false
+            ));
+
+            $lvl = $lvl - $_category['lvl'] + 1;
+            for ($i = 0; $i < $lvl; $i++) {
+                $_container = $_container->getParent();
+            }
+
+            $lvl = $_category['lvl'];
+            $_container->addPage($page);
+            $_container = $page;
+        }
+
+        $this->view->menu = $menu;
         $this->render('categories');
     }
 
@@ -74,7 +110,6 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
             'Site Map All Products'
         );
         $this->view->meta()->setTitle($this->view->pageTitle);
-        $siteId = Axis::getSiteId();
         $products = Axis::single('catalog/product_category')->select()
             ->distinct()
             ->from('catalog_product_category', array())
@@ -85,13 +120,33 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
             ->addKeyWord()
             ->addActiveFilter()
             ->addDateAvailableFilter()
-            ->addSiteFilter($siteId)
+            ->addSiteFilter(Axis::getSiteId())
+            ->order('cpd.name')
             ->fetchAll();
-        foreach ($products as &$product) {
-            $product['lvl'] = 1;
-        }
 
-        $this->view->products = $products;
+        $menu = new Zend_Navigation();
+        foreach ($products as $_product) {
+            $uri = $this->view->hurl(array(
+                'cat' => array(
+                    'value' => $_product['id'],
+                    'seo'   => $_product['key_word']
+                ),
+                'controller' => 'catalog',
+                'action'     => 'view'
+            ), false, true);
+
+            $class = 'nav-' . str_replace('.', '-', $_product['key_word']);
+
+            $page = new Zend_Navigation_Page_Uri(array(
+                'label'   => $_product['name'],
+                'title'   => $_product['name'],
+                'uri'     => $uri,
+                'class'   => $class
+            ));
+
+            $menu->addPage($page);
+        }
+        $this->view->menu = $menu;
         $this->render('products');
     }
 
