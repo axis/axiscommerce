@@ -108,8 +108,31 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
             ->addActiveFilter()
             ->addSiteFilter(Axis::getSiteId())
             ->addLanguageIdFilter(Axis_Locale::getLanguageId())
+            ->order('cc.parent_id')
             ->where('ccc.link IS NOT NULL')
             ->fetchAssoc();
+
+        $menu = new Zend_Navigation();
+        
+        foreach ($categories as $_category) {
+
+            $title = empty($_category['title']) ?
+                $_category['link'] : $_category['title'];
+
+            $page = new Zend_Navigation_Page_Mvc(array(
+                'category_id' => $_category['id'],
+                'label'       => $title,
+                'title'       => $title,
+                'route'       => 'cms_category',
+                'params'      => array('cat' => $_category['link']),
+                'class'       => 'icon-folder'
+            ));
+            $_container = $menu->findBy('category_id', $_category['parent_id']);
+            if (null === $_container) {
+                $_container = $menu;
+            }
+            $_container->addPage($page);
+        }
 
         if (Axis::config('sitemap/cms/showPages') && !empty ($categories)) {
             $pages = Axis::single('cms/page')->select(array('id', 'name'))
@@ -122,20 +145,24 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
                 ->where('cp.is_active = 1')
                 ->where('cpc.language_id = ?', Axis_Locale::getLanguageId())
                 ->where('cpca.cms_category_id IN (?)', array_keys($categories))
+                ->order('cpca.cms_category_id')
                 ->fetchAssoc();
-            
-            foreach ($pages as $page) {
-                $categories[$page['cms_category_id']]['pages'][$page['id']] = $page;
+
+            foreach($pages as $_page) {
+                $title = empty($_page['title']) ? $_page['link'] : $_page['title'];
+
+                $page = new Zend_Navigation_Page_Mvc(array(
+                    'label'  => $title,
+                    'title'  => $title,
+                    'route'  => 'cms_page',
+                    'params' => array('cat' => $_page['link']),
+                    'class'  => 'icon-page'
+                ));
+                $_container = $menu->findBy('category_id', $_page['cms_category_id']);
+                $_container->addPage($page);
             }
         }
-
-        $tree = array();
-        foreach ($categories as $category) {
-            $tree[intval($category['parent_id'])][$category['id']] = $category;
-        }
-        
-        $this->view->treeCount = count($pages);
-        $this->view->tree = $tree;
+        $this->view->menu = $menu;
         $this->render('pages');
     }
 }
