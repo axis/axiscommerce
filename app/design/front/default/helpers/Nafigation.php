@@ -31,7 +31,7 @@
  * @subpackage  Axis_View_Helper_Front
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_View_Helper_Navigation
+class Axis_View_Helper_Nafigation
 {
     private $_activeCategories = null;
 
@@ -40,7 +40,7 @@ class Axis_View_Helper_Navigation
         $this->view = $view;
     }
 
-    public function navigation(array $items)
+    public function nafigation(array $items)
     {
         if (!count($items)) {
             return '';
