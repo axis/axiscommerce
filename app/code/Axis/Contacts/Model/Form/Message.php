@@ -35,9 +35,9 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
 {
     protected $_translatorModule = 'contacts';
     
-	public function __construct($options = null)
-   	{
-   	    $default = array(
+    public function __construct($options = null)
+    {
+        $default = array(
             'id' => 'form-contacts',
             'action' => Zend_Controller_Front::getInstance()->getBaseUrl()
                 . Axis_Locale::getLanguageUrl() . '/contacts'
@@ -49,45 +49,49 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
        parent::__construct($default);
        
        $this->addElement('text', 'email', array(
-            'required'  => true,
-            'label'     => 'Email',
-            'class'     => 'input-text required email',
-            'validators' => array('EmailAddress')
+           'required'   => true,
+           'label'      => 'Email',
+           'class'      => 'input-text required email',
+           'validators' => array('EmailAddress'),
+           'skip'       => true
         ));
         $this->addElement('text', 'name', array(
-            'required'  => true,
-            'label'     => 'Full name',
-            'class'     => 'input-text required'
+            'required' => true,
+            'label'    => 'Full name',
+            'class'    => 'input-text required'
         ));
         $this->addElement('text', 'subject', array(
-            'required'  => true,
-            'label'     => 'Subject',
-            'class'     => 'input-text required'
+            'required' => true,
+            'label'    => 'Subject',
+            'class'    => 'input-text required',
+            'skip'     => true
         ));
         
         $departments = Axis_Collect_Department::collect();
         if (count($departments)) {
-            $this->addElement('select', 'department', array(
-               'label' => 'Department'
+            $this->addElement('select', 'department_id', array(
+               'label' => 'Department',
+               'skip'  => true
             ));
-            $this->getElement('department')->options = $departments;
+            $this->getElement('department_id')->options = $departments;
         }
         $this->addElement('textarea', 'message', array(
-            'required'  => true,
-            'label'     => 'Message',
-            'class'     => 'input-text required',
-            'rows' => 6,
-            'cols' => 60
+            'required' => true,
+            'label'    => 'Message',
+            'class'    => 'input-text required',
+            'rows'     => 6,
+            'cols'     => 60,
+            'skip'     => true
         ));
         $this->addDisplayGroup(
-            array('email', 'name', 'subject', 'department', 'message'),
+            array('email', 'name', 'subject', 'department_id', 'message'),
             'contacts',
             array('legend' => 'Contact Us')
         );
         
         $this->getDisplayGroup('contacts')
             ->addRow(array('email', 'name'), 'user_info')
-            ->addRow(array('subject', 'department'), 'message_info')
+            ->addRow(array('subject', 'department_id'), 'message_info')
             ->addRow('message', 'message');
         
         $this->getDisplayGroup('contacts')->getRow('user_info')
@@ -96,7 +100,7 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
         
         $this->getDisplayGroup('contacts')->getRow('message_info')
             ->addColumn('subject', 'col1')
-            ->addColumn('department', 'col2');
+            ->addColumn('department_id', 'col2');
         
         $this->addElement('button', 'submit', array(
             'type' => 'submit',

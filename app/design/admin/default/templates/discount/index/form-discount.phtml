@@ -11,10 +11,10 @@ $this->headScript()->appendFile('/js/axis/admin/discount/form.js');
 </script>
 
 <div id="templates" style="display: none;">
-    <?php echo $this->render('discount-index/condition/price.phtml'); ?>
-    <?php echo $this->render('discount-index/condition/date.phtml'); ?>
-    <?php echo $this->render('discount-index/condition/productId.phtml'); ?>
-    <?php echo $this->render('discount-index/condition/attribute.phtml'); ?>
+    <?php echo $this->render('index/condition/price.phtml'); ?>
+    <?php echo $this->render('index/condition/date.phtml'); ?>
+    <?php echo $this->render('index/condition/productId.phtml'); ?>
+    <?php echo $this->render('index/condition/attribute.phtml'); ?>
 </div>
 
 <?php
@@ -171,26 +171,26 @@ $this->setTabs(array(
                 foreach ($this->discount['conditions']['date']['e-type'] as $i => $etype) {
                     $this->dateEqualType = $etype;
                     $this->dateValue = $this->discount['conditions']['date']['value'][$i];
-                    echo $this->render('discount-index/condition/date.phtml');
+                    echo $this->render('index/condition/date.phtml');
                 }
 
             if (isset($this->discount['conditions']['price']))
                 foreach ($this->discount['conditions']['price']['e-type'] as $i => $etype) {
                     $this->priceEqualType = $etype;
                     $this->priceValue = $this->discount['conditions']['price']['value'][$i];
-                    echo $this->render('discount-index/condition/price.phtml');
+                    echo $this->render('index/condition/price.phtml');
                 }
 
             if (isset($this->discount['productId']))
                 foreach ($this->discount['productId'] as $productId) {
                     $this->prodIdValue = $productId;
-                    echo $this->render('discount-index/condition/productId.phtml');
+                    echo $this->render('index/condition/productId.phtml');
                 }
 
             if (isset($this->discount['attributes']))
                 foreach ($this->discount['attributes'] as $attribute) {
                     $this->attribute = $attribute;
-                    echo $this->render('discount-index/condition/attribute.phtml');
+                    echo $this->render('index/condition/attribute.phtml');
                 }
             ?>
         </div>
