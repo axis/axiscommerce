@@ -45,7 +45,7 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
 
         $select = Axis::single('contacts/message')->select('*')
             ->calcFoundRows()
-            ->addDepartamentFilter($this->_getParam('depId', 0))
+            ->addDepartamentFilter($this->_getParam('departmentId', 0))
             ->addFilters($this->_getParam('filter', array()))
             ->limit(
                 $this->_getParam('limit', 25),
@@ -87,6 +87,75 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
             )
         );
         $this->_helper->json->sendSuccess();
+    }
+
+    
+    public function sendAction()
+    {
+        $this->_helper->layout->disableLayout();
+
+        $data = $this->_getAllParams();
+
+        $from = Axis::model('contacts/department')
+            ->find($data['department_id'])
+            ->current()
+            ->email;
+
+        $customer = Axis::model('account/customer')->fetchRow(
+            Axis::db()->quoteInto('email = ?', $data['email'])
+        );
+
+        //@todo if null need firstname = full name from custom_info fields
+        $firstname = $customer ? $customer->firstname : null;
+        $lastname  = $customer ? $customer->lastname : null;
+
+        try {
+            $mail = new Axis_Mail();
+            if ($customer) {
+                $mail->setLocale($customer->locale);
+            }
+            $configResult = $mail->setConfig(array(
+                'event'   => 'default',
+                'subject' => $data['subject'],
+                'data'    => array(
+                    'text'      => $data['message'],
+                    'firstname' => $firstname,
+                    'lastname'  => $lastname,
+                    'customer'  => $customer
+                ),
+                'to'      => $data['email'],
+                'from'    => array(
+                    'email' => $from
+                )
+            ));
+            $mail->send();
+
+            if ($configResult) {
+                Axis::message()->addSuccess(
+                    Axis::translate('core')->__('Mail was sended successfully')
+                );
+            }
+            $this->_helper->json->sendSuccess();
+        } catch (Zend_Mail_Transport_Exception $e) {
+            Axis::message()->addError(
+                Axis::translate('core')->__('Mail sending was failed.')
+                . ' ' . $e->getMessage()
+            );
+            $this->_helper->json->sendFailure();
+        }
+    }
+
+    public function setStatusAction()
+    {
+        $this->_helper->layout->disableLayout();
+        $row = Axis::single('contacts/message')->fetchRow(
+            $this->db->quoteInto('id = ?', $this->_getParam('id'))
+        );
+        $row->message_status = $this->_getParam('message_status');
+
+        $this->_helper->json->sendJson(array(
+            'success' => $row->save()
+        ));
     }
 
     public function deleteDepartmentAction()
@@ -163,74 +232,6 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
 
         $this->_helper->json->sendSuccess(array(
             'data' => array($result)
-        ));
-    }
-
-    public function sendAction()
-    {
-        $this->_helper->layout->disableLayout();
-
-        $data = $this->_getAllParams();
-
-        $from = Axis::model('contacts/department')
-            ->find($data['depId'])
-            ->current()
-            ->email;
-
-        $customer = Axis::model('account/customer')->fetchRow(
-            Axis::db()->quoteInto('email = ?', $data['email'])
-        );
-
-        //@todo if null need firstname = full name from custom_info fields
-        $firstname = $customer ? $customer->firstname : null;
-        $lastname  = $customer ? $customer->lastname : null;
-
-        try {
-            $mail = new Axis_Mail();
-            if ($customer) {
-                $mail->setLocale($customer->locale);
-            }
-            $configResult = $mail->setConfig(array(
-                'event'   => 'default',
-                'subject' => $data['subject'],
-                'data'    => array(
-                    'text'      => $data['message'],
-                    'firstname' => $firstname,
-                    'lastname'  => $lastname,
-                    'customer'  => $customer
-                ),
-                'to'      => $data['email'],
-                'from'    => array(
-                    'email' => $from
-                )
-            ));
-            $mail->send();
-
-            if ($configResult) {
-                Axis::message()->addSuccess(
-                    Axis::translate('core')->__('Mail was sended successfully')
-                );
-            }
-            $this->_helper->json->sendSuccess();
-        } catch (Zend_Mail_Transport_Exception $e) {
-            Axis::message()->addError(
-                Axis::translate('core')->__('Mail sending was failed.')
-                . ' ' . $e->getMessage()
-            );
-            $this->_helper->json->sendFailure();
-        }
-    }
-
-    public function setStatusAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $row = Axis::single('contacts/message')->fetchRow(
-            $this->db->quoteInto('id = ?', $this->_getParam('id'))
-        );
-        $row->message_status = $this->_getParam('message_status');
-
-        $this->_helper->json->sendJson(array(
-            'success' => $row->save()
         ));
     }
 }

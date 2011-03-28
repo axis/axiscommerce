@@ -41,20 +41,20 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
         if ($this->_request->isPost()) {
             $data = $this->_request->getPost();
             if ($form->isValid($data)) {
-                $customInfo = '';
+                $custom = array();
                 foreach ($form->getElements() as $element) {
                     if (($element->getValue() != '')
                         && (true != $element->getAttrib('skip'))) {
-                        $customInfo .= $element->getLabel()
-                            . ': ' . $element->getValue() . "\n";
+                        $custom[$element->getLabel()] = $element->getValue();
                     }
                 }
-                $data['custom_info'] = $customInfo;
+                $data['custom_info'] = Zend_Json::encode($custom);
                 $data['site_id']     = Axis::getSiteId();
+                
                 Axis::model('contacts/message')->save($data);
 
                 $department = Axis::single('contacts/department')
-                    ->find($data['department'])
+                    ->find($data['department_id'])
                     ->current();
 
                 if ($department) {

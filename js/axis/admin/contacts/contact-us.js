@@ -47,7 +47,7 @@ var Contact = {
             return false;
         }
         if (selectedItems[0]['data']['department_id']) {
-            return selectedItems[0].id;
+            return selectedItems[0]['data']['department_id'];
         }
         return false;
     },
@@ -56,9 +56,6 @@ var Contact = {
         formMail.expand();
         formMail.getForm().submit({
             url: Axis.getUrl('contacts_index/send'),
-            params: {
-                depId: Contact.getSelectedDepartamentId()
-            },
             success: function() {
                 Contact.window.hide();
                 Ext.Ajax.request({
@@ -90,6 +87,7 @@ var Contact = {
         var datetime = selected.data['datetime'];
         formMail.getForm().findField('email').setValue(mail);
         formMail.getForm().findField('subject').setValue('re: '+subject);
+        formMail.getForm().findField('department_id').setValue(Contact.getSelectedDepartamentId());
         var template = new Ext.Template.from('tpl-message');
         Contact.window.items.first().body.update(template.applyTemplate({
             'from'      : mail,
@@ -389,6 +387,9 @@ Ext.onReady(function() {
             xtype: 'textarea',
             height: 130,
             allowBlank: false
+        }, {
+            name: 'department_id',
+            xtype: 'hidden'
         }]
     });
 
@@ -520,7 +521,7 @@ Ext.onReady(function() {
 
     Department.tree.on('click', function (node, e) {
         Dep.id = node.id;
-        ds.baseParams['depId'] = Dep.id;
+        ds.baseParams['departmentId'] = Dep.id;
         ds.load();
     });
     root.expand();
