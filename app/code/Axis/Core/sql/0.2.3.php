@@ -47,8 +47,12 @@ class Axis_Core_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
                 continue;
             }
 
-            if (is_array(Zend_Json::decode($row->config))) {
-                continue;
+            try {
+                if (is_array(Zend_Json::decode($row->config))) {
+                    continue;
+                }
+            } catch (Exception $e) {
+                // non-json content
             }
 
             $config = array();
