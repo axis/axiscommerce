@@ -57,4 +57,18 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
         }
         return $this->columns_count;
     }
+
+    public function getConfigurationFields()
+    {
+        return array(
+            'products_count' => array(
+                'fieldLabel'    => Axis::translate('catalog')->__('Products Count'),
+                'initialValue'  => $this->_productsCount
+            ),
+            'columns_count' => array(
+                'fieldLabel'    => Axis::translate('catalog')->__('Columns Count'),
+                'initialValue'  => $this->_columnsCount
+            )
+        );
+    }
 }

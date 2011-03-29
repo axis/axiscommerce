@@ -67,9 +67,6 @@ class Axis_Cms_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
                 ));
             }
         }
-
-        $mBlock->delete(array('name' => 'noscript_notice'));
-        $mBlock->delete(array('name' => 'demo_notice'));
     }
 
     public function down()

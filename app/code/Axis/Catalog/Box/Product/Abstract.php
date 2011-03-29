@@ -59,4 +59,14 @@ abstract class Axis_Catalog_Box_Product_Abstract extends Axis_Core_Box_Abstract
         }
         return true;
     }
+
+    public function getConfigurationFields()
+    {
+        return array(
+            'product_id' => array(
+                'fieldLabel'    => Axis::translate('catalog')->__('Product Id'),
+                'xtype'         => 'numberfield'
+            )
+        );
+    }
 }

@@ -88,18 +88,8 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
         $this->setPages($pages);
     }
 
-    protected function _initLayout()
+    protected function _getLayoutName()
     {
-        $layout = $this->getLayout();
-        $layoutName = $layout->getLayout();
-        if (!empty($layoutName)) {
-            return;
-        }
-        if (Axis_Area::isBackend()) {
-            $layoutName = 'layout';
-            $layout->setLayout($layoutName, false);
-            return;
-        }
         $pages = $this->getPages();
         $themeId = Axis::config('design/main/frontTemplateId');
 
@@ -136,8 +126,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 $layoutName = $theme->default_layout;
             }
         }
-
-        $layout->setLayout($layoutName, false);
+        return $layoutName;
     }
 
     protected function _initBlockAssigns()
@@ -161,25 +150,28 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
         if ($parentPage) {
             $pages[$parentPage['id']] = $parentPage;
         }
-        $blockset = Axis::single('core/template_box')->select(
-                array('id', 'class', 'block', 'config')
-            )->joinInner('core_template_box_page',
+        $blockset = Axis::single('core/template_box')->select(array(
+                'id', 'class', 'block', 'config',
+                'sort_order' => 'IF (ctbp.sort_order IS NOT NULL, ctbp.sort_order, ctb.sort_order)'
+            ))
+            ->joinInner(
+                'core_template_box_page',
                 'ctbp.box_id = ctb.id',
-                array('box_show',
-                    'sort_order',
+                array(
+                    'box_show',
                     'other_block' => 'block',
                     'template',
                     'tab_container',
                     'page_id'
                 )
-            )->where('ctb.template_id = ?', $themeId)
+            )
+            ->where('ctb.template_id = ?', $themeId)
             ->where('ctb.box_status = 1')
-            ->where('ctbp.page_id IN(?)', array_keys($pages))
-            ->order('ctb.sort_order')
-            ->fetchAll()
-            ;
-        foreach ($blockset as $block) {
+            ->where('ctbp.page_id IN (?)', array_keys($pages))
+            ->order('sort_order')
+            ->fetchAll();
 
+        foreach ($blockset as $block) {
             $container = empty($block['other_block']) ?
                 $block['block'] : $block['other_block'];
             $blockId = $block['id'];
@@ -198,7 +190,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             if (!isset($module) || !isset($box)) {
                 continue;
             }
-            $assign = array(
+            $assign = array_merge(array(
                 'box_namespace' => ucfirst($namespace),
                 'box_module'    => ucfirst($module),
                 'box_name'      => ucfirst($box),
@@ -207,13 +199,14 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 'sort_order'    => $block['sort_order'],
                 'page_id'       => $block['page_id'],
                 'box_show'      => $block['box_show']
-            );
-            if (!empty($block['config'])) {
-                foreach(explode(',', $block['config']) as $_config) {
+            ), Zend_Json::decode($block['config']));
 
-                    list($key, $value) = explode(':', $_config);
-                    $assign[$key] = $value;
+            $perPageRules = array('tab_container', 'template', 'sort_order');
+            foreach ($perPageRules as $ruleKey) {
+                if (empty($block[$ruleKey])) {
+                    continue; // use value from config
                 }
+                $assign[$ruleKey] = $block[$ruleKey];
             }
 
             if (strstr($block['class'], 'Axis_Cms_Block_')) {
@@ -223,11 +216,26 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 }
                 $assign['static_block'] = $staticBlock;
             }
-            $tabContainer = $block['tab_container'];
+
+            $tabContainer = $assign['tab_container'];
             if (!empty($tabContainer)) {
+                if (isset($assigns[$container][$tabContainer][$blockId])) {
+                    $oldPage = $pages[$assigns[$container]
+                        [$tabContainer][$blockId]['page_id']];
+                    $newPage = $pages[$block['page_id']];
+                    if (!$this->_sortPages($oldPage, $newPage)) {
+                        continue;
+                    }
+                }
                 $assigns[$container][$tabContainer][$blockId] = $assign;
+                if (isset($assigns[$container][$blockId])) {
+                    unset($assigns[$container][$blockId]);
+                }
             } else {
                 $assigns[$container][$blockId] = $assign;
+                if (isset($assigns[$container][$tabContainer][$blockId])) {
+                    unset($assigns[$container][$tabContainer][$blockId]);
+                }
             }
         }
 
@@ -259,9 +267,18 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             return;
         }
 
-        $this->_initPages();
-        $this->_initLayout();
-        $this->_initBlockAssigns();
+        // two logic mix
+        $layoutName = $layout->getLayout();
+        if (Axis_Area::isFrontend()) {
+            $this->_initPages();
+            if (empty($layoutName)) {
+                $layoutName = $this->_getLayoutName();
+            }
+            $this->_initBlockAssigns();
+        } elseif (empty($layoutName)) {
+            $layoutName = 'layout';
+        }
+        $layout->setLayout($layoutName, false);
 
         $response   = $this->getResponse();
         $content    = $response->getBody(true);
