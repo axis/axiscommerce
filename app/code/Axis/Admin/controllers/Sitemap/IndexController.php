@@ -45,45 +45,6 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    private function _generateXmlSitemap(Axis_Db_Table_Row $row, $languageId)
-    {
-        /*
-         * Get categories
-         */
-        $config = Axis::config()->sitemap;
-
-        /*
-         * Get cms pages
-         */
-        
-        $changefreq['pages'] = $config->cms->frequency;
-        $priority['pages']   = $config->cms->priority;
-
-        $this->view->serverName = Axis::single('core/site')
-            ->find($row->site_id)
-            ->current()
-            ->base;
-
-        $this->view->changefreq = $changefreq;
-        $this->view->priority   =  $priority;
-
-        $script = $this->getViewScript('xml', false);
-        $xml = $this->view->render($script);
-        return $xml;
-//        $filename = Axis::config('system/path') . '/' . $row['filename'] . '.xml';
-//        if (@file_put_contents($filename, $xml)) {
-//
-//            return true;
-//        }
-//        Axis::message()->addError(
-//            Axis::translate('core')->__(
-//                'Error write file : %s dir chmod 755 need', $filename
-//            )
-//        );
-//
-//        return false;
-    }
-
     private function _pingEngine($engineUrl, $xmlUrl)
     {
         $url = $engineUrl . htmlentities($xmlUrl, ENT_QUOTES, "UTF-8");
@@ -129,7 +90,19 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         
         $siteId = $this->_getParam('site_id');
 
-        $this->view->categories = Axis::single('catalog/category')->select('*')
+        $menu = new Zend_Navigation();
+        $gmDate = gmdate('Y-m-d');
+        $oldLocale = Axis_Locale::getLocale();
+        $locales = Axis::single('locale/language')
+                ->select(array('id', 'locale'))
+                ->fetchPairs();
+        foreach ($locales as $languageId => &$_locale) {
+            Axis_Locale::setLocale($_locale);
+            $_locale = Axis_Locale::getLanguageUrl();
+        }
+        Axis_Locale::setLocale($oldLocale);
+
+        $categories = Axis::single('catalog/category')->select('*')
             ->addName()
             ->addKeyWord()
             ->order('cc.lft')
@@ -137,13 +110,51 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             ->addDisabledFilter()
             ->fetchAll()
             ;
-
         $config = Axis::config()->sitemap;
 
-        $changefreq['categories'] = $config->categories->frequency ;
-        $priority['categories'] = $config->categories->priority ;
+        $changefreq = $config->categories->frequency ;
+        $priority   = $config->categories->priority ;
 
-        $this->view->products = Axis::single('catalog/product_category')->select()
+        $_container = $menu;
+        $lvl = 0;
+        foreach ($categories as $_category) {
+            if (!isset($locales[$_category['language_id']])) {
+                continue;
+            }
+            $uri = $this->view->hurl(array(
+                'cat' => array(
+                    'value' => $_category['id'],
+                    'seo'   => $_category['key_word']
+                ),
+                'locale'     => $locales[$_category['language_id']],
+                'controller' => 'catalog',
+                'action'     => 'view'
+            ), false, true);
+
+
+            $page = new Zend_Navigation_Page_Uri(array(
+                'label'      => $_category['name'],
+                'title'      => $_category['name'],
+                'uri'        => $uri,
+                'order'      => $_category['lft'],
+                'visible'    => 'enabled' === $_category['status'] ? true : false,
+                'lastmod'    => $gmDate,
+                'changefreq' => $changefreq,
+                'priority'   => $priority,
+                'id'         => $_category['id'] . $_category['language_id']
+            ));
+
+            $lvl = $lvl - $_category['lvl'] + 1;
+            for ($i = 0; $i < $lvl; $i++) {
+                $_container = $_container->getParent();
+            }
+
+            $lvl = $_category['lvl'];
+            $_container->addPage($page);
+            $_container = $page;
+        }
+
+        $products = Axis::single('catalog/product_category')->select()
             ->distinct()
             ->from('catalog_product_category', array())
             ->joinLeft('catalog_product',
@@ -154,20 +165,81 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             ->addActiveFilter()
             ->addDateAvailableFilter()
             ->addSiteFilter($siteId)
-            ->fetchAll();
+            ->columns(array('category_id' => 'cc.id'))
+            ->fetchAll()
+            ;
 
-        $changefreq['products'] = $config->products->frequency;
-        $priority['products']   = $config->products->priority;
+        $changefreq = $config->products->frequency;
+        $priority   = $config->products->priority;
 
+        foreach($products as $_product) {
+            if (!isset($locales[$_product['language_id']])) {
+                continue;
+            }
+            $uri = $this->view->hurl(array(
+                'cat' => array(
+                    'value' => $_product['id'],
+                    'seo' => $_product['key_word']
+                ),
+                'locale'     => $locales[$_product['language_id']],
+                'controller' => 'catalog',
+                'action'     => 'view'
+            ), false, true);
+
+            $page = new Zend_Navigation_Page_Uri(array(
+                'label'      => $_product['name'],
+                'title'      => $_product['name'],
+                'uri'        => $uri,
+                'lastmod'    => $gmDate,
+                'changefreq' => $changefreq,
+                'priority'   => $priority,
+            ));
+
+            $_container = $menu->findBy(
+                'id', $_product['category_id'] . $_product['language_id']
+            );
+            $_container->addPage($page);
+        }
+        
         $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
             ->addCategoryContentTable()
             ->columns(array('ccc.link', 'ccc.title', 'ccc.language_id'))
             ->addActiveFilter()
             ->addSiteFilter($siteId)
             ->where('ccc.link IS NOT NULL')
-            ->fetchAssoc();
-        $this->view->cmsCategories = $categories;
+            ->fetchAll();
         
+        $changefreq = $config->cms->frequency;
+        $priority   = $config->cms->priority;
+
+        foreach ($categories as $_category) {
+            if (!isset($locales[$_category['language_id']])) {
+                continue;
+            }
+            $title = empty($_category['title']) ?
+                $_category['link'] : $_category['title'];
+
+            $page = new Zend_Navigation_Page_Mvc(array(
+                'label'      => $title,
+                'title'      => $title,
+                'route'      => 'cms_category',
+                'params'     => array(
+                    'cat'    => $_category['link'],
+                    'locale' => $locales[$_category['language_id']]
+                ),
+                'id' => 'cms' . $_category['id'] . $_category['language_id'],
+                'lastmod'    => $gmDate,
+                'changefreq' => $changefreq,
+                'priority'   => $priority
+            ));
+            $_container = $menu->findBy(
+                'id', 'cms' . $_category['parent_id'] . $_category['language_id']
+            );
+            if (null === $_container) {
+                $_container = $menu;
+            }
+            $_container->addPage($page);
+        }
         $pages = array();
         if ($config->cms->showPages && !empty($categories)) {
             $pages = Axis::single('cms/page')->select(array('id', 'name'))
@@ -179,24 +251,34 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
                     array('link', 'title', 'language_id'))
                 ->where('cp.is_active = 1')
                 ->where('cpca.cms_category_id IN (?)', array_keys($categories))
-                ->fetchAssoc()
+                ->fetchAll()
                 ;
+             
+            foreach($pages as $_page) {
+                $title = empty($_page['title']) ? $_page['link'] : $_page['title'];
+
+                $page = new Zend_Navigation_Page_Mvc(array(
+                    'label'  => $title,
+                    'title'  => $title,
+                    'route'  => 'cms_page',
+                    'params' => array(
+                        'page'   => $_page['link'],
+                        'locale' => $locales[$_page['language_id']]
+                    ),
+                    'lastmod'    => $gmDate,
+                    'changefreq' => $changefreq,
+                    'priority'   => $priority
+                ));
+                $_container = $menu->findBy(
+                    'id', 'cms' . $_page['cms_category_id'] . $_page['language_id']
+                );
+
+                if (null !== $_container) {
+                    $_container->addPage($page);
+                }
+            }
         }
-        $this->view->pages = $pages;
-
-        $changefreq['pages'] = $config->cms->frequency;
-        $priority['pages']   = $config->cms->priority;
-//
-//        $this->view->serverName = Axis::single('core/site')
-//            ->find($siteId)
-//            ->current()
-//            ->base;
-//
-        $this->view->changefreq = $changefreq;
-        $this->view->priority   =  $priority;
-
-        $script = $this->getViewScript('xml', false);
-        $content = $this->view->render($script);
+        $content = $this->view->navigation()->sitemap($menu)->render();
 
         $this->getResponse()
             ->clearAllHeaders()
