@@ -47,6 +47,9 @@ class Axis_Catalog_Model_Product_Price_Index extends Axis_Db_Table
      */
     public function updateIndexesByProducts(array $products)
     {
+        if (!count($products)) {
+            return;
+        }
         $ids = array_keys($products);
 
         $oldPricesTemp = $this->select('*')
@@ -159,6 +162,10 @@ class Axis_Catalog_Model_Product_Price_Index extends Axis_Db_Table
         $products = Axis::model('catalog/product')
             ->select('*')
             ->fetchAssoc();
+
+        if (!count($products)) {
+            return;
+        }
         $productIds = array_keys($products);
 
         $variationsTemp = Axis::model('catalog/product_variation')->select()
