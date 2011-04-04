@@ -127,6 +127,15 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         }
 
         $view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
+        $view->addHelperPath(
+            str_replace('_', '/', 'Zend_View_Helper_Navigation'),
+            'Zend_View_Helper_Navigation'
+        );
+
+        $view->addHelperPath(
+            $systemPath . '/library/Axis/View/Helper/Navigation',
+            'Axis_View_Helper_Navigation'
+        );
         $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
         $view->setScriptPath(array());
 

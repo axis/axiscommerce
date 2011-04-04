@@ -86,11 +86,11 @@ class Axis_View_Helper_Menu
 
     public function __toString()
     {
-            return $this->_menu;
+        return $this->_menu;
     }
 
     public function setView($view)
     {
-            $this->view = $view;
+        $this->view = $view;
     }
 }

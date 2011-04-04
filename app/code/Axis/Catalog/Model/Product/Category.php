@@ -34,6 +34,8 @@
 class Axis_Catalog_Model_Product_Category extends Axis_Db_Table
 {
     protected $_name = 'catalog_product_category';
+    protected $_selectClass = 'Axis_Catalog_Model_Product_Category_Select';
+
 
     /**
      * Retrieve the categories ids for the recieved product ids

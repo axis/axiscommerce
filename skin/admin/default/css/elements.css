@@ -783,3 +783,7 @@ ul.success-msg {
 /* Roles */
 #role-rules ul ul { margin-left: 35px; }
 #role-rules .parentAllowed { background-color: #ceffe1; }
+
+#sitemap-ping td, #sitemap-ping th { padding: 5px; vertical-align: top;}
+#sitemap-ping thead { border-bottom: 1px solid #000;}
+#sitemap-ping thead th{ font-weight: bold; text-transform: uppercase;}

@@ -1,7 +1,12 @@
-<?php if ($this->box->hasData('items')): ?>
-    <ul class="navigation">
-        <?php echo $this->navigation($this->box->getData('items')) ?>
-    </ul>
-<?php else :
+<?php
+    $menu = $this->navigation()->menu($this->box->menu)
+        ->disableWrapper(false)
+        ->setOnlyActiveBranch(true)
+        ->setRenderParents(false)
+        ->render()
+        ;
+if (empty($menu)) {
     echo $this->translate('catalog')->__("No categories found");
-endif ?>
+} else {
+    echo $menu;
+} ?>

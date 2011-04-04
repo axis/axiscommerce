@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_View
- * @subpackage  Axis_View_Helper
+ * @package     Axis_Sitemap
+ * @subpackage  Axis_Sitemap_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,34 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_View
- * @subpackage  Axis_View_Helper
+ * @package     Axis_Sitemap
+ * @subpackage  Axis_Sitemap_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_View_Helper_Hurl
+class Axis_Sitemap_Model_Sitemap extends Axis_Db_Table
 {
-    public function __construct()
-    {
-        $this->_hurl = Axis_HumanUri::getInstance();
-        $this->_enabledSsl = Axis::config('core/frontend/ssl');
-    }
-
-    public function hurl(array $options = array(), $ssl = false, $reset = false)
-    {
-        $baseUrl = ($ssl && $this->_enabledSsl) ?
-            $this->view->secureUrl : $this->view->baseUrl;
-        
-        $locale = isset($options['locale']) ?
-            $options['locale'] : Axis_Locale::getLanguageUrl();
-        
-        return $baseUrl
-            . $locale . '/'
-            . Axis::config('catalog/main/route')
-            . $this->_hurl->url($options, $reset);
-    }
-
-    public function setView($view)
-    {
-        $this->view = $view;
-    }
+    protected $_name = 'sitemap';
 }

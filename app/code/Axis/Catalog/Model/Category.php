@@ -39,6 +39,8 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
 
     protected $_rowClass = 'Axis_Catalog_Model_Category_Row';
 
+    protected $_selectClass = 'Axis_Catalog_Model_Category_Select';
+
     protected $_dependentTables = array(
         'Axis_Catalog_Model_Category_Description'
     );
@@ -101,77 +103,23 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
          * update tree index
          */
 
-        $idForDelete = $this->select('id')
+        $childrenIds = $this->select('id')
             ->where("lft BETWEEN $row->lft AND $row->rgt")
             ->where('site_id = ?', $row->site_id)
             ->fetchCol()
             ;
 
-        if (!sizeof($idForDelete)) {
+        if (!sizeof($childrenIds)) {
             return false;
         }
 
-        $db->delete(
-            $this->_prefix . 'catalog_category_description',
-            $db->quoteInto('category_id IN(?)', $idForDelete)
-        );
-        $db->delete(
-            $this->_prefix . 'catalog_product_category',
-            $db->quoteInto('category_id IN(?)', $idForDelete)
-        );
         Axis::single('catalog/hurl')->delete(array(
-            $db->quoteInto('key_id IN(?)', $idForDelete),
+            $db->quoteInto('key_id IN(?)', $childrenIds),
             "key_type = 'c'"
         ));
 
         $nstreeTable = new Axis_NSTree_Table();
         return $nstreeTable->deleteNode($id, true);
-    }
-
-    /**
-     * @param int $languageId
-     * @param mixed(array) $siteIds
-     * @param bool $isActive
-     * @return array
-     * <pre>
-     * [site_id => array, site_id => array]
-     * </pre>
-     */
-    public function getFlatTree($languageId, $siteIds = null, $activeOnly = false)
-    {
-        $select = $this->select(
-                array('id', 'site_id', 'lvl', 'lft', 'rgt')
-            )
-            ->joinLeft(
-                'catalog_category_description',
-                'ccd.category_id = cc.id AND ccd.language_id = :languageId',
-                'name'
-            )
-            ->joinLeft(
-                'catalog_hurl',
-                'ch.key_id = cc.id',
-                'key_word'
-            )
-            ->where("ch.key_type='c'")
-            ->order('cc.lft')
-            ->bind(array('languageId' => $languageId));
-
-        if (null !== $siteIds) {
-            $select->where('cc.site_id IN(?)', $siteIds);
-        }
-
-        if ($activeOnly && $disabledCategories = $this->getDisabledIds()) {
-            $select->where('cc.id NOT IN (?)', $disabledCategories);
-        }
-
-        $select = $select->query();
-        $tree = array();
-
-        while (($row = $select->fetch())) {
-            $tree[$row['site_id']][] = $row;
-        }
-
-        return $tree;
     }
 
     /**
@@ -285,21 +233,21 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     public function getDisabledIds()
     {
         if (!Zend_Registry::isRegistered('catalog/disabled_categories')) {
-            $categories = $this->fetchAll(
-                "status = 'enabled' AND site_id = " . Axis::getSiteId(), 'lft'
-            );
-            $disabledCategories = $this->fetchAll(
-                "status = 'disabled' AND site_id = " . Axis::getSiteId(), 'lft'
-            );
+            $enableds  = $this->select('*')->order('lft')
+                ->where("status = 'enabled'")
+                ->fetchAll();
+            $disableds = $this->select('*')->order('lft')
+                ->where("status = 'disabled'")
+                ->fetchAll();
 
             $result = array();
-            foreach ($disabledCategories as $disabledCategory) {
-                $result[$disabledCategory['id']] = $disabledCategory['id'];
-                foreach ($categories as $category) {
-                    if ($category['lft'] > $disabledCategory['lft']
-                        && $category['rgt'] < $disabledCategory['rgt']) {
+            foreach ($disableds as $_disabled) {
+                $result[$_disabled['id']] = $_disabled['id'];
+                foreach ($enableds as $_enabled) {
+                    if ($_enabled['lft'] > $_disabled['lft']
+                        && $_enabled['rgt'] < $_disabled['rgt']) {
 
-                        $result[$category['id']] = $category['id'];
+                        $result[$_enabled['id']] = $_enabled['id'];
                     }
                 }
             }
