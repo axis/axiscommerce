@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Model
+ * @package     Axis_Sitemap
+ * @subpackage  Axis_Sitemap_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -31,19 +31,7 @@
  * @subpackage  Axis_Sitemap_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sitemap_Model_File_Row extends Axis_Db_Table_Row
+class Axis_Sitemap_Model_Sitemap extends Axis_Db_Table
 {
-    /**
-     *
-     * @return bool
-     */
-    public function removeFile()
-    {
-        $filename = Axis::config('system/path') . '/' . $this->filename . '.xml';
-
-        if (is_file($filename)) {
-            unlink($filename);
-        }
-        return true;
-    }
+    protected $_name = 'sitemap';
 }

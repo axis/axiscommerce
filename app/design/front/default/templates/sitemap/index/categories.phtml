@@ -1,10 +1,5 @@
 <?php echo $this->title($this->pageTitle) ?>
 <?php echo $this->render('index/nav.phtml'); ?>
-<span>
-    <?php echo count($this->categories) - 1 .  " " . $this->translate('core')->__("Item(s)");?>
-</span>
-<ul class="tree">
-    <?php echo $this->navigation($this->categories);?>
-</ul>
+<?php echo $this->navigation()->menu($this->menu)->setUlClass('tree');?>
 <br />
 <?php echo $this->render('index/links.phtml'); ?>

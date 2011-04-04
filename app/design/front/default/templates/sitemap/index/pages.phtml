@@ -1,8 +1,5 @@
-<?php echo $this->title($this->pageTitle) ?>
+<?php echo $this->title($this->pageTitle); ?>
 <?php echo $this->render('index/nav.phtml'); ?>
-<span>
-    <?php echo $this->treeCount . " " . $this->translate('core')->__("Item(s)"); ?>
-</span>
-<?php echo $this->cmsTree($this->tree); ?>
+<?php echo $this->navigation()->menu($this->menu); ?>
 <br/>
 <?php echo $this->render('index/links.phtml'); ?>
