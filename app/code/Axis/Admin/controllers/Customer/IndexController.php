@@ -240,9 +240,15 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
 
     public function saveCustomerAction()
     {
-        $customerData = $this->_getParam('customer') + $this->_getParam('custom_fields');
+        $customerData = $this->_getParam('customer') 
+            + $this->_getParam('custom_fields', array());
 
-        if (!$this->_isEmailValid($customerData['email'], $customerData['site_id'], $customerData['id'])) {
+        if (!$this->_isEmailValid(
+                $customerData['email'], 
+                $customerData['site_id'], 
+                $customerData['id']
+            )) {
+
             return $this->_helper->json->sendFailure();
         }
 
@@ -253,7 +259,9 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
         /**
          * @var Axis_Account_Model_Customer_Row
          */
-        $customer = Axis::single('account/customer')->find($result['id'])->current();
+        $customer = Axis::single('account/customer')
+            ->find($result['id'])
+            ->current();
 
         // address
         if ($this->_hasParam('address')) {
