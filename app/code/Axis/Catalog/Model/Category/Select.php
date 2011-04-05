@@ -116,6 +116,9 @@ class Axis_Catalog_Model_Category_Select extends Axis_Db_Table_Select
     public function addDisabledFilter()
     {
         $disabledCategories = $this->getTable()->getDisabledIds();
+        if (empty($disabledCategories)) {
+            return $this;
+        }
         return $this->where('cc.id NOT IN (?)', $disabledCategories);
     }
 
