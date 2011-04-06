@@ -77,6 +77,9 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
         }
         if (isset($rules['optionId'])) {
             foreach ($rules['optionId'] as $optionId) {
+                if (!isset($rules['option[' . $optionId . ']'])) {
+                    continue;
+                }
                 foreach ($rules['option[' . $optionId . ']'] as $optionValueId) {
                     $array['attributes'][] = array(
                         'optionId' => $optionId,

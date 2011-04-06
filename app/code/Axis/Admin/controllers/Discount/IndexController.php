@@ -82,8 +82,32 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
             ->order('cc.lft')
             ->fetchAllAndSortByColumn('site_id');
         
-        $this->view->attributes = Axis::single('catalog/product_option')
-            ->getValueSets($languageId);
+        
+        $select = Axis::model('catalog/product_option_value')->select('*')
+            ->joinLeft('catalog_product_option_value_text',
+                'cpov.id = cpovt.option_value_id',
+                'name')
+            ->where('cpovt.language_id = ?', $languageId)
+            ;
+        $valuesetValues = array();
+        foreach ($select->fetchAll() as $_row) {
+            $valuesetValues[$_row['valueset_id']][$_row['id']] = $_row['name'];
+        }
+        $select = Axis::single('catalog/product_option')
+                ->select('*')
+                ->addNameAndDescription($languageId)
+                ;
+        $attributes = array();
+        foreach ($select->fetchAll() as $_option) {
+            if (isset($valuesetValues[$_option['valueset_id']])) {
+                $attributes[$_option['id']] = array(
+                    'name'   => $_option['name'],
+                    'option' => $valuesetValues[$_option['valueset_id']]
+                );
+            }
+        }
+        
+        $this->view->attributes = $attributes;
     }
 
     public function editAction()
