@@ -86,7 +86,7 @@ class Axis_Cms_IndexController extends Axis_Core_Controller_Front
                 'label'  => $title,
                 'title'  => $title,
                 'route'  => 'cms_page',
-                'params' => array('cat' => $_page['link']),
+                'params' => array('page' => $_page['link']),
                 'class'  => 'icon-page'
             ));
             $_container = $menu->findBy('category_id', $_page['cms_category_id']);
