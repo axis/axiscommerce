@@ -84,7 +84,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
                 'uri'     => $uri,
                 'order'   => $_category['lft'],
                 'class'   => $class,
-                'visible' => 'enabled' === $_category['status'] ? true : false
+                'visible' => ('enabled' === $_category['status']) ? true : false
             ));
 
             $lvl = $lvl - $_category['lvl'] + 1;

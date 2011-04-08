@@ -44,7 +44,8 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Account
             $this->_redirect('/account');
         }
         $this->view->crumbs()->add(
-            Axis::translate('tag')->__('Tags'), '/account/tag'
+            Axis::translate('tag')->__('Tags'), 
+            $this->view->href('/account/tag', true)
         );
     }
 

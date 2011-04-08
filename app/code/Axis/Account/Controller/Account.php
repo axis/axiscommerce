@@ -39,7 +39,7 @@ class Axis_Account_Controller_Account extends Axis_Core_Controller_Front_Secure
         $this->auth();
         $this->view->crumbs()->add(
             Axis::translate('account')->__('Account'),
-            '/account'
+            $this->view->href('/account', true)
         );
     }
 }

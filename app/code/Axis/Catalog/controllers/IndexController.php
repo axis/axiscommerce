@@ -54,6 +54,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         }
 
         $parentItems = $categoryRow->cache()->getParentItems();
+        array_pop($parentItems);
         foreach ($parentItems as $item) {
             if ($item['status'] != 'enabled') {
                 return false;
@@ -263,7 +264,6 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         } else {
             $pathItems = $product->getParentItems();
         }
-
         foreach ($pathItems as $item) {
             if ($item['status'] != 'enabled') {
                 return $this->_forward('not-found', 'Error', 'Axis_Core');
@@ -331,7 +331,6 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
 
         $this->view->product = $data;
 
-        $this->view->crumbs()->add($data['description']['name']);
         $this->view->pageTitle = $data['description']['name'];
 
         $metaTitle = trim($data['description']['meta_title']) == '' ?

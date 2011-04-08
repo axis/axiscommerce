@@ -37,7 +37,8 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Account
     {
         parent::init();
         $this->view->crumbs()->add(
-            Axis::translate('account')->__('Information'), '/account/info'
+            Axis::translate('account')->__('Information'), 
+            $this->view->href('/account/info', true)
         );
     }
 
@@ -45,7 +46,7 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Account
     {
         $this->_redirect('account/info/change');
     }
-
+ 
     public function changeAction()
     {
         $this->view->pageTitle = Axis::translate('account')->__('Change Info');

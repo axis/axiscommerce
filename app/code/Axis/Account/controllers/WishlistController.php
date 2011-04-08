@@ -37,7 +37,8 @@ class Axis_Account_WishlistController extends Axis_Account_Controller_Account
     {
         parent::init();
         $this->view->crumbs()->add(
-            Axis::translate('account')->__('My Wishlist'), '/account/wishlist'
+            Axis::translate('account')->__('My Wishlist'), 
+            $this->view->href('/account/wishlist', true)
         );
     }
 

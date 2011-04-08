@@ -40,24 +40,43 @@ class Axis_View_Helper_Crumbs
      * Add crumb
      * @return void
      * @param string $title
-     * @param string $url
+     * @param string $uri
      */
-    public function add($title, $url = null)
+    public function add($title, $uri = null)
     {
-        if (null === $url) {
+        if (null === $uri) {
             $request = Zend_Controller_Front::getInstance()->getRequest();
 
-            $url = $request->getScheme() . '://'
+            $uri = $request->getScheme() . '://'
                  . $request->getHttpHost()
                  . $request->getRequestUri();
 
-        } elseif (substr($url, 0 , 4) !== 'http') {
-            $url = $this->view->href($url);
+        } elseif (substr($uri, 0 , 4) !== 'http') {
+            $uri = $this->view->href($uri);
         }
 
-        if (empty($this->_crumbs[$url])) {
-            $this->_crumbs[$url] = array('title' => $title, 'url' => $url);
+        if (empty($this->_crumbs[$uri])) {
+            $this->_crumbs[$uri] = array('title' => $title, 'url' => $uri);
         }
+//        Axis_FirePhp::callstack();
+        $container = $this->view->breadcrumbs;
+        
+        $iterator = new RecursiveIteratorIterator($container,
+                RecursiveIteratorIterator::SELF_FIRST);
+        
+        foreach ($iterator as $_page) {
+            if ($_page->get('uri') == $uri) {
+                return;
+            }
+            $container = $_page;
+        }
+        
+        $page = new Zend_Navigation_Page_Uri(array(
+            'title'  => $title, 
+            'uri'    => $uri, 
+            'active' => true 
+        ));
+        $container->addPage($page);
     }
 
     /**

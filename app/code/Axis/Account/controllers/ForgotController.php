@@ -44,7 +44,8 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
     {
         parent::init();
         $this->view->crumbs()->add(
-            Axis::translate('account')->__('Auth'), '/account/auth'
+            Axis::translate('account')->__('Auth'), 
+            $this->view->href('/account/auth', true)
         );
     }
 

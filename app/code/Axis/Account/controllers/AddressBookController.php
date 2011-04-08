@@ -44,7 +44,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
         $this->_customerId = Axis::getCustomerId();
         $this->view->crumbs()->add(
             Axis::translate('account')->__('Address Book'),
-            '/account/address-book'
+            $this->view->href('/account/address-book', true)
         );
     }
 

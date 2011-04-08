@@ -42,7 +42,8 @@ class Axis_Account_OrderController extends Axis_Account_Controller_Account
     {
         parent::init();
         $this->view->crumbs()->add(
-            Axis::translate('account')->__('My Orders'), '/account/order'
+            Axis::translate('account')->__('My Orders'), 
+            $this->view->href('/account/order', true)
         );
         $this->_table =  Axis::single('sales/order');
     }
