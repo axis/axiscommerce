@@ -42,7 +42,6 @@ class Axis_View_Helper_Title
         if (empty($title)) {
             return '';
         }
-        $this->view->crumbs()->add($title);
         return '<div class="page-title"><h1 class="title">' .
                  $this->view->escape($title) .
             '</h1></div>';

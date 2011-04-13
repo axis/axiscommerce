@@ -33,26 +33,9 @@
  */
 class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 {
-    public function init()
-    {
-        parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('checkout')->__(
-                'Shopping Cart'
-            ),
-            '/checkout/cart'
-        );
-        $this->view->meta()->setTitle(
-            Axis::translate('checkout')->__(
-                'Shopping Cart'
-        ));
-    }
-
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('checkout')->__(
-            'Shopping Cart'
-        );
+        $this->setTitle(Axis::translate('checkout')->__('Shopping Cart'));
 
         $request = $this->getRequest();
         if (null !== Axis::session()->lastUrl) {
@@ -75,6 +58,7 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 
     public function addAction()
     {
+        $this->_helper->layout->disableLayout();
         $productId        = $this->_getParam('productId', 0);
         $quantity         = $this->_getParam('quantity', false);
         $modifierOptions  = $this->_getParam('modifier', array());
@@ -100,6 +84,7 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 
     public function updateAction()
     {
+        $this->_helper->layout->disableLayout();
         $data = $this->_getParam('quantity');
         foreach ($data as $itemId => $quantity) {
             Axis::single('checkout/cart')->updateItem($itemId, $quantity);
@@ -110,12 +95,14 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 
     public function removeAction()
     {
+        $this->_helper->layout->disableLayout();
         Axis::single('checkout/cart')->deleteItem($this->_getParam('scItemId', 0));
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
     }
 
     public function reOrderAction()
     {
+        $this->_helper->layout->disableLayout();
         if ($this->_hasParam('orderId')) {
            $orderId = $this->_getParam('orderId');
         } else {

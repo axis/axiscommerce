@@ -31,29 +31,27 @@
  * @subpackage  Axis_Account_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_InfoController extends Axis_Account_Controller_Account
+class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
 {
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('Information'), 
-            $this->view->href('/account/info', true)
-        );
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('account')->__('Information'),
+            'controller' => 'info',
+            'route'      => 'account'
+        ));
     }
 
     public function indexAction()
     {
+        $this->_helper->layout->disableLayout();
         $this->_redirect('account/info/change');
     }
  
     public function changeAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__('Change Info');
-        $this->view->meta()->setTitle(
-            Axis::translate('account')->__(
-                'Change account info'
-        ));
+        $this->setTitle(Axis::translate('account')->__('Change Info'));
         $form = Axis::single('account/Form_ChangeInfo');
 
         if ($this->_request->isPost()) {

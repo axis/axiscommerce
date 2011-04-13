@@ -41,12 +41,11 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('checkout')->__(
-                'Checkout'
-            ),
-            '/checkout/cart'
-        );
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('checkout')->__('Checkout'),
+            'controller' => 'cart',
+            'route'      => 'checkout'
+        ));
     }
 
     public function indexAction()
@@ -128,9 +127,7 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
 
     public function successAction()
     {
-        $this->view->pageTitle = Axis::translate('checkout')->__('Checkout Success');
-        $this->view->meta()->setTitle($this->view->pageTitle);
-         /* analytic ZA4OT*/
+        $this->setTitle(Axis::translate('checkout')->__('Checkout Success'));
         Axis::config()->analytics->main->checkoutSuccess = true;
 
         $orderId = $this->_getCheckout()->getOrderId();
@@ -147,6 +144,7 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
 
     public function cancelAction()
     {
+        $this->_helper->layout->disableLayout();
         $this->_getCheckout()->clean();
         $this->_redirect('/checkout/cart');
     }

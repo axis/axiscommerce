@@ -33,6 +33,16 @@
  */
 class Axis_Core_Controller_Front extends Axis_Controller_Action
 {
+    public function init()
+    {
+        parent::init();
+        Axis::single('account/customer')->checkIdentity();
+        $this->addBreadcrumb(array(
+            'label' => Axis::translate('core')->__('Home'),
+            'route' => 'core'
+        ));
+    }
+    
     public function auth()
     {
         if (!Axis::getCustomerId()) {
@@ -40,16 +50,83 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
         }
     }
     
-    public function init()
+    /**
+     *
+     * @param Zend_Navigation_Container $container
+     * @return Axis_Core_Controller_Front 
+     */
+    public function setBreadcrumbs(Zend_Navigation_Container $container = null) 
     {
-        parent::init();
-        Axis::single('account/customer')->checkIdentity();
-        $this->view->crumbs()->add(
-            Axis::translate('core')->__(
-                'Home'
-            ),
-            $this->view->href('/')
-        );
+        if (null === $container) {
+            $container = new Zend_Navigation();
+        }
+        Zend_Registry::set('axis/breadcrumbs', $container);
+        return $this;
+    }
+    
+    /**
+     *
+     * @return Zend_Navigation_Container 
+     */
+    public function getBreadcrumbs() 
+    {
+        if (!Zend_Registry::isRegistered('axis/breadcrumbs')) {
+            $this->setBreadcrumbs();
+        }
+        return Zend_Registry::get('axis/breadcrumbs');
+    }
+    
+    /**
+     *
+     * @param array $page
+     * @return Axis_Core_Controller_Front 
+     */
+    public function addBreadcrumb(array $page) 
+    {
+        $container = $this->getBreadcrumbs();
+        
+        $iterator = new RecursiveIteratorIterator($container,
+                RecursiveIteratorIterator::SELF_FIRST);
+        
+        foreach ($iterator as $_page) {
+            $container = $_page;
+        }
+        
+        $page['active'] = true;
+        $container->addPage($page);
+//        $this->setBreadcrumbs($page);
+        return $this;
+    }
+    
+    /**
+     *
+     * @param string $title
+     * @param string $metaTitle
+     * @param string $labelBreadcrumb 
+     */
+    public function setTitle($title, $metaTitle = null, $labelBreadcrumb = null) 
+    {
+        $this->view->pageTitle = $title;
+        
+        if (null === $metaTitle) {
+            $metaTitle = $title;
+        }
+        if (!empty($metaTitle)) {
+            $this->view->meta()->setTitle($metaTitle);
+        }
+        if (null === $labelBreadcrumb) {
+            $labelBreadcrumb = $title;
+        }
+        if (!empty($labelBreadcrumb)) {
+            $request = $this->getRequest();
+            $this->addBreadcrumb(array(
+                'label'      => $labelBreadcrumb,
+                'module'     => $request->getModuleName(),
+                'controller' => $request->getControllerName(),
+                'action'     => $request->getActionName(),
+                'params'     => $request->getParams()
+            ));
+        }
     }
     
     /**

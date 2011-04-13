@@ -38,10 +38,10 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
     {
         parent::init();
         $this->hurl = Axis_HumanUri::getInstance();
-        $this->view->crumbs()->add(
-            Axis::translate('catalog')->__('Catalog'),
-            '/' . $this->view->catalogUrl
-        );
+        $this->addBreadcrumb(array(
+            'label' => Axis::translate('catalog')->__('Catalog'),
+            'route' => 'product_catalog'
+        ));
         $this->view->tags()->disableAction();
     }
 
@@ -54,19 +54,20 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         }
 
         $parentItems = $categoryRow->cache()->getParentItems();
-        array_pop($parentItems);
-        foreach ($parentItems as $item) {
-            if ($item['status'] != 'enabled') {
+        foreach ($parentItems as $_category) {
+            if ($_category['status'] != 'enabled') {
                 return false;
             }
-            $this->view->crumbs()->add(
-                $item['name'],
-                $this->view->hurl(array(
-                    'cat' => array(
-                        'value' => $item['id'],
-                        'seo'   => $item['key_word']
-                    )
-                )));
+            $_uri = $this->view->hurl(array(
+                'cat' => array(
+                    'value' => $_category['id'],
+                    'seo'   => $_category['key_word']
+                )
+            ));
+            $this->addBreadcrumb(array(
+                'label' => $_category['name'],
+                'uri'   => $_uri
+            ));
         }
 
         $categoryDescriptionRow = Axis::single('catalog/category_description')
@@ -81,11 +82,11 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
                 $categoryDescriptionRow->toArray()
             );
             $this->view->pageTitle = $categoryDescriptionRow->name;
-            $this->view->meta()->set(array(
-                'description'   => $categoryDescriptionRow->meta_description,
-                'title'         => $categoryDescriptionRow->meta_title,
-                'keywords'      => $categoryDescriptionRow->meta_keyword
-            ));
+            $this->view->meta()
+                ->setDescription($categoryDescriptionRow->meta_description)
+                ->setTitle($categoryDescriptionRow->meta_title)
+                ->setKeywords($categoryDescriptionRow->meta_keyword)
+            ;
         }
 
         Zend_Registry::set('catalog/current_category', $categoryRow);
@@ -104,7 +105,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         }
 
         $this->view->pageTitle = Axis::translate('catalog')->__('Catalog');
-
+        
         /**
          * @var Axis_Catalog_Model_Product_Select
          */
@@ -264,20 +265,22 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         } else {
             $pathItems = $product->getParentItems();
         }
-        foreach ($pathItems as $item) {
-            if ($item['status'] != 'enabled') {
+        foreach ($pathItems as $_category) {
+            if ($_category['status'] != 'enabled') {
                 return $this->_forward('not-found', 'Error', 'Axis_Core');
             }
-            $this->view->crumbs()->add(
-                $item['name'],
-                $this->view->hurl(array(
-                    'cat' => array(
-                        'value' => $item['id'],
-                        'seo' => $item['key_word']
-                    )
-                ), false, true)
-            );
-            $lastItem = $item;
+            
+            $_uri = $this->view->hurl(array(
+                'cat' => array(
+                    'value' => $_category['id'],
+                    'seo' => $_category['key_word']
+                )
+            ), false, true);
+            $this->addBreadcrumb(array(
+                'label' => $_category['name'],
+                'uri'   => $_uri
+            ));
+            $lastItem = $_category;
         }
 
         $product->incViewed();
@@ -344,7 +347,18 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             ->setTitle($metaTitle, 'product', $productId)
             ->setDescription($metaDescription)
             ->setKeywords($data['description']['meta_keyword']);
-
+        
+        $_uri = $this->view->hurl(array(
+            'product' => array(
+                'value' => $data['id'],
+                'seo'   => $product->getHumanUrl()
+            )
+        ), false, true);
+        $this->addBreadcrumb(array(
+            'label' => $data['description']['name'],
+            'uri'   => $_uri
+        ));
+        
         Axis::dispatch('catalog_product_view', array(
             'product' => $product
         ));

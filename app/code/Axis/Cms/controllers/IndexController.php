@@ -31,12 +31,11 @@
  * @subpackage  Axis_Cms_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Cms_IndexController extends Axis_Core_Controller_Front
+class Axis_Cms_IndexController extends Axis_Cms_Controller_Abstract
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('cms')->__('Pages');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('cms')->__('Pages'), null, false);
 
         $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
             ->addCategoryContentTable()

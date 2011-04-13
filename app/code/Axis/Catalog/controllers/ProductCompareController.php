@@ -35,8 +35,10 @@ class Axis_Catalog_ProductCompareController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('catalog')->__('Product Comparison');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('catalog')->__(
+                'Product Comparison'
+        ));
 
         if (!Axis::single('catalog/product_compare')->hasItems()) {
             $this->render('empty');

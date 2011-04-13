@@ -43,16 +43,19 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('Auth'), 
-            $this->view->href('/account/auth', true)
-        );
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('account')->__('Auth'),
+            'controller' => 'auth',
+            'route'      => 'account'
+        ));
     }
 
     public function registerAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__('Forgot password');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('account')->__(
+                'Forgot password'
+        ));
 
         $username = $this->_getParam('username', null);
         if (empty($username)) {
@@ -111,10 +114,10 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             $this->_redirect('account/forgot/register');
         }
 
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Retrieve Forgotten Password'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('account')->__(
+                'Retrieve Forgotten Password'
+        ));
         $this->view->hash = $hash;
         $this->render();
     }

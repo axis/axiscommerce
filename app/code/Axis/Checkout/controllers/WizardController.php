@@ -38,18 +38,15 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
         parent::init();
         $this->view->pageTitle = Axis::translate('checkout')->__('Checkout Process');
         $this->view->meta()->setTitle($this->view->pageTitle);
-        $this->view->crumbs()->disable();
-        $this->view->crumbs()->add(
-            Axis::translate('checkout')->__(
-                'Checkout Wizard'
-            ),
-            '/checkout/wizard'
-        );
-
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('checkout')->__('Checkout Wizard'),
+            'controller' => 'wizard',
+            'route'      => 'checkout'
+        ));
         if (!Axis::getCustomerId()
             && !$this->_getCheckout()->getStorage()->asGuest
             && !in_array(
-                $this->_request->getActionName(),
+                $this->getRequest()->getActionName(),
                 array('index', 'login', 'as-guest')
             )) {
 
@@ -58,17 +55,17 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
     }
     public function indexAction()
     {
+        $this->_helper->layout->disableLayout();
         parent::_validateCart();
-        $this->_forward('login');
+        $this->_redirect('/checkout/wizard/login');
     }
 
     public function loginAction()
     {
-        $this->view->pageTitle = Axis::translate('checkout')->__('Login');
-
         if (Axis::getCustomerId()) {
             $this->_redirect('/checkout/wizard/billing-address');
         }
+        $this->setTitle(Axis::translate('checkout')->__('Login'));
 
         $formSignup = Axis::single('account/form_signup');
         $formSignup->setAttrib('onsubmit', 'register(); return false;');
@@ -81,6 +78,7 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
 
     public function asGuestAction()
     {
+        $this->_helper->layout->disableLayout();
         /**
          *  @var Zend_Session_Namespace $storage
          */
@@ -95,9 +93,11 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
     {
         $storage = $this->_getCheckout()->getStorage();
         if (!$storage->asGuest) {
-            $this->_forward(
-                'address-list', null, null, array('type' => 'billing-address')
-            );
+            $this->getRequest()
+                ->setActionName('address-list')
+                ->setParam('type', 'billing-address')
+            ;
+            $this->addressListAction();
             return;
         }
         $formAddress = $this->_getAddressForm();
@@ -124,6 +124,7 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
 
     public function setBillingAddressAction()
     {
+        $this->_helper->layout->disableLayout();
         $checkout = $this->_getCheckout();
         $storage = $checkout->getStorage();
         if (!$storage->asGuest) {
@@ -174,9 +175,11 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
     {
         $storage = $this->_getCheckout()->getStorage();
         if (!$storage->asGuest) {
-            $this->_forward(
-                'address-list', null, null, array('type' => 'delivery-address')
-            );
+            $this->getRequest()
+                ->setActionName('address-list')
+                ->setParam('type', 'delivery-address')
+            ;
+            $this->addressListAction();
             return;
         }
         $formAddress = $this->_getAddressForm();
@@ -199,6 +202,7 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
 
     public function setDeliveryAddressAction()
     {
+        $this->_helper->layout->disableLayout();
         $checkout = $this->_getCheckout();
         $storage = $checkout->getStorage();
         if (!$storage->asGuest) {
@@ -225,22 +229,25 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
 
     public function shippingMethodAction()
     {
-        $this->view->pageTitle = Axis::translate('checkout')->__(
-            'Shipping Method'
-        );
+        $this->setTitle(
+            Axis::translate('checkout')->__(
+                'Shipping Method'
+        ));
         parent::shippingMethodAction();
     }
 
     public function paymentMethodAction()
     {
-        $this->view->pageTitle = Axis::translate('checkout')->__(
-            'Payment Method'
-        );
+        $this->setTitle(
+            Axis::translate('checkout')->__(
+                'Payment Method'
+        ));
         parent::paymentMethodAction();
     }
 
     public function setPaymentMethodAction()
     {
+        $this->_helper->layout->disableLayout();
         $methodCode = $this->_getParam('method');
 
         if (!in_array($methodCode, Axis_Payment::getMethodNames())) {
@@ -273,6 +280,7 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
 
     public function setShippingMethodAction()
     {
+        $this->_helper->layout->disableLayout();
         $methodCode = $this->_getParam('method');
 
         // methodCode can include method type also - Pickup_Standard|Ups_Standard_WXS
@@ -306,9 +314,10 @@ class Axis_Checkout_WizardController extends Axis_Checkout_Controller_Checkout
 
     public function confirmationAction()
     {
-        $this->view->pageTitle = Axis::translate('checkout')->__(
-            'Confirm your order'
-        );
+        $this->setTitle(
+            Axis::translate('checkout')->__(
+                'Confirm your order'
+        ));
         parent::confirmationAction();
     }
 

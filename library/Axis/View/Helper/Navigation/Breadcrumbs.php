@@ -54,28 +54,7 @@ class Axis_View_Helper_Navigation_Breadcrumbs extends Zend_View_Helper_Navigatio
      * @var bool
      */
     protected $_linkLast = false;
-    
-    /**
-     * View helper entry point:
-     * Retrieves helper and optionally sets container to operate on
-     *
-     * @param  Zend_Navigation_Container $container     [optional] container to
-     *                                                  operate on
-     * @return Zend_View_Helper_Navigation_Breadcrumbs  fluent interface,
-     *                                                  returns self
-     */
-    public function breadcrumbs(Zend_Navigation_Container $container = null)
-    {
-        if (null === $container) {
-            $container = $this->view->breadcrumbs;
-        }
-        if (null !== $container) {
-            $this->setContainer($container);
-        }
-
-        return $this;
-    }
-    
+     
     /**
      * Renders breadcrumbs by chaining 'a' elements with the separator
      * registered in the helper
