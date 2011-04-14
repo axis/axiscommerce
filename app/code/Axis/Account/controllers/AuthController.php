@@ -43,21 +43,21 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('Auth'), '/account/auth'
-        );
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('account')->__('Auth'),
+            'controller' => 'auth',
+            'route'      => 'account'
+        ));
     }
 
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Log in or create an account'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
         if (Axis::getCustomerId()) {
             $this->_redirect('account');
         }
-
+        $this->setTitle(Axis::translate('account')->__(
+            'Log in or create an account'
+        ));
         $this->render();
     }
 
@@ -85,8 +85,8 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
             $this->_redirect('account');
         }
 
-        $this->view->pageTitle = Axis::translate('account')->__('Create an Account');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('account')->__('Create an Account'));
+        
         $form = Axis::single('account/form_signup');
 
         if ($this->_request->isPost()) {

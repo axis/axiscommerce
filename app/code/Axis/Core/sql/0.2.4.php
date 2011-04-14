@@ -19,27 +19,26 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @subpackage  Axis_Core_Controller
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Core
- * @subpackage  Axis_Core_Controller
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class IndexController extends Axis_Core_Controller_Front
+class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 {
-    public function indexAction()
+    protected $_version = '0.2.4';
+    protected $_info = 'Block Axis_Core_Box_Breadcrumbs added';
+
+    public function up()
     {
-        $this->view->meta()
-            ->setTitle(Axis::config()->design->htmlHead->homeTitle)
-            ->setDescription(Axis::config()->design->htmlHead->homeDescription)
-            ->setKeywords(Axis::config()->design->htmlHead->homeKeywords)
-        ;
-        $this->render();
+        Axis::model('core/template_box')->add(
+            'Axis_Core_Breadcrumbs',
+            'beforeContent',
+            array('*/*/*', 'core/index/index' => array('box_show' => false))
+        );
+    }
+
+    public function down()
+    {
+        Axis::model('core/template_box')->remove('Axis_Core_Breadcrumbs');
     }
 }

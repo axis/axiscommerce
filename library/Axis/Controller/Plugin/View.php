@@ -165,7 +165,7 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         $view->doctype('XHTML1_STRICT');
 
         $view->setEncoding('UTF-8');
-
+        
         $layout = Axis_Layout::getMvcInstance();
 
         $layout->setView($view)->setLayoutPath(

@@ -27,19 +27,18 @@
 /**
  * 
  * @category    Axis
- * @package     Axis_Account
- * @subpackage  Axis_Account_Controller
+ * @package     Axis_Cms
+ * @subpackage  Axis_Cms_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_Controller_Account extends Axis_Core_Controller_Front_Secure
+abstract class Axis_Cms_Controller_Abstract extends Axis_Core_Controller_Front
 {
     public function init()
     {
         parent::init();
-        $this->auth();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('Account'),
-            '/account'
-        );
+        $this->addBreadcrumb(array(
+            'label' => Axis::translate('cms')->__('Pages'),
+            'route' => 'cms_default'
+        ));
     }
 }

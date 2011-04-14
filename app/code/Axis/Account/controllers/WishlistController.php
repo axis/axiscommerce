@@ -31,20 +31,14 @@
  * @subpackage  Axis_Account_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_WishlistController extends Axis_Account_Controller_Account
+class Axis_Account_WishlistController extends Axis_Account_Controller_Abstract
 {
-    public function init()
-    {
-        parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('My Wishlist'), '/account/wishlist'
-        );
-    }
-
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__('My Wishlist');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('account')->__(
+                'My Wishlist'
+        ));
         $this->view->wishlist = Axis::single('account/wishlist')
             ->findByCustomerId(Axis::getCustomerId());
         $this->render();
@@ -52,6 +46,7 @@ class Axis_Account_WishlistController extends Axis_Account_Controller_Account
 
     public function addAction()
     {
+        $this->_helper->layout->disableLayout();
         $customerId = Axis::getCustomerId();
         $productId = $this->_getParam('id');
         $hasDuplicate = (bool) Axis::single('account/wishlist')->select('id')
@@ -78,21 +73,23 @@ class Axis_Account_WishlistController extends Axis_Account_Controller_Account
 
     public function removeAction()
     {
+        $this->_helper->layout->disableLayout();
+        $productId = $this->_getParam('id');
+        $customerId = Axis::getCustomerId();
         Axis::single('account/wishlist')->delete(array(
-            $this->db->quoteInto('id = ?', $this->_getParam('id')),
-            $this->db->quoteInto('customer_id = ?',
-                (int) Axis::getCustomerId()
-            )
+            $this->db->quoteInto('id = ?', $productId),
+            $this->db->quoteInto('customer_id = ?', $customerId)
         ));
         Axis::dispatch('account_whishlist_remove_product_success', array(
-            'customer_id' => $this->_getParam('id'),
-            'product_id' => Axis::getCustomerId()
+            'customer_id' => $customerId,
+            'product_id'  => $productId
         ));
         $this->_redirect('/account/wishlist');
     }
 
     public function updateAction()
     {
+        $this->_helper->layout->disableLayout();
         Axis::single('account/wishlist')->updateComments(
             $this->_getParam('comment', array())
         );

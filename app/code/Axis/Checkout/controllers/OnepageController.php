@@ -36,14 +36,13 @@ class Axis_Checkout_OnepageController extends Axis_Checkout_Controller_Checkout
     public function init()
     {
         parent::init();
-        $this->view->pageTitle = Axis::translate('checkout')->__('Checkout Process');
-        $this->view->crumbs()->add(
-            Axis::translate('checkout')->__(
-                'Checkout Onepage'
-            ),
-            '/checkout/cart'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $title = Axis::translate('checkout')->__('Checkout Process');
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('checkout')->__('Checkout Onepage'),
+            'controller' => 'cart',
+            'route'      => 'checkout'
+        ));
+        $this->setTitle($title, $title, false);
     }
 
     public function indexAction()

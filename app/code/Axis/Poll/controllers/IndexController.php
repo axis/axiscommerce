@@ -35,11 +35,12 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('poll')->__('Polls');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('poll')->__(
+                'Polls'
+        ));
+        
         $languageId = Axis_Locale::getLanguageId();
-
-
         $questionIds = array();
         if ($this->_hasParam('questionId'))  {
             $questionIds[] = array('id' => $this->_getParam('questionId'));

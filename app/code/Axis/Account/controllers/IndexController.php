@@ -31,17 +31,15 @@
  * @subpackage  Axis_Account_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_IndexController extends Axis_Account_Controller_Account
+class Axis_Account_IndexController extends Axis_Account_Controller_Abstract
 {
-	public function indexAction()
-	{
-	    $this->view->pageTitle = Axis::translate('account')->__('My Account');
-        $this->view->meta()->setTitle(
-            Axis::translate('account')->__(
-                'My Account'
-        ));
-	    $customer = Axis::single('account/customer')
-                ->find(Axis::getCustomerId())->current();
+    public function indexAction()
+    {
+        $title = Axis::translate('account')->__('My Account'); 
+        $this->setTitle($title, $title, false);
+        $customer = Axis::single('account/customer')
+            ->find(Axis::getCustomerId())
+            ->current();
 
         $this->view->customerName = $customer->firstname . ' '
             . $customer->lastname;

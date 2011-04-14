@@ -31,11 +31,11 @@
  * @subpackage  Axis_Tag_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Tag_AccountController extends Axis_Account_Controller_Account
+class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
 {
     /**
      * Initialize
-     * @see app/code/Axis/Account/Controller/Axis_Account_Controller_Account#init()
+     * @see app/code/Axis/Account/Controller/Axis_Account_Controller_Abstract#init()
      */
     public function init()
     {
@@ -43,9 +43,10 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Account
         if (!Axis::single('core/module')->getByCode('Axis_Tag')->isInstalled()) {
             $this->_redirect('/account');
         }
-        $this->view->crumbs()->add(
-            Axis::translate('tag')->__('Tags'), '/account/tag'
-        );
+        $this->addBreadcrumb(array(
+            'label' => Axis::translate('account')->__('Tags'),
+            'route' => 'tag_account'
+        ));
     }
 
     /**
@@ -54,8 +55,8 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Account
      */
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__('My Tags');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('account')->__('My Tags'));
+        
         $this->view->tags = Axis::single('tag/customer')->getMyWithWeight();
         $this->view->tags()->enableWeight();
         $this->render();

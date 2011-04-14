@@ -31,7 +31,7 @@
  * @subpackage  Axis_Account_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
+class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstract
 {
     /**
      * @var int
@@ -42,21 +42,18 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
     {
         parent::init();
         $this->_customerId = Axis::getCustomerId();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('Address Book'),
-            '/account/address-book'
-        );
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('account')->__('Address Book'),
+            'controller' => 'address-book',
+            'route'      => 'account'
+            
+        ));
     }
 
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Address Book'
-        );
-        $this->view->meta()->setTitle(
-            Axis::translate('account')->__(
-                'Address Book'
-        ));
+        $this->setTitle(Axis::translate('account')->__('Address Book'), null, false);
+        
         $this->view->defaultBillingAddresId = false;
         $this->view->defaultShippingAddresId = false;
         if ($customer = Axis::single('account/customer')->find(Axis::getCustomerId())->current()) {
@@ -71,10 +68,8 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
 
     public function saveAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Saving address'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('account')->__('Saving address'));
+        
         $params = $this->_getAllParams();
         $form = Axis::model('account/Form_Address');
 
@@ -114,10 +109,10 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
 
     public function newAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Add new address'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('account')->__(
+                'Add new address'
+        ));
         $form = Axis::single('account/Form_Address');
         $form->addUseAsDefaultAddressCheckbox();
         $this->view->form = $form;
@@ -126,12 +121,12 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
 
     public function editAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Edit address'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('account')->__(
+                'Edit address'
+        ));
+        
         $addressId = $this->_getParam('id');
-
         $row = Axis::single('account/customer_address')->fetchRow(array(
             $this->db->quoteInto('id = ?', $addressId),
             $this->db->quoteInto('customer_id = ?', $this->_customerId)

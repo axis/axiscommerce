@@ -36,6 +36,10 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
 
     public function indexAction()
     {
+        $this->setTitle(
+            Axis::translate('contacts')->__(
+                'Contact Us'
+        ));
         $form = Axis::model('contacts/form_message');
 
         if ($this->_request->isPost()) {
@@ -96,10 +100,6 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
             );
         }
 
-        $this->view->pageTitle = Axis::translate('contacts')->__(
-            'Contact Us'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
         $this->view->form = $form;
         $this->render();
     }

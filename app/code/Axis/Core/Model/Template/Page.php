@@ -47,12 +47,12 @@ class Axis_Core_Model_Template_Page extends Axis_Db_Table
      */
     public function add($layout, $page, $templateId = null, $parentPage = null, $priority = 100)
     {
-        $pageId = Axis::single('core/page')->add($page)->getPageIdByRequest($page);
+        $pageId = Axis::single('core/page')->add($page)->getIdByPage($page);
         if (null === $templateId) {
             $templateId = Axis::config('design/main/frontTemplateId');
         }
         if (!empty($parentPage)) {
-            $parentPage = Axis::single('core/page')->getPageIdByRequest($parentPage);
+            $parentPage = Axis::single('core/page')->getIdByPage($parentPage);
         }
 
         $this->insert(array(
@@ -79,7 +79,7 @@ class Axis_Core_Model_Template_Page extends Axis_Db_Table
 
             $templateId = Axis::config('design/main/frontTemplateId');
         }
-        $pageId = Axis::single('core/page')->getPageIdByRequest($page);
+        $pageId = Axis::single('core/page')->getIdByPage($page);
         if (!$pageId) {
             return $this;
         }

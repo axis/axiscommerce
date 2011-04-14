@@ -663,6 +663,31 @@
             <tab_container></tab_container>
         </page>
     </box>
+    <box multiple="1">
+        <class>Axis_Core_Breadcrumbs</class>
+        <block>beforeContent</block>
+        <sort_order>100</sort_order>
+        <config>{"template":""}</config>
+        <status>1</status>
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
     <layout multiple="1">
         <layout>layout_2columns-left</layout>
         <page>

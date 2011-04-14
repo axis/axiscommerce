@@ -36,24 +36,17 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('sitemap')->__(
-                'Sitemap'
-            ),
-            '/sitemap'
-        );
-        $this->view->meta()->setTitle(
-            Axis::translate('sitemap')->__(
-                'Sitemap'
+        $this->addBreadcrumb(array(
+            'label' => Axis::translate('sitemap')->__('Sitemap'),
+            'route' => 'sitemap'
         ));
     }
 
     public function getAllCategoriesAction()
     {
-        $this->view->pageTitle = Axis::translate('sitemap')->__(
+        $this->setTitle(Axis::translate('sitemap')->__(
             'Site Map Categories'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        ));
         
         $categories = Axis::single('catalog/category')->select('*')
             ->addName(Axis_Locale::getLanguageId())
@@ -84,7 +77,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
                 'uri'     => $uri,
                 'order'   => $_category['lft'],
                 'class'   => $class,
-                'visible' => 'enabled' === $_category['status'] ? true : false
+                'visible' => ('enabled' === $_category['status']) ? true : false
             ));
 
             $lvl = $lvl - $_category['lvl'] + 1;
@@ -103,13 +96,10 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
 
     public function getAllProductsAction()
     {
-        $this->view->crumbs()->add(
-            Axis::translate('sitemap')->__('Products'), '/get-all-products'
-        );
-        $this->view->pageTitle = Axis::translate('sitemap')->__(
-            'Site Map All Products'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('sitemap')->__(
+                'Site Map All Products'
+        ));
         $products = Axis::single('catalog/product_category')->select()
             ->distinct()
             ->from('catalog_product_category', array())
@@ -152,10 +142,8 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
 
     public function getAllPagesAction()
     {
-        $this->view->pageTitle = Axis::translate('sitemap')->__(
-            'Site Map All Pages'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('sitemap')->__('Site Map All Pages'));
+        
         $result = array();
         $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
             ->addCategoryContentTable()
@@ -210,7 +198,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
                     'label'  => $title,
                     'title'  => $title,
                     'route'  => 'cms_page',
-                    'params' => array('cat' => $_page['link']),
+                    'params' => array('page' => $_page['link']),
                     'class'  => 'icon-page'
                 ));
                 $_container = $menu->findBy('category_id', $_page['cms_category_id']);

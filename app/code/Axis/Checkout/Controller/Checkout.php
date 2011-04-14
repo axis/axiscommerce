@@ -93,9 +93,10 @@ class Axis_Checkout_Controller_Checkout extends Axis_Core_Controller_Front_Secur
 
         switch ($type) {
             case 'billing-address':
-                $this->view->pageTitle = Axis::translate('checkout')->__(
-                    'Select billing address'
-                );
+                $this->setTitle(
+                    Axis::translate('checkout')->__(
+                        'Select billing address'
+                ));
                 $billing = $this->_getCheckout()->getBilling();
                 if ($billing instanceof Axis_Address && $billing->hasId()) {
                     $selectedAddressId = $this->_getCheckout()->getBilling()->id;
@@ -107,9 +108,10 @@ class Axis_Checkout_Controller_Checkout extends Axis_Core_Controller_Front_Secur
                 }
                 break;
             case 'delivery-address':
-                $this->view->pageTitle = Axis::translate('checkout')->__(
-                    'Select delivery address'
-                );
+                $this->setTitle(
+                    Axis::translate('checkout')->__(
+                        'Select delivery address'
+                ));
                 $delivery = $this->_getCheckout()->getDelivery();
                 if ($delivery instanceof Axis_Address && $delivery->hasId()) {
                     $selectedAddressId = $this->_getCheckout()->getDelivery()->id;
