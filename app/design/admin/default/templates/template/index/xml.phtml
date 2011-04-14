@@ -18,8 +18,12 @@
             <controller><?php echo $page['controller']; ?></controller>
             <action><?php echo $page['action']; ?></action>
             <show><?php echo $page['box_show']; ?></show>
-            <block><?php echo $page['block']; ?></block>
-            <sort_order><?php echo $page['sort_order']; ?></sort_order>
+            <block><?php echo $page['block']; ?></block><?php
+            if (!empty($page['sort_order'])) : ?>
+
+            <sort_order><?php echo $page['sort_order']; ?></sort_order><?php
+            endif;?>
+
             <template><?php echo $page['template']; ?></template>
             <tab_container><?php echo $page['tab_container']; ?></tab_container>
         </page><?php
