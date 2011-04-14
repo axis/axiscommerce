@@ -94,97 +94,69 @@ class Axis_Core_Model_Template_Box extends Axis_Db_Table
 
     /**
      * Insert box
-     * @param string class 'Catalog_Navigation'
-     * @param string block 'left' or  'footer' , etc...
+     * @param string $class 'Catalog_Navigation'
+     * @param string $container 'left' or  'footer' , etc...
      * @param mixed $pages
      *  'module/controler/action',
      *  array(
      *      'module/controler/action',
-     *      'module2/controler/action'
+     *      'module2/controler/action' => array('box_show' => false)
      *  )
      * @param int $templateId If template is not provided, current templateId will be used
-     * @param int boxStatus 1 or 0 default 1
-     * @param int sort_order 100 (default '100')
-     * @param array $extraOptions
-     *  'module/controler/action' => array(
-     *      'box_show' => 0|1,
-     *      'template' => 'template',
-     *      'tab_container' => 'container',
-     *      'block' => 'block'
-     *      'sort_order' => sort_order
-     *  )
+     * @param bool $status 1 or 0 default 1
+     * @param int $sort_order 100 (default '100')
      * @return Axis_Core_Model_Template_Box Provides fluent interface
      */
     public function add(
         $class,
-        $block = 'content',
-        $pages = '*/*/*',
+        $container = 'content',
+        $assigns = '*/*/*',
         $sortOrder = 100,
-        $config = '',
+        $config = '{}',
         $templateId = null,
-        $boxStatus = 1,
-        $extraOptions = array())
+        $status = true
+        )
     {
-        if (!is_array($pages)) {
-            $pages = array($pages);
+        if (!is_array($assigns)) {
+            $assigns = array($assigns);
         }
         if (null === $templateId) {
-            $templateId = isset(Axis::config()->design->main->frontTemplateId) ?
-                Axis::config()->design->main->frontTemplateId : 1;
+            $templateId = Axis::config('design/main/frontTemplateId');
         }
-        $data = array(
-            'block'       => $block,
+        $row = $this->createRow(array(
+            'block'       => $container,
             'class'       => $class,
             'sort_order'  => $sortOrder,
-            'box_status'  => $boxStatus,
+            'box_status'  => $status,
             'template_id' => $templateId,
             'config'      => $config
-        );
-        $boxId = $this->insert($data);
-
-        foreach ($pages as $page) {
-            $pageId = Axis::single('core/page')->getPageIdByRequest($page);
-            if (!$pageId) {
-                $request = explode('/', $page);
-                $pageId = Axis::single('core/page')->insert(array(
-                    'module_name' => $request[0],
-                    'controller_name' => $request[1],
-                    'action_name' => $request[2]
-                ));
+        ));
+        $row->save();
+        
+        $modelPage = Axis::model('core/page');
+        $modelAssign = Axis::model('core/template_box_page');
+        foreach ($assigns as $page => $options) {
+            $data = array();
+            
+            if (is_array($options)) {
+                $data = $options;
+            } else {
+                $page = $options;
             }
-            Axis::single('core/template_box_page')->insert(array(
-                'box_id'     => $boxId,
-                'page_id'    => $pageId,
-                'box_show'   => $data['box_status'],
+            $page = $modelPage->add($page)->getIdByPage($page);
+            
+            $data = array_merge(array(
+                'box_show'   => $status,
                 'template'   => new Zend_Db_Expr('NULL'),
                 'block'      => new Zend_Db_Expr('NULL'),
-                'sort_order' => $data['sort_order']
+                'sort_order' => new Zend_Db_Expr('NULL')
+            ), $data);
+            $data = array_merge($data, array(
+                'box_id'  => $row->id,
+                'page_id' => $page
             ));
+            $modelAssign->createRow($data)->save();
         }
-
-        foreach ($extraOptions as $page => $values) {
-            $pageId = Axis::single('core/page')->getPageIdByRequest($page);
-
-            if (!$pageId) {
-                $request = explode('/', $page);
-                $pageId = Axis::single('core/page')->insert(array(
-                    'module_name'     => $request[0],
-                    'controller_name' => $request[1],
-                    'action_name'     => $request[2]
-                ));
-                // there are no boxes assigned to page, if it was just created,
-                $row = Axis::single('core/template_box_page')->createRow();
-            } elseif (!$row = Axis::single('core/template_box_page')
-                ->find($boxId, $pageId)->current()) {
-
-                $row = Axis::single('core/template_box_page')->createRow();
-            }
-            $row->setFromArray($values);
-            $row->box_id = $boxId;
-            $row->page_id = $pageId;
-            $row->save();
-        }
-
         return $this;
     }
 

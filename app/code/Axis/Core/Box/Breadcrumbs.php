@@ -48,8 +48,24 @@ class Axis_Core_Box_Breadcrumbs extends Axis_Core_Box_Abstract
         }
         $breadcrumbs = $this->getData('breadcrumbs');
         return $this->getView()->navigation()->breadcrumbs($breadcrumbs)
-            ->setLinkLast(true)
+            ->setLinkLast($this->link_last)
             ->render()
             ;
+    }
+    
+    public function getConfigurationFields()
+    {
+        return array(
+            'link_last' => array(
+                'fieldLabel'   => Axis::translate('core')->__(
+                    'Show last item as link'
+                ),
+                'initialValue' => 0,
+                'data' => array(
+                    0 => 'No',
+                    1 => 'Yes'
+                )
+            )
+        );
     }
 }

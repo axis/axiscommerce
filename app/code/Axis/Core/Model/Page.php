@@ -99,7 +99,7 @@ class Axis_Core_Model_Page extends Axis_Db_Table
      * @param string $request [optional]
      * @return string
      */
-    public function getPageIdByRequest($request = '*/*/*')
+    public function getIdByPage($request = '*/*/*')
     {
         $request = explode('/', $request);
         $module = $request[0];
@@ -186,7 +186,7 @@ class Axis_Core_Model_Page extends Axis_Db_Table
      */
     public function add($request = '*/*/*')
     {
-        if ($this->getPageIdByRequest($request)) {
+        if ($this->getIdByPage($request)) {
             return $this;
         }
         $request = explode('/', $request);
