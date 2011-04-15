@@ -219,15 +219,14 @@ ul.success-msg {
 }
 
 /* Breadcrumbs */
-.breadcrumbs-container { background: url(../images/middle_bg.gif) repeat-y 50% 0; }
-.breadcrumbs,
-.breadcrumbs a,
-.breadcrumbs span { font: bold 11px Tahoma, Helvetica, sans-serif; }
-.breadcrumbs { width: 940px; margin: 0 auto; }
+.breadcrumbs-container { margin: 0 0 6px 0; }
+.breadcrumbs { font: bold 11px Tahoma, Helvetica, sans-serif; }
 .breadcrumbs span,
-.breadcrumbs a { color: #005bcc; display: block; padding: 3px 8px 3px 0; margin-right: 4px; }
-.breadcrumbs a { background: url(../images/common.gif) no-repeat 100% 8px; }
-.breadcrumbs li { float: left; padding-top: 3px }
+.breadcrumbs a { color: #005bcc; display: block; padding: 1px 8px 1px 0; }
+.breadcrumbs a { background: url(../images/common.gif) no-repeat 100% 6px; }
+.breadcrumbs li { float: left; margin-right: 4px; }
+.breadcrumbs li.last { margin-right: 0; }
+.breadcrumbs li.last span { padding-right: 0; }
 
 /* attributes popup */
 .excerpt { position: relative; margin-bottom: 3px; z-index: 10; }
