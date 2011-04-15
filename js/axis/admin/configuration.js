@@ -107,6 +107,10 @@ Ext.onReady(function() {
                 ds.baseParams['filter[tree][value]']    = node.id + '%';
             }
 
+            if (ds.lastOptions && ds.lastOptions.params) {
+                ds.lastOptions.params.start = 0; // reset pagination
+            }
+
             ds.reload();
         },
 
