@@ -110,6 +110,7 @@ class Axis_GoogleAnalytics_Box_Ga extends Axis_Core_Box_Abstract
 
     public function getConfigurationFields()
     {
+        $url = 'http://code.google.com/intl/en/apis/analytics/docs/tracking/home.html';
         return array(
             'customOption' => array(
                 'fieldLabel'   => Axis::translate('GoogleAnalytics')->__(
@@ -117,7 +118,7 @@ class Axis_GoogleAnalytics_Box_Ga extends Axis_Core_Box_Abstract
                 ),
                 'initialValue' => '',
                 'description' => 'example: <code> ->_setCampNameKey(\'some-key\')->_setCampSourceKey(\'some-key2\')</code></br>' 
-                    . '<a href="#" onclick="window.open(\'http://code.google.com/intl/en/apis/analytics/docs/tracking/home.html\')">Google Analytics Docs</a>'
+                    . "<a href=\"{$url}\" onclick=\"window.open(\"{$url}\")\">Google Analytics Docs</a>"
             )
         );
     }
