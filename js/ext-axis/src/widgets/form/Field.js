@@ -56,4 +56,12 @@ Ext.intercept(Ext.form.Field.prototype, 'afterRender', function() {
             });
         }
     }
+    
+    if (this.description){
+        this.getEl().insertHtml('afterEnd', 
+            '<div class="x-form-element-description">'
+                + this.description
+            + '</div>'
+        );
+    }
 });
