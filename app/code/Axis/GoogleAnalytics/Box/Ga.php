@@ -116,7 +116,7 @@ class Axis_GoogleAnalytics_Box_Ga extends Axis_Core_Box_Abstract
         return array(
             'customOption' => array(
                 'fieldLabel'   => Axis::translate('GoogleAnalytics')->__(
-                    'Custom GA options'
+                    'Custom options'
                 ),
                 'initialValue' => '' 
                 // example ->_setCampNameKey('zzz')->_setCampSourceKey()
