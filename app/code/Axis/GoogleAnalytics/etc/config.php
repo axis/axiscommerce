@@ -27,6 +27,15 @@ $config = array(
         'package' => 'Axis_GoogleAnalytics',
         'name' => 'GoogleAnalytics',
         'version' => '0.1.0',
-        'required' => 0
+        'required' => 0, 
+        'events' => array(
+            'sales_order_create_success' => array(
+                'ga_set_order' => array(
+                    'type'   => 'single',
+                    'model'  => 'Axis_GoogleAnalytics_Box_Ga',
+                    'method' => 'setOrder'
+                )
+            )
+        )
     )
 );
