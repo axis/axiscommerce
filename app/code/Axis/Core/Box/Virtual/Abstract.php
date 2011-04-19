@@ -35,6 +35,15 @@ class Axis_Core_Box_Virtual_Abstract extends Axis_Core_Box_Abstract
 {
     /**
      *
+     * @return string 
+     */
+    public function getTemplate()
+    {
+        return '';
+    }
+    
+    /**
+     *
      * @return string
      */
     public function render()
