@@ -118,7 +118,7 @@ class Axis_GoogleAnalytics_Box_Ga extends Axis_Core_Box_Abstract
                 ),
                 'initialValue' => '',
                 'description' => 'example: <code> ->_setCampNameKey(\'some-key\')->_setCampSourceKey(\'some-key2\')</code></br>' 
-                    . "<a href=\"{$url}\" onclick=\"window.open(\"{$url}\")\">Google Analytics Docs</a>"
+                    . "<a href=\"{$url}\" onclick=\"window.open('{$url}');return false;\">Google Analytics Docs</a>"
             )
         );
     }
