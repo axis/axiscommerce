@@ -35,7 +35,7 @@ Axis.form.CKEditor = Ext.extend(Ext.form.TextArea, {
                 + 'and unpack under the js folder (AXIS_ROOT/js)'
             );
         }
-        CKEDITOR.config.toolbar_Axis = [
+        CKEDITOR.config.toolbar_axis = [
             ['Source','-','Templates'],
             ['Cut','Copy','Paste','PasteText','PasteFromWord','-'],
             ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
@@ -51,9 +51,16 @@ Axis.form.CKEditor = Ext.extend(Ext.form.TextArea, {
             ['TextColor','BGColor'],
             ['Maximize', 'ShowBlocks']
         ];
+        CKEDITOR.config.toolbar_axis_min = [ // feature http://dev.ckeditor.com/ticket/7280
+            ['Source'],
+            ['Bold','Italic','Underline','Strike'],
+            ['NumberedList','BulletedList'],
+            ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+            ['Link','Unlink']
+        ];
         var tags = ['p', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
         CKEDITOR.replace(this.id, {
-            toolbar: 'Axis',
+            toolbar: 'axis',
             height: this.height ? this.height : 200,
             on: {
                 blur: function() {
