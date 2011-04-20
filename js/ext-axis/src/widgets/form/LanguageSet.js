@@ -82,6 +82,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                     nextField.focus();
                 }
             };
+            item.anchor = '100%';
 
             for (var i = 0, limit = this.tplVars.length; i < limit; i++) {
                 var v = this.tplVars[i];
@@ -138,12 +139,26 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                 autoEl: {
                     id: this.id
                 },
+                deferredRender: false,
                 bufferResize: false,// Default this to false, since it doesn't really have a proper ownerCt.
                 cls: this.baseCls,
-                items: this.items,
                 layout: 'card',
                 renderTo: ct
             };
+
+            var tabs = [];
+            Ext.each(this.items, function(el, i) {
+                tabs.push({
+                    anchor: '-20',
+                    deferredRender: false,
+                    xtype: 'container',
+                    autoHeight: true,
+                    border: false,
+                    layout: 'anchor',
+                    items: [el]
+                });
+            });
+            panelCfg.items = tabs;
 
             this.panel = new Ext.Container(panelCfg);
             this.panel.ownerCt = this;
@@ -265,7 +280,6 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
                                      + '.gif)'
             });
         }
-
     },
 
     // private
@@ -386,7 +400,7 @@ Axis.form.LanguageSet = Ext.extend(Ext.form.TextField, {
     },
 
     focus: function() {
-        this.panel.layout.activeItem.focus();
+        // this.panel.layout.activeItem.findByType('field')[0].focus();
     },
 
     setValue: function() {

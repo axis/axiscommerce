@@ -145,7 +145,8 @@ Ext.onReady(function() {
             xtype: 'langset'
         }, {
             name: 'content[description]',
-            defaultType: 'textarea',
+            defaultType: 'ckeditor',
+            height: 100,
             fieldLabel: 'Description'.l(),
             xtype: 'langset'
         }, {

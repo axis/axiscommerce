@@ -28,10 +28,8 @@ var Block = {
     },
 
     load: function(id) {
-        BlockWindow.form.getForm().clear();
         BlockWindow.form.getForm().load({
-            url:  Axis.getUrl('cms_block/get-data/id/') + id,
-            method: 'get',
+            url: Axis.getUrl('cms_block/get-data/id/') + id,
             success: function(form, action) {
                 BlockWindow.el.show();
             }
@@ -106,6 +104,10 @@ Ext.onReady(function() {
             sortable: true
         },
         columns: [{
+            header: 'Id'.l(),
+            dataIndex: 'id',
+            width: 60
+        }, {
             header: 'Name'.l(),
             dataIndex: 'name',
             id: 'name'

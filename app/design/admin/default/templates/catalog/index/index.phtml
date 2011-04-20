@@ -1,9 +1,15 @@
 <?php
-$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.FileTreeMenu.js');
-$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.FileTreePanel.js');
-$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.form.BrowseButton.js');
-$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.UploadPanel.js');
-$this->headScript()->appendFile('js/ext-ux/filetree/Ext.ux.FileUploader.js');
+$this->headScript()
+    ->appendFile('js/ckeditor/ckeditor.js')
+    ->appendFile('js/axis/admin/core/ckeditor.js')
+    ->appendFile('js/ext-axis/src/widgets/form/CKEditor.js');
+
+$this->headScript()
+    ->appendFile('js/ext-ux/filetree/Ext.ux.FileTreeMenu.js')
+    ->appendFile('js/ext-ux/filetree/Ext.ux.FileTreePanel.js')
+    ->appendFile('js/ext-ux/filetree/Ext.ux.form.BrowseButton.js')
+    ->appendFile('js/ext-ux/filetree/Ext.ux.UploadPanel.js')
+    ->appendFile('js/ext-ux/filetree/Ext.ux.FileUploader.js');
 
 $this->headScript()
     ->appendFile('js/ext-axis/src/widgets/ImageBrowser.js')

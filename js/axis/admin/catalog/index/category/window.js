@@ -138,7 +138,7 @@ Ext.onReady(function() {
                         }]
                     }]
                 }, {
-                    defaultType: 'textarea',
+                    defaultType: 'ckeditor',
                     fieldLabel: 'Description'.l(),
                     height: 150,
                     name: 'description',

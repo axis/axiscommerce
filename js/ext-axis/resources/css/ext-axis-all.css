@@ -9,6 +9,7 @@
     top: 0;
     width: 20px;
 }
+.x-form-label-top .x-form-element .x-form-lang-trigger { top: 4px; }
 .x-form-htmleditor-element .x-form-lang-trigger { right: 0; }
 .x-form-lang-trigger:hover { background-color: #eaeaea; }
 .x-form-lang-menu .x-menu-item-icon { height: auto; width: auto; margin-top: 2px; }
@@ -48,3 +49,6 @@
 .x-grid3-filter-offset { padding-left: 1px; text-align: left; }
 .x-grid3-filter td { vertical-align: top !important; border-bottom: 1px solid #c6c6c6; -moz-user-select: text; }
 .x-grid3-cell-filter-inner { cursor: inherit; padding: 3px 3px 3px 3px; position: relative; }
+
+/* ckeditor */
+span.x-form-invalid { border: 1px solid #c30 !important; }

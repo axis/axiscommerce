@@ -52,23 +52,23 @@ Ext.onReady(function(){
             name: 'description[title]',
             xtype: 'langset'
         }, {
-            fieldLabel: 'Description'.l(),
-            defaultType: 'textarea',
-            name: 'description[description]',
-            xtype: 'langset'
-        }, {
             fieldLabel: 'Image'.l(),
             url: Axis.getUrl('catalog_manufacturer/save-image'),
             name: 'image',
             rootPath: 'media/manufacturer',
             rootText: 'manufacturer',
             xtype: 'imageuploadfield'
+        }, {
+            fieldLabel: 'Description'.l(),
+            defaultType: 'ckeditor',
+            height: 100,
+            name: 'description[description]',
+            xtype: 'langset'
         }]
     });
 
     var window = new Axis.Window({
         id: 'window',
-        height: 400,
         title: 'Manufacturer'.l(),
         items: form,
         buttons: [{

@@ -87,11 +87,15 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        Axis::model('cms/block')->save($this->_getAllParams());
+        $id = Axis::model('cms/block')->save($this->_getAllParams());
         Axis::message()->addSuccess(Axis::translate('core')->__(
             'Data was saved successfully'
         ));
-        $this->_helper->json->sendSuccess();
+        $this->_helper->json->sendSuccess(array(
+            'data' => array(
+                'id' => $id
+            )
+        ));
     }
 
     public function batchSaveAction()
