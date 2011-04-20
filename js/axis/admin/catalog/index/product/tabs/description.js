@@ -57,13 +57,13 @@ Ext.onReady(function() {
             name: 'description[name]',
             xtype: 'langset'
         }, {
-            defaultType: 'textarea',//'htmleditor',
+            defaultType: 'ckeditor',
             fieldLabel: 'Description'.l(),
             height: 150,
             name: 'description[description]',
             xtype: 'langset'
         }, {
-            defaultType: 'textarea',//'htmleditor',
+            defaultType: 'ckeditor',
             fieldLabel: 'Short Description'.l(),
             height: 70,
             name: 'description[short_description]',

@@ -116,7 +116,8 @@ Ext.onReady(function() {
             name: 'content[title]',
             xtype: 'langset'
         }, {
-            defaultType: 'textarea',
+            hideLabel: true,
+            defaultType: 'ckeditor',
             height: 250,
             fieldLabel: 'Content'.l(),
             name: 'content[content]',
