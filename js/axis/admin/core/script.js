@@ -28,6 +28,19 @@ if (typeof Ext != 'object') {
    );
 }
 
+if (typeof Range.prototype.createContextualFragment == "undefined") { // FIX IE9
+    Range.prototype.createContextualFragment = function(html) {
+        var doc = this.startContainer.ownerDocument;
+        var container = doc.createElement("div");
+        container.innerHTML = html;
+        var frag = doc.createDocumentFragment(), n;
+        while ( (n = container.firstChild) ) {
+            frag.appendChild(n);
+        }
+        return frag;
+    };
+}
+
 Axis.getUrl = function(url, disableSsl, front) {
     var prefix = Axis.secureUrl;
     if (disableSsl) {
