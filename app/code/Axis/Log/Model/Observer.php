@@ -51,18 +51,18 @@ class Axis_Log_Model_Observer
         
         // add new url request
         $modelUrlInfo = Axis::single('log/url_info');
-        $select = $modelUrlInfo->select()
-            ->where('url = ?', $url)
-            ->where('refer = ?', $refer)
-        ;
-        $rowUrlInfo = $modelUrlInfo->fetchRow($select);
-        if (!$rowUrlInfo) {
+//        $select = $modelUrlInfo->select()
+//            ->where('url = ?', $url)
+//            ->where('refer = ?', $refer)
+//        ;
+//        $rowUrlInfo = $modelUrlInfo->fetchRow($select);
+//        if (!$rowUrlInfo) {
             $rowUrlInfo = $modelUrlInfo->createRow(array(
                 'url'   => $url,
                 'refer' => $refer
             ));
             $rowUrlInfo->save();
-        }
+//        }
         //add/update visitor
         $modelVisitor = Axis::single('log/visitor');
         $select = $modelVisitor->select()
