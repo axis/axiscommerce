@@ -45,25 +45,27 @@
     {
         $customerId = Axis::getCustomerId();
         $sessionId = Zend_Session::getId();
+        $urlId = Axis::single('log/url_info')->add();
         $rowData = array(
             'session_id'    => $sessionId,
             'customer_id'   => $customerId ?
                 $customerId : new Zend_Db_Expr('NULL'),
             // add link trace
-            'last_url_id'   => Axis::single('log/url_info')->add(),
+            'last_url_id'   => $urlId,
             'last_visit_at' => Axis_Date::now()->toSQLString(),
             'site_id'       => Axis::getSiteId()
         );
         $visitorId = isset(Axis::session()->visitorId) ?
             Axis::session()->visitorId : null;
         //salt
-        if ((!$visitorId || !$row = $this->fetchRow('id = ' . $visitorId)) 
-               || ($row->customer_id != $customerId && !$row = $this->fetchRow(
+        if ((!$visitorId || 
+            !$row = $this->fetchRow('id = ' . $visitorId)) || 
+            ($row->customer_id != $customerId && !$row = $this->fetchRow(
                    "session_id = '{$sessionId}' AND customer_id"
                    . ($customerId ? " = {$customerId}" : ' IS NULL'))
                )
            ) {
-                $row = $this->createRow($rowData);
+            $row = $this->createRow($rowData);
         } else {
             $row->setFromArray($rowData);
         }

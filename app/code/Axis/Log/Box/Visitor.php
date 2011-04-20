@@ -35,6 +35,7 @@ class Axis_Log_Box_Visitor extends Axis_Core_Box_Virtual_Abstract
 {
     public function init()
     {
+        return false;
         if (!Axis::config('log/main/enabled'))  {
             return false;
         }

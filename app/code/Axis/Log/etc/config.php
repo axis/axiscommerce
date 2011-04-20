@@ -27,6 +27,15 @@ $config = array(
         'package' => 'Axis_Log',
         'name' => 'Log',
         'version' => '0.1.1',
-        'required' => 1
+        'required' => 1,
+        'events' => array(
+            'controller_action_postdispatch' => array(
+                'core' => array(
+                    'type' => 'single',
+                    'model' => 'log/observer',
+                    'method' => 'core'
+                )
+            )
+        )
     )
 );
