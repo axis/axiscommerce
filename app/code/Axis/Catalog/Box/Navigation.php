@@ -37,7 +37,7 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
     protected $_class = 'box-category';
 
     protected $_activeCategories = null;
-    
+
     public function init()
     {
         $categories = Axis::single('catalog/category')->select('*')
@@ -47,10 +47,6 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
             ->addSiteFilter(Axis::getSiteId())
             ->addDisabledFilter()
             ->fetchAll();
-
-        if (empty($categories)) {
-            return false;
-        }
 
         if (!is_array($this->_activeCategories)) {
             $this->_activeCategories = array();
