@@ -35,7 +35,7 @@ class Axis_Log_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
         $installer->run("
             
             CREATE TABLE  `{$installer->getTable('log_event')}` (
-              `id` int(11) NOT NULL,
+              `id` int(11) NOT NULL AUTO_INCREMENT,
               `visitor_id` int(11) NOT NULL,
               `event_id` mediumint(9) NOT NULL,
               `object_id` mediumint(9) NOT NULL,
@@ -43,8 +43,9 @@ class Axis_Log_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             
             DELETE FROM `{$installer->getTable('log_url')}`;
+            
             ALTER TABLE `{$installer->getTable('log_url')}` 
-                ADD COLUMN `id` INTEGER  NOT NULL AFTER `site_id`,
+                ADD COLUMN `id` INTEGER  NOT NULL AFTER `visitor_id`,
                 DROP PRIMARY KEY,
                 ADD PRIMARY KEY (`id`);
 
