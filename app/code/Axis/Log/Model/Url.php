@@ -35,14 +35,4 @@ class Axis_Log_Model_Url extends Axis_Db_Table
 {
     protected $_name = 'log_url';
     protected $_selectClass = 'Axis_Log_Model_Url_Select';
-
-    public function add($urlId, $visitorId)
-    {
-        return $this->insert(array(
-            'url_id'     => $urlId,
-            'visitor_id' => $visitorId,
-            'visit_at'   => Axis_Date::now()->toSQLString(),
-            'site_id'    => Axis::getSiteId()
-        ));
-    }
 }

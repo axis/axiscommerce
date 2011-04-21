@@ -64,27 +64,14 @@ class Axis_Log_Model_Observer
             $rowUrlInfo->save();
         }
         //add/update visitor
-        $modelVisitor = Axis::single('log/visitor');
-        $select = $modelVisitor->select()
-            ->where('session_id =?', Zend_Session::getId())
-            ->where('site_id = ?', $siteId);
-        
-        if ($customerId = Axis::getCustomerId()) {
-            $select->where('customer_id = ?', $customerId);
-        } else {
-            $select->where('customer_id IS NULL');
-        }
-        $rowVisitor = $modelVisitor->fetchRow($select);
-        if (!$rowVisitor) {
-            $rowVisitor = $modelVisitor->createRow();
-        }
+        $rowVisitor = Axis::single('log/visitor')->getVisitor();
 
         $rowVisitor->setFromArray(array(
             'last_url_id'   => $rowUrlInfo->id,
             'last_visit_at' => $timestamp,
             'session_id'    => Zend_Session::getId(),
-            'customer_id'   => $customerId ? 
-                $customerId : new Zend_Db_Expr('NULL'),
+            'customer_id'   => Axis::getCustomerId() ? 
+                Axis::getCustomerId() : new Zend_Db_Expr('NULL'),
             'site_id'       => $siteId
         ))->save();
         

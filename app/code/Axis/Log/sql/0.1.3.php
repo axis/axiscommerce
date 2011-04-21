@@ -50,14 +50,11 @@ class Axis_Log_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
                 ADD PRIMARY KEY (`id`);
 
         ");
+            
+        Axis::single('core/template_box')->remove('Axis_Log_Visitor');
     }
 
     public function down()
     {
-//        $installer = Axis::single('install/installer');
-//
-//        $installer->run("
-//            DROP TABLE IF EXISTS `{$installer->getTable('log_event')}`;
-//        ");
     }
 }
