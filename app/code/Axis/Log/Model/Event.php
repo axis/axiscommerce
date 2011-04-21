@@ -19,23 +19,20 @@
  *
  * @category    Axis
  * @package     Axis_Log
+ * @subpackage  Axis_Log_Model
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
-$config = array(
-    'Axis_Log' => array(
-        'package' => 'Axis_Log',
-        'name' => 'Log',
-        'version' => '0.1.1',
-        'required' => 1,
-        'events' => array(
-            'controller_action_postdispatch' => array(
-                'core' => array(
-                    'type' => 'single',
-                    'model' => 'log/observer',
-                    'method' => 'log'
-                )
-            )
-        )
-    )
-);
+
+/**
+ *
+ * @category    Axis
+ * @package     Axis_Log
+ * @subpackage  Axis_Log_Model
+ * @author      Axis Core Team <core@axiscommerce.com>
+ */
+class Axis_Log_Model_Event extends Axis_Db_Table
+{
+    protected $_name = 'log_event';
+    
+}
