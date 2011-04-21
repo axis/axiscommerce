@@ -64,20 +64,20 @@ class Axis_Log_Model_Observer
             $rowUrlInfo->save();
         }
         //add/update visitor
-        $rowVisitor = Axis::single('log/visitor')->getVisitor();
-
-        $rowVisitor->setFromArray(array(
-            'last_url_id'   => $rowUrlInfo->id,
-            'last_visit_at' => $timestamp,
-            'session_id'    => Zend_Session::getId(),
-            'customer_id'   => Axis::getCustomerId() ? 
-                Axis::getCustomerId() : new Zend_Db_Expr('NULL'),
-            'site_id'       => $siteId
-        ))->save();
+        $visitorId = Axis::single('log/visitor')->getVisitor()
+            ->setFromArray(array(
+                'last_url_id'   => $rowUrlInfo->id,
+                'last_visit_at' => $timestamp,
+                'session_id'    => Zend_Session::getId(),
+                'customer_id'   => Axis::getCustomerId() ? 
+                    Axis::getCustomerId() : new Zend_Db_Expr('NULL'),
+                'site_id'       => $siteId
+            ))
+            ->save();
         
         //add/update visitor info
         Axis::single('log/visitor_info')
-            ->getRow($rowVisitor->id)
+            ->getRow($visitorId)
             ->setFromArray(array(
                 'http_refer'           => $refer,
                 'user_agent'           => $request->getServer('HTTP_USER_AGENT', ''),
@@ -88,11 +88,11 @@ class Axis_Log_Model_Observer
             ))->save();
         
         //
-        Axis::single('log/url')->createRow(array(
+        Axis::single('log/url')->insert(array(
             'url_id'     => $rowUrlInfo->id,
-            'visitor_id' => $rowVisitor->id,
+            'visitor_id' => $visitorId,
             'visit_at'   => $timestamp,
             'site_id'    => $siteId
-        ))->save();
+        ));
     }
 }
