@@ -45,7 +45,7 @@ class Axis_Log_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             DELETE FROM `{$installer->getTable('log_url')}`;
             
             ALTER TABLE `{$installer->getTable('log_url')}` 
-                ADD COLUMN `id` INTEGER  NOT NULL AFTER `visitor_id`,
+                ADD COLUMN `id` INTEGER  NOT NULL AUTO_INCREMENT AFTER `visitor_id`,
                 DROP PRIMARY KEY,
                 ADD PRIMARY KEY (`id`);
 
