@@ -70,7 +70,7 @@ $config = array(
                     'method' => 'updatePriceIndexOnProductMove'
                 )
             ),
-            'catalog_product_remove_after' => array(
+            'catalog_product_remove_from_category' => array(
                 'update_price_index' => array(
                     'type' => 'model',
                     'model' => 'catalog/observer',
@@ -102,7 +102,14 @@ $config = array(
                 'catalog_product_view_log_event' => array(
                     'type'   => 'model',
                     'model'  => 'catalog/observer',
-                    'method' => 'catalogProductViewAddLogEvent'
+                    'method' => 'addLogEventOnCatalogProductView'
+                )
+            ),
+            'catalog_product_remove_success' => array(
+                'remove_log_event' => array(
+                    'type' => 'model',
+                    'model' => 'catalog/observer',
+                    'method' => 'removeLogEventOnCatalogProductRemoveSuccess'
                 )
             )
         )
