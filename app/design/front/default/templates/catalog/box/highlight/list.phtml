@@ -1,0 +1,41 @@
+<ul class="product-listing product-listing-list">
+    <?php foreach ($this->box->products as $prodId => $product) :
+        $productUrl = $this->hurl(array(
+            'product' => array('value' => $prodId, 'seo' => $product['key_word']),
+            'controller' => 'catalog',
+            'action' => 'product'
+        ), false, true);
+    ?>
+        <li class="product-item">
+            <div class="product-media">
+                <?php
+                $imagePath = isset($product['images'][$product['image_listing']]) ?
+                    $product['images'][$product['image_listing']]['path'] : '';
+                $imageTitle = isset($product['images'][$product['image_listing']]) ?
+                    $product['images'][$product['image_listing']]['title'] : '';
+                ?>
+                <a href="<?php echo $productUrl ?>"
+                   title="<?php echo $this->escape($imageTitle) ?>"
+                   class="product-image"
+                ><?php echo $this->imager('/product' . $imagePath, array(
+                    'width'  => 120,
+                    'height' => 120,
+                    'alt' => $this->escape($imageTitle),
+                    'seo' => $product['image_seo_name']
+                ));
+                ?></a>
+            </div>
+            <!--
+            <div class="product-content">
+
+                <h4 class="product-name"><a href="<?php echo $productUrl ?>"
+                    title="<?php echo $this->escape($product['name']) ?>"
+                ><?php echo $product['name'] ?></a></h4>
+
+                <?php echo $this->price($product['prices']) ?>
+               
+            </div>
+            -->
+        </li>
+    <?php endforeach; ?>
+    </ul>
