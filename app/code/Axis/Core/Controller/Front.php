@@ -151,4 +151,24 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
             $options
         );
     }
+    
+    /**
+     * Post-dispatch routines
+     *
+     * Called after action method execution. If using class with
+     * {@link Zend_Controller_Front}, it may modify the
+     * {@link $_request Request object} and reset its dispatched flag in order
+     * to process an additional action.
+     *
+     * Common usages for postDispatch() include rendering content in a sitewide
+     * template, link url correction, setting headers, etc.
+     *
+     * @return void
+     */
+    public function postDispatch()
+    {
+        $observer = new Axis_Object();
+        $observer->controller = $this;
+        Axis::dispatch('controller_action_postdispatch', $observer);
+    }
 }

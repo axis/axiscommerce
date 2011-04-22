@@ -37,55 +37,20 @@
     protected $_selectClass = 'Axis_Log_Model_Visitor_Select';
 
     /**
-     * Upadte or create table visitor row 
-     *
-     * @return  Axis_Log_Model_Visitor Fluet interface
-     */
-    public function updateVisitor()
-    {
-        $customerId = Axis::getCustomerId();
-        $sessionId = Zend_Session::getId();
-        $rowData = array(
-            'session_id'    => $sessionId,
-            'customer_id'   => $customerId ?
-                $customerId : new Zend_Db_Expr('NULL'),
-            // add link trace
-            'last_url_id'   => Axis::single('log/url_info')->add(),
-            'last_visit_at' => Axis_Date::now()->toSQLString(),
-            'site_id'       => Axis::getSiteId()
-        );
-        $visitorId = isset(Axis::session()->visitorId) ?
-            Axis::session()->visitorId : null;
-        //salt
-        if ((!$visitorId || !$row = $this->fetchRow('id = ' . $visitorId)) 
-               || ($row->customer_id != $customerId && !$row = $this->fetchRow(
-                   "session_id = '{$sessionId}' AND customer_id"
-                   . ($customerId ? " = {$customerId}" : ' IS NULL'))
-               )
-           ) {
-                $row = $this->createRow($rowData);
-        } else {
-            $row->setFromArray($rowData);
-        }
-        $row->save();
-        Axis::session()->visitorId = $row->id;
-        Axis::single('log/visitor_info')->updateVisitorInfo($row->id);
-        Axis::single('log/url')->add($row->last_url_id, $row->id);
-
-        return $this;
-    }
-
-    /**
      * Return visitor row
      *
      * @return Zend_Db_Table_Row_Abstract
      */
     public function getVisitor()
     {
-        if (!isset(Axis::session()->visitorId)) {
-            $this->updateVisitor();
+        if (!isset(Axis::session()->visitorId) ||
+            (!$row = $this->find(Axis::session()->visitorId)->current()))
+        {
+            $row = $this->createRow();
+            $row->save();
+            Axis::session()->visitorId = $row->id; //unset only on logout
         }
-        return $this->find(Axis::session()->visitorId)->current();
+        return $row;
     }
 
     /**
@@ -97,7 +62,7 @@
     {
         $select = $this->getAdapter()->select();
         $select->from(
-                array('o' =>  $this->_prefix . 'log_visitor'),
+                array('o' => $this->_prefix . 'log_visitor'),
                 array('last_visit_at', 'hit'=> 'COUNT(DISTINCT session_id)')
             )
            ->group('last_visit_at')
