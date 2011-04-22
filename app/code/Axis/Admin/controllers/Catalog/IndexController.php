@@ -562,7 +562,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             $this->db->quoteInto('product_id IN (?)', $productIds)
         ));
 
-        Axis::dispatch('catalog_product_remove_after', array(
+        Axis::dispatch('catalog_product_remove_from_category', array(
             'product_ids' => $productIds,
             'category_ids' => array($categoryId)
         ));
@@ -583,7 +583,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             $this->db->quoteInto('product_id IN(?)', $productIds)
         ));
 
-        Axis::dispatch('catalog_product_remove_after', array(
+        Axis::dispatch('catalog_product_remove_from_category', array(
             'product_ids' => $productIds,
             'category_ids' => $categoryIds
         ));

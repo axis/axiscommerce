@@ -235,7 +235,7 @@ class Axis_Catalog_Model_Observer
         );
     }
     
-    public function catalogProductViewAddLogEvent($observer) 
+    public function addLogEventOnCatalogProductView($observer) 
     {
         $product = $observer['product'];
         if (!$product instanceof Axis_Catalog_Model_Product_Row){
@@ -247,5 +247,13 @@ class Axis_Catalog_Model_Observer
             'event_name' => 'catalog_product_view',
             'object_id'  => $product->id
         ))->save();
+    }
+    
+    public function removeLogEventOnCatalogProductRemoveSuccess($data) 
+    {
+        Axis::model('log/event')->delete(array(
+            Axis::db()->quoteInto('event_name = ? ', 'catalog_product_view'),
+            Axis::db()->quoteInto('object_id IN (?)', $data['product_ids'])
+        ));
     }
 }
