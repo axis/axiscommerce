@@ -33,8 +33,9 @@
  */
 class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
 {
-    protected $_productsCount = 6;
-    protected $_columnsCount = 3;
+    protected $_viewMode        = 'grid';
+    protected $_productsCount   = 6;
+    protected $_columnsCount    = 3;
 
     /**
      * @return integer
@@ -61,6 +62,14 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
     public function getConfigurationFields()
     {
         return array(
+            'view_mode' => array(
+                'fieldLabel'    => Axis::translate('catalog')->__('View mode'),
+                'initialValue'  => $this->_viewMode,
+                'data'          => array(
+                    'grid' => Axis::translate('catalog')->__('Grid'),
+                    'list' => Axis::translate('catalog')->__('List')
+                )
+            ),
             'products_count' => array(
                 'fieldLabel'    => Axis::translate('catalog')->__('Products Count'),
                 'initialValue'  => $this->_productsCount
