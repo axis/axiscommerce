@@ -89,7 +89,7 @@ Ext.onReady(function() {
                 {name: 'box_id', type: 'int'},
                 {name: 'block', type: 'string'},
                 {name: 'box_show', type: 'int'},
-                {name: 'sort_order', type: 'int'},
+                {name: 'sort_order'},
                 {name: 'tab_container', type: 'string'},
                 {name: 'template', type: 'string'},
                 {name: 'remove', type: 'int'}
@@ -121,7 +121,7 @@ Ext.onReady(function() {
     });
 
     var useConfigValueRenderer = function(v) {
-        if ('' == v) {
+        if ('' == v || undefined == v) {
             return 'Use Config Value'.l();
         }
         return v;
