@@ -36,13 +36,13 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        
+
         $this->addBreadcrumb(array(
-            'label' => Axis::translate('catalog')->__('Catalog'), 
+            'label' => Axis::translate('catalog')->__('Catalog'),
             'route' => 'product_catalog'
         ));
         $this->addBreadcrumb(array(
-            'label' => Axis::translate('community')->__('Reviews'), 
+            'label' => Axis::translate('community')->__('Reviews'),
             'route' => 'community_review'
         ));
     }
@@ -78,7 +78,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                 $productIds[] = $review['product_id'];
                 $keywords[$review['product']['name']] = $review['product']['name'];
             }
-            
+
             $title = Axis::translate('community')->__('Customer reviews');
             $this->view->meta()
                 ->setTitle($title)
@@ -122,7 +122,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             $review = current($data['reviews']);
             $author = empty($review['author']) ?
                 Axis::translate('community')->__('Guest') : $review['author'];
-            
+
             $title = Axis::translate('community')->__(
                 "%s: Review by %s", $review['product']['name'], $author
             );
@@ -275,7 +275,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
 
             $this->view->customer = $nickname;
             $this->view->customerId = $customerId;
-            
+
             $title = Axis::translate('community')->__(
                 'Reviews written by customer %s', $nickname
             );
@@ -306,15 +306,6 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     {
         $this->_setSnapshot($this->getRequest()->getServer('HTTP_REFERER'));
         $this->_forward('index', 'auth', 'Axis_Account');
-    }
-
-    public function compareAction()
-    {
-        Axis::single('catalog/product_compare')->clear();
-        foreach ($this->_getParam('product_id') as $productId) {
-            Axis::single('catalog/product_compare')->add($productId);
-        }
-        $this->_redirect($this->view->catalogUrl . '/product-compare');
     }
 
     public function addAction()

@@ -170,7 +170,7 @@
         <class>Axis_Catalog_Featured</class>
         <block>content</block>
         <sort_order>100</sort_order>
-        <config>{"products_count":3,"title":"Store hottest products","template":"catalog/box/highlight/grid.phtml"}</config>
+        <config>{"products_count":3,"columns_count":3,"title":"Store hottest products","template":"catalog/box/highlight/listing.phtml"}</config>
         <status>1</status>
         <page multiple="1">
             <module>core</module>
@@ -692,7 +692,7 @@
         <class>Axis_Catalog_RecentlyViewed</class>
         <block>right</block>
         <sort_order>20</sort_order>
-        <config>{"template":"catalog/box/highlight/list.phtml"}</config>
+        <config>{"template":"catalog/box/recentlyViewed.phtml","products_count":15}</config>
         <status>1</status>
         <page multiple="1">
             <module>*</module>

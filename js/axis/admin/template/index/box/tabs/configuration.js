@@ -54,9 +54,12 @@ var ConfigurationFields = {
                     });
                     field.mode = 'local';
                     var arrayData = [];
-                    Ext.each(field.data, function(item, index) {
-                        arrayData.push([index, item]);
-                    });
+                    for (i in field.data) {
+                        if (typeof field.data[i] == 'function') {
+                            continue;
+                        }
+                        arrayData.push([i, field.data[i]]);
+                    }
                     field.store = new Ext.data.ArrayStore({
                         data    : arrayData,
                         fields  : ['id', 'value']
@@ -97,7 +100,8 @@ var ConfigurationFields = {
 
         var additionalConfiguration = {};
         for (var key in config) {
-            var field = panel.find('name', 'configuration[' + key + ']')[0];
+            var field = panel.find('name', 'configuration[' + key + ']')[0]
+                || panel.find('hiddenName', 'configuration[' + key + ']')[0]; // combobox fix
             if (field && field.setValue) {
                 field.setValue(config[key]);
             } else if (field) {

@@ -92,4 +92,17 @@ class Axis_Catalog_ProductCompareController extends Axis_Core_Controller_Front
         Axis::single('catalog/product_compare')->remove($productId);
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
     }
+
+    public function compareAction()
+    {
+        if (!$this->_hasParam('product_id')) {
+            return $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        }
+        $mCompare = Axis::model('catalog/product_compare');
+        $mCompare->clear();
+        foreach ($this->_getParam('product_id') as $productId) {
+            $mCompare->add($productId);
+        }
+        $this->_redirect($this->view->catalogUrl . '/product-compare');
+    }
 }
