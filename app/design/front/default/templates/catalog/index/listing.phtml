@@ -30,7 +30,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
 <?php echo $this->render('index/product-listing-paging.phtml') ?>
 
 <?php if ($this->mode == 'list' ): /* List listing */ ?>
-    <ul class="product-listing product-listing-list">
+    <ul class="product-listing product-listing-list" id="content-listing">
     <?php foreach ($this->products as $prodId => $product) :
         $productUrl = $this->hurl(array(
             'product' => array('value' => $prodId, 'seo' => $product['key_word']),
@@ -104,7 +104,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
     <?php endforeach; ?>
     </ul>
 <?php else : /* Grid listing */ ?>
-    <div class="product-listing product-listing-grid">
+    <div class="product-listing product-listing-grid" id="content-listing">
     <?php
     $i = 0;
     $columnCount = 3;
@@ -189,7 +189,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
     </div>
 
     <script type="text/javascript">
-        var rows = $('.grid-row');
+        var rows = $('#content-listing .grid-row');
         var count = rows.length;
         if (count) {
             $(rows[0]).addClass('first');
