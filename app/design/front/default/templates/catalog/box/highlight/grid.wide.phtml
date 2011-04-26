@@ -1,4 +1,4 @@
-<table class="product-listing product-listing-table listing-highlight" id="<?php echo $this->box->getData('class') ?>">
+<div class="product-listing product-listing-grid listing-highlight" id="<?php echo $this->box->getData('class') ?>">
 <?php
 $reviewSummaryBox = $this->box('community/ReviewRating')
     ->setProductIds(array_keys($this->box->getData('products')));
@@ -13,12 +13,11 @@ foreach ($this->box->getData('products') as $prodId => $product) :
         'action' => 'product'
     ), false, true);
 ?>
-    <?php if ($i%$columnCount==0): ?>
-       <tr>
+    <?php if ($i % $columnCount == 0) : ?>
+        <ul class="grid-row">
     <?php endif; ?>
 
-    <td>
-        <div class="product-item">
+        <li class="product-item">
             <div class="product-image">
                 <?php
                 $imagePath = isset($product['images'][$product['image_listing']]) ?
@@ -57,27 +56,27 @@ foreach ($this->box->getData('products') as $prodId => $product) :
                     <div class="out-of-stock"><?php echo $this->translate('catalog')->__('Out of stock') ?></div>
                 <?php endif ?>
             </div>
-        </div>
-    </td>
+        </li>
 
     <?php $i++;
 
-    if ($i%$columnCount==0) : ?>
-       </tr>
+    if ($i % $columnCount == 0) : ?>
+       </ul>
     <?php endif;
 
 endforeach;
 
-if ($i % $columnCount != 0) :
-    for($i; $i % $columnCount; $i++) : ?>
-        <td class="empty-cell">&nbsp;</td>
-    <?php
-    endfor;?>
-    </tr>
+if ($i % $columnCount != 0) : ?>
+</ul>
 <?php endif; ?>
 
-</table>
+</div>
 
 <script type="text/javascript">
-    decorateTable("<?php echo $this->box->getData('class') ?>");
+    var rows = $("#<?php echo $this->box->getData('class') ?> .grid-row");
+    var count = rows.length;
+    if (count) {
+        $(rows[0]).addClass('first');
+        $(rows[count - 1]).addClass('last');
+    }
 </script>

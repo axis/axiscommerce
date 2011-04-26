@@ -78,7 +78,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
     <?php endforeach; ?>
     </ul>
 <?php else : /* Grid listing */ ?>
-    <div class="product-listing product-listing-grid">
+    <div class="product-listing product-listing-grid" id="<?php echo $this->box->getData('class') ?>">
     <?php
     $i = 0;
     $columnCount = $this->box->getColumnsCount();
@@ -163,7 +163,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
     </div>
 
     <script type="text/javascript">
-        var rows = $('.grid-row');
+        var rows = $("#<?php echo $this->box->getData('class') ?> .grid-row");
         var count = rows.length;
         if (count) {
             $(rows[0]).addClass('first');

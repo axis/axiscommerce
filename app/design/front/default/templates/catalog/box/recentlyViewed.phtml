@@ -49,9 +49,9 @@ $().ready(function() {
 //        }
 //    });
     $("#form-recently-viewed").submit(function() { // this should be replaced with validation plugin
-        if ($('.checkbox-compare:checked').length < 2) {
+        if ($('#form-recently-viewed .checkbox-compare:checked').length < 2) {
             $('#form-recently-viewed label.error').remove();
-            $('.grid-row').after(
+            $('#form-recently-viewed .btn-compare').before(
                 "<label class='error'>Please select at least two products you'd like to compare.</label>"
             );
             return false;

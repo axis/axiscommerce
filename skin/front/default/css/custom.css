@@ -7,8 +7,9 @@
 
 .box-about-us { padding: 0 7px !important; }
 
-.tabs-home .listing-highlight td { width: 330px; border: none;
-    background: url(../images/vline_dashed_grey.gif) repeat-y 100% 0; }
+.tabs-home .listing-highlight .product-item { width: 320px !important; border: none;
+    background: url(../images/vline_dashed_grey.gif) repeat-y 100% 0; padding: 0 7px; }
+.tabs-home .listing-highlight .product-item.last { background: none; }
 .tabs-home .listing-highlight .product-image { float: left; }
 .tabs-home .listing-highlight .product-info { float: right; padding: 0; width: 160px; }
 
