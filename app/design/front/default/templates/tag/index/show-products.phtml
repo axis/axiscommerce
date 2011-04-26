@@ -5,7 +5,7 @@
         <?php echo $this->translate('tag')->__('There are no products matching your request'); ?>
     </p>
 <?php else: ?>
-<table class="product-listing-table" id="product-tags">
+<div class="product-listing product-listing-grid" id="content-listing">
 <?php
 $i = 0;
 $columnCount = 3;
@@ -18,36 +18,36 @@ foreach ($this->tagItems as $item) :
        ), false, true);
 ?>
     <?php if ($i%$columnCount==0): ?>
-        <tr>
+    <ul class="grid-row">
     <?php endif; ?>
 
-        <td>
-            <div class="product-item">
-                <?php if ($this->showRemove): ?>
-                    <a href="<?php echo $this->href('account/tag/remove-item/itemId/' . $item['id'] . '/tagId/' . $item['customer_tag_id'], true) ?>"
-                        class="tag-remove"><?php echo $this->translate('tag')->__('Remove tag from this product') ?>
-                    </a>
-                <?php endif; ?>
-                <?php
-                $imagePath = isset($product['images'][$product['image_listing']]) ?
-                    $product['images'][$product['image_listing']]['path'] : '';
-                $imageTitle = isset($product['images'][$product['image_listing']]) ?
-                    $product['images'][$product['image_listing']]['title'] : '';
-                ?>
-                <a href="<?php echo $productUrl;?>" class="product-image"
-                    title="<?php echo $this->escape($imageTitle) ?>"
-                ><?php echo $this->imager('/product' . $imagePath, array(
-                    'width'  => $this->config()->image->product->widthSmall,
-                    'height' => $this->config()->image->product->heightSmall,
-                    'alt' => $this->escape($imageTitle),
-                    'seo' => $product['image_seo_name']
-                ));
-                ?></a>
-                <h4 class="product-name"><a href="<?php echo $productUrl;?>"
-                    title="<?php echo $this->escape($product['name']);?>"
-                    ><?php echo $this->escape($product['name']);?></a></h4>
-                <?php echo $this->price($product['prices']) ?>
+        <li class="product-item">
+            <?php if ($this->showRemove): ?>
+                <a href="<?php echo $this->href('account/tag/remove-item/itemId/' . $item['id'] . '/tagId/' . $item['customer_tag_id'], true) ?>"
+                    class="tag-remove"><?php echo $this->translate('tag')->__('Remove tag from this product') ?>
+                </a>
+            <?php endif; ?>
+            <?php
+            $imagePath = isset($product['images'][$product['image_listing']]) ?
+                $product['images'][$product['image_listing']]['path'] : '';
+            $imageTitle = isset($product['images'][$product['image_listing']]) ?
+                $product['images'][$product['image_listing']]['title'] : '';
+            ?>
+            <a href="<?php echo $productUrl;?>" class="product-image"
+                title="<?php echo $this->escape($imageTitle) ?>"
+            ><?php echo $this->imager('/product' . $imagePath, array(
+                'width'  => $this->config()->image->product->widthSmall,
+                'height' => $this->config()->image->product->heightSmall,
+                'alt' => $this->escape($imageTitle),
+                'seo' => $product['image_seo_name']
+            ));
+            ?></a>
+            <h4 class="product-name"><a href="<?php echo $productUrl;?>"
+                title="<?php echo $this->escape($product['name']);?>"
+                ><?php echo $this->escape($product['name']);?></a></h4>
+            <?php echo $this->price($product['prices']) ?>
 
+            <div class="product-actions">
                 <?php if ($product['is_saleable']): ?>
                     <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(
                         'class' => 'button btn-add-to-cart',
@@ -76,28 +76,29 @@ foreach ($this->tagItems as $item) :
                     </a>
                 </p>
             </div>
-        </td>
+        </li>
 
     <?php $i++;
 
     if ($i%$columnCount==0) : ?>
-       </tr>
+    </ul>
     <?php endif;
 
 endforeach;
 
-if ($i % $columnCount != 0) :
-    for($i; $i % $columnCount; $i++): ?>
-        <td>&nbsp;</td>
-    <?php
-    endfor;?>
-    </tr>
+if ($i % $columnCount != 0) : ?>
+    </ul>
 <?php endif; ?>
 
-</table>
+</div>
 
 <script type="text/javascript">
-    decorateTable('product-tags');
+    var rows = $('#content-listing .grid-row');
+    var count = rows.length;
+    if (count) {
+        $(rows[0]).addClass('first');
+        $(rows[count - 1]).addClass('last');
+    }
 </script>
 
 <?php endif ?>
