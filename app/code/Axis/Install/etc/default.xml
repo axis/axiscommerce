@@ -858,7 +858,7 @@
         <priority>100</priority>
     </layout>
     <layout multiple="1">
-        <layout>layout_1column</layout>
+        <layout>layout_3columns</layout>
         <page>
             <module>*</module>
             <controller>*</controller>
