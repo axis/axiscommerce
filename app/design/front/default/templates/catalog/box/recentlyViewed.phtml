@@ -33,13 +33,16 @@
     <?php
     endforeach; ?>
     </ul>
+    <div>
     <?php echo $this->button($this->translate('catalog')->__('Compare Selected'), array(
         'class' => 'alt-button btn-compare f-right',
         'type' => 'submit'
     ), 'button') ?>
+    </div>
 </form>
 
 <script type="text/javascript">
+//<![CDATA[
 $().ready(function() {
 //    $("#form-recently-viewed").validate({
 //        rules: {
@@ -58,4 +61,5 @@ $().ready(function() {
         }
     });
 });
+//]]>
 </script>
