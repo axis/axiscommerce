@@ -63,23 +63,15 @@ class Axis_Log_Model_Observer
             ));
             $rowUrlInfo->save();
         }
+        
         //add/update visitor
-        $visitorId = Axis::single('log/visitor')->getVisitor()
-            ->setFromArray(array(
-                'last_url_id'   => $rowUrlInfo->id,
-                'last_visit_at' => $timestamp,
-                'session_id'    => Zend_Session::getId(),
-                'customer_id'   => Axis::getCustomerId() ? 
-                    Axis::getCustomerId() : new Zend_Db_Expr('NULL'),
-                'site_id'       => $siteId
-            ))
-            ->save();
+        $visitor = Axis::single('log/visitor')->getVisitor();
         
         //add/update visitor info
         Axis::single('log/visitor_info')
-            ->getRow($visitorId)
-            ->setFromArray(array(
-                'http_refer'           => $refer,
+            ->getRow(array(
+                'visitor_id'           => $visitor->id,
+//                'http_refer'           => $refer,
                 'user_agent'           => $request->getServer('HTTP_USER_AGENT', ''),
                 'http_accept_charset'  => $request->getServer('HTTP_ACCEPT_CHARSET', ''),
                 'http_accept_language' => $request->getServer('HTTP_ACCEPT_LANGUAGE', ''),
@@ -90,9 +82,22 @@ class Axis_Log_Model_Observer
         //
         Axis::single('log/url')->insert(array(
             'url_id'     => $rowUrlInfo->id,
-            'visitor_id' => $visitorId,
+            'visitor_id' => $visitor->id,
             'visit_at'   => $timestamp,
             'site_id'    => $siteId
         ));
+    }
+    
+    public function login()
+    {
+        $visitor = Axis::single('log/visitor')->getVisitor();
+        $visitor->customer_id = Axis::getCustomerId();
+        $visitor->save();
+    }
+    
+    public function logout()
+    {
+        unset(Axis::session()->visitorId);
+        // ? Zend_Session::regenerateId();
     }
 }

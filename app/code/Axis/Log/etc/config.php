@@ -31,9 +31,23 @@ $config = array(
         'events' => array(
             'controller_action_postdispatch' => array(
                 'core' => array(
-                    'type' => 'single',
-                    'model' => 'log/observer',
+                    'type'   => 'single',
+                    'model'  => 'log/observer',
                     'method' => 'log'
+                )
+            ),
+            'account_customer_login_success' => array(
+                'login' => array(
+                    'type'   => 'single',
+                    'model'  => 'log/observer',
+                    'method' => 'login'
+                )
+            ),
+            'account_customer_logout_success' => array(
+                'login' => array(
+                    'type'   => 'single',
+                    'model'  => 'log/observer',
+                    'method' => 'logout'
                 )
             )
         )

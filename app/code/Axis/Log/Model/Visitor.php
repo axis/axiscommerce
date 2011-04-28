@@ -46,7 +46,14 @@
         if (!isset(Axis::session()->visitorId) ||
             (!$row = $this->find(Axis::session()->visitorId)->current()))
         {
-            $row = $this->createRow();
+            $row = $this->createRow(array(
+//                'last_url_id'   => $rowUrlInfo->id,
+//                'last_visit_at' => Axis_Date::now()->toSQLString(),
+                'session_id'    => Zend_Session::getId(),
+                'customer_id'   => Axis::getCustomerId() ? 
+                    Axis::getCustomerId() : new Zend_Db_Expr('NULL'),
+//                'site_id'       => Axis::getSiteId()
+            ));
             $row->save();
             Axis::session()->visitorId = $row->id; //unset only on logout
         }
