@@ -76,11 +76,11 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
             ->addSiteFilter($siteId)
             ->count();
 
-        $this->view->visitorToday = Axis::single('log/visitor')
+        $this->view->visitorToday = Axis::single('log/url')
             ->select()
-            ->where('last_visit_at > ?', $date)
+            ->where('visit_at > ?', $date)
             ->addSiteFilter($siteId)
-            ->count('DISTINCT session_id');
+            ->count('DISTINCT visitor_id');
 
         $this->view->pageviewsToday = Axis::single('log/url')
             ->select()
@@ -116,9 +116,9 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
                 $realData = Axis::single('sales/order')->getAmountsList($where);
                 break;
             case "visit":
-                $where['datagt'] = "last_visit_at >= '{$startDate}'";
-                $where['datalt'] = "last_visit_at < '{$endDate}'";
-                $realData = Axis::single('log/visitor')->getCountList($where);
+                $where['datagt'] = "visit_at >= '{$startDate}'";
+                $where['datalt'] = "visit_at < '{$endDate}'";
+                $realData = Axis::single('log/url')->getCountList($where, $period);
                 break;
             case "customer":
                 $where['datagt'] = "created_at >= '{$startDate}'";
@@ -126,10 +126,10 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
                 $realData = Axis::single('account/customer')->getCountList($where);
                 break;
             case "rate":
-                $where['datagt'] = "last_visit_at >= '{$startDate}'";
-                $where['datalt'] = "last_visit_at < '{$endDate}'";
-                $realDataVisitor = Axis::single('log/visitor')
-                    ->getCountList($where);
+                $where['datagt'] = "visit_at >= '{$startDate}'";
+                $where['datalt'] = "visit_at < '{$endDate}'";
+                $realDataVisitor = Axis::single('log/url')
+                    ->getCountList($where, $period);
                 $where['datagt'] = "date_purchased_on >= '{$startDate}'";
                 $where['datalt'] = "date_purchased_on < '{$endDate}'";
                 $realDataOrder = Axis::single('sales/order')

@@ -43,46 +43,17 @@
      */
     public function getVisitor()
     {
-        if (!isset(Axis::session()->visitorId) ||
-            (!$row = $this->find(Axis::session()->visitorId)->current()))
-        {
+        $sessionId = Zend_Session::getId();
+        $select = $this->select()->where('session_id = ?', $sessionId);
+        
+        if (!$row = $this->fetchRow($select)) {
             $row = $this->createRow(array(
-//                'last_url_id'   => $rowUrlInfo->id,
-//                'last_visit_at' => Axis_Date::now()->toSQLString(),
-                'session_id'    => Zend_Session::getId(),
-                'customer_id'   => Axis::getCustomerId() ? 
+                'session_id'  => $sessionId,
+                'customer_id' => Axis::getCustomerId() ? 
                     Axis::getCustomerId() : new Zend_Db_Expr('NULL'),
-//                'site_id'       => Axis::getSiteId()
             ));
             $row->save();
-            Axis::session()->visitorId = $row->id; //unset only on logout
         }
         return $row;
-    }
-
-    /**
-     *
-     * @param  mixed $where
-     * @return array
-     */
-    public function getCountList($where = null)
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(
-                array('o' => $this->_prefix . 'log_visitor'),
-                array('last_visit_at', 'hit'=> 'COUNT(DISTINCT session_id)')
-            )
-           ->group('last_visit_at')
-           ->order('last_visit_at');
-                    
-        if (is_string($where) && $where) {
-            $select->where($where);
-        } elseif (is_array($where)) {
-            foreach ($where as $condition) {
-                if ($condition)
-                    $select->where($condition);
-            }
-        }
-        return $this->getAdapter()->fetchPairs($select->__toString());
     }
 }

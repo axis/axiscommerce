@@ -35,4 +35,54 @@ class Axis_Log_Model_Url extends Axis_Db_Table
 {
     protected $_name = 'log_url';
     protected $_selectClass = 'Axis_Log_Model_Url_Select';
+    
+    /**
+     *
+     * @param  mixed $where
+     * @return array
+     */
+    public function getCountList($where = null, $period = 'day')
+    {
+        switch (strtolower($period)) {
+            case 'hour' :
+                $period = 16;
+                break;
+            case 'week' :
+            case 'month':
+                $period = 10;
+                break;
+            case 'year' :
+                $period = 7;
+                break;
+            case 'day':
+            default:
+                $period = 13;
+        }
+        $select = Axis::single('log/url')
+            ->select(array(
+                'd' => "LEFT(visit_at, {$period})", 
+                'hit'=> 'COUNT(DISTINCT visitor_id)'
+            ))
+            ->group('d')
+            ->order('d');
+        
+        if (is_string($where) && $where) {
+            $select->where($where);
+        } elseif (is_array($where)) {
+            foreach ($where as $condition) {
+                if ($condition)
+                    $select->where($condition);
+            }
+        }
+
+        $datatimePattern = "00 00:00:00";
+        $dataset = array();
+        foreach ($select->fetchPairs() as $key => $value) {
+            if (strlen($datatimePattern) + 8 > strlen($key))  {
+                $key .= substr($datatimePattern, strlen($key) - 8); 
+            }
+            $dataset[$key] = $value;
+        }
+        return $dataset;
+    }
 }

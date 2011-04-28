@@ -71,7 +71,6 @@ class Axis_Log_Model_Observer
         Axis::single('log/visitor_info')
             ->getRow(array(
                 'visitor_id'           => $visitor->id,
-//                'http_refer'           => $refer,
                 'user_agent'           => $request->getServer('HTTP_USER_AGENT', ''),
                 'http_accept_charset'  => $request->getServer('HTTP_ACCEPT_CHARSET', ''),
                 'http_accept_language' => $request->getServer('HTTP_ACCEPT_LANGUAGE', ''),
@@ -79,7 +78,6 @@ class Axis_Log_Model_Observer
                 'remote_addr'          => $request->getServer('REMOTE_ADDR', '')
             ))->save();
         
-        //
         Axis::single('log/url')->insert(array(
             'url_id'     => $rowUrlInfo->id,
             'visitor_id' => $visitor->id,
@@ -93,11 +91,5 @@ class Axis_Log_Model_Observer
         $visitor = Axis::single('log/visitor')->getVisitor();
         $visitor->customer_id = Axis::getCustomerId();
         $visitor->save();
-    }
-    
-    public function logout()
-    {
-        unset(Axis::session()->visitorId);
-        // ? Zend_Session::regenerateId();
     }
 }

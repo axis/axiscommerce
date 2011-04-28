@@ -22,27 +22,30 @@
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
-$config = array(
-    'Axis_Log' => array(
-        'package' => 'Axis_Log',
-        'name' => 'Log',
-        'version' => '0.1.1',
-        'required' => 1,
-        'events' => array(
-            'controller_action_postdispatch' => array(
-                'core' => array(
-                    'type'   => 'single',
-                    'model'  => 'log/observer',
-                    'method' => 'log'
-                )
-            ),
-            'account_customer_login_success' => array(
-                'login' => array(
-                    'type'   => 'single',
-                    'model'  => 'log/observer',
-                    'method' => 'login'
-                )
-            )
-        )
-    )
-);
+
+class Axis_Log_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
+{
+    protected $_version = '0.1.4';
+    protected $_info = 'unnecessary columns remove';
+
+    public function up()
+    {
+        $installer = Axis::single('install/installer');
+
+        $installer->run("
+            
+            ALTER TABLE `{$installer->getTable('log_visitor')}` 
+                DROP COLUMN `last_url_id`,
+                DROP COLUMN `last_visit_at`,
+                DROP COLUMN `site_id`;
+            
+            ALTER TABLE `{$installer->getTable('log_visitor_info')}` 
+                DROP COLUMN `http_refer`;
+
+        ");
+    }
+
+    public function down()
+    {
+    }
+}
