@@ -75,11 +75,11 @@ class Axis_Log_Model_Url extends Axis_Db_Table
             }
         }
 
-        $datatimePattern = "00 00:00:00";
+        $datatimePattern = "0000-00-00 00:00:00";
         $dataset = array();
         foreach ($select->fetchPairs() as $key => $value) {
-            if (strlen($datatimePattern) + 8 > strlen($key))  {
-                $key .= substr($datatimePattern, strlen($key) - 8); 
+            if (strlen($datatimePattern) > strlen($key))  {
+                $key .= substr($datatimePattern, strlen($key)); 
             }
             $dataset[$key] = $value;
         }
