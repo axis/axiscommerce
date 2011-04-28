@@ -43,39 +43,17 @@
      */
     public function getVisitor()
     {
-        if (!isset(Axis::session()->visitorId) ||
-            (!$row = $this->find(Axis::session()->visitorId)->current()))
-        {
-            $row = $this->createRow();
+        $sessionId = Zend_Session::getId();
+        $select = $this->select()->where('session_id = ?', $sessionId);
+        
+        if (!$row = $this->fetchRow($select)) {
+            $row = $this->createRow(array(
+                'session_id'  => $sessionId,
+                'customer_id' => Axis::getCustomerId() ? 
+                    Axis::getCustomerId() : new Zend_Db_Expr('NULL'),
+            ));
             $row->save();
-            Axis::session()->visitorId = $row->id; //unset only on logout
         }
         return $row;
-    }
-
-    /**
-     *
-     * @param  mixed $where
-     * @return array
-     */
-    public function getCountList($where = null)
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(
-                array('o' => $this->_prefix . 'log_visitor'),
-                array('last_visit_at', 'hit'=> 'COUNT(DISTINCT session_id)')
-            )
-           ->group('last_visit_at')
-           ->order('last_visit_at');
-                    
-        if (is_string($where) && $where) {
-            $select->where($where);
-        } elseif (is_array($where)) {
-            foreach ($where as $condition) {
-                if ($condition)
-                    $select->where($condition);
-            }
-        }
-        return $this->getAdapter()->fetchPairs($select->__toString());
     }
 }

@@ -142,7 +142,6 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
     {
         Axis::dispatch('account_customer_logout_success', array('id' => Axis::getCustomerId()));
         Zend_Auth::getInstance()->clearIdentity();
-        unset(Axis::session()->visitorId);// ? Zend_Session::regenerateId();
         Axis::single('checkout/cart')->unsetCartId();
         Axis::single('checkout/checkout')->getStorage()->unsetAll();
         return $this;
