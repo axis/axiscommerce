@@ -155,26 +155,6 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     }
 
     /**
-     *
-     * @param int $categoryId
-     * @return mixed
-     */
-    public function getInfoWithKeyWord($categoryId)
-    {
-        if (!$categoryId) {
-            return false;
-        }
-        return $this->select('*')
-            ->joinLeft(
-                'catalog_hurl',
-                "ch.key_id = cc.id AND ch.key_type = 'c'",
-                'key_word'
-            )
-            ->where('cc.id = ?', $categoryId)
-            ->fetchRow();
-    }
-
-    /**
      * @param string $url
      * @param int $siteId [optional]
      * @return Axis_Catalog_Model_Category_Row
