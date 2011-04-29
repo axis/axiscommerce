@@ -201,6 +201,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
      */
     protected function _getPriceFilters(array $filters)
     {
+        Axis_FirePhp::log(__METHOD__);
         $select = Axis::single('catalog/product')->select(
             array('cnt' => 'COUNT(cp.price)')
         );
@@ -212,19 +213,19 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
             ->joinCategory()
             ->addCommonFilters($filters);
 
-        $row = $select->fetchRow();
+        $row = $select->fetchRow2();
 
-        if (!$row['cnt']) {
+        if (!$row->cnt) {
             return null;
         }
 
         $currency = Axis::single('locale/currency');
-        $row['price_max'] = $currency->to($row['price_max']);
-        $row['price_min'] = $row['price_min'] > 0 ? $currency->to($row['price_min']) : 1;
+        $row->price_max = $currency->to($row->price_max);
+        $row->price_min = $row->price_min > 0 ? $currency->to($row->price_min) : 1;
         $rate = $currency->getData(null, 'rate');
 
         //Return rounded number, example: 80->10, 120->100, 895->100, 1024->1000
-        $roundTo = pow(10, strlen((string) floor($row['price_max'] - $row['price_min'])) - 1);
+        $roundTo = pow(10, strlen((string) floor($row->price_max - $row->price_min)) - 1);
         $select->reset();
         $select->from('catalog_product', array(
                 'cnt'         => 'COUNT(DISTINCT cp.id)',

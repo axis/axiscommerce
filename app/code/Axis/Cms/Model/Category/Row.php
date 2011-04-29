@@ -47,9 +47,9 @@ class Axis_Cms_Model_Category_Row extends Axis_Db_Table_Row
             'meta_title'
         );
         return Axis::single('cms/category_content')->select($cols)
-                ->where('ccc.cms_category_id = ?', $this->id)
-                ->where('ccc.language_id = ?', $languageId)
-                ->fetchRow()
+            ->where('ccc.cms_category_id = ?', $this->id)
+            ->where('ccc.language_id = ?', $languageId)
+            ->fetchRow2()
             ;
     }
   

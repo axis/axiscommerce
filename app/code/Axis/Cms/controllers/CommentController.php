@@ -89,10 +89,10 @@ class Axis_Cms_CommentController extends Axis_Cms_Controller_Abstract
             ));
         }
         $rowContent = $currentPage->cache()->getContent();
-        $this->setTitle($rowContent['title']);
+        $this->setTitle($rowContent->title);
 
         $page = array(
-            'content'      => $rowContent['content'],
+            'content'      => $rowContent->content,
             'is_commented' => (bool) $currentPage->comment
         );
 
@@ -106,12 +106,12 @@ class Axis_Cms_CommentController extends Axis_Cms_Controller_Abstract
         }
         
         $this->view->page = $page;
-        $metaTitle = empty($rowContent['meta_title']) ?
-                $rowContent['title'] : $rowContent['meta_title'];
+        $metaTitle = empty($rowContent->meta_title) ?
+                $rowContent->title : $rowContent->meta_title;
         $this->view->meta()
             ->setTitle($metaTitle, 'cms_page', $pageId)
-            ->setDescription($rowContent['meta_description'])
-            ->setKeywords($rowContent['meta_keyword']);
+            ->setDescription($rowContent->meta_description)
+            ->setKeywords($rowContent->meta_keyword);
 
         $this->_helper->layout->setLayout($currentPage->layout);
         $this->render();

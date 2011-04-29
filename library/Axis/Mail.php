@@ -105,14 +105,14 @@ class Axis_Mail extends Zend_Mail
         if (isset($config['event'])) {
             $mailTemplate = Axis::model('core/template_mail')->select('*')
                 ->where('ctm.event = ?', $config['event'])
-                ->fetchRow();
+                ->fetchRow2();
 
-            if (false === $mailTemplate || !$mailTemplate['status']) {
+            if (!$mailTemplate || !$mailTemplate->status) {
                 $this->_disabled = true;
                 return false;
             }
 
-            $siteIds = explode(',', $mailTemplate['site']);
+            $siteIds = explode(',', $mailTemplate->site);
             if (isset($config['siteId'])) {
                 if (!in_array($config['siteId'], $siteIds)) {
                     $this->_disabled = true;
@@ -123,11 +123,11 @@ class Axis_Mail extends Zend_Mail
                 return false;
             }
 
-            $type = isset($config['type']) ? $config['type'] : $mailTemplate['type'];
+            $type = isset($config['type']) ? $config['type'] : $mailTemplate->type;
 
             if (is_array($from)) {
                 if (!isset($from['email'])) {
-                    $from['email'] = Axis_Collect_MailBoxes::getName($mailTemplate['from']);
+                    $from['email'] = Axis_Collect_MailBoxes::getName($mailTemplate->from);
                 }
             }
         }
@@ -138,7 +138,9 @@ class Axis_Mail extends Zend_Mail
 
         $siteName = $this->view->site;
         if (isset($config['siteId']) && $config['siteId'] != Axis::getSiteId()) {
-            $siteName = Axis::model('core/site')->find($config['siteId'])->current()->name;
+            $siteName = Axis::model('core/site')->find($config['siteId'])
+                ->current()
+                ->name;
         }
         $this->view->siteName = $siteName;
         if (is_array($from)) {
@@ -156,9 +158,9 @@ class Axis_Mail extends Zend_Mail
 
         if (isset($config['event'])) {
             if ('html' == $type) {
-                $this->renderHtml($mailTemplate['template']);
+                $this->renderHtml($mailTemplate->template);
             } else {
-                $this->renderText($mailTemplate['template']);
+                $this->renderText($mailTemplate->template);
             }
         } else {
             $this->setBodyText($config['data']['text']);

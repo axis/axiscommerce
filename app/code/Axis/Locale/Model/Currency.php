@@ -223,7 +223,8 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
         if (!isset($this->_data[$code])) {
             $this->_data[$code] = $this->select()
                 ->where('code = ?', $code)
-                ->fetchRow();
+                ->fetchRow2()
+                ->toArray();
         }
 
         if (!empty($key)) {

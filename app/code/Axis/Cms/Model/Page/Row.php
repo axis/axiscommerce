@@ -54,7 +54,7 @@ class Axis_Cms_Model_Page_Row extends Axis_Db_Table_Row
 
     /**
      *
-     * @return string | array
+     * @return Axis_Cms_Model_Page_Content_Row
      */
     public function getContent()
     {
@@ -63,26 +63,28 @@ class Axis_Cms_Model_Page_Row extends Axis_Db_Table_Row
         $columns = array(
             'title',  'content', 'meta_keyword', 'meta_description', 'meta_title'
         );
-        $content = Axis::model('cms/page_content')
+        $row = Axis::model('cms/page_content')
             ->select($columns)
             ->joinLeft('cms_page', 'cp.id = cpc.cms_page_id', array('layout'))
             ->where('cpc.language_id = ?', $languageId)
             ->where('cpc.cms_page_id = ?', $this->id)
-            ->fetchRow()
+            ->fetchRow2()
         ;
-        
+        if (!$row) {
+            return false;
+        }
         //inserting blocks in content
         $matches = array();
-        preg_match_all('/{{\w+}}/', $content['content'], $matches);
+        preg_match_all('/{{\w+}}/', $row->content, $matches);
         $i = 0;
         
         foreach ($matches[0] as $block) {
-           $content['content'] = str_replace(
-               $block, $this->_getReplaceContent($block), $content['content']
+           $row->content = str_replace(
+               $block, $this->_getReplaceContent($block), $row->content
            );
         }
         
-        return $content;
+        return $row;
     }
     
     public function getComments()

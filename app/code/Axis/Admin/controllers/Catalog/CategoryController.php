@@ -72,9 +72,16 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
             ->addKeyWord()
             ->where('cc.id = ?', $categoryId)
             ->fetchRow2()
-            ->toArray()
             ;
-
+        if (!$data) {
+            Axis::message()->addError(
+                Axis::translate('catalog')->__(
+                    'Category not exist'
+                )
+            );
+            return $this->_helper->json->sendFailure();
+        }
+        $data = $data->toArray();
         $rowset = Axis::model('catalog/category_description')->select()
             ->where('category_id = ?', $categoryId)
             ->fetchAll();
