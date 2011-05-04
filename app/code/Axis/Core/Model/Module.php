@@ -270,8 +270,9 @@ class Axis_Core_Model_Module extends Axis_Db_Table
     public function getByCode($code)
     {
         try {
-            $where = $this->select()->where('code = ?', $code);
-            $row = $this->fetchRow($where);
+            $row = $this->select()
+                ->where('code = ?', $code)
+                ->fetchRow();
             if ($row) {
                 return $row;
             }

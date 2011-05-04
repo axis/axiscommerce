@@ -147,8 +147,9 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             ->where('ctp.template_id = ?', $themeId)
             ->where('ctp.page_id = ?', $strongPage['id'])
             ->fetchRow();
+        
         if ($parentPage) {
-            $pages[$parentPage['id']] = $parentPage;
+            $pages[$parentPage->id] = $parentPage->toArray();
         }
         $blockset = Axis::single('core/template_box')->select(array(
                 'id', 'class', 'block', 'config',

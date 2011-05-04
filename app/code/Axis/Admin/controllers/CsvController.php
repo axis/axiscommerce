@@ -483,7 +483,9 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
 
         if (!isset($this->_optionsCache[$optionName[0]])) {
             $mOption = Axis::single('catalog/product_option');
-            $option = $mOption->fetchRow($mOption->select()->where('code = ?', $optionName[0]));
+            $option = $mOption->select()
+                ->where('code = ?', $optionName[0])
+                ->fetchRow();
             if (!$option && $createNotExists && isset($optionName[1])) {
                 // create option
                 $option = $mOption->createRow();
@@ -566,7 +568,6 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
             ->fetchPairs();
 
         $mProduct = Axis::single('catalog/product');
-        $select = $mProduct->select();
         $log['skipped'] = array();
         $log['imported'] = array();
         $log['skipped']['count'] = 0;
@@ -587,7 +588,7 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
 
             $i = 0;
             $sku = $data['sku'];
-            while ($mProduct->fetchRow($select->reset('where')->where('sku = ?', $sku))) {
+            while ($mProduct->select()->where('sku = ?', $sku)->fetchRow()) {
                 $sku = $data['sku'] . '-' . ++$i;
             }
             $data['sku'] = $sku;

@@ -255,15 +255,22 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
     {
         $billing = new Axis_Address();
 
-        $country = $this->billing_country ? Axis::single('location/country')->fetchRow(
-            $this->getAdapter()->quoteInto('name = ?', $this->billing_country)
-        )->toArray() : NULL;
+        $country = $zone = null;
+        if ($this->billing_country) {
+            $country = Axis::single('location/country')->select()
+                ->where('name = ?', $this->billing_country)
+                ->fetchRow()
+                ->toArray();
+        }
+        
+        if ($this->billing_state) {
+            $zone = Axis::single('location/zone')->select()
+                ->where('name = ?', $this->billing_state)
+                ->fetchRow()
+                ->toArray();
+        }
 
-        $zone = $this->billing_state ? Axis::single('location/zone')->fetchRow(
-            $this->getAdapter()->quoteInto('name = ?', $this->billing_state)
-        )->toArray() : NULL;
-
-        $ret = $billing->setFirstname($this->billing_firstname)
+        $billing->setFirstname($this->billing_firstname)
             ->setLastname($this->billing_lastname)
             ->setCompany($this->billing_company)
             ->setStreetAddress($this->billing_street_address)
@@ -291,13 +298,18 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
     {
         $delivery = new Axis_Address();
 
-        $country = Axis::single('location/country')->fetchRow(
-            $this->getAdapter()->quoteInto('name = ?', $this->delivery_country)
-        )->toArray();
+        $country = Axis::single('location/country')->select()
+            ->where('name = ?', $this->delivery_country)
+            ->fetchRow()
+            ->toArray();
 
-        $zone = $this->delivery_state ? Axis::single('location/zone')->fetchRow(
-            $this->getAdapter()->quoteInto('name = ?', $this->delivery_state)
-        )->toArray() : NULL;
+        $zone = null;
+        if ($this->delivery_state) {
+            $zone = Axis::single('location/zone')->select()
+                ->where('name = ?', $this->delivery_state)
+                ->fetchRow()
+                ->toArray();
+        }
 
         $delivery->setFirstname($this->delivery_firstname)
             ->setLastname($this->delivery_lastname)

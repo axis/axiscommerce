@@ -111,20 +111,11 @@ class Axis_Catalog_Model_Product_Option_Value extends Axis_Db_Table
 
     public function getByText($valueText, $valuesetId)
     {
-        $select = $this->select()
-            ->from(array('v' => $this->_prefix . 'catalog_product_option_value'), 'id')
-            ->join(array('vt' => $this->_prefix . 'catalog_product_option_value_text'),
-                'vt.option_value_id = v.id',
-                array())
-            ->where('v.valueset_id = ?', $valuesetId)
-            ->where('vt.name = ?', $valueText)
-            ->limit(1);
-        $valueId = $this->getAdapter()->fetchOne($select);
-        if ($valueId) {
-            return $this->fetchRow(
-                $this->select()->where('id = ?', $valueId)
-            );
-        }
-        return $valueId;
+        return $this->select('*')
+            ->join('catalog_product_option_value_text',
+                'cpovt.option_value_id = cpov.id')
+            ->where('cpov.valueset_id = ?', $valuesetId)
+            ->where('cpovt.name = ?', $valueText)
+            ->fetchRow();
     }
 }

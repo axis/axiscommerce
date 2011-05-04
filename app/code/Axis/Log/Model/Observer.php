@@ -51,11 +51,11 @@ class Axis_Log_Model_Observer
         
         // add new url request
         $modelUrlInfo = Axis::single('log/url_info');
-        $select = $modelUrlInfo->select()
+        $rowUrlInfo = $modelUrlInfo->select()
             ->where('url = ?', $url)
             ->where('refer = ?', $refer)
-        ;
-        $rowUrlInfo = $modelUrlInfo->fetchRow($select);
+            ->fetchRow();
+        
         if (!$rowUrlInfo) {
             $rowUrlInfo = $modelUrlInfo->createRow(array(
                 'url'   => $url,
@@ -91,5 +91,11 @@ class Axis_Log_Model_Observer
         $visitor = Axis::single('log/visitor')->getVisitor();
         $visitor->customer_id = Axis::getCustomerId();
         $visitor->save();
+    }
+    
+    public function logout()
+    {
+        unset(Axis::session()->visitorId);
+        // ? Zend_Session::regenerateId();
     }
 }

@@ -35,21 +35,5 @@ class Axis_Contacts_Model_Department extends Axis_Db_Table
 {
     protected $_name = 'contacts_department';
     protected $_primary = 'id';
-    
-    public function save($data)
-    {
-        if ($data['id'] == 0) {
-            unset($data['id']);
-            $this->insert($data);
-        } else {
-            $this->update(
-                $data, $this->getAdapter()->quoteInto('id = ?', $data['id'])
-            );
-        }
-        Axis::message()->addSuccess(
-            Axis::translate('contacts')->__(
-               'Department was saved succesfully'
-            )
-        );
-    }
+
 }

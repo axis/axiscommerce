@@ -112,13 +112,22 @@ class Axis_Admin_Model_Menu extends Axis_Db_Table
             $data['title'] = $item;
             
             if ($check_before_insert) {
-                $where = (null === $data['parent_id'] ? 'parent_id IS NULL' : "parent_id = {$data['parent_id']}");
-                if ($row_menu = $this->fetchRow("title = '{$data['title']}' AND $where")) {
-                    if (isset($menu_items[$data['lvl'] + 1]) && $row_menu->has_children == 0) {
-                        $row_menu->has_children = 1;
-                        $row_menu->save();
+                $rowMenu = $this->select()
+                    ->where('title = ?', $data['title']);
+                if (null === $data['parent_id']) {
+                    $rowMenu->where('parent_id IS NULL');
+                } else {
+                    $rowMenu->where('parent_id = ?', $data['parent_id']);
+                }    
+                $rowMenu = $rowMenu->fetchRow();
+                if ($rowMenu) {
+                    if (isset($menu_items[$data['lvl'] + 1]) 
+                        && $rowMenu->has_children == 0) {
+                        
+                        $rowMenu->has_children = 1;
+                        $rowMenu->save();
                     }
-                    $data['parent_id'] = $row_menu->id;
+                    $data['parent_id'] = $rowMenu->id;
                     $data['lvl']++;
                     continue;
                 } else {
@@ -126,7 +135,7 @@ class Axis_Admin_Model_Menu extends Axis_Db_Table
                 }
             }
             
-            $row_menu = $this->createRow();
+            $rowMenu = $this->createRow();
             
             if (isset($menu_items[$data['lvl'] + 1])) {
                 $data['has_children'] = 1;
@@ -142,9 +151,9 @@ class Axis_Admin_Model_Menu extends Axis_Db_Table
             }
             
             
-            $row_menu->setFromArray($data)->save();
+            $rowMenu->setFromArray($data)->save();
             
-            $data['parent_id'] = $row_menu->id;
+            $data['parent_id'] = $rowMenu->id;
             $data['lvl']++;
         }
         

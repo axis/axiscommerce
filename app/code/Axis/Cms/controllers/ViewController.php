@@ -63,7 +63,7 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
         }
         $page = array(
             'id'           => $rowPage->id,
-            'content'      => $rowContent['content'],
+            'content'      => $rowContent->content,
             'is_commented' => $rowPage->comment
         );
 
@@ -79,13 +79,13 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
         }
         $this->view->page = $page;
 
-        $this->setTitle($rowContent['title']);
-        $metaTitle = empty($rowContent['meta_title']) ?
-                $rowContent['title'] : $rowContent['meta_title'];
+        $this->setTitle($rowContent->title);
+        $metaTitle = empty($rowContent->meta_title) ?
+                $rowContent->title : $rowContent->meta_title;
         $this->view->meta()
             ->setTitle($metaTitle, 'cms_page', $pageId)
-            ->setDescription($rowContent['meta_description'])
-            ->setKeywords($rowContent['meta_keyword']);
+            ->setDescription($rowContent->meta_description)
+            ->setKeywords($rowContent->meta_keyword);
 
         $this->_helper->layout->setLayout($rowPage->layout);
         $this->render();
@@ -105,7 +105,7 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
         $rowContent = $currentCategory->getContent();
 
         $this->view->category = array();
-        $this->view->pageTitle = $rowContent['title'];
+        $this->view->pageTitle = $rowContent->title;
 
         $categories = $modelCategory->getParentCategory($categoryId);
         foreach ($categories as $_category) {
@@ -118,17 +118,17 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
             ));
         }
 
-        $metaTitle = empty($rowContent['meta_title']) ?
-            $rowContent['title'] : $rowContent['meta_title'];
-        $metaDescription = empty($rowContent['meta_description']) ?
-            $rowContent['description'] : $rowContent['meta_description'];
+        $metaTitle = empty($rowContent->meta_title) ?
+            $rowContent->title : $rowContent->meta_title;
+        $metaDescription = empty($rowContent->meta_description) ?
+            $rowContent->description : $rowContent->meta_description;
         $this->view->meta()
             ->setTitle($metaTitle, 'cms_category', $categoryId)
             ->setDescription($metaDescription)
-            ->setKeywords($rowContent['meta_keyword']);
+            ->setKeywords($rowContent->meta_keyword);
 
         $this->view->category = array(
-            'description' => $rowContent['description'],
+            'description' => $rowContent->description,
             'childs'      => $currentCategory->getChilds(),
             'pages'       => $currentCategory->getPages()
         );

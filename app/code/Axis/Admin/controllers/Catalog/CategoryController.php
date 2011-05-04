@@ -67,24 +67,32 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
 
     public function getDataAction()
     {
-        $catId = $this->_getParam('catId');
-        $cat = Axis::model('catalog/category')->getInfoWithKeyWord($catId);
+        $categoryId = $this->_getParam('categoryId');
+        $row = Axis::model('catalog/category')->select('*')
+            ->addKeyWord()
+            ->where('cc.id = ?', $categoryId)
+            ->fetchRow()
+            ;
+        if (!$row) {
+            Axis::message()->addError(
+                Axis::translate('catalog')->__(
+                    'Category not exist'
+                )
+            );
+            return $this->_helper->json->sendFailure();
+        }
+        $data = $row->toArray();
+        $rowset = Axis::model('catalog/category_description')->select()
+            ->where('category_id = ?', $categoryId)
+            ->fetchAll();
 
-        $catDesc = array();
-
-        $rows = Axis::model('catalog/category_description')
-            ->fetchAll("category_id = {$catId}")->toArray();
-
-        $result = $cat;
-        foreach ($rows as $row) {
+        foreach ($rowset as $row) {
             foreach ($row as $label => $value) {
-                $result[$label . '_' . $row['language_id']] = $value;
+                $data[$label . '_' . $row['language_id']] = $value;
             }
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data' => $result
-        ));
+        $this->_helper->json->setData($data)->sendSuccess();
     }
 
     /**
