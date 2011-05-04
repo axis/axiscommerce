@@ -1,21 +1,21 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2010 Axis
  * @license     GNU Public License V3.0
  */
@@ -36,7 +36,7 @@ Checkout.Step = {
         'login', 'billing-address', 'delivery-address',
         'shipping', 'payment', 'confirmation'
     ],
-    
+
     getStepNum: function(step) {
         for (i = 0; i < this.stack.length; i++) {
             if (this.stack[i] == step)
@@ -72,10 +72,10 @@ Checkout.Step = {
                      +  'Edit</a>';
             $('#title-' + step).prepend(icon);
         });
-        
+
         $('.step .loading-bar').hide();
         $('button', '#checkout-accordion').removeAttr('disabled');
-        
+
         /* set current step & next step classes */
         var currentStep = $('#checkout-accordion .checkout-step-title')
             .index($('#title-' + step).get(0));
@@ -83,7 +83,7 @@ Checkout.Step = {
             .addClass('next').removeClass('previous');
         $('#checkout-accordion .checkout-step-title:lt(' + (currentStep) +')')
             .addClass('previous').removeClass('next');
-        
+
         $('div.step:visible').toggle();
         $('#step-' + step).toggle();
     },
@@ -100,7 +100,7 @@ Checkout.Step = {
             case 'shipping':
                 Checkout.Shipping.loadMethods();
                 break;
-            case 'payment': 
+            case 'payment':
                 Checkout.Billing.loadMethods();
                 break;
             case 'confirmation':
@@ -134,13 +134,13 @@ Checkout.Step = {
             'type': 'post',
             //'data': extraData,
             'success': function(response, textStatus) {
-                $('#block-confirmation').empty().append(response); 
+                $('#block-confirmation').empty().append(response);
                 Checkout.Step.switchStep('confirmation');
             }
         });
     }
 };
-    
+
 var Customer = {
     logged : false,
     loggedAsGuest: false,
@@ -202,7 +202,7 @@ var Address = {
             var inputZone = $(this)
                 .parents('form')
                 .find('.input-zone');
-                
+
             inputZone.removeOption(/./);
 
             if (Zones[this.value])
@@ -210,7 +210,7 @@ var Address = {
         });
     },
     show: function(type, addressListHtml) {
-        $('#' + type)[0].innerHTML = addressListHtml;
+        $('#' + type + '-list').html(addressListHtml);
     },
     create: function() {
         this.currentId = 0;
@@ -321,9 +321,9 @@ var Address = {
                     var field = $('#' + fieldName);
                     if (!field.length) // field not found
                         continue;
-                    
+
                     var fieldValue = response.data[fieldName];
-                    
+
                     switch (field.get(0).tagName.toLowerCase()) {
                         case 'select':
                             field.selectOptions(fieldValue, true);
@@ -340,8 +340,8 @@ var Address = {
         });
     },
     showForm: function() {
-        if (!$('#step-' + Checkout.Step.current + ' #step-address-book').length) {
-            $('#step-' + Checkout.Step.current).prepend($('#step-address-book'));
+        if (!$('#' + Checkout.Step.current + ' #step-address-book').length) {
+            $('#' + Checkout.Step.current).append($('#step-address-book'));
         }
         $('#step-address-book').show();
     },
@@ -361,6 +361,14 @@ var Address = {
                 }
             }
         });
+    },
+    onChange: function(el) {
+        var selected = $(':selected', el)[0].value;
+        if (0 == selected) {
+            this.showForm();
+        } else {
+            this.hideForm();
+        }
     }
 };
 
@@ -377,7 +385,7 @@ Checkout.Shipping = {
         return false;
     },
     getAddressId : function() {
-        var items = $('#delivery-radios input:checked').get();
+        var items = $('#delivery-address-id option:selected').get();
         if (items.length) {
             return items[0].value
         }
@@ -393,9 +401,9 @@ Checkout.Shipping = {
             alert('Select delivery address');
             return;
         }
-        
+
         $(element).attr('disabled', 'disabled');
-        
+
         $.ajax({
             url: Axis.getUrl('checkout/onepage/set-delivery-address', true),
             type: 'post',
@@ -418,7 +426,7 @@ Checkout.Shipping = {
         $.ajax({
             url: Axis.getUrl('checkout/onepage/shipping-method', true),
             success: function(response, textStatus) {
-                $('#block-shippingMethod').empty().append(response); 
+                $('#block-shippingMethod').empty().append(response);
                 Checkout.Step.switchStep('shipping');
             }
         });
@@ -455,7 +463,7 @@ Checkout.Shipping = {
         });
     }
 };
-    
+
 Checkout.Billing = {
     method: '',
     addressId: 0,
@@ -471,7 +479,7 @@ Checkout.Billing = {
             alert('Select billing address');
             return;
         }
-        
+
         if (!addressId) {
             return;
         }
@@ -489,7 +497,7 @@ Checkout.Billing = {
                     Checkout.Step.next('billing-address');
                     if (1 === $('#use_as_delivery:checked').length) {
                         Checkout.Step.next('delivery-address');
-                    } 
+                    }
                 } else {
                     $(element).removeAttr('disabled');
                     if (response.messages) {
@@ -506,7 +514,7 @@ Checkout.Billing = {
         return false;
     },
     getAddressId: function() {
-        var items = $('#billing-radios input:checked').get();
+        var items = $('#billing-address-id option:selected').get();
         if (items.length) {
             return items[0].value;
         }
@@ -517,7 +525,7 @@ Checkout.Billing = {
         $.ajax({
             url: Axis.getUrl('checkout/onepage/payment-method', true),
             success: function(response, textStatus) {
-               $('#block-paymentMethod').empty().append(response); 
+               $('#block-paymentMethod').empty().append(response);
                Checkout.Billing.initExtra();
                Checkout.Step.switchStep('payment');
             }
@@ -552,9 +560,9 @@ Checkout.Billing = {
             alert('Select Payment Method');
             return;
         }
-        
+
         this.extraFields = this.getExtra();
-        
+
         var data = { 'method': method };
         for (var i in this.extraFields) {
             var field = this.extraFields[i];

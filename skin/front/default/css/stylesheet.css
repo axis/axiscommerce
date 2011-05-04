@@ -1227,6 +1227,8 @@ a.review-stars { outline: none; }
 }
 .billing-address,
 .shipping-address { float: left; display: inline; }
+#billing-address-id,
+#shipping-address-id { width: 100%; }
 
 #block-confirmation .shipping-address,
 #form-confirmation .shipping-address { margin-left: 15px; display: inline; }
