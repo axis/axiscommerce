@@ -224,7 +224,7 @@ class Axis_Core_Model_Module_Row extends Axis_Db_Table_Row
         return Axis::model('core/module_upgrade')->select()
             ->where('module_id = ?', $this->id)
             ->order('id desc')
-            ->fetchRow3();
+            ->fetchRow();
     }
 
     public function install()

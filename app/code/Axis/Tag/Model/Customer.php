@@ -182,7 +182,7 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
             ->where('name = ?', $tag)
             ->where('customer_id = ?', Axis::getCustomerId())
             ->where('site_id = ?', Axis::getSiteId())
-            ->fetchRow3();
+            ->fetchRow();
     }
 
     /**

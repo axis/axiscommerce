@@ -105,7 +105,7 @@ class Axis_Mail extends Zend_Mail
         if (isset($config['event'])) {
             $mailTemplate = Axis::model('core/template_mail')->select('*')
                 ->where('ctm.event = ?', $config['event'])
-                ->fetchRow2();
+                ->fetchRow();
 
             if (!$mailTemplate || !$mailTemplate->status) {
                 $this->_disabled = true;

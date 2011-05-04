@@ -379,24 +379,6 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
     }
 
     /**
-     * Fetches the first row of the SQL result.
-     * Uses the current fetchMode for the adapter.
-     *
-     * @param mixed                 $bind Data to bind into SELECT placeholders.
-     * @param mixed                 $fetchMode Override current fetch mode.
-     * @return array
-     */
-    public function fetchRow($bind = array(), $fetchMode = null)
-    {
-        //todo also find
-//        if (null === $fetchMode && true !== $this->_integrityCheck) {
-//            return $this->getTable()->fetchRow($this);
-//        }
-        $this->bind($bind);
-        return $this->getAdapter()->fetchRow($this, $this->getBind(), $fetchMode);
-    }
-    
-    /**
      * Fetches one row in an object of type Zend_Db_Table_Row_Abstract,
      * or returns null if no row matches the specified criteria.
      *
@@ -404,17 +386,11 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
      * @return Zend_Db_Table_Row_Abstract|null The row results per the
      *     Zend_Db_Adapter fetch mode, or null if no row found.
      */
-    public function fetchRow2($bind = array())
+    public function fetchRow($bind = array())
     {
         $this->bind($bind);
         return $this->getTable()->fetchRow($this);
     }
-    
-    public function fetchRow3($bind = array())
-    {
-        return $this->fetchRow2($bind);
-    }
-
 
     /**
      * Fetches all SQL result rows as an associative array.

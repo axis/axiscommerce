@@ -43,7 +43,7 @@ class Axis_Config_Handler_BaseCurrency implements  Axis_Config_Handler_Interface
     {
         $row = Axis::single('locale/currency')->select()
             ->where('code = ?' , $value)
-            ->fetchRow3();
+            ->fetchRow();
         if ($row instanceof Axis_Db_Table_Row && 1 !== $row->rate) {
             $row->rate = 1;
             $row->save();

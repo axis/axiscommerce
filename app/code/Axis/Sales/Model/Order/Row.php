@@ -259,14 +259,14 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         if ($this->billing_country) {
             $country = Axis::single('location/country')->select()
                 ->where('name = ?', $this->billing_country)
-                ->fetchRow3()
+                ->fetchRow()
                 ->toArray();
         }
         
         if ($this->billing_state) {
             $zone = Axis::single('location/zone')->select()
                 ->where('name = ?', $this->billing_state)
-                ->fetchRow3()
+                ->fetchRow()
                 ->toArray();
         }
 
@@ -300,14 +300,14 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
 
         $country = Axis::single('location/country')->select()
             ->where('name = ?', $this->delivery_country)
-            ->fetchRow3()
+            ->fetchRow()
             ->toArray();
 
         $zone = null;
         if ($this->delivery_state) {
             $zone = Axis::single('location/zone')->select()
                 ->where('name = ?', $this->delivery_state)
-                ->fetchRow3()
+                ->fetchRow()
                 ->toArray();
         }
 

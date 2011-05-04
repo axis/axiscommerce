@@ -48,7 +48,7 @@ class Axis_Checkout_Model_Cart_Product extends Axis_Db_Table
             ->from(array('scp' => $this->_prefix . 'checkout_cart_product'))
             ->where('scp.shopping_cart_id = ?', $shoppingCartId);
         
-        if (!$this->select()->where('shopping_cart_id = ?', $shoppingCartId)->fetchRow3()) {
+        if (!$this->select()->where('shopping_cart_id = ?', $shoppingCartId)->fetchRow()) {
             return $this->getAdapter()->fetchAll($select);
         }
         

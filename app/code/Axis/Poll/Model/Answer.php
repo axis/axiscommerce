@@ -48,7 +48,7 @@ class Axis_Poll_Model_Answer extends Axis_Db_Table
             ->where('id = ?', $id)
             ->where('language_id = ?', $languageId)
             ->where('question_id = ?', $questionId)
-            ->fetchRow3();
+            ->fetchRow();
         
         if (!$row) {
             $rowData = array(

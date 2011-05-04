@@ -119,7 +119,7 @@ class Axis_Admin_Model_Menu extends Axis_Db_Table
                 } else {
                     $rowMenu->where('parent_id = ?', $data['parent_id']);
                 }    
-                $rowMenu = $rowMenu->fetchRow3();
+                $rowMenu = $rowMenu->fetchRow();
                 if ($rowMenu) {
                     if (isset($menu_items[$data['lvl'] + 1]) 
                         && $rowMenu->has_children == 0) {

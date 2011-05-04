@@ -61,7 +61,7 @@ class Axis_Catalog_Model_Hurl extends Axis_Db_Table
             ->where('site_id = ?', $rowData['site_id'])
             ->where('key_id = ?', $rowData['key_id'])
             ->where('key_type = ?', $rowData['key_type'])
-            ->fetchRow3()
+            ->fetchRow()
             ;
         if (!$row) {
             $row = $this->createRow();
@@ -94,6 +94,6 @@ class Axis_Catalog_Model_Hurl extends Axis_Db_Table
             $select->where('key_id <> ?', $keyId);
         }
         
-        return !is_null($select->fetchRow3());
+        return !is_null($select->fetchRow());
     } 
 }

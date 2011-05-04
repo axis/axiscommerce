@@ -39,7 +39,7 @@ class Axis_Admin_Customer_EmailController extends Axis_Admin_Controller_Back
         $data = $this->_getAllParams();
         $customer = Axis::model('account/customer')->select()
             ->where('email = ?', $data['email'])
-            ->fetchRow3();
+            ->fetchRow();
 
         try {
             $mail = new Axis_Mail();

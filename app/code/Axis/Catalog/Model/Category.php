@@ -168,7 +168,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
             )
             ->where('ch.key_word = ?', $url)
             ->where('ch.site_id = ?', $siteId)
-            ->fetchRow3()
+            ->fetchRow()
         ;
     }
 
@@ -186,7 +186,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
         return $this->select()
             ->where('site_id = ?', $siteId)
             ->where('lvl = 0')
-            ->fetchRow3()
+            ->fetchRow()
         ;
     }
 

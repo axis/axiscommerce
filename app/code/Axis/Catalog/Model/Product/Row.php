@@ -579,7 +579,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         $row = Axis::single('catalog/product_description')->select('*')
             ->where('product_id = ?', $this->id)
             ->where('language_id = ?', $languageId)
-            ->fetchRow2()
+            ->fetchRow()
             ;
         return $row ? $row->toArray() : false;
     }
@@ -824,7 +824,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         if ($variationId) {
             $variation = Axis::single('catalog/product_variation')->select('*')
                 ->where('id = ?', $variationId)
-                ->fetchRow2();
+                ->fetchRow();
 
             $weight = self::getNewWeight(
                 $weight, $variation->weight, $variation->weight_type
@@ -1004,7 +1004,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 "cpm.id = ch.key_id AND ch.key_type = 'm' AND ch.site_id = " . Axis::getSiteId(),
                 'key_word')
             ->where('cpm.id = ?', $this->manufacturer_id)
-            ->fetchRow2()
+            ->fetchRow()
             ->toArray();
     }
 

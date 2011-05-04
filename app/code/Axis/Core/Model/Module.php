@@ -272,7 +272,7 @@ class Axis_Core_Model_Module extends Axis_Db_Table
         try {
             $row = $this->select()
                 ->where('code = ?', $code)
-                ->fetchRow3();
+                ->fetchRow();
             if ($row) {
                 return $row;
             }

@@ -78,7 +78,7 @@ class Axis_Catalog_Model_Product_Option_ValueSet extends Axis_Db_Table
     {
         $row = $this->select()
             ->where('name = ?', $name)
-            ->fetchRow3();
+            ->fetchRow();
         
         if (!$row) {
             $row = $this->createRow((array('name' => $name)));

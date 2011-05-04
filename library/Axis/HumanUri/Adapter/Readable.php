@@ -100,7 +100,7 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
                         ->select(array('title', 'description'))
                         ->where('manufacturer_id = ?', $row['key_id'])
                         ->where('language_id = ?', Axis_Locale::getLanguageId())
-                        ->fetchRow2();
+                        ->fetchRow();
 
                     $this->_params['manufacturer'] = array(
                         'value'         => $row['key_id'],

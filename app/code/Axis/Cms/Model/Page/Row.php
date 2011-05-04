@@ -68,7 +68,7 @@ class Axis_Cms_Model_Page_Row extends Axis_Db_Table_Row
             ->joinLeft('cms_page', 'cp.id = cpc.cms_page_id', array('layout'))
             ->where('cpc.language_id = ?', $languageId)
             ->where('cpc.cms_page_id = ?', $this->id)
-            ->fetchRow2()
+            ->fetchRow()
         ;
         if (!$row) {
             return false;

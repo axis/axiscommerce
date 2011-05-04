@@ -68,12 +68,12 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
     public function getDataAction()
     {
         $categoryId = $this->_getParam('categoryId');
-        $data = Axis::model('catalog/category')->select('*')
+        $row = Axis::model('catalog/category')->select('*')
             ->addKeyWord()
             ->where('cc.id = ?', $categoryId)
-            ->fetchRow2()
+            ->fetchRow()
             ;
-        if (!$data) {
+        if (!$row) {
             Axis::message()->addError(
                 Axis::translate('catalog')->__(
                     'Category not exist'
@@ -81,7 +81,7 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        $data = $data->toArray();
+        $data = $row->toArray();
         $rowset = Axis::model('catalog/category_description')->select()
             ->where('category_id = ?', $categoryId)
             ->fetchAll();

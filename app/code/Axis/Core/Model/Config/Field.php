@@ -102,7 +102,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
 
         $row = $this->select()
             ->where('path = ?', $rowData['path'])
-            ->fetchRow3();
+            ->fetchRow();
 
         if (!$row) {
             $row = $this->createRow();
@@ -191,7 +191,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             if ($checkBeforeInsert) {
                 $rowField = $this->select()
                     ->where('path = ?', $rowData['path'])
-                    ->fetchRow3();
+                    ->fetchRow();
                 if ($rowField) {
                     continue;
                 } else {
@@ -206,7 +206,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             $modelValue = Axis::single('core/config_value');
             $rowValue = $modelValue->select()
                 ->where('path = ?', $rowData['path'])
-                ->fetchRow3();
+                ->fetchRow();
             if (!$rowValue) {
                 $rowValue = $modelValue->createRow();
             }

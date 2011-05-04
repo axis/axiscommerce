@@ -559,7 +559,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
         }
         $previousCartRow = $this->select()
             ->where('customer_id = ?', $customerId)
-            ->fetchRow3();
+            ->fetchRow();
         if ($previousCartRow && $previousCartRow->id != $this->getCartId()) {
 
             $collection = $this->getAdapter()->select()

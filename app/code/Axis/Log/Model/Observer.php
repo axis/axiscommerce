@@ -54,7 +54,7 @@ class Axis_Log_Model_Observer
         $rowUrlInfo = $modelUrlInfo->select()
             ->where('url = ?', $url)
             ->where('refer = ?', $refer)
-            ->fetchRow3();
+            ->fetchRow();
         
         if (!$rowUrlInfo) {
             $rowUrlInfo = $modelUrlInfo->createRow(array(

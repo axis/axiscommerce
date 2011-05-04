@@ -116,6 +116,6 @@ class Axis_Catalog_Model_Product_Option_Value extends Axis_Db_Table
                 'cpovt.option_value_id = cpov.id')
             ->where('cpov.valueset_id = ?', $valuesetId)
             ->where('cpovt.name = ?', $valueText)
-            ->fetchRow3();
+            ->fetchRow();
     }
 }

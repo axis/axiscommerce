@@ -62,7 +62,7 @@ class Axis_Auth_AdminAdapter implements Zend_Auth_Adapter_Interface
     {
         $row = Axis::single('admin/user')->select()
             ->where('username = ?', $this->_username)
-            ->fetchRow3();
+            ->fetchRow();
         
         if (!$row) {
             $code = Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND;

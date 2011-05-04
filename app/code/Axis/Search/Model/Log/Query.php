@@ -43,7 +43,7 @@ class Axis_Search_Model_Log_Query extends Axis_Db_Table
      */
     public function getQuery($query)
     {
-    	$row = $this->select()->where('query = ?', $query)->fetchRow3();
+    	$row = $this->select()->where('query = ?', $query)->fetchRow();
     	if (!$row) {
             $row = $this->createRow();
             $row->query = $query;

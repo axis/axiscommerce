@@ -197,7 +197,7 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
 
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', $path)
-            ->fetchRow3();
+            ->fetchRow();
         
         $translator = Axis::translate($row->getTranslationModule());
 //        $this->view->confField = $row->toArray();
@@ -243,7 +243,7 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
 
         $field = Axis::single('core/config_field')->select()
             ->where('path = ?', $path)
-            ->fetchRow3();
+            ->fetchRow();
         
         if ($field->config_type === 'handler') {
 
@@ -264,7 +264,7 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
         $value = Axis::single('core/config_value')->select()
             ->where('path = ?', $path)
             ->where('site_id = ?', $siteId)
-            ->fetchRow3();
+            ->fetchRow();
         /*
          * if such row not founded then create new record
          * It possible when we redeclare global config-value for site
@@ -325,7 +325,7 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
             $globalRow = $model->select()
                 ->where('path = ?', $path)
                 ->where('site_id = 0')
-                ->fetchRow3();
+                ->fetchRow();
 
             if ($globalRow) {
                 $model->createRow(array_merge($globalRow->toArray(), array(

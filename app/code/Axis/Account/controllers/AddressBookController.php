@@ -130,7 +130,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         $row = Axis::single('account/customer_address')->select()
             ->where('id = ?', $addressId)
             ->where('customer_id = ?', $this->_customerId)
-            ->fetchRow3();
+            ->fetchRow();
 
         if (!$row instanceof  Axis_Db_Table_Row) {
             Axis::message()->addError(Axis::translate('account')->__(

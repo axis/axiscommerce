@@ -120,6 +120,6 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
             ->where('ch.key_type = ?', 'p')
             ->where('ch.site_id = ?', $siteId)
             ->where('ch.key_word = ?', $url)
-            ->fetchRow3();
+            ->fetchRow();
     }
 }

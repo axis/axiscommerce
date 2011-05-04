@@ -201,18 +201,16 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
      */
     protected function _getPriceFilters(array $filters)
     {
-        $select = Axis::single('catalog/product')->select(
-            array('cnt' => 'COUNT(cp.price)')
-        );
-        $select->joinPriceIndex()
+        $row = Axis::single('catalog/product')->select(
+               array('cnt' => 'COUNT(cp.price)')
+            )->joinPriceIndex()
             ->columns(array(
                 'price_max' => 'MAX(cppi.final_max_price)',
                 'price_min' => 'MIN(cppi.final_min_price)'
             ))
             ->joinCategory()
-            ->addCommonFilters($filters);
-
-        $row = $select->fetchRow2();
+            ->addCommonFilters($filters)
+            ->fetchRow();
 
         if (!$row->cnt) {
             return null;
@@ -225,8 +223,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
 
         //Return rounded number, example: 80->10, 120->100, 895->100, 1024->1000
         $roundTo = pow(10, strlen((string) floor($row->price_max - $row->price_min)) - 1);
-        $select->reset();
-        $select->from('catalog_product', array(
+        $priceGroups = Axis::single('catalog/product')->select(array(
                 'cnt'         => 'COUNT(DISTINCT cp.id)',
                 'price_group' => new Zend_Db_Expr("floor(cppi.final_min_price * $rate / $roundTo) * $roundTo")
             ))
@@ -234,9 +231,8 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
             ->joinCategory()
             ->addCommonFilters($filters)
             ->group('price_group')
-            ->order('cppi.final_min_price');
-
-        $priceGroups = $select->fetchAll();
+            ->order('cppi.final_min_price')
+            ->fetchAll();
 
         if (count($priceGroups) < 2) {
             return null;

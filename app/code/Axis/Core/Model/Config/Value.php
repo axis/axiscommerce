@@ -47,7 +47,7 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
             ->where('path = ?', $path)
             ->where('site_id IN(?)', array(0, $siteId))
             ->order('site_id DESC')
-            ->fetchRow3();
+            ->fetchRow();
         if ($row) {
             return $row->value;
         }
@@ -64,7 +64,7 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
     {
         $row = $this->select()
             ->where('path = ?', $data['path'])
-            ->fetchRow3();
+            ->fetchRow();
         
         if (!$row) {
             Axis::message()->addError(

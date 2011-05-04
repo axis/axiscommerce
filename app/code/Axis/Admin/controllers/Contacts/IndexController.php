@@ -103,7 +103,7 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
 
         $customer = Axis::model('account/customer')->select()
             ->where('email = ?', $data['email'])
-            ->fetchRow3();
+            ->fetchRow();
 
         //@todo if null need firstname = full name from custom_info fields
         $firstname = $customer ? $customer->firstname : null;
