@@ -2,20 +2,24 @@
 
 echo $this->message();
 
-if (count($this->addressList)) :
-    $addressArray = array(
-        0 => 'New Address'
-    );
-    foreach ($this->addressList as $address) :
-        $addressArray[$address->id] = trim($this->address($address, ', '), ', ');
-    endforeach;
+$addressArray = array(
+    0 => 'New Address'
+);
+foreach ($this->addressList as $address) :
+    $addressArray[$address->id] = trim($this->address($address, ', '), ', ');
+endforeach;
 
-    echo $this->formSelect(
-        $this->escape($this->addressType) . '-id',
-        $this->selectedAddressId,
-        array(
-            'onchange' => 'Address.onChange(this)'
-        ),
-        $addressArray
-    );
-endif; ?>
+echo $this->formSelect(
+    $this->escape($this->addressType) . '-id',
+    $this->selectedAddressId,
+    array(
+        'onchange' => 'Address.onChange(this)'
+    ),
+    $addressArray
+);
+
+if (!count($this->addressList)) : ?>
+    <script type="text/javascript">
+        Address.create();
+    </script>
+<?php endif;
