@@ -755,10 +755,10 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         // set variation
         if ($variationId) {
             $variation = Axis::single('catalog/product_variation')
-                ->fetchRow('id = ' . $variationId)
-                ->toArray();
+                ->find($variationId)
+                ->current();
             $price = self::getNewPrice(
-                $price, $variation['price'], $variation['price_type']
+                $price, $variation->price, $variation->price_type
             );
         }
         // set discount

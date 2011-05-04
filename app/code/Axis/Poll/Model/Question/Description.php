@@ -45,20 +45,10 @@ class Axis_Poll_Model_Question_Description extends Axis_Db_Table
      */
     public function save($questionId, $languageId, $question)
     {
-        $row = $this->fetchRow(array(
-            'question_id = ' . $questionId,
-            'language_id = ' . $languageId
-        ));
-
-        if (!$row instanceof Axis_Db_Table_Row) {
-            $row = $this->createRow(array(
-                'question_id' => $questionId,
-                'language_id' => $languageId,
-                'question'      => $question
-            ));
-        } else {
-            $row->question = $question;
-        }
-        return $row->save();
+        return $this->getRow(array(
+            'question_id' => $questionId,
+            'language_id' => $languageId,
+            'question'    => $question
+        ))->save();
     }
 }

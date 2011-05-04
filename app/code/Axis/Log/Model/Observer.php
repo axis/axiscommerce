@@ -51,11 +51,11 @@ class Axis_Log_Model_Observer
         
         // add new url request
         $modelUrlInfo = Axis::single('log/url_info');
-        $select = $modelUrlInfo->select()
+        $rowUrlInfo = $modelUrlInfo->select()
             ->where('url = ?', $url)
             ->where('refer = ?', $refer)
-        ;
-        $rowUrlInfo = $modelUrlInfo->fetchRow($select);
+            ->fetchRow3();
+        
         if (!$rowUrlInfo) {
             $rowUrlInfo = $modelUrlInfo->createRow(array(
                 'url'   => $url,

@@ -44,13 +44,13 @@ class Axis_Poll_Model_Answer extends Axis_Db_Table
      */
     public function save($id, $languageId, $questionId, $answer)
     {
-        $row = $this->fetchRow(array(
-            'id = ' . $id,
-            'language_id = ' . $languageId,
-            'question_id = ' . $questionId
-        ));
+        $row = $this->select()
+            ->where('id = ?', $id)
+            ->where('language_id = ?', $languageId)
+            ->where('question_id = ?', $questionId)
+            ->fetchRow3();
         
-        if (!$row instanceof Axis_Db_Table_Row) {
+        if (!$row) {
             $rowData = array(
                 'language_id' => $languageId,
                 'question_id' => $questionId,

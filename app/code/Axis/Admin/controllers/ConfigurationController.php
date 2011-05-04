@@ -195,19 +195,14 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
         $siteId = $this->_getParam('siteId');
         $path = $this->_getParam('path');
 
-        $field = Axis::single('core/config_field')->fetchRow(
-            $this->db->quoteInto("path = ?", $path)
-        );
-
-        $this->view->confField = $field->toArray();
-        $this->view->confField['description'] =
-            Axis::translate($field->getTranslationModule())->__(
-                $this->view->confField['description']
-            );
-        $this->view->confField['title'] =
-            Axis::translate($field->getTranslationModule())->__(
-                $this->view->confField['title']
-            );
+        $row = Axis::single('core/config_field')->select()
+            ->where('path = ?', $path)
+            ->fetchRow3();
+        
+        $translator = Axis::translate($row->getTranslationModule());
+//        $this->view->confField = $row->toArray();
+        $row->description = $translator->__($row->description);
+        $row->title = $translator->__($row->title);
 
         $this->view->confValue = Axis::single('core/config_value')
             ->getValue($path, $siteId);
@@ -215,25 +210,26 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
         $this->view->siteId = $siteId;
         $this->view->configPath = $path;
 
-        if (!empty($field->model)) {
-            if ($field->config_type != 'handler') {
-                $this->view->confField['config_options'] =
-                    $this->_collect($field->model, $field->model_assigned_with);
+        if (!empty($row->model)) {
+            if ($row->config_type != 'handler') {
+                $row->config_options =
+                    $this->_collect($row->model, $row->model_assigned_with);
             } else {
-                $this->view->confField['config_options'] = $this->_getHtml(
-                    $field->model,
+                $row->config_options = $this->_getHtml(
+                    $row->model,
                     Axis::single('core/config_value')->getValue($path, $siteId)
                 );
             }
 
             $this->view->confValue = $this->_optionsToArray($this->view->confValue);
-        } elseif ($field->config_type == 'select'
-            || $field->config_type == 'multiple') {
+        } elseif ($row->config_type == 'select' 
+            || $row->config_type == 'multiple') {
 
-            $this->view->confField['config_options'] =
-                $this->_optionsToArray($field->config_options);
+            $row->config_options = $this->_optionsToArray($row->config_options);
+            
             $this->view->confValue = $this->_optionsToArray($this->view->confValue);
         }
+        $this->view->confField = $row->toArray();
 
         $this->render();
     }
@@ -241,13 +237,14 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-        $path    = $this->_getParam('path');
-        $siteId  = $this->_getParam('siteId');
+        $path      = $this->_getParam('path');
+        $siteId    = $this->_getParam('siteId');
         $confValue = $this->_getParam('confValue');
 
-        $field = Axis::single('core/config_field')->fetchRow(
-            $this->db->quoteInto('path = ?', $path)
-        );
+        $field = Axis::single('core/config_field')->select()
+            ->where('path = ?', $path)
+            ->fetchRow3();
+        
         if ($field->config_type === 'handler') {
 
             //@todo kostul
@@ -264,23 +261,24 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
             $confValue = implode(Axis_Config::MULTI_SEPARATOR, $values);
         }
 
-        $row = Axis::single('core/config_value')->fetchRow(array(
-            $this->db->quoteInto('path = ?', $path),
-            $this->db->quoteInto('site_id = ?', $siteId)
-        ));
+        $value = Axis::single('core/config_value')->select()
+            ->where('path = ?', $path)
+            ->where('site_id = ?', $siteId)
+            ->fetchRow3();
         /*
          * if such row not founded then create new record
          * It possible when we redeclare global config-value for site
          */
-        if (!$row) {
-            $row = Axis::single('core/config_value')->createRow();
-            $row->config_field_id = $field->id;
-            $row->path = $path;
-            $row->site_id = $siteId;
+        if (!$value) {
+            $value = Axis::single('core/config_value')->createRow(array(
+                'config_field_id' => $field->id,
+                'path'            => $path,
+                'site_id'         => $siteId
+            ));
         }
-
-        $row->value = $confValue;
-        $row->save();
+        $value->value = $confValue;
+        $value->save();
+        
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Configuration option was saved successfully'
@@ -319,22 +317,21 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
 
         $pathItems = Zend_Json_Decoder::decode($this->_getParam('pathItems'));
         $where = array($this->db->quoteInto('site_id = ?', $siteId));
+        $model = Axis::single('core/config_value');
         foreach ($pathItems as $path) {
             $where[1] = $this->db->quoteInto('path = ?', $path);
 
-            Axis::single('core/config_value')->delete($where);
-            $globalRow = Axis::single('core/config_value')->fetchRow(array(
-                $where[1],
-                'site_id = 0'
-            ));
+            $model->delete($where);
+            $globalRow = $model->select()
+                ->where('path = ?', $path)
+                ->where('site_id = 0')
+                ->fetchRow3();
 
             if ($globalRow) {
-                Axis::single('core/config_value')->insert(array(
-                    'path'    => $path,
-                    'site_id' => $siteId,
-                    'value'   => $globalRow->value,
-                    'config_field_id' => $globalRow->config_field_id
-                ));
+                $model->createRow(array_merge($globalRow->toArray(), array(
+                    'id'      => null,
+                    'site_id' => $siteId
+                )))->save();
             }
         }
         Axis::message()->addSuccess(

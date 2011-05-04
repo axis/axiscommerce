@@ -44,9 +44,12 @@
     public function getVisitor()
     {
         $sessionId = Zend_Session::getId();
-        $select = $this->select()->where('session_id = ?', $sessionId);
+        $row = $this->select()
+            ->where('session_id = ?', $sessionId)
+            ->fetchRow3()
+            ;
         
-        if (!$row = $this->fetchRow($select)) {
+        if (!$row) {
             $row = $this->createRow(array(
                 'session_id'  => $sessionId,
                 'customer_id' => Axis::getCustomerId() ? 

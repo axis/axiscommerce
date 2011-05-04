@@ -43,11 +43,11 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
      */
     public function getValue($path, $siteId)
     {
-        $select = $this->select()->where('path = ?', $path)
-            ->where('site_id IN(?)', array_unique(array(0, $siteId)))
-            ->order('site_id desc')
-            ;
-        $row = $this->fetchRow($select);
+        $row = $this->select()
+            ->where('path = ?', $path)
+            ->where('site_id IN(?)', array(0, $siteId))
+            ->order('site_id DESC')
+            ->fetchRow3();
         if ($row) {
             return $row->value;
         }
@@ -62,7 +62,11 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
      */
     public function save($data)
     {
-        if (!$row = $this->fetchRow('path = "' . $data['path'] . '"')) {
+        $row = $this->select()
+            ->where('path = ?', $data['path'])
+            ->fetchRow3();
+        
+        if (!$row) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     "Config field '%s' was not found", $data['path']

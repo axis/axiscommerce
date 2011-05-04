@@ -53,9 +53,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
      */
     public function insertItem(array $data, $parentId = 0)
     {
-        $parentRow = $this->fetchRow(
-            $this->getAdapter()->quoteInto('id = ?', $parentId)
-        );
+        $parentRow = $this->find($parentId)->current();
 
         if (!$parentRow)  {
             return false;
@@ -91,8 +89,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
      */
     public function deleteItem($id)
     {
-        $db = $this->getAdapter();
-        $row = $this->fetchRow($db->quoteInto('id = ?', $id));
+        $row = $this->find($id)->current();
         if (!$row) {
             return false;
         }
@@ -114,7 +111,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
         }
 
         Axis::single('catalog/hurl')->delete(array(
-            $db->quoteInto('key_id IN(?)', $childrenIds),
+            $this->getAdapter()->quoteInto('key_id IN(?)', $childrenIds),
             "key_type = 'c'"
         ));
 
@@ -164,14 +161,15 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
         if (null === $siteId) {
             $siteId = Axis::getSiteId();
         }
-        return $this->fetchRow($this->select('*')
+        return $this->select('*')
             ->joinInner(
                 'catalog_hurl',
                 "ch.key_id = cc.id AND ch.key_type = 'c'"
             )
             ->where('ch.key_word = ?', $url)
             ->where('ch.site_id = ?', $siteId)
-        );
+            ->fetchRow3()
+        ;
     }
 
     /**
@@ -185,11 +183,11 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
         if (null === $siteId) {
             $siteId = Axis::getSiteId();
         }
-        return $this->fetchRow(
-            $this->select()
-                ->where('site_id = ?', $siteId)
-                ->where('lvl = 0')
-        );
+        return $this->select()
+            ->where('site_id = ?', $siteId)
+            ->where('lvl = 0')
+            ->fetchRow3()
+        ;
     }
 
     public function getRootCategories()

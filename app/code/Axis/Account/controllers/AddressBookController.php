@@ -127,10 +127,10 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         ));
         
         $addressId = $this->_getParam('id');
-        $row = Axis::single('account/customer_address')->fetchRow(array(
-            $this->db->quoteInto('id = ?', $addressId),
-            $this->db->quoteInto('customer_id = ?', $this->_customerId)
-        ));
+        $row = Axis::single('account/customer_address')->select()
+            ->where('id = ?', $addressId)
+            ->where('customer_id = ?', $this->_customerId)
+            ->fetchRow3();
 
         if (!$row instanceof  Axis_Db_Table_Row) {
             Axis::message()->addError(Axis::translate('account')->__(

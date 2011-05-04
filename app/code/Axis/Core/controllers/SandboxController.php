@@ -36,14 +36,6 @@ class SandboxController extends Axis_Core_Controller_Front
 
     public function indexAction()
     {
-        
-        $dd = Axis::single('catalog/product_description')->select('*')
-            ->where('product_id = ?', 11)
-            ->where('language_id = ?', 22)
-            ->fetchRow()
-//            ->toArray()
-            ;
-        Zend_Debug::dump($dd, 'DDDDDDDDDDDDD');
 //        Zend_Debug::dump();
         $this->view->meta()->setTitle('片　视 频　地');
         Axis_FirePhp::timeStamp('333');

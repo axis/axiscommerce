@@ -201,7 +201,6 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
      */
     protected function _getPriceFilters(array $filters)
     {
-        Axis_FirePhp::log(__METHOD__);
         $select = Axis::single('catalog/product')->select(
             array('cnt' => 'COUNT(cp.price)')
         );

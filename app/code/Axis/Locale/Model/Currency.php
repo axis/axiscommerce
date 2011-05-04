@@ -324,32 +324,16 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
      */
     public function save(array $rowData)
     {
-        $id = false;
-        if (isset($rowData['id']) && null !== $rowData['id']) {
+        $row = $this->getRow($rowData);
+        if ($row->code === Axis::config('locale/main/currency') &&
+            $row->rate != 1) {
 
-            $id = $rowData['id'];
-            unset($rowData['id']);
+//            throw new Axis_Exception(
+            Axis::message()->addError(Axis::translate('locale')->__(
+                'Base currency rate should be 1.00'
+            ));
+            return false;
         }
-
-        if (!$id || !$row = $this->fetchRow(
-                $this->getAdapter()->quoteInto('id = ?', $id)
-            )) {
-
-            $row = $this->createRow($rowData);
-        } else {
-            $row->setFromArray($rowData);
-
-            if ($row->code === Axis::config()->locale->main->currency &&
-                $row->rate != 1) {
-
-    //            throw new Axis_Exception(
-                Axis::message()->addError(Axis::translate('locale')->__(
-                    'Base currency rate should be 1.00'
-                ));
-                return false;
-            }
-        }
-
         $row->rate = str_replace(',', '.', $row->rate);
 
         return $row->save();

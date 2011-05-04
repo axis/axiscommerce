@@ -78,39 +78,36 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
     /**
      * Insert or update config field
      *
-     * @param array $data
+     * @param array $rowData
      * @return bool
      */
-    public function save(array $data = null)
+    public function save(array $rowData = null)
     {
-        if (null === $data['path'] || $data['path'] == '') {
+        if (null === $rowData['path'] || $rowData['path'] == '') {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     'Incorrect field path'
             ));
             return false;
         }
-        if ($data['config_options'] == '') {
-            $data['config_options'] = new Zend_Db_Expr('NULL');
+        if ($rowData['config_options'] == '') {
+            $rowData['config_options'] = new Zend_Db_Expr('NULL');
         }
 
-        $data['lvl'] = count(explode('/', $data['path']));
+        $rowData['lvl'] = count(explode('/', $rowData['path']));
 
-        if ($data['lvl'] <= 2) {
-            $data['config_type'] = '';
+        if ($rowData['lvl'] <= 2) {
+            $rowData['config_type'] = '';
         }
 
-        $row = $this->fetchRow(
-            $this->getAdapter()->quoteInto(
-                'path = ?', $data['path']
-            )
-        );
+        $row = $this->select()
+            ->where('path = ?', $rowData['path'])
+            ->fetchRow3();
 
-        if (null === $row) {
-            $row = $this->createRow($data);
-        } else {
-            $row->setFromArray($data);
-        }
+        if (!$row) {
+            $row = $this->createRow();
+        } 
+        $row->setFromArray($rowData);
         $row->save();
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
@@ -164,18 +161,18 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             $description = '';
         }
 
-        $row = array('lvl' => 0);
+        $rowData = array('lvl' => 0);
         foreach ($configEntries as $configEntry) {
-            if (++$row['lvl'] == 1) {
-                $row['path'] = $configEntry;
+            if (++$rowData['lvl'] == 1) {
+                $rowData['path'] = $configEntry;
             } else {
-                $row['path'] .= '/' . $configEntry;
+                $rowData['path'] .= '/' . $configEntry;
             }
 
-            $row['title'] = isset($title[$row['lvl']-1]) ?
-                $title[$row['lvl']-1] : $title[0];
+            $rowData['title'] = isset($title[$rowData['lvl']-1]) ?
+                $title[$rowData['lvl']-1] : $title[0];
 
-            $row = array_merge(array(
+            $rowData = array_merge(array(
                 'config_type' => 'string',
                 'description' => '',
                 'model'       => isset($data['model']) ? $data['model'] : '',
@@ -183,47 +180,45 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                     $data['model_assigned_with'] : '',
                 'translation_module' => isset($data['translation_module']) ?
                     $data['translation_module'] : new Zend_Db_Expr('NULL')
-            ), $row);
+            ), $rowData);
 
-            if ($row['lvl'] == 3) {
-                $row['config_type'] = $type;
-                $row['description'] = $description;
-                $row = array_merge($data, $row);
+            if ($rowData['lvl'] == 3) {
+                $rowData['config_type'] = $type;
+                $rowData['description'] = $description;
+                $rowData = array_merge($data, $rowData);
             }
 
             if ($checkBeforeInsert) {
-                if ($rowField = $this->fetchRow(
-                        $this->getAdapter()->quoteInto(
-                            'path = ?', $row['path']
-                        )
-                )) {
+                $rowField = $this->select()
+                    ->where('path = ?', $rowData['path'])
+                    ->fetchRow3();
+                if ($rowField) {
                     continue;
                 } else {
                     $checkBeforeInsert = false;
                 }
             }
-            $rowField = $this->createRow($row);
+            $rowField = $this->createRow($rowData);
             $rowField->save();
         }
 
-        if ($row['lvl'] == 3) {
-            $rowValue = Axis::single('core/config_value')->fetchRow(
-                $this->getAdapter()->quoteInto(
-                    'path = ?', $row['path']
-                )
-            );
+        if ($rowData['lvl'] == 3) {
+            $modelValue = Axis::single('core/config_value');
+            $rowValue = $modelValue->select()
+                ->where('path = ?', $rowData['path'])
+                ->fetchRow3();
             if (!$rowValue) {
-                $rowValue = Axis::single('core/config_value')->createRow();
+                $rowValue = $modelValue->createRow();
             }
-            if ($row['config_type'] == 'handler') {
-                $class = 'Axis_Config_Handler_' . ucfirst($row['model']);
+            if ($rowData['config_type'] == 'handler') {
+                $class = 'Axis_Config_Handler_' . ucfirst($rowData['model']);
                 $value = call_user_func(
                     array($class, 'getSaveValue'), $value
                 );
             }
             $rowValue->setFromArray(array(
                 'config_field_id' => $rowField->id,
-                'path'            => $row['path'],
+                'path'            => $rowData['path'],
                 'site_id'         => 0,
                 'value'           => $value
             ));

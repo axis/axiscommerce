@@ -557,9 +557,9 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
         if (!$customerId = Axis::getCustomerId()) {
             return false;
         }
-        $previousCartRow = $this->fetchRow(
-            $this->getAdapter()->quoteInto('customer_id = ?', $customerId)
-        );
+        $previousCartRow = $this->select()
+            ->where('customer_id = ?', $customerId)
+            ->fetchRow3();
         if ($previousCartRow && $previousCartRow->id != $this->getCartId()) {
 
             $collection = $this->getAdapter()->select()

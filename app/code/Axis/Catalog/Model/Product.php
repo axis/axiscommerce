@@ -113,12 +113,13 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
             $siteId = Axis::getSiteId();
         }
 
-        return $this->fetchRow($this->select()
+        return $this->select()
             ->setIntegrityCheck(true)
             ->from('catalog_product')
             ->join('catalog_hurl', 'cp.id = ch.key_id')
             ->where('ch.key_type = ?', 'p')
             ->where('ch.site_id = ?', $siteId)
-            ->where('ch.key_word = ?', $url));
+            ->where('ch.key_word = ?', $url)
+            ->fetchRow3();
     }
 }
