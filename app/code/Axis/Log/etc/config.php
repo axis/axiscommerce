@@ -42,7 +42,14 @@ $config = array(
                     'model'  => 'log/observer',
                     'method' => 'login'
                 )
-            )
+            ),
+            'account_customer_logout_success' => array(
+                'login' => array(
+                    'type'   => 'single',
+                    'model'  => 'log/observer',
+                    'method' => 'logout'
+                )
+             )
         )
     )
 );

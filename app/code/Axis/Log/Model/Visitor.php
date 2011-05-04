@@ -43,19 +43,16 @@
      */
     public function getVisitor()
     {
-        $sessionId = Zend_Session::getId();
-        $row = $this->select()
-            ->where('session_id = ?', $sessionId)
-            ->fetchRow3()
-            ;
-        
-        if (!$row) {
+        if (!isset(Axis::session()->visitorId) ||
+            (!$row = $this->find(Axis::session()->visitorId)->current()))
+         {
             $row = $this->createRow(array(
-                'session_id'  => $sessionId,
+                'session_id'  => Zend_Session::getId(),
                 'customer_id' => Axis::getCustomerId() ? 
                     Axis::getCustomerId() : new Zend_Db_Expr('NULL'),
             ));
             $row->save();
+            Axis::session()->visitorId = $row->id; //unset only on logout
         }
         return $row;
     }

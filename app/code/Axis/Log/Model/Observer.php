@@ -92,4 +92,10 @@ class Axis_Log_Model_Observer
         $visitor->customer_id = Axis::getCustomerId();
         $visitor->save();
     }
+    
+    public function logout()
+    {
+        unset(Axis::session()->visitorId);
+        // ? Zend_Session::regenerateId();
+    }
 }
