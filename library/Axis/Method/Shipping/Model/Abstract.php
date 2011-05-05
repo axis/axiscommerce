@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Method
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Method
@@ -41,7 +41,7 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
      * @var string
      */
     protected $_type = null;
-    
+
     /**
      * @var array
      */
@@ -50,13 +50,13 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
     /**
      * Construct shipping class method
      *
-     * @param string $type 
+     * @param string $type
      */
     public function __construct($type = null)
     {
         parent::__construct();
-        
-        //fix  single call 
+
+        //fix  single call
         if (is_array($type) && !count($type)) {
             $type = null;
         }
@@ -81,15 +81,15 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
         Axis::message()->addError($this->_code . ': ' . $message);
         $this->_logger->info($this->_code . ' ' . $message);
     }
-    
+
     /**
      * Сan not used other method this class on this method
      *
-     * @param mixed array $request shipping request 
+     * @param mixed array $request shipping request
      * @return mixed array
      */
     abstract function getAllowedTypes($request);
-    
+
     /**
      * Return Shipping Method
      *
@@ -123,22 +123,30 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
         }
         return Zend_Registry::get('shippingType');
     }
-    
+
     /**
-     * 
+     *
      * @param $request shipping request
-     * @return bool 
+     * @return bool
      */
     public function isAllowed($request)
     {
+        if (!empty($this->_config->minOrderTotal) &&
+            $request['price'] < $this->_config->minOrderTotal) {
 
-        if (!isset($this->_config->geozone) 
-            || !intval($this->_config->geozone)) {
+            return false;
+        }
 
+        if (!empty($this->_config->maxOrderTotal) &&
+            $request['price'] > $this->_config->maxOrderTotal) {
+
+            return false;
+        }
+
+        if (empty($this->_config->geozone) || !intval($this->_config->geozone)) {
             return true;
         }
 
-        
         if (null !== $request['payment_method_code']) {
             $payment = Axis_Payment::getMethod($request['payment_method_code']);
             $disallowedShippingMethods = $payment->config()->shippings->toArray();
@@ -157,13 +165,13 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
             $zoneId
         );
     }
-    
+
     /**
      * Return translated shipping method title
      * (Dont use on getTypes function current method)
      *
      * @see library/Axis/Method/Axis_Method_Abstract#getTitle()
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -172,18 +180,18 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
 
         if (null !== $this->_type &&
             $request = Axis::single('checkout/checkout')->getShippingRequest()) {
-            
+
             $type = $this->getType($request, $this->getCode());
             $title = $type['title'];
         }
         return $this->getTranslator()->__($title);
     }
-    
+
     /**
      * Return shipping code
-     * 
+     *
      * @see library/Axis/Method/Axis_Method_Abstract#getCode()
-     * @return string 
+     * @return string
      */
     public function getCode()
     {
@@ -195,12 +203,12 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
         }
         return $this->_code;
     }
-    
+
     /**
      * Only Axis shippings are supported
      * @todo return module with category name
      *  example: Axis_ShippingFlat
-     *  
+     *
      * @return Axis_Translator
      */
     public function getTranslator()
