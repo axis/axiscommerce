@@ -86,7 +86,7 @@ Ext.onReady(function() {
                         return;
                     }
                     Config.window.show();
-                    Config.window.body.update(response.responseText);
+                    Config.window.body.update(response.responseText, true);
                     $('#confValue').focus();
                 }
             });
