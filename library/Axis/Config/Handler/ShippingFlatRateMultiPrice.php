@@ -45,14 +45,23 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
             $temp = array();
             foreach ($params as $param) {
                 $temp[$param['subcode']] = array(
-                    'title' =>  $param['title'],
-                    'price' => $param['price']
+                    'title' => $param['title'],
+                    'price' => $param['price'],
+                    'minOrderTotal' => $param['minOrderTotal'],
+                    'maxOrderTotal' => $param['maxOrderTotal']
                 );
             }
             $params = $temp;
         }
         if (is_string($params)) {
-            $params = array('standard' => array('title' => 'Standard', 'price' => $params));
+            $params = array(
+                'standard' => array(
+                    'title' => 'Standard',
+                    'price' => $params,
+                    'minOrderTotal' => '',
+                    'maxOrderTotal' => ''
+                )
+            );
         }
         return json_encode($params);
     }
@@ -70,71 +79,71 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
         if (!is_array($value)) {
             $value = json_decode(self::getSaveValue('25'), true);
         }
-        $html = '';
+        $html = '<script type="text/javascript">
+            function removeRate(id) {
+                $(\'#wraper-\' + id).remove();
+            }
+            function addRate() {
+                var rand = Math.floor(Math.random() * 2147483647);
+                var html = $(\'#shippingmultirate-template\').html();
+                html = html.replace(/{template_id}/g, rand)
+                    .replace(/{template}/g, \'confValue[\' + rand + \']\');
+                $(\'#shippingmultirate-template\').before(html);
+            }
+        </script>';
         $i = 1;
         foreach ($value as $subcode => $item) {
-            $html .=
-                  '<div id="wraper-' . $i . '">'
-                  . 'Subcode : ' . $view->formText('confValue[' . $i . '][subcode]', $subcode, array('size' => '10'))
-                  . 'Title : ' . $view->formText('confValue[' . $i . '][title]', $item['title'], array('size' => '10'))
-                  . 'Price : ' . $view->formText('confValue[' . $i . '][price]', $item['price'], array('size' => '10'))
-                  . $view->formButton('shippingmultirate-template-remove', 'Remove',
-                        array('onclick' => 'function remove() {$(\'#wraper-' . $i . '\').remove();}remove();')
+            $html .= '<div id="wraper-' . $i . '">'
+                . 'Subcode : ' . $view->formText('confValue[' . $i . '][subcode]', $subcode, array('size' => '10'))
+                . 'Title : ' . $view->formText('confValue[' . $i . '][title]', $item['title'], array('size' => '10'))
+                . 'Price : ' . $view->formText('confValue[' . $i . '][price]', $item['price'], array('size' => '10'))
+                . 'Min Subtotal : '
+                    . $view->formText(
+                        'confValue[' . $i . '][minOrderTotal]',
+                        isset($item['minOrderTotal']) ? $item['minOrderTotal'] : '',
+                        array('size' => '10')
                     )
-                  . '</div>';
+                . 'Max Subtotal : '
+                    . $view->formText(
+                        'confValue[' . $i . '][maxOrderTotal]',
+                        isset($item['maxOrderTotal']) ? $item['maxOrderTotal'] : '',
+                        array('size' => '10')
+                    )
+                . $view->formButton('shippingmultirate-template-remove', 'Remove',
+                    array('onclick' => 'removeRate(' . $i . ');')
+                )
+                . '</div>';
             $i++;
         }
 
-        $jsStrReplaceFunction =
-        ' function str_replace(search, replace, subject, count) {
-
-            var i = 0, j = 0, temp = \'\', repl = \'\', sl = 0, fl = 0,
-                    f = [].concat(search),
-                    r = [].concat(replace),
-                    s = subject,
-                    ra = r instanceof Array, sa = s instanceof Array;
-            s = [].concat(s);
-            if (count) {
-                this.window[count] = 0;
-            }
-
-            for (i=0, sl=s.length; i < sl; i++) {
-                if (s[i] === \'\') {
-                    continue;
-                }
-                for (j=0, fl=f.length; j < fl; j++) {
-                    temp = s[i]+\'\';
-                    repl = ra ? (r[j] !== undefined ? r[j] : \'\') : r[0];
-                    s[i] = (temp).split(f[j]).join(repl);
-                    if (count && s[i] !== temp) {
-                        this.window[count] += (temp.length-s[i].length)/f[j].length;}
-                }
-            }
-            return sa ? s : s[0];
-        } ';
-
         $html .= '<div id="shippingmultirate-template" style="display:none" >'
-            . '<div id="wraper-{template}">'
+            . '<div id="wraper-{template_id}">'
             . 'Subcode : ' . $view->formText('{template}[subcode]', $subcode, array('size' => '10'))
             . 'Title : ' . $view->formText('{template}[title]', $item['title'], array('size' => '10'))
             . 'Price : ' . $view->formText('{template}[price]', $item['price'], array('size' => '10'))
+            . 'Min Subtotal : '
+                . $view->formText(
+                    '{template}[minOrderTotal]',
+                    isset($item['minOrderTotal']) ? $item['minOrderTotal'] : '',
+                    array('size' => '10')
+                )
+            . 'Max Subtotal : '
+                . $view->formText(
+                    '{template}[maxOrderTotal]',
+                    isset($item['maxOrderTotal']) ? $item['maxOrderTotal'] : '',
+                    array('size' => '10')
+                )
             . $view->formButton('shippingmultirate-template-remove', 'Remove',
-                  array('onclick' => 'function remove() {$(\'#wraper-{template}\').remove();}remove();')
-              )
+                array('onclick' => 'removeRate(\'{template_id}\');')
+            )
             . '</div>'
             . '</div>'
 
-            . $view->formButton('shippingmultirate-template-add', 'Add', array('onclick' => ' var i = ' . $i . ';'
-                . $jsStrReplaceFunction . '
-                function clone() {
-                    i = i + 1;
-                    var rand = Math.floor(Math.random() * (2147483647 - 0 + 1)) + 0;
-                    var html = $(\'#shippingmultirate-template\').html();
-                    html = str_replace(\'{template}\', \'confValue[\' + rand + \']\', html);
-                    $(\'#shippingmultirate-template\').before(html);
-                    //$(\'#shippingmultirate-template-add\').hide();
-                } clone();'))
-            ;
+            . $view->formButton(
+                'shippingmultirate-template-add',
+                'Add',
+                array('onclick' => 'addRate();')
+            );
 
         return $html;
     }
