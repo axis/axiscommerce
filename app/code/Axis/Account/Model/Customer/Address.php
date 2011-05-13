@@ -112,22 +112,22 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
 
         $j = 0;
         for ($i = 0, $n = count($addressList); $i < $n; $i++) {
-            if ($addressList[$i]['id'] == $defaultBillingId
-                || $addressList[$i]['id'] == $defaultShippingId)
-            {
-                list($addressList[$i], $addressList[$j]) =
-                    array($addressList[$j], $addressList[$i]);
+            if ($addressList[$i]['id'] != $defaultBillingId
+                && $addressList[$i]['id'] != $defaultShippingId) {
 
-                if ($addressList[$i]['id'] == $defaultShippingId) {
-                    $addressList[$i]['default_shipping'] = 1;
-                }
-
-                if ($addressList[$i]['id'] == $defaultBillingId) {
-                    $addressList[$i]['default_billing'] = 1;
-                }
-
-                ++$j;
+                continue;
             }
+
+            if ($addressList[$i]['id'] == $defaultShippingId) {
+                $addressList[$i]['default_shipping'] = 1;
+            }
+            if ($addressList[$i]['id'] == $defaultBillingId) {
+                $addressList[$i]['default_billing'] = 1;
+            }
+            list($addressList[$i], $addressList[$j]) =
+                array($addressList[$j], $addressList[$i]);
+
+            ++$j;
         }
         foreach ($addressList as &$address) {
             $address = new Axis_Address($address);
