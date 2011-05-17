@@ -31,7 +31,7 @@
  * @subpackage  Axis_PaymentPaypal_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Controller_Checkout
+class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Checkout
 {
 
     /**
@@ -117,7 +117,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
     public function detailsAction()
     {
         if (empty($this->_getPayment()->getStorage()->token)) {
-            $this->_redirect('/paymentpaypal/express-checkout/index');
+            $this->_redirect('/paymentpaypal/express/index');
         }
 
         $response = $this->_getPayment()->runGetExpressCheckoutDetails();
@@ -125,7 +125,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
         if (empty($this->_getPayment()->getStorage()->payer['payer_id'])) {
 
             $this->_getPayment()->getStorage()->token = null;
-            $this->_redirect('/paymentpaypal/express-checkout/index');
+            $this->_redirect('/paymentpaypal/express/index');
         }
 
         if ($response) {
@@ -157,14 +157,14 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
             )));
         }
         if (!$this->_getCheckout()->getDelivery() instanceof Axis_Address) {
-            $this->_redirect('/paymentpaypal/express-checkout/delivery');
+            $this->_redirect('/paymentpaypal/express/delivery');
         }
 
         if (null === $this->_getCheckout()->getShippingMethodCode()) {
-            $this->_redirect('/paymentpaypal/express-checkout/shipping-method');
+            $this->_redirect('/paymentpaypal/express/shipping-method');
         }
         if (true == $this->_getPayment()->getStorage()->markflow) {
-            $this->_redirect('/paymentpaypal/express-checkout/process');
+            $this->_redirect('/paymentpaypal/express/process');
         }
 
         $this->_forward('confirmation');
@@ -220,7 +220,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
                     "'%s' method not found among installed modules", $methodCode
                 )
             );
-            $this->_redirect('/paymentpaypal/express-checkout/shipping-method');
+            $this->_redirect('/paymentpaypal/express/shipping-method');
         }
 
         $method = Axis_Shipping::getMethod($methodCode);
@@ -233,11 +233,11 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
                     'Selected shipping method in not allowed'
                 )
             );
-            $this->_redirect('/paymentpaypal/express-checkout/shipping-method');
+            $this->_redirect('/paymentpaypal/express/shipping-method');
         }
 
         $this->_getCheckout()->setShippingMethodCode($methodCode);
-        $this->_redirect('/paymentpaypal/express-checkout/confirmation');
+        $this->_redirect('/paymentpaypal/express/confirmation');
     }
 
     public function setDeliveryAction()
@@ -268,9 +268,9 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
             $this->_getCheckout()->setDelivery($address);
         }
         if (null === $this->_getCheckout()->getShippingMethodCode()) {
-            $this->_redirect('/paymentpaypal/express-checkout/shipping-method');
+            $this->_redirect('/paymentpaypal/express/shipping-method');
         }
-        $this->_redirect('/paymentpaypal/express-checkout/confirmation');
+        $this->_redirect('/paymentpaypal/express/confirmation');
     }
 
     public function processAction()
@@ -280,7 +280,7 @@ class Axis_PaymentPaypal_ExpressCheckoutController extends Axis_Checkout_Control
 
         $response = $this->_getPayment()->runDoExpressCheckoutPayment();
         if (!$response) {
-            $this->_redirect('/paymentpaypal/express-checkout/cancel');
+            $this->_redirect('/paymentpaypal/express/cancel');
         }
 
         if (empty($this->_getPayment()->getStorage()->payer['payer_email'])) {

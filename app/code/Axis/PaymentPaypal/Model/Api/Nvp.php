@@ -185,7 +185,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
                 $values['PAYMENTACTION'] = ($this->_trxtype == 'S' ? 'Sale' : 'Authorization');
             }
             $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
-            $values['NOTIFYURL'] = urlencode($view->href('paymentpaypal/express-checkout', true));
+            $values['NOTIFYURL'] = urlencode($view->href('paymentpaypal/express', true));
         }
         return $this->_request($values, 'DoExpressCheckoutPayment');
     }
@@ -220,7 +220,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
             $values['FIRSTNAME'] = $fname;
             $values['LASTNAME'] = $lname;
             $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
-            $values['NOTIFYURL'] = urlencode($view->href('paymentpaypal/express-checkout'));
+            $values['NOTIFYURL'] = urlencode($view->href('paymentpaypal/express'));
             if (!isset($values['PAYMENTACTION']))
                 $values['PAYMENTACTION'] = ($this->_trxtype == 'S' ? 'Sale' : 'Authorization');
                 

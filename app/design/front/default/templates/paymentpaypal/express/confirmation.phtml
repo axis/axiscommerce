@@ -13,7 +13,7 @@
             <h5><?php echo $this->translate('checkout')->__('Payment Method'); ?>:</h5>
             <h4><?php echo $this->translate('PaymentPaypal')->__('Paypal Express Checkout'); ?></h4>
         </div>
-        <a class="address-edit" href="<?php echo $this->href('/paymentpaypal/express-checkout/edit', true); ?>">
+        <a class="address-edit" href="<?php echo $this->href('/paymentpaypal/express/edit', true); ?>">
             <?php echo $this->translate('checkout')->__('Change Payment Method')?>
         </a>
     </div>
@@ -30,7 +30,7 @@
             <h5><?php echo $this->translate('checkout')->__('Shipping Method');?>:</h5>
             <p><?php echo $this->checkout['shipping']; ?></p>
         </div>
-        <a class="address-edit" href="<?php echo $this->href('/paymentpaypal/express-checkout/edit', true);?>">
+        <a class="address-edit" href="<?php echo $this->href('/paymentpaypal/express/edit', true);?>">
             <?php echo $this->translate('checkout')->__('Change Address')?>
         </a>
     </div>
@@ -81,7 +81,7 @@
 <tfoot>
     <tr>
         <td colspan="100" class="a-right">
-            <form method="post" action="<?php echo $this->href('/paymentpaypal/express-checkout/process', true);?>" id="form-checkout">
+            <form method="post" action="<?php echo $this->href('/paymentpaypal/express/process', true);?>" id="form-checkout">
                 <p class="order-comment-row">
                     <label for="comment"><?php echo Axis::translate('checkout')->__('You can add some additional information for our manager')?>:</label><br/>
                     <textarea rows="5" cols="80" class="input-text order-comment" name="comment" id="comment"></textarea>

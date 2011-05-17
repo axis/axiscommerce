@@ -72,8 +72,8 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
         }
 
         $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
-        $returnUrl = $view->href('/paymentpaypal/express-checkout/details', true);
-        $cancelUrl = $view->href('/paymentpaypal/express-checkout/cancel', true);
+        $returnUrl = $view->href('/paymentpaypal/express/details', true);
+        $cancelUrl = $view->href('/paymentpaypal/express/cancel', true);
 
         $delivery = $this->getCheckout()->getDelivery();
 
@@ -304,7 +304,7 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
     {
         $this->getStorage()->markflow = true;
         $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
-        $url = $view->href('/paymentpaypal/express-checkout/index', true);
+        $url = $view->href('/paymentpaypal/express/index', true);
         header("Location: {$url}");
         exit;
     }

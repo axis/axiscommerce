@@ -16,7 +16,7 @@ $(document).ready(function() {
     });
 });
 </script>
-<form action="<?php echo $this->href('/paymentpaypal/express-checkout/set-delivery', true);?>">
+<form action="<?php echo $this->href('/paymentpaypal/express/set-delivery', true);?>">
     <div>
         <?php echo $this->render('checkout/onepage/address-list.phtml'); ?>
         <a href="javascript:void(0)" class="link-blue" onclick="$('#new-delivery').show();">
