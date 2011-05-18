@@ -36,12 +36,7 @@ class Axis_ShippingFlat_Model_Standard extends Axis_Method_Shipping_Model_Abstra
     protected $_code = 'Flat_Standard';
     protected $_title = 'Flat Rate';
     protected $_description = 'Flat Rate';
-
-    public function __construct($type = null)
-    {
-        parent::__construct($type);
-        $this->_icon = $this->_config->icon;
-    }
+    protected $_icon = '';
 
     public function getAllowedTypes($request)
     {
