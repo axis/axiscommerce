@@ -84,10 +84,10 @@ class Axis
     }
 
     /**
-     * Return customer id or false
+     * Return customer id or null
      *
      * @static
-     * @return mixed (int|bool)
+     * @return mixed (int|null)
      */
     public static function getCustomerId()
     {
@@ -95,6 +95,30 @@ class Axis
             return null;
         }
         return Zend_Auth::getInstance()->getIdentity();
+    }
+
+    /**
+     * Returns customer row if logged in or null if not
+     *
+     * @static
+     * @return Axis_Account_Model_Customer_Row|null
+     */
+    public static function getCustomer()
+    {
+        if (!$customerId = self::getCustomerId()) {
+            return null;
+        }
+        if (!Zend_Registry::isRegistered('account/current_customer')) {
+            $customer = Axis::model('account/customer')
+                ->find($customerId)
+                ->current();
+
+            if (!$customer) {
+                return null; // invalid customerId
+            }
+            Zend_Registry::set('account/current_customer', $customer);
+        }
+        return Zend_Registry::get('account/current_customer');
     }
 
     /**

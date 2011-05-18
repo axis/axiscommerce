@@ -61,10 +61,7 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
 
         $storage = $checkout->getStorage();
 
-        if ($customerId = Axis::getCustomerId()) {
-            $customer = Axis::single('account/customer')
-                ->find($customerId)
-                ->current();
+        if ($customer = Axis::getCustomer()) {
             $orderRow->customer_id = $customer->id;
             $orderRow->customer_email = $customer->email;
         } elseif($storage->asGuest && !$storage->registerGuest) {

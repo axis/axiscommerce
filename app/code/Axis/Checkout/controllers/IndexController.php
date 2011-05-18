@@ -90,12 +90,9 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
                 $customerData['is_active'] = 1;
                 $mCustomer->save($customerData);
                 $mCustomer->login($billing->email, $billing->password);
-                if ($customerId = Axis::getCustomerId()) {
-                    $billing->customer_id = $customerId;
-                    Axis::single('account/customer')
-                        ->find($customerId)
-                        ->current()
-                        ->setAddress($billing->toFlatArray());
+                if ($customer = Axis::getCustomer()) {
+                    $billing->customer_id = $customer->id;
+                    $customer->setAddress($billing->toFlatArray());
                 }
             }
         }

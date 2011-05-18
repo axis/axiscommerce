@@ -509,8 +509,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
 
         //filtred
         $discountRules = array();
-        $customerGroupId = Axis::single('account/customer')
-            ->getGroupId(Axis::getCustomerId());
+        $customerGroupId = Axis::single('account/customer')->getGroupId();
 
         foreach ($productsRowset as $product) {
 

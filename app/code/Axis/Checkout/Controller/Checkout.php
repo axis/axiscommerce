@@ -81,7 +81,7 @@ class Axis_Checkout_Controller_Checkout extends Axis_Core_Controller_Front_Secur
             !$this->_getCheckout()->getCart()->validateContent()) {
 
             $this->_redirect('checkout/cart');
-            return;
+            exit;
         }
     }
 
@@ -102,7 +102,7 @@ class Axis_Checkout_Controller_Checkout extends Axis_Core_Controller_Front_Secur
                     $selectedAddressId = $this->_getCheckout()->getBilling()->id;
                 } else {
                     $selectedAddressId = false;
-                    if ($customer = Axis::single('account/customer')->find($customerId)->current()) {
+                    if ($customer = Axis::getCustomer()) {
                         $selectedAddressId = $customer->default_billing_address_id;
                     }
                 }
@@ -117,7 +117,7 @@ class Axis_Checkout_Controller_Checkout extends Axis_Core_Controller_Front_Secur
                     $selectedAddressId = $this->_getCheckout()->getDelivery()->id;
                 } else {
                     $selectedAddressId = false;
-                    if ($customer = Axis::single('account/customer')->find($customerId)->current()) {
+                    if ($customer = Axis::getCustomer()) {
                         $selectedAddressId = $customer->default_shipping_address_id;
                     }
                 }

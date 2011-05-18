@@ -54,7 +54,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                 }
                 $data['custom_info'] = Zend_Json::encode($custom);
                 $data['site_id']     = Axis::getSiteId();
-                
+
                 Axis::model('contacts/message')->save($data);
 
                 $department = Axis::single('contacts/department')
@@ -91,9 +91,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
             } else {
                 $form->populate($data);
             }
-        } elseif ($customerId = Axis::getCustomerId()) {
-            $customer = Axis::single('account/customer')
-                ->find($customerId)->current();
+        } elseif ($customer = Axis::getCustomer()) {
             $form->getElement('email')->setValue($customer->email);
             $form->getElement('name')->setValue(
                 $customer->firstname . ' ' . $customer->lastname

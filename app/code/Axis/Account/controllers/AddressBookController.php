@@ -46,17 +46,17 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
             'label'      => Axis::translate('account')->__('Address Book'),
             'controller' => 'address-book',
             'route'      => 'account'
-            
+
         ));
     }
 
     public function indexAction()
     {
         $this->setTitle(Axis::translate('account')->__('Address Book'), null, false);
-        
+
         $this->view->defaultBillingAddresId = false;
         $this->view->defaultShippingAddresId = false;
-        if ($customer = Axis::single('account/customer')->find(Axis::getCustomerId())->current()) {
+        if ($customer = Axis::getCustomer()) {
             $this->view->defaultBillingAddresId = $customer->default_billing_address_id;
             $this->view->defaultShippingAddresId = $customer->default_shipping_address_id;
         }
@@ -69,16 +69,13 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
     public function saveAction()
     {
         $this->setTitle(Axis::translate('account')->__('Saving address'));
-        
+
         $params = $this->_getAllParams();
         $form = Axis::model('account/Form_Address');
 
         if ($form->isValid($params)) {
             $params['customer_id'] = $this->_customerId;
-            Axis::single('account/customer')
-                ->find($params['customer_id'])
-                ->current()
-                ->setAddress($params);
+            Axis::getCustomer()->setAddress($params);
 
             if ($this->getRequest()->isXmlHttpRequest()) {
                 $this->_helper->json->sendRaw(true);
@@ -125,7 +122,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
             Axis::translate('account')->__(
                 'Edit address'
         ));
-        
+
         $addressId = $this->_getParam('id');
         $row = Axis::single('account/customer_address')->select()
             ->where('id = ?', $addressId)
@@ -152,8 +149,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         $form = Axis::model('account/Form_Address');
         $form->addUseAsDefaultAddressCheckbox();
 
-        $customer = Axis::single('account/customer')
-            ->find($this->_customerId)->current();
+        $customer = Axis::getCustomer();
 
         $form->populate($row->toArray());
 

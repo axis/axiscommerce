@@ -51,8 +51,7 @@ class Axis_Cms_Model_Form_Comment extends Axis_Form
         }
 
         parent::__construct($default);
-        $customer = Axis::single('account/customer')
-            ->find(Axis::getCustomerId())->current();
+        $customer = Axis::getCustomer();
         if ($customer) {
             $name = $customer->firstname . ' ' . $customer->lastname;
             $email = $customer->email;

@@ -82,6 +82,9 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
         if (null === $customerId) {
             $customerId = Axis::getCustomerId();
         }
+        if (null === $customerId) {
+            return array();
+        }
 
         $addressList = $this->select()
             ->from('account_customer_address')

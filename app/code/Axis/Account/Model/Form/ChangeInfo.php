@@ -189,8 +189,7 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
             'validators' => array(
                 'NotEmpty',
                 new Axis_Validate_PasswordEqual(
-                    Axis::single('account/customer')
-                        ->getPasswordById(Axis::getCustomerId())
+                    Axis::getCustomer()->password
                 )
             )
         ));
