@@ -431,25 +431,21 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
      */
     public function validateContent()
     {
-        $isValid = true;
-        foreach ($this->getProducts() as $cartProductRow) {
-            if (!$product = Axis::single('catalog/product')
-                    ->find($cartProductRow['product_id'])->current()) {
+        $isValid        = true;
+        $productIds     = array();
+        $cartProducts   = $this->getProducts();
+        foreach ($cartProducts as $cartProduct) {
+            $productIds[$cartProduct['id']] = $cartProduct['product_id'];
+        }
+        $products   = Axis::model('catalog/product')->find($productIds);
 
-                $isValid = false;
-                $this->deleteItem($cartProductRow['id']);
-                Axis::message()->addError(
-                    Axis::translate('checkout')->__(
-                        "Product '%s' is not found in stock. product_id = %s",
-                        $cartProductRow['name'],
-                        $cartProductRow['product_id']
-                    )
-                );
-                continue;
-            }
+        $loadedProductIds = array();
+        foreach ($products as $product) {
+            $loadedProductIds[] = $product->id;
+            $cartProductId      = array_search($product->id, $productIds);
+            $cartProductRow     = $cartProducts[$cartProductId];
 
             $stockRow = $product->getStockRow();
-
             if (!$stockRow->canAddToCart(
                     $cartProductRow['quantity'],
                     $cartProductRow['variation_id'])) {
@@ -480,6 +476,22 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
                 }
             }
         }
+
+        foreach (array_diff($productIds, $loadedProductIds) as $missedProductId) {
+            // shopping cart has deleted products
+            $isValid        = false;
+            $cartProductId  = array_search($missedProductId, $productIds);
+            $cartProductRow = $cartProducts[$cartProductId];
+            $this->deleteItem($cartProductRow['id']);
+            Axis::message()->addError(
+                Axis::translate('checkout')->__(
+                    "Product '%s' is not found in stock. product_id = %s",
+                    $cartProductRow['name'],
+                    $cartProductRow['product_id']
+                )
+            );
+        }
+
         if (!$isValid) {
             Axis::message()->addNotice(
                 Axis::translate('checkout')->__(
@@ -523,7 +535,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
     {
         $count = 0;
         $items = Axis::single('checkout/cart_product')
-            ->getProductsSimple($this->getCartId());
+            ->getProducts($this->getCartId());
         foreach ($items as $item) {
             if ($item['decimal']) {
                 $count++;

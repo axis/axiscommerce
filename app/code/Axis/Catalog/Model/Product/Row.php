@@ -974,7 +974,8 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         if (!$this->_stockRow) {
             $this->_stockRow = Axis::single('catalog/product_stock')
                 ->find($this->id)
-                ->current();
+                ->current()
+                ->setProductRow($this);
         }
         return $this->_stockRow;
     }
