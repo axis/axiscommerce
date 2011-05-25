@@ -33,23 +33,31 @@
  */
 class Axis_Catalog_Model_Product_Option_Row extends Axis_Db_Table_Row
 {
+    /**
+     *
+     * @param int $languageId
+     * @return array 
+     */
     public function getValuesArrayByLanguage($languageId)
     {
         if (!$this->valueset_id) {
             return array();
         }
-        $select = $this->getAdapter()->select();
-        $select->from(array('pov' => $this->_prefix . 'catalog_product_option_value'))
-            ->join(
-                array('povt' => $this->_prefix . 'catalog_product_option_value_text'),
+        return Axis::model('catalog/product_option_value')->select('*')
+            ->join('catalog_product_option_value_text', 
                 'pov.id = povt.option_value_id',
                 'name'
             )
-            ->where('pov.valueset_id = ' . $this->valueset_id)
-            ->where('povt.language_id = ' . $languageId);
-        return $select->query()->fetchAll();
+            ->where('pov.valueset_id = ?', $this->valueset_id)
+            ->where('povt.language_id = ?', $languageId)
+            ->fetchAll()
+            ;
     }
     
+    /**
+     *
+     * @return bool 
+     */
     public function isInputable()
     {
         if ($this->input_type == Axis_Catalog_Model_Product_Option::TYPE_STRING || 

@@ -207,13 +207,11 @@ class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
         $modelQuestionSite = Axis::single('poll/question_site');
         $modelQuestion = Axis::single('poll/question');
         foreach ($data as $questionId => $question) {
-            $modelQuestion->update(
-                array(
-		            'changed_at' => Axis_Date::now()->toSQLString(),
-		            'status' => $question['status'] ? 1 : 0,
-                    'type' => $question['type'] ? 1 : 0
-	            ), 
-	            $this->db->quoteInto('id = ?', $questionId)
+            $modelQuestion->update(array(
+                    'changed_at' => Axis_Date::now()->toSQLString(),
+                    'status'     => $question['status'] ? 1 : 0,
+                    'type'       => $question['type'] ? 1 : 0
+                    ), $this->db->quoteInto('id = ?', $questionId)
 	        );
             $modelQuestionSite->delete(
                 $this->db->quoteInto('question_id = ?', $questionId)
@@ -240,8 +238,9 @@ class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
         $answersIds = array();
         $modelAnswer = Axis::single('poll/answer');
         foreach ($paramQuestionIds as $questionId)  {
-            $answersIds = array_merge(
-                $modelAnswer->getIdsByQuestionId($questionId), $answersIds
+            $answersIds = array_merge($modelAnswer->select('id')
+                ->where('question_id = ?', $questionId)
+                ->fetchCol(), $answersIds
             );
         }
         $answersIds = array_unique($answersIds);

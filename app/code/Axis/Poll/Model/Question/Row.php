@@ -39,26 +39,34 @@ class Axis_Poll_Model_Question_Row extends Axis_Db_Table_Row
      */
     public function getTotalVoteCount()
     {
-        return $this->getAdapter()->fetchOne(
-            'SELECT COUNT(*) FROM ' . $this->_prefix . 'poll_vote as  pv ' .
-            'INNER JOIN ' . $this->_prefix . 'poll_answer pa ON pa.id = pv.answer_id ' .
-            'WHERE pa.question_id = ? AND pa.language_id = ?',
-            array($this->id, Axis_Locale::getLanguageId())
-        );
+        $languageId = Axis_Locale::getLanguageId();
+        
+        return Axis::model('poll/vote')->select('*')
+            ->join('poll_answer', 'pa.id = pv.answer_id')
+            ->where('pa.question_id = ?', $this->id)
+            ->where('pa.language_id = ?', $languageId)
+            ->count()
+            ;
     }
 
+    /**
+     *
+     * @return array 
+     */
     public function getResults()
     {
-        $result = $this->getAdapter()->fetchAssoc(
-            'SELECT pv.answer_id, COUNT(*) AS cnt ' .
-            'FROM ' . $this->_prefix . 'poll_vote pv ' .
-            'INNER JOIN ' . $this->_prefix . 'poll_answer pa ON pa.id = pv.answer_id ' .
-            'WHERE pa.question_id = ? AND pa.language_id = ?' .
-            'GROUP BY pv.answer_id ' .
-            'ORDER BY cnt' ,
-            array($this->id, Axis_Locale::getLanguageId())
-        );
-        return $result;
+        $languageId = Axis_Locale::getLanguageId();
+        
+        return Axis::model('poll/vote')->select(
+                array('answer_id', 'cnt' => 'COUNT(*)')
+            )
+            ->join('poll_answer', 'pa.id = pv.answer_id')
+            ->where('pa.question_id = ?', $this->id)
+            ->where('pa.language_id = ?', $languageId)
+            ->group('pv.answer_id')
+            ->order('cnt')
+            ->fetchAssoc()
+            ;
     }
 
     /**

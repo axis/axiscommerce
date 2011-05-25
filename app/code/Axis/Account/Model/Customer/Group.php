@@ -41,73 +41,33 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
 
     /**
      *
-     * @param array $params
-     * @return array
-     */
-    public function getList($params = array())
-    {
-        $select = $this->getAdapter()->select();
-
-        $select->from($this->_prefix . 'account_customer_group');
-
-        if (isset($params['sort'])&& (isset($params['dir']))) {
-            $select->order($params['sort'] . ' ' . $params['dir']);
-        }
-
-        if (isset($params['where'])) {
-          $select->where($params['where']);
-        }
-
-        return $this->getAdapter()->fetchAll($select->__toString());
-    }
-
-    /**
-     * @return int
-     */
-    public function getCount()
-    {
-        return $this->getAdapter()->fetchOne(
-            'SELECT COUNT(*) FROM ' . $this->_prefix . 'account_customer_group'
-        );
-    }
-
-    /**
-     *
      * @param array $data
      * @return bool
      */
     public function save($data)
     {
-        foreach ($data as $values) {
-            if (!isset($values['id'])
-                || !$row = $this->find($values['id'])->current()) {
+        if (!isset($data['id'])
+            || !$row = $this->find($data['id'])->current()) {
 
-                unset($values['id']);
-                $row = $this->createRow();
-                $oldGroupData = null;
-            } else {
-                if (Axis_Account_Model_Customer_Group::GROUP_GUEST_ID === $values['id']
-                    && Axis_Account_Model_Customer_Group::GROUP_ALL_ID === $values['id']) {
-                    // disallow to change system groups
-                    continue;
-                }
-                $oldGroupData = $row->toArray();
+            unset($data['id']);
+            $row = $this->createRow();
+            $oldData = null;
+        } else {
+            if (self::GROUP_GUEST_ID === $data['id']
+                && self::GROUP_ALL_ID === $data['id']) {
+                // disallow to change system groups
+                return;
             }
-
-            $row->setFromArray($values)
-                ->save();
-
-            Axis::dispatch('account_group_save_after', array(
-                'old_data'  => $oldGroupData,
-                'group'     => $row
-            ));
+            $oldData = $row->toArray();
         }
 
-        Axis::message()->addSuccess(
-            Axis::translate('account')->__(
-                'Group was saved successfully'
-            )
-        );
+        $row->setFromArray($data)
+            ->save();
+
+        Axis::dispatch('account_group_save_after', array(
+            'old_data'  => $oldData,
+            'group'     => $row
+        ));
         return true;
     }
 }

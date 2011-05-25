@@ -125,12 +125,16 @@ class Axis_Account_Model_Customer_ValueSet_Value extends Axis_Db_Table
         if (null === $languageId) {
             $languageId = Axis_Locale::getLanguageId();
         }
-        $query = "SELECT cvv.id, cvvl.`label` FROM " . $this->_prefix . 'account_customer_valueset_value' . " cvv
-            INNER JOIN " . $this->_prefix . "account_customer_valueset_value_label cvvl ON cvvl.valueset_value_id = cvv.id
-            WHERE cvv.is_active = 1 AND cvv.customer_valueset_id = ? AND language_id = ? 
-            ORDER BY cvv.sort_order";
-        return $this->getAdapter()->fetchPairs($query, array(
-            $valueSetId, $languageId
-        ));
+        
+        return $this->select('*')
+            ->join('account_customer_valueset_value_label',
+                'acvvl.valueset_value_id = acvv.id',
+                'label'
+            )
+            ->where('acvv.is_active = 1')
+            ->where('acvv.customer_valueset_id = ?', $valueSetId)
+            ->where('acvvl.language_id = ?', $languageId)
+            ->order('acvv.sort_order')
+            ->fetchPairs();
     }
 }
