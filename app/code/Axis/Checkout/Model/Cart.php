@@ -562,19 +562,14 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
             ->fetchRow();
         if ($previousCartRow && $previousCartRow->id != $this->getCartId()) {
 
-            $collection = $this->getAdapter()->select()
-                ->from(
-                    array('ccp' => $this->_prefix . 'checkout_cart_product'),
-                    array('*', 'checkout_cart_product_id' => 'id')
-                )
-                ->joinLeft(
-                    array('ccpa' => $this->_prefix . 'checkout_cart_product_attribute'),
-                    'ccp.id = ccpa.shopping_cart_product_id'
-                )
-                ->where('ccp.shopping_cart_id = ?', $previousCartRow->id)
-                ;
-            $previousCartProducts = $this->getAdapter()
-                ->fetchAll($collection->__toString());
+            $previousCartProducts = Axis::model('checkout/cart_product')
+                ->select(array('*', 'checkout_cart_product_id' => 'id'))
+                ->joinLeft('checkout_cart_product_attribute',
+                    'ccp.id = ccpa.shopping_cart_product_id', 
+                    '*'
+                )->where('ccp.shopping_cart_id = ?', $previousCartRow->id)
+                ->fetchAll();
+            
             $result = array();
             foreach ($previousCartProducts as $p) {
                 if (!isset($result[$p['checkout_cart_product_id']])) {
@@ -603,26 +598,21 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
                     $clon['id'], $clon['quantity'] + $product['quantity']
                 );
                 $removedShoppingProductIds[] = $shopppingCartProductId;
-
             }
+            $adapter = $this->getAdapter();
             if (count($removedShoppingProductIds)) {
                 Axis::single('checkout/cart_product')->delete(
-                    $this->getAdapter()->quoteInto('id IN (?)', $removedShoppingProductIds)
+                    $adapter->quoteInto('id IN (?)', $removedShoppingProductIds)
                 );
             }
             Axis::single('checkout/cart_product')->update(
                 array('shopping_cart_id' => $this->getCartId()),
-                $this->getAdapter()->quoteInto(
-                    'shopping_cart_id = ?', $previousCartRow->id
-                )
+                $adapter->quoteInto('shopping_cart_id = ?', $previousCartRow->id)
             );
-            $this->delete(
-                $this->getAdapter()->quoteInto('customer_id = ?', $customerId)
-            );
+            $this->delete($adapter->quoteInto('customer_id = ?', $customerId));
         }
-        $this->update(
-            array('customer_id' => $customerId),
-            $this->getAdapter()->quoteInto('id = ?', $this->getCartId())
+        $this->update(array('customer_id' => $customerId),
+            $adapter->quoteInto('id = ?', $this->getCartId())
         );
         return true;
     }

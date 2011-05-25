@@ -39,46 +39,6 @@ class Axis_Contacts_Model_Message extends Axis_Db_Table
     protected $_name = 'contacts_message';
     protected $_selectClass = 'Axis_Contacts_Model_Message_Select';
 
-    public function getList($departmentId = false, $params = array())
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(array('c' => $this->_prefix . 'contacts_message'))
-            ->join(array('d' => $this->_prefix . 'contacts_department'),
-                'd.id = c.department_id',
-                array('department_name' => 'name'));
-
-        if (!empty($params['sort']))
-            $select->order($params['sort'] . ' ' . $params['dir']);
-        if (!empty($params['limit'])) {
-            $select->limit($params['limit'], $params['start']);
-        }
-        if ($departmentId) {
-            $select->where('department_id = ?', $departmentId);
-        }
-        if (isset($params['filter']) && is_array($params['filter'])) {
-            foreach ($params['filter'] as $filter) {
-                switch ($filter['data']['type']) {
-                    case 'numeric':
-                    case 'date':
-                        $condition = $filter['data']['comparison'] == 'eq' ? '=' :
-                            ($filter['data']['comparison'] == 'noteq' ? '<>' :
-                            ($filter['data']['comparison'] == 'lt' ? '<' : '>'));
-                        $select->where("c.{$filter['field']} $condition ?", $filter['data']['value']);
-                        break;
-                    case 'list':
-                        $select->where($this->getAdapter()->quoteInto(
-                            "c.$filter[field] IN (?)", explode(',', $filter['data']['value'])
-                        ));
-                        break;
-                    default:
-                        $select->where("c.$filter[field] LIKE ?", $filter['data']['value'] . "%");
-                        break;
-                }
-            }
-        }
-        return $select->query()->fetchAll();
-    }
-
     /**
      * Adds message to database
      *

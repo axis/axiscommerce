@@ -37,21 +37,24 @@ class Axis_Poll_Model_Question_Site extends Axis_Db_Table
     
     public function getSitesNamesAssigns()
     {
-    	$query = 'SELECT qts.question_id, s.id, s.name FROM ' . $this->_prefix . 'poll_question_site' . ' AS qts' .
-            ' LEFT JOIN ' . $this->_prefix . 'core_site AS s ON s.id = qts.site_id';
-        $rows = $this->getAdapter()->fetchAll($query);
-        $assigns = array();
+        $rows = $this->select('question_id')
+            ->joinLeft('core_site', 
+                'cs.id = pqs.site_id',
+                array('id', 'name')
+            )
+            ->fetchAll()
+            ;
+        $dataset = array();
         foreach ($rows as $row) {
-        	$assigns[$row['question_id']][$row['id']] = $row['name'];
+        	$dataset[$row['question_id']][$row['id']] = $row['name'];
         }
-        return $assigns;
+        return $dataset;
     }
     
     public function getSitesIds($questionId)
     {
-        return $this->getAdapter()->fetchCol(
-            'SELECT site_id FROM ' . $this->_prefix . 'poll_question_site' . ' WHERE question_id = ?',
-            $questionId
-        );
+        return $this->select('site_id')
+            ->where('question_id = ?', $questionId)
+            ->fetchCol();
     }
 }

@@ -44,23 +44,23 @@ class Axis_Community_Model_Review_Rating extends Axis_Db_Table
      */
     public function getList($enabledOnly = true, $currentLanguageOnly = true)
     {
+        $select = $this->select('*');
+        
         $on = 'crrt.rating_id = crr.id';
         if ($currentLanguageOnly) {
             $on .= ' AND crrt.language_id = ' . Axis_Locale::getLanguageId();
         }
-        $select = $this->getAdapter()->select()
-            ->from(array('crr' => $this->_prefix . 'community_review_rating'))
-            ->joinLeft(array('crrt' => $this->_prefix . 'community_review_rating_title'),
-                $on,
-                array('title', 'language_id'))
-            ->order('crrt.title DESC');
+        $select->joinLeft('community_review_rating_title',
+            $on, array('title', 'language_id')
+        );
+        $select->order('crrt.title DESC');
         
         if ($enabledOnly) {
             $select->where('status = ?', 'enabled');
         }
         
         $result = array();
-        foreach ($this->getAdapter()->fetchAll($select) as $rating) {
+        foreach ($select->fetchAll() as $rating) {
             if (!isset($result[$rating['id']])) {
                 $result[$rating['id']] = array(
                     'id' => $rating['id'],

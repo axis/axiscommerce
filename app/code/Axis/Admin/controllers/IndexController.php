@@ -46,30 +46,29 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
             Axis::config()->locale->main->currency
         );
 
-        $order = Axis::single('sales/order');
+        $modelOrder = Axis::single('sales/order');
 
-        $this->view->orderTotal = $currency->toCurrency(
-            $order->getTotal($this->db->quoteInto('site_id = ?', $siteId))
-        );
-
-        $this->view->orderTotalToday = $currency->toCurrency(
-            $order->getTotal(array(
-                $this->db->quoteInto('date_purchased_on > ? ', $date),
-                $this->db->quoteInto('site_id = ?', $siteId)
-            ))
-        );
-
-        $this->view->orderCountToday = $order->select()
-            ->where('date_purchased_on > ?', $date)
-            ->addSiteFilter($siteId)
-            ->count('DISTINCT customer_email');
-
-        $count = $order->select()
+        $selectOrderTotal = $modelOrder->select('SUM(order_total)')
+                ->addSiteFilter($siteId);
+        $orderTotal = (float) $selectOrderTotal->fetchOne();
+        $this->view->orderTotal = $currency->toCurrency($orderTotal);
+        
+        $count = $modelOrder->select()
             ->addSiteFilter($siteId)
             ->count();
         $this->view->orderAverage = $currency->toCurrency(
-            $count ? $order->getTotal($this->db->quoteInto('site_id = ?', $siteId))/$count : 0
+            $count ? $orderTotal/$count : 0
         );
+
+        $this->view->orderTotalToday = $currency->toCurrency(
+            (float) $selectOrderTotal->where('date_purchased_on > ? ', $date)
+                ->fetchOne()
+        );
+
+        $this->view->orderCountToday = $modelOrder->select()
+            ->addSiteFilter($siteId)
+            ->where('date_purchased_on > ?', $date)
+            ->count('DISTINCT customer_email');
 
         $this->view->customerCount = Axis::single('account/customer')
             ->select()
@@ -99,50 +98,99 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
         $type        = $this->_getParam('type', 'order');
         $period      = $this->_getParam('period', 'day');
         $periodIndex = $this->_getParam('periodIndex', 1);
-
-        if ($siteId = $this->_getParam('siteId', false)) {
-            $where['siteId'] = Axis::db()->quoteInto('site_id = ?', $siteId);
-        }
-
+        
         $startTime = $this->_getStartDate($period, $periodIndex - 1);
         $endTime   = $this->_getEndDate($startTime, $period);
         $startDate = $startTime->toPhpString('Y-m-d H:i:s');
         $endDate   = $endTime->toPhpString('Y-m-d H:i:s');
 
+        $select = false;
+        switch (strtolower($period)) {
+            case 'hour' :
+                $_period = 16;
+                break;
+            case 'week' :
+            case 'month':
+                $_period = 10;
+                break;
+            case 'year' :
+                $_period = 7;
+                break;
+            case 'day':
+            default:
+                $_period = 13;
+        }
+        $suffix = substr('0000-00-00 00:00:00', $_period);
+        
         switch ($type) {
-            case "amount":
-                $where['datagt'] = "date_purchased_on >= '{$startDate}'";
-                $where['datalt'] = "date_purchased_on < '{$endDate}'";
-                $realData = Axis::single('sales/order')->getAmountsList($where);
+            case 'amount':
+                $select = Axis::single('sales/order')
+                    ->select(array(
+                        'date_purchased_on', 
+                        'order_total'
+                    ))
+                    ->group('date_purchased_on')
+                    ->order('date_purchased_on')
+                    ->where('date_purchased_on >= ?', $startDate)
+                    ->where('date_purchased_on < ?', $endDate)
+                    ;
                 break;
-            case "visit":
-                $where['datagt'] = "visit_at >= '{$startDate}'";
-                $where['datalt'] = "visit_at < '{$endDate}'";
-                $realData = Axis::single('log/url')->getCountList($where, $period);
+            case 'visit':
+                $select = Axis::single('log/url')->select(array(
+                        'time' => "CONCAT(LEFT(visit_at, {$_period}), '{$suffix}')", 
+                        'hit'=> 'COUNT(DISTINCT visitor_id)'
+                    ))
+                    ->group('time')
+                    ->order('time')
+                    ->where('visit_at >= ?', $startDate)
+                    ->where('visit_at < ?', $endDate)
+                    ;
                 break;
-            case "customer":
-                $where['datagt'] = "created_at >= '{$startDate}'";
-                $where['datalt'] = "created_at < '{$endDate}'";
-                $realData = Axis::single('account/customer')->getCountList($where);
+            case 'customer':
+                $select = Axis::single('account/customer')
+                    ->select(array('created_at' ,'COUNT(*) as hit'))
+                    ->group('created_at')
+                    ->order('created_at')
+                    ->where('created_at >= ?', $startDate)
+                    ->where('created_at < ?', $endDate)
+                    ;
                 break;
-            case "rate":
-                $where['datagt'] = "visit_at >= '{$startDate}'";
-                $where['datalt'] = "visit_at < '{$endDate}'";
-                $realDataVisitor = Axis::single('log/url')
-                    ->getCountList($where, $period);
-                $where['datagt'] = "date_purchased_on >= '{$startDate}'";
-                $where['datalt'] = "date_purchased_on < '{$endDate}'";
-                $realDataOrder = Axis::single('sales/order')
-                    ->getCountList($where, true);
-
-                $data = $this->_prepareDataArray(
-                    $realDataOrder, $startTime, $endTime, $period
-                );
-
+            case 'rate':
+                $select = Axis::single('log/url')->select(array(
+                        'time' => "CONCAT(LEFT(visit_at, {$_period}), '{$suffix}')", 
+                        'hit'=> 'COUNT(DISTINCT visitor_id)'
+                    ))
+                    ->group('time')
+                    ->order('time')
+                    ->where('visit_at >= ?', $startDate)
+                    ->where('visit_at < ?', $endDate)
+                    ;
+                if ($siteId = $this->_getParam('siteId', false)) {
+                    $select->where('site_id = ?', $siteId);
+                }        
+                $realDataVisitor = $select->fetchPairs();
                 $visits = $this->_prepareDataArray(
                     $realDataVisitor, $startTime, $endTime, $period
                 );
-
+                ///////
+                $select = Axis::single('sales/order')
+                    ->select(array(
+                        'date_purchased_on', 
+                        'COUNT(DISTINCT customer_email)'
+                    ))
+                    ->group('date_purchased_on')
+                    ->order('date_purchased_on')
+                    ->where('date_purchased_on >= ?', $startDate)
+                    ->where('date_purchased_on < ?', $endDate)
+                ;
+                if ($siteId = $this->_getParam('siteId', false)) {
+                    $select->where('site_id = ?', $siteId);
+                }        
+                $realDataOrder = $select->fetchPairs();
+                $data = $this->_prepareDataArray(
+                    $realDataOrder, $startTime, $endTime, $period
+                );
+                
                 foreach ($data as $id => &$item) {
                     if ($item['time'] !== $visits[$id]['time']) {
                         continue;
@@ -150,19 +198,37 @@ class Axis_Admin_IndexController extends Axis_Admin_Controller_Back
                     $item['value'] = $item['value'] && $visits[$id]['value'] ?
                         round(($item['value'] * 100) / $visits[$id]['value'], 2) : 0;
                 }
-                return $this->_helper->json->setData($data)->sendSuccess();
+                return $this->_helper->json
+                    ->setData($data)
+                    ->sendSuccess();
                 break;
-            case "order":
+            case 'order':
             default:
-                $where['datagt'] = "date_purchased_on >= '{$startDate}'";
-                $where['datalt'] = "date_purchased_on < '{$endDate}'";
-                $realData = Axis::single('sales/order')->getCountList($where);
+                $select = Axis::single('sales/order')
+                    ->select(array(
+                        'date_purchased_on', 
+                        'COUNT(*)'
+                    ))
+                    ->group('date_purchased_on')
+                    ->order('date_purchased_on')
+                    ->where('date_purchased_on >= ?', $startDate)
+                    ->where('date_purchased_on < ?', $endDate)
+                ;
         }
 
+        if ($siteId = $this->_getParam('siteId', false)) {
+            $select->where('site_id = ?', $siteId);
+        }
+        
+        if ($select) {
+            $realData = $select->fetchPairs();
+        }
         $data = $this->_prepareDataArray(
             $realData, $startTime, $endTime, $period
         );
-        return $this->_helper->json->setData($data)->sendSuccess();
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
     protected function _prepareDataArray(

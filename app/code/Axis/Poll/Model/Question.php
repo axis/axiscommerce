@@ -43,7 +43,7 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
      */
     public function getOneNotVotedQuestionIdByCookie()
     {
-        $select = $this->select('pq.id')
+        $select = $this->select('id')
             ->joinInner('poll_question_site', 'pq.id = pqs.question_id')
             ->where('pq.status = 1')
             ->where('pqs.site_id = ?', Axis::getSiteId())
@@ -64,12 +64,14 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
      */
     public function getQuestionById($questionId)
     {
-        $query = 'SELECT `qd`.`language_id` as languageId, q.id,`qd`.`question`, `q`.`type`, `q`.`status` ' .
-            "FROM " . $this->_prefix . 'poll_question' . " AS `q` " .
-            'LEFT JOIN ' .  $this->_prefix . 'poll_question_description AS `qd` ON qd.question_id = q.id ' .
-            'WHERE q.id = ?';
-
-        return $this->getAdapter()->fetchAssoc($query, $questionId);
+        return $this->select(array('id', 'type', 'status'))
+            ->joinLeft('poll_question_description', 
+                'pqd.question_id = pq.id', 
+                array('languageId' => 'language_id', 'question')
+            )
+            ->where('pq.id = ?', $questionId)
+            ->fetchAssoc()
+            ;
     }
 
     /**
@@ -81,27 +83,24 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
      */
     public function getQuestionWithAnswers($questionId, $languageId)
     {
-        $select = $this->getAdapter()->select()
-            ->from(array('q' => $this->_prefix . 'poll_question'), array('id', 'type'))
-            ->joinLeft(
-                array('a' => $this->_prefix . 'poll_answer'),
-                'a.question_id = q.id',
+        $select = $this->select(array('id', 'type'))
+            ->joinLeft( 'poll_answer',
+                'pa.question_id = pq.id',
                 array('answer_id' => 'id' , 'answer')
-            )->joinLeft(
-                array('qd' => $this->_prefix . 'poll_question_description'),
-                'qd.question_id = q.id',
+            )->joinLeft('poll_question_description',
+                'pqd.question_id = pq.id',
                 array('question', 'language_id')
-            )/*->joinLeft(
-                array('ad' => $this->_prefix . 'poll_answer_description'),
-                'ad.answer_id = a.id',
-                array('answer_id', 'answer'))*/
-            ->where('q.id = ?', $questionId)
-            ->where('a.language_id = ? AND qd.language_id = ?', $languageId)
+            )
+            ->where('pq.id = ?', $questionId)
+            ->where('pa.language_id = ?', $languageId)
+            ->where('pqd.language_id = ?', $languageId)
             ;
 
-        if (!count($rowset = $this->getAdapter()->fetchAll($select))) {
+        $rowset = $select->fetchAll();
+        if (!count($rowset)) {
             return false;
         }
+        
         $result['answers'] = array();
         foreach ($rowset as $row) {
             $result['answers'][$row['answer_id']] = array(
@@ -130,45 +129,36 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
     public function getQuestions(
         $languageId = false, $questionIds = array(), $siteId = false)
     {
-        if (!is_array($questionIds)) {
-            $questionIds = array($questionIds);
-        }
-        $qWhere = '';
-        if (count($questionIds)) {
-            $qWhere = $this->getAdapter()->quoteInto(
-                ' AND q.id IN(?)', $questionIds
-            );
-        }
-
+        $select = $this->select(array('id', 'type'))
+            ->joinLeft('poll_question_description', 
+                'pqd.question_id = pq.id'
+            )
+            ->join('poll_question_site', 'pqs.question_id = pq.id')
+            ->where('pq.status = 1')
+            ->order('pq.id DESC')
+            ;
         if ($languageId) {
             if (true === $languageId) {
                 $languageId = Axis_Locale::getLanguageId();
             }
-            $lWhere = " AND qd.language_id = {$languageId}";
+            $select->where('pqd.language_id = ?', $languageId);
         }
-        $sWhere = '';
+        
+        if (!is_array($questionIds)) {
+            $questionIds = array($questionIds);
+        }
+        if (count($questionIds)) {
+            $select->where('pq.id IN(?)', $questionIds);
+        }
+        
         if ($siteId) {
             if (true === $siteId) {
                 $siteId = Axis::getSiteId();
             }
-            $sWhere = " AND s.site_id = {$siteId}";
+            $select->where('pqs.site_id = ?', $siteId);
         }
-//        $ip = ip2long($_SERVER['REMOTE_ADDR']);
-
-        $query = 'SELECT q.id, `qd`.`language_id` as languageId,`qd`.`question`, `q`.`type` ' .
-            "FROM " . $this->_prefix . 'poll_question' . " AS `q` " .
-            'LEFT JOIN ' . $this->_prefix . 'poll_question_description AS `qd` ON qd.question_id = q.id ' .
-            "INNER JOIN " . $this->_prefix . "poll_question_site as s on s.question_id = q.id " .
-//            "LEFT JOIN " . $this->_prefix . "poll_answer AS a ON a.question_id = q.id " .
-//            "INNER JOIN " . $this->_prefix . "poll_vote AS v ON v.answer_id = a.id " .
-            'WHERE q.status = 1' .
-            $lWhere .
-            $sWhere .
-//            " AND v.ip = {$ip}" .
-            $qWhere .
-            " ORDER BY `q`.`id` DESC";
-
-        return $this->getAdapter()->fetchAssoc($query);
+        
+        return $select->fetchAssoc();
     }
 
     /**
@@ -178,12 +168,13 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
      */
     public function getQuestionsBack()
     {
-        $query = "SELECT q.*, qd.question  FROM " . $this->_prefix . 'poll_question' . " AS q " .
-            'LEFT JOIN ' . $this->_prefix . 'poll_question_description AS qd ' .
-                'ON qd.question_id = q.id AND qd.language_id = ?';
-        $questions = $this->getAdapter()->fetchAssoc(
-            $query, Axis_Locale::getLanguageId()
-        );
+        $questions = $this->select('*')
+            ->joinLeft('poll_question_description', 
+                'pqd.question_id = pq.id AND pqd.language_id = :languageId',
+                'question'
+            )->bind(array('languageId' => Axis_Locale::getLanguageId()))
+            ->fetchAssoc()
+        ;
         /* select assigned sites names*/
         $sitesNames = Axis::single('poll/question_site')->getSitesNamesAssigns();
 

@@ -36,6 +36,11 @@ class SandboxController extends Axis_Core_Controller_Front
 
     public function indexAction()
     {
+        $select =  Axis::model('checkout/cart_product')->getProducts(328)
+            ;
+            
+        Zend_Debug::dump($select);
+        
 //        Zend_Debug::dump();
         $this->view->meta()->setTitle('片　视 频　地');
         Axis_FirePhp::timeStamp('333');
@@ -84,28 +89,7 @@ class SandboxController extends Axis_Core_Controller_Front
 //
 //        Zend_Debug::dump($o);
 //        die;
-        $d = array();
-        for ($index = 0; $index < 12; $index++) {
-            $d[$index*10] = $index;
-        }
-
-        $d[15] = '11';
-        $d[12] = '00';
-        Zend_Debug::dump($d);
-
-        $routes = array('a' => 'Hey', 'b' => 'hey', 'c' => 'My1', 'd' => 'my2');
-        $afterKey = 'k';
-
-        $length = array_search($afterKey, array_keys($routes));
-        if (false !== $length) {
-            $length += 1;
-        }
-
-        $firstPart = array_splice($routes, 0, $length);
-        $firstPart['new_key'] = 'new_value';
-
-        Zend_Debug::dump($firstPart + $routes);
-
+        
         $this->_prefix = '';
         $where = $where2 = ':where';
         $query = "
@@ -124,9 +108,7 @@ class SandboxController extends Axis_Core_Controller_Front
         $string = $selectStr->__toString();
 
 
-        Zend_Debug::dump(
-            Axis::single('catalog/product')->find(34)->current()->getParentItems()
-        );
+        Zend_Debug::dump($string);
 //        Zend_Debug::dump(Axis::single('location/country')
 //                    ->getIdByName('Ukraine') . Axis::single('location/zone')->getIdByCode(
 //                'CA'

@@ -391,6 +391,15 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
         $this->bind($bind);
         return $this->getTable()->fetchRow($this);
     }
+    
+    /**
+     * 
+     */
+    public function fetchRowset($bind = array()) 
+    {
+        $this->bind($bind);
+        return $this->getTable()->fetchAll($this);
+    }
 
     /**
      * Fetches all SQL result rows as an associative array.
