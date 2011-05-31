@@ -203,9 +203,9 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
     {
         $customerGroupId = null;
 
-        if (!$customerId) {
-            $customerGroupId = Axis::getCustomer()->group_id;
-        } else if ($row = $this->find($customerId)->current()) {
+        if (!$customerId && $row = Axis::getCustomer()) {
+            $customerGroupId = $row->group_id;
+        } else if ($customerId && $row = $this->find($customerId)->current()) {
             $customerGroupId = $row->group_id;//parent::getGroupId()
         }
 
