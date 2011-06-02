@@ -1,13 +1,13 @@
 <script>
     function updateSearchIndex(skipConfirm, resetSession) {
         if (!skipConfirm
-            && !confirm(("Are you sure want to delete old price indexes " +
-            "and create new for all products?\nThis can take a while.").l())) {
+            && !confirm(("Are you sure want to delete old search indexes " +
+            "and create new for all products and cms pages?\nThis can take a while.").l())) {
 
             return;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_index/update-search-index'),
+            url: Axis.getUrl('search/update-index'),
             params: {
                 limit       : 50,
                 reset_session: resetSession
@@ -44,11 +44,6 @@ $this->setButtons(array(
         'onclick' => "updateSearchIndex(0, 1); return false;",
         'class' => 'button'
     ),
-//    array(
-//        'title' => $this->translate('admin')->__('Update search indexes'),
-//        'onclick' => "window.location = Axis.getUrl('catalog_index/update-search-index/'); return false;",
-//        'class' => 'button'
-//    ),
     array(
         'title' => $this->translate('admin')->__('Clear all'),
         'onclick' => 'clearAll()',

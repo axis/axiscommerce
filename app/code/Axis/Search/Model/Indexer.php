@@ -77,23 +77,6 @@ class Axis_Search_Model_Indexer
     {
         return AXIS_ROOT . '/var/index/' . $path;
     }
-    
-    /**
-     *
-     * @param string $path
-     * @return Zend_Search_Lucene_Interface 
-     */
-    public function createIndex($path) 
-    {
-        try {
-            $index = Zend_Search_Lucene::create($path);
-            $this->_log()->info("Created new index in $path");
-        } catch(Zend_Search_Lucene_Exception $e) {
-            $this->_log()->err("Failed opening or creating index in $path");
-            $this->_log()->err($e->getMessage());
-        }
-        return $index;
-    }
 
     /**
      *
@@ -106,7 +89,13 @@ class Axis_Search_Model_Indexer
             $index = Zend_Search_Lucene::open($path);
             $this->_log()->info("Opened existing index in $path");
         } catch (Zend_Search_Lucene_Exception $e) {
-            $index = $this->createIndex($path);
+            try {
+                $index = Zend_Search_Lucene::create($path);
+                $this->_log()->info("Created new index in $path");
+            } catch(Zend_Search_Lucene_Exception $e) {
+                $this->_log()->err("Failed opening or creating index in $path");
+                $this->_log()->err($e->getMessage());
+            }
         }
         return $index;
     }
@@ -148,92 +137,6 @@ class Axis_Search_Model_Indexer
         return $document;
     }
 
-    public function _make() 
-    {
-        $sites = Axis::model('core/site')->select('id')
-            ->fetchCol();
-        $languages = Axis::model('locale/language')->select(array('id', 'locale'))
-            ->fetchPairs();
-        
-        $modelProduct = Axis::model('catalog/product');
-        $modelCmsPageContent = Axis::model('cms/page_content');
-        foreach ($sites as $_siteId) {
-
-            foreach ($languages as $_languageId => $_locale) {
-                
-                $path = $this->getIndexPath(
-                    $_siteId .  '/' . $_locale
-                );
-//                if (!is_dir($path)) {
-//                    mkdir($path, 0777, true);
-//                }
-                $index = $this->getIndex($path);
-                
-                $rowset = $modelProduct->select(array('id', 'sku'))
-                    ->distinct()
-                    ->join('catalog_product_description', 
-                        'cpd.product_id = cp.id', 
-                        array('name', 'description')
-                    )->joinLeft('catalog_product_image', 
-                        'cpi.id = cp.image_thumbnail',
-                        array('image_thumbnail' => 'path')
-                    )->joinLeft('catalog_product_image_title', 
-                        'cpit.image_id = cpi.id',
-                        array('image_title' => 'title')
-                    )->join('catalog_product_category', 'cp.id = cpc.product_id')
-                    ->join('catalog_category', 'cc.id = cpc.category_id')
-                    ->joinLeft('catalog_hurl', 
-                        "ch.key_id = cp.id AND ch.key_type='p'", 
-                        'key_word'
-                    )
-                    ->where('cc.site_id = ?', $_siteId)
-                    ->where('cpd.language_id = ?', $_languageId)
-                    ->fetchRowset()
-                ;
-                foreach ($rowset as $_product) {
-//                    $index->find('name:')
-                    $index->addDocument(
-                        $this->getDocument(
-                            'product',
-                            $_product->name,
-                            $_product->description,
-                            $_product->key_word,
-                            $_product->image_thumbnail,
-                            $_product->image_title
-                    ));
-
-                    $this->_log()->info('Added document ' . $_product->key_word);
-                }
-                
-                $rowset = $modelCmsPageContent->select('*')
-                    ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
-                    ->join('cms_category', 'cc.id = cpc2.cms_category_id')
-                    ->where('cpc.language_id = ?', $_languageId)
-                    ->where('cc.site_id = ?', $_siteId)
-                    ->fetchRowset();
-                
-                foreach ($rowset as $_row) {
-                    $index->addDocument(
-                        $this->getDocument(
-                            'page',
-                            $_row->title,
-                            $_row->getContent(),
-                            $_row->link
-                    ));
-
-                    $this->_log()->info('Added document ' . $_row['link']);
-                }
-                
-                $this->_log()->info("Optimizing index...");
-                $index->optimize();
-                $index->commit();
-                $this->_log()->info("Done. Index now contains " . $index->numDocs() . " documents");
-            }
-        }
-        $this->_log()->info("Index Maker shutting down");
-        return true;
-    } 
-    
     public function removeAllIndexesFromFilesystem() 
     {
         function rrmdir($dir) {
