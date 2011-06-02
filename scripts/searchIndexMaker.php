@@ -28,7 +28,7 @@
  * This script will find all language sensitive statements, that are thanslated via js function l() and output them to $output
  */
 require_once '_init.php';
-set_time_limit(4 * 60);
+//set_time_limit(4 * 60);
 $prefix = $config->db->prefix;
 $sites = $db->fetchAll("SELECT * FROM {$prefix}core_site");
 $languages = $db->fetchAll("SELECT * FROM {$prefix}locale_language");

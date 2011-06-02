@@ -27,6 +27,16 @@ $config = array(
         'package' => 'Axis_Search',
         'name' => 'Search',
         'version' => '0.1.2',
-        'required' => 0
+        'required' => 0,
+        'events' => array(
+            'catalog_product_save_after' => array(
+                
+                'update_search_index' => array(
+                    'type' => 'model',
+                    'model' => 'search/observer',
+                    'method' => 'updateSearchIndexOnProductSave'
+                )
+            )
+        )
     )
 );
