@@ -36,10 +36,21 @@ class SandboxController extends Axis_Core_Controller_Front
 
     public function indexAction()
     {
-        $select =  Axis::model('checkout/cart_product')->getProducts(328)
+        $select = Axis::model('cms/page_content')->select('*')
+                ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
+                ->join('cms_category', 
+                    'cc.id = cpc2.cms_category_id',
+                    'site_id'
+                )->joinLeft('locale_language', 
+                    'll.id = cpc.language_id',
+                    'locale'
+                )
+                ;
+        $rowset = $select->fetchRowset();
+//        $s = Axis::model('search/indexer')->make()
             ;
             
-        Zend_Debug::dump($select);
+        Zend_Debug::dump($rowset->toArray());
         
 //        Zend_Debug::dump();
         $this->view->meta()->setTitle('片　视 频　地');

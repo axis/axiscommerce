@@ -228,7 +228,7 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
     public function savePageAction()
     {
         $this->_helper->layout->disableLayout();
-
+        
         $data = $this->_getAllParams();
 
         $id = Axis::model('cms/page')->save($data);

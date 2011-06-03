@@ -655,21 +655,6 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
         $this->_helper->json->sendSuccess();
     }
 
-    public function updateSearchIndexAction()
-    {
-        @require_once(
-            Axis::config()->system->path . '/scripts/searchIndexMaker.php'
-        );
-
-        Axis::message()->addSuccess(
-            Axis::translate('catalog')->__(
-                'Search indexes updated successfully'
-        ));
-
-        $referUrl = $this->getRequest()->getServer('HTTP_REFERER', 'cache');
-        $this->_redirect($referUrl);
-    }
-
     public function updatePriceIndexAction()
     {
         $this->_helper->layout->disableLayout();
