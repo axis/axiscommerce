@@ -69,7 +69,6 @@ class Axis_Search_Model_Observer
             ;
         
         $index  = $path = null;
-  
         foreach ($rowset as $_row) {
             $_path = $indexer->getIndexPath(
                 $_row->site_id  . '/' . $_row->locale
@@ -84,26 +83,65 @@ class Axis_Search_Model_Observer
                 $path = $_path;
                 $index = $indexer->getIndex($path);
             }
-            $hits = $index->find("name:$_row->name");
-//            $index->delete(reset($hits));
-            foreach ($hits as $hit) {
-                if ($hit->name === $_row->name) {
-                    $index->delete($hit);
-                }
-            }
+            $hits = $index->find("url:$_row->key_word");
+            $index->delete(reset($hits));
+//            foreach ($hits as $hit) {
+//                if ($hit->name === $_row->name) {
+//                    $index->delete($hit);
+//                }
+//            }
             $index->addDocument(
-                $indexer->getDocument(
-                    'product',
-                    $_row->name,
-                    $_row->description,
-                    $_row->key_word,
-                    $_row->image_thumbnail,
-                    $_row->image_title
-            ));
+                $indexer->getDocument($_row)
+            );
         }
-        if ($index) {
-            $index->optimize();
-            $index->commit();
+        $index->optimize();
+        $index->commit();
+    }
+    
+    public function updateSearchIndexOnCmsPageAddSuccess(array $data) 
+    {
+        $pageId = $data['page_id'];
+        $indexer = Axis::model('search/indexer');
+        $rowset = Axis::model('cms/page_content')->select('*')
+            ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
+            ->join('cms_category', 
+                'cc.id = cpc2.cms_category_id',
+                'site_id'
+            )->joinRight('locale_language', 
+                'll.id = cpc.language_id',
+                'locale'
+            )->where('cpc.cms_page_id = ?', $pageId)
+            ->order('cc.site_id')
+            ->order('cpc.language_id')
+            ->fetchRowset();
+        
+        $index  = $path = null;
+        foreach ($rowset as $_row) {
+            $_path = $indexer->getIndexPath(
+                $_row->site_id  . '/' . $_row->locale
+            );
+            //next index
+            if ($path !== $_path) {
+                //save prev index
+                if ($index) {
+                    $index->optimize();
+                    $index->commit();
+                }
+                $path = $_path;
+                $index = $indexer->getIndex($path);
+            }
+            $hits = $index->find("url:$_row->link");
+            $index->delete(reset($hits));
+//            foreach ($hits as $hit) {
+//                if ($hit->name === $_row->title) {
+//                    $index->delete($hit);
+//                }
+//            }
+            $index->addDocument(
+                $indexer->getDocument($_row)
+            );
         }
+        $index->optimize();
+        $index->commit();
     }
 }

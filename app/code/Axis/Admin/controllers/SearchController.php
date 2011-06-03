@@ -128,7 +128,7 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
                 ->join('cms_category', 
                     'cc.id = cpc2.cms_category_id',
                     'site_id'
-                )->joinLeft('locale_language', 
+                )->joinRight('locale_language', 
                     'll.id = cpc.language_id',
                     'locale'
                 )
@@ -155,27 +155,11 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
                 $path = $_path;
                 $index = $indexer->getIndex($path);
             }
-            if ($_row instanceof Axis_Catalog_Model_Product_Row) {
                 
-                $index->addDocument(
-                    $indexer->getDocument(
-                        'product',
-                        $_row->name,
-                        $_row->description,
-                        $_row->key_word,
-                        $_row->image_thumbnail,
-                        $_row->image_title
-                ));
-            } elseif ($_row instanceof Axis_Cms_Model_Page_Content_Row) {
-                
-               $index->addDocument(
-                    $indexer->getDocument(
-                        'page',
-                        $_row->title,
-                        $_row->getContent(),
-                        $_row->link
-                )); 
-            }
+            $index->addDocument(
+                $indexer->getDocument($_row)
+            );
+            
         }
         $index->optimize();
         $index->commit();

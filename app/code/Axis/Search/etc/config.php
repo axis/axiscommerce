@@ -36,6 +36,20 @@ $config = array(
                     'model' => 'search/observer',
                     'method' => 'updateSearchIndexOnProductSave'
                 )
+            ),
+            'cms_page_add_success' => array(
+                'update_search_index' => array(
+                    'type' => 'model',
+                    'model' => 'search/observer',
+                    'method' => 'updateSearchIndexOnCmsPageAddSuccess'
+                )
+            ),
+            'cms_page_update_success' => array(
+                'update_search_index' => array(
+                    'type' => 'model',
+                    'model' => 'search/observer',
+                    'method' => 'updateSearchIndexOnCmsPageAddSuccess'
+                )
             )
         )
     )

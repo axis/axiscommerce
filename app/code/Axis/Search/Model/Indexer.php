@@ -110,10 +110,32 @@ class Axis_Search_Model_Indexer
      * @param type $imageTitle
      * @return Zend_Search_Lucene_Document 
      */
-    public function getDocument(
-        $type, $name, $content, $url, $imagePath = null, $imageTitle = null)
+    public function getDocument(Axis_Db_Table_Row $row)
+//        $type, $name, $content, $url, $imagePath = null, $imageTitle = null)
     {
         $document = new Zend_Search_Lucene_Document();
+        
+        if ($row instanceof Axis_Cms_Model_Page_Content_Row) {
+            $type    = 'page';
+            $name    = $row->title;
+            $content = $row->getContent();
+            $url     = $row->link;
+        } else {
+            $type       = 'product';
+            $name       = $row->name;
+            $content    = $row->description;
+            $url        = $row->key_word;
+            $imagePath  = $row->image_thumbnail;
+            $imageTitle = $row->image_title;
+            
+            $document->addField(Zend_Search_Lucene_Field::UnIndexed(
+                'image', $imagePath, $this->_encoding
+            ));
+            $document->addField(Zend_Search_Lucene_Field::UnIndexed(
+                'image_title', $imageTitle, $this->_encoding
+            ));
+        } 
+        
         $document->addField(Zend_Search_Lucene_Field::UnIndexed(
             'type', $type, $this->_encoding
         ));
@@ -123,17 +145,10 @@ class Axis_Search_Model_Indexer
         $document->addField(Zend_Search_Lucene_Field::Text(
             'contents', $content, $this->_encoding
         ));
-        $document->addField(Zend_Search_Lucene_Field::UnIndexed(
+        $document->addField(Zend_Search_Lucene_Field::Text(
             'url', $url, $this->_encoding
         ));
-        if (null !== $imagePath || $type == 'product') {
-            $document->addField(Zend_Search_Lucene_Field::UnIndexed(
-                'image', $imagePath, $this->_encoding
-            ));
-            $document->addField(Zend_Search_Lucene_Field::UnIndexed(
-                'image_title', $imageTitle, $this->_encoding
-            ));
-        }
+        
         return $document;
     }
 
