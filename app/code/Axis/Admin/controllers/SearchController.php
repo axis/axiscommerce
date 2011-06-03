@@ -99,7 +99,7 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
                 ->join('catalog_product_description', 
                     'cpd.product_id = cp.id', 
                     array('name', 'description')
-                )->joinLeft('locale_language',
+                )->joinRight('locale_language',
                     'll.id = cpd.language_id',
                     'locale'
                 )->joinLeft('catalog_product_image', 
@@ -135,7 +135,6 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
                 ->order('cc.site_id')
                 ->order('cpc.language_id')
                 ->calcFoundRows()
-                ->firephp()
                 ;
         } 
         $rowset = $select->fetchRowset();
@@ -143,10 +142,6 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
         $index  = $path = null;
         
         foreach ($rowset as $_row) {
-            if (empty($_row->locale)) {
-                continue;
-            }
-            
             $_path = $indexer->getIndexPath(
                 $_row->site_id  . '/' . $_row->locale
             );
@@ -182,10 +177,9 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
                 )); 
             }
         }
-        if ($index) {
-            $index->optimize();
-            $index->commit();
-        }
+        $index->optimize();
+        $index->commit();
+        
         $session->processed += $rowset->count();
         $session->page++;
         
