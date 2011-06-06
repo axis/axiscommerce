@@ -177,8 +177,12 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
     public function getProducts($orderId)
     {
         $products = Axis::single('sales/order_product')
-            ->select()
+            ->select('*')
             ->where('order_id = ?', $orderId)
+            ->joinLeft('catalog_product_stock', 
+                'sop.product_id = cps.product_id', 
+                'decimal'
+            )
             ->fetchAssoc();
 
         /* select attributes */
@@ -191,7 +195,7 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         foreach ($attributes as $attribute) {
             $products[$attribute['order_product_id']]['attributes'][] = $attribute;
         }
-
+        
         return $products;
     }
 

@@ -84,7 +84,7 @@
     </tr>
     <?php foreach ($order['products'] as $product) : ?>
         <tr>
-            <td><?php echo $product['quantity'] ?></td>
+            <td><?php echo $product['decimal'] ? $product['quantity'] : (int)$product['quantity'] ?></td>
             <td><?php echo $product['name'] ?>
             <?php if (isset($product['attributes'])): ?>
                 <br/>
