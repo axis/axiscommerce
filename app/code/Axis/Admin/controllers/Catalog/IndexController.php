@@ -198,14 +198,14 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
 
             foreach ($options as $item) {
                 $items[] = array(
-                   'text' => $item['name'],
-                   'code' => $item['code'],
+                   'text'        => $item['name'],
+                   'code'        => $item['code'],
                    'option_name' => $item['name'],
-                   'id' => $item['id'],
-                   'option_id' => $item['id'],
-                   'parent' => null,
-                   'leaf' => in_array($item['input_type'], $leafOptions) ? true : false,
-                   'input_type' => $item['input_type'],
+                   'id'          => $item['id'],
+                   'option_id'   => $item['id'],
+                   'parent'      => null,
+                   'leaf'        => in_array($item['input_type'], $leafOptions) ? true : false,
+                   'input_type'  => $item['input_type'],
                    'languagable' => $item['languagable']
                 );
             }

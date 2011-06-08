@@ -45,11 +45,11 @@ class Axis_Catalog_Model_Product_Option_Row extends Axis_Db_Table_Row
         }
         return Axis::model('catalog/product_option_value')->select('*')
             ->join('catalog_product_option_value_text', 
-                'pov.id = povt.option_value_id',
+                'cpov.id = cpovt.option_value_id',
                 'name'
             )
-            ->where('pov.valueset_id = ?', $this->valueset_id)
-            ->where('povt.language_id = ?', $languageId)
+            ->where('cpov.valueset_id = ?', $this->valueset_id)
+            ->where('cpovt.language_id = ?', $languageId)
             ->fetchAll()
             ;
     }
