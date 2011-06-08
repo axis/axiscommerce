@@ -237,12 +237,30 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
     public function ajaxSaveValueSetValuesAction()
     {
         $this->_helper->layout->disableLayout();
-        $data = Zend_Json::decode($this->_getParam('data'));
-        $valueset = $this->_getParam('customer_valueset_id');
+        $dataset = Zend_Json::decode($this->_getParam('data'));
+        $valuesetId = $this->_getParam('customer_valueset_id');
         
-        Axis::single('account/Customer_ValueSet_Value')
-            ->save($data, $valueset);
-        
+        $modelValue  = Axis::single('account/Customer_ValueSet_Value');
+        $modelLabel  = Axis::single('account/Customer_ValueSet_Value_Label');
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+        foreach ($dataset as $_row) {
+            if (!isset($_row['customer_valueset_id'])) {
+                $_row['customer_valueset_id'] = $valuesetId;
+            }
+            $row = $modelValue->getRow($_row);
+            $row->save();
+            foreach ($languageIds as $languageId) {
+                $rowLabel = $modelLabel->getRow($row->id, $languageId);
+                $rowLabel->label = $_row['label' . $languageId];
+                $rowLabel->save();
+            }
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
+            )
+        );
+
         $this->_helper->json->sendSuccess();
     }
     
