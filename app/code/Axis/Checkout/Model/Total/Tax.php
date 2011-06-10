@@ -39,17 +39,20 @@ class Axis_Checkout_Model_Total_Tax extends Axis_Checkout_Model_Total_Abstract
     public function collect(Axis_Checkout_Model_Total $total)
     {
         $checkout = Axis::single('checkout/checkout');
+        $taxBasis = null;
 
-        if (null === $checkout->shipping()) {
+        if (null !== $checkout->shipping()) {
+            $taxBasis = $checkout->shipping()->_config->taxBasis;
+        }
+
+        if (!$taxBasis && !$taxBasis = Axis::config()->tax->main->taxBasis) {
             return false;
         }
 
-        if (!$taxBasis = $checkout->shipping()->_config->taxBasis) {
-            if (!$taxBasis = Axis::config()->tax->main->taxBasis) {
-                return false;
-            }
-        }
         $address = $checkout->getStorage()->{$taxBasis};
+        if (!$address) {
+            return false;
+        }
 
         $countryId = $address->country->id;
         $zoneId = $address->hasZone() && $address->zone->hasId() ?
