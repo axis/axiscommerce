@@ -37,6 +37,8 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
     {
         $this->setTitle(Axis::translate('checkout')->__('Shopping Cart'));
 
+        Axis::single('checkout/checkout')->clean();
+
         $request = $this->getRequest();
         if (null !== Axis::session()->lastUrl) {
             $lastUrl = Axis::session()->lastUrl;
