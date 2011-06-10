@@ -49,10 +49,12 @@ class Axis_ShippingPerWeightUnit_Model_Standard extends Axis_Method_Shipping_Mod
     {
         $price      = is_numeric($this->_config->price) ? $this->_config->price : 0;
         $handling   = is_numeric($this->_config->handling) ? $this->_config->handling : 0;
-        $this->_types[] = array(
-            'id' => $this->_code,
-            'title' => $this->getTitle(),
-            'price' => $price * $request['weight'] + $handling
+        $this->_types = array(
+            array(
+                'id' => $this->_code,
+                'title' => $this->getTitle(),
+                'price' => $price * $request['weight'] + $handling
+            )
         );
         return $this->_types;
     }

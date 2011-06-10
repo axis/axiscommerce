@@ -43,6 +43,7 @@ class Axis_ShippingFlat_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         if (!$this->_config->multiPrice) {
             return array();
         }
+        $this->_types = array();
         foreach ($this->_config->multiPrice->toArray() as $id => $item) {
             if (!empty($item['minOrderTotal'])
                 && $request['price'] < $item['minOrderTotal']) {

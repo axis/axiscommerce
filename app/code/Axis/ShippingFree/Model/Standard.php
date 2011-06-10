@@ -48,10 +48,12 @@ class Axis_ShippingFree_Model_Standard extends Axis_Method_Shipping_Model_Abstra
     {
         $cost       = is_numeric($this->_config->cost) ? $this->_config->cost : 0;
         $handling   = is_numeric($this->_config->handling) ? $this->_config->handling : 0;
-        $this->_types[] = array(
-            'id' => $this->_code,
-            'title' => $this->getTitle(),
-            'price' => $cost + $handling
+        $this->_types = array(
+            array(
+                'id' => $this->_code,
+                'title' => $this->getTitle(),
+                'price' => $cost + $handling
+            )
         );
         return $this->_types;
     }

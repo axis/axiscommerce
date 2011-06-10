@@ -46,7 +46,7 @@ class Axis_ShippingItem_Model_Standard extends Axis_Method_Shipping_Model_Abstra
             'price' => (is_numeric($this->_config->price) ?
                 floatval($this->_config->price) : 0) * $request['qty']
         );
-        $this->_types[] = $method;
+        $this->_types = array($method);
         return $this->_types;
     }
 }
