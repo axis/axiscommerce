@@ -155,39 +155,18 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
 
     /**
      *
-     * @param string $where [optional]
-     * @return float
-     */
-    public function getTotal($where = null)
-    {
-        $select = $this->getAdapter()->select()
-            ->from(array('o' => $this->_prefix . 'sales_order'),
-            array("SUM(order_total)")
-        );
-
-        if (is_string($where) && $where) {
-            $select->where($where);
-        } elseif (is_array($where)) {
-            foreach ($where as $condition) {
-                if ($condition)
-                    $select->where($condition);
-            }
-        } elseif ($where instanceof Zend_Db_Select) {
-        }
-        $return = $this->getAdapter()->fetchOne($select->__toString());
-        return $return ? $return : 0;
-    }
-
-    /**
-     *
      * @param int $orderId
      * @return array
      */
     public function getProducts($orderId)
     {
         $products = Axis::single('sales/order_product')
-            ->select()
+            ->select('*')
             ->where('order_id = ?', $orderId)
+            ->joinLeft('catalog_product_stock', 
+                'sop.product_id = cps.product_id', 
+                'decimal'
+            )
             ->fetchAssoc();
 
         /* select attributes */
@@ -200,7 +179,7 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         foreach ($attributes as $attribute) {
             $products[$attribute['order_product_id']]['attributes'][] = $attribute;
         }
-
+        
         return $products;
     }
 
@@ -242,72 +221,6 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
     public function getSubtotal($orderId)
     {
         return Axis::single('sales/order_total')->getSubtotal($orderId);
-    }
-
-    /**
-     *
-     * @param string $where [optional]
-     * @param bool $distinctCustomer [optional]
-     * @return array
-     */
-    public function getCountList($where = null, $distinctCustomer = false)
-    {
-        $select = $this->getAdapter()->select();
-        $countExpr = $distinctCustomer ?
-            'COUNT(DISTINCT customer_email)' : 'COUNT(*)';
-
-        $select->from(
-                array('o' => $this->_prefix . 'sales_order'),
-                array('date_purchased_on', 'hit' => $countExpr)
-            )
-            ->group('date_purchased_on')
-            ->order('date_purchased_on')
-        ;
-
-        if (is_string($where) && $where) {
-            $select->where($where);
-        } elseif (is_array($where)) {
-            foreach ($where as $condition) {
-                if ($condition)
-                    $select->where($condition);
-            }
-        }
-        return $this->getAdapter()->fetchPairs($select->__toString());
-    }
-
-    /**
-     *
-     * @param int $period
-     * @param string $where
-     * @return array
-     */
-    public function getAmountsList(
-        //$period = 10,
-        $where = null)
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(
-                array('o' => $this->_prefix . 'sales_order'),
-                array('date_purchased_on', 'order_total')
-            )
-            ->group("date_purchased_on")
-            ->order("date_purchased_on")
-            ;
-        if (is_string($where) && $where) {
-            $select->where($where);
-        } elseif (is_array($where)) {
-            foreach ($where as $condition) {
-                $select->where($condition);
-            }
-        }
-        $baseCurrency = Axis::config('locale/main/baseCurrency');
-        $modelCurrency = Axis::single('locale/currency');
-        $results = $this->getAdapter()->fetchPairs($select->__toString());
-        foreach ($results as &$item) {
-            $item = $modelCurrency->to($item, $baseCurrency);
-        }
-
-        return $results;
     }
 
     /**

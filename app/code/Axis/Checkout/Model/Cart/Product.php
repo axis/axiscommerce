@@ -49,47 +49,45 @@ class Axis_Checkout_Model_Cart_Product extends Axis_Db_Table
             return Zend_Registry::get($registryIndex);
         }
 
-        $select = $this->getAdapter()->select()
-            ->from(array('scp' => $this->_prefix . 'checkout_cart_product'))
-            ->where('scp.shopping_cart_id = ?', $shoppingCartId);
-
-        if (!$this->select()->where('shopping_cart_id = ?', $shoppingCartId)->fetchRow()) {
-            return $this->getAdapter()->fetchAll($select);
+        $select = $this->select('*')
+            ->where('shopping_cart_id = ?', $shoppingCartId);
+        if (!$select->fetchRow()) {
+            return array();
         }
-
-        $languageId = Axis_Locale::getLanguageId();
-
-        $select->joinLeft(array('p' => $this->_prefix . 'catalog_product'),
-            'p.id = scp.product_id', array('sku', 'price', 'image_thumbnail', 'image_listing', 'image_base'))
-            ->joinLeft(array('pd' => $this->_prefix . 'catalog_product_description'),
-                'pd.product_id = scp.product_id AND pd.language_id = ' . $languageId,
-                array('name', 'description', 'image_seo_name'))
-            ->joinLeft(array('hu' => $this->_prefix . 'catalog_hurl'),
-                'hu.key_id = p.id AND hu.key_type = "p"',
-                'key_word')
-            ->joinLeft(array('ps' => $this->_prefix . 'catalog_product_stock'),
-                'ps.product_id = p.id',
-                'decimal')
-            ->joinLeft(array('scpa' => $this->_prefix . 'checkout_cart_product_attribute'),
-                'scpa.shopping_cart_product_id = scp.id',
-                array('shoppingCartProductAttributeId' => 'id', 'product_attribute_value'))
-            ->joinLeft(array('pa' => $this->_prefix . 'catalog_product_attribute'),
-                'pa.id = scpa.product_attribute_id',
-                array())
-            ->joinLeft(array('po' => $this->_prefix . 'catalog_product_option'),
-                'po.id = pa.option_id',
-                'input_type')
-            ->joinLeft(array('pot' => $this->_prefix . 'catalog_product_option_text'),
-                'pot.option_id = pa.option_id AND pot.language_id = ' . $languageId,
-                array('option_name' => 'name'))
-            ->joinLeft(array('povt' => $this->_prefix . 'catalog_product_option_value_text'),
-                'povt.option_value_id = pa.option_value_id AND povt.language_id = ' . $languageId,
-                array('value_name' => 'name'))
-            ->order(array('scp.product_id', 'po.id'));
+        $select
+            ->joinLeft('catalog_product',
+                'cp.id = ccp.product_id',
+                array('sku', 'price', 'image_thumbnail', 'image_listing', 'image_base')
+            )->joinLeft('catalog_product_description',
+                'cpd.product_id = ccp.product_id AND cpd.language_id = :languageId',
+                array('name', 'description', 'image_seo_name')
+            )->joinLeft('catalog_hurl',
+                'ch.key_id = cp.id AND ch.key_type = "p"',
+                'key_word'
+            )->joinLeft('catalog_product_stock',
+                'cps.product_id = cp.id',
+                'decimal'
+            )->joinLeft('checkout_cart_product_attribute',
+                'ccpa.shopping_cart_product_id = ccp.id',
+                array('shoppingCartProductAttributeId' => 'id', 'product_attribute_value')
+            )->joinLeft('catalog_product_attribute',
+                'cpa.id = ccpa.product_attribute_id'
+            )->joinLeft('catalog_product_option',
+                'cpo.id = cpa.option_id',
+                'input_type'
+            )->joinLeft('catalog_product_option_text',
+                'cpot.option_id = cpa.option_id AND cpot.language_id = :languageId',
+                array('option_name' => 'name')
+            )->joinLeft('catalog_product_option_value_text',
+                'cpovt.option_value_id = cpa.option_value_id AND cpovt.language_id = :languageId',
+                array('value_name' => 'name')
+            )->order(array('ccp.product_id', 'cpo.id'))
+            ->bind(array('languageId' => Axis_Locale::getLanguageId()))
+            ->limit(); //reset limit 1
 
         $products = array();
         $productIds = array();
-        foreach ($this->getAdapter()->fetchAll($select) as $row) {
+        foreach ($select->fetchAll() as $row) {
             if (!isset($products[$row['id']])) {
                 $productIds[$row['product_id']] = $row['product_id'];
                 $products[$row['id']] = $row;

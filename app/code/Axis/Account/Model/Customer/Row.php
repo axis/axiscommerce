@@ -55,28 +55,26 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
         if (!$languageId) {
             $languageId = Axis_Locale::getLanguageId();
         }
-        $select = $this->getAdapter()->select();
-        $select->from(array('cd' => $this->_prefix . 'account_customer_detail'), array('customer_valueset_value_id' , 'data'))
-               ->join(array('cf' => $this->_prefix . 'account_customer_field'),
-               'cd.customer_field_id = cf.id')
-               ->where('cd.customer_id = ' . intval($this->id))
-               ->where('cf.name =  ?', $fieldName);
-        $rows = $this->getAdapter()->fetchAll($select->__toString());
-
-        if (isset($rows[0]) && !empty($rows[0]['data'])){
-            return $rows[0]['data'];
-        } elseif (isset($rows[0]) && !empty($rows[0]['customer_valueset_value_id'])) {
-            $valuesetIds = array();
-            foreach ($rows as $row) {
-                $valuesetIds[] = $row['customer_valueset_value_id'];
-            }
-
-            $select = $this->getAdapter()->select();
-            $select->from(array('cvvl' => $this->_prefix . 'account_customer_valueset_value_label'), 'label')
-                   ->where('cvvl.valueset_value_id IN  (?)', $valuesetIds)
-                   ->where('cvvl.language_id =  ?', $languageId);
-
-            return $this->getAdapter()->fetchCol($select->__toString());
+        $select = Axis::model('account/customer_detail')->select('*')
+            ->join('account_customer_field', 'acd.customer_field_id = acf.id')
+            ->where('acd.customer_id = ? ', $this->id)
+            ->where('acf.name =  ?', $fieldName);
+        
+        $row = $select->fetchRow();
+        if (!$row) {
+            return false;
+        }
+        
+        if ($row->data){
+            return $row->data;
+        } 
+        if ($row->customer_valueset_value_id) {
+            return Axis::model('account/customer_valueSet_value_label')
+                ->select('label')
+                ->where('valueset_value_id = ?', $row->customer_valueset_value_id)
+                ->where('language_id = ?', $languageId)
+                ->firephp()
+                ->fetchCol();
         }
         return false;
     }

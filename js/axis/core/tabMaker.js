@@ -31,7 +31,7 @@
         $.extend(config, settings);
         $('.tab-container').each(function(){
             buildTabs(this);
-            setActiveTab(this, 0);
+            setActiveTab(this, getIndexByUrlHash());
             addObservers(this);
         })
     }
@@ -82,7 +82,7 @@
         switch (config.effect) {
             case 'fade':
             case 'slide':
-            default: 
+            default:
                 switchTabDisplay(container, index);
             break;
         }
@@ -94,4 +94,19 @@
         $('.content .tab:eq(' + index + ')', container).css('display', 'block');
     }
     
+    getIndexByUrlHash = function(container) {
+        hash = window.location.hash;
+        if ('' === hash) {
+            return 0;
+        }
+        var el = $('.' + hash.substr(1));
+        
+        if (!el.length) {
+            return 0;
+        }
+        $('html, body').scrollTop(
+            el.parents('.tab-container').offset().top
+        );
+        return $('.content .tab', container).index(el);
+    }
 })(jQuery);

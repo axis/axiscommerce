@@ -86,24 +86,22 @@ Ext.onReady(function(){
         },{
             text:'Save'.l(),
             handler: function(){
-                if (!valueSet.getSelectionModel().selNode) {
+                var node = valueSet.getSelectionModel().selNode;
+                if (!node) {
                     return;
                 }
                 data = {};
-                data['valueSetName'] = valueSet.getSelectionModel().selNode.text;
-                data['valueSetId'] = valueSet.getSelectionModel().selNode.id;
+                data['name'] = node.text;
+                data['id'] = node.id;
                 jsonData = Ext.encode(data);
                 Ext.Ajax.request({
                     url: Axis.getUrl('customer_custom-fields/ajax-save-value-set'),
                     params: {data: jsonData},
                     success: function(response) {
-                        if (valueSet.getSelectionModel().selNode.attributes.cls == 'newValueSet') {
-                            var new_valueSet = eval('('+ response.responseText +')');
-                            valuesetId = new_valueSet.valuesetId;
-                            valueSet.getSelectionModel().selNode.id = valuesetId;
-                            valueSet.getSelectionModel().selNode.attributes.cls = '';
-                            valueSet.getSelectionModel().selNode.getUI().removeClass('newValueSet');
-                        }
+                        node.id = Ext.decode(response.responseText).valueset_id
+                        node.attributes.cls = '';
+                        node.getUI().removeClass('newValueSet');
+                        
                         vs.baseParams.valuesetId = valuesetId;
                         vs.reload();
                         modifiedSet = true;

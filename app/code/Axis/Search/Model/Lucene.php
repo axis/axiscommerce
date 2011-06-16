@@ -60,11 +60,7 @@ class Axis_Search_Model_Lucene
             $encoding = array_shift($params);
         }
         if (null === $indexPath) {
-            $site = Axis::getSite();
-            $site = str_replace(
-                array('http://', 'https://'), '',
-                urlencode($site->name . '_'. $site->id)
-            );
+            $site = Axis::getSite()->id;
             $locale = Axis::single('locale/language')
                 ->find(Axis_Locale::getLanguageId())
                 ->current()
@@ -94,7 +90,7 @@ class Axis_Search_Model_Lucene
         $stopWords = array('a', 'an', 'at', 'the', 'and', 'or', 'is', 'am');
         $stopWordsFilter = new Zend_Search_Lucene_Analysis_TokenFilter_StopWords($stopWords);
 
-        $analyzer = new Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8_CaseInsensitive();
+        $analyzer = new Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8Num_CaseInsensitive();
         $analyzer->addFilter($stopWordsFilter);
 
         Zend_Search_Lucene_Analysis_Analyzer::setDefault($analyzer);

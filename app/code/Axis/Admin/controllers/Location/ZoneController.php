@@ -87,10 +87,12 @@ class Axis_Admin_Location_ZoneController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
+        $model = Axis::single('location/zone');
+        foreach ($data  as $_row) {
+            $model->save($_row);
+        }
 
-        return $this->_helper->json->sendJson(array(
-            'success' => Axis::single('location/zone')->save($data)
-        ));
+        return $this->_helper->json->sendSuccess();
     }
 
     public function deleteAction()

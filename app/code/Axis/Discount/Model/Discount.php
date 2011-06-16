@@ -751,38 +751,31 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         if (null === $date) {
             $date = Axis_Date::now()->toPhpString("Y-m-d");
         }
-        $select = $this->getAdapter()->select();
-        $select->distinct()->from(array('d' => $this->_prefix . 'discount'), array())
-            ->join(array('e1' => $this->_prefix . 'discount_eav'),
-                "e1.discount_id = d.id AND e1.entity = 'special' AND e1.value = '1'",
-                array())
-            ->join(array('e2' => $this->_prefix . 'discount_eav'),
-                "e2.discount_id = e1.discount_id AND e2.entity = 'productId'",
-                array('value'))
+        $select = $this->select('de2.value')
+            ->join('discount_eav',
+                "de.discount_id = d.id AND de.entity = 'special' AND de.value = '1'"
+            )
+            ->join('discount_eav',
+                "de2.discount_id = d.id AND de2.entity = 'productId'"
+            )
             ->where('d.is_active = 1')
             ->where('d.from_date <= ? OR d.from_date IS NULL', $date)
             ->where('? <= d.to_date OR d.to_date IS NULL', $date)
             ->order(array('d.from_date DESC', 'cp.id DESC'))
             ->limit($limit)
-            ->join(array('cpc' => $this->_prefix . 'catalog_product_category'),
-                'e2.value = cpc.product_id',
-                array())
-            ->join(array('c' => $this->_prefix . 'catalog_category'),
-                'cpc.category_id = c.id',
-                array())
-            ->where('c.site_id = ?', $siteId)
-            ->join(array('cp' => $this->_prefix . 'catalog_product'),
-                'e2.value = cp.id',
-                array())
-            ->where('cp.is_active = 1');
-
+            ->join('catalog_product_category', 'de2.value = cpc.product_id')
+            ->join('catalog_category', 'cpc.category_id = cc.id')
+            ->where('cc.site_id = ?', $siteId)
+            ->join('catalog_product', 'de2.value = cp.id')
+            ;
+        
         if ($disabledCategories = Axis::single('catalog/category')->getDisabledIds()) {
-            $select->where('c.id NOT IN (?)', $disabledCategories);
+            $select->where('cc.id NOT IN (?)', $disabledCategories);
         }
 
         if (null != $categoryId) {
             $select->where('cpc.category_id = ? ', $categoryId);
         }
-        return $this->getAdapter()->fetchCol($select->__toString());
+        return $select->fetchCol();
     }
 }

@@ -31,41 +31,45 @@
  * @subpackage  Axis_Cms_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Cms_Model_Page_Row extends Axis_Db_Table_Row 
+class Axis_Cms_Model_Page_Content_Row extends Axis_Db_Table_Row 
 {
+    private function _cleanTag($blockName) 
+    {
+       return str_replace(array('{', '}'), '', $blockName);
+    }
+    
+    private function _getReplaceContent($blockName)
+    {
+       $blockName = $this->_cleanTag($blockName);
+       
+       list($tagType, $tagKey) = explode('_', $blockName, 2);
+       switch ($tagType) {
+           case 'static':
+               return Axis::single('cms/block')->getContentByName($tagKey);
+               break;
+       }
+       
+       return '';
+    }
+
     /**
      *
-     * @return Axis_Cms_Model_Page_Content_Row
+     * @return string
      */
     public function getContent()
     {
-        $languageId = Axis_Locale::getLanguageId();
+        $content = $this->content;
+        //inserting blocks in content
+        $matches = array();
+        preg_match_all('/{{\w+}}/', $content, $matches);
+        $i = 0;
         
-        $columns = array(
-            'title',  'content', 'meta_keyword', 'meta_description', 'meta_title'
-        );
-        $row = Axis::model('cms/page_content')
-            ->select($columns)
-            ->joinLeft('cms_page', 'cp.id = cpc.cms_page_id', array('layout'))
-            ->where('cpc.language_id = ?', $languageId)
-            ->where('cpc.cms_page_id = ?', $this->id)
-            ->fetchRow()
-        ;
-        if (!$row) {
-            return false;
+        foreach ($matches[0] as $block) {
+            $content = str_replace(
+                $block, $this->_getReplaceContent($block), $content
+            );
         }
-        $row->content = $row->getContent();
-        return $row;
+        
+        return $content;
     }
-    
-    public function getComments()
-    {
-        return Axis::model('cms/page_comment')->select()
-            ->where('cpc.cms_page_id = ?', $this->id)
-            ->where('cpc.status = 1') //is approved
-//            ->where('cpc.status <> 2') //not blocked
-            ->order('cpc.created_on DESC')
-            ->fetchAll()
-            ;
-   }
 }

@@ -148,32 +148,6 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
     }
 
     /**
-     *
-     * @param string|array|Zend_Db-Select $where
-     * @return array
-     */
-    public function getCountList($where = null)
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(
-                array('o' => $this->_prefix . 'account_customer'),
-                array("created_at" ,'COUNT(*) as hit')
-            )
-           ->group('created_at')
-           ->order('created_at');
-        if (is_string($where) && $where) {
-            $select->where($where);
-        } elseif (is_array($where)) {
-            foreach ($where as $condition) {
-                if ($condition) {
-                    $select->where($condition);
-                }
-            }
-        }
-        return $this->getAdapter()->fetchPairs($select->__toString());
-    }
-
-    /**
      * Checks, is user exists in database. If not - clearIdentity called
      *
      * @return void

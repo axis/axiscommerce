@@ -62,19 +62,16 @@ class Axis_Account_Model_Customer_ForgotPassword extends Axis_Db_Table
      */
     public function isValid($hash, $email = null) 
     {
-         $select = $this->getAdapter()->select();
-         $date = Axis_Date::now()->addDay(-1)->toSQLString();
-         $select->from(array('cfp' => $this->_prefix . 'account_customer_forgotpassword'), 'COUNT(*)')
-                ->joinLeft( array('c' => $this->_prefix . 'account_customer'),
-                    'c.id = cfp.customer_id', array())
-                ->where('cfp.hash = ?', $hash)
-                ->where('c.site_id = ?', Axis::getSiteId())
-                ->where('cfp.created_at > ?', $date);
-         if ($email) {
-            $select->where('c.email = ?', $email);
-         }
-         $count = $this->getAdapter()->fetchOne($select->__toString());
-         return $count ? true : false;
+        $date = Axis_Date::now()->addDay(-1)->toSQLString();
+        $select = $this->select('*')
+            ->joinLeft('account_customer', 'ac.id = acf.customer_id')
+            ->where('acf.hash = ?', $hash)
+            ->where('ac.site_id = ?', Axis::getSiteId())
+            ->where('acf.created_at > ?', $date);
+        if (null !== $email) {
+            $select->where('ac.email = ?', $email);
+        }
+        return (bool) $select->count();    
     }
 
     /**
@@ -84,11 +81,12 @@ class Axis_Account_Model_Customer_ForgotPassword extends Axis_Db_Table
      */
     public function getEmailByHash($hash)
     {
-        $select = $this->getAdapter()->select();
-        $select->from(array('c' => $this->_prefix . 'account_customer'), 'email')
-               ->joinLeft(array('cfp' => $this->_prefix . 'account_customer_forgotpassword'),
-                   'c.id = cfp.customer_id', array())
-               ->where("cfp.hash = '{$hash}'");
-        return $this->getAdapter()->fetchOne($select->__toString());
+        return Axis::single('account/customer')->select('email')
+            ->joinLeft('account_customer_forgotpassword',
+                   'ac.id = acf.customer_id'
+            )
+            ->where('acf.hash = ?', $hash)
+            ->fetchOne()
+            ;
     }
 }

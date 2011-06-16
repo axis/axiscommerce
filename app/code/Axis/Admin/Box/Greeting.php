@@ -48,8 +48,10 @@ class Axis_Admin_Box_Greeting extends Axis_Admin_Box_Abstract
             ->count();
         
 
-        $orderTotal = Axis::single('sales/order')
-            ->getTotal("date_purchased_on > '{$date}'");
+        $orderTotal = (float) Axis::single('sales/order')->select('SUM(order_total)')
+            ->where('date_purchased_on > ?', $date)
+            ->fetchOne()
+            ;
 
         $orderTotal = Axis::single('locale/currency')
             ->getCurrency(Axis::config()->locale->main->currency)
