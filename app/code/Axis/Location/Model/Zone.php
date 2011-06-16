@@ -37,33 +37,15 @@ class Axis_Location_Model_Zone extends Axis_Db_Table
 
     /**
      *
-     * @param array $data
+     * @param array $row
+     * @return mixed The primary key value(s), as an associative array if the
+     *     key is compound, or a scalar if the key is single-column.
      */
-    public function save($data)
+    public function save(array $row)
     {
-        $db = $this->getAdapter();
-        
-        $ids = array_keys($data);
-
-        $existZoneIds = $this->select('id')
-            ->where('id IN (?)', $ids)
-            ->fetchCol();
-
-        foreach ($data as $id => $values) {
-            if (empty($values['code']) || empty($values['name'])) {
-                continue;
-            }
-            $row = array(
-                'code'       => $values['code'],
-                'name'       => $values['name'],
-                'country_id' => $values['country_id']
-            );
-            
-            if (in_array($id, $existZoneIds)) {
-                $this->update($row, $db->quoteInto('id = ?', $id));
-            } else {
-                $this->insert($row);
-            }
+        if (empty($row['code']) || empty($row['name'])) {
+            return;
         }
+        return $this->getRow($row)->save();
     }   
 } 

@@ -64,58 +64,6 @@ class Axis_Account_Model_Customer_ValueSet_Value extends Axis_Db_Table
 
     /**
      *
-     * @param array $data
-     * @param int $valueset
-     * @return void
-     */
-    public function save($data, $valueset)
-    {
-        $label = Axis::single('account/Customer_ValueSet_Value_Label');
-        $langIds = array_keys(Axis_Collect_Language::collect());
-        foreach ($data as $id => $values) {
-            $row = array(
-                'customer_valueset_id'  => $valueset,
-                'sort_order'            => $values['sort_order'],
-                'is_active'             => $values['is_active'] ? 1 : 0,
-            );
-            
-            if (!isset($values['new'])) {
-                $this->update($row, $this->getAdapter()->quoteInto('id = ?', $id));
-                //labels update at n_customer_valueset_value_label
-                foreach ($langIds as $langId) {
-                    if (!$record = $label->find($id, $langId)->current()) {
-                        $record = $label->createRow(array(
-                            'valueset_value_id' => $id,
-                            'language_id' => $langId,
-                            'label' => $values['label' . $langId]
-                        ));
-                    } else {
-                        $record->setFromArray(array(
-                            'label' => $values['label' . $langId]
-                        ));
-                    }
-                    $record->save();
-                }
-            } else {
-                $id = $this->insert($row);
-                foreach ($langIds as $langId) {
-                    $label->insert(array(
-                        'valueset_value_id' => $id,
-                        'language_id' => $langId,
-                        'label' => $values['label' . $langId]
-                    ));
-                }
-            }
-        }
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-            )
-        );
-    }
-
-    /**
-     *
      * @param int $valueSetId
      * @param int $languageId
      * @return array
@@ -125,12 +73,16 @@ class Axis_Account_Model_Customer_ValueSet_Value extends Axis_Db_Table
         if (null === $languageId) {
             $languageId = Axis_Locale::getLanguageId();
         }
-        $query = "SELECT cvv.id, cvvl.`label` FROM " . $this->_prefix . 'account_customer_valueset_value' . " cvv
-            INNER JOIN " . $this->_prefix . "account_customer_valueset_value_label cvvl ON cvvl.valueset_value_id = cvv.id
-            WHERE cvv.is_active = 1 AND cvv.customer_valueset_id = ? AND language_id = ? 
-            ORDER BY cvv.sort_order";
-        return $this->getAdapter()->fetchPairs($query, array(
-            $valueSetId, $languageId
-        ));
+        
+        return $this->select('*')
+            ->join('account_customer_valueset_value_label',
+                'acvvl.valueset_value_id = acvv.id',
+                'label'
+            )
+            ->where('acvv.is_active = 1')
+            ->where('acvv.customer_valueset_id = ?', $valueSetId)
+            ->where('acvvl.language_id = ?', $languageId)
+            ->order('acvv.sort_order')
+            ->fetchPairs();
     }
 }

@@ -1,3 +1,26 @@
+<script>
+    function updateSearchIndex(skipConfirm, resetSession) {
+        if (!skipConfirm
+            && !confirm(("Are you sure want to delete old search indexes " +
+            "and create new for all products and cms pages?\nThis can take a while.").l())) {
+
+            return;
+        }
+        Ext.Ajax.request({
+            url: Axis.getUrl('search/update-index'),
+            params: {
+                limit       : 50,
+                reset_session: resetSession
+            },
+            success: function(response, options) {
+                response = Ext.decode(response.responseText);
+                if (false == response.completed) {
+                    updateSearchIndex(1, 0);
+                }
+            }
+        });
+    }
+</script>
 <?php 
 $this->headScript()->appendFile('/js/axis/admin/cache.js'); 
 $this->setButtons(array(
@@ -18,7 +41,7 @@ $this->setButtons(array(
     ),
     array(
         'title' => $this->translate('admin')->__('Update search indexes'),
-        'onclick' => "window.location = Axis.getUrl('catalog_index/update-search-index/'); return false;",
+        'onclick' => "updateSearchIndex(0, 1); return false;",
         'class' => 'button'
     ),
     array(

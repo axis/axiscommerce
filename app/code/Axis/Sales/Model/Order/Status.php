@@ -46,20 +46,19 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
     {
         if (null !== $statusId) {
             $childrens = Axis::single('sales/order_status_relation')->getChildrens($statusId);
-        }
-
-        $select = $this->getAdapter()->select()
-            ->from(array('sos' => $this->_prefix . 'sales_order_status'))
-            ->joinLeft(array('sost' => $this->_prefix . 'sales_order_status_text'),
-                'sos.id = sost.status_id',
-                array('language_id', 'status_name'));
-        if (null !== $statusId) {
             if (!count($childrens)) {
                 return array();
             }
-            $select->where($this->getAdapter()->quoteInto("sos.id IN (?)", $childrens));
         }
-        return $this->getAdapter()->fetchAll($select);
+        
+        return $this->select('*')
+            ->joinLeft('sales_order_status_text',
+                'sos.id = sost.status_id',
+                array('language_id', 'status_name')
+            )
+            ->where('sos.id IN (?)', $childrens)
+            ->fetchAll()
+            ;
     }
 
     /**

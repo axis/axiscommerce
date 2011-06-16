@@ -92,19 +92,14 @@ class Axis_Account_Model_Customer_Detail extends Axis_Db_Table
      */
     public function isExistNickname($nickname)
     {
-        $select = $this->getAdapter()->select()
-            ->from(array('acd' => $this->_prefix . 'account_customer_detail'), 'id')
-            ->joinInner(
-                array('acf' => $this->_prefix . 'account_customer_field'),
-                'acf.id = acd.customer_field_id',
-                array()
-            )
-            ->where("acf.name = 'nickname'")
+        $select = Axis::model('account/customer_detail')->select('id')
+            ->join('account_customer_field', 'acf.id = acd.customer_field_id')
+            ->where('acf.name = ?', 'nickname')
             ->where('acd.data = ?', $nickname)
             ;
         if ($customerId = Axis::getCustomerId()) {
-            $select->where("acd.customer_id <> ?", $customerId);
+            $select->where('acd.customer_id <> ?', $customerId);
         }
-        return (bool) $this->getAdapter()->fetchOne($select);
+        return (bool) $select->fetchOne();
     }
 }

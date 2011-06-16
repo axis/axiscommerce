@@ -191,12 +191,18 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
      */
     public function getFields()
     {
-        $query = "SELECT cf.*, cfl.field_label FROM " . $this->_prefix . 'account_customer_field' . " cf
-            INNER JOIN " . $this->_prefix . "account_customer_fieldgroup cfg ON cfg.id = cf.customer_field_group_id
-            INNER JOIN " . $this->_prefix . "account_customer_field_label cfl ON cfl.customer_field_id = cf.id
-            WHERE cf.is_active = 1 AND cfg.is_active = 1 AND cfl.language_id = ?
-            ORDER BY cf.sort_order";
-        return $this->getAdapter()->fetchAll($query, Axis_Locale::getLanguageId());
+        return $this->select('*')
+            ->join('account_customer_fieldgroup',
+                'acf2.id = acf.customer_field_group_id')
+            ->join('account_customer_field_label',
+                'acfl.customer_field_id = acf.id',
+                'field_label'
+            )
+            ->where('acf.is_active = 1')
+            ->where('acf2.is_active = 1')
+            ->where('acfl.language_id = ?', Axis_Locale::getLanguageId())
+            ->order('acf.sort_order')
+            ->fetchAll();
     }
     
     /**

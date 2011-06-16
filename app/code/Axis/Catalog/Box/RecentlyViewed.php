@@ -38,14 +38,21 @@ class Axis_Catalog_Box_RecentlyViewed extends Axis_Catalog_Box_Product_Listing
 
     protected function _beforeRender()
     {
-        $rowVisitor = Axis::model('log/visitor')->getVisitor();
-        $productIds = Axis::model('log/event')->select('object_id')
+        $visitor = Axis::model('log/visitor')->getVisitor();
+        $select = Axis::model('log/event')->select('object_id')
             ->distinct()
-            ->where('visitor_id = ?', $rowVisitor->id)
             ->limit($this->getProductsCount())
-            ->order('id DESC')
-            ->fetchCol()
+            ->order('le.id DESC')
             ;
+        $customerId = $visitor->customer_id;
+        if ($customerId && $customerId === Axis::getCustomerId()) {
+            $select->join('log_visitor', 'le.visitor_id = lv.id')
+                ->where('lv.customer_id = ?', $customerId);    
+        } else {
+            $select->where('visitor_id = ?', $visitor->id);
+        }
+        $productIds = $select->fetchCol();
+        
         if (empty ($productIds)) {
             return false;
         }
