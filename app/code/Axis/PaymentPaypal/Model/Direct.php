@@ -50,7 +50,7 @@ class Axis_PaymentPaypal_Model_Direct extends Axis_PaymentPaypal_Model_Abstract
         }
     }
 
-    public function pending(Axis_Sales_Model_Order_Row $order)
+    public function postProcess(Axis_Sales_Model_Order_Row $order)
     {
         $cc = $this->getCreditCard();
         Axis::single('sales/order_creditcard')->save($cc, $order);
@@ -76,7 +76,7 @@ class Axis_PaymentPaypal_Model_Direct extends Axis_PaymentPaypal_Model_Abstract
             'STATE'       => $billing->getZone()->getCode() ?
                 $billing->getZone()->getCode() : $billing->getCity(),
             'COUNTRYCODE' => $billing->getCountry()->getIsoCode2(),
-            'EXPDATE'     => $cc->getCcExpiresMonth() . '/' . $cc->getCcExpiresYear(),
+            'EXPDATE'     => $cc->getCcExpiresMonth() . $cc->getCcExpiresYear(),
             'PAYMENTACTION' => ($this->_config->paymentAction == 'Authorization') ? 'Authorization' : 'Sale'
         );
 
@@ -119,7 +119,5 @@ class Axis_PaymentPaypal_Model_Direct extends Axis_PaymentPaypal_Model_Abstract
 
             throw new Axis_Exception('DoDirectPayment Failure');
         }
-
-        return true;
     }
 }

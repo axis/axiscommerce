@@ -63,6 +63,7 @@ class Axis_Sales_Model_Order_Status_Run
         }
         $modelStock = Axis::single('catalog/product_stock');
         $products = $order->getProducts();
+        // check the availability of all products
         foreach ($products as $product) {
             if ($product['backorder']) {
                 continue;
@@ -83,7 +84,7 @@ class Axis_Sales_Model_Order_Status_Run
             }
         }
 
-        $modelStock = Axis::single('catalog/product_stock');
+        // update stock data
         foreach ($products as $product) {
             if ($product['backorder']) {
                 continue;
@@ -96,7 +97,6 @@ class Axis_Sales_Model_Order_Status_Run
                 $quantity - $product['quantity'],
                 $product['variation_id']
             );
-
         }
 
         return true;
@@ -126,6 +126,7 @@ class Axis_Sales_Model_Order_Status_Run
     {
         $modelStock = Axis::single('catalog/product_stock');
         $products = $order->getProducts();
+        // check the availability of all products
         foreach ($products as $product) {
             if (!$product['backorder']) {
                 continue;
@@ -144,7 +145,8 @@ class Axis_Sales_Model_Order_Status_Run
                 return false;
             }
         }
-        $modelStock = Axis::single('catalog/product_stock');
+        // update stock data for backordered products
+        // normal products update the stock in pending status
         foreach ($products as $product) {
             if (!$product['backorder']) {
                 continue;
@@ -219,6 +221,16 @@ class Axis_Sales_Model_Order_Status_Run
     public function failed(Axis_Sales_Model_Order_Row $order)
     {
         $this->_paymentCallback(__FUNCTION__, $order);
+
+        $modelStock = Axis::single('catalog/product_stock');
+        foreach ($order->getProducts() as $product) {
+            $stockRow = $modelStock->find($product['product_id'])->current();
+            $quantity = $stockRow->getQuantity($product['variation_id']);
+            $stockRow->setQuantity(
+                $quantity + $product['quantity'],
+                $product['variation_id']
+            );
+        }
         return true;
     }
 

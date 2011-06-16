@@ -1,0 +1,56 @@
+<?php
+$this->headScript()->appendFile('/js/jquery/jquery.selectboxes.js');
+?>
+<script type="text/javascript">
+Zones = <?php echo Zend_Json_Encoder::encode($this->formAddress->getZones()); ?>;
+$(document).ready(function() {
+    $('.input-country').change(function(){
+        var inputZone = $(this)
+            .parents('form')
+            .find('.input-zone');
+
+        inputZone.removeOption(/./);
+
+        if (Zones[this.value])
+            inputZone.addOption(Zones[this.value], false);
+    });
+});
+</script>
+<form action="<?php echo $this->href('paymentpaypal/express/set-delivery', true);?>">
+    <div>
+        <?php echo $this->message();
+        $addressArray = array(
+            0 => 'New Address'
+        );
+        foreach ($this->addressList as $address) :
+            $addressArray[$address->id] = trim($this->address($address, ', '), ', ');
+        endforeach;
+
+        echo $this->formSelect(
+            $this->escape($this->addressType) . '-id',
+            $this->selectedAddressId,
+            array(
+                'onchange' => 'Address.onChange(this)'
+            ),
+            $addressArray
+        );
+        if (!count($this->addressList)) : ?>
+            <script type="text/javascript">
+                Address.create();
+            </script>
+        <?php endif; ?>
+
+        <a href="javascript:void(0)" class="link-blue" onclick="$('#new-delivery').show();">
+            <?php echo $this->translate('checkout')->__('Create New Address')?>
+        </a>
+        <div id="new-delivery" style="display:none;">
+            <?php $this->formAddress->setAttrib('onsubmit', 'form_send(); return false;');
+            echo $this->formAddress->render($this); ?>
+        </div>
+        <br clear="all">
+        <?php echo $this->button($this->translate('checkout')->__('Confirm'), array(
+            'class' => 'button btn-confirm',
+            'type' => 'submit'
+        ), 'button') ?>
+    </div>
+</form>

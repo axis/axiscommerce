@@ -49,6 +49,21 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
         }
     }
 
+    public function preProcess()
+    {
+        if (!$this->runSetExpressCheckout()) {
+            throw new Axis_Exception();
+        }
+
+        $this->getStorage()->markflow = true;
+        return array(
+            'redirect' => $this->getPayPalLoginServer()
+                . "?cmd=_express-checkout&token="
+                . $this->getStorage()->token
+                . '&useraction=commit'
+        );
+    }
+
     public function runSetExpressCheckout()
     {
         $options = array();
@@ -72,8 +87,8 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
         }
 
         $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
-        $returnUrl = $view->href('/paymentpaypal/express-checkout/details', true);
-        $cancelUrl = $view->href('/paymentpaypal/express-checkout/cancel', true);
+        $returnUrl = $view->href('/paymentpaypal/express/details', true);
+        $cancelUrl = $view->href('/paymentpaypal/express/cancel', true);
 
         $delivery = $this->getCheckout()->getDelivery();
 
@@ -298,15 +313,6 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
 
         // sandbox url
         return 'https://www.sandbox.paypal.com/cgi-bin/webscr';
-    }
-
-    public function preProcess()
-    {
-        $this->getStorage()->markflow = true;
-        $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
-        $url = $view->href('/paymentpaypal/express-checkout/index', true);
-        header("Location: {$url}");
-        exit;
     }
 
     public function clear()

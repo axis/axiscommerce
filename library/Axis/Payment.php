@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Payment
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Payment
  * @author      Axis Core Team <core@axiscommerce.com>
@@ -36,7 +36,7 @@ class Axis_Payment
      * @var array
      */
     private static $_methods;
-    
+
     /**
      * Retrieve the list of paymetns methods of installed payment modules
      * @return array
@@ -46,7 +46,7 @@ class Axis_Payment
         if ($methods = Axis::cache()->load('payment_methods_list')) {
             return $methods;
         }
-        
+
         $prefix = 'Payment';
         $modules = Axis::app()->getModules();
         $methods = array();
@@ -64,15 +64,15 @@ class Axis_Payment
                 if ($ext != 'php' || $methodName == 'Abstract') {
                     continue;
                 }
-                $methods[] = substr($moduleName, strlen($prefix)) . '_' . $methodName;  
+                $methods[] = substr($moduleName, strlen($prefix)) . '_' . $methodName;
             }
             closedir($dir);
         }
         Axis::cache()->save($methods, 'payment_methods_list', array('modules'));
         return $methods;
-        
+
     }
-    
+
     /**
      * Retrieve array of installed payment methods
      *
@@ -87,7 +87,7 @@ class Axis_Payment
         }
         return $modules;
     }
-    
+
     /**
      * Retrieve payment method class
      *
@@ -105,7 +105,7 @@ class Axis_Payment
         }
         return self::$_methods[$code];
     }
-    
+
     /**
      * Retrieve the list of allowed methods,
      * according to checkout process request
@@ -116,12 +116,14 @@ class Axis_Payment
      */
     public static function getAllowedMethods($request)
     {
-        function _sortOrder($a, $b)
-        {
-            if ($a['sortOrder'] == $b['sortOrder']) {
-                return 0;
+        if (!function_exists('_sortOrder')) {
+            function _sortOrder($a, $b)
+            {
+                if ($a['sortOrder'] == $b['sortOrder']) {
+                    return 0;
+                }
+                return $a['sortOrder'] < $b['sortOrder'] ? -1 : 1;
             }
-            return $a['sortOrder'] < $b['sortOrder'] ? -1 : 1;
         }
         $checkout = Axis::single('checkout/checkout');
         $currentMethodCode = null;
@@ -130,9 +132,9 @@ class Axis_Payment
             if (!$method->isEnabled() || !$method->isAllowed($request)) {
                 continue;
             }
-            if ($checkout->getPaymentMethodCode() == $method->getCode() || !count($methods)) {
+            if ($checkout->getPaymentMethodCode() == $method->getCode()) {
                 $currentMethodCode = $method->getCode();
-            } 
+            }
             $methods[] = array(
                 'code' => $method->getCode(),
                 'title' => $method->getTitle(),
@@ -145,7 +147,7 @@ class Axis_Payment
             unset($method['sortOrder']);
         }
         return array (
-            'methods' => $methods, 
+            'methods'           => $methods,
             'currentMethodCode' => $currentMethodCode
         );
     }

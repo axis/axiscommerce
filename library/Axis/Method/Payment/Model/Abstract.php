@@ -60,7 +60,15 @@ abstract class Axis_Method_Payment_Model_Abstract extends Axis_Method_Abstract
     }
 
     /**
+     * Validation of order data by payment service
+     * should be called from this method
      *
+     * If invalid data received methods should throw an Exception
+     *
+     * Method can return a redirect url:
+     * array(
+     *  'redirect' => payment aggregator url
+     * )
      */
     public function preProcess() {}
 
@@ -100,11 +108,14 @@ abstract class Axis_Method_Payment_Model_Abstract extends Axis_Method_Abstract
     public function failed(Axis_Sales_Model_Order_Row $order) {return true;}
 
     /**
-     *
      * @param Axis_Sales_Model_Order_Row $order
-     * @return mixed
+     *
+     * Method can return a redirect url:
+     * array(
+     *  'redirect' => payment aggregator url
+     * )
      */
-    public function postProcess(Axis_Sales_Model_Order_Row $order) {}
+    public function postProcess(Axis_Sales_Model_Order_Row $order) { }
 
     /**
      * Return checkout data storage
@@ -173,33 +184,34 @@ abstract class Axis_Method_Payment_Model_Abstract extends Axis_Method_Abstract
             return false;
         }
 
-
         if (null !== $request['shipping_method_code']) {
             $shipping = Axis_Shipping::getMethod($request['shipping_method_code']);
-            // get list of payments that is allowed by selected shipping method, and compare with requested payment method
+            // get list of disallowed payment methods, and compare with requested payment method
             $disallowedPaymentMethods = $shipping->config()->payments->toArray();
             if (in_array($this->getCode(), $disallowedPaymentMethods)) {
                 return false;
             }
 
-            // get list of shippings that is allowed by this method and compare with selected shipping method
+            // get list of disallowed shippings and compare with selected shipping method
             $disallowedShippingMethods = $this->_config->shippings->toArray();
-            if (in_array($shipping->getCode(), $disallowedShippingMethods)) {
+            if (in_array($shipping->getCode(false), $disallowedShippingMethods)) {
                 return false;
             }
         }
+
         if (!isset($this->_config->geozone)
             || !intval($this->_config->geozone)) {
 
             return true;
         }
 
+        if (empty($request['country']['id'])) {
+            return true;
+        }
+
         $zoneId = null;
         if (isset($request['zone']['id'])) {
             $zoneId = $request['zone']['id'];
-        }
-        if (!isset($request['country']['id'])) {
-            return false;
         }
 
         return Axis::single('location/geozone_zone')->inGeozone(

@@ -108,7 +108,7 @@ $productUrl = $this->hurl(array(
         <p class="cart-total"><?php echo $this->translate('checkout')->__('Total')?>:<?php echo $this->currency($this->scTotal);?></p>
         <?php echo $this->button($this->translate('checkout')->__('Proceed to Checkout'), array(
             'class' => 'button btn-checkout',
-            'href' => $this->href('checkout/onepage', true)
+            'href' => $this->href('checkout/onestep', true)
         )) ?>
     </div>
 

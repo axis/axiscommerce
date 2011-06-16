@@ -45,7 +45,7 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
     /**
      * @var array
      */
-    protected $_types = null;
+    protected $_types = array();
 
     /**
      * Construct shipping class method
@@ -155,6 +155,10 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
             }
         }
 
+        if (empty($request['country']['id'])) {
+            return true;
+        }
+
         $zoneId = null;
         if (isset($request['zone']['id'])) {
             $zoneId = $request['zone']['id'];
@@ -191,14 +195,15 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
      * Return shipping code
      *
      * @see library/Axis/Method/Axis_Method_Abstract#getCode()
+     * @param boolean $includeType
      * @return string
      */
-    public function getCode()
+    public function getCode($includeType = true)
     {
 //        if ($type = current(func_get_args())) {
 //            $this->_type = $type;
 //        }
-        if (null !== $this->_type) {
+        if ($includeType && null !== $this->_type) {
             return $this->_code . '_' . $this->_type;
         }
         return $this->_code;

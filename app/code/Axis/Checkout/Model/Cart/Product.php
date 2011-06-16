@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Model
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Model
@@ -38,21 +38,25 @@ class Axis_Checkout_Model_Cart_Product extends Axis_Db_Table
 
     /**
      * Retrieve the list of products including product hurl, options and attributes
-     * 
+     *
      * @param id $shoppingCartId
      * @return array
      */
     public function getProducts($shoppingCartId)
     {
+        $registryIndex = 'checkout/cart_products_' . $shoppingCartId;
+        if (Zend_Registry::isRegistered($registryIndex)) {
+            return Zend_Registry::get($registryIndex);
+        }
+
         $select = $this->select('*')
-            ->where('shopping_cart_id = ?', $shoppingCartId)
-            ;
+            ->where('shopping_cart_id = ?', $shoppingCartId);
         if (!$select->fetchRow()) {
             return array();
         }
         $select
-            ->joinLeft('catalog_product', 
-                'cp.id = ccp.product_id', 
+            ->joinLeft('catalog_product',
+                'cp.id = ccp.product_id',
                 array('sku', 'price', 'image_thumbnail', 'image_listing', 'image_base')
             )->joinLeft('catalog_product_description',
                 'cpd.product_id = ccp.product_id AND cpd.language_id = :languageId',
@@ -61,7 +65,7 @@ class Axis_Checkout_Model_Cart_Product extends Axis_Db_Table
                 'ch.key_id = cp.id AND ch.key_type = "p"',
                 'key_word'
             )->joinLeft('catalog_product_stock',
-                'cps.product_id = cp.id', 
+                'cps.product_id = cp.id',
                 'decimal'
             )->joinLeft('checkout_cart_product_attribute',
                 'ccpa.shopping_cart_product_id = ccp.id',
@@ -79,9 +83,8 @@ class Axis_Checkout_Model_Cart_Product extends Axis_Db_Table
                 array('value_name' => 'name')
             )->order(array('ccp.product_id', 'cpo.id'))
             ->bind(array('languageId' => Axis_Locale::getLanguageId()))
-            ->limit() //reset limit 1
-        ;
-        
+            ->limit(); //reset limit 1
+
         $products = array();
         $productIds = array();
         foreach ($select->fetchAll() as $row) {
@@ -117,31 +120,13 @@ class Axis_Checkout_Model_Cart_Product extends Axis_Db_Table
             $products[$row['id']]['attributes'][$row['shoppingCartProductAttributeId']]
                 = $attributte;
         }
-        
+
         $images = Axis::single('catalog/product_image')->getList($productIds);
         foreach ($products as $product) {
             $products[$product['id']]['images'] = $images[$product['product_id']];
         }
-        return $products;
-    }
-    
-    /**
-     * Retrieve the list of products with minimal using of joins
-     * Returns cart product rows with decimal flag. Used to calculate products count
-     * 
-     * @param id $shoppingCartId
-     * @return array
-     */
-    public function getProductsSimple($shoppingCartId)
-    {
-        return $this->select('*')
-            ->joinLeft(
-                'catalog_product_stock',
-                'cps.product_id = ccp.product_id',
-                'decimal'
-            )
-            ->where('ccp.shopping_cart_id =  ? ', $shoppingCartId)
-            ->query()
-            ->fetchAll();
+
+        Zend_Registry::set($registryIndex, $products);
+        return Zend_Registry::get($registryIndex);
     }
 }

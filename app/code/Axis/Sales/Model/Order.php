@@ -61,10 +61,7 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
 
         $storage = $checkout->getStorage();
 
-        if ($customerId = Axis::getCustomerId()) {
-            $customer = Axis::single('account/customer')
-                ->find($customerId)
-                ->current();
+        if ($customer = Axis::getCustomer()) {
             $orderRow->customer_id = $customer->id;
             $orderRow->customer_email = $customer->email;
         } elseif($storage->asGuest && !$storage->registerGuest) {
@@ -145,21 +142,8 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
             ));
         }
 
-        // SET ORDER STATUS
-        // set order status 'pending' or 'processing'
-        if ($checkout->payment()->config('orderStatusId')) {
-            $orderStatusId = $checkout->payment()->config('orderStatusId');
-        } else {
-            $orderStatusId = Axis::config()->sales->order->defaultStatusId;
-        }
-
-        //@todo make chain of statuses, and apply it
-        if (!in_array($orderStatusId, array(1, 'pending', 2 , 'processing'))) {
-            $orderStatusId = 'pending';
-        } elseif (in_array($orderStatusId, array(2, 'processing'))) {
-            $orderRow->setStatus('pending');
-        }
-        $orderRow->setStatus($orderStatusId);
+        // update product stock
+        $orderRow->setStatus('pending');
 
         // Clear cart after checkout
         if ('development' != Axis::app()->getEnvironment()) {

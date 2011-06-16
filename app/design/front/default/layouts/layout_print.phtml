@@ -23,14 +23,12 @@
         ->setProxy('axis_core')
         ->appendStylesheet('stylesheet.css')
         ->appendStylesheet('print.css', 'print')
-        ->appendStylesheet('custom.css') ?>
+        ->appendStylesheet('custom.css'); ?>
 
     <?php $this->headScript()
         ->setProxy('axis_core')
-        ->appendFile('js/jquery/jquery-1.4.4.min.js')
-        ->appendFile('js/jquery/jquery.validate.min.js')
-        ->appendFile('js/axis/core/script.js')
-        ->appendFile('/js/axis/core/messageStack.js') ?>
+        ->appendFile('js/jquery/jquery-1.6.1.min.js')
+        ->appendFile('js/axis/core/script.js'); ?>
 
     <?php $this->addFilter('Placeholder') ?>
 </head>
@@ -44,8 +42,8 @@
     <?php echo $this->layout()->content;?>
     <div class="button-set">
         <?php echo $this->button($this->translate('core')->__('Close Window'), array(
-            'onclick' => 'window.close();',
-            'class' => 'button btn-close-window'
+            'onclick'   => 'window.close();',
+            'class'     => 'button btn-close-window'
         ), 'button') ?>
     </div>
 </div>

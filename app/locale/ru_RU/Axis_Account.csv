@@ -144,3 +144,5 @@
 "This link is valid for only %d hours, until %s.","Эта ссылка действительна на протяжении %d часов, до %s."
 "Forgotten Password","Забытый пароль"
 "Customer account was created successfully","Акаунт был успешно создан"
+"State(Region) Id","№ Штата(Области)"
+"You can get the id of desired region at admin/location_zone","Идентификатор области можно найти на странице admin/location_zone"

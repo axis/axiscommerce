@@ -86,7 +86,7 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
         }
 
         $this->setTitle(Axis::translate('account')->__('Create an Account'));
-        
+
         $form = Axis::single('account/form_signup');
 
         if ($this->_request->isPost()) {
@@ -96,7 +96,7 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
                 $request['site_id'] = Axis::getSiteId();
                 $request['is_active'] = 1;
                 $result = $mCustomer->save($request);
-                $mCustomer->login($request['email'], $request['password']);
+                $mCustomer->login($request['email'], $result['password']);
 
                 Axis::dispatch('account_customer_register_success', array(
                     'customer' => $mCustomer->find($result['id'])->current(),

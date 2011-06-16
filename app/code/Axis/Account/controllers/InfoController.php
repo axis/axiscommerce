@@ -48,7 +48,7 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
         $this->_helper->layout->disableLayout();
         $this->_redirect('account/info/change');
     }
- 
+
     public function changeAction()
     {
         $this->setTitle(Axis::translate('account')->__('Change Info'));
@@ -71,8 +71,7 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
             }
         } else {
             $data = array();
-            $customer = Axis::single('account/customer')
-                ->find(Axis::getCustomerId())->current();
+            $customer = Axis::getCustomer();
             $extraInfo = $customer->findDependentRowset(
                 'Axis_Account_Model_Customer_Detail'
             );

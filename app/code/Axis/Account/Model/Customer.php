@@ -157,7 +157,7 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
         if (!Axis::getCustomerId()) {
             return;
         }
-        if (!$customer = $this->find(Axis::getCustomerId())->current()) {
+        if (!$customer = Axis::getCustomer()) {
             return $this->logout();
         }
         if (!$customer->is_active) {
@@ -170,14 +170,16 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
 
     /**
      *
-     * @param int $customerId
+     * @param int $customerId [optional]
      * @return int|null
      */
-    public function getGroupId($customerId)
+    public function getGroupId($customerId = null)
     {
         $customerGroupId = null;
 
-        if ($customerId && $row = $this->find($customerId)->current()) {
+        if (!$customerId && $row = Axis::getCustomer()) {
+            $customerGroupId = $row->group_id;
+        } else if ($customerId && $row = $this->find($customerId)->current()) {
             $customerGroupId = $row->group_id;//parent::getGroupId()
         }
 

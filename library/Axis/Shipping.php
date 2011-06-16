@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Shipping
  * @copyright   Copyright 2008-2010 Axis
@@ -24,7 +24,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Shipping
  * @author      Axis Core Team <core@axiscommerce.com>
@@ -36,7 +36,7 @@ class Axis_Shipping
      * @var array
      */
     private static $_methods;
-    
+
     /**
      * Retrieve the list of shipping methods of installed shipping modules
      *
@@ -48,7 +48,7 @@ class Axis_Shipping
         if ($methods = Axis::cache()->load('shipping_methods_list')) {
             return $methods;
         }
-        
+
         $prefix = 'Shipping';
         $modules = Axis::app()->getModules();
         $methods = array();
@@ -77,7 +77,7 @@ class Axis_Shipping
         );
         return $methods;
     }
-    
+
     /**
      * Retrieve array of installed shipping methods
      *
@@ -93,7 +93,7 @@ class Axis_Shipping
         }
         return $methods;
     }
-    
+
     /**
      * Retrieve shipping method class
      *
@@ -105,9 +105,9 @@ class Axis_Shipping
         if (isset(self::$_methods[$code])) {
             return self::$_methods[$code];
         }
-        
+
         list($moduleName, $methodName) = explode('_', $code, 2);
-        
+
         $methodType = null;
         if (strstr($methodName, '_')) {
             list($methodName, $methodType) = explode('_', $methodName, 2);
@@ -116,7 +116,7 @@ class Axis_Shipping
         self::$_methods[$code] = new $className($methodType);
         return self::$_methods[$code];
     }
-    
+
     /**
      * Retrieve the list of allowed methods,
      * according to checkout process request
@@ -144,11 +144,9 @@ class Axis_Shipping
             if (!$method->isEnabled() || !$method->isAllowed($request)) {
                 continue;
             }
-            
-            foreach ($method->getAllowedTypes($request) as $type) {
-                if ($checkout->getShippingMethodCode() == $type['id']
-                    || !count($methods)) {
 
+            foreach ($method->getAllowedTypes($request) as $type) {
+                if ($checkout->getShippingMethodCode() == $type['id']) {
                     $currentMethodCode = $type['id'];
                 }
                 $methods[$method->getCode()][] = $type;
@@ -160,9 +158,9 @@ class Axis_Shipping
         foreach ($methods as &$method) {
             unset($method['sortOrder']);
         }
-        
+
         return array (
-            'methods' => $methods, 
+            'methods'           => $methods,
             'currentMethodCode' => $currentMethodCode
         );
     }
