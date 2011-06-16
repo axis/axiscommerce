@@ -132,7 +132,7 @@ class Axis_Payment
             if (!$method->isEnabled() || !$method->isAllowed($request)) {
                 continue;
             }
-            if ($checkout->getPaymentMethodCode() == $method->getCode() || !count($methods)) {
+            if ($checkout->getPaymentMethodCode() == $method->getCode()) {
                 $currentMethodCode = $method->getCode();
             }
             $methods[] = array(
@@ -147,7 +147,7 @@ class Axis_Payment
             unset($method['sortOrder']);
         }
         return array (
-            'methods' => $methods,
+            'methods'           => $methods,
             'currentMethodCode' => $currentMethodCode
         );
     }

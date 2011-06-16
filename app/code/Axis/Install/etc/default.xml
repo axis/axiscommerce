@@ -816,16 +816,7 @@
         <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
-            <controller>onepage</controller>
-            <action>*</action>
-        </page>
-        <priority>100</priority>
-    </layout>
-    <layout multiple="1">
-        <layout>layout_1column</layout>
-        <page>
-            <module>checkout</module>
-            <controller>wizard</controller>
+            <controller>onestep</controller>
             <action>*</action>
         </page>
         <priority>100</priority>

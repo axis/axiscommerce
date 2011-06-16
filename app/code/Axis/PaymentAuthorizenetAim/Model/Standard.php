@@ -33,35 +33,39 @@
  */
 class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Model_Card_Abstract
 {
-    /**
-     * $code determines the internal 'code' name used to designate "this" payment module
-     *
-     * @var string
-     */
+    const APPROVED  = 1;
+    const DECLINED  = 2;
+    const ERROR     = 3;
+    const HELD      = 4;
+
     protected $_code = 'AuthorizenetAim_Standard';
     protected $_title = 'AuthorizenetAim';
-
     protected $_request;
 
     /**
-     *  Callback setStatus('processing');
-     *
-     * @see Axis_Sales_Model_Status_Run
      * @param Axis_Sales_Model_Order_Row $order
      * @return bool
      */
-    public function processing(Axis_Sales_Model_Order_Row $order)
+    public function postProcess(Axis_Sales_Model_Order_Row $order)
     {
         if ($this->_config->authorizationType === 'Authorize') {
-            $this->_authorize($order);
+            $response = $this->_authorize($order);
         } else {
-            $this->_capture($order);
+            $response = $this->_capture($order);
         }
 
-        $transactionId = $this->getRequest()->getLastTransId();
-        if (null === $transactionId) {
-            return false;
+        if (self::APPROVED != $response->getResponseCode()) {
+            $message = sprintf(
+                "Authorize.Net Error:\n\tResponse Reason Code: %s;\n\tResponse Code: %s;\n\tResponse Reson Text: %s",
+                $response->getResponseReasonCode(),
+                $response->getResponseCode(),
+                $response->getResponseReasonText()
+            );
+            $order->setStatus('failed', $message);
+            $this->log($message);
+            throw new Axis_Exception($response->getResponseReasonText());
         }
+        $this->getRequest()->setLastTransId($response->getTransactionId());
 
         $crypt = Axis_Crypt::factory();
         $cc = $this->getCreditCard();
@@ -70,19 +74,45 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
                   . str_repeat('X', (strlen($ccNumber) - 8))
                   . substr($ccNumber, -4);
 
-
-        return Axis::single('paymentAuthorizenetAim/standard_order')->insert(array(
+        Axis::single('paymentAuthorizenetAim/standard_order')->insert(array(
             'order_id'   => $order->id,
-            'trans_id'   => $transactionId,
+            'trans_id'   => $this->getRequest()->getLastTransId(),
             'cc_type'    => $crypt->encrypt($cc->getCcType()),
             'cc_owner'   => $crypt->encrypt($cc->getCcOwner()),
             'cc_number'  => $crypt->encrypt($ccNumber),
             'cc_expires' => $crypt->encrypt($cc->getCcExpiresMonth() . '/' . $cc->getCcExpiresYear()),
             'cc_issue'   => $crypt->encrypt($cc->getCcIssueMonth() . '/' . $cc->getCcIssueYear()),
             'x_type'     => $this->getRequest()->getAnetTransType(),
-            'x_method'     => $this->getRequest()->getAnetTransMethod(),
-
+            'x_method'   => $this->getRequest()->getAnetTransMethod()
         ));
+    }
+
+    /**
+     * Send authorize request to gateway
+     *
+     * @param   Axis_Sales_Model_Order_Row $order
+     * @return  Axis_Object Authorize.Net response
+     */
+    protected function _authorize(Axis_Sales_Model_Order_Row $order)
+    {
+        $this->getRequest()->setAnetTransType('AUTH_ONLY');
+        return $this->_postRequest(
+            $this->_buildRequest($order)
+        );
+    }
+
+    /**
+     * Send authorize and capture request to gateway
+     *
+     * @param Axis_Sales_Model_Order_Row $order
+     * @return Axis_Object Authorize.Net response
+     */
+    protected function _capture(Axis_Sales_Model_Order_Row $order)
+    {
+        $this->getRequest()->setAnetTransType('AUTH_CAPTURE');
+        return $this->_postRequest(
+            $this->_buildRequest($order)
+        );
     }
 
     /**
@@ -121,69 +151,6 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
     {
         //$this->getCreditCard()->setCcNumber(****) etc
         return $this->_credit($order);
-    }
-
-    /**
-     * Send authorize request to gateway
-     *
-     * @param   Axis_Sales_Model_Order_Row $order
-     * @return  mixed
-     */
-    protected function _authorize(Axis_Sales_Model_Order_Row $order)
-    {
-        $this->getRequest()->setAnetTransType('AUTH_ONLY');
-
-        $result = $this->_postRequest(
-            $this->_buildRequest($order)
-        );
-
-        switch ($result->getResponseCode()) {
-            case 1:
-                $this->getRequest()->setLastTransId($result->getTransactionId());
-                return true;
-                break;
-            case 2:
-                $message = 'Payment authorization transaction has been declined.';
-                break;
-            default:
-                $message = 'Payment authorization error.';
-                break;
-        }
-        $this->log($message);
-        return false;
-    }
-
-    /**
-     *
-     * @param Axis_Sales_Model_Order_Row $order
-     * @return mixed
-     */
-    protected function _capture(Axis_Sales_Model_Order_Row $order)
-    {
-        $transactionId = Axis::single('paymentAuthorizenetAim/standard_order')
-            ->getTransactionId($order->id);
-
-        if (null != $transactionId) {
-            $this->getRequest()->setCcTransId($transactionId);
-            $this->getRequest()->setAnetTransType('PRIOR_AUTH_CAPTURE');
-        } else {
-            $this->getRequest()->setAnetTransType('AUTH_CAPTURE');
-        }
-
-        $result = $this->_postRequest(
-            $this->_buildRequest($order)
-        );
-
-        if ($result->getResponseCode() == 1) {
-            $this->getRequest()->setLastTransId($result->getTransactionId());
-            return true;
-        }
-        $message = 'Error in capturing the payment';
-        if ($result->getResponseReasonText()) {
-            $message = $result->getResponseReasonText();
-        }
-        $this->log($message);
-        return false;
     }
 
     protected function _void(Axis_Sales_Model_Order_Row $order)
@@ -260,7 +227,7 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
             ->setXType($request->getAnetTransType())
             ->setXMethod($request->getAnetTransMethod());
 
-        if($order->getAmount()){
+        if ($order->getAmount()) {
             $request->setXAmount(Axis::single('locale/currency')->convert(
                 $order->getAmount(),
                 $order->currency,
@@ -320,13 +287,12 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
                 $cc = $this->getCreditCard();
                 if ($cc->getCcNumber()) {
                     $request->setXCardNum($cc->getCcNumber())
-
-                    ->setXExpDate(sprintf(
-                        '%02d-%02d',
-                        $cc->getCcExpiresMonth(),
-                        $cc->getCcExpiresYear()
-                    ))
-                    ->setXCardCode($cc->getCcCvv());
+                        ->setXExpDate(sprintf(
+                            '%02d-%02d',
+                            $cc->getCcExpiresMonth(),
+                            $cc->getCcExpiresYear()
+                        ))
+                        ->setXCardCode($cc->getCcCvv());
                 }
                 break;
 

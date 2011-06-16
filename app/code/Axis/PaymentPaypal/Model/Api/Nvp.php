@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * paypal_curl.php communications class for Paypal Express Checkout / Website Payments Pro / Payflow Pro payment methods
  *
@@ -9,7 +9,7 @@
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version     $Id: paypal_curl.php 7558 2007-11-30 17:54:43Z drbyte $
  */
- 
+
  /**
  * PayPal NVP (v3.2) and Payflow Pro (v4 HTTP API) implementation via cURL.
  *
@@ -18,13 +18,13 @@
  * @subpackage  Axis_PaymentPaypal_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_PaymentPaypal_Model_Api_Nvp 
+class Axis_PaymentPaypal_Model_Api_Nvp
 {
     /**
      * Debug or production?
      */
     private $_server = null;
-    
+
     /**
      * URL endpoints -- defaults here are for three-token NVP implementation
      */
@@ -37,16 +37,16 @@ class Axis_PaymentPaypal_Model_Api_Nvp
      * Options for cURL. Defaults to preferred (constant) options.
      */
     private $_curlOptions = array(
-        CURLOPT_HEADER          => 0, 
-        CURLOPT_RETURNTRANSFER  => 1, 
-        CURLOPT_TIMEOUT         => 60, 
-        CURLOPT_FOLLOWLOCATION  => 0, 
-        CURLOPT_SSL_VERIFYPEER  => 0, 
-        CURLOPT_SSL_VERIFYHOST  => 2, 
-        CURLOPT_FORBID_REUSE    => true, 
+        CURLOPT_HEADER          => 0,
+        CURLOPT_RETURNTRANSFER  => 1,
+        CURLOPT_TIMEOUT         => 60,
+        CURLOPT_FOLLOWLOCATION  => 0,
+        CURLOPT_SSL_VERIFYPEER  => 0,
+        CURLOPT_SSL_VERIFYHOST  => 2,
+        CURLOPT_FORBID_REUSE    => true,
         CURLOPT_POST            => 1
     );
-    
+
     /**
      * Parameters that are always required and that don't change
      * request to request.
@@ -57,24 +57,24 @@ class Axis_PaymentPaypal_Model_Api_Nvp
     private $_pwd;
     private $_version;
     private $_signature;
-    
+
     /**
      * nvp or payflow?
      */
     private $_mode = 'nvp';
-    
+
     /**
      * Sales or authorizations? For the U.K. this will always be 'S'
      * (Sale) because of Switch and Solo cards which don't support
      * authorizations. The other option is 'A' for Authorization.
      */
     private $_trxtype = 'S';
-    
+
     /**
      * Store the last-generated name/value list for debugging.
      */
     private $lastParamList = null;
-    
+
     /**
      * Store the last-generated headers for debugging.
      */
@@ -83,7 +83,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
     /**
      * Constructor. Sets up communication infrastructure.
      */
-    public function __construct($code = 'Paypal_Express') 
+    public function __construct($code = 'Paypal_Express')
     {
         if (Axis::config()->payment->{$code}->mode == 'payflow') {
             $this->_mode = 'payflow';
@@ -102,7 +102,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         $this->_version = Axis::config()->payment->nvp->version;
 
     }
-    
+
     /**
      * SetExpressCheckout
      *
@@ -112,7 +112,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
      * The token returned to this function is passed to PayPal in
      * order to link their PayPal selections to their cart actions.
      */
-    public function SetExpressCheckout($amount, $returnUrl, $cancelUrl, $optional = array()) 
+    public function SetExpressCheckout($amount, $returnUrl, $cancelUrl, $optional = array())
     {
         $values = array_merge($optional, array(
             'AMT' => $amount,
@@ -141,13 +141,13 @@ class Axis_PaymentPaypal_Model_Api_Nvp
          */
         return $this->_request($values, 'SetExpressCheckout');
     }
-    
+
     /**
      * GetExpressCheckoutDetails
      *
      * When customer returns from PayPal site, this retrieves their payment/shipping data for use in Zen Cart
      */
-    public function GetExpressCheckoutDetails($token, $optional = array()) 
+    public function GetExpressCheckoutDetails($token, $optional = array())
     {
         $values = array_merge($optional, array('TOKEN' => $token));
         if ($this->_mode == 'payflow') {
@@ -161,13 +161,13 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         }
         return $this->_request($values, 'GetExpressCheckoutDetails');
     }
-    
+
     /**
      * DoExpressCheckoutPayment
      *
      * Completes the sale using PayPal as payment choice
      */
-    public function DoExpressCheckoutPayment($token, $payerId, $amount, $optional = array()) 
+    public function DoExpressCheckoutPayment($token, $payerId, $amount, $optional = array())
     {
         $values = array_merge($optional, array(
             'TOKEN' => $token,
@@ -189,7 +189,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         }
         return $this->_request($values, 'DoExpressCheckoutPayment');
     }
-    
+
     /**
      * DoDirectPayment
      * Sends CC information to gateway for processing.
@@ -198,14 +198,14 @@ class Axis_PaymentPaypal_Model_Api_Nvp
      *
      * PAYMENTACTION = Authorization (auth/capt) or Sale (final)
      */
-    public function DoDirectPayment($amount, $cc, $cvv2 = '', $exp, $fname = null, $lname = null, $cc_type, $options = array(), $nvp = array()) 
+    public function DoDirectPayment($amount, $cc, $cvv2 = '', $exp, $fname = null, $lname = null, $cc_type, $options = array(), $nvp = array())
     {
         $values = $options;
         $values['AMT'] = $amount;
         $values['ACCT'] = $cc;
         if ($cvv2 != '')
             $values['CVV2'] = $cvv2;
-            
+
         if ($this->_mode == 'payflow') {
             $values['EXPDATE'] = $exp;
             $values['TENDER'] = 'C';
@@ -223,7 +223,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
             $values['NOTIFYURL'] = urlencode($view->href('paymentpaypal/express'));
             if (!isset($values['PAYMENTACTION']))
                 $values['PAYMENTACTION'] = ($this->_trxtype == 'S' ? 'Sale' : 'Authorization');
-                
+
             if (isset($values['COUNTRY']))
                 unset($values['COUNTRY']);
             if (isset($values['NAME']))
@@ -238,13 +238,13 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         ksort($values);
         return $this->_request($values, 'DoDirectPayment');
     }
-    
+
     /**
      * RefundTransaction
      *
      * Used to refund all or part of a given transaction
      */
-    public function RefundTransaction($oID, $txnID, $amount = 'Full', $note = '') 
+    public function RefundTransaction($oID, $txnID, $amount = 'Full', $note = '')
     {
         if ($this->_mode == 'payflow') {
             $values['ORIGID'] = $txnID;
@@ -266,13 +266,13 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         }
         return $this->_request($values, 'RefundTransaction');
     }
-    
+
     /**
      * DoVoid
      *
      * Used to void a previously authorized transaction
      */
-    public function DoVoid($txnID, $note = '') 
+    public function DoVoid($txnID, $note = '')
     {
         if ($this->_mode == 'payflow') {
             $values['ORIGID'] = $txnID;
@@ -287,13 +287,13 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         }
         return $this->_request($values, 'DoVoid');
     }
-    
+
     /**
      * DoAuthorization
      *
      * Used to authorize part of a previously placed order which was initiated as authType of Order
      */
-    public function DoAuthorization($txnID, $amount = 0, $currency = 'USD', $entity = 'Order') 
+    public function DoAuthorization($txnID, $amount = 0, $currency = 'USD', $entity = 'Order')
     {
         $values['TRANSACTIONID'] = $txnID;
         $values['AMT'] = number_format($amount, 2, '.', ',');
@@ -301,26 +301,26 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         $values['CURRENCYCODE'] = $currency;
         return $this->_request($values, 'DoAuthorization');
     }
-    
+
     /**
      * DoReauthorization
      *
      * Used to reauthorize a previously-authorized order which has expired
      */
-    public function DoReauthorization($txnID, $amount = 0, $currency = 'USD') 
+    public function DoReauthorization($txnID, $amount = 0, $currency = 'USD')
     {
         $values['AUTHORIZATIONID'] = $txnID;
         $values['AMT'] = number_format($amount, 2, '.', ',');
         $values['CURRENCYCODE'] = $currency;
         return $this->_request($values, 'DoReauthorization');
     }
-    
+
     /**
      * DoCapture
      *
      * Used to capture part or all of a previously placed order which was only authorized
      */
-    public function DoCapture($txnID, $amount = 0, $currency = 'USD', $captureType = 'Complete', $invNum = '', $note = '') 
+    public function DoCapture($txnID, $amount = 0, $currency = 'USD', $captureType = 'Complete', $invNum = '', $note = '')
     {
         if ($this->_mode == 'payflow') {
             $values['ORIGID'] = $txnID;
@@ -343,13 +343,13 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         }
         return $this->_request($values, 'DoCapture');
     }
-    
+
     /**
      * GetTransactionDetails
      *
      * Used to read data from PayPal for a given transaction
      */
-    public function GetTransactionDetails($txnID) 
+    public function GetTransactionDetails($txnID)
     {
         if ($this->_mode == 'payflow') {
             $values['ORIGID'] = $txnID;
@@ -361,13 +361,13 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         }
         return $this->_request($values, 'GetTransactionDetails');
     }
-    
+
     /**
      * TransactionSearch
      *
      * Used to read data from PayPal for specified transaction criteria
      */
-    public function TransactionSearch($startdate, $txnID = '', $email = '', $options) 
+    public function TransactionSearch($startdate, $txnID = '', $email = '', $options)
     {
         if ($this->_mode == 'payflow') {
             $values['CUSTREF'] = $txnID;
@@ -383,31 +383,29 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         }
         return $this->_request($values, 'TransactionSearch');
     }
-    
+
     /**
      * Set a parameter as passed.
      */
-    public function setParam($name, $value) 
+    public function setParam($name, $value)
     {
         $name = '_'.$name;
         $this->$name = $value;
     }
-    
+
     /**
      * Set cURL options.
      */
-    public function setCurlOption($name, $value) 
+    public function setCurlOption($name, $value)
     {
         $this->_curlOptions[$name] = $value;
     }
-    
+
     /**
      * Send a request to endpoint.
      */
-    protected function _request($values, $operation, $requestId = null) 
+    protected function _request($values, $operation, $requestId = null)
     {
-        /*if (isset($values['in']))
-         unset($values['in']);*/
         if ($this->_mode == 'nvp') {
             $values['METHOD'] = $operation;
         }
@@ -425,7 +423,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         if (null === $requestId) {
             $requestId = md5(uniqid(mt_rand()));
         }
-        
+
         $headers[] = 'Content-Type: text/namevalue';
         $headers[] = 'X-VPS-Timeout: 45';
         $headers[] = "X-VPS-VIT-Client-Type: PHP/cURL";
@@ -436,31 +434,31 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         }
         $headers[] = 'X-VPS-VIT-Integration-Version: 1.3.8a';
         $this->lastHeaders = $headers;
-        
+
         $ch = curl_init();
-        //
+
         //turning off the server and peer verification(TrustManager Concept).
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        
+
         curl_setopt($ch, CURLOPT_URL, $this->_endpoints[$this->_server]);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_buildNameValueList($values));
         foreach ($this->_curlOptions as $name => $value) {
             curl_setopt($ch, $name, $value);
         }
-        
+
         $response = curl_exec($ch);
         $commError = curl_error($ch);
         $commErrNo = curl_errno($ch);
-        
+
         $commInfo = @curl_getinfo($ch);
         curl_close($ch);
-        
+
         $rawdata = "CURL raw data:\n" . $response . "CURL RESULTS: (" . $commErrNo.') ' . $commError . "\n" . print_r($commInfo, true)."\nEOF";
         $errors = ($commErrNo != 0 ? "\n(".$commErrNo.') '.$commError : '');
         $response .= '&CURL_ERRORS='.($commErrNo != 0 ? urlencode('('.$commErrNo.') '.$commError) : '');
-        $response .= ($commErrNo != 0 ? '&CURL_INFO='.urlencode($commInfo) : '');
+        $response .= ($commErrNo != 0 ? '&CURL_INFO='.urlencode(implode(',', $commInfo)) : '');
         if ($response) {
             $response = $this->_parseNameValueList($response);
         } else {
@@ -469,7 +467,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         $response['in'] = $values;
         return $response;
     }
-    
+
     /**
      * Take an array of name-value pairs and return a properly
      * formatted list. Enforces the following rules:
@@ -483,7 +481,7 @@ class Axis_PaymentPaypal_Model_Api_Nvp
      * returns false, and the caller must abort and not proceed with
      * the transaction.
      */
-    protected function _buildNameValueList($pairs) 
+    protected function _buildNameValueList($pairs)
     {
         // Add the parameters that are always sent.
         $commpairs = array();
@@ -503,9 +501,9 @@ class Axis_PaymentPaypal_Model_Api_Nvp
         if ($this->_signature != '')
             $commpairs['SIGNATURE'] = trim($this->_signature);
         $pairs = array_merge($pairs, $commpairs);
-        
+
         //if (PAYPAL_DEV_MODE == 'true') $this->log('_buildNameValueList - breakpoint 1 - pairs+commpairs: ' . print_r($pairs, true));
-        
+
         $string = array();
         foreach ($pairs as $name=>$value) {
             if (preg_match('/[^A-Z_0-9]/', $name)) {
@@ -524,17 +522,17 @@ class Axis_PaymentPaypal_Model_Api_Nvp
                 $string[] = $name.'='.$value;
             }
         }
-        
+
         $this->lastParamList = implode('&', $string);
         return $this->lastParamList;
     }
-    
+
     /**
      * Take a name/value response string and parse it into an
      * associative array. Doesn't handle length tags in the response
      * as they should not be present.
      */
-    protected function _parseNameValueList($string) 
+    protected function _parseNameValueList($string)
     {
         $string = str_replace('&amp;', '|', $string);
         $pairs = explode('&', str_replace(array("\r\n", "\n"), '', $string));

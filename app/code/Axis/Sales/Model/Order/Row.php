@@ -84,17 +84,17 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         /* save Status History */
         $this->addComment($comments, $notifyCustomer, $statusId);
 
-        $message = Axis::translate('sales')->__(
-            "Order status was changed to %s", $status
-        );
-        if ($status == 'failed' && Axis_Area::isFrontend()) {
-            Axis::message()->addError($message);
-            if (!$retMethod) {
-                Axis::message()->addError($comments);
-            }
-        } else {
-            Axis::message()->addSuccess($message);
-        }
+//        $message = Axis::translate('sales')->__(
+//            "Order status was changed to %s", $status
+//        );
+//        if ($status == 'failed' && Axis_Area::isFrontend()) {
+//            Axis::message()->addError($message);
+//            if (!$retMethod) {
+//                Axis::message()->addError($comments);
+//            }
+//        } else {
+//            Axis::message()->addSuccess($message);
+//        }
         return $retMethod;
     }
 
@@ -262,7 +262,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
                 ->fetchRow()
                 ->toArray();
         }
-        
+
         if ($this->billing_state) {
             $zone = Axis::single('location/zone')->select()
                 ->where('name = ?', $this->billing_state)
@@ -364,7 +364,5 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
                 substr($numberPattern, 0, strlen($numberPattern) - strlen($id)) . $id : $id);
         }
         return parent::save();
-
     }
-
 }

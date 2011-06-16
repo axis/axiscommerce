@@ -45,9 +45,10 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
     public function getAddress($address)
     {
         if (is_array($address)) {
-
-            $countryId = isset($address['country_id']) ? $address['country_id'] : false;
-            $zoneId = isset($address['zone_id']) ? $address['zone_id'] : false;
+            $countryId  = isset($address['country_id']) ?
+                $address['country_id'] : false;
+            $zoneId     = isset($address['zone_id']) ?
+                $address['zone_id'] : false;
         } else {
            $address = $this->find($address)->current();
             if (!$address instanceof Axis_Db_Table_Row) {
@@ -57,6 +58,7 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
             $zoneId    = $address->zone_id ? $address->zone_id : false;
             $address   = $address->toArray();
         }
+
         if ($countryId) {
             $address['country'] = Axis::single('location/country')
                 ->find($countryId)

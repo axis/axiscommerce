@@ -1,5 +1,5 @@
-<div class="payment-additional" style="display:none;">
-    <dl class="form" id="extra-fields-<?php echo $this->payment->getCode();?>">
+<div id="extra-fields-<?php echo $this->payment->getCode();?>" class="payment-additional" style="display:none;">
+    <dl>
         <dt><?php echo$this->translate('PaymentCheckMoney')->__("Make Check payable to")?>:</dt>
         <dd><?php echo $this->payment->config('sendCheckTo') ?></dd>
         <dt><?php echo$this->translate('PaymentCheckMoney')->__("Send Check to")?>:</dt>

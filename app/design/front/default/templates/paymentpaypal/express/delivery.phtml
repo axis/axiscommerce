@@ -16,9 +16,30 @@ $(document).ready(function() {
     });
 });
 </script>
-<form action="<?php echo $this->href('/paymentpaypal/express/set-delivery', true);?>">
+<form action="<?php echo $this->href('paymentpaypal/express/set-delivery', true);?>">
     <div>
-        <?php echo $this->render('checkout/onepage/address-list.phtml'); ?>
+        <?php echo $this->message();
+        $addressArray = array(
+            0 => 'New Address'
+        );
+        foreach ($this->addressList as $address) :
+            $addressArray[$address->id] = trim($this->address($address, ', '), ', ');
+        endforeach;
+
+        echo $this->formSelect(
+            $this->escape($this->addressType) . '-id',
+            $this->selectedAddressId,
+            array(
+                'onchange' => 'Address.onChange(this)'
+            ),
+            $addressArray
+        );
+        if (!count($this->addressList)) : ?>
+            <script type="text/javascript">
+                Address.create();
+            </script>
+        <?php endif; ?>
+
         <a href="javascript:void(0)" class="link-blue" onclick="$('#new-delivery').show();">
             <?php echo $this->translate('checkout')->__('Create New Address')?>
         </a>

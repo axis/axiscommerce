@@ -113,20 +113,3 @@ function decorateTable(table){
         }
     }
 }
-/* Hide-Show CVV-Help */
-function toggleCvv(){
-    if ($('.helpCvv').length) {
-        $('.helpCvv').remove();
-    } else {
-        var offset = BrowserWindow.getScrollOffset();
-        var screen = BrowserWindow.getViewportSize();
-        $('body').append('<div class="helpCvv">' +
-        'Enter numbers from yor credit card<a class="Cvv-close" href="#" onclick = "return toggleCvv()"></a>' +
-        '</div>');
-        $('.helpCvv').css({
-            'left': offset.left + screen.width / 2 - 125,
-            'top': offset.top + 100
-        });
-    }
-    return false;
-}

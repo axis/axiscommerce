@@ -1,0 +1,43 @@
+<?php $this->headScript()->appendFile('js/axis/checkout/onestep.js'); ?>
+
+<div class="page-title">
+    <h1 class="title">
+        <?php echo $this->pageTitle ?>
+        <?php if (!Axis::getCustomerId()) : ?>
+<!--             <a class="onestep-login" href="#">Already registered? Log in, please</a> -->
+        <?php endif; ?>
+    </h1>
+</div>
+
+<?php //echo $this->message() ?>
+
+<form method="post" action="<?php echo $this->href('checkout/onestep/process', true)?>" id="form-checkout">
+    <div class="onestep-set">
+        <div class="col-address">
+            <?php echo $this->render('checkout/onestep/billing-address.phtml') ?>
+            <?php if (Axis::config('checkout/address_form/shipping_address_enabled')) : ?>
+                <?php echo $this->render('checkout/onestep/delivery-address.phtml') ?>
+            <?php endif; ?>
+        </div>
+        <div class="col-shipping-payment">
+            <?php echo $this->render('checkout/onestep/shipping-method.phtml') ?>
+            <?php echo $this->render('checkout/onestep/payment-method.phtml') ?>
+            <?php echo $this->render('checkout/onestep/review.phtml') ?>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+Onestep.init({
+    urls: {
+        billing_address : '<?php echo $this->href('checkout/onestep/update-billing-address', true) ?>',
+        delivery_address: '<?php echo $this->href('checkout/onestep/update-delivery-address', true) ?>',
+        shipping_method : '<?php echo $this->href('checkout/onestep/update-shipping-method', true) ?>',
+        payment_method  : '<?php echo $this->href('checkout/onestep/update-payment-method', true) ?>',
+        shopping_cart   : '<?php echo $this->href('checkout/onestep/update-shopping-cart', true) ?>'
+    },
+    zones: <?php echo Zend_Json::encode($this->checkout['form_billing_address']->getZones()); ?>,
+    ajax: <?php echo Zend_Json::encode(Axis::config('checkout/onestep_ajax')->toArray()); ?>
+
+});
+</script>

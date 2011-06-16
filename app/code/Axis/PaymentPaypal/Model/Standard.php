@@ -36,15 +36,15 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
     protected $_code = 'Paypal_Standard';
     protected $_title = 'PayPal Standard';
 
-    public function pending(Axis_Sales_Model_Order_Row $order)
+    public function postProcess(Axis_Sales_Model_Order_Row $order)
     {
         $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
         $delivery = $order->getDelivery();
         $formFields = array(
             'business'          => $this->_config->email,
-            'return'            => $view->href('/paymentpaypal/standard/success'),
-            'cancel_return'     => $view->href('/paymentpaypal/standard/cancel/invoice/' . $order->id),
-            'notify_url'        => $view->href('/paymentpaypal/standard/ipn'),
+            'return'            => $view->href('paymentpaypal/standard/success'),
+            'cancel_return'     => $view->href('paymentpaypal/standard/cancel'),
+            'notify_url'        => $view->href('paymentpaypal/standard/ipn'),
             'invoice'           => $order->id,
             'address_override'  => 1,
             'first_name'        => $delivery->getFirstname(),
@@ -92,7 +92,7 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
         } else {
             $formFields = array_merge($formFields, array(
                 'cmd'       => '_cart',
-                'upload'       => '1',
+                'upload'    => '1',
             ));
             $products = $order->getProducts();
 
@@ -112,7 +112,7 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
                     }
                     $i++;
                 }
-           }
+            }
         }
         $totals = $order->getTotals();
 
@@ -144,7 +144,9 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
 
         $this->getStorage()->formFields = $rArr;
 
-        return true;
+        return array(
+            'redirect' => $view->href('paymentpaypal/standard/submit')
+        );
     }
 
     /**
@@ -222,8 +224,6 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
            );
         }
 
-        $order->setStatus('processing'/* or int 2*/, $message, true);
-
-        return;
+        $order->setStatus('processing', $message, true);
     }
 }

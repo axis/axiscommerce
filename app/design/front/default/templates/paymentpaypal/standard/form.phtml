@@ -1,5 +1,3 @@
-<div class="payment-additional" style="display:none;">
-    <div class="form" id="extra-fields-<?php echo $this->payment->getCode();?>">
-        <?php echo $this->translate('PaymentPaypal')->__('You will be redirected to PayPal website when you place an order'); ?>.
-    </div>
+<div id="extra-fields-<?php echo $this->payment->getCode();?>" class="payment-additional" style="display:none;">
+    <?php echo $this->translate('PaymentPaypal')->__('You will be redirected to PayPal website when you place an order'); ?>.
 </div>

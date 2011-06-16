@@ -146,9 +146,7 @@ class Axis_Shipping
             }
 
             foreach ($method->getAllowedTypes($request) as $type) {
-                if ($checkout->getShippingMethodCode() == $type['id']
-                    || !count($methods)) {
-
+                if ($checkout->getShippingMethodCode() == $type['id']) {
                     $currentMethodCode = $type['id'];
                 }
                 $methods[$method->getCode()][] = $type;
@@ -162,7 +160,7 @@ class Axis_Shipping
         }
 
         return array (
-            'methods' => $methods,
+            'methods'           => $methods,
             'currentMethodCode' => $currentMethodCode
         );
     }

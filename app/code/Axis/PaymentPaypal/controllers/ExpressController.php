@@ -84,7 +84,7 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
 
         $this->_payment = Axis::single('paymentPaypal/express');
         if (!$this->_getPayment()->isEnabled()) {
-            $this->_redirect('/checkout/cart');
+            $this->_redirect('checkout/cart');
         }
     }
 
@@ -92,7 +92,7 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
     {
         //SetExpressCheckout get token
         if (!$this->_getPayment()->runSetExpressCheckout()) {
-            $this->_redirect('/checkout/cart');
+            $this->_redirect('checkout/cart');
         }
 
         $this->_getCheckout()->setPaymentMethodCode(
@@ -117,15 +117,14 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
     public function detailsAction()
     {
         if (empty($this->_getPayment()->getStorage()->token)) {
-            $this->_redirect('/paymentpaypal/express/index');
+            $this->_redirect('paymentpaypal/express/index');
         }
 
         $response = $this->_getPayment()->runGetExpressCheckoutDetails();
 
         if (empty($this->_getPayment()->getStorage()->payer['payer_id'])) {
-
             $this->_getPayment()->getStorage()->token = null;
-            $this->_redirect('/paymentpaypal/express/index');
+            $this->_redirect('paymentpaypal/express/index');
         }
 
         if ($response) {
@@ -157,14 +156,14 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
             )));
         }
         if (!$this->_getCheckout()->getDelivery() instanceof Axis_Address) {
-            $this->_redirect('/paymentpaypal/express/delivery');
+            $this->_redirect('paymentpaypal/express/delivery');
         }
 
         if (null === $this->_getCheckout()->getShippingMethodCode()) {
-            $this->_redirect('/paymentpaypal/express/shipping-method');
+            $this->_redirect('paymentpaypal/express/shipping-method');
         }
         if (true == $this->_getPayment()->getStorage()->markflow) {
-            $this->_redirect('/paymentpaypal/express/process');
+            $this->_redirect('paymentpaypal/express/process');
         }
 
         $this->_forward('confirmation');
@@ -204,6 +203,14 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
         $this->render('delivery');
     }
 
+    public function shippingMethodAction()
+    {
+        $this->view->shippingMethods = Axis_Shipping::getAllowedMethods(
+            $this->_getCheckout()->getShippingRequest()
+        );
+        $this->render('shipping');
+    }
+
     public function setShippingMethodAction()
     {
         $methodCode = $this->_getParam('method');
@@ -236,7 +243,7 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
             $this->_redirect('/paymentpaypal/express/shipping-method');
         }
 
-        $this->_getCheckout()->setShippingMethodCode($methodCode);
+        $this->_getCheckout()->setShippingMethod($methodCode);
         $this->_redirect('/paymentpaypal/express/confirmation');
     }
 
@@ -276,45 +283,44 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
     public function processAction()
     {
         $checkout = $this->_getCheckout();
-        $total = $checkout->getTotal()->getTotal();
-
         $response = $this->_getPayment()->runDoExpressCheckoutPayment();
-        if (!$response) {
-            $this->_redirect('/paymentpaypal/express/cancel');
+
+        // onestep|wizard checkout
+        $orderId = $checkout->getOrderId();
+        if ($orderId
+            && $order = Axis::model('sales/order')->find($orderId)->current()) {
+
+            // delivery address can be changed on paypal side
+            // @TODO can it? afaik it could be changed only with express button pressed in shopping cart
+//            $order->setFromArray($checkout->getDelivery()->toArray());
+//            $order->save();
+
+            if (!$response) {
+                $order->setStatus('failed');
+                return $this->_redirect('checkout/cart');
+            }
+
+            return $this->_redirect('checkout/index/success');
         }
 
+        // express checkout button in shopping cart
+        if (!$response) {
+            return $this->_redirect('paymentpaypal/express/cancel');
+        }
         if (empty($this->_getPayment()->getStorage()->payer['payer_email'])) {
-
             $delivery = $checkout->getDelivery();
-
             $this->_getPayment()->getStorage()->payer['payer_email'] =
                 $delivery->firstname . ' ' . $delivery->lastname;
         }
 
         $checkout->setBilling(array(
             'firstname' => 'Paypal Account: ',
-            'lastname' => $this->_getPayment()->getStorage()->payer['payer_email']
-//            'phone' => '',
-//            'fax' => '',
-//            'company' => '',
-//            'street_address' => '',
-//            'suburb' => '',
-//            'city' => '',
-//            'postcode' => '',
-//            'state' => '',
-//            'country' => '',
-//            'address_format_id' => 1,
+            'lastname'  => $this->_getPayment()->getStorage()->payer['payer_email']
         ));
 
         $checkout->getStorage()->customer_comment = $this->_getParam('comment');
-
         $order = Axis::single('sales/order')->createFromCheckout();
-
         $checkout->setOrderId($order->id);
-
-//        $this->_getPayment()->postProcess($order);
-
-        $this->_getPayment()->clear();
 
         $this->_redirect('checkout/index/success');
     }
@@ -324,8 +330,7 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
      */
     public function cancelAction()
     {
-        $this->_getPayment()->clear();
-        $this->_redirect('/checkout/cancel');
+        $this->_redirect('checkout/cancel');
     }
 
     public function editAction()

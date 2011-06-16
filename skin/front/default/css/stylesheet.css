@@ -89,6 +89,7 @@ option, optgroup { font:1em arial, helvetica, sans-serif; }
 optgroup { font-weight:bold; }
 textarea { overflow:auto; }
 input.input-text, textarea { padding:2px; }
+select { padding: 1px; }
 input.radio { margin-right:3px; }
 input.checkbox { margin-right:3px; }
 
@@ -116,8 +117,9 @@ input.checkbox { margin-right:3px; }
 .axis-form .actions button { margin-left: 5px; }
 
 input.error, select.error, textarea.error { border: 1px dashed #ef9c9c; background: #f8e2da; }
-div.error, p.error, label.error, ul.errors li { font-size: .9em; color: #b30000;
-    display: block; clear: both; padding: 0; font-weight: bold; }
+div.error, p.error, label.error, ul.errors li {
+    font-size: .9em; display: block; clear: both; padding: 0; font-weight: bold;
+    color: #b30000 !important; float: none !important; width: auto !important; }
 ul.errors { padding: 0; }
 div.success, p.success { font-size: 1em; background:#EFF5EA none repeat scroll 0 0;
     border-color: #446423; color:#3D6611; }
@@ -277,7 +279,7 @@ dl.attributes-list dd { padding-left: 10px; }
 .header-top #locale-form { float: left; }
 .header-top #locale-form label { font-weight: normal; font-size: .9em; color: #a1b9f9; }
 
-.quick-links { float: right; }
+.quick-links { float: right; margin-top: 2px; }
 .quick-links li { float: left; padding: 0 0 0 7px; margin-right: 5px;
     background: url(../images/common.gif) no-repeat -206px -187px; }
 .quick-links li.first { padding: 0; background: none; }
@@ -1119,6 +1121,146 @@ a.review-stars { outline: none; }
 }
 
 /* Checkout page */
+.onestep-login {
+    float: right;
+    font: normal 12px Arial, Helvetica, sans-serif;
+    background: #dd5c06;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #e64545;
+    padding: 5px 10px;
+    margin: 3px 0 0 0;
+    border-radius: 3px;
+}
+.onestep-login:hover {
+    background: #eb6004;
+}
+.onestep-set {}
+.onestep-set:after { content: '.'; display: block; clear: both; height: 0; font-size: 0; visibility: hidden; }
+.onestep-set .box {
+    background: #f6f6f6 url(../images/box.gif) repeat-x 0 0;
+    border: 1px solid #dfdfdf;
+    border-radius: 10px 10px 10px 10px;
+    margin-bottom: 5px;
+}
+.onestep-set .box .head {
+    margin: 0;
+    border: 1px solid #fff;
+    border-width: 1px 0 1px 0;
+    border-color: #fff #fff #dfdfdf;
+    border-radius: 10px 10px 0 0;
+    padding: 6px 7px 4px;
+}
+.onestep-set .box .head .number {
+    border: 1px solid #fff;
+    border-radius: 3px;
+    background: #b0b0b0;
+    color: #fff;
+    padding: 1px 5px;
+    margin: 0 2px 0 0;
+    font-weight: bold;
+}
+.onestep-set .box .content {
+    border-top: 1px solid #fff;
+    padding: 8px 5px 3px;
+}
+
+.onestep-set label.error { margin: 0 0 8px 0 !important; padding: 0 0 0 92px !important; }
+.onestep-set .loading { opacity: 0.3; }
+#osc-ajax-loader {
+    position: absolute;
+    width: 120px;
+    height: 60px;
+    margin: -30px 0 0 -60px;
+    box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+    border: 1px solid #fff;
+    background: #fafafa url(../images/ajax-loader.gif) no-repeat 50% 50%;
+    cursor: wait;
+}
+#osc-mask {
+    position: absolute;
+    cursor: wait;
+}
+
+.onestep-set .col-address { float: left; width: 300px; }
+.onestep-set .col-address fieldset { border: none; margin: 0; padding: 0; }
+.onestep-set .col-address fieldset .legend { display: none; }
+.onestep-set .box-address-form { clear: both; }
+.onestep-set .box-address-form li { margin: 0 0 3px 0; padding: 0 5px; clear: left; }
+.onestep-set .box-address-form label { float: left; width: 90px; padding: 2px 0 0 0; margin-right: 4px; }
+.onestep-set .box-address-form label[for="billing_address-register"],
+.onestep-set .box-address-form label[for="billing_address-use_for_delivery"] { width: 160px; }
+.onestep-set .box-address-form .input-text { width: 178px; }
+.onestep-set .box-address-form select { width: 184px; }
+.onestep-set #billing_address-id,
+.onestep-set #delivery_address-id { width: 288px; margin: 0 0 10px; }
+
+.onestep-set .col-shipping-payment { float: right; width: 640px; }
+.onestep-set .shipping-methods { float: left; width: 315px; }
+.onestep-set .payment-methods { float: right; width: 315px; }
+.onestep-set .shipping-method,
+.onestep-set .payment-method { background: none; border: none; margin-bottom: 5px; }
+.onestep-set .shipping-method-title,
+.onestep-set .payment-method-title { padding: 0; }
+.onestep-set #shipping-required,
+.onestep-set #payment-required {
+    padding: 5px 8px 5px 32px !important;
+    background: #faebe7 url(../images/delete.png) no-repeat 10px 7px;
+    border: 1px solid #f16048;
+    color: #df280a !important;
+    font-size: 1em;
+}
+.onestep-set .method-reset {
+    float: right;
+    border: 1px solid #aaa;
+    text-shadow: 0 1px 0 #fff;
+    background: #ddd;
+    padding: 1px 4px 0;
+    text-decoration: none;
+    border-radius: 6px;
+    margin: -2px 0 0;
+    color: #717171 !important;
+}
+.onestep-set .method-reset:hover { background: #d4d4d4; }
+.onestep-set .method-reset.disabled,
+.onestep-set .method-reset.disabled:hover {
+    display: none;
+    opacity: 0.5;
+    background: #ddd;
+    cursor: default;
+}
+
+.onestep-set .payment-additional { padding: 0 0 0 15px; }
+.onestep-set .payment-additional ul { padding: 0; }
+.onestep-set .payment-additional li { clear: both; margin: 0 0 3px; }
+.onestep-set .payment-additional label { font-size: 90%; color: #555; float: left; width: 90px; }
+.onestep-set .payment-additional .input-text { width: 178px; }
+.onestep-set .payment-additional select { width: 184px; }
+.onestep-set .payment-additional .input-cc-month { width: 126px; }
+.onestep-set .payment-additional .input-cc-year { width: 55px; }
+.onestep-set .payment-additional .input-cc-cvv { width: 60px; }
+
+.onestep-set .order-review { clear: both; margin: 0; }
+.onestep-set .order-review .content { padding: 0; }
+.onestep-set #shopping-cart-table { border: none; border-radius: 0 0 10px 10px; }
+.onestep-set #shopping-cart-table th.last,
+.onestep-set #shopping-cart-table td.last { border-right: none; }
+.onestep-set .grand-total { font-size: 1.4em; font-weight: bold; }
+.onestep-set .grand-total td { padding: 10px 3px; background: #dadada; }
+
+.onestep-set .place-order-row { padding: 10px; }
+.onestep-set .order-comment-row { float: left; }
+.onestep-set .order-comment { width: 350px; }
+.onestep-set .submit-area { padding: 35px 45px 10px 0; float: right; }
+.onestep-set .btn-submit { font-size: 1.3em; }
+.onestep-set .btn-submit span { padding: 0 30px 0 0; background: #dd5c06; border-radius: 5px; }
+.onestep-set .btn-submit:hover span { background: #eb6004; }
+.onestep-set .btn-submit span span { padding: 15px 0 15px 30px; }
+.onestep-set .btn-submit .icon { background: none; padding: 0; }
+/************************************/
+
+
+
 #checkout-accordion { background: #fff; }
 #checkout-accordion h3 { font-size: 13px; }
 #checkout-accordion #form-login .input-text { width: 90%; }
@@ -1163,7 +1305,7 @@ a.review-stars { outline: none; }
 }
 .loading-bar span { display: none; }
 
-/* Payment Methods */
+/* Payment and Shipping Methods */
 .shipping-method, .payment-method { background: #f3f3f3; border: 1px solid #e3e3e3; margin-bottom: 10px; padding: 0 !important; }
 .shipping-method-title, .payment-method-title { padding: 6px 5px; margin: 0; font-size: 1em; }
 .shipping-method-type-title { color: #555; margin: 0; }
@@ -1261,19 +1403,31 @@ a.review-stars { outline: none; }
 .tag4 {}
 .remove-tag { margin-left: 2px; }
 
-.helpCvv {
-    background: url(../images/cvv.jpg) no-repeat top left;
+.cvv-row {
+    position: relative;
+}
+.cvv-row .cvv-help {
+    position: absolute;
+    left: 160px;
+    top: 3px;
+}
+.cvv-help {
+    font-size: .8em;
+    cursor: help;
+}
+.cvv-window {
+    background: #aaa url(../images/cvv.jpg) no-repeat 0 0;
+    box-shadow: 0 0 15px #aaa;
     border: 1px solid #aaa;
     position: absolute;
-    left: 450px;
-    top: 200px;
-    width: 256px;
-    height: 438px;
+    margin: -120px 0 0 -285px;
+    width: 569px;
+    height: 223px;
     text-indent: -9999px;
     z-index: 999;
 }
-.Cvv-close{
-    background: url(../images/cvv-close.gif) left top no-repeat;
+.cvv-window-close {
+    background: #777 url(../images/cvv-close.gif) no-repeat 0 0;
     width: 15px;
     height: 15px;
     float: right;
@@ -1358,6 +1512,7 @@ pre { margin: 0; }
 .nav,
 .breadcrumbs,
 .middle,
+.col-main,
 .footer,
 .footer-top-wrapper,
 .footer-top,
@@ -1397,6 +1552,7 @@ pre { margin: 0; }
 .nav:after,
 .breadcrumbs:after,
 .middle:after,
+.col-main:after,
 .footer:after,
 .footer-top-wrapper:after,
 .footer-top:after,
