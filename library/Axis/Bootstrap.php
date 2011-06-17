@@ -416,4 +416,22 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $frontController = $this->getResource('FrontController');
         $frontController->registerPlugin($debug);
     }
+
+    /**
+     * Apply all upgrades to installed modules if config enabled
+     *
+     * @see AXIS_ROOT/app/etc/config.php
+     */
+    protected function _initModules()
+    {
+        $this->bootstrap('DbAdapter');
+
+        if (!Axis::config('system/applyUpgrades')) {
+            return;
+        }
+        $mModule = Axis::model('core/module');
+        foreach ($mModule->fetchAll() as $module) {
+            $module->upgradeAll();
+        }
+    }
 }

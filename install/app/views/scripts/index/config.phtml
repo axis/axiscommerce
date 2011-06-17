@@ -2,13 +2,14 @@
 
 $config = array(
     'system' => array(
-        'path'    => '<?php echo $this->config['store_path'] ?>'
+        'path'          => '<?php echo $this->config['store_path'] ?>',
+        'applyUpgrades' => false
     ),
-    
+
     'crypt' => array(
         'key' => '<?php echo $this->config['store_cryptKey'] ?>'
     ),
-    
+
     'db' => array(
         'host'     => '<?php echo $this->config['db_host'] ?>',
         'username' => '<?php echo $this->config['db_username'] ?>',
@@ -16,7 +17,7 @@ $config = array(
         'dbname'   => '<?php echo $this->config['db_dbname'] ?>',
         'prefix'   => '<?php echo $this->config['db_prefix'] ?>'
     ),
-    
+
     'front' => array(
         'humanUrlAdapter' => "Readable"
     )
