@@ -134,8 +134,9 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         $mImageTitle = Axis::single('catalog/product_image_title');
         $languages   = Axis_Collect_Language::collect();
 
-        $imageTypes = array('base', 'listing', 'thumbnail');
-
+        $imageTypes     = array('base', 'listing', 'thumbnail');
+        $updatedImages  = array();
+        $imageIds       = array();
         foreach ($data as $image) {
             if (!isset($image['id'])
                 || !$row = $mImage->find($image['id'])->current()) {
@@ -150,6 +151,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 $row->delete();
             } else {
                 $row->save();
+                $imageIds[$row->id] = $row->id;
                 $mImageTitle->delete(
                     $this->getAdapter()->quoteInto('image_id = ? ', $row->id)
                 );
@@ -165,8 +167,18 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 foreach ($imageTypes as $type) {
                     if ($image['is_' . $type]) {
                         $this->{'image_' . $type} = $row->id;
+                        $updatedImages[$type] = true;
                     }
                 }
+            }
+        }
+
+        foreach ($imageTypes as $type) {
+            // if base, listing or thumbnail image was not updated
+            // while previously linked image with this type was recieved
+            // we should unset this type of image
+            if (empty($updatedImages[$type]) && in_array($this->{'image_' . $type}, $imageIds)) {
+                $this->{'image_' . $type} = new Zend_Db_Expr('NULL');
             }
         }
 
