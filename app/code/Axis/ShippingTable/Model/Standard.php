@@ -70,11 +70,12 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             $select->where('zone_id = 0');
         }
 
-        $row = current($select->query()->fetchAll());
+        $rows = $select->query()->fetchAll();
+        $row = current($rows);
 
         $this->_types = array(
             array(
-                'id' => $this->_code,
+                'id'    => $this->_code,
                 'title' => $this->getTitle(),
                 'price' => $row['price'] + (is_numeric($this->_config->handling) ?
                     $this->_config->handling : 0)

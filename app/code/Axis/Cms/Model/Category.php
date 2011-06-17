@@ -136,7 +136,8 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
             ->fetchAssoc();
 
         if ($isPage) {
-            $id = current($this->getIdsByPage($id));
+            $ids = $this->getIdsByPage($id);
+            $id = current($ids);
         }
         $result = array();
         $this->_recurse($all, $id, $result);

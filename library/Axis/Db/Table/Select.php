@@ -391,13 +391,13 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
         $this->bind($bind);
         return $this->getTable()->fetchRow($this);
     }
-    
+
     /**
-     * 
+     *
      * @param mixed $bind Data to bind into SELECT placeholders.
      * @return Zend_Db_Table_Rowset_Abstract The row results per the Zend_Db_Adapter fetch mode.
      */
-    public function fetchRowset($bind = array()) 
+    public function fetchRowset($bind = array())
     {
         $this->bind($bind);
         return $this->getTable()->fetchAll($this);
@@ -555,7 +555,8 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
                 $dot   = '';
                 $table = '';
             } else {
-                $table = key($this->getPart(Zend_Db_Select::FROM));
+                $from   = $this->getPart(Zend_Db_Select::FROM);
+                $table  = key($from);
                 if (empty($table)) {
                     $dot = '';
                 }

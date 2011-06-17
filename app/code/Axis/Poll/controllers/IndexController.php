@@ -39,7 +39,7 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
             Axis::translate('poll')->__(
                 'Polls'
         ));
-        
+
         $languageId = Axis_Locale::getLanguageId();
         $questionIds = array();
         if ($this->_hasParam('questionId'))  {
@@ -104,7 +104,8 @@ class Axis_Poll_IndexController extends Axis_Core_Controller_Front
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-        $questionId = current($this->_getParam('questionId'));
+        $quistionIds = $this->_getParam('questionId');
+        $questionId = current($quistionIds);
 
         $modelPollVote = Axis::single('poll/vote');
         $oldCookieValues = $modelPollVote->getQuestionIdsFromCookie();
