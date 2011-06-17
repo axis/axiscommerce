@@ -221,9 +221,11 @@ class Axis_Admin_Sales_OrderStatusController extends Axis_Admin_Controller_Back
                 $statusText[$languageId]['status_name'] : '';
         }
 
+        $parents = $status->getParents();
+
         return $this->_helper->json->sendSuccess(array(
             'data' => array_merge(array(
-                'from' => current($status->getParents()),
+                'from' => current($parents),
                 'name' => $status->name,
                 'statusId' => $status->id,
                 'to' => implode(',', $status->getChildrens()),
