@@ -1,5 +1,5 @@
 <div class="box order-review">
-    <div class="head"><span class="title">Order review</span></div>
+    <div class="head"><span class="title"><?php echo $this->translate('checkout')->__('Order review') ?></span></div>
     <div class="content">
         <div id="shopping-cart-load">
             <?php echo $this->render('checkout/onestep/review/cart.phtml') ?>
@@ -7,7 +7,7 @@
 
         <div class="place-order-row">
             <p class="order-comment-row">
-                <label for="comment"><?php echo Axis::translate('checkout')->__('You can add some additional information for our manager')?>:</label><br/>
+                <label for="comment"><?php echo $this->translate('checkout')->__('You can add some additional information for our manager')?>:</label><br/>
                 <textarea rows="5" cols="50" class="input-text order-comment" name="comment" id="comment"></textarea>
             </p>
             <div class="submit-area">
