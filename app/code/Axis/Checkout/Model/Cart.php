@@ -569,19 +569,20 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
         if (!$customerId = Axis::getCustomerId()) {
             return false;
         }
-        $previousCartRow = $this->select()
+        $adapter            = $this->getAdapter();
+        $previousCartRow    = $this->select()
             ->where('customer_id = ?', $customerId)
             ->fetchRow();
-        if ($previousCartRow && $previousCartRow->id != $this->getCartId()) {
 
+        if ($previousCartRow && $previousCartRow->id != $this->getCartId()) {
             $previousCartProducts = Axis::model('checkout/cart_product')
                 ->select(array('*', 'checkout_cart_product_id' => 'id'))
                 ->joinLeft('checkout_cart_product_attribute',
-                    'ccp.id = ccpa.shopping_cart_product_id', 
+                    'ccp.id = ccpa.shopping_cart_product_id',
                     '*'
                 )->where('ccp.shopping_cart_id = ?', $previousCartRow->id)
                 ->fetchAll();
-            
+
             $result = array();
             foreach ($previousCartProducts as $p) {
                 if (!isset($result[$p['checkout_cart_product_id']])) {
@@ -611,19 +612,23 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
                 );
                 $removedShoppingProductIds[] = $shopppingCartProductId;
             }
-            $adapter = $this->getAdapter();
             if (count($removedShoppingProductIds)) {
                 Axis::single('checkout/cart_product')->delete(
                     $adapter->quoteInto('id IN (?)', $removedShoppingProductIds)
                 );
             }
             Axis::single('checkout/cart_product')->update(
-                array('shopping_cart_id' => $this->getCartId()),
+                array(
+                    'shopping_cart_id' => $this->getCartId()
+                ),
                 $adapter->quoteInto('shopping_cart_id = ?', $previousCartRow->id)
             );
             $this->delete($adapter->quoteInto('customer_id = ?', $customerId));
         }
-        $this->update(array('customer_id' => $customerId),
+        $this->update(
+            array(
+                'customer_id' => $customerId
+            ),
             $adapter->quoteInto('id = ?', $this->getCartId())
         );
         return true;
