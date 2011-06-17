@@ -161,9 +161,10 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
             );
             
         }
-        $index->optimize();
-        $index->commit();
-        
+        if ($index) {
+            $index->optimize();
+            $index->commit();
+        }
         $session->processed += $rowset->count();
         $session->page++;
         
