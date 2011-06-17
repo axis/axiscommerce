@@ -57,16 +57,13 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         }
 
         $orderRow = $this->createRow();
-        /* Fill order row */
-
         $storage = $checkout->getStorage();
 
         if ($customer = Axis::getCustomer()) {
             $orderRow->customer_id = $customer->id;
             $orderRow->customer_email = $customer->email;
-        } elseif($storage->asGuest && !$storage->registerGuest) {
-            $billing = $checkout->getBilling()->toArray();
-            $orderRow->customer_email = $billing['email'];
+        } else {
+            $orderRow->customer_email = $checkout->getBilling()->email;
         }
 
         $orderRow->site_id = Axis::getSiteId();
@@ -163,8 +160,8 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         $products = Axis::single('sales/order_product')
             ->select('*')
             ->where('order_id = ?', $orderId)
-            ->joinLeft('catalog_product_stock', 
-                'sop.product_id = cps.product_id', 
+            ->joinLeft('catalog_product_stock',
+                'sop.product_id = cps.product_id',
                 'decimal'
             )
             ->fetchAssoc();
@@ -179,7 +176,7 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         foreach ($attributes as $attribute) {
             $products[$attribute['order_product_id']]['attributes'][] = $attribute;
         }
-        
+
         return $products;
     }
 

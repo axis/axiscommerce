@@ -300,7 +300,7 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
             $postProcess = (array)$checkout->payment()->postProcess($order);
 
             // register customer if required
-            if (!empty($billing['register'])) {
+            if (!empty($billing['register']) && !Axis::getCustomerId()) {
                 $mCustomer  = Axis::model('account/customer');
                 $userData   = $billing;
                 $userData['site_id']    = Axis::getSiteId();

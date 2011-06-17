@@ -44,15 +44,8 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         $filterSet = array();
         $filters = $this->_getActiveFilters();
 
-        // Get category filters
-        /*$catId = $this->hurl->hasParam('cat') ?
-            $this->hurl->getParamValue('cat') : Axis::single('catalog/category')->getRoot()->id;
-        $result['category'] = Axis::single('catalog/category')->find($catId)->current()->getChildItems(false, true);*/
-
-        // Get price filters
-        $filterSet['price'] = $this->_getPriceFilters($filters);
-
-        // Get manufacturer filters
+        $filterSet['category']  = $this->_getCategoryFilters($filters);
+        $filterSet['price']     = $this->_getPriceFilters($filters);
         if (!$this->hurl->hasParam('manufacturer')) {
             $filterSet['manufacturer'] = $this->_getManufacturerFilters($filters);
         }
@@ -60,12 +53,12 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         // Attribute filters
         $filterSet['attributes'] = $this->_getAttributeFilters($filters);
 
-        if ((count($filters) && !$this->hurl->hasParam('cat'))
-            || (1 < count($filters) && $this->hurl->hasParam('cat'))) { // we don't show categories in filters
+//        if ((count($filters) && !$this->hurl->hasParam('cat'))
+//            || (1 < count($filters) && $this->hurl->hasParam('cat'))) { // we don't show categories in filters
 
-            $this->filters = $filterSet;
-            return true;
-        }
+//            $this->filters = $filterSet;
+//            return true;
+//        }
 
         foreach($filterSet as $filter) {
             if (count($filter)) {
@@ -113,6 +106,52 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         }
 
         return $filters;
+    }
+
+    /**
+     * @param  array $filters
+     * @return mixed
+     */
+    protected function _getCategoryFilters(array $filters)
+    {
+        $categoryIds    = array();
+        $mCategory      = Axis::model('catalog/category');
+        if (!empty($filters['category_ids'])) {
+            $categoryIds = $filters['category_ids'];
+            unset($filters['category_ids']);
+        } else {
+            $categoryIds = array($mCategory->getRoot()->id);
+        }
+
+        $select = Axis::single('catalog/product')->select(array(
+                'cnt' => 'COUNT(DISTINCT cp.id)'
+            ))
+            ->joinInner('catalog_product_category', 'cp.id = cpc.product_id')
+            ->joinInner('catalog_category', 'cpc.category_id = cc.id')
+            ->joinInner('catalog_category_description', 'ccd.category_id = cc.id', '*')
+            ->joinInner('catalog_hurl', 'ch.key_id = cc.id AND ch.key_type = "c"', 'key_word')
+            ->addCommonFilters($filters)
+            ->addFilterByAvailability()
+            ->group('cc.id')
+            ->order('ccd.name')
+            ->where('ccd.language_id = ?', Axis_Locale::getLanguageId())
+            ->where('ch.site_id = ?', Axis::getSiteId());
+
+        $categories = $mCategory->find($categoryIds);
+        $where = array();
+        foreach ($categories as $category) {
+            $where[] = "(cc.lft > {$category->lft} AND cc.rgt < {$category->rgt})";
+        }
+        $select->where(implode(' OR ', $where))
+            ->where('cc.lvl = ?', $categories->rewind()->current()->lvl + 1);
+
+        $categories = $select->fetchAll();
+
+        if (!count($categories)) {
+            return null;
+        }
+
+        return $categories;
     }
 
     /**

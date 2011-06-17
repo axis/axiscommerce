@@ -1,6 +1,6 @@
 #nav { font-size: 1em; }
 #nav a {display: block; text-decoration: none; }
-#nav span { font: bold 1em Verdana, Geneva, Arial, Helvetica, sans-serif;  color: #c3cdd4; cursor: default; padding: 10px 10px 10px 8px; display: block; }
+#nav span { font: bold 1em Verdana, Geneva, Arial, Helvetica, sans-serif;  color: #c3cdd4; cursor: default; padding: 10px 10px 7px 8px; display: block; }
 #nav a span { cursor: pointer; }
 #nav span:hover { text-decoration: none; color: #fff; }
 #nav li { float: left; position: relative; color: #c3cdd4; z-index: 10; }

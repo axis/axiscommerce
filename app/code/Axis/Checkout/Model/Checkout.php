@@ -535,7 +535,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
         }
 
         $formAddress = $this->getAddressForm('billing');
-        if (!empty($data['register'])) {
+        if (!empty($data['register']) && !Axis::getCustomerId()) {
             $formAddress->addRegistrationFields();
         }
         if ($validateForm && !$formAddress->isValid($data)) {
