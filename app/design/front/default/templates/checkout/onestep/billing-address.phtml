@@ -1,5 +1,5 @@
 <div class="box box-address-form billing-address">
-    <div class="head"><span class="title">Billing Address</span></div>
+    <div class="head"><span class="title"><?php echo $this->translate('checkout')->__('Billing Address') ?></span></div>
     <div class="content">
         <?php
             if (count($this->checkout['address_list'])) :
@@ -24,7 +24,7 @@
         <ol>
             <li class="last">
                 <?php if (Axis::config('checkout/address_form/shipping_address_enabled')) : ?>
-                    <label class="optional" for="billing_address-use_for_delivery">Use as Delivery Address</label>
+                    <label class="optional" for="billing_address-use_for_delivery"><?php echo $this->translate('checkout')->__('Use as Delivery Address') ?></label>
                     <input type="hidden" value="0" name="billing_address[use_for_delivery]"/>
                     <?php
                         $checked = '';

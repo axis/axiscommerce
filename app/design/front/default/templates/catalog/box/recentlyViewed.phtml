@@ -44,18 +44,12 @@
 <script type="text/javascript">
 //<![CDATA[
 $().ready(function() {
-//    $("#form-recently-viewed").validate({
-//        rules: {
-//            'product_id[]': {
-//                minlength: 2
-//            }
-//        }
-//    });
     $("#form-recently-viewed").submit(function() { // this should be replaced with validation plugin
         if ($('#form-recently-viewed .checkbox-compare:checked').length < 2) {
             $('#form-recently-viewed label.error').remove();
+            var message = "<?php echo $this->translate('catalog')->__("Please select at least two products you'd like to compare.") ?>";
             $('#form-recently-viewed .btn-compare').before(
-                "<label class='error'>Please select at least two products you'd like to compare.</label>"
+                "<label class='error'>" + message + "</label>"
             );
             return false;
         }
