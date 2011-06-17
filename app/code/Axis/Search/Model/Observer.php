@@ -69,9 +69,10 @@ class Axis_Search_Model_Observer
             ;
         
         $index  = $path = null;
-        foreach ($rowset as $_row) {
+            
+        foreach ($rowset as $row) {
             $_path = $indexer->getIndexPath(
-                $_row->site_id  . '/' . $_row->locale
+                $row->site_id  . '/' . $row->locale
             );
             //next index
             if ($path !== $_path) {
@@ -83,19 +84,18 @@ class Axis_Search_Model_Observer
                 $path = $_path;
                 $index = $indexer->getIndex($path);
             }
-            $hits = $index->find("url:$_row->key_word");
-            $index->delete(reset($hits));
-//            foreach ($hits as $hit) {
-//                if ($hit->name === $_row->name) {
-//                    $index->delete($hit);
-//                }
-//            }
+            $hits = $index->find("sku:$row->sku");
+            if (count($hits)) {
+                $index->delete(current($hits));
+            }
             $index->addDocument(
-                $indexer->getDocument($_row)
+                $indexer->getDocument($row)
             );
         }
-        $index->optimize();
-        $index->commit();
+        if ($index) {
+            $index->optimize();
+            $index->commit();
+        }
     }
     
     public function updateSearchIndexOnCmsPageAddSuccess(array $data) 
@@ -131,17 +131,16 @@ class Axis_Search_Model_Observer
                 $index = $indexer->getIndex($path);
             }
             $hits = $index->find("url:$_row->link");
-            $index->delete(reset($hits));
-//            foreach ($hits as $hit) {
-//                if ($hit->name === $_row->title) {
-//                    $index->delete($hit);
-//                }
-//            }
+            if (count($hits)) {
+                $index->delete(current($hits));
+            }
             $index->addDocument(
                 $indexer->getDocument($_row)
             );
         }
-        $index->optimize();
-        $index->commit();
+        if ($index) {
+            $index->optimize();
+            $index->commit();
+        }
     }
 }

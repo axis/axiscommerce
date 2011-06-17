@@ -128,6 +128,9 @@ class Axis_Search_Model_Indexer
             $imagePath  = $row->image_thumbnail;
             $imageTitle = $row->image_title;
             
+            $document->addField(Zend_Search_Lucene_Field::Text(
+                'sku', $row->sku, $this->_encoding
+            ));
             $document->addField(Zend_Search_Lucene_Field::UnIndexed(
                 'image', $imagePath, $this->_encoding
             ));
