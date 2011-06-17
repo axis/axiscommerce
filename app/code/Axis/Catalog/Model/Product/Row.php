@@ -101,16 +101,12 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
             return $this;
         }
 
-        if (!$row = $this->getStockRow()) {
-            $row = Axis::single('catalog/product_stock')->createRow();
-            $row->product_id = $this->id;
-        }
-
         foreach ($data as $col => $val) {
             if (empty($val)) {
                 $data[$col] = intval($data[$col]);
             }
         }
+        $row = $this->getStockRow();
         $oldStockData = $row->toArray();
         $row->setFromArray($data);
         $row->save();
@@ -984,10 +980,14 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     public function getStockRow()
     {
         if (!$this->_stockRow) {
-            $this->_stockRow = Axis::single('catalog/product_stock')
-                ->find($this->id)
-                ->current()
-                ->setProductRow($this);
+            $mStock = Axis::model('catalog/product_stock');
+            $this->_stockRow = $mStock->find($this->id)
+                ->current();
+            if (!$this->_stockRow) { // saving new product
+                $this->_stockRow = $mStock->createRow();
+                $this->_stockRow->product_id = $this->id;
+            }
+            $this->_stockRow->setProductRow($this);
         }
         return $this->_stockRow;
     }
