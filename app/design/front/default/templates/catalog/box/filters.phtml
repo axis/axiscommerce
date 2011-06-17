@@ -43,6 +43,25 @@ $currency   = Axis::single('locale/currency')->getCurrency();
     endforeach;
 endif; ?>
 
+<?php if ($this->box->hasData('filters/category')) : ?>
+<li class="filter-box" id="filter-category">
+    <h3 class="filter-name"><?php echo $this->translate('catalog')->__('Category')?></h3>
+    <ul>
+<?php
+foreach ($this->box->getData('filters/category') as $item) :
+    echo  '<li><a rel="nofollow" href="' . $this->hurl(array(
+           'cat' => array(
+              'value' => $item['category_id'],
+              'seo' => $item['key_word']
+           ), 'page' => ''))
+        . '">'
+        . $this->escape($item['name'])
+        . '</a> (' . $item['cnt'] . ')</li>';
+endforeach; ?>
+    </ul>
+</li>
+<?php endif; ?>
+
 <?php if ($this->box->hasData('filters/price/groups')) : ?>
 <li class="filter-box" id="filter-price">
     <h3 class="filter-name"><?php echo $this->translate('catalog')->__('Price')?></h3>
