@@ -30,6 +30,7 @@ var Block = {
     load: function(id) {
         BlockWindow.form.getForm().load({
             url: Axis.getUrl('cms_block/get-data/id/') + id,
+            method: 'post',
             success: function(form, action) {
                 BlockWindow.el.show();
             }
