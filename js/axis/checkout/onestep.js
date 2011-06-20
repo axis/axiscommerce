@@ -76,7 +76,7 @@ var Onestep = (function() {
 
     function update(url, sections) {
         setLoadWaiting(true, sections);
-        var form = $(settings.form);​
+        var form = $(settings.form);
         $.post(url, form.serialize())
             .success(setResponse)
             .error(function(response) {
