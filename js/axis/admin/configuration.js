@@ -104,7 +104,7 @@ Ext.onReady(function() {
             if (node.id != tree.root.id) {
                 ds.baseParams['filter[tree][field]']    = 'path';
                 ds.baseParams['filter[tree][operator]'] = 'STRICT_LIKE';
-                ds.baseParams['filter[tree][value]']    = node.id + '%';
+                ds.baseParams['filter[tree][value]']    = node.id + '/%';
             }
 
             if (ds.lastOptions && ds.lastOptions.params) {
