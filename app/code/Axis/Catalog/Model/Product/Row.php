@@ -241,7 +241,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 $row->product_id = $this->id;
                 $row->language_id = $languageId;
             }
-            if ($data[$languageId]) {
+            if (!empty($data[$languageId])) {
                 $row->setFromArray($data[$languageId]);
             }
             $row->save();

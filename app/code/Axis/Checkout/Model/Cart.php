@@ -209,7 +209,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
             $quantity = $stockRow->min_qty_allowed ? $stockRow->min_qty_allowed : 1;
         }
 
-        if ($stockRow->decimal) {
+        if (!$stockRow->decimal) {
             $quantity = floor($quantity);
         }
 
@@ -256,7 +256,10 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
 
         // Check for clon exists
         if (false !== ($clon = $this->_getClon($productId, $attributes))) {
-            $this->updateItem($clon['id'], $clon['quantity'] + $quantity);
+            $this->updateItem(
+                $clon['id'],
+                $clon['quantity'] + Axis_Locale::getNumber($quantity)
+            );
             return true;
         }
 
@@ -377,7 +380,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
             return false;
         }
 
-        if ($stockRow->decimal) {
+        if (!$stockRow->decimal) {
             $quantity = floor($quantity);
         }
 
