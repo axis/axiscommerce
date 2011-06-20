@@ -1201,7 +1201,9 @@ a.review-stars { outline: none; }
 .onestep-set .shipping-method,
 .onestep-set .payment-method { background: none; border: none; margin-bottom: 5px; }
 .onestep-set .shipping-method-title,
-.onestep-set .payment-method-title { padding: 0; }
+.onestep-set .payment-method-title { padding: 0; margin: 0; font-size: 1em; }
+.onestep-set .shipping-method-type-title { color: #555; margin: 0; }
+.onestep-set .shipping-types { padding: 0 8px 8px; }
 .onestep-set #shipping-required,
 .onestep-set #payment-required {
     padding: 5px 8px 5px 32px !important;
@@ -1257,63 +1259,6 @@ a.review-stars { outline: none; }
 .onestep-set .btn-submit:hover span { background: #eb6004; }
 .onestep-set .btn-submit span span { padding: 15px 0 15px 30px; }
 .onestep-set .btn-submit .icon { background: none; padding: 0; }
-/************************************/
-
-
-
-#checkout-accordion { background: #fff; }
-#checkout-accordion h3 { font-size: 13px; }
-#checkout-accordion #form-login .input-text { width: 90%; }
-.step { padding: 10px 15px; display: none; }
-.checkout-step-title {
-    font-weight: bold;
-    margin: 1px 0;
-    padding: 5px 10px;
-    background: #ccc;
-    color: #444;
-    border: 1px solid #bbb;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-}
-.checkout-step-title.previous { background: #e8e8e8; }
-.checkout-step-title.next { background: #ccc; }
-.checkout-step-title a {
-    font: bold 12px Arial, Helvetica, sans-serif !important;
-    line-height: 19px !important;
-    color: #333 !important;
-    text-decoration: none !important;
-}
-.block-button-continue {
-    text-align: right;
-    position: relative;
-    clear: both;
-    margin-top: 5px;
-}
-.loading-bar {
-    z-index:10000;
-    width: 43px;
-    height: 21px;
-    text-indent: -9999px;
-    display: none;
-    background: url(../images/ajax-loader.gif) no-repeat 0 50%;
-}
-.block-button-continue .loading-bar {
-    position: absolute;
-    right: 120px;
-    top: 4px;
-}
-.loading-bar span { display: none; }
-
-/* Payment and Shipping Methods */
-.shipping-method, .payment-method { background: #f3f3f3; border: 1px solid #e3e3e3; margin-bottom: 10px; padding: 0 !important; }
-.shipping-method-title, .payment-method-title { padding: 6px 5px; margin: 0; font-size: 1em; }
-.shipping-method-type-title { color: #555; margin: 0; }
-.shipping-types { padding: 0 8px 8px; }
-.shipping-type { margin: 0; padding: 0 !important; }
-.shipping-type-additional, .payment-additional { margin-top: 3px; padding: 0 10px; }
-.payment-additional { padding-bottom: 8px; }
-.payment-additional dd { padding: 0 7px; }
 
 /* Address */
 .address-row { margin: 0 0 7px 0; }
