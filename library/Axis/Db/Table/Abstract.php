@@ -284,6 +284,26 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     }
 
     /**
+     * Prepare data for table before save
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function _prepareDataForTable($data)
+    {
+        foreach ($this->info(self::METADATA) as $name => $values) {
+            if (!isset($data[$name]) || ($data[$name] instanceof Zend_Db_Expr)) {
+                continue;
+            }
+
+            if ('decimal' == $values['DATA_TYPE']) {
+                $data[$name] = Axis_Locale::getNumber($data[$name]);
+            }
+        }
+        return $data;
+    }
+
+    /**
      * @todo remove this, need use Axis::message in controllers
      *
      * @param  array  $data  Column-value pairs.
@@ -292,6 +312,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     public function insert(array $data)
     {
         try {
+            $data = $this->_prepareDataForTable($data);
             return parent::insert($data);
         } catch (Exception $e) {
             Axis::message()->addError($e->getMessage());
@@ -309,6 +330,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     public function update(array $data, $where)
     {
         try {
+            $data = $this->_prepareDataForTable($data);
             return parent::update($data, $where);
         } catch (Exception $e) {
             Axis::message()->addError($e->getMessage());
@@ -451,7 +473,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
 
     /**
      * Returns the Row found or created with the primary keys or data array
-     * 
+     *
      * @param  mixed $key The value(s) of the primary keys.
      * @return Zend_Db_Table_Row_Abstract Row matching the criteria.
      * @throws Zend_Db_Table_Exception
@@ -476,7 +498,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
             }
             $data = $args[0];
         } else {
-        
+
             if (count($args) < count($keyNames)) {
                 require_once 'Zend/Db/Table/Exception.php';
                 throw new Zend_Db_Table_Exception("Too few columns for the primary key");
@@ -492,7 +514,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
             }
             $data = $primary;
         }
-        
+
         $select = $this->select();
         foreach ($primary as $key => $value) {
             $select->where("$key = ?", $value);
