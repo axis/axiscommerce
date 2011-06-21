@@ -116,13 +116,15 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         }
 
         parent::__construct($default);
+
+        $configOptions = Axis::config('account/address_form')->toArray();
         $this->_fieldConfig = array_merge(array(
                 'firstname_sort_order'  => -20,
                 'firstname_status'      => 'required',
                 'lastname_sort_order'   => -19,
                 'lastname_status'       => 'required'
             ),
-            Axis::config('account/address_form')->toArray()
+            $configOptions
         );
         uasort($this->_fields, array($this, '_sortFields'));
 
@@ -141,8 +143,23 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
 
             unset($countries['0']);
         }
-        $defaultCountry = empty($options['values']['country_id']) ?
-            223 : $options['values']['country_id'];
+
+        $allowedCountries = $configOptions['country_id_allow'];
+        if (!in_array(0, $allowedCountries)) { // ALL WORLD COUNTRIES is not selected
+            $countries = array_intersect_key(
+                $countries,
+                array_flip($allowedCountries)
+            );
+        }
+        $countryIds     = array_keys($countries);
+        $defaultCountry = current($countryIds);
+        if (!empty($options['values']['country_id'])) {
+            $_defaultCountry = $options['values']['country_id'];
+            if (isset($countries[$_defaultCountry])) {
+                $defaultCountry = $_defaultCountry;
+            }
+        }
+
         $zones = Axis_Collect_Zone::collect();
         $this->_zones = $zones;
 

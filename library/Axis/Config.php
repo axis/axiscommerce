@@ -116,7 +116,7 @@ class Axis_Config extends Zend_Config
                     }
                     break;
                 case 'multiple':
-                    if (empty ($row['value'])) {
+                    if (!isset($row['value'])) {
                         $value = array();
                     } else {
                         $value = explode(self::MULTI_SEPARATOR, $row['value']);
