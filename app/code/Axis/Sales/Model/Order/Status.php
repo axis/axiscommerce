@@ -44,154 +44,30 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
      */
     public function getList($statusId = null)
     {
+        $childrens = array();
         if (null !== $statusId) {
             $childrens = Axis::single('sales/order_status_relation')->getChildrens($statusId);
-            if (!count($childrens)) {
-                return array();
-            }
         }
-        
-        return $this->select('*')
+        $select = $this->select('*')
             ->joinLeft('sales_order_status_text',
                 'sos.id = sost.status_id',
                 array('language_id', 'status_name')
-            )
-            ->where('sos.id IN (?)', $childrens)
-            ->fetchAll()
-            ;
-    }
-
-    /**
-     * Update existing or create new order status
-     *
-     * @param array $data
-     * @return void
-     */
-    public function batchSave($data)
-    {
-        $languages = array_keys(Axis_Collect_Language::collect());
-
-        foreach ($data as $id => $row) {
-            if (!$this->getSystem(intval($row['id']))) {
-                $this->update(
-                    array('name' => $row['name']),
-                    'id = ' . intval($row['id'])
-                );
-            }
-            foreach ($languages as $langId) {
-                if (!isset($row['status_name_' . $langId]))
-                    continue;
-
-                if (!$record = Axis::single('sales/order_status_text')->find($row['id'], $langId)->current()) {
-                    $record = Axis::single('sales/order_status_text')->createRow(array(
-                        'status_id' => intval($row['id']),
-                        'language_id' => intval($langId),
-                        'status_name' => $row['status_name_' . $langId]
-                    ));
-                } else {
-                    $record->setFromArray(array(
-                        'status_name' => $row['status_name_' . $langId]
-                    ));
-                }
-                $record->save();
-            }
-        }
-
-        Axis::message()->addSuccess(
-            Axis::translate('sales')->__(
-                'Status was saved successfully'
-        ));
-    }
-
-    /**
-     *
-     * @param int $id
-     * @param string $name
-     * @param array|int|string $parent
-     * @param array|int|string $children
-     * @param array of string $translates ( 1 => 'pending', 2 => 'jxsredfyyz')
-     * @return mixed false|$this Provides fluent interface
-     */
-    public function save(
-            $id,
-            $name,
-            $parent = array(),
-            $children = array(),
-            $translates = array())
-    {
-        $system = 0;
-        if ($this->getSystem($id)) {
-            $name = $this->getName($id);
-            $system = 1;
-            Axis::message()->addNotice(
-                Axis::translate('sales')->__(
-                    "Relation no change. Order status %s is SYSTEM ", $name
-            ));
-        }
-        $this->update(
-            array('name' => $name, 'system' => $system),
-            $this->getAdapter()->quoteInto('id = ?', $id)
-        );
-
-        if (!is_array($parent)) {
-            if (is_string($parent)) {
-                $parent = array($this->getIdByName($parent));
-            } elseif ($parent) {
-                $parent = array($parent);
-            } else {
-                $parent = array();
-            }
-        }
-        if (!is_array($children)) {
-            if (is_string($children)) {
-                $children = array($this->getIdByName($children));
-            } else {
-                $children = array($children);
-            }
-        }
-        if (!$system) {
-            Axis::single('sales/order_status_relation')->delete(
-                $this->getAdapter()->quoteInto('from_status = ? OR to_status = ? ', array($id, $id))
             );
-
-            foreach ($parent as $from) {
-                Axis::single('sales/order_status_relation')->add($from, $id);
-            }
-
-            foreach ($children as $to) {
-                Axis::single('sales/order_status_relation')->add($id, intval($to));
-            }
+        if (count($childrens)) {
+            $select->where('sos.id IN (?)', $childrens);
         }
-
-        Axis::single('sales/order_status_text')->delete(
-            $this->getAdapter()->quoteInto('status_id = ?', $id)
-        );
-        foreach (array_keys(Axis_Collect_Language::collect()) as $langId) {
-            if (!isset($translates[$langId]))
-                continue;
-
-            Axis::single('sales/order_status_text')->insert(array(
-                'status_id' => $id,
-                'language_id' => $langId,
-                'status_name' => $translates[$langId]
-            ));
-        }
-        Axis::message()->addSuccess(
-            Axis::translate('sales')->__(
-                "Order status  %s upload", $name
-        ));
-
+        return $select->fetchAll();
     }
 
     /**
      *
      * @param string $name
-     * @param array|int|string $parent
-     * @param array|int|string $children
+     * @param int|string $from
+     * @param array|int|string $to
      * @param array of string $translates ( 1 => 'pending', 2 => 'jxsredfyyz')
      * @return mixed false|$this Provides fluent interface
      */
-    public function add($name, $parent = array(), $children = array(), $translates = array())
+    public function add($name, $from = array(), $to = array(), $translates = array())
     {
         if ($this->getIdByName($name)) {
             Axis::message()->addError(
@@ -200,46 +76,44 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
             ));
             return false;
         }
-        if (!is_array($parent)) {
-            if (is_string($parent)) {
-                $parent = array($this->getIdByName($parent));
-            } elseif ($parent) {
-                $parent = array($parent);
-            } else {
-                $parent = array();
-            }
-        }
-        if (!is_array($children)) {
-            if (is_string($children)) {
-                $children = array($this->getIdByName($children));
-            } else {
-                $children = array($children);
-            }
-        }
-
-        $id = $this->insert(array(
+        
+        $row = $this->createRow(array(
             'name' => $name,
             'system' => 0
         ));
-        $id = intval($id);
-        foreach ($parent as $from) {
-            Axis::single('sales/order_status_relation')->add($from, $id);
+        $row->save();
+        
+        //add relation
+        $modelRealation = Axis::model('sales/order_status_relation');
+        if (is_string($from)) {
+            $from = array($this->getIdByName($from));
+        }
+        $modelRealation->add($from, $row->id);
+
+        if (is_string(to)) {
+            $to = array($this->getIdByName($to));
+        }
+        if (!is_array($to)) {
+            $to = array($to);
+        }     
+        foreach ($to as $_to) {
+            $modelRealation->add($row->id, $_to);
         }
 
-        foreach ($children as $to) {
-            Axis::single('sales/order_status_relation')->add($id, intval($to));
-        }
-
-        foreach (array_keys(Axis_Collect_Language::collect()) as $langId) {
-            if (!isset($translates[$langId]))
+        //add labels
+        $modelLabel  = Axis::model('sales/order_status_text');
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+        foreach ($languageIds as $languageId) {
+            if (!isset($translates[$languageId])) {
                 continue;
-
-            Axis::single('sales/order_status_text')->insert(array(
-                'status_id' => $id,
-                'language_id' => $langId,
-                'status_name' => $translates[$langId]
-            ));
+            }
+            $modelLabel->createRow(array(
+                'status_id'   => $row->id,
+                'language_id' => $languageId,
+                'status_name' => $translates[$languageId]
+            ))->save();
         }
+        
         Axis::message()->addSuccess(
             Axis::translate('sales')->__(
                 "New order status create : %s", $name

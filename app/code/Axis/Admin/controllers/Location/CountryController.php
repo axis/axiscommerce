@@ -88,7 +88,11 @@ class Axis_Admin_Location_CountryController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        Axis::single('location/country')->save($data);
+        
+        $model = Axis::model('location/country');
+        foreach ($data as $_row) {
+            $model->save($_row);
+        }
 
         return $this->_helper->json->sendSuccess();
     }

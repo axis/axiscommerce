@@ -115,74 +115,28 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
      * @param array $data
      * @return void
      */
-    public function save($data)
+    public function save(array $data)
     {
-        $db = $this->getAdapter();
-        if (!sizeof($data)) {
-            return;
+        $row = $this->getRow($data);
+
+        if (empty($row->customer_valueset_id)) {
+            $row->customer_valueset_id = new Zend_Db_Expr('NULL');
         }
-        $label = Axis::single('account/Customer_Field_Label');
-        $languageIds = array_keys(Axis_Collect_Language::collect());
-        foreach ($data as $values) {
-            
-            $required = 1;
-            if (!isset($values['required']) || !$values['required']) {
-                $required = 0;
-            }
-                
-            $isActive = 1;
-            if (!isset($values['is_active']) || !$values['is_active']) {
-                $isActive = 0;
-            }
-            
-            $row = array(
-                'customer_field_group_id' => $values['customer_field_group_id'],
-                'name'          => $values['name'],
-                'field_type'    => $values['field_type'],
-                'required'      => $required,
-                'sort_order'    => $values['sort_order'],
-                'is_active'     => $isActive,
-                'customer_valueset_id' => $values['customer_valueset_id'] ? 
-                    $values['customer_valueset_id'] : new Zend_Db_Expr('NULL'),
-                'validator' => $values['validator'] == '' ?
-                    new Zend_Db_Expr('NULL') : $values['validator'],
-                'axis_validator' => $values['axis_validator'] == '' ?
-                    new Zend_Db_Expr('NULL') : $values['axis_validator']
-            );
-            
-            if (isset($values['new']) || $values['id'] == 'new') {
-                $id = $this->insert($row);
-                foreach ($languageIds as $langId) {
-                    $label->insert(array(
-                        'customer_field_id' => $id,
-                        'language_id' => $langId,
-                        'field_label' => $values['field_label' . $langId]
-                    ));
-                }
-            } else {
-                $this->update($row, $db->quoteInto('id = ?', $values['id']));
-                //labels update at customer_field_label
-                foreach ($languageIds as $langId) {
-                    if (!$record = $label->find($values['id'], $langId)->current()) {
-                        $record = $label->createRow(array(
-                            'customer_field_id' => $values['id'],
-                            'language_id' => $langId,
-                            'field_label' => $values['field_label' . $langId]
-                        ));
-                    } else {
-                        $record->setFromArray(array(
-                            'field_label' => $values['field_label' . $langId]
-                        ));
-                    }
-                    $record->save();
-                }
-            }
+        if (empty($row->validator)) {
+            $row->validator = new Zend_Db_Expr('NULL');
         }
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-            )
-        );
+        if (empty($row->axis_validator)) {
+            $row->axis_validator = new Zend_Db_Expr('NULL');
+        }
+        $row->required = false;
+        $row->required = !empty($data['required']);
+        
+        $row->is_active = false;
+        $row->is_active = !empty($data['is_active']);
+        
+        $row->save();
+        
+        return $row;
     }
 
     /**

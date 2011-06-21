@@ -107,8 +107,22 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
         
         $data = Zend_Json::decode($this->_getParam('data'));
         
-        Axis::single('account/customer_field')->save($data); 
-
+        $model       = Axis::model('account/customer_field');
+        $modelLabel  = Axis::model('account/Customer_Field_Label');
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+        foreach ($data as $_row) {
+            $row = $model->save($_row);
+            foreach ($languageIds as $languageId) {
+                $rowLabel = $modelLabel->getRow($row->id, $languageId);
+                $rowLabel->field_label = $_row['field_label' . $languageId];
+                $rowLabel->save();
+            }
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
+            )
+        );
         $this->_helper->json->sendSuccess();
     }
     
@@ -117,8 +131,20 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
         $this->_helper->layout->disableLayout();
         $data = $this->_getParam('data');
         
-        Axis::single('account/customer_field')->save(array($data)); 
-
+        $row = Axis::model('account/customer_field')->save($data); 
+//        $row->save();
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+        $modelLabel = Axis::model('account/Customer_Field_Label');
+        foreach ($languageIds as $languageId) {
+            $rowLabel = $modelLabel->getRow($row->id, $languageId);
+            $rowLabel->field_label = $data['field_label' . $languageId];
+            $rowLabel->save();
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
+            )
+        );
         $this->_helper->json->sendSuccess();
     }
     
@@ -126,11 +152,38 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
     {
         $this->_helper->layout->disableLayout();
         $data = Zend_Json::decode($this->_getParam('data'));
+        if (!sizeof($data)) {
+            Axis::message()->addError(
+                Axis::translate('core')->__(
+                    'No data to save'
+                )
+            );
+            return $this->_helper->json->sendFailure();
+        }
+        $data['name'] = preg_replace(
+            array("/[^a-z0-9\s+]/", "/\s+/"),
+            array('', '_'),
+            strtolower($data['name'])
+        );
         
-        $this->_helper->json->sendSuccess(array(
-            'groupId'  => Axis::single('account/Customer_FieldGroup')
-                ->save($data)
-        ));
+        $row = Axis::model('account/Customer_FieldGroup')->save($data);
+        Axis::message()->addSuccess(
+            Axis::translate('account')->__(
+                'Group was saved successfully'
+            )
+        );
+        
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+        $modelLabel = Axis::model('account/Customer_FieldGroup_Label');
+        foreach ($languageIds as $languageId) {
+            $rowLabel = $modelLabel->getRow($row->id, $languageId);
+            $rowLabel->group_label = $data['group_label-' . $languageId];
+            $rowLabel->save();
+        }
+        
+        $this->_helper->json
+            ->setGroupId($row->id)
+            ->sendSuccess();
     }
     
     public function deleteFieldsAction()

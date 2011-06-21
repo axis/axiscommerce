@@ -37,6 +37,16 @@ class Axis_Account_Model_Customer_ForgotPassword extends Axis_Db_Table
 
     /**
      *
+     * @return string 
+     */
+    public function generatePassword()
+    {
+        mt_srand((double)microtime(1)*1000000);
+        return md5(mt_rand());
+    }
+
+    /**
+     *
      * @param array $data
      * @return mixed
      */
@@ -45,13 +55,9 @@ class Axis_Account_Model_Customer_ForgotPassword extends Axis_Db_Table
         if (empty($data['created_at'])) {
             $data['created_at'] = Axis_Date::now()->toSQLString();
         }
-        if (count($this->find($data['customer_id']))) {
-            $where = $this->getAdapter()->quoteInto(
-                'customer_id = ?', $data['customer_id']
-            );
-            return $this->update($data, $where);
-        }
-        return $this->insert($data);
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 
     /**

@@ -43,13 +43,9 @@ class Axis_Sales_Model_Order_Status_Relation extends Axis_Db_Table
      */
     public function getParents($statusId) 
     {
-        
-        $parents = array(); 
-        $where = $this->getAdapter()->quoteInto("to_status = ?", intval($statusId));
-        foreach ($this->fetchAll($where)->toArray() as $parent) {
-            $parents[] = $parent['from_status'];                        
-        }
-        return $parents;        
+        return $this->select('from_status')
+            ->where('to_status = ?', $statusId)
+            ->fetchCol();
     }
     
     /**
@@ -59,13 +55,9 @@ class Axis_Sales_Model_Order_Status_Relation extends Axis_Db_Table
      */
     public function getChildrens($statusId) 
     {
-        
-        $childrens = array(); 
-        $where = $this->getAdapter()->quoteInto("from_status = ?", intval($statusId));
-        foreach ($this->fetchAll($where)->toArray() as $child) {
-            $childrens[] = $child['to_status'];                        
-        }
-        return $childrens;        
+        return $this->select('to_status')
+            ->where('to_status = ?', $statusId)
+            ->fetchCol();
     }
     
     /**
@@ -76,26 +68,26 @@ class Axis_Sales_Model_Order_Status_Relation extends Axis_Db_Table
      */
     public function add($from, $to)
     {
+        $model = Axis::model('sales/order_status');
         if (is_string($from)) {
-            $from = Axis::single('sales/order_status')->getIdByName($from);
+            $_from = $model->getIdByName($from);
+            if (null !== $_from) {
+                $from = $_from;
+            }
         }
-        
         if (is_string($to)) {
-            $to = Axis::single('sales/order_status')->getIdByName($to);
+            $_to = $model->getIdByName($to);
+            if (null !== $_to) {
+                $to = $_to;
+            }
         }
-        if (!Axis::single('sales/order_status')->find($from) 
-            || !Axis::single('sales/order_status')->find($to)) {
 
-            Axis::message()->addError(
-                Axis::translate('sales')->__(
-                    "Order status not exist"
-            ));
-            return;    
-        }
-        $this->insert(array(
+        $row = $this->createRow(array(
             'from_status' => $from,
-            'to_status' => $to,
+            'to_status'   => $to,
         ));
+        $row->save();
+        
         return $this;
     }
     

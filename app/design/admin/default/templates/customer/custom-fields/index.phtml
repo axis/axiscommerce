@@ -33,11 +33,11 @@ $this->setButtons(array(
 $this->setTabs($this->fieldGroups, false);
 
 //groupName field
-echo $this->formText('groupName', '', array('size' => '18'));
+echo $this->formText('name', '', array('size' => '18'));
 //Sort Order field
-echo $this->formText('sortOrder', '', array('size' => '2'));
+echo $this->formText('sort_order', '', array('size' => '2'));
 //group is_active field
-echo $this->formSelect('groupAct', null, null, array('0' => 'Disabled', '1' => 'Enabled'));
+echo $this->formSelect('is_active', null, null, array('0' => 'Disabled', '1' => 'Enabled'));
 
 $_languages = Axis_Collect_Language::collect();
 ?>
@@ -48,7 +48,7 @@ $_languages = Axis_Collect_Language::collect();
             <?php foreach ($_languages as $languageId => $language) { ?>
                 <div id="langTabItem<?php echo $languageId; ?>" class="x-hide-display simple-fields">
                     <label><?php echo $this->translate('account')->__('Group title') ?>: </label>
-                    <?php echo $this->formText("groupTitle$languageId", ''); ?>
+                    <?php echo $this->formText("group_label[{$languageId}]", ''); ?>
                 </div>
             <?php } ?>
         </div>

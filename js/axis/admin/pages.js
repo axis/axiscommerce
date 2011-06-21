@@ -36,10 +36,9 @@ Ext.onReady(function(){
         create: function (){
             grid.stopEditing();
             var record = new Item.record({
-                type: 'new',
                 module_name: '',
-                 controller_name: '*',
-                 action_name: '*'
+                controller_name: '*',
+                action_name: '*'
             });
             ds.insert(0, record);
             grid.getStore().getAt(0).set('module_name', '*');

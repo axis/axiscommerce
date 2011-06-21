@@ -43,13 +43,7 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
      * Update or insert page row
      *
      * @param array $data
-     * <code>
-     *  column_name => value,
-     *  content     => array(
-     *      langId => array()
-     *  ),
-     *  category => json_string
-     * </code>
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
@@ -58,25 +52,7 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
         }
         $row = $this->getRow($data);
         $row->save();
-
-        $mContent = Axis::model('cms/page_content');
-        foreach ($data['content'] as $languageId => $values) {
-            if (empty($values['link'])) {
-                $values['link'] = $row->name;
-            }
-            $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
-        }
-
-        $mPageCategory = Axis::model('cms/page_category');
-        $mPageCategory->delete(Axis::db()->quoteInto('cms_page_id = ?', $row->id));
-        foreach (Zend_Json::decode($data['category']) as $categoryId) {
-            $mPageCategory->insert(array(
-                'cms_category_id' => $categoryId,
-                'cms_page_id'     => $row->id
-            ));
-        }
-
-        return $row->id;
+        return $row;
     }
 
     public function getPageIdByLink($link)

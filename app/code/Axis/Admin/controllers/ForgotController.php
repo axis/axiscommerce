@@ -62,7 +62,9 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
             $this->render();
             return;
         }
-        if (Axis::single('admin/user')->hasEmail($email)) {
+        
+        $model = Axis::model('admin/user');
+        if ($model->hasEmail($email)) {
             $hash = $this->_generatePassword();
             $link = $this->view->href('forgot') . '?hash=' . $hash;
 
@@ -74,11 +76,9 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
                         'Forgot Your Backend Password'
                     ),
                     'data'    => array(
-                        'link' => $link,
-                        'firstname' => Axis::single('admin/user')
-                            ->getFirstnameByEmail($email),
-                        'lastname' => Axis::single('admin/user')
-                            ->getLastnameByEmail($email)
+                        'link'      => $link,
+                        'firstname' => $model->getFirstnameByEmail($email),
+                        'lastname'  => $model->getLastnameByEmail($email)
                     ),
                     'to' => $email
                 ));
@@ -86,8 +86,8 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
 
                 if ($configResult) {
                     Axis::single('admin/UserForgotPassword')->save(array(
-                        'hash' => $hash,
-                        'user_id' => Axis::single('admin/user')->getIdByEmail($email)
+                        'hash'    => $hash,
+                        'user_id' => $model->getIdByEmail($email)
                     ));
                     Axis::message()->addSuccess(
                         Axis::translate('admin')->__('See your mailbox to proceed')
@@ -158,10 +158,13 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
             return;
         }
 
-        Axis::single('admin/user')->update(array(
-            'password' => md5($data['password'])),
-            $this->db->quoteInto('username = ?', $data['username'])
-        );
+        $row = Axis::single('admin/user')->select()
+            ->where('username = ?', $data['username'])
+            ->fetchRow()
+            ;
+        $row->password = md5($data['password']);
+        $row->save();
+
         Axis::single('admin/userForgotPassword')->delete(
             $this->db->quoteInto('hash = ?', $data['hash'])
         );
@@ -171,5 +174,4 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
         ));
         $this->_redirect('auth');
     }
-
 }

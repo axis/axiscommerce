@@ -47,8 +47,8 @@ Ext.onReady(function () {
                 items: [{
                         xtype: 'textarea',
                         fieldLabel: 'Question'.l(),
-                        name: 'question[' + languageId + ']',
-                        id: 'question[' + languageId + ']',
+                        name: 'description[' + languageId + ']',
+                        id: 'description[' + languageId + ']',
                         anchor: '95%'
 //                        ,allowBlank: false
                     }, {
@@ -112,15 +112,15 @@ Ext.onReady(function () {
     });
 
     var questionRecord = [
-        {name: 'questionId'},
+        {name: 'id'},
         {name: 'status'},
         {name: 'type'},
         {name: 'sites'}
     ];
     for (var languageId in Axis.languages) {
         questionRecord.push({
-            name: 'question[' + languageId + ']',
-            mapping:'text[' + languageId + ']'
+            name: 'description[' + languageId + ']',
+            mapping:'description[' + languageId + ']'
         });
     }
 
@@ -137,7 +137,7 @@ Ext.onReady(function () {
         ),
         items: [{
             xtype: 'hidden',
-            name: 'questionId'
+            name: 'id'
         },  {
             layout: 'column',
             border: false,

@@ -279,4 +279,37 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
             ->order(array('cpc.category_id', 'cpc.product_id', 'cc1.lvl'))
             ->fetchAll();
     }
+    
+    /**
+     *
+     * @param Axis_Db_Table_Row $site
+     * @return Axis_Db_Table_Row 
+     */
+    public function addNewRootCategory(Axis_Db_Table_Row $site) 
+    {
+        $modelDescription = Axis::model('catalog/category_description');
+        $languageIds      = array_keys(Axis_Collect_Language::collect());
+        $timestamp        = Axis_Date::now()->toSQLString();
+        $row = $this->createRow(array(
+            'site_id'     => $site->id,
+            'lft'         => 1,
+            'rgt'         => 2,
+            'lvl'         => 0,
+            'created_on'  => $timestamp,
+            'modified_on' => $timestamp,
+            'status'      => 'enabled'
+        ));
+        $row->save();
+        
+        foreach ($languageIds as $languageId) {
+            $modelDescription->createRow(array(
+                'category_id' => $row->id,
+                'language_id' => $languageId,
+                'name'        => $site->name,
+                'description' => 'Root Category'
+            ))->save();
+        }
+        
+        return $row;
+    }
 }

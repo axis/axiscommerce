@@ -22,12 +22,12 @@ Ext.onReady(function() {
     var tabsTopBar = new Ext.Toolbar();
     tabsTopBar.addSpacer();
     tabsTopBar.addText('Name'.l());
-    tabsTopBar.addElement('groupName');
+    tabsTopBar.addElement('name');
     tabsTopBar.addSeparator();
     tabsTopBar.addText('Sort Order'.l());
-    tabsTopBar.addElement('sortOrder');
+    tabsTopBar.addElement('sort_order');
     tabsTopBar.addSeparator();
-    tabsTopBar.addElement('groupAct');
+    tabsTopBar.addElement('is_active');
     tabsTopBar.addSeparator();
     tabsTopBar.addButton({
         text: 'Save'.l(),

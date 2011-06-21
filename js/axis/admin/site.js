@@ -203,11 +203,11 @@ Ext.onReady(function(){
 
     function addSite(){
         var s = new siteFields({
-            id: 'new',
+            id: null,
             name: '',
             base: '',
             secure: '',
-            root_category: 'new'
+            root_category: null
         });
         grid.stopEditing();
         grid.getStore().insert(0, s);

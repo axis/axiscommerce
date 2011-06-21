@@ -70,7 +70,7 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
                 array('languageId' => 'language_id', 'question')
             )
             ->where('pq.id = ?', $questionId)
-            ->fetchAssoc()
+            ->fetchAll()
             ;
     }
 
@@ -188,5 +188,21 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
             $questions[$questionId]['cnt'] = $count;
         }
         return array_values($questions);
+    }
+    
+    /**
+     *
+     * @param array $data
+     * @return Axis_Db_Table_Row 
+     */
+    public function save(array $data) 
+    {
+        $row = $this->getRow($data);
+        $row->changed_at = Axis_Date::now()->toSQLString();
+        if (null === $row->created_at) {
+            $row->created_at = $row->changed_at;
+        }
+        $row->save();
+        return $row;
     }
 }

@@ -96,7 +96,6 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
         $params = $this->_getAllParams();
 
         $params['products'] = Zend_Json::decode($params['products']);
-//        Axis_FirePhp::log($params);
         ////////////////////////////////////////////////////////////////////////
         //add new customer
         $newBillingAddress = $params['order']['billing_address_type'] == 0;

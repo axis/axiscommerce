@@ -102,18 +102,18 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
     {
         $success = true;
 
-        $categoryModel = Axis::model('catalog/category');
-        /* @var $categoryModel Axis_Catalog_Model_Category */
+        $modelCategory = Axis::model('catalog/category');
+        /* @var $modelCategory Axis_Catalog_Model_Category */
 
-        $parentId = $this->_getParam('parent_id', 0);
+        $parentId   = $this->_getParam('parent_id', 0);
         $categoryId = $this->_getParam('id', 0);
         $catKeyWord = strtolower($this->_getParam('key_word'));
-        $siteId = $this->_getParam('site_id');
+        $siteId     = $this->_getParam('site_id');
 
         /* if human url already exist */
-        $mHurl = Axis::model('catalog/hurl');
+        $modelHurl = Axis::model('catalog/hurl');
         if (!empty($catKeyWord) &&
-            $mHurl->hasDuplicate($catKeyWord, $siteId, $categoryId)) {
+            $modelHurl->hasDuplicate($catKeyWord, $siteId, $categoryId)) {
 
             Axis::message()->addError(
                 Axis::translate('catalog')->__(
@@ -141,39 +141,37 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
 
         // save category
         $data = array(
-            'status' => $this->_getParam('status', 'enabled'),
-            'image_base' => $image['base']['src'],
+            'status'        => $this->_getParam('status', 'enabled'),
+            'image_base'    => $image['base']['src'],
             'image_listing' => $image['listing']['src']
         );
 
         if ($categoryId) {
             $data['modified_on'] = Axis_Date::now()->toSQLString();
-            $categoryModel->update($data, array(
+            $modelCategory->update($data, array(
                 $this->db->quoteInto('id = ?', $categoryId)
             ));
-            Axis::dispatch('catalog_category_update_success', array(
-                'category_id' => $categoryId,
-                'data' => $data
-            ));
+            $event = 'catalog_category_update_success';
         } else {
             $data['created_on'] = Axis_Date::now()->toSQLString();
-            $categoryId = $categoryModel->insertItem($data, $parentId);
-            Axis::dispatch('catalog_category_add_success', array(
-                'category_id' => $categoryId,
-                'data' => $data
-            ));
+            $categoryId = $modelCategory->insertItem($data, $parentId);
+            $event = 'catalog_category_add_success';
         }
+        Axis::dispatch($event, array(
+            'category_id' => $categoryId,
+            'data' => $data
+        ));
 
         if (!$categoryId) {
             Axis::message()->addError('Unable to save category');
             return $this->_helper->json->sendFailure();
         }
         /* Save category description */
-        $categoryName            = $this->_getParam('name');
-        $categoryDescription     = $this->_getParam('description');
-        $metaTitle         = $this->_getParam('meta_title');
-        $metaDescription   = $this->_getParam('meta_description');
-        $metaKeyword       = $this->_getParam('meta_keyword');
+        $categoryName        = $this->_getParam('name');
+        $categoryDescription = $this->_getParam('description');
+        $metaTitle           = $this->_getParam('meta_title');
+        $metaDescription     = $this->_getParam('meta_description');
+        $metaKeyword         = $this->_getParam('meta_keyword');
 
         $mCategoryDescription = Axis::model('catalog/category_description');
         foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
@@ -181,14 +179,14 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
                 continue;
             }
             $row = $mCategoryDescription->save(array(
-                'category_id' => $categoryId,
-                'language_id' => $languageId,
-                'name' => $categoryName[$languageId],
-                'description' => $categoryDescription[$languageId],
-                'meta_title' => $metaTitle[$languageId],
-                'meta_description' => $metaDescription[$languageId],
-                'meta_keyword' => $metaKeyword[$languageId],
-                'image_base_title' => $image['base']['title'][$languageId],
+                'category_id'         => $categoryId,
+                'language_id'         => $languageId,
+                'name'                => $categoryName[$languageId],
+                'description'         => $categoryDescription[$languageId],
+                'meta_title'          => $metaTitle[$languageId],
+                'meta_description'    => $metaDescription[$languageId],
+                'meta_keyword'        => $metaKeyword[$languageId],
+                'image_base_title'    => $image['base']['title'][$languageId],
                 'image_listing_title' => $image['listing']['title'][$languageId]
             ));
             if (!$row) {
@@ -197,16 +195,16 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
         }
 
         /* Save Human Url */
-        $mHurl->delete(array(
+        $modelHurl->delete(array(
             $this->db->quoteInto('key_id = ?', $categoryId),
             $this->db->quoteInto('key_type = ?', 'c')
         ));
 
         if (!empty($catKeyWord)) {
-            $hurlSuccess = $mHurl->save(array(
+            $hurlSuccess = $modelHurl->save(array(
                 'key_word' => $catKeyWord,
                 'key_type' => 'c',
-                'site_id' => $siteId,
+                'site_id'  => $siteId,
                 'key_id'   => $categoryId
             ));
             if (!$hurlSuccess) {

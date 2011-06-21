@@ -54,34 +54,29 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        // $this->getRow($data)->save();
-
-        if (!isset($data['id'])
-            || !$row = $this->find($data['id'])->current()) {
-
-            $row = $this->createRow();
+        if (!$data['id']) {
+            unset($data['id']);
         }
-        unset($data['id']);
         if (empty($data['parent_id'])) {
             $data['parent_id'] = new Zend_Db_Expr('NULL');
         }
-        $row->setFromArray($data)->save();
-
-        $mContent = Axis::model('cms/category_content');
-        foreach ($data['content'] as $languageId => $values) {
-
-            // $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
-
-            if (!$rowContent = $mContent->find($row->id, $languageId)->current()) {
-                $rowContent = $mContent->createRow(array(
-                    'cms_category_id'   => $row->id,
-                    'language_id'       => $languageId
-                ));
-            }
-            $rowContent->setFromArray($values)->save();
-        }
-
-        return $row->id;
+        $row = $this->getRow($data);
+        $row->save();
+        
+//        // $this->getRow($data)->save();
+//
+//        if (!isset($data['id'])
+//            || !$row = $this->find($data['id'])->current()) {
+//
+//            $row = $this->createRow();
+//        }
+//        unset($data['id']);
+//        if (empty($data['parent_id'])) {
+//            $data['parent_id'] = new Zend_Db_Expr('NULL');
+//        }
+//        $row->setFromArray($data)
+//            ->save();
+        return $row;
     }
 
     public function getCategoryIdByLink($link)
