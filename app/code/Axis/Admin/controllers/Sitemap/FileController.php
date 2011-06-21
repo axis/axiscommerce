@@ -152,7 +152,9 @@ class Axis_Admin_Sitemap_FileController extends Axis_Admin_Controller_Back
             $_container = $menu->findBy(
                 'id', $_product['category_id'] . $_product['language_id']
             );
-            $_container->addPage($page);
+            if (null !== $_container) {
+                $_container->addPage($page);
+            }
         }
 
         $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
