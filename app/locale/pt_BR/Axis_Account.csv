@@ -148,3 +148,4 @@
 "Default Customer Group (default:'General')", "Grupo de Cliente Padrão (Padrão: \'Geral\')"
 "State(Region) Id","State(Region) Id"
 "You can get the id of desired region at admin/location_zone","You can get the id of desired region at admin/location_zone"
+"Allowed Countries","Allowed Countries"

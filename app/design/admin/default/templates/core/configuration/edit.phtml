@@ -6,8 +6,10 @@
 ?>
 <h3 class="config-title"> <?php echo $this->confField['title'];?> </h3>
 <dl class="general-form">
-    <dt><label><?php echo $this->translate('admin')->__('Description');?>: </label></dt>
-    <dd><?php echo $this->confField['description'];?></dd>
+    <?php if (!empty($this->confField['description'])) : ?>
+        <dt><label><?php echo $this->translate('admin')->__('Description');?>: </label></dt>
+        <dd><?php echo $this->confField['description'];?></dd>
+    <?php endif; ?>
     <dt><label for="confValue"><?php echo $this->translate('admin')->__('Value');?>:</label></dt>
     <dd><?php
     switch ($this->confField['config_type']) {

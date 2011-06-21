@@ -198,7 +198,7 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', $path)
             ->fetchRow();
-        
+
         $translator = Axis::translate($row->getTranslationModule());
 //        $this->view->confField = $row->toArray();
         $row->description = $translator->__($row->description);
@@ -222,11 +222,11 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
             }
 
             $this->view->confValue = $this->_optionsToArray($this->view->confValue);
-        } elseif ($row->config_type == 'select' 
+        } elseif ($row->config_type == 'select'
             || $row->config_type == 'multiple') {
 
             $row->config_options = $this->_optionsToArray($row->config_options);
-            
+
             $this->view->confValue = $this->_optionsToArray($this->view->confValue);
         }
         $this->view->confField = $row->toArray();
@@ -244,7 +244,7 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
         $field = Axis::single('core/config_field')->select()
             ->where('path = ?', $path)
             ->fetchRow();
-        
+
         if ($field->config_type === 'handler') {
 
             //@todo kostul
@@ -254,11 +254,7 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
 
             $confValue = $this->_getSaveValue($field->model, $confValue, array());
         } elseif (is_array($confValue)) {
-            $values = array();
-            foreach ($confValue as $valueItem) {
-                if ($valueItem !== '0') $values[] = $valueItem;
-            }
-            $confValue = implode(Axis_Config::MULTI_SEPARATOR, $values);
+            $confValue = implode(Axis_Config::MULTI_SEPARATOR, $confValue);
         }
 
         $value = Axis::single('core/config_value')->select()
@@ -278,7 +274,7 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
         }
         $value->value = $confValue;
         $value->save();
-        
+
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Configuration option was saved successfully'
