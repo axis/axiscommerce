@@ -38,7 +38,7 @@ class Axis_Tax_Model_Class extends Axis_Db_Table
     /**
      * Save data call backend
      * @param array $data
-     * @return mixed primary keys 
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
@@ -47,9 +47,10 @@ class Axis_Tax_Model_Class extends Axis_Db_Table
         }
         $row = $this->getRow($data);
         $row->modified_on = Axis_Date::now()->toSQLString();
-        if (null === $row->created_on) {
+        if (empty($row->created_on)) {
             $row->created_on = $row->modified_on;
         }
-        return $row->save();
+        $row->save();
+        return $row;
     }
 }

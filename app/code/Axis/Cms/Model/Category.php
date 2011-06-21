@@ -45,37 +45,15 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
      * Update or insert category row
      *
      * @param array $data
-     * <code>
-     *  column_name => value,
-     *  content     => array(
-     *      langId => array()
-     *  )
-     * </code>
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
-        if (!$data['id']) {
-            unset($data['id']);
-        }
-        if (empty($data['parent_id'])) {
-            $data['parent_id'] = new Zend_Db_Expr('NULL');
-        }
         $row = $this->getRow($data);
+        if (empty($row->parent_id)) {
+            $row->parent_id = new Zend_Db_Expr('NULL');
+        }
         $row->save();
-        
-//        // $this->getRow($data)->save();
-//
-//        if (!isset($data['id'])
-//            || !$row = $this->find($data['id'])->current()) {
-//
-//            $row = $this->createRow();
-//        }
-//        unset($data['id']);
-//        if (empty($data['parent_id'])) {
-//            $data['parent_id'] = new Zend_Db_Expr('NULL');
-//        }
-//        $row->setFromArray($data)
-//            ->save();
         return $row;
     }
 

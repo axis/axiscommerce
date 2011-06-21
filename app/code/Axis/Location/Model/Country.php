@@ -38,6 +38,7 @@ class Axis_Location_Model_Country extends Axis_Db_Table
     /**
      *
      * @param array $data
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
@@ -66,6 +67,6 @@ class Axis_Location_Model_Country extends Axis_Db_Table
             )
         );
         
-        return $row->id;
+        return $row;
     }
 }
