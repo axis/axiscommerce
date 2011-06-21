@@ -64,8 +64,8 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
         $this->_type = $type;
         try {
             $writer = new Zend_Log_Writer_Stream(
-                Axis::config()->system->path .
-                Axis::config()->log->main->shipping
+                Axis::config('system/path') .
+                Axis::config('log/main/shipping')
             );
             $this->_logger = new Zend_Log($writer);
         } catch (Exception $e) {}
@@ -78,7 +78,9 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
      */
     public function log($message)
     {
-        Axis::message()->addError($this->_code . ': ' . $message);
+        if ($this->_config->showErrors) {
+            Axis::message()->addError($this->_code . ': ' . $message);
+        }
         $this->_logger->info($this->_code . ' ' . $message);
     }
 
