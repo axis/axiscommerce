@@ -1,8 +1,8 @@
 <form method="post" action="<?php echo $this->href('configuration/save');?>" id="form-edit"
       onsubmit="Config.save(); return false;">
-<?php 
-    echo $this->formHidden('siteId', $this->siteId); 
-    echo $this->formHidden('path', $this->configPath); 
+<?php
+    echo $this->formHidden('siteId', $this->siteId);
+    echo $this->formHidden('path', $this->configPath);
 ?>
 <h3 class="config-title"> <?php echo $this->confField['title'];?> </h3>
 <dl class="general-form">
@@ -19,22 +19,23 @@
             echo $this->formSelect('confValue', $this->confValue, null, $this->confField['config_options']);
             break;
         case 'multiple':
-            foreach ($this->confField['config_options'] as $key => $dataItem) {
-                echo $this->formCheckbox(
-                    "confValue[$key]",
-                    isset($this->confValue[$key]) ? $key : null,
-                    null,
-                    array($key, 0)
-                ) . " $dataItem<br />";
-            }
+            echo $this->formSelect(
+                'confValue',
+                $this->confValue,
+                array(
+                    'multiple'  => 'multiple',
+                    'size'      => 10
+                ),
+                $this->confField['config_options']
+            );
             break;
         case 'text':
             echo $this->formTextarea('confValue', $this->confValue, array('rows' => 8, 'cols' => 45));
             break;
         case 'handler':
             echo $this->confField['config_options'];
-            break;    
-        
+            break;
+
         default:
             echo $this->formText('confValue', $this->confValue, array('size' => '50'));
     }
