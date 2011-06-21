@@ -60,8 +60,8 @@ class Axis_Catalog_Model_Category_Select extends Axis_Db_Table_Select
         if (null !== $languageId) {
             return $this->joinLeft(
                 'catalog_category_description',
-                'ccd.category_id = cc.id AND ccd.language_id = :languageId'
-            )->bind(array('languageId' => $languageId));
+                'ccd.category_id = cc.id AND ccd.language_id = ' . $languageId
+            );
         }
 
         return $this->joinLeft(

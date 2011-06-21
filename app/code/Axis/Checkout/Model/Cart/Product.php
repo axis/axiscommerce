@@ -54,12 +54,13 @@ class Axis_Checkout_Model_Cart_Product extends Axis_Db_Table
         if (!$select->fetchRow()) {
             return array();
         }
-        $select
-            ->joinLeft('catalog_product',
+
+        $languageId = Axis_Locale::getLanguageId();
+        $select->joinLeft('catalog_product',
                 'cp.id = ccp.product_id',
                 array('sku', 'price', 'image_thumbnail', 'image_listing', 'image_base')
             )->joinLeft('catalog_product_description',
-                'cpd.product_id = ccp.product_id AND cpd.language_id = :languageId',
+                'cpd.product_id = ccp.product_id AND cpd.language_id = ' . $languageId,
                 array('name', 'description', 'image_seo_name')
             )->joinLeft('catalog_hurl',
                 'ch.key_id = cp.id AND ch.key_type = "p"',
@@ -76,13 +77,13 @@ class Axis_Checkout_Model_Cart_Product extends Axis_Db_Table
                 'cpo.id = cpa.option_id',
                 'input_type'
             )->joinLeft('catalog_product_option_text',
-                'cpot.option_id = cpa.option_id AND cpot.language_id = :languageId',
+                'cpot.option_id = cpa.option_id AND cpot.language_id = ' . $languageId,
                 array('option_name' => 'name')
             )->joinLeft('catalog_product_option_value_text',
-                'cpovt.option_value_id = cpa.option_value_id AND cpovt.language_id = :languageId',
+                'cpovt.option_value_id = cpa.option_value_id AND cpovt.language_id = ' . $languageId,
                 array('value_name' => 'name')
-            )->order(array('ccp.product_id', 'cpo.id'))
-            ->bind(array('languageId' => Axis_Locale::getLanguageId()))
+            )
+            ->order(array('ccp.product_id', 'cpo.id'))
             ->limit(); //reset limit 1
 
         $products = array();

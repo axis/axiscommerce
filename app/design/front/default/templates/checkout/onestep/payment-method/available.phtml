@@ -1,6 +1,6 @@
 <?php echo $this->message() ?>
 
-<label id="payment-required" class="error" style="display: none;">Payment Method is required.</label>
+<label id="payment-required" class="error" style="display: none;"><?php echo $this->translate('checkout')->__('Payment Method is required.') ?></label>
 
 <?php if (!count($this->checkout['payment_methods']['methods'])) : ?>
 

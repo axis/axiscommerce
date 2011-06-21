@@ -416,4 +416,27 @@ class Axis_Locale
     {
         return Zend_Locale::getTranslationList('NameToCurrency', self::getLocale());
     }
+
+    /**
+     * Returns number from string
+     *
+     * @param string $value
+     * @return float
+     */
+    public static function getNumber($value)
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        if (!is_string($value)) {
+            return floatval($value);
+        }
+
+        $value = str_replace('\'', '', $value);
+        $value = str_replace(' ', '', $value);
+        $value = str_replace(',', '.', $value);
+
+        return floatval($value);
+    }
 }

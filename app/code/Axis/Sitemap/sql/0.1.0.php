@@ -71,9 +71,9 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
             ->add('sitemap/categories/priority', 'Sitemap/Categories Options/Priority', '0.8', 'string', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
             ->add('sitemap/categories/frequency', 'Frequency', 'daily', 'select', 'Frequency', array('config_options' => 'always,hourly,daily,weekly,monthly,yearly,never'))
-            ->add('sitemap/products/priority', 'Sitemap/Products Options/Priority', '', 'string', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
+            ->add('sitemap/products/priority', 'Sitemap/Products Options/Priority', '0.8', 'string', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
             ->add('sitemap/products/frequency', 'Frequency', 'daily', 'select', 'Frequency', array('config_options' => 'always,hourly,daily,weekly,monthly,yearly,never'))
-            ->add('sitemap/cms/priority', 'Sitemap/CMS Pages Options/Priority', '', 'string', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
+            ->add('sitemap/cms/priority', 'Sitemap/CMS Pages Options/Priority', '0.5', 'string', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
             ->add('sitemap/cms/frequency', 'Frequency', 'daily', 'select', 'Frequency', array('config_options' => 'always,hourly,daily,weekly,monthly,yearly,never'))
             ->add('sitemap/cms/showPages', 'Show pages', '1', 'bool', 'Show pages on sitemap page');
 

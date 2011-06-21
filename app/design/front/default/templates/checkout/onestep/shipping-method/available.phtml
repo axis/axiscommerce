@@ -1,6 +1,6 @@
 <?php echo $this->message() ?>
 
-<label id="shipping-required" class="error" style="display: none;">Shipping Method is required.</label>
+<label id="shipping-required" class="error" style="display: none;"><?php echo $this->translate('checkout')->__('Shipping Method is required.') ?></label>
 
 <?php if (!count($this->checkout['shipping_methods']['methods'])) : ?>
 

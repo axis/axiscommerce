@@ -22,7 +22,7 @@ Ext.onReady(function() {
     ProductWindow.formFields.push(
         {name: 'product[sku]', mapping: 'product.sku'},
         {name: 'product[date_available]', mapping: 'product.date_available', type: 'date', dateFormat: 'Y-m-d'},
-        {name: 'product[quantity]', mapping: 'product.quantity', type: 'int'},
+        {name: 'product[quantity]', mapping: 'product.quantity', type: 'float'},
         {name: 'product[weight]', mapping: 'product.weight', type: 'float'},
         {name: 'stock[manage]', mapping: 'stock.manage', type: 'int'},
         {name: 'stock[backorder]', mapping: 'stock.backorder', type: 'int'},
