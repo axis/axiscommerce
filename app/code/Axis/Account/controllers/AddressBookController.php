@@ -71,7 +71,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         $this->setTitle(Axis::translate('account')->__('Saving address'));
 
         $params = $this->_getAllParams();
-        $form = Axis::model('account/Form_Address');
+        $form = Axis::model('account/form_address');
 
         if ($form->isValid($params)) {
             $params['customer_id'] = $this->_customerId;
@@ -110,9 +110,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
             Axis::translate('account')->__(
                 'Add new address'
         ));
-        $form = Axis::single('account/Form_Address');
-        $form->addUseAsDefaultAddressCheckbox();
-        $this->view->form = $form;
+        $this->view->form = Axis::model('account/form_address');
         $this->render('form-address');
     }
 
@@ -146,8 +144,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
             ));
         }
 
-        $form = Axis::model('account/Form_Address');
-        $form->addUseAsDefaultAddressCheckbox();
+        $form = Axis::model('account/form_address');
 
         $customer = Axis::getCustomer();
 
