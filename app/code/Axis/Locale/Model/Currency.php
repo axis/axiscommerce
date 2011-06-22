@@ -292,41 +292,12 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
-    public function batchSave($data)
+    public function save(array $data)
     {
-        $result = true;
-        foreach ($data as $id => $values) {
-            $format = empty($values['format']) ?
-                new Zend_Db_Expr('NULL') : $values['format'];
-            $rowData = array(
-                'id'                 => $id,
-                'code'               => $values['code'],
-                'title'              => $values['title'],
-                'position'           => $values['position'],
-                'display'            => $values['display'],
-                'format'             => $format,
-                'currency_precision' => $values['currency_precision'],
-                'rate'               => $values['rate']
-            );
-
-            $result = $result && (bool) $this->save($rowData);
-        }
-        return $result;
-    }
-
-    /**
-     *
-     * @param array $rowData
-     * @return mixed The primary key value(s), as an associative array if the
-     *     key is compound, or a scalar if the key is single-column.
-     */
-    public function save(array $rowData)
-    {
-        $rowData['rate'] = Axis_Locale::getNumber($rowData['rate']);
-        $row = $this->getRow($rowData);
-
+        $data['rate'] = Axis_Locale::getNumber($data['rate']);
+        $row = $this->getRow($data);
         if ($row->code === Axis::config('locale/main/currency')
             && $row->rate != 1) {
 
@@ -336,7 +307,10 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
             ));
             $row->rate = 1;
         }
-
-        return $row->save();
+        if (empty($row->format)) {
+            $row->format = new Zend_Db_Expr('NULL');
+        }
+        $row->save();
+        return $row;
     }
 }

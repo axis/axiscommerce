@@ -122,26 +122,27 @@ Ext.onReady(function() {
         }, Item.record),
         pruneModifiedRecords: true
     });
-
+    
     var cm = new Ext.grid.ColumnModel([{
         header: "Id".l(),
         dataIndex: 'id',
-        width: 50
+        width: 60
     }, {
         header: "Code".l(),
         dataIndex: 'code',
-        width: 30
+        width: 60
     }, {
+        id: 'title',
         header: "Title".l(),
         dataIndex: 'title',
-        width: 120,
+        width: 60,
         editor: new Ext.form.TextField({
            allowBlank: false
         })
     }, {
         header: "Position".l(),
         dataIndex: 'position',
-        width: 120,
+        width: 100,
         editor: new Ext.form.ComboBox({
            typeAhead: true,
            triggerAction: 'all',
@@ -152,7 +153,7 @@ Ext.onReady(function() {
     }, {
         header: "Display".l(),
         dataIndex: 'display',
-        width: 120,
+        width: 100,
         editor: new Ext.form.ComboBox({
             typeAhead: true,
             triggerAction: 'all',
@@ -163,21 +164,26 @@ Ext.onReady(function() {
     }, {
         header: "Format".l(),
         dataIndex: 'format',
-        width: 60,
-        editor: new Ext.form.TextField({
-            allowBlank: true
-        })
+        width: 180,
+        editor: new Ext.form.ComboBox({
+            typeAhead: true,
+            triggerAction: 'all',
+            transform: 'format',
+            lazyRender: true,
+            allowBlank: false
+        }),
+        renderer : renderLocale
     }, {
         header: "Precision".l(),
         dataIndex: 'currency_precision',
-        width: 65,
+        width: 60,
         editor: new Ext.form.TextField({
             allowBlank: false
         })
     }, {
         header: "Rate".l(),
         dataIndex: 'rate',
-        width: 120,
+        width: 60,
         editor: new Ext.form.TextField({
             allowBlank: false
         })
@@ -187,10 +193,7 @@ Ext.onReady(function() {
     var grid = new Axis.grid.EditorGridPanel({
         ds: ds,
         cm: cm,
-        viewConfig: {
-            forceFit: true,
-            emptyText: 'No records found'.l()
-        },
+        autoExpandColumn: 'title',
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
@@ -237,7 +240,7 @@ Ext.onReady(function() {
         fieldLabel: 'Currency'.l(),
         value: 'USD',
         allowBlank: false
-    })
+    });
 
     var zendLocales = new Ext.form.ComboBox({
         transform: 'locale',
@@ -248,7 +251,7 @@ Ext.onReady(function() {
         fieldLabel: 'Format'.l(),
         value: 'en_US',
         allowBlank: false
-    })
+    });
 
     var form = new Ext.form.FormPanel({
         border: false,
