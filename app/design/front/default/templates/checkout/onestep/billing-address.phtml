@@ -21,8 +21,8 @@
         <div class="address-form">
             <?php echo $this->checkout['form_billing_address']->render(); ?>
         </div>
-        <ol>
-            <li class="last">
+        <ul>
+            <li class="element-row last">
                 <?php if (Axis::config('checkout/address_form/shipping_address_enabled')) : ?>
                     <label class="optional" for="billing_address-use_for_delivery"><?php echo $this->translate('checkout')->__('Use as Delivery Address') ?></label>
                     <input type="hidden" value="0" name="billing_address[use_for_delivery]"/>
@@ -39,6 +39,6 @@
                     <input type="checkbox" checked="checked" style="display: none;" value="1" id="billing_address-use_for_delivery" name="billing_address[use_for_delivery]"/>
                 <?php endif; ?>
             </li>
-        </ol>
+        </ul>
     </div>
 </div>

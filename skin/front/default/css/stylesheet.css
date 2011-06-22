@@ -93,6 +93,7 @@ select { padding: 1px; }
 input.radio { margin-right:3px; }
 input.checkbox { margin-right:3px; }
 
+form ul ul { padding: 0; }
 .axis-form legend span { display: none; }
 .axis-form fieldset { background:#FBFAF6 none repeat scroll 0%; border:1px solid #BBAFA0;
     margin:12px 0pt; padding:16px 25px 12px; }
@@ -982,7 +983,7 @@ a.review-stars { outline: none; }
 .product-listing-grid .review-add { display: none; }
 #form-review .review-ratings { width: 300px; }
 #form-review .review-ratings li { padding: 0; clear: both; }
-#form-review .review-stars { float: right; }
+#form-review .review-stars { margin-left: 90px; }
 #form-review .rating-title { float: left; width: 90px; line-height: 32px; }
 
 /* Small stars */
@@ -1186,7 +1187,7 @@ a.review-stars { outline: none; }
 .onestep-set .col-address fieldset { border: none; margin: 0; padding: 0; }
 .onestep-set .col-address fieldset .legend { display: none; }
 .onestep-set .box-address-form { clear: both; }
-.onestep-set .box-address-form li { margin: 0 0 3px 0; padding: 0 5px; clear: left; }
+.onestep-set .box-address-form li.element-row { margin: 0 0 3px 0; padding: 0 5px; clear: left; }
 .onestep-set .box-address-form label { float: left; width: 90px; padding: 2px 0 0 0; margin-right: 4px; }
 .onestep-set .box-address-form label[for="billing_address-register"],
 .onestep-set .box-address-form label[for="billing_address-use_for_delivery"] { width: 160px; }

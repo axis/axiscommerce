@@ -151,15 +151,11 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         $form->populate($row->toArray());
 
         if ($customer->default_shipping_address_id == $addressId) {
-            $form->getDisplayGroup('address')
-                ->getRow('default_shipping')
-                ->getElement('default_shipping')
+            $form->getElement('default_shipping')
                 ->setOptions(array('value' => 1));
         }
         if ($customer->default_billing_address_id == $addressId) {
-            $form->getDisplayGroup('address')
-                ->getRow('default_billing')
-                ->getElement('default_billing')
+            $form->getElement('default_billing')
                 ->setOptions(array('value' => 1));
         }
 

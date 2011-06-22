@@ -88,15 +88,7 @@ class Axis_Cms_Model_Form_Comment extends Axis_Form
             'cols' => '50'
         ));
 
-        $this->addDisplayGroup(array('author', 'email', 'content'), 'comment');
-
-        $this->getDisplayGroup('comment')
-            ->addRow(array('author', 'email'), 'row1')
-            ->addRow('content', 'row2');
-
-        $this->getDisplayGroup('comment')->getRow('row1')
-            ->addColumn('author', 'col1')
-            ->addColumn('email', 'col2');
+        $this->addDisplayGroup($this->getElements(), 'comment');
 
         $this->addElement('button', 'submit', array(
             'type' => 'submit',
