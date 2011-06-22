@@ -194,7 +194,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                 );
         } else {
             if (!$product = Axis::single('catalog/product')->getByUrl($this->_getParam('hurl'))) {
-                $productName = $this->_getParam('hurl');
+                return $this->_forward('not-found', 'Error', 'Axis_Core');
             } else {
                 $description = $product->getDescription();
                 $productName = $description['name'];
@@ -227,19 +227,18 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
      */
     public function customerAction()
     {
+        $customerId = $this->_getParam('id');
+        if (!$customerId
+            || !is_numeric($customerId)
+            || !$customer = Axis::model('account/customer')->find($customerId)->current()) {
+
+            return $this->_forward('not-found', 'Error', 'Axis_Core');
+        }
+
         $this->view->data = array(
             'reviews' => array(),
             'count' => 0
         );
-
-        if (!$this->_hasParam('id') || !is_numeric($this->_getParam('id'))) {
-            $this->setTitle(
-                Axis::translate('community')->__(
-                    'Review not found'
-            ));
-            $this->render('list');
-            return;
-        }
 
         $where = 'cr.customer_id = ' . (int)$this->_getParam('id');
         $params = $this->_getListingParams();
@@ -259,6 +258,18 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         $this->view->paging = $paging;
         $this->view->comparable = true;
 
+        if (!$nickname = $customer->getExtraField('nickname')) {
+            $nickname = $customerId;
+        }
+
+        $this->view->customer   = $nickname;
+        $this->view->customerId = $customerId;
+
+        $title = Axis::translate('community')->__(
+            'Reviews written by customer %s', $nickname
+        );
+        $this->setTitle($title);
+
         if (count($this->view->data['reviews'])) {
             $productIds = array();
             $keywords = array();
@@ -267,36 +278,20 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                 $keywords[$review['product']['name']] = $review['product']['name'];
             }
 
-            $nickname = $customerId = $this->_getParam('id');
-            if ($customer = Axis::single('account/customer')->find($customerId)->current()) {
-                $nick = $customer->getExtraField('nickname');
-                $nickname = $nick ? $nick : $nickname;
-            }
-
-            $this->view->customer = $nickname;
-            $this->view->customerId = $customerId;
-
-            $title = Axis::translate('community')->__(
-                'Reviews written by customer %s', $nickname
-            );
-            $this->setTitle($title, false);
             $this->view->meta()
-                ->setTitle($title)
                 ->setKeywords(implode(',', $keywords))
-                ->setDescription($title)
-            ;
+                ->setDescription($title);
 
-            $this->view->average_ratings = Axis::single('community/review')
-                ->getAverageProductRating(
-                    $productIds, Axis::config()->community->review->merge_average
-                );
+            $mReview = Axis::model('community/review');
+            $this->view->average_ratings = $mReview->getAverageProductRating(
+                $productIds,
+                Axis::config('community/review/merge_average')
+            );
 
-            $this->view->average_customer_ratings = Axis::single('community/review')
-                ->getAverageCustomerRating(
-                    $customerId, Axis::config()->community->review->merge_average
-                );
-        } else {
-            $this->setTitle(Axis::translate('community')->__('Review not found'));
+            $this->view->average_customer_ratings = $mReview->getAverageCustomerRating(
+                $customerId,
+                Axis::config('community/review/merge_average')
+            );
         }
 
         $this->render('list-customer');
