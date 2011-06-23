@@ -50,7 +50,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
 
     public function getNodesAction()
     {
-        $rowset = Axis::model('core/template')->fetchAll();
+        $rowset = Axis::model('core/template')->fetchAll(null, 'name ASC');
         foreach ($rowset as $row) {
             $data[] = array(
                 'text'     => $row->name,

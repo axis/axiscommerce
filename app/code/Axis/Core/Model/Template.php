@@ -352,4 +352,56 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         }
         return $row->name;
     }
+
+    /**
+     * Duplicates boxes and layout preferences from one theme to another
+     *
+     * @param string $from
+     * @param string $to    Must be unique value
+     * @return mixed Axis_Db_Table_Row|false
+     */
+    public function duplicate($from, $to)
+    {
+        $fromId = $this->getIdByName($from);
+        if (!$fromId) {
+            return false;
+        }
+
+        $data = $this->getFullInfo($fromId);
+        if ($toId = $this->getIdByName($to)) {
+            $template = $this->find($toId)->current();
+        } else {
+            $template = $this->createRow();
+            $template->name = $to;
+        }
+        $template->default_layout = $data['default_layout'];
+        $template->save();
+
+        //import boxes
+        $mTemplateBox       = Axis::model('core/template_box');
+        $mTemplateBoxPage   = Axis::model('core/template_box_page');
+        foreach ($data['boxes'] as $boxData) {
+            unset($boxData['id']);
+            $box = $mTemplateBox->createRow($boxData);
+            $box->template_id = $template->id;
+            $box->save();
+            foreach ($boxData['pages'] as $pageData) {
+                $page = $mTemplateBoxPage->createRow($pageData);
+                $page->box_id    = $box->id;
+                $page->page_id   = $pageData['id'];
+                $page->save();
+            }
+        }
+
+        //import layouts
+        $mTemplatePage = Axis::model('core/template_page');
+        foreach ($data['layouts'] as $layoutData) {
+            unset($layoutData['id']);
+            $layout = $mTemplatePage->createRow($layoutData);
+            $layout->template_id = $template->id;
+            $layout->save();
+        }
+
+        return $template;
+    }
 }

@@ -56,7 +56,7 @@ Ext.onReady(function() {
             if (!selectedItem)
                 return;
 
-            if (!confirm('Are you sure?'))
+            if (!confirm('Are you sure?'.l()))
                 return;
 
             Ext.Ajax.request({
@@ -158,33 +158,29 @@ Ext.onReady(function() {
         loader: new Ext.tree.TreeLoader({
             dataUrl: Axis.getUrl('template_index/get-nodes')
         }),
-        tbar: [{
-            text: 'Edit'.l(),
-            tooltip: {text:'Edit template'},
-            icon: Axis.skinUrl + '/images/icons/page_edit.png',
-            cls: 'x-btn-text-icon',
-            handler: Template.edit
-        }, {
-            text: 'Export'.l(),
-            tooltip: {text:'Export template'},
-            icon: Axis.skinUrl + '/images/icons/brick_go.png',
-            cls: 'x-btn-text-icon',
-            handler: Template.exportT
-        }, {
-            text: 'Delete'.l(),
-            tooltip: {text:'Uninstall template'},
-            icon: Axis.skinUrl + '/images/icons/delete.png',
-            cls: 'x-btn-text-icon',
-            handler: Template.remove
-        }, '->', {
-            icon: Axis.skinUrl + '/images/icons/refresh.png',
-            cls: 'x-btn-icon',
-            handler: function(){
-                tree.getLoader().load(tree.getRootNode(), function(){
-                    tree.getRootNode().expand();
-                });
-            }
-        }]
+        tbar: {
+            enableOverflow: true,
+            items: [{
+                text: 'Edit'.l(),
+                icon: Axis.skinUrl + '/images/icons/page_edit.png',
+                handler: Template.edit
+            }, {
+                text: 'Export'.l(),
+                icon: Axis.skinUrl + '/images/icons/brick_go.png',
+                handler: Template.exportT
+            }, {
+                text: 'Delete'.l(),
+                icon: Axis.skinUrl + '/images/icons/delete.png',
+                handler: Template.remove
+            }, '->', {
+                icon: Axis.skinUrl + '/images/icons/refresh.png',
+                handler: function(){
+                    tree.getLoader().load(tree.getRootNode(), function(){
+                        tree.getRootNode().expand();
+                    });
+                }
+            }]
+        }
     });
 
     tree.on('click', Template.load);
