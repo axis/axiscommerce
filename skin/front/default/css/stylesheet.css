@@ -83,7 +83,7 @@ span.required { color: #f00; }
 
 /* Forms */
 input.input-text, select, textarea { border:1px solid #b6b6b6; background: #fff;
-    font:1em arial, helvetica, sans-serif; }
+    font: 1em Arial, Helvetica, sans-serif; }
 input.input-text:focus, select:focus, textarea:focus { background: #f4f8fb; }
 option, optgroup { font:1em arial, helvetica, sans-serif; }
 optgroup { font-weight:bold; }
@@ -95,40 +95,47 @@ input.checkbox { margin-right:3px; }
 
 form ul ul { padding: 0; }
 .axis-form legend span { display: none; }
-.axis-form fieldset { background:#FBFAF6 none repeat scroll 0%; border:1px solid #BBAFA0;
-    margin:12px 0pt; padding:16px 25px 12px; }
-.axis-form .legend { background: #EDF3FC; border: 1px solid #9DBDEE; color: #1b63bc;
-    float: left; font: bold 1em Arial, Helvetica, sans-serif; margin: -26px 0 0; padding: 1px 8px; }
+.axis-form fieldset { background: #fbfaf6; border: 1px solid #bbafa0; margin: 12px 0;
+    padding: 16px 25px 12px; }
+.axis-form .legend { background: #edf3fc; border: 1px solid #9dbdee; color: #1b63bc;
+    float: left; font: bold 1em Arial, Helvetica, sans-serif; margin: -26px 0 0;
+    padding: 1px 8px; }
 .axis-form li { padding:4px 8px; overflow: hidden; }
-.axis-form label { font-weight: bold; color: #444; font-size: 1.1em; display: block; }
-.axis-form .label-inline label { display: inline; }
+.axis-form label { font-weight: bold; color: #444; font-size: 1.1em; float: left;
+    width: 150px; text-align: right; margin: 0 5px 0 0; }
+.axis-form label.error { text-align: left; }
+.axis-form .label-inline { clear: both; }
+.axis-form .label-inline label { display: inline; float: none; }
 .axis-form .description { display: block; clear: both; }
-.axis-form .input-text, .axis-form select, .axis-form textarea { width:97.5%; }
-.axis-form .col2-set,
-.axis-form .col3-set { padding: 4px 8px; }
-.axis-form li .col2-set,
-.axis-form li .col3-set { padding: 0; }
-.axis-form .col2-set .input-text,
-.axis-form .col3-set .input-text,
-.axis-form .col2-set textarea,
-.axis-form .col3-set textarea { width:95%; }
-.axis-form .col2-set select,
-.axis-form .col3-set select { width:95%; }
 .axis-form .actions { text-align: right; padding: 4px 8px; }
 .axis-form .actions button { margin-left: 5px; }
+
+.axis-form select                                   { width: 456px; }
+.axis-form .input-text,
+.axis-form textarea                                 { width: 450px; }
+.axis-form .description                             { margin-left: 155px; }
+.axis-form label.error                              { margin-left: 155px; }
+.layout-1column .col-main .axis-form select         { width: 606px; }
+.layout-1column .col-main .axis-form .input-text,
+.layout-1column .col-main .axis-form textarea       { width: 600px; }
+.layout-3columns .col-main .axis-form label         { width: 120px; }
+.layout-3columns .col-main .axis-form label.error   { margin-left: 125px; }
+.layout-3columns .col-main .axis-form .description  { margin-left: 125px; }
+.layout-3columns .col-main .axis-form select        { width: 306px; }
+.layout-3columns .col-main .axis-form .input-text,
+.layout-3columns .col-main .axis-form textarea      { width: 300px; }
 
 input.error, select.error, textarea.error { border: 1px dashed #ef9c9c; background: #f8e2da; }
 div.error, p.error, label.error, ul.errors li {
     font-size: .9em; display: block; clear: both; padding: 0; font-weight: bold;
     color: #b30000 !important; float: none !important; width: auto !important; }
 ul.errors { padding: 0; }
-div.success, p.success { font-size: 1em; background:#EFF5EA none repeat scroll 0 0;
-    border-color: #446423; color:#3D6611; }
+div.success, p.success { font-size: 1em; background:#eff5ea;
+    border-color: #446423; color:#3d6611; }
 
 .noscript-notice { background: #ffff90; text-align: center; padding: 10px 0; border-bottom: 1px solid #000; }
 .noscript-notice p { margin: 0 0 .2em; }
-.demo-notice { background: #dbdb1a; color: #000; font-weight: bold;
-    text-align: center; padding: 2px 0; }
+.demo-notice { background: #dbdb1a; color: #000; font-weight: bold; text-align: center; padding: 2px 0; }
 
 .button, .alt-button {
     font: bold .9em Tahoma,Helvetica,sans-serif;
@@ -983,8 +990,8 @@ a.review-stars { outline: none; }
 .product-listing-grid .review-add { display: none; }
 #form-review .review-ratings { width: 300px; }
 #form-review .review-ratings li { padding: 0; clear: both; }
-#form-review .review-stars { margin-left: 90px; }
-#form-review .rating-title { float: left; width: 90px; line-height: 32px; }
+#form-review .review-stars { margin-left: 155px; }
+#form-review .rating-title { line-height: 32px; }
 
 /* Small stars */
 .review-rate-sm0, .review-rate-sm0h,
