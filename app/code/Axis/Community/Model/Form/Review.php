@@ -57,6 +57,33 @@ class Axis_Community_Model_Form_Review extends Axis_Form
         $this->addElement('hidden', 'product', array(
             'value' => $product
         ));
+
+        // ratings
+        $ratings = array();
+        if (!Axis::single('community/review_mark')->isCustomerVoted(Axis::getCustomerId(), $product)) {
+            $marks = array('0.5' => 0.5, '1' => 1, '1.5' => 1.5, 2 => 2, '2.5' => 2.5, '3' => 3, '3.5' => 3.5, '4' => 4, '4.5' => 4.5, '5' => 5); //@todo make configurable
+            foreach (Axis::single('community/review_rating')->getList() as $rating) {
+                $this->addElement('select', 'rating_' . $rating['id'], array(
+                    'required' => true,
+                    'id' => $rating['name'],
+                    //'name' => 'rating[' . $rating['id'] . ']', //Zend doesn't allow to do this
+                    'label' => $rating['title'],
+                    'class' => 'required review-rating'
+                ));
+                $this->getElement('rating_' . $rating['id'])
+                    ->addMultiOptions($marks)
+                    ->addDecorator('Label', array(
+                        'tag' => '',
+                        'class' => 'rating-title',
+                        'placement' => 'prepend',
+                        'separator' => ''
+                    ))
+                    ->setDisableTranslator(true);
+
+                $ratings[] = 'rating_' . $rating['id'];
+            }
+        }
+
         $this->addElement('text', 'author', array(
             'required' => true,
             'label' => 'Nickname',
@@ -116,55 +143,7 @@ class Axis_Community_Model_Form_Review extends Axis_Form
             )
         ));
 
-        // ratings
-        $ratings = array();
-        if (!Axis::single('community/review_mark')->isCustomerVoted(Axis::getCustomerId(), $product)) {
-            $marks = array('0.5' => 0.5, '1' => 1, '1.5' => 1.5, 2 => 2, '2.5' => 2.5, '3' => 3, '3.5' => 3.5, '4' => 4, '4.5' => 4.5, '5' => 5); //@todo make configurable
-            foreach (Axis::single('community/review_rating')->getList() as $rating) {
-                $this->addElement('select', 'rating_' . $rating['id'], array(
-                    'required' => true,
-                    'id' => $rating['name'],
-                    //'name' => 'rating[' . $rating['id'] . ']', //Zend doesn't allow to do this
-                    'label' => $rating['title'],
-                    'class' => 'required review-rating'
-                ));
-                $this->getElement('rating_' . $rating['id'])
-                    ->addMultiOptions($marks)
-                    ->addDecorator('Label', array(
-                        'tag' => '',
-                        'class' => 'rating-title',
-                        'placement' => 'prepend',
-                        'separator' => ''
-                    ))
-                    ->setDisableTranslator(true);
-
-                $ratings[] = 'rating_' . $rating['id'];
-            }
-        }
-
-        $this->addDisplayGroup(array_merge(
-                $ratings, array('author', 'title', 'pros', 'cons', 'summary')
-            ),
-            'review'
-        );
-
-        if (count($ratings)) {
-            $this->getDisplayGroup('review')
-                ->addRow($ratings, 'row1');
-        }
-
-        $this->getDisplayGroup('review')
-            ->addRow(array('author', 'title'), 'row2')
-            ->addRow(array('pros', 'cons'), 'row3')
-            ->addRow('summary', 'row4');
-
-        $this->getDisplayGroup('review')->getRow('row2')
-            ->addColumn('author', 'col1')
-            ->addColumn('title', 'col2');
-
-        $this->getDisplayGroup('review')->getRow('row3')
-            ->addColumn('pros', 'col1')
-            ->addColumn('cons', 'col2');
+        $this->addDisplayGroup($this->getElements(), 'review');
 
         if (Axis::single('community/review')->canAdd()) {
             $this->addElement('button', 'submit', array(

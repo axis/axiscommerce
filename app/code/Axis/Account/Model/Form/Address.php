@@ -174,11 +174,19 @@ class Axis_Account_Model_Form_Address extends Axis_Form
                     new Zend_Validate_InArray(array_keys($countries))
                 );
                 $values['type'] = new Zend_Form_Element_Select($name, $fieldOptions);
-                $values['type']->removeDecorator('HtmlTag');
+                $values['type']->removeDecorator('HtmlTag')
+                    ->addDecorator('HtmlTag', array(
+                        'tag'   => 'li',
+                        'class' => 'element-row'
+                    ));
                 $values['type']->options = $countries;
             } else if ('zone_id' == $name) {
                 $values['type'] = new Zend_Form_Element_Select($name, $fieldOptions);
-                $values['type']->removeDecorator('HtmlTag');
+                $values['type']->removeDecorator('HtmlTag')
+                    ->addDecorator('HtmlTag', array(
+                        'tag'   => 'li',
+                        'class' => 'element-row'
+                    ));
                 if (isset($zones[$defaultCountry]) && count($countries)) {
                     $values['type']->options = $zones[$defaultCountry];
                 }
@@ -240,10 +248,13 @@ class Axis_Account_Model_Form_Address extends Axis_Form
     public function isValid($data)
     {
         if (isset($data['country_id'])) {
-            $this->getElement('zone_id')->setAttribs(array(
-                'options' => isset($this->_zones[$data['country_id']]) ?
-                    $this->_zones[$data['country_id']] : ''
-            ));
+            $zone = $this->getElement('zone_id');
+            if ($zone) {
+                $zone->setAttribs(array(
+                    'options' => isset($this->_zones[$data['country_id']]) ?
+                        $this->_zones[$data['country_id']] : ''
+                ));
+            }
         }
 
         return parent::isValid($data);
@@ -256,25 +267,6 @@ class Axis_Account_Model_Form_Address extends Axis_Form
     public function getZones()
     {
         return $this->_zones;
-    }
-
-    /**
-     *
-     * @param array $defaults
-     * @return Axis_Account_Model_Form_Address Fluent interface
-     */
-    public function setDefaults(array $defaults)
-    {
-        parent::setDefaults($defaults);
-        if (array_key_exists('zone_id', $defaults)
-            && isset($this->_zones[$defaults['country_id']])) {
-
-            $this->getElement('zone_id')->setAttribs(array(
-                'options' =>  $this->_zones[$defaults['country_id']]
-            ));
-            $this->setDefault('zone_id', $defaults['zone_id']);
-        }
-        return $this;
     }
 
     protected function _sortFields($a, $b)

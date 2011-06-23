@@ -31,31 +31,27 @@
  * @subpackage  Axis_Form_Decorator
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Form_Decorator_Colset extends Zend_Form_Decorator_Abstract
+class Axis_Form_Decorator_LiWrapper extends Zend_Form_Decorator_Abstract
 {
+    /**
+     * Default placement: surround content
+     * @var string
+     */
+    protected $_placement = null;
+
+    /**
+     * Render
+     *
+     * Renders as the following:
+     * <li>$content</li>
+     *
+     * @param  string $content
+     * @return string
+     */
     public function render($content)
     {
-        $form = $this->getElement();
-        $translator     = $form->getTranslator();
-        $items          = array();
-        $view           = $form->getView();
-        $i              = 0;
-        foreach ($form->getColumns() as $item) {
-            $item->setView($view)->setTranslator($translator);
-            $items[] = '<div class="col-' . ++$i . '">'
-                . $item->render()
-                . '</div>';
-        }
-        $elementContent = implode('', $items);
+        $elementName = $this->getElement()->getName();
 
-        if ($form->hasColumns()) {
-            $class = $form->getAttrib('colsetClass');
-            $elementContent = '<div class="'
-                . (null === $class ? 'col' . $i . '-set' : $class)
-                . '">' . $elementContent . '</div>';
-        }
-
-        return $elementContent . $content;
+        return '<li class="li-wrappper" id="' . $elementName . '-wrapper">' . $content . '</li>';
     }
-
 }

@@ -50,7 +50,7 @@ class Axis_Form_Decorator_ActionBar extends Zend_Form_Decorator_Abstract
         }
         $elementContent = implode('', $items);
 
-        $decorator = new Zend_Form_Decorator_HtmlTag(array('tag' => 'div', 'class' => 'actions'));
+        $decorator = new Zend_Form_Decorator_HtmlTag(array('tag' => 'li', 'class' => 'actions'));
         $elementContent = $decorator->render($elementContent);
 
         return $content . $elementContent;
