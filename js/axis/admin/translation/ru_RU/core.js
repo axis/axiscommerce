@@ -511,5 +511,6 @@ Locale.module("core", {
     "Additional Configuration": "Дополнительная конфигурация",
     "Disable Wrapper": "Отключить обертку",
     "Box Specific Configuration": "Конфигурация",
-    "Basic Configuration": "Базовая конфигурация"
+    "Basic Configuration": "Базовая конфигурация",
+    "Copy blocks and layouts from": "Копировать блоки и макеты из"
 });

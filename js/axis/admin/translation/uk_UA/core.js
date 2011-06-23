@@ -511,5 +511,6 @@ Locale.module("core", {
     "Additional Configuration": "Додаткова конфігурація",
     "Disable Wrapper": "Відключити обгортку",
     "Box Specific Configuration": "Конфігурація",
-    "Basic Configuration": "Базова конфігурація"
+    "Basic Configuration": "Базова конфігурація",
+    "Copy blocks and layouts from": "Копіювати блоки та макети з"
 });

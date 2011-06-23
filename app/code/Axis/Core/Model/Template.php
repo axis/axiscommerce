@@ -60,14 +60,19 @@ class Axis_Core_Model_Template extends Axis_Db_Table
      */
     public function save($data)
     {
-        if (empty($data['name']) || empty($data['default_layout'])) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'Required fields are missing'
-            ));
-            return false;
+        $row = false;
+        if (!empty($data['duplicate'])) {
+            $row = $this->duplicate($data['duplicate'], $data['name']);
+            if ($row) {
+                $row->default_layout = $data['default_layout'];
+                $row->save();
+            }
         }
-        $this->getRow($data)->save();
+
+        if (!$row) {
+            $this->getRow($data)->save();
+        }
+
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Template was saved successfully'
