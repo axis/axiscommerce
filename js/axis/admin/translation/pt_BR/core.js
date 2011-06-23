@@ -511,5 +511,6 @@ Locale.module("core", {
     "Additional Configuration": "Additional Configuration",
     "Disable Wrapper": "Disable Wrapper",
     "Box Specific Configuration": "Box Specific Configuration",
-    "Basic Configuration": "Basic Configuration"
+    "Basic Configuration": "Basic Configuration",
+    "Copy blocks and layouts from": "Copy blocks and layouts from"
 });

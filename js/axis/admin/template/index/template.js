@@ -56,7 +56,7 @@ Ext.onReady(function() {
             if (!selectedItem)
                 return;
 
-            if (!confirm('Are you sure?'))
+            if (!confirm('Are you sure?'.l()))
                 return;
 
             Ext.Ajax.request({
@@ -124,9 +124,6 @@ Ext.onReady(function() {
             if (!template) {
                 return;
             }
-            if (!confirm('Export this template?')) {
-                return;
-            }
             window.location = Axis.getUrl('template_index/export')
                 + '/templateId/'
                 + template.id;
@@ -158,33 +155,37 @@ Ext.onReady(function() {
         loader: new Ext.tree.TreeLoader({
             dataUrl: Axis.getUrl('template_index/get-nodes')
         }),
-        tbar: [{
-            text: 'Edit'.l(),
-            tooltip: {text:'Edit template'},
-            icon: Axis.skinUrl + '/images/icons/page_edit.png',
-            cls: 'x-btn-text-icon',
-            handler: Template.edit
-        }, {
-            text: 'Export'.l(),
-            tooltip: {text:'Export template'},
-            icon: Axis.skinUrl + '/images/icons/brick_go.png',
-            cls: 'x-btn-text-icon',
-            handler: Template.exportT
-        }, {
-            text: 'Delete'.l(),
-            tooltip: {text:'Uninstall template'},
-            icon: Axis.skinUrl + '/images/icons/delete.png',
-            cls: 'x-btn-text-icon',
-            handler: Template.remove
-        }, '->', {
-            icon: Axis.skinUrl + '/images/icons/refresh.png',
-            cls: 'x-btn-icon',
-            handler: function(){
-                tree.getLoader().load(tree.getRootNode(), function(){
-                    tree.getRootNode().expand();
-                });
-            }
-        }]
+        tbar: {
+            enableOverflow: true,
+            items: [{
+                text: 'Add'.l(),
+                icon: Axis.skinUrl + '/images/icons/add.png',
+                handler: Template.create
+            }, {
+                text: 'Edit'.l(),
+                icon: Axis.skinUrl + '/images/icons/page_edit.png',
+                handler: Template.edit
+            }, {
+                text: 'Delete'.l(),
+                icon: Axis.skinUrl + '/images/icons/delete.png',
+                handler: Template.remove
+            }, {
+                text: 'Import'.l(),
+                icon: Axis.skinUrl + '/images/icons/brick_add.png',
+                handler: Template.startImport
+            }, {
+                text: 'Export'.l(),
+                icon: Axis.skinUrl + '/images/icons/brick_go.png',
+                handler: Template.exportT
+            }, '->', {
+                icon: Axis.skinUrl + '/images/icons/refresh.png',
+                handler: function(){
+                    tree.getLoader().load(tree.getRootNode(), function(){
+                        tree.getRootNode().expand();
+                    });
+                }
+            }]
+        }
     });
 
     tree.on('click', Template.load);
@@ -200,13 +201,6 @@ Ext.onReady(function() {
             Box.Grid.el,
             Axis.Template.Layout.grid
         ]
-    });
-
-    var templateStore = new Ext.data.JsonStore({
-        url: Axis.getUrl('template_index/list-xml-templates'),
-        root: 'data',
-        id: 'template',
-        fields: ['template'/*, 'file'*/]
     });
 
     var importForm = new Ext.FormPanel({
@@ -225,20 +219,20 @@ Ext.onReady(function() {
         }]
     });
 
-    var templateForm = new Ext.FormPanel({
+    var templateForm = new Axis.FormPanel({
         url: Axis.getUrl('template_index/save'),
-        defaults: {width: 130},
+        defaults: {
+            anchor: '100%'
+        },
         border: false,
         bodyStyle: 'padding: 10px 5px 0',
         defaultType: 'textfield',
         items: [{
             fieldLabel: 'Template Name'.l(),
             name: 'name',
-            anchor: '98%',
             allowBlank:false
         }, Ext.getCmp('comboLayout').cloneConfig({
             fieldLabel: 'Default layout'.l(),
-            anchor: '98%',
             allowBlank: false,
             name: 'default_layout',
             hiddenName: 'default_layout',
@@ -246,18 +240,20 @@ Ext.onReady(function() {
             valueField: 'id',
             editable: false
         }), {
+            fieldLabel: 'Copy blocks and layouts from'.l(),
+            name: 'duplicate',
+            hiddenName: 'duplicate',
+            description: 'Template Name'.l()
+        }, {
             xtype: 'hidden',
             name: 'id'
         }]
-    })
+    });
 
-    var templateWin =  new Ext.Window({
-        layout: 'fit',
+    var templateWin =  new Axis.Window({
         width: 400,
-        height: 160,
-        plain: false,
-        title: 'Template',
-        closeAction: 'hide',
+        height: 260,
+        title: 'Template'.l(),
         buttons: [{
             text: 'Save'.l(),
             handler: Template.save
@@ -268,7 +264,7 @@ Ext.onReady(function() {
             }
         }],
         items: templateForm
-    })
+    });
 
     var importWin =  new Ext.Window({
         layout: 'fit',
@@ -287,10 +283,6 @@ Ext.onReady(function() {
             }
         }],
         items: importForm
-    })
-
-    tree.getRootNode().on('load', function(node){
-        templateStore.load();
     });
 
     new Axis.Panel({
