@@ -91,7 +91,14 @@ class Axis_Admin_Location_CountryController extends Axis_Admin_Controller_Back
         
         $model = Axis::model('location/country');
         foreach ($data as $_row) {
-            $model->save($_row);
+            $row = $model->save($_row);
+            if ($row) {
+                Axis::message()->addSuccess(
+                    Axis::translate('location')->__(
+                        'Country "%s" has been saved succesfully', $row->name
+                    )
+                );
+            }
         }
 
         return $this->_helper->json->sendSuccess();

@@ -51,6 +51,7 @@ class Axis_Location_Model_Country extends Axis_Db_Table
         $columns = array_diff($this->_getCols(), $primary);
         foreach ($columns as $column) {
             if (empty($row->$column)) {
+                //must by throw
                 Axis::message()->addError(
                     Axis::translate('core')->__(
                         'Required fields "%s" are missing', $column
@@ -59,13 +60,7 @@ class Axis_Location_Model_Country extends Axis_Db_Table
                 return false; 
             }
         }
-        //save
         $row->save();
-        Axis::message()->addSuccess(
-            Axis::translate('location')->__(
-                'Country "%s" has been saved succesfully', $row->name
-            )
-        );
         
         return $row;
     }

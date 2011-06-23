@@ -23,7 +23,7 @@ foreach ($this->tagItems as $item) :
 
         <li class="product-item">
             <?php if ($this->showRemove): ?>
-                <a href="<?php echo $this->href('account/tag/remove-item/itemId/' . $item['id'] . '/tagId/' . $item['customer_tag_id'], true) ?>"
+                <a href="<?php echo $this->href('account/tag/remove-item/itemId/' . $item['id'], true) ?>"
                     class="tag-remove"><?php echo $this->translate('tag')->__('Remove tag from this product') ?>
                 </a>
             <?php endif; ?>
