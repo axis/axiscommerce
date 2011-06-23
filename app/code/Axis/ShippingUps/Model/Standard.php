@@ -397,8 +397,9 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
      */
     protected function _getCgiQuotes()
     {
-        if (!isset($this->_request->actionCode))
+        if (!isset($this->_request->actionCode)) {
             $this->_request->actionCode = '4';
+        }
 
         $request = join('&', array(
             'accept_UPS_license_agreement=yes',
@@ -423,14 +424,21 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         ));
 
         $request = str_replace(' ', '+', $request);
-        $httpClient->setUri((empty($this->_config->gateway) ?
-                $this->_defaultGatewayUrl : $this->_config->gateway) . '?'. $request
-        );
+        $uri = $this->_defaultGatewayUrl;
+        if (!empty($this->_config->gateway)) {
+            $uri = $this->_config->gateway;
+        }
+        $httpClient->setUri($uri . '?'. $request);
         $httpClient->setConfig(array('maxredirects' => 0, 'timeout' => 30));
 
-        return $this->_parseCgiResponse(
-            $httpClient->request('GET')->getBody()
-        );
+        try {
+            return $this->_parseCgiResponse(
+                $httpClient->request('GET')->getBody()
+            );
+        } catch (Exception $e) {
+            $this->log($e->getMessage());
+            return array();
+        }
     }
 
     /**
