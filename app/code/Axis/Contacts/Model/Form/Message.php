@@ -52,8 +52,7 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
            'required'   => true,
            'label'      => 'Email',
            'class'      => 'input-text required email',
-           'validators' => array('EmailAddress'),
-           'skip'       => true
+           'validators' => array('EmailAddress')
         ));
         $this->addElement('text', 'name', array(
             'required' => true,
@@ -63,15 +62,13 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
         $this->addElement('text', 'subject', array(
             'required' => true,
             'label'    => 'Subject',
-            'class'    => 'input-text required',
-            'skip'     => true
+            'class'    => 'input-text required'
         ));
 
         $departments = Axis_Collect_Department::collect();
         if (count($departments)) {
             $this->addElement('select', 'department_id', array(
-               'label' => 'Department',
-               'skip'  => true
+               'label' => 'Department'
             ));
             $this->getElement('department_id')->options = $departments;
         }
@@ -80,8 +77,7 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
             'label'    => 'Message',
             'class'    => 'input-text required',
             'rows'     => 6,
-            'cols'     => 60,
-            'skip'     => true
+            'cols'     => 60
         ));
         $this->addDisplayGroup(
             $this->getElements(),

@@ -145,9 +145,6 @@ class Axis_Object implements ArrayAccess
     public function setFromArray(array $data)
     {
         foreach ($data as $key => $value) {
-            if (empty($value)) {
-                continue;
-            }
             $this->setData($key, $value);
         }
 
