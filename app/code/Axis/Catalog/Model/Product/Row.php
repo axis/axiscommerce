@@ -610,6 +610,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 $modifiers[$optionId] = array(
                     'id'            => $optionId,
                     'name'          => $row['option_name'],
+                    'code'          => $row['code'],
                     'description'   => $row['option_description'],
                     'type'          => $row['input_type'],
                     'visible'       => $row['visible'],
