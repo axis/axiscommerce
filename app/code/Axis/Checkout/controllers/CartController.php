@@ -78,7 +78,11 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
             ));
         }
         if ($result) {
-            $this->_redirect('/checkout/cart');
+            $location = Axis::config('checkout/cart/redirect');
+            if ('referer' == $location) {
+                $location = $this->getRequest()->getServer('HTTP_REFERER');
+            }
+            return $this->_redirect($location);
         }
         $keyword = Axis::single('catalog/hurl')->getProductUrl($productId);
         $this->_redirect('/' . $this->view->catalogUrl . '/' . $keyword);
