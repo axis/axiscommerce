@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class ErrorController extends Axis_Controller_Action
+class ErrorController extends Axis_Core_Controller_Front
 {
     public function errorAction()
     {
@@ -98,6 +98,11 @@ class ErrorController extends Axis_Controller_Action
         $this->getResponse()->setHttpResponseCode(404);
         $this->view->pageTitle = Axis::translate('core')->__('Page not found');
         $this->view->meta()->setTitle('404 ' . $this->view->pageTitle);
+        $this->addBreadcrumb(array(
+            'label' => $this->view->pageTitle,
+            'controller' => 'error',
+            'route'      => 'core'
+        ));
         $this->render('error/404', null, true);
     }
 }
