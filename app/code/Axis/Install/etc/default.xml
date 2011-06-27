@@ -671,6 +671,15 @@
             <template></template>
             <tab_container></tab_container>
         </page>
+        <page multiple="1">
+            <module>checkout</module>
+            <controller>onestep</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
     </box>
     <box multiple="1">
         <class>Axis_Catalog_RecentlyViewed</class>

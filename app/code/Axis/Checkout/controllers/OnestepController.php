@@ -282,10 +282,11 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
 
         $checkout   = $this->_getCheckout();
         $billing    = $this->_getParam('billing_address');
+        $delivery   = $this->_getParam('delivery_address');
         try {
             $checkout->setBillingAddress($billing);
             if (!$billing['use_for_delivery']) {
-                $checkout->setDeliveryAddress($this->_getParam('delivery_address'));
+                $checkout->setDeliveryAddress($delivery);
             }
             $checkout->setShippingMethod($this->_getParam('shipping'));
             $checkout->setPaymentMethod($this->_getParam('payment'));
@@ -316,6 +317,14 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
                     'customer' => $mCustomer->find($result['id'])->current(),
                     'password' => $result['password']
                 ));
+            }
+
+            // save address if needed
+            if (empty($billing['id']) && $customer = Axis::getCustomer()) {
+                $customer->setAddress($billing);
+                if (empty($delivery['id']) && !$billing['use_for_delivery']) {
+                    $customer->setAddress($delivery);
+                }
             }
 
             $result = array_merge($preProcess, $postProcess);
