@@ -63,6 +63,8 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
             }
             if ($form->isValid($data)) {
                 $data['id'] = Axis::getCustomerId();
+                Zend_Debug::dump($data);
+                die;
                 Axis::single('account/customer')->save($data);
                 Axis::message()->addSuccess(
                     Axis::translate('Axis_Core')->__(

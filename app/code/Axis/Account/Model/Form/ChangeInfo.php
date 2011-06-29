@@ -57,7 +57,7 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
                 new Axis_Validate_Exists(
                     Axis::single('account/customer'),
                     'email',
-                    "id <> " . Axis::getCustomerId()
+                    "id <> " . Axis::getCustomerId() . " AND site_id = " . Axis::getSiteId()
                 )
             )
         ));
@@ -87,7 +87,7 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
         foreach ($rows as $row) {
             $field = 'field_' . $row['id'];
             $config = array(
-                'id' => 'field_' . $row['name'],
+                'id'       => 'field_' . $row['name'],
                 'required' => (boolean) $row['required'],
                 'label'    => $row['field_label'],
                 'class'    => 'input-text'

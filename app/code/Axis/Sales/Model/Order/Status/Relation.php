@@ -42,7 +42,7 @@ class Axis_Sales_Model_Order_Status_Relation extends Axis_Db_Table
      * @return array
      */
     public function getParents($statusId) 
-    {
+    {       
         return $this->select('from_status')
             ->where('to_status = ?', $statusId)
             ->fetchCol();
@@ -54,9 +54,9 @@ class Axis_Sales_Model_Order_Status_Relation extends Axis_Db_Table
      * @return array
      */
     public function getChildrens($statusId) 
-    {
+    {      
         return $this->select('to_status')
-            ->where('to_status = ?', $statusId)
+            ->where('from_status = ?', $statusId)
             ->fetchCol();
     }
     

@@ -33,7 +33,6 @@
  */
 class Axis_Account_ForgotController extends Axis_Core_Controller_Front
 {
-
     public function init()
     {
         parent::init();

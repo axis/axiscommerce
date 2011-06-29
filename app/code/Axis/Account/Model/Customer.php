@@ -42,46 +42,54 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
     protected $_dependentTables = array('Axis_Account_Model_Customer_Detail');
 
     /**
-     * Update or insert customer row
      *
      * @param array $data
-     * @return array|false
+     * @return type 
      */
-    public function save(array $data)
+    public function create(array $data) 
     {
-        if (!isset($data['id']) || !$row = $this->find($data['id'])->current()) {
-            unset($data['id']);
-            $row = $this->createRow();
-            $row->created_at = Axis_Date::now()->toSQLString();
-            if (!isset($data['password']) || empty($data['password'])) {
-                $data['password'] = $this->generatePassword();
-            }
+        $row = $this->createRow($data);
+        
+        if (empty($row->password)) {
+            $row->password = $this->generatePassword();
         }
-        $password = '';
-        if (isset($data['password']) && !empty($data['password'])) {
-            $password = $data['password'];
-            $data['password'] = md5($data['password']);
-        } else {
-            unset($data['password']);
-        }
-
-        if (!isset($data['locale'])) {
-            $data['locale'] = Axis_Locale::getLocale()->toString();
-        }
-
-        $row->setFromArray($data);
+        $password = $row->password;
+        $row->password = md5($password);
+        
         $row->modified_at = Axis_Date::now()->toSQLString();
-
-        if (!$row->save()) {
-            return false;
+        
+        if (empty($row->created_at)) {
+            $row->created_at = $row->modified_at;
         }
-
-        Axis::single('account/customer_detail')->save($row->id, $data);
-
-        return array(
-            'id'        => $row->id,
-            'password'  => $password
+        
+        if (empty($row->locale)) {
+            $row->locale = Axis_Locale::getLocale()->toString();
+        }
+        
+        $row->save();
+        
+        Axis::dispatch('account_customer_register_success', array(
+            'customer' => $row,
+            'password' => $password
+        ));
+        
+        //add customer detail
+        $modelDetail = Axis::model('account/customer_detail');
+        
+        $modelDetail->delete(
+            Axis::db()->quoteInto('customer_id = ?', $row->id)
         );
+        foreach ($data as $fieldId => $value) {
+            
+            if (0 !== strpos($fieldId, 'field_') || empty($value)) {
+                continue;
+            }
+            list(, $fieldId) = explode('_', $fieldId);
+            
+            $modelDetail->add($row->id, $fieldId, $value);
+        }
+        
+        return array($row, $password);
     }
 
     /**

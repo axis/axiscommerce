@@ -107,17 +107,10 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 'site_id'   => $params['order']['site_id']
             ));
 
-            $customerSaveResult = Axis::single('account/customer')
-                ->save($customerRawData);
+            list($customer, ) = Axis::single('account/customer')
+                ->create($customerRawData);
 
-            Axis::dispatch('account_customer_register_success', array(
-                'customer' => Axis::single('account/customer')
-                    ->find($customerSaveResult['id'])
-                    ->current(),
-                'password' => $customerSaveResult['password']
-            ));
-
-            $params['order']['customer_id'] = $customerSaveResult['id'];
+            $params['order']['customer_id'] = $customer->id;
             $newBillingAddress = $newDeliveryAddress = true;
         }
         if ($params['order']['customer_id'] < 0) {

@@ -55,12 +55,12 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
         if (!$languageId) {
             $languageId = Axis_Locale::getLanguageId();
         }
-        $select = Axis::model('account/customer_detail')->select('*')
+        $row = Axis::model('account/customer_detail')->select('*')
             ->join('account_customer_field', 'acd.customer_field_id = acf.id')
             ->where('acd.customer_id = ? ', $this->id)
-            ->where('acf.name =  ?', $fieldName);
+            ->where('acf.name =  ?', $fieldName)
+            ->fetchRow();
         
-        $row = $select->fetchRow();
         if (!$row) {
             return false;
         }
@@ -73,7 +73,6 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
                 ->select('label')
                 ->where('valueset_value_id = ?', $row->customer_valueset_value_id)
                 ->where('language_id = ?', $languageId)
-                ->firephp()
                 ->fetchCol();
         }
         return false;

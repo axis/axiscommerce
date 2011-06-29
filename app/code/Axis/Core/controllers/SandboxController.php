@@ -36,6 +36,20 @@ class SandboxController extends Axis_Core_Controller_Front
 
     public function indexAction()
     {
+        $row = Axis::model('account/customer')->find(1)->current();
+        $row->password  = 1; 
+        $_row = array();
+        Zend_Debug::dump(!isset($_row['name']));
+        Zend_Debug::dump(empty($_row['name']));
+        $_row['name'] = '';
+        Zend_Debug::dump(empty($_row['name']));
+        $_row['name'] = null;
+        Zend_Debug::dump(empty($_row['name']));
+        $_row['name'] = false;
+        Zend_Debug::dump(empty($_row['name']));
+        $_row['name'] = 'xxx';
+        Zend_Debug::dump(empty($_row['name']));
+        
         $select = Axis::model('cms/page_content')->select('*')
                 ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
                 ->join('cms_category', 

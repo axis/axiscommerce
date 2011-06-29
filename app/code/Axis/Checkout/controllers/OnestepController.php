@@ -301,21 +301,14 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
 
             // register customer if required
             if (!empty($billing['register']) && !Axis::getCustomerId()) {
-                $mCustomer  = Axis::model('account/customer');
-                $userData   = $billing;
+                $modelCustomer  = Axis::model('account/customer');
+                $userData = $billing;
                 $userData['site_id']    = Axis::getSiteId();
                 $userData['is_active']  = 1;
-                $result = $mCustomer->save($userData);
-
-                $order->customer_id = $result['id'];
+                list($customer, $password) = $modelCustomer->create($userData);
+                $order->customer_id = $customer->id;
                 $order->save();
-
-                $mCustomer->login($userData['email'], $result['password']);
-
-                Axis::dispatch('account_customer_register_success', array(
-                    'customer' => $mCustomer->find($result['id'])->current(),
-                    'password' => $result['password']
-                ));
+                $modelCustomer->login($userData['email'], $password);
             }
 
             $result = array_merge($preProcess, $postProcess);
