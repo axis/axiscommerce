@@ -19,7 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Community
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 $router->addRoute('community_review', new Axis_Controller_Router_Route(

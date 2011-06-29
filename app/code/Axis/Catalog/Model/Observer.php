@@ -2,7 +2,7 @@
 /**
  * Axis
  *
- * @copyright Copyright 2008-2010 Axis
+ * @copyright Copyright 2008-2011 Axis
  * @license GNU Public License V3.0
  *
  * This file is part of Axis.
@@ -23,7 +23,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 

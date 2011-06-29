@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Poll
  * @subpackage  Axis_Poll_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 

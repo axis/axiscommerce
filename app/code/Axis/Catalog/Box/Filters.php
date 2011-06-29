@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -224,7 +224,12 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
             ->where('cpo.filterable = 1')
             ->where('cpot.language_id = ?', $languageId)
             ->where('cpovt.language_id = ?', $languageId)
-            ->order(array('cpo.sort_order ASC', 'cpov.sort_order ASC'))
+            ->order(array(
+                'cpo.sort_order ASC',
+                'cpot.name ASC',
+                'cpov.sort_order ASC',
+                'cpovt.name ASC'
+            ))
             ->group(array('cpa.option_id', 'cpa.option_value_id'));
 
         if (isset($filters['attributes']) && count($filters['attributes'])) {

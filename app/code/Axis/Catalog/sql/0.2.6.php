@@ -18,24 +18,36 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Account
+ * @package     Axis_Catalog
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-class Axis_Account_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
+class Axis_Catalog_Upgrade_0_2_6 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_version = '0.2.1';
-    protected $_info = 'Available countries option added';
+    protected $_version = '0.2.6';
+    protected $_info = 'Mysql indexes added to fields used for sort order';
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('account/address_form/country_id_allow', 'Allowed Countries', 0, 'multiple', array('model' => 'Country'));
+        $installer = Axis::single('install/installer');
+
+        $installer->run("
+
+        ALTER TABLE `{$installer->getTable('catalog_product_option_text')}`
+            ADD INDEX `IDX_CATALOG_PRODUCT_OPTION_TEXT_NAME`(`name`);
+
+        ALTER TABLE `{$installer->getTable('catalog_product_option_value')}`
+            ADD INDEX `IDX_CATALOG_PRODUCT_OPTION_VALUE_SORT_ORDER`(`sort_order`);
+
+        ALTER TABLE `{$installer->getTable('catalog_product_option_value_text')}`
+            ADD INDEX `IDX_CATALOG_PRODUCT_OPTION_VALUE_TEXT_NAME`(`name`);
+
+        ");
     }
 
     public function down()
     {
-        //
+
     }
 }
