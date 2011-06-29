@@ -82,11 +82,11 @@ class Axis_Sales_Model_Observer
             ));
             $mail->send();
 
-            if ($configResult) {
-                Axis::message()->addSuccess(
-                    Axis::translate('core')->__('Mail was sended successfully')
-                );
-            }
+//            if ($configResult) {
+//                Axis::message()->addSuccess(
+//                    Axis::translate('core')->__('Mail was sended successfully')
+//                );
+//            }
             return true;
         } catch (Zend_Mail_Transport_Exception $e) {
             Axis::message()->addError(
