@@ -320,8 +320,10 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
             }
 
             // save address if needed
-            if (empty($billing['id']) && $customer = Axis::getCustomer()) {
-                $customer->setAddress($billing);
+            if ($customer = Axis::getCustomer()) {
+                if (empty($billing['id'])) {
+                    $customer->setAddress($billing);
+                }
                 if (empty($delivery['id']) && !$billing['use_for_delivery']) {
                     $customer->setAddress($delivery);
                 }
