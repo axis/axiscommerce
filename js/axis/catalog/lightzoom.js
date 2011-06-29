@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -408,11 +408,13 @@
                 };
 
                 this.process = function(image, scope){
-                    var self = scope || this;
-                    var top = self.viewportSize.height / 2 - image['image'].height / 2 - 100;
-                    top = top < 0 ? 0 : top;
-                    var left = self.viewportSize.width / 2 - image['image'].width / 2;
-                    left = left < 0 ? 0 : left;
+                    var self = scope || this,
+                        scrollOffset = BrowserWindow.getScrollOffset(),
+                        top = scrollOffset.top + self.viewportSize.height / 2 - image['image'].height / 2 - 100,
+                        left = self.viewportSize.width / 2 - image['image'].width / 2;
+
+                    top     = top < scrollOffset.top ? scrollOffset.top : top;
+                    left    = left < 0 ? 0 : left;
 
                     self.image.parent().animate({
                         'width': image['image'].width,

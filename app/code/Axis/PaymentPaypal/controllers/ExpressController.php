@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_PaymentPaypal
  * @subpackage  Axis_PaymentPaypal_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -51,10 +51,10 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
 
     protected function _getAddressForm()
     {
-        $form = Axis::model('account/Form_Address');
+        $form = Axis::model('account/form_address');
+        $form->setAction($this->view->href('paymentpaypal/express/set-delivery', true));
         $form->removeElement('default_billing');
         $form->removeElement('default_shipping');
-        $form->removeElement('address_submit');
         return $form;
     }
 
@@ -254,30 +254,37 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
             $this->_getCheckout()->setDelivery($addressId);
         } else {
             $params = $this->_getAllParams();
-            $form = Axis::single('account/Form_Address');
+            $form = Axis::model('account/form_address');
 
             if (!$form->isValid($params)) {
-                $this->_helper->json->sendRaw($form->getMessages());
+                foreach ($form->getMessages() as $field => $messages) {
+                    foreach ($messages as $message) {
+                        Axis::message()->addError($field . ': ' . $message);
+                    }
+                }
+                return $this->_redirect('paymentpaypal/express/delivery');
             }
-            $address = array(
-                 'firstname'      => $params['firstname'],
-                 'lastname'       => $params['lastname'],
-                 'street_address' => $params['street_address'],
-                 'suburb'         => '',
-                 'city'           => $params['city'],
-                 'postcode'       => $params['postcode'],
-                 'phone'          => $params['phone'],
-                 'zone'           => Axis::single('location/zone')
-                    ->find($params['zone_id'])->current()->toArray(),
-                 'country'        => Axis::single('location/country')
-                    ->find($params['country_id'])->current()->toArray()
-            );
+
+            $address = $params;
+            if (!empty($params['zone_id'])
+                && $zone = Axis::model('location/zone')
+                        ->find($params['zone_id'])->current()) {
+
+                $address['zone'] = $zone->toArray();
+            }
+            if (!empty($params['country_id'])
+                && $country = Axis::model('location/country')
+                        ->find($params['country_id'])->current()) {
+
+                $address['country'] = $country->toArray();
+            }
+
             $this->_getCheckout()->setDelivery($address);
         }
         if (null === $this->_getCheckout()->getShippingMethodCode()) {
-            $this->_redirect('/paymentpaypal/express/shipping-method');
+            return $this->_redirect('paymentpaypal/express/shipping-method');
         }
-        $this->_redirect('/paymentpaypal/express/confirmation');
+        $this->_redirect('paymentpaypal/express/confirmation');
     }
 
     public function processAction()

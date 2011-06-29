@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -133,7 +133,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
             ->addCommonFilters($filters)
             ->addFilterByAvailability()
             ->group('cc.id')
-            ->order('ccd.name')
+            ->order('cc.lft')
             ->where('ccd.language_id = ?', Axis_Locale::getLanguageId())
             ->where('ch.site_id = ?', Axis::getSiteId());
 
@@ -164,6 +164,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
                 'cnt' => 'COUNT(DISTINCT cp.id)'
             ))
             ->joinCategory()
+            ->addFilterByAvailability()
             ->addCommonFilters($filters)
             ->addManufacturer()
             ->group('cpm.id')
@@ -186,31 +187,49 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
      */
     protected function _getAttributeFilters(array $filters)
     {
+        $languageId = Axis_Locale::getLanguageId();
         $select = Axis::single('catalog/product')->select(array(
                 'cnt' => 'COUNT(DISTINCT cp.id)'
             ))
             ->joinCategory()
             ->addCommonFilters($filters)
-            ->joinInner('catalog_product_attribute',
+            ->addFilterByAvailability()
+            ->joinInner(
+                'catalog_product_attribute',
                 'cp.id = cpa.product_id',
                 array(
                     'option_id',
                     'option_value_id'
-                ))
-            ->join('catalog_product_option', 'cpa.option_id = cpo.id')
-            ->join('catalog_product_option_text',
+                )
+            )
+            ->joinInner('catalog_product_option', 'cpa.option_id = cpo.id')
+            ->joinInner(
+                'catalog_product_option_text',
                 'cpa.option_id = cpot.option_id',
                 array(
                     'option_name' => 'name'
-                ))
-            ->joinInner('catalog_product_option_value_text',
-                'cpa.option_value_id = cpovt.option_value_id',
+                )
+            )
+            ->joinInner(
+                'catalog_product_option_value',
+                'cpa.option_value_id = cpov.id'
+            )
+            ->joinInner(
+                'catalog_product_option_value_text',
+                'cpov.id = cpovt.option_value_id',
                 array(
                     'value_name' => 'name'
-                ))
+                )
+            )
             ->where('cpo.filterable = 1')
-            ->where('cpot.language_id = ?', Axis_Locale::getLanguageId())
-            ->where('cpovt.language_id = ?', Axis_Locale::getLanguageId())
+            ->where('cpot.language_id = ?', $languageId)
+            ->where('cpovt.language_id = ?', $languageId)
+            ->order(array(
+                'cpo.sort_order ASC',
+                'cpot.name ASC',
+                'cpov.sort_order ASC',
+                'cpovt.name ASC'
+            ))
             ->group(array('cpa.option_id', 'cpa.option_value_id'));
 
         if (isset($filters['attributes']) && count($filters['attributes'])) {
@@ -242,12 +261,14 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
     {
         $row = Axis::single('catalog/product')->select(
                array('cnt' => 'COUNT(cp.price)')
-            )->joinPriceIndex()
+            )
+            ->joinPriceIndex()
             ->columns(array(
                 'price_max' => 'MAX(cppi.final_max_price)',
                 'price_min' => 'MIN(cppi.final_min_price)'
             ))
             ->joinCategory()
+            ->addFilterByAvailability()
             ->addCommonFilters($filters)
             ->fetchRow();
 
@@ -268,6 +289,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
             ))
             ->joinPriceIndex()
             ->joinCategory()
+            ->addFilterByAvailability()
             ->addCommonFilters($filters)
             ->group('price_group')
             ->order('cppi.final_min_price')

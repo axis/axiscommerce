@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Community
  * @subpackage  Axis_Community_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -98,24 +98,26 @@ class Axis_Community_Model_Review extends Axis_Db_Table
         $reviews = $select->fetchAssoc();
         $count = $select->count();
 
-        $products = array();
-        foreach ($reviews as $review) {
-            $products[$review['product_id']] = $review['product_id'];
-        }
-        $products = Axis::model('catalog/product')
-            ->select('*')
-            ->addCommonFields()
-            ->addFinalPrice()
-            ->where('cp.id IN (?)', $products)
-            ->fetchProducts($products);
+        if ($count) {
+            $products = array();
+            foreach ($reviews as $review) {
+                $products[$review['product_id']] = $review['product_id'];
+            }
+            $products = Axis::model('catalog/product')
+                ->select('*')
+                ->addCommonFields()
+                ->addFinalPrice()
+                ->where('cp.id IN (?)', $products)
+                ->fetchProducts($products);
 
-        foreach ($reviews as &$review) {
-            $review['product'] = $products[$review['product_id']];
-        }
+            foreach ($reviews as &$review) {
+                $review['product'] = $products[$review['product_id']];
+            }
 
-        $ratings = $this->loadRating(array_keys($reviews));
-        foreach ($reviews as $key => &$review) {
-            $review['ratings'] = $ratings[$key];
+            $ratings = $this->loadRating(array_keys($reviews));
+            foreach ($reviews as $key => &$review) {
+                $review['ratings'] = $ratings[$key];
+            }
         }
 
         return array(

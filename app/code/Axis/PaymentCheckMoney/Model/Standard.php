@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_PaymentCheckMoney
  * @subpackage  Axis_PaymentCheckMoney_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 

@@ -34,7 +34,7 @@ $tpl = <<<HEREDOC
  *
  * @category    Axis
  * @package     Axis_Account
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 

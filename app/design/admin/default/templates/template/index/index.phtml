@@ -19,16 +19,4 @@ $this->headScript()
 $this->headScript()
     ->offsetSetFile(10000, 'js/axis/admin/template/index/box/window.js');
 
-$this->setButtons(array(
-    array(
-        'title' => Axis::translate('Axis_Admin')->__('Create template'),
-        'class' => 'button',
-        'onclick' => "Axis.Template.Template.create()"
-    ),
-    array(
-        'title' => Axis::translate('Axis_Admin')->__('Import template'),
-        'class' => 'button',
-        'onclick' => "Axis.Template.Template.startImport()"
-    )
-));
 ?>

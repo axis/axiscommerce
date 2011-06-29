@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Poll
  * @subpackage  Axis_Poll_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -131,7 +131,8 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
     {
         $select = $this->select(array('id', 'type'))
             ->joinLeft('poll_question_description', 
-                'pqd.question_id = pq.id'
+                'pqd.question_id = pq.id',
+                'question'
             )
             ->join('poll_question_site', 'pqs.question_id = pq.id')
             ->where('pq.status = 1')

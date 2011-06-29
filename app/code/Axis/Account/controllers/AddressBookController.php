@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -71,7 +71,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         $this->setTitle(Axis::translate('account')->__('Saving address'));
 
         $params = $this->_getAllParams();
-        $form = Axis::model('account/Form_Address');
+        $form = Axis::model('account/form_address');
 
         if ($form->isValid($params)) {
             $params['customer_id'] = $this->_customerId;
@@ -110,9 +110,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
             Axis::translate('account')->__(
                 'Add new address'
         ));
-        $form = Axis::single('account/Form_Address');
-        $form->addUseAsDefaultAddressCheckbox();
-        $this->view->form = $form;
+        $this->view->form = Axis::model('account/form_address');
         $this->render('form-address');
     }
 
@@ -146,23 +144,18 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
             ));
         }
 
-        $form = Axis::model('account/Form_Address');
-        $form->addUseAsDefaultAddressCheckbox();
+        $form = Axis::model('account/form_address');
 
         $customer = Axis::getCustomer();
 
         $form->populate($row->toArray());
 
         if ($customer->default_shipping_address_id == $addressId) {
-            $form->getDisplayGroup('address')
-                ->getRow('default_shipping')
-                ->getElement('default_shipping')
+            $form->getElement('default_shipping')
                 ->setOptions(array('value' => 1));
         }
         if ($customer->default_billing_address_id == $addressId) {
-            $form->getDisplayGroup('address')
-                ->getRow('default_billing')
-                ->getElement('default_billing')
+            $form->getElement('default_billing')
                 ->setOptions(array('value' => 1));
         }
 

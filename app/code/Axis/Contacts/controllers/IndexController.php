@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Contacts
  * @subpackage  Axis_Contacts_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -47,10 +47,17 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
             if ($form->isValid($data)) {
                 $custom = array();
                 foreach ($form->getElements() as $element) {
-                    if (($element->getValue() != '')
-                        && (true != $element->getAttrib('skip'))) {
-                        $custom[$element->getLabel()] = $element->getValue();
+                    $elementsToSkip = array(
+                        'email',
+                        'subject',
+                        'department_id',
+                        'message',
+                        'submit'
+                    );
+                    if (in_array($element->getName(), $elementsToSkip)) {
+                        continue;
                     }
+                    $custom[$element->getLabel()] = $element->getValue();
                 }
                 $data['custom_info'] = Zend_Json::encode($custom);
                 $data['site_id']     = Axis::getSiteId();

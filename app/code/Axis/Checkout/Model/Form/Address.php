@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -133,7 +133,6 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
             $form = new Axis_Form(); // makes possible to use brackets in field names
             $form->setIsArray(true);
             $form->removeDecorator('Form');
-            $form->removeDecorator('HtmlTag');
             $this->addSubForm($form, $default['subform']);
         }
 
@@ -172,7 +171,6 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                 'class' => 'input-text required email',
                 'validators' => array('EmailAddress')
             ));
-            $form->addRow('email', 'email');
         }
 
         foreach ($this->_fields as $name => $values) {
@@ -194,19 +192,28 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                     new Zend_Validate_InArray(array_keys($countries))
                 );
                 $values['type'] = new Zend_Form_Element_Select($name, $fieldOptions);
-                $values['type']->removeDecorator('HtmlTag');
+                $values['type']->removeDecorator('HtmlTag')
+                    ->addDecorator('HtmlTag', array(
+                        'tag'   => 'li',
+                        'class' => 'element-row'
+                    ));
                 $values['type']->options = $countries;
             } else if ('zone_id' == $name) {
                 $values['type'] = new Zend_Form_Element_Select($name, $fieldOptions);
-                $values['type']->removeDecorator('HtmlTag');
+                $values['type']->removeDecorator('HtmlTag')
+                    ->addDecorator('HtmlTag', array(
+                        'tag'   => 'li',
+                        'class' => 'element-row'
+                    ));
                 if (isset($zones[$defaultCountry]) && count($countries)) {
                     $values['type']->options = $zones[$defaultCountry];
                 }
             }
 
             $form->addElement($values['type'], $name, $fieldOptions);
-            $form->addRow($name, $name);
         }
+
+        $form->addDisplayGroup($form->getElements(), $default['subform']);
     }
 
     /**
@@ -236,7 +243,6 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         $form->addElement('checkbox', 'register', array(
             'label' => 'Create an Account'
         ));
-        $form->addRow('register', 'register');
 
         $form->addElement('password', 'password', array(
             'required'  => true,
@@ -310,10 +316,6 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         }
 
         $form->addDisplayGroup($fields, 'registration_fields');
-        $group = $form->getDisplayGroup('registration_fields');
-        foreach ($fields as $field) {
-            $group->addRow($field, $field);
-        }
     }
 
     /**
@@ -328,10 +330,13 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
             if ($subform = $this->getSubForms()) {
                 $form = current($subform);
             }
-            $form->getElement('zone_id')->setAttribs(array(
-                'options' => isset($this->_zones[$data['country_id']]) ?
-                    $this->_zones[$data['country_id']] : ''
-            ));
+            $zone = $form->getElement('zone_id');
+            if ($zone) {
+                $zone->setAttribs(array(
+                    'options' => isset($this->_zones[$data['country_id']]) ?
+                        $this->_zones[$data['country_id']] : ''
+                ));
+            }
         }
 
         return parent::isValid($data);

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Discount
  * @subpackage  Axis_Discount_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -752,6 +752,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             $date = Axis_Date::now()->toPhpString("Y-m-d");
         }
         $select = $this->select('de2.value')
+            ->distinct()
             ->join('discount_eav',
                 "de.discount_id = d.id AND de.entity = 'special' AND de.value = '1'"
             )
@@ -768,7 +769,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             ->where('cc.site_id = ?', $siteId)
             ->join('catalog_product', 'de2.value = cp.id')
             ;
-        
+
         if ($disabledCategories = Axis::single('catalog/category')->getDisabledIds()) {
             $select->where('cc.id NOT IN (?)', $disabledCategories);
         }

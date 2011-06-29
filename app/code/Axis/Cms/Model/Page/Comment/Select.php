@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 

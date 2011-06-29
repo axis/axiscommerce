@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -494,8 +494,8 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('mail/mailboxes/email15', 'Email', 'test@axiscommerce.com')
 
             ->add('design', 'Design', null, null, array('translation_module' => 'Axis_Core'))
-            ->add('design/main/frontTemplateId', 'Design/General/Front Template', '1', 'select', array('model' => 'Template'))
-            ->add('design/main/adminTemplateId', 'Admin Template',  '1', 'select', array('model' => 'Template'))
+            ->add('design/main/frontTemplateId', 'Design/General/Front Template', 2, 'select', array('model' => 'Template'))
+            ->add('design/main/adminTemplateId', 'Admin Template',  1, 'select', array('model' => 'Template'))
             ->add('design/htmlHead/defaultTitle', 'Design/HTML Head/Default Title', 'Default Title')
             ->add('design/htmlHead/defaultDescription', 'Default Description', 'Default Description',  'text')
             ->add('design/htmlHead/defaultKeywords', 'Default Keywords',  'Axis, store', 'text')

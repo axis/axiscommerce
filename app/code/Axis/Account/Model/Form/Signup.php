@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -91,25 +91,6 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             'login',
             array('legend' => 'General information')
         );
-
-        $this->getDisplayGroup('login')
-            ->addRow(array('email'), 'row1', array('colsetClass' => 'col2-set'))
-            ->addRow(array('password', 'password_confirm'), 'row2')
-            ->addRow(array('firstname', 'lastname'), 'row3');
-
-        $this->getDisplayGroup('login')
-            ->getRow('row1')
-            ->addColumn(array('email'), 'col1');
-
-        $this->getDisplayGroup('login')
-            ->getRow('row2')
-            ->addColumn(array('password'), 'col1')
-            ->addColumn(array('password_confirm'), 'col2');
-
-        $this->getDisplayGroup('login')
-            ->getRow('row3')
-            ->addColumn(array('firstname'), 'col1')
-            ->addColumn(array('lastname'), 'col2');
 
         $rows = Axis::single('account/customer_field')->getFields();
         $groupsFields = array();
@@ -182,10 +163,7 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                     )
                 );
                 $this->getDisplayGroup($groupName)
-                    ->setDisableTranslator(true)
-                    ->addColumn(
-                            array_values($groupsFields[$row['id']]), 'col'
-                        );
+                    ->setDisableTranslator(true);
             }
         }
 

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -46,7 +46,6 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
             $default = array_merge($default, $options);
         }
         parent::__construct($default);
-        $db = Axis::db();
 
         $this->addElement('text', 'email', array(
             'required'  => true,
@@ -74,15 +73,8 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
         $this->addDisplayGroup(array('email', 'firstname', 'lastname'), 'login', array(
             'legend' => 'General information'
         ));
-        $this->getDisplayGroup('login')
-            ->addRow('email', 'row1')
-            ->addRow(array('firstname', 'lastname'), 'row2');
-        $this->getDisplayGroup('login')->getRow('row2')
-            ->addColumn('firstname', 'col1')
-            ->addColumn('lastname', 'col2');
 
-        $rows = Axis::single('account/customer_field')
-            ->getFields();
+        $rows = Axis::single('account/customer_field')->getFields();
         $groupsFields = array();
         foreach ($rows as $row) {
             $field = 'field_' . $row['id'];
@@ -202,18 +194,6 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
                 'style'  => 'display: none;'
             )
         );
-        $this->getDisplayGroup('change_password')
-            ->addRow(
-                'password_current',
-                'row1',
-                array('colsetClass' => 'col2-set')
-            )
-            ->addRow(array('password', 'password_confirm'), 'row2');
-
-        $this->getDisplayGroup('change_password')
-            ->getRow('row2')
-            ->addColumn('password', 'col1')
-            ->addColumn('password_confirm', 'col2');
 
         $this->addElement('button', 'submit', array(
             'type' => 'submit',
