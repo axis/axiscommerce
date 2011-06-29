@@ -19,7 +19,7 @@
  * @category    Axis
  * @package     Axis_ShippingUps
  * @subpackage  Axis_ShippingUps_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @copyright   Copyright 2003-2007 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @license     GNU Public License V3.0
