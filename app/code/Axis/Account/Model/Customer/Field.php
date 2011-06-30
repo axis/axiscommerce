@@ -155,6 +155,7 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
             ->where('acf.is_active = 1')
             ->where('acf2.is_active = 1')
             ->where('acfl.language_id = ?', Axis_Locale::getLanguageId())
+            ->order('acf.customer_field_group_id')
             ->order('acf.sort_order')
             ->fetchAll();
     }

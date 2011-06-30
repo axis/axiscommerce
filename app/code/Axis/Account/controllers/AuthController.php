@@ -85,7 +85,8 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
         if ($this->getRequest()->isPost()) {
             $data = $this->getRequest()->getPost();
             if ($form->isValid($data)) {
-                Zend_Debug::dump($data);die;
+                Zend_Debug::dump($data);
+                die;
                 $model = Axis::single('account/customer');
                 $data['site_id'] = Axis::getSiteId();
                 $data['is_active'] = 1;
