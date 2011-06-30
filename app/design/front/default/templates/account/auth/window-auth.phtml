@@ -1,0 +1,64 @@
+<div class="axis-window" id="window-login" style="display: none;">
+    <div class="axis-window-inner">
+        <div class="head"><span class="title"><?php echo $this->translate('account')->__('Login') ?></span></div>
+        <div class="content">
+            <form method="post" id="form-login" class="axis-form" action="<?php echo $this->href('account/auth/login', true) ?>">
+                <ul>
+                    <li>
+                        <label for="username"><?php
+                            echo $this->translate('account')->__('Email')
+                            ?><span class="required">&nbsp;*</span></label>
+                        <input type="text" id="username" name="username" class="input-text required email" />
+                    </li>
+                    <li>
+                        <label for="password"><?php
+                            echo $this->translate('account')->__('Password')
+                            ?><span class="required">&nbsp;*</span></label>
+                        <input type="password" id="password" name="password" class="input-text required" />
+                    </li>
+                    <li class="actions">
+                        <?php echo $this->button($this->translate('account')->__('Login'), array(
+                            'class' => 'button btn-login',
+                            'type' => 'submit'
+                        ), 'button') ?>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    loginWindow = $('#window-login').axisWindow('.onestep-login', {
+        'modal' : true,
+        'onShow': function() {
+            this.window.find('#username').focus();
+        }
+    });
+});
+$("#form-login").validate({
+    submitHandler: function(form) {
+        form = $(form);
+        loginWindow.setBlocked(true);
+        var loginBtn = $('#window-login .btn-login');
+        loginBtn.attr('disabled', 'disabled').addClass('loading');
+
+        $.post(form.attr('action'), form.serialize())
+            .success(function(response) {
+                if (response.success) {
+                    return window.location.reload();
+                }
+                MessageStack.init(response.messages, '#window-login .content').render();
+                loginWindow.setBlocked(false);
+                loginBtn.removeAttr('disabled').removeClass('loading');
+            })
+            .error(function(response) {
+                if (response.status) {
+                    alert('An error has been occured during request processing. Try again');
+                }
+                loginWindow.setBlocked(false);
+                loginBtn.removeAttr('disabled').removeClass('loading');
+            });
+    }
+});
+</script>
