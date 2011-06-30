@@ -100,7 +100,7 @@ form ul ul { padding: 0; }
 .axis-form .legend { background: #edf3fc; border: 1px solid #9dbdee; color: #1b63bc;
     float: left; font: bold 1em Arial, Helvetica, sans-serif; margin: -26px 0 0;
     padding: 1px 8px; }
-.axis-form li { padding:4px 8px; overflow: hidden; }
+.axis-form li { padding:4px 8px; overflow: hidden; clear: both; }
 .axis-form label { font-weight: bold; color: #444; font-size: 1.1em; float: left;
     width: 150px; text-align: right; margin: 0 5px 0 0; }
 .axis-form label.error { text-align: left; }
@@ -168,6 +168,12 @@ a.button, a.alt-button { float: left; line-height: 13px !important; text-decorat
 .button .icon, .alt-button .icon { padding: 0; background: none; zoom: 1; white-space: nowrap; }
 
 .button:disabled, .alt-button:disabled { cursor: wait; opacity: .2; filter:alpha(opacity=20); }
+.button:hover:disabled span { background-position: 100% -29px; }
+.alt-button:hover:disabled span { background-position: 100% -145px; }
+.button:hover:disabled span span { background-position: 0 0; }
+.alt-button:hover:disabled span span { background-position: 0 -116px; }
+
+.button.loading, .alt-button.loading { padding-left: 48px; background: url(../images/ajax-loader.gif) no-repeat 0 50%; }
 
 .button-set {
     margin: 5px 0px;
@@ -178,6 +184,24 @@ a.button, a.alt-button { float: left; line-height: 13px !important; text-decorat
 
 .btn-add-to-cart .icon { padding-left: 18px; background: url(../images/common.gif) no-repeat -210px -141px !important; }
 .btn-add-to-cart:hover .icon { background-position: -210px -141px !important; }
+
+/* dialog window */
+.axis-window { position: absolute; width: 350px; z-index: 999;
+    border: 3px solid #eee; left: 0; top: 0;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); border-radius: 5px; }
+.axis-window-inner { background: #fff; padding: 2px; }
+.axis-window .head { padding: 4px 7px 4px; border-bottom: 1px solid #ddd; }
+.axis-window .title { font: bold 1.2em Arial,Helvetica,sans-serif; color: #555; }
+.axis-window .content { padding: 7px 0 0; }
+.axis-window-mask { position: absolute; left: 0; top: 0; background: #000;
+    opacity: 0.3;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+    filter: alpha(opacity=30);
+    z-index: 998; }
+
+.axis-window .axis-form label { width: 80px; }
+.axis-window .axis-form label.error { margin-left: 85px; }
+.axis-window .axis-form .input-text, .axis-window .axis-form textarea { width: 210px !important; }
 
 /* messagestack */
 #messages {

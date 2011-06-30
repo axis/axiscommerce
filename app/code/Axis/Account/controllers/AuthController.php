@@ -68,6 +68,16 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
             $this->_getParam('password')
         );
 
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $this->_helper->layout->disableLayout();
+            if (Axis::getCustomerId()) { // bad login method design. try..catch or return information should be used
+                $this->_helper->json->sendSuccess();
+            } else {
+                $this->_helper->json->sendFailure();
+            }
+            return;
+        }
+
         $this->_redirect($this->_hasSnapshot() ?
             $this->_getSnapshot() :
                 $this->getRequest()->getServer('HTTP_REFERER'));

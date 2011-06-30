@@ -4,12 +4,16 @@
     <h1 class="title">
         <?php echo $this->pageTitle ?>
         <?php if (!Axis::getCustomerId()) : ?>
-<!--             <a class="onestep-login" href="#">Already registered? Log in, please</a> -->
+            <?php $label = $this->translate('account')->__('Already registered? Log in, please'); ?>
+            <a class="onestep-login"
+                href="<?php echo $this->href('account/auth', true) ?>"
+                title="<?php echo $label ?>"
+            ><?php echo $label ?></a>
         <?php endif; ?>
     </h1>
 </div>
 
-<?php //echo $this->message() ?>
+<?php echo $this->message() ?>
 
 <form method="post" action="<?php echo $this->href('checkout/onestep/process', true)?>" id="form-checkout">
     <div class="onestep-set">
@@ -41,3 +45,7 @@ Onestep.init({
 
 });
 </script>
+
+<?php if (!Axis::getCustomerId()) : ?>
+    <?php echo $this->render('account/auth/window-auth.phtml') ?>
+<?php endif; ?>
