@@ -262,7 +262,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
           `option_id` mediumint(8) unsigned NOT NULL,
           `language_id` smallint(5) unsigned NOT NULL,
           `name` varchar(128) NOT NULL,
-          `description` varchar(256) NOT NULL DEFAULT '',
+          `description` varchar(255) NOT NULL DEFAULT '',
           PRIMARY KEY  (`option_id`,`language_id`),
           CONSTRAINT `FK_PRODUCT_OPTION_ID` FOREIGN KEY (`option_id`)
             REFERENCES `{$installer->getTable('catalog_product_option')}` (`id`)
