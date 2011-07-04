@@ -110,7 +110,7 @@
                 <a href="<?php echo $this->href('index')?>" id="logo">
                     <?php echo $this->image('logo.gif', 'alt="' . Axis::config()->core->company->name . '"'); ?>
                 </a>
-                <?php echo $this->box('admin/greeting'); ?>
+                <?php echo $this->box('admin/greeting')->render(); ?>
             </div>
         </div>
 
