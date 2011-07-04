@@ -37,18 +37,21 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
 
     public function autoAddBasePaths($auto = true)
     {
-        $this->_autoAddBasePaths = false;
+        $this->_autoAddBasePaths = (bool) $auto;
         return $this;
     }
 
     /**
      *
-     * @param <type> $path
-     * @param <type> $prefix
+     * @param string $path
+     * @param string $prefix
      * @return Axis_Controller_Action_Helper_ViewRenderer 
      */
     protected function _autoAddBasePaths($path = null, $prefix = null)
     {
+        if (false === $this->_autoAddBasePaths) {
+            return $this;
+        }
         // Get base view path
         if (empty($path)) {
             $path = $this->_getBasePath();
