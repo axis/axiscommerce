@@ -112,7 +112,6 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
         
         $model = Axis::single('account/customer');
 
-        $success = 0;
         foreach ($data as $id => $_row) {
             if (!$this->_isEmailValid($_row['email'], $_row['site_id'], $id)) {
                 continue;
@@ -121,12 +120,11 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
             $row = $model->find($id)->current();
             $row->setFromArray($_row)
                 ->save();
-            $success++;
         }
 
         Axis::message()->addSuccess(
             Axis::translate('Axis_Core')->__(
-                '%d record(s) was saved successfully', $success
+                '%d record(s) was saved successfully', count($data)
         ));
 
         return $this->_helper->json->sendSuccess();
@@ -242,8 +240,8 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
 
     public function saveCustomerAction()
     {
-        $_row = $this->_getParam('customer') 
-            + $this->_getParam('custom_fields', array());
+        $_row    = $this->_getParam('customer'); 
+        $details = $this->_getParam('custom_fields', array());
 
         if (!$this->_isEmailValid(
                 $_row['email'],  $_row['site_id'], $_row['id']
@@ -253,8 +251,11 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
         }
         $model = Axis::single('account/customer');
         $row = $model->find($_row['id'])->current(); 
+        $event = false;
         if (!$row) {
-            list($row, ) = $model->create($_row);
+            list($row, $password) = $model->create($_row);
+            $event = true;
+            
             Axis::message()->addSuccess(
                 Axis::translate('Axis_Account')->__(
                     'Customer account was created successfully'
@@ -273,13 +274,31 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
                     'Data was saved successfully'
             ));
         }
+
+        $row->setDetails($details);
         
         // address
         if ($this->_hasParam('address')) {
-            foreach (Zend_Json::decode($this->_getParam('address')) as $address) {
-                $row->setAddress($address);
+            $addresses = Zend_Json::decode($this->_getParam('address'));
+            
+            $modelAddress = Axis::single('account/customer_address');
+            foreach ($addresses as $address) {
+                if (!empty($address['id']) && $address['remove']) {
+                    $model->delete(
+                        Axis::db()->quoteInto('id = ?', $address['id'])
+                    );
+                } else {
+                    $row->setAddress($address);
+                }
             }
         }
+        
+        if ($event) {
+            Axis::dispatch('account_customer_register_success', array(
+                'customer' => $row,
+                'password' => $password
+            ));
+        }    
 
         $this->_helper->json->sendSuccess(array(
             'data' => array('customer_id' => $row->id)

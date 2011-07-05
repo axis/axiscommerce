@@ -68,27 +68,6 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
         
         $row->save();
         
-        Axis::dispatch('account_customer_register_success', array(
-            'customer' => $row,
-            'password' => $password
-        ));
-        
-        //add customer detail
-        $modelDetail = Axis::model('account/customer_detail');
-        
-        $modelDetail->delete(
-            Axis::db()->quoteInto('customer_id = ?', $row->id)
-        );
-        foreach ($data as $fieldId => $value) {
-            
-            if (0 !== strpos($fieldId, 'field_') || empty($value)) {
-                continue;
-            }
-            list(, $fieldId) = explode('_', $fieldId);
-            
-            $modelDetail->add($row->id, $fieldId, $value);
-        }
-        
         return array($row, $password);
     }
 

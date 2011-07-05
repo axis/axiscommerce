@@ -117,6 +117,12 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         }
 
         parent::__construct($default);
+        
+        $this->addElement('hidden', 'id', array(
+            'validators' => array(
+                new Axis_Account_Model_Form_Validate_AddressId()
+            )
+        ));
 
         $configOptions = Axis::config('account/address_form')->toArray();
         $this->_fieldConfig = array_merge(array(
@@ -267,6 +273,25 @@ class Axis_Account_Model_Form_Address extends Axis_Form
     public function getZones()
     {
         return $this->_zones;
+    }
+    
+    /**
+     *
+     * @param array $defaults
+     * @return Axis_Account_Model_Form_Address Fluent interface
+     */
+    public function setDefaults(array $defaults)
+    {
+        parent::setDefaults($defaults);
+        if (array_key_exists('zone_id', $defaults)
+            && isset($this->_zones[$defaults['country_id']])) {
+
+            $this->getElement('zone_id')->setAttribs(array(
+                'options' =>  $this->_zones[$defaults['country_id']]
+            ));
+            $this->setDefault('zone_id', $defaults['zone_id']);
+        }
+        return $this;
     }
 
     protected function _sortFields($a, $b)

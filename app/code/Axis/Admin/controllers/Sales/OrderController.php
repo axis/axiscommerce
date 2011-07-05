@@ -100,6 +100,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
         //add new customer
         $newBillingAddress = $params['order']['billing_address_type'] == 0;
         $newDeliveryAddress = $params['order']['delivery_address_type'] == 0;
+        $event = false;
         if (-2 == $params['order']['customer_id']) {
             $customerRawData = array_merge($params['customer'], array(
                 'email'     => $params['order']['customer_email'],
@@ -107,8 +108,10 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 'site_id'   => $params['order']['site_id']
             ));
 
-            list($customer, ) = Axis::single('account/customer')
+            list($customer, $password) = Axis::single('account/customer')
                 ->create($customerRawData);
+            $event = true;
+            $customer->setDetails($customerRawData);
 
             $params['order']['customer_id'] = $customer->id;
             $newBillingAddress = $newDeliveryAddress = true;
@@ -161,6 +164,13 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 $customerRow->setAddress($address);
             }
         }
+        if ($event) {
+            Axis::dispatch('account_customer_register_success', array(
+                'customer' => $customer,
+                'password' => $password
+            ));
+        }
+        
         ////////////////////////////////////////////////////////////////////////
         //prepare order data
         $params['order']['currency_rate'] = Axis::single('locale/currency')

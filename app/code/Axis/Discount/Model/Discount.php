@@ -68,15 +68,15 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
      *  Add/update discount
      *  return discount id
      *
-     * @param array $params
+     * @param array $data
      * @return int
      */
-    public function save($params)
+    public function save($data)
     {
-        if (!isset($params['id'])
-            || !$row = $this->find($params['id'])->current()) {
+        if (!isset($data['id'])
+            || !$row = $this->find($data['id'])->current()) {
 
-            unset($params['id']);
+            unset($data['id']);
             $row = $this->createRow();
             $oldDiscountData = null;
         } else {
@@ -84,34 +84,34 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             $oldDiscountData['products'] = $row->getApplicableProducts();
         }
 
-        if (empty($params['discountFromDate'])) {
-            $params['discountFromDate'] = new Zend_Db_Expr('NULL');
+        if (empty($data['discountFromDate'])) {
+            $data['discountFromDate'] = new Zend_Db_Expr('NULL');
         }
-        if (empty($params['discountToDate'])) {
-            $params['discountToDate'] = new Zend_Db_Expr('NULL');
+        if (empty($data['discountToDate'])) {
+            $data['discountToDate'] = new Zend_Db_Expr('NULL');
         }
-        if (!isset($params['discountPriority'])
-            || empty($params['discountPriority'])) {
+        if (!isset($data['discountPriority'])
+            || empty($data['discountPriority'])) {
 
-            $params['discountPriority'] = 125;
+            $data['discountPriority'] = 125;
         }
         $row->setFromArray(array(
-                'name'          => $params['discountName'],
+                'name'          => $data['discountName'],
                 'description'   => '', //@todo
-                'from_date'     => $params['discountFromDate'],
-                'to_date'       => $params['discountToDate'],
-                'is_active'     => $params['discountIsActive'],
-                'type'          => $params['discountOperator'],
-                'amount'        => $params['discountAmount'],
-                'priority'      => $params['discountPriority'],
-                'is_combined'   => $params['discountIsCombined']
+                'from_date'     => $data['discountFromDate'],
+                'to_date'       => $data['discountToDate'],
+                'is_active'     => $data['discountIsActive'],
+                'type'          => $data['discountOperator'],
+                'amount'        => $data['discountAmount'],
+                'priority'      => $data['discountPriority'],
+                'is_combined'   => $data['discountIsCombined']
             ))
             ->save();
 
         $mDiscountEav = Axis::model('discount/eav');
         $mDiscountEav->delete('discount_id = ' . $row->id);
-        if (isset($params['discountSites'])) {
-            foreach ($params['discountSites'] as $siteId) {
+        if (isset($data['discountSites'])) {
+            foreach ($data['discountSites'] as $siteId) {
                 $mDiscountEav->insert(array(
                     'discount_id' => $row->id,
                     'entity' => 'site',
@@ -119,8 +119,8 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 ));
             }
         }
-        if (isset($params['discountCustomerGroups'])) {
-            foreach ($params['discountCustomerGroups'] as $groupId) {
+        if (isset($data['discountCustomerGroups'])) {
+            foreach ($data['discountCustomerGroups'] as $groupId) {
                 $mDiscountEav->insert(array(
                     'discount_id' => $row->id,
                     'entity' => 'group',
@@ -128,18 +128,18 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 ));
             }
         }
-        if (isset($params['discountSpecial'])) {
+        if (isset($data['discountSpecial'])) {
             $mDiscountEav->insert(array(
                 'discount_id' => $row->id,
                 'entity' => 'special',
-                'value' => $params['discountSpecial']
+                'value' => $data['discountSpecial']
             ));
         }
 
-        if (!isset($params['condition'])) {
-            $params['condition'] = array();
+        if (!isset($data['condition'])) {
+            $data['condition'] = array();
         }
-        foreach ($params['condition'] as $conditionType => $subCondition) {
+        foreach ($data['condition'] as $conditionType => $subCondition) {
             if (in_array($conditionType, array('category', 'manufacture', 'productId'))) {
                 foreach ($subCondition as $condition) {
                     $mDiscountEav->insert(array(

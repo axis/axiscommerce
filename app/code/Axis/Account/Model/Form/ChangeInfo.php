@@ -73,7 +73,7 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
         $this->addDisplayGroup(array('email', 'firstname', 'lastname'), 'login', array(
             'legend' => 'General information'
         ));
-
+        
         $rows = Axis::single('account/customer_field')->getFields();
         $groupsFields = array();
         foreach ($rows as $row) {
@@ -89,30 +89,23 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
                 $config['cols'] = 60;
             }
             $this->addElement($row['field_type'], $field, $config);
-
+            $el = $this->getElement($field);
             if ($row['required']) {
-                $this->getElement($field)
-                    ->addValidator('NotEmpty')
+                $el->addValidator('NotEmpty')
                     ->setAttrib(
                         'class',
-                        $this->getElement($field)
+                        $el
                             ->getAttrib('class') . ' required'
                     );
             }
             if (!empty($row['validator'])) {
-                $this->getElement($field)->addValidator($row['validator']);
+                $el->addValidator($row['validator']);
                 if ($row['validator'] == 'Date') {
-                    $this->getElement($field)
-                        ->setAttrib(
-                            'class' ,
-                            $this->getElement($field)
-                                ->getAttrib('class') . ' input-date'
-                        );
+                    $el->setAttrib('class', $el->getAttrib('class') . ' input-date');
                 }
             }
             if (!empty($row['axis_validator'])) {
-                $this->getElement($field)
-                    ->addValidator(new $row['axis_validator']());
+                $el->addValidator(new $row['axis_validator']());
             }
             if (isset($row['customer_valueset_id'])) {
                 $values = Axis::single('account/Customer_ValueSet_Value')
@@ -120,11 +113,9 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
                         $row['customer_valueset_id'],
                         Axis_Locale::getLanguageId()
                     );
-                $element = $this->getElement($field);
-                if (method_exists($element, 'setMultiOptions')) {
-                    $element->setMultiOptions($values);
+                if (method_exists($el, 'setMultiOptions')) {
+                    $el->setMultiOptions($values);
                 }
-
             }
             $groupsFields[$row['customer_field_group_id']][$row['id']] = $field;
         }

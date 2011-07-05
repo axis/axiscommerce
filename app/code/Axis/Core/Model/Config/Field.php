@@ -78,36 +78,36 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
     /**
      * Insert or update config field
      *
-     * @param array $rowData
+     * @param array $data
      * @return bool
      */
-    public function save(array $rowData = null)
+    public function save(array $data = null)
     {
-        if (null === $rowData['path'] || $rowData['path'] == '') {
+        if (empty($data['path'])) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     'Incorrect field path'
             ));
             return false;
         }
-        if ($rowData['config_options'] == '') {
-            $rowData['config_options'] = new Zend_Db_Expr('NULL');
+        if (empty($data['config_options'])) {
+            $data['config_options'] = new Zend_Db_Expr('NULL');
         }
 
-        $rowData['lvl'] = count(explode('/', $rowData['path']));
+        $data['lvl'] = count(explode('/', $data['path']));
 
-        if ($rowData['lvl'] <= 2) {
-            $rowData['config_type'] = '';
+        if ($data['lvl'] <= 2) {
+            $data['config_type'] = '';
         }
 
         $row = $this->select()
-            ->where('path = ?', $rowData['path'])
+            ->where('path = ?', $data['path'])
             ->fetchRow();
 
         if (!$row) {
             $row = $this->createRow();
         } 
-        $row->setFromArray($rowData);
+        $row->setFromArray($data);
         $row->save();
         Axis::message()->addSuccess(
             Axis::translate('core')->__(

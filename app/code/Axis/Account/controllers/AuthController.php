@@ -85,12 +85,16 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
         if ($this->getRequest()->isPost()) {
             $data = $this->getRequest()->getPost();
             if ($form->isValid($data)) {
-                Zend_Debug::dump($data);
-                die;
                 $model = Axis::single('account/customer');
                 $data['site_id'] = Axis::getSiteId();
                 $data['is_active'] = 1;
-                list(, $password) = $model->create($data);
+                list($row, $password) = $model->create($data);
+                $row->setDetails($data);
+                
+                Axis::dispatch('account_customer_register_success', array(
+                    'customer' => $row,
+                    'password' => $password
+                ));
                 
                 $model->login($data['email'], $password);
                 return $this->_redirect('account');

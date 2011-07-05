@@ -91,7 +91,7 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             'login',
             array('legend' => 'General information')
         );
-
+        
         $rows = Axis::single('account/customer_field')->getFields();
         $groupsFields = array();
         foreach ($rows as $row) {

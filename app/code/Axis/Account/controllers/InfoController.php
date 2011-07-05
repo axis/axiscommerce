@@ -62,10 +62,20 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
                 $form->getElement('password_confirm')->clearValidators(); //removeValidator('NotEmpty');
             }
             if ($form->isValid($data)) {
-                $data['id'] = Axis::getCustomerId();
-                Zend_Debug::dump($data);
-                die;
-                Axis::single('account/customer')->save($data);
+
+                $model = Axis::single('account/customer');
+                
+                $row = $model->find(Axis::getCustomerId())->current();
+                if (empty($data['password'])) {
+                    unset($data['password']);
+                } else {
+                    $data['password'] = md5($data['password']);
+                }
+                $row->setFromArray($data);
+                $row->modified_at = Axis_Date::now()->toSQLString();
+                $row->save();
+                $row->setDetails($data);
+
                 Axis::message()->addSuccess(
                     Axis::translate('Axis_Core')->__(
                         'Data was saved successfully'
@@ -80,11 +90,23 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
             $data = $customer->toArray();
 
             foreach ($extraInfo as $row) {
-                $data['field_' . $row->customer_field_id] = empty($row->data) ?
-                    $row->customer_valueset_value_id : $row->data;
+                $value  = empty($row->data) ? $row->customer_valueset_value_id : $row->data;
+                
+                $isMulti = isset($data['field_' . $row->customer_field_id]);
+                
+                if ($isMulti && is_array($data['field_' . $row->customer_field_id])) {
+                    $data['field_' . $row->customer_field_id][] = $value;
+                } elseif ($isMulti) {
+                    $data['field_' . $row->customer_field_id] = array(
+                        $data['field_' . $row->customer_field_id],
+                        $value
+                    );
+                    
+                } else {
+                    $data['field_' . $row->customer_field_id] = $value;
+                }
             }
         }
-
         $form->populate($data);
         $this->view->form = $form;
         $this->render();
