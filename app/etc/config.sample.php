@@ -2,13 +2,14 @@
 
 $config = array(
     'system' => array(
-        'path'    => '/var/www/htdocs/axiscommerce.com'
+        'path'          => '/var/www/htdocs/axiscommerce.com',
+        'applyUpgrades' => false
     ),
-    
+
     'crypt' => array(
         'key' => 'crypt_key'
     ),
-    
+
     'db' => array(
         'host'     => 'localhost',
         'username' => 'user_axis',
@@ -16,7 +17,7 @@ $config = array(
         'dbname'   => 'axis',
         'prefix'   => ''
     ),
-    
+
     'front' => array(
         'humanUrlAdapter' => "Readable"
     )
