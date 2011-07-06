@@ -83,13 +83,6 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
      */
     public function save(array $data = null)
     {
-        if (empty($data['path'])) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'Incorrect field path'
-            ));
-            return false;
-        }
         if (empty($data['config_options'])) {
             $data['config_options'] = new Zend_Db_Expr('NULL');
         }
@@ -109,11 +102,8 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         } 
         $row->setFromArray($data);
         $row->save();
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-        ));
-        return true;
+        
+        return $row;
     }
 
     /**

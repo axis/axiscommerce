@@ -66,6 +66,9 @@ class Axis_Admin_Tax_ClassController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         $dataset = Zend_Json::decode($this->_getParam('data'));
+        if (!sizeof($dataset)) {
+            return $this->_helper->json->sendFailure();
+        }
         $model = Axis::model('tax/class');
         foreach ($dataset as $_row) {
             $model->save($_row);

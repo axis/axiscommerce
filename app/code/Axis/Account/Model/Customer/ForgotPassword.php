@@ -52,10 +52,10 @@ class Axis_Account_Model_Customer_ForgotPassword extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        if (empty($data['created_at'])) {
-            $data['created_at'] = Axis_Date::now()->toSQLString();
-        }
         $row = $this->getRow($data);
+        if (empty($row->created_at)) {
+            $row->created_at = Axis_Date::now()->toSQLString();
+        }
         $row->save();
         return $row;
     }

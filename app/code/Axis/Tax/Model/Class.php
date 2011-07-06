@@ -42,9 +42,6 @@ class Axis_Tax_Model_Class extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        if (!sizeof($data)) {
-            return false;
-        }
         $row = $this->getRow($data);
         $row->modified_on = Axis_Date::now()->toSQLString();
         if (empty($row->created_on)) {

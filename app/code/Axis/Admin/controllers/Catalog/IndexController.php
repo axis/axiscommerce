@@ -248,17 +248,15 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $id = (int)$this->_getParam('product_id', 0);
-        $productRow = array();
-        $productRow[$id] = $this->_getParam('product');
+        $data = $this->_getParam('product');
 
         try {
-            $mProduct = Axis::model('catalog/product');
+            $model = Axis::model('catalog/product');
             $oldProductData = null;
-            if ($id && $oldProduct = $mProduct->find($id)->current()) {
+            if ($oldProduct = $model->find($data['id'])->current()) {
                 $oldProductData = $oldProduct->toArray();
             }
-            $product = $mProduct->save($productRow);
+            $product = $model->save($data);
         } catch (Axis_Exception $e) {
             Axis::message()->addError($e->getMessage());
             return $this->_helper->json->sendFailure();
@@ -283,7 +281,11 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             'old_data'  => $oldProductData,
             'product'   => $product
         ));
-
+        
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__('Data was saved successfully')
+        );
+        
         $this->_helper->json->sendSuccess(array(
             'data' => array('product_id' => $product->id))
         );
@@ -296,16 +298,16 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
         $siteId = $this->_getParam('siteId', Axis::getSiteId());
 
         $data = Zend_Json::decode($this->_getParam('data'));
-        $tableProduct = Axis::single('catalog/product');
+        $model = Axis::model('catalog/product');
 
         foreach ($data as $id => $values) {
-            $product = $tableProduct->find($id)->current();
-            $oldProductData = $product->toArray();
-            $product->setFromArray($values);
-            $product->save();
+            $row = $model->find($id)->current();
+            $oldProductData = $row->toArray();
+            $row->setFromArray($values);
+            $row->save();
             Axis::dispatch('catalog_product_save_after', array(
                 'old_data'  => $oldProductData,
-                'product'   => $product
+                'product'   => $row
             ));
         }
 

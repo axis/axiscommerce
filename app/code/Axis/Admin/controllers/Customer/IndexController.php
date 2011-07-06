@@ -284,7 +284,7 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
             $modelAddress = Axis::single('account/customer_address');
             foreach ($addresses as $address) {
                 if (!empty($address['id']) && $address['remove']) {
-                    $model->delete(
+                    $modelAddress->delete(
                         Axis::db()->quoteInto('id = ?', $address['id'])
                     );
                 } else {

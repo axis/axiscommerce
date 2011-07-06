@@ -42,13 +42,15 @@ class Axis_Contacts_Model_Message extends Axis_Db_Table
     /**
      * Adds message to database
      *
-     * @param string $data Row data
-     * @return int The primary key value
+     * @param array $data 
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
-        $data['created_at'] = Axis_Date::now()->toSQLString();
-        return $this->createRow($data)->save();
+        $row = $this->createRow($data);
+        $row->created_at = Axis_Date::now()->toSQLString();
+        $row->save();
+        return $row;
     }
 }
 
