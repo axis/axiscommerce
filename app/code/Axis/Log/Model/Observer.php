@@ -33,13 +33,13 @@
  */
 class Axis_Log_Model_Observer
 {
-    public function log($observer) 
+    public function log($observer)
     {
         if (!Axis::config('log/main/enabled')){
             return false;
         }
         /**
-         * @var $request Zend_Controller_Request_Abstract 
+         * @var $request Zend_Controller_Request_Abstract
          */
         $request = $observer->getController()->getRequest();
         $url = $request->getScheme() . '://'
@@ -48,14 +48,14 @@ class Axis_Log_Model_Observer
         $refer     = $request->getServer('HTTP_REFERER', '');
         $timestamp = Axis_Date::now()->toSQLString();
         $siteId    = Axis::getSiteId();
-        
+
         // add new url request
         $modelUrlInfo = Axis::single('log/url_info');
         $rowUrlInfo = $modelUrlInfo->select()
             ->where('url = ?', $url)
             ->where('refer = ?', $refer)
             ->fetchRow();
-        
+
         if (!$rowUrlInfo) {
             $rowUrlInfo = $modelUrlInfo->createRow(array(
                 'url'   => $url,
@@ -63,10 +63,10 @@ class Axis_Log_Model_Observer
             ));
             $rowUrlInfo->save();
         }
-        
+
         //add/update visitor
         $visitor = Axis::single('log/visitor')->getVisitor();
-        
+
         //add/update visitor info
         Axis::single('log/visitor_info')
             ->getRow(array(
@@ -77,7 +77,7 @@ class Axis_Log_Model_Observer
                 'server_addr'          => $request->getServer('SERVER_ADDR', ''),
                 'remote_addr'          => $request->getServer('REMOTE_ADDR', '')
             ))->save();
-        
+
         Axis::single('log/url')->insert(array(
             'url_id'     => $rowUrlInfo->id,
             'visitor_id' => $visitor->id,
@@ -85,17 +85,39 @@ class Axis_Log_Model_Observer
             'site_id'    => $siteId
         ));
     }
-    
+
     public function login()
     {
         $visitor = Axis::single('log/visitor')->getVisitor();
         $visitor->customer_id = Axis::getCustomerId();
         $visitor->save();
     }
-    
+
     public function logout()
     {
         unset(Axis::session()->visitorId);
         // ? Zend_Session::regenerateId();
+    }
+
+    public function addLogEventOnCatalogProductView($observer)
+    {
+        $product = $observer['product'];
+        if (!$product instanceof Axis_Catalog_Model_Product_Row){
+            return;
+        }
+        $visitor = Axis::single('log/visitor')->getVisitor();
+        Axis::model('log/event')->createRow(array(
+            'visitor_id' => $visitor->id,
+            'event_name' => 'catalog_product_view',
+            'object_id'  => $product->id
+        ))->save();
+    }
+
+    public function removeLogEventOnCatalogProductRemoveSuccess($data)
+    {
+        Axis::model('log/event')->delete(array(
+            Axis::db()->quoteInto('event_name = ? ', 'catalog_product_view'),
+            Axis::db()->quoteInto('object_id IN (?)', $data['product_ids'])
+        ));
     }
 }

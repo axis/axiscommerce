@@ -22,6 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
+
 $config = array(
     'Axis_Log' => array(
         'package' => 'Axis_Log',
@@ -44,12 +45,26 @@ $config = array(
                 )
             ),
             'account_customer_logout_success' => array(
-                'login' => array(
+                'logout' => array(
                     'type'   => 'single',
                     'model'  => 'log/observer',
                     'method' => 'logout'
                 )
-             )
+            ),
+            'catalog_product_view' => array(
+                'catalog_product_view_log_event' => array(
+                    'type'   => 'model',
+                    'model'  => 'log/observer',
+                    'method' => 'addLogEventOnCatalogProductView'
+                )
+            ),
+            'catalog_product_remove_success' => array(
+                'catalog_product_remove_log_event' => array(
+                    'type' => 'model',
+                    'model' => 'log/observer',
+                    'method' => 'removeLogEventOnCatalogProductRemoveSuccess'
+                )
+            )
         )
     )
 );
