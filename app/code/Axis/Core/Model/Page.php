@@ -125,10 +125,7 @@ class Axis_Core_Model_Page extends Axis_Db_Table
     public function remove($module = '*', $controller = '*', $action = '*')
     {
         if (strpos($module, '/')) {
-            $request    = explode('/', $module);
-            $module     = $request[0];
-            $controller = $request[1];
-            $action     = $request[2];
+            list($module, $controller, $action) = explode('/', $module);
         }
         
         $this->delete(
@@ -138,45 +135,15 @@ class Axis_Core_Model_Page extends Axis_Db_Table
     }
     
     /**
-     * Save or insert page data
      * 
-     * @param array $data ('module_name' =>, 'controller_name' =>, 'action_name' =>)
-     * @return bool
+     * @param array $data
+     * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
-        if (!sizeof($data)) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'No data to save'
-            ));
-            return false;
-        }
-        
-        foreach ($data as $id => $row) {
-            if (isset($row['id'])) {
-                $this->update(
-                    array(
-                        'module_name'     => $row['module_name'],
-                        'action_name'     => $row['action_name'],
-                        'controller_name' => $row['controller_name']
-                    ), 
-                    'id = ' . intval($id)
-                );
-            } else {
-                $this->insert(array(
-                    'module_name'     => $row['module_name'],
-                    'action_name'     => $row['action_name'],
-                    'controller_name' => $row['controller_name']
-                ));
-            }
-        }
-
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-        ));
-        return true;
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
     
     /**
@@ -191,11 +158,11 @@ class Axis_Core_Model_Page extends Axis_Db_Table
         }
         $request = explode('/', $request);
         
-        $this->insert(array(
+        $this->createRow(array(
             'module_name'     => $request[0],
             'controller_name' => $request[1],
             'action_name'     => $request[2]
-        ));
+        ))->save();
         return $this;
     }
 }

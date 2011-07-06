@@ -36,37 +36,6 @@ class Axis_Poll_Model_Answer extends Axis_Db_Table
     protected $_name = 'poll_answer';
 
     /**
-     * @param int $id
-     * @param int $languageId
-     * @param int $questionId
-     * @param string $answer
-     * @return int 
-     */
-    public function save($id, $languageId, $questionId, $answer)
-    {
-        $row = $this->select()
-            ->where('id = ?', $id)
-            ->where('language_id = ?', $languageId)
-            ->where('question_id = ?', $questionId)
-            ->fetchRow();
-        
-        if (!$row) {
-            $rowData = array(
-                'language_id' => $languageId,
-                'question_id' => $questionId,
-                'answer'      => $answer
-            );
-            if ($id > 0) {
-                $rowData['id'] = $id;
-            }
-            $row = $this->createRow($rowData);
-        } else {
-            $row->answer = $answer;
-        }
-        return $row->save();
-    }
-    
-    /**
      *
      * @param int $questionId
      * @param int $languageId

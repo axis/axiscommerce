@@ -112,7 +112,6 @@ Ext.onReady(function() {
             xtype: 'langset'
         }, {
             name: 'id',
-            initialValue: 0,
             xtype: 'hidden'
         }]
     });

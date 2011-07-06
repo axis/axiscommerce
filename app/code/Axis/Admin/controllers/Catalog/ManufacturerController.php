@@ -132,9 +132,10 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
     {
         $this->_helper->layout->disableLayout();
 
+        $data  = $this->_getAllParams();
+        $model = Axis::model('catalog/product_manufacturer');
         try {
-            $id = Axis::model('catalog/product_manufacturer')
-                ->save($this->_getAllParams());
+            $row = $model->save($data);
             Axis::message()->addSuccess(
                 Axis::translate('catalog')->__('Data was successfully saved')
             );
@@ -144,9 +145,9 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
         }
 
         $this->_helper->json->sendJson(array(
-            'success' => (bool) $id,
+            'success' => (bool) $row->id,
             'data'    => array(
-                'id' => $id
+                'id' => $row
             )
         ));
     }
@@ -155,11 +156,12 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
     {
         $this->_helper->layout->disableLayout();
 
-        $mManufacturer = Axis::model('catalog/product_manufacturer');
-        $i = 0;
-        foreach (Zend_Json_Decoder::decode($this->_getParam('data')) as $data) {
+        $model   = Axis::model('catalog/product_manufacturer');
+        $dataset = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $i       = 0;
+        foreach ($dataset as $data) {
             try {
-                $mManufacturer->save($data);
+                $model->save($data);
                 $i++;
             } catch (Axis_Exception $e) {
                 Axis::message()->addError($e->getMessage());

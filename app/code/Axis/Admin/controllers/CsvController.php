@@ -90,14 +90,41 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $data = $this->_getParam('general');
-        $filters = $this->_getParam('filter');
+        $data         = $this->_getParam('general');
+        $filters      = $this->_getParam('filter');
         $data['site'] = trim($filters['site'], ',');
 
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('admin/csv_profile')
-                ->save($data, $filters)
-        ));
+        $row = Axis::model('admin/csv_profile')->save($data);//, $filters);
+        
+        
+        if ('export' == $row->direction) {
+            $rowFilter = $row->findDependentRowset('Axis_Admin_Model_Csv_Profile_Filter')->current();
+            if (!$rowFilter) {
+                $rowFilter = Axis::single('admin/csv_profile_filter')->createRow();
+                $rowFilter->profile_id = $row->id;
+            }
+            $rowFilter->setFromArray($filters);
+            $rowFilter->language_ids = trim($rowFilter->language_ids, ', ');
+            
+            $rowFilter->price_from = is_numeric($rowFilter->price_from) ?
+                    $rowFilter->price_from : new Zend_Db_Expr('NULL');
+            
+            $rowFilter->price_to = is_numeric($rowFilter->price_to) ?
+                    $rowFilter->price_to : new Zend_Db_Expr('NULL');
+            
+            $rowFilter->qty_from = is_numeric($rowFilter->qty_from) ?
+                    $rowFilter->qty_from : new Zend_Db_Expr('NULL');
+            
+            $rowFilter->qty_to = is_numeric($rowFilter->qty_to) ?
+                    $rowFilter->qty_to : new Zend_Db_Expr('NULL');
+            $rowFilter->save();
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('admin')->__(
+                'Profile was saved successfully'
+            )
+        );
+        $this->_helper->json->sendSuccess();
     }
 
     public function deleteAction()

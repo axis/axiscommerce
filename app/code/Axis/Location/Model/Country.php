@@ -33,52 +33,35 @@
  */
 class Axis_Location_Model_Country extends Axis_Db_Table
 {
-    /**
-     * The default table name
-     */
     protected $_name = 'location_country';
 
     /**
      *
      * @param array $data
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
-        $db = $this->getAdapter();
-
-        $existZoneIds = $this->select('id')
-            ->where('id IN (?)', array_keys($data))
-            ->fetchCol();
-
-        foreach ($data as $id => $values) {
-            if (empty($values['iso_code_2'])
-                || empty($values['iso_code_3'])) {
-
+        $row = $this->getRow($data);
+        //validate
+        $primary = $this->_primary;
+        if (!is_array($primary)) {
+           $primary = array($primary); 
+        }
+        $columns = array_diff($this->_getCols(), $primary);
+        foreach ($columns as $column) {
+            if (empty($row->$column)) {
+                //must by throw
                 Axis::message()->addError(
                     Axis::translate('core')->__(
-                        'Required fields are missing'
+                        'Required fields "%s" are missing', $column
                     )
                 );
-                continue;
+                return false; 
             }
-            $row = array(
-                'name'              => $values['name'],
-                'iso_code_2'        => $values['iso_code_2'],
-                'iso_code_3'        => $values['iso_code_3'],
-                'address_format_id' => $values['address_format_id']
-            );
-
-            if (in_array($id, $existZoneIds)) {
-                $this->update($row, $db->quoteInto('id = ?', $id));
-            } else {
-                $this->insert($row);
-            }
-
-            Axis::message()->addSuccess(
-                Axis::translate('location')->__(
-                    'Country "%s" has been saved succesfully', $values['name']
-                )
-            );
         }
+        $row->save();
+        
+        return $row;
     }
 }

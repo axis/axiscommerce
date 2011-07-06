@@ -73,19 +73,19 @@ Ext.onReady(function(){
                 anchor: '98%'
             }, {
                 xtype             : 'multiselect',
-                name              :  'to',
-                id                :  'multiselect',
-                fieldLabel        :  'To statuses'.l(),
-                dataFields        :  ['id', 'name'], 
-                store             :  orderStatusChild,
-                valueField        :  'id',
-                displayField      :  'name',
-                width             :  200,
-                height            :  100,
-                allowBlank        :  true
+                name              : 'to',
+                id                : 'multiselect',
+                fieldLabel        : 'To statuses'.l(),
+                dataFields        : ['id', 'name'], 
+                store             : orderStatusChild,
+                valueField        : 'id',
+                displayField      : 'name',
+                width             : 200,
+                height            : 100,
+                allowBlank        : true
         
             }, new Ext.form.Hidden({
-                name              :  'statusId',
+                name              :  'id',
                 id                :  'statusId'
             })
             ]

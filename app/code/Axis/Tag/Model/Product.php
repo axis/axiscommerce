@@ -54,25 +54,4 @@ class Axis_Tag_Model_Product extends Axis_Db_Table
             ->where('customer_tag_id = ?', $tagId)
             ->count();
     }
-
-    /**
-     *
-     * @param $tagItemId
-     * @return mixed
-     */
-    public function deleteMy($tagItemId)
-    {
-        $row = $this->find($tagItemId)->current();
-        if (!$row) {
-            return false;
-        }
-        $parentRow = $row->findParentRow('Axis_Tag_Model_Customer');
-
-        if ($parentRow->customer_id != Axis::getCustomerId() ||
-            $parentRow->site_id != Axis::getSiteId()) {
-
-            return false;
-        }
-        return $row->delete();
-    }
 }

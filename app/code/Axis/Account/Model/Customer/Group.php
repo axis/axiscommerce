@@ -44,21 +44,24 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
      * @param array $data
      * @return bool
      */
-    public function save($data)
+    public function save(array $data)
     {
-        if (!isset($data['id'])
-            || !$row = $this->find($data['id'])->current()) {
-
+        $row  = false;
+        if (isset($data['id'])) {
+            $row = $this->find($data['id'])->current();
+        }
+        if (!$row) {
             unset($data['id']);
             $row = $this->createRow();
             $oldData = null;
         } else {
-            if (self::GROUP_GUEST_ID === $data['id']
-                && self::GROUP_ALL_ID === $data['id']) {
-                // disallow to change system groups
-                return;
-            }
             $oldData = $row->toArray();
+        }
+        
+        if (self::GROUP_GUEST_ID === $row->id 
+            && self::GROUP_ALL_ID === $row->id) {
+            // disallow to change system groups
+            return;
         }
 
         $row->setFromArray($data)
@@ -68,6 +71,6 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
             'old_data'  => $oldData,
             'group'     => $row
         ));
-        return true;
+        return $row;
     }
 }

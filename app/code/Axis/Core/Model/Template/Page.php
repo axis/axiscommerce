@@ -91,12 +91,13 @@ class Axis_Core_Model_Template_Page extends Axis_Db_Table
 
     /**
      *
-     * @param array $rowData
-     * @return mixed The primary key value(s), as an associative array if the
-     *     key is compound, or a scalar if the key is single-column.
+     * @param array $data
+     * @return Axis_Db_Table_Row
      */
-    public function save(array $rowData)
+    public function save(array $data)
     {
-        return $this->getRow($rowData)->save();
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 }

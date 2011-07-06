@@ -172,8 +172,7 @@ Ext.onReady(function() {
             }]
         }, {
             xtype: 'hidden',
-            name: 'id',
-            initialValue: 0
+            name: 'id'
         }, {
             xtype: 'hidden',
             name: 'parent_id'

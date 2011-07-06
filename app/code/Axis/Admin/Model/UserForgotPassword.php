@@ -41,15 +41,12 @@ class Axis_Admin_Model_UserForgotPassword extends Axis_Db_Table
     
     public function save(array $data)
     {
-        if (empty($data['created_at'])) {
-            $data['created_at'] = Axis_Date::now()->toSQLString();
+        $row = $this->getRow($data);
+        if (empty($row->created_at)) {
+            $row->created_at = Axis_Date::now()->toSQLString();
         }
-        if (count($this->find($data['user_id'])))
-            return $this->update(
-                $data, 
-                $this->getAdapter()->quoteInto('user_id = ?', $data['user_id'])
-            );
-        return $this->insert($data);
+        $row->save();
+        return $row;
     }   
     
     /**

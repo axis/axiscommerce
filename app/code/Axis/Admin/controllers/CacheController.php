@@ -50,11 +50,17 @@ class Axis_Admin_CacheController extends Axis_Admin_Controller_Back
 
     public function saveAction()
     {
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-
-        return $this->_helper->json->sendJson(array(
-            'success' => Axis::single('core/cache')->save($data)
+        $dataset = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $model = Axis::model('core/cache');
+        foreach ($dataset as $_row) {
+            $model->save($_row);
+        }
+        
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
         ));
+        $this->_helper->json->sendSuccess();
     }
 
     public function cleanAction()

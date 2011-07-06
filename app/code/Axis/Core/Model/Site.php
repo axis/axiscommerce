@@ -139,77 +139,12 @@ class Axis_Core_Model_Site extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return void
+     * @return Axis_Db_Table_Row
      */
     public function save($data)
     {
-        $languages = Axis_Collect_Language::collect();
-
-        foreach ($data as $id => $values) {
-            if ($values['id'] == 'new') {
-                $siteId = $this->insert(array(
-                    'name' => $values['name'],
-                    'base' => $values['base'],
-                    'secure' => $values['secure']
-                ));
-                $categoryId = Axis::single('catalog/category')->insert(array(
-                    'site_id'    => $siteId,
-                    'lft'        => 1,
-                    'rgt'        => 2,
-                    'lvl'        => 0,
-                    'created_on' => Axis_Date::now()->toSQLString(),
-                    'status'     => 'enabled'
-                ));
-
-                foreach ($languages as $languageId => $name) {
-                    Axis::single('catalog/category_description')->insert(array(
-                        'category_id' => $categoryId,
-                        'language_id' => $languageId,
-                        'name'        => $values['name'],
-                        'description' => 'Root Category'
-                    ));
-                }
-            } else {
-                $this->update(array(
-                    'name'   => $values['name'],
-                    'base'   => $values['base'],
-                    'secure' => $values['secure']
-                ), "id = $values[id]");
-
-                // link another root_category for site if nessesary
-                if (!$values['root_category']) {
-                    continue;
-                }
-
-                $oldSite = Axis::single('catalog/category')
-                    ->select('site_id')
-                    ->where('id = ?', $values['root_category'])
-                    ->fetchOne();
-
-                if ($oldSite == $values['id']) {
-                    continue;
-                }
-
-                // it's not safe if there are another categories linked to this site
-                if (Axis::single('catalog/category')
-                        ->select('id')
-                        ->where('site_id = ?', $values['id'])
-                        ->fetchOne()) {
-
-                    Axis::message()->addNotice(
-                        Axis::translate('core')->__(
-                            "Root category wasn't changed. Some categories already linked with the site %s. Unlink them from the site first",
-                            $values['name']
-                        )
-                    );
-                } else {
-                    // update site_id for category and all of child nodes
-                    Axis::single('catalog/category')
-                        ->update(array(
-                            'site_id' => $values['id']
-                        ), 'site_id = ' . $oldSite);
-                }
-            }
-        }
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 }

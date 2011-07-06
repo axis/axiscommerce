@@ -20,7 +20,6 @@
  * @license     GNU Public License V3.0
  */
 
-var deleteAnswerIds = [];
 Ext.onReady(function () {
 
     var iteratorNewAnswer = 0;
@@ -33,7 +32,7 @@ Ext.onReady(function () {
 
         function _clearQuestion() {
             for (var languageId in Axis.languages) {
-                Ext.getCmp('question[' + languageId + ']').setValue();
+                Ext.getCmp('description[' + languageId + ']').setValue();
             }
             return true;
         }
@@ -50,7 +49,7 @@ Ext.onReady(function () {
             getResults: function(row) {
                 Ext.StoreMgr.lookup('storeResults').load({
                     params: {
-                        'questionId': row.id
+                        'id': row.id
                     }
                 })
                 Ext.getCmp('window-question-result').setTitle(row.question);
@@ -106,9 +105,6 @@ Ext.onReady(function () {
                             anchor: "100%",
                             handler: function() {
                                 Poll().removeAnswerRow(answerId);
-                                if (answerId > 0) {
-                                    deleteAnswerIds.push(answerId);
-                                }
                             }
                         }]
                     });
@@ -117,14 +113,14 @@ Ext.onReady(function () {
                 return true;
             },
             //////////////////////////////
-            editQuestion: function(questionId) {
+            editQuestion: function(id) {
                 Ext.getCmp('window-question').setTitle('Edit Question');
                 Ext.getCmp('window-question').show();
 //
                 Ext.getCmp('form-question').getForm().clear();
                 Ext.getCmp('form-question').getForm().load({
                     url: Axis.getUrl('poll_index/get-question'),
-                    params : {questionId : questionId},
+                    params : {id : id},
                     success: function(form, action) {
                         var response = Ext.decode(action.response.responseText).data[0];
                         _clearAnswers();
@@ -144,11 +140,13 @@ Ext.onReady(function () {
                 if (modified.length < 1) return alert('Nothing to save');
                 var data = {};
                 for (var i = 0; i < modified.length; i++) {
-                    data[modified[i]['data'].id] = 
-                        {'status': modified[i]['data'].status,
-                         'type': modified[i]['data'].type,
-                         'sites': modified[i]['data'].sites
-                        };
+                    var _row = modified[i]['data'];
+                    data[i] = {
+                        'id'     : _row.id,
+                        'status' : _row.status,
+                        'type'   : _row.type,
+                        'sites'  : _row.sites
+                    };
                 }
                 Ext.Ajax.request({
                     url: Axis.getUrl('poll_index/quick-save'),
@@ -163,7 +161,6 @@ Ext.onReady(function () {
             saveQuestion: function() {
                 Ext.getCmp('form-question').getForm().submit({
                     url: Axis.getUrl('poll_index/save'),
-                    params: {'deleteAnswerIds[]': deleteAnswerIds},
                     success: function(form, response) {
                         Ext.getCmp('window-question').hide();
                         form.clear();
@@ -189,12 +186,12 @@ Ext.onReady(function () {
                     }
                 });
             },
-            remove: function(text, questionId) {
+            remove: function(text, id) {
                 if (!confirm('Delete question: [ '+ text + ' ]')) {
                     return;
                 }    
                 Ext.Ajax.request({
-                    params : {data :  [questionId]},
+                    params : {data :  [id]},
                     url: Axis.getUrl('poll_index/delete'),
                     callback: function(response, options) {
                         Ext.getCmp('grid-poll').getStore().reload();

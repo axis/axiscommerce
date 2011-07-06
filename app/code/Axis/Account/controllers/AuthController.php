@@ -33,13 +33,6 @@
  */
 class Axis_Account_AuthController extends Axis_Core_Controller_Front
 {
-
-    protected function _generatePassword()
-    {
-        mt_srand((double)microtime(1)*1000000);
-        return md5(mt_rand());
-    }
-
     public function init()
     {
         parent::init();
@@ -99,23 +92,24 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
 
         $form = Axis::single('account/form_signup');
 
-        if ($this->_request->isPost()) {
-            $request = $this->_request->getPost();
-            if ($form->isValid($request)) {
-                $mCustomer = Axis::single('account/customer');
-                $request['site_id'] = Axis::getSiteId();
-                $request['is_active'] = 1;
-                $result = $mCustomer->save($request);
-                $mCustomer->login($request['email'], $result['password']);
-
+        if ($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost();
+            if ($form->isValid($data)) {
+                $model = Axis::single('account/customer');
+                $data['site_id'] = Axis::getSiteId();
+                $data['is_active'] = 1;
+                list($row, $password) = $model->create($data);
+                $row->setDetails($data);
+                
                 Axis::dispatch('account_customer_register_success', array(
-                    'customer' => $mCustomer->find($result['id'])->current(),
-                    'password' => $result['password']
+                    'customer' => $row,
+                    'password' => $password
                 ));
-
+                
+                $model->login($data['email'], $password);
                 return $this->_redirect('account');
             } else {
-                $form->populate($request);
+                $form->populate($data);
             }
         }
 

@@ -101,68 +101,10 @@ class Axis_Account_Model_Customer_FieldGroup extends Axis_Db_Table
      * @param array $data
      * @return mixed
      */
-    public function save($data)
+    public function save(array $data)
     {
-        $db = $this->getAdapter();
-        
-        if (!sizeof($data)) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'No data to save'
-                )
-            );
-            return false;
-        }
-            
-        $languageIds = array_keys(Axis_Collect_Language::collect());
-        
-        $label = Axis::single('account/Customer_FieldGroup_Label');
-        $groupName = preg_replace(
-            array("/[^a-z0-9\s+]/", "/\s+/"),
-            array('', '_'),
-            strtolower($data['groupName'])
-        );
-
-        $row = array(
-            'name' => $groupName,
-            'sort_order' => $data['sortOrder'],
-            'is_active' => $data['isActive']
-        ); 
-        
-        if ($data['groupId'] != 'null') {
-            $this->update($row, $db->quoteInto('id = ?', $data['groupId']));
-            foreach ($languageIds as $languageId) {
-                $label->update(
-                   array('group_label' => $data['groupTitle' . $languageId]),
-                   array(
-                       $db->quoteInto(
-                           'customer_field_group_id = ?', $data['groupId']
-                       ),
-                       'language_id = ' . $languageId
-                   )
-                );
-            }
-        } else {
-            $groupId = $this->insert($row);
-            foreach ($languageIds as $languageId) {
-                $label->insert(array(
-                    'customer_field_group_id' => $groupId,
-                    'language_id' => $languageId,
-                    'group_label' => $data['groupTitle' . $languageId]
-                ));
-            }
-            Axis::message()->addSuccess(
-                Axis::translate('account')->__(
-                    'Group was saved successfully'
-                )
-            );
-            return $groupId;
-        }
-        Axis::message()->addSuccess(
-            Axis::translate('account')->__(
-                'Group was saved successfully'
-            )
-        );
-        return $data['groupId'];
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 }

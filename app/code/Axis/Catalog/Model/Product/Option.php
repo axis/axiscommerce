@@ -169,51 +169,29 @@ class Axis_Catalog_Model_Product_Option extends Axis_Db_Table
      * Update or insert product otions
      *
      * @param array $data
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
+        Axis_FirePhp::log($data);
         if (!isset($data['id']) || !$row = $this->find($data['id'])->current()) {
             $row = $this->createRow();
         }
         unset($data['id']);
-        $checkOptions = array(
+        $options = array(
             'comparable', 'filterable', 'searchable', 'languagable', 'visible'
         );
-        foreach ($checkOptions as $option) {
-            if (isset($data[$option])) {
-                $data[$option] = 1;
-            } else {
-                $data[$option] = 0;
-            }
-        }
-        if (!isset($data['valueset_id']) || !$data['valueset_id']) {
-            $data['valueset_id'] = new Zend_Db_Expr('NULL');
-        }
-        $row->setFromArray($data);
-        if (!$row->save()) {
-            return false;
+        foreach ($options as $option) {
+            $data[$option] = isset($data[$option]);
         }
 
-        /* saving option text */
-        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
-            $textRow = Axis::single('catalog/product_option_text')
-                ->find($row->id, $languageId)
-                ->current();
-            if (!$textRow instanceof Axis_Db_Table_Row) {
-                $textRow = Axis::single('catalog/product_option_text')->createRow();
-                $textRow->option_id = $row->id;
-                $textRow->language_id = $languageId;
-            }
-            $textRow->setFromArray($data['text'][$languageId]);
-            $textRow->save();
+        $row->setFromArray($data);
+        if (empty($row->valueset_id)) {
+            $row->valueset_id = new Zend_Db_Expr('NULL');
         }
-        Axis::message()->addSuccess(
-            Axis::translate('catalog')->__(
-                'Option was saved successfully'
-            )
-        );
-        return true;
+        $row->save();
+
+        return $row;
     }
 
 

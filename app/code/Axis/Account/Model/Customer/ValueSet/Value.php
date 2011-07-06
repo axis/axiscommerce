@@ -74,7 +74,7 @@ class Axis_Account_Model_Customer_ValueSet_Value extends Axis_Db_Table
             $languageId = Axis_Locale::getLanguageId();
         }
         
-        return $this->select('*')
+        return $this->select('id')
             ->join('account_customer_valueset_value_label',
                 'acvvl.valueset_value_id = acvv.id',
                 'label'

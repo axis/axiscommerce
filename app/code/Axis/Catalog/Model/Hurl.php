@@ -52,21 +52,21 @@ class Axis_Catalog_Model_Hurl extends Axis_Db_Table
     
     /**
      *
-     * @param array $rowData
+     * @param array $data
      * @return mixed 
      */
-    public function save(array $rowData)
+    public function save(array $data)
     {
         $row = $this->select()
-            ->where('site_id = ?', $rowData['site_id'])
-            ->where('key_id = ?', $rowData['key_id'])
-            ->where('key_type = ?', $rowData['key_type'])
+            ->where('site_id = ?', $data['site_id'])
+            ->where('key_id = ?', $data['key_id'])
+            ->where('key_type = ?', $data['key_type'])
             ->fetchRow()
             ;
         if (!$row) {
             $row = $this->createRow();
         }
-        $row->setFromArray($rowData);
+        $row->setFromArray($data);
         return $row->save();
     }
     

@@ -138,32 +138,15 @@ class Axis_Core_Model_Cache extends Axis_Db_Table
     }
 
     /**
-     * Updates the cache rows
      *
      * @param array $data
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
-        foreach ($data as $id => $values) {
-            if (!$row = $this->find($id)->current()) {
-                $row = $this->createRow();
-                $row->name = $values['name'];
-            }
-            if (is_array($values)) {
-                $row->is_active = $values['is_active'];
-                $row->lifetime = (int) $values['lifetime'] ?
-                    (int)$values['lifetime'] : new Zend_Db_Expr('NULL');
-            } else {
-                $row->is_active = $values;
-            }
-            $row->save();
-        }
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-        ));
-        return true;
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 
     /**

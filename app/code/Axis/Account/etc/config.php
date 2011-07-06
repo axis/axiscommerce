@@ -34,7 +34,7 @@ $config = array(
                     'type' => 'model',
                     'model' => 'account/observer',
                     'method' => 'notifyCustomerRegistration'
-                )
+                ), 
             ),
             'account_box_navigation_prepare' => array(
                 'prepare_menu' => array(

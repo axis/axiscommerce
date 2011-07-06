@@ -43,56 +43,13 @@ class Axis_Account_Model_Customer_Detail extends Axis_Db_Table
     );
     
     /**
-     * Updates customer extra info
-     * 
-     * @param int $customerId
-     * @param array $data
-     * @return void
-     */
-    public function save($customerId, $data)
-    {
-        $this->delete(
-            Axis::db()->quoteInto('customer_id = ?', $customerId)
-        );
-        
-        foreach ($data as $id => $value) {
-            if (false === strpos($id, 'field_')) {
-                continue;
-            }
-            $parts = explode('_', $id);
-            $id = array_pop($parts);
-            $row = array(
-                'customer_id' => $customerId,
-                'customer_field_id' => $id
-            );
-
-            if (is_string($value) && !empty ($value)) {
-                $fieldType = Axis::single('account/customer_field')
-                    ->find($id)->current()->field_type;
-                $multiFields = Axis_Account_Model_Customer_Field::$fieldMulti;
-                if (in_array($fieldType, $multiFields)) {
-                    $row['customer_valueset_value_id'] = $value;
-                } else {
-                    $row['data'] = $value;
-                }
-                $this->insert($row);
-            } elseif (is_array($value)) {
-                foreach ($value as $v) {
-                    $row['customer_valueset_value_id'] = $v;
-                    $this->insert($row);
-                }
-            }
-        }
-    }
-
-    /**
      *
      * @param string $nickname
      * @return bool
      */
     public function isExistNickname($nickname)
     {
-        $select = Axis::model('account/customer_detail')->select('id')
+        $select = $this->select('id')
             ->join('account_customer_field', 'acf.id = acd.customer_field_id')
             ->where('acf.name = ?', 'nickname')
             ->where('acd.data = ?', $nickname)

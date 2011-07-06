@@ -37,19 +37,19 @@ class Axis_Location_Model_Geozone extends Axis_Db_Table
 
     /**
      *
-     * @param array $rowData
-     * @return bool
+     * @param array $data
+     * @return Axis_Db_Table_Row
      */
-    public function save($rowData)
+    public function save($data)
     {
-        if (isset($rowData['id']) && $row = $this->find($rowData['id'])->current()) {
-            $rowData['modified_on'] = Axis_Date::now()->toSQLString();
-            $row->setFromArray($rowData);
-        } else {
-            $rowData['created_on'] = Axis_Date::now()->toSQLString();
-            $row = $this->createRow($rowData);
+        $row = $this->getRow($data);
+        $row->modified_on = Axis_Date::now()->toSQLString();
+        if (empty($row->created_on)) {
+            $row->created_on = $row->modified_on;
         }
-        return $row->save();
+        
+        $row->save();
+        return $row;
     }
 
     /**

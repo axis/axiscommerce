@@ -86,14 +86,28 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-
-        $id = Axis::model('cms/block')->save($this->_getAllParams());
+        
+        $_row = $this->_getAllParams();
+        $row  = Axis::model('cms/block')->save($_row);
+        
+        //save cms block content
+        $languageIds  = array_keys(Axis_Collect_Language::collect());
+        $modelContent = Axis::model('cms/block_content');
+        foreach ($languageIds as $languageId) {
+            if (!isset($_row['content'][$languageId])) {
+                continue;
+            }
+            $modelContent->getRow($row->id, $languageId)
+                ->setFromArray($_row['content'][$languageId])
+                ->save();
+        }
+        
         Axis::message()->addSuccess(Axis::translate('core')->__(
             'Data was saved successfully'
         ));
         $this->_helper->json->sendSuccess(array(
             'data' => array(
-                'id' => $id
+                'id' => $row->id
             )
         ));
     }

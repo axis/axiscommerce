@@ -49,27 +49,12 @@ class Axis_Cms_Model_Block extends Axis_Db_Table
      * Inserts or update cms_block
      *
      * @param array $data
-     * @return mixed The primary key value(s), as an associative array if the
-     *     key is compound, or a scalar if the key is single-column.
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
-        if (isset($data['id']) && !$data['id']) {
-            unset($data['id']);
-        }
         $row = $this->getRow($data);
         $row->save();
-        $languages = Axis_Collect_Language::collect();
-        $model = Axis::model('cms/block_content');
-        foreach ($languages as $languageId => $language) {
-            if (!isset($data['content'][$languageId])) {
-                continue;
-            }
-            $model->getRow($row->id, $languageId)
-                ->setFromArray($data['content'][$languageId])
-                ->save();
-        }
-
-        return $row->id;
+        return $row;
     }
 }

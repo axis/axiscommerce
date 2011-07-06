@@ -31,7 +31,7 @@
  * @subpackage  Axis_Form_Decorator
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Form_Decorator_FormElements extends Zend_Form_Decorator_Abstract
+class Axis_Form_Decorator_FormElements extends Zend_Form_Decorator_FormElements
 {
     /**
      * Render form elements

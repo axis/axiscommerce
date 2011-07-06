@@ -81,15 +81,15 @@ class Axis_Admin_Template_MailController extends Axis_Admin_Controller_Back
     {
         $templates = Axis_Collect_MailTemplate::collect();
         
-        $result = array();
+        $data = array();
         $i = 0;
         foreach ($templates as $templateKey => $template) {
-            $result[$i] = array('name' => $template, 'id' => $templateKey);
+            $data[$i] = array('name' => $template, 'id' => $templateKey);
             $i++;
         }
         
         $this->_helper->json->sendSuccess(array(
-            'data' => $result
+            'data' => $data
         ));
     }
     
@@ -123,9 +123,41 @@ class Axis_Admin_Template_MailController extends Axis_Admin_Controller_Back
             unset($data[$id]['action']);
         }
         
-        return $this->_helper->json->sendJson(array(
-            'success' => Axis::single('core/template_mail')->save($data)
+        if (!sizeof($data)) {
+            Axis::message()->addError(
+                Axis::translate('core')->__(
+                    'No data to save'
+            ));
+            return $this->_helper->json->sendFailure();
+        }
+        $model = Axis::model('core/template_mail');
+        foreach ($data as $_row) {
+            /* saving content into file */ 
+            if (!empty($_row['content'])) {
+                
+                $file = AXIS_ROOT. '/app/design/mail/' 
+                      . $_row['template'] . '_' . $_row['type'] . '.phtml';
+
+                if (!is_writable($file)) {
+                    Axis::message()->addError(
+                        Axis::translate('core')->__(
+                            "Can't open file with write permissions : %s", $file
+                    ));
+                } else if (!@file_put_contents($file, $_row['content'])) {
+                    Axis::message()->addError(
+                        Axis::translate('core')->__(
+                            "Can't write content to file :%s", $file
+                    ));
+                }
+            }
+            
+            $model->save($_row);
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
         ));
+        return $this->_helper->json->sendSuccess();
     }
     
     public function deleteAction()

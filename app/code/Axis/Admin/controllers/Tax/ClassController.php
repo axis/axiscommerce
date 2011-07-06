@@ -65,11 +65,15 @@ class Axis_Admin_Tax_ClassController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('tax/class')->save(
-                Zend_Json::decode($this->_getParam('data'))
-            )
-        ));
+        $dataset = Zend_Json::decode($this->_getParam('data'));
+        if (!sizeof($dataset)) {
+            return $this->_helper->json->sendFailure();
+        }
+        $model = Axis::model('tax/class');
+        foreach ($dataset as $_row) {
+            $model->save($_row);
+        }
+        $this->_helper->json->sendSuccess();
     }
 
     public function deleteAction()

@@ -122,12 +122,12 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         ));
 
         $addressId = $this->_getParam('id');
-        $row = Axis::single('account/customer_address')->select()
+        $address = Axis::single('account/customer_address')->select()
             ->where('id = ?', $addressId)
             ->where('customer_id = ?', $this->_customerId)
             ->fetchRow();
 
-        if (!$row instanceof  Axis_Db_Table_Row) {
+        if (!$address instanceof  Axis_Db_Table_Row) {
             Axis::message()->addError(Axis::translate('account')->__(
                 'Address not found'
             ));
@@ -140,7 +140,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
 
         if ($this->getRequest()->isXmlHttpRequest()) {
             return $this->_helper->json->sendSuccess(array(
-                'data' => $row->toArray()
+                'data' => $address->toArray()
             ));
         }
 
@@ -148,7 +148,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
 
         $customer = Axis::getCustomer();
 
-        $form->populate($row->toArray());
+        $form->populate($address->toArray());
 
         if ($customer->default_shipping_address_id == $addressId) {
             $form->getElement('default_shipping')

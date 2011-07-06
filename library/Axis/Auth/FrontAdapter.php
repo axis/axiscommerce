@@ -62,6 +62,7 @@ class Axis_Auth_FrontAdapter implements Zend_Auth_Adapter_Interface
     {
         $row = Axis::single('account/customer')->select()
             ->where('email = ?', $this->_username)
+            ->where('site_id = ?', Axis::getSiteId())
             ->fetchRow();
         $messages = array();
         if (!$row) {

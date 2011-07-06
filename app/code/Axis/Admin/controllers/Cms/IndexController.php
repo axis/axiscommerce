@@ -95,15 +95,27 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
     public function saveCategoryAction()
     {
         $this->_helper->layout->disableLayout();
-
-        $id = Axis::model('cms/category')->save($this->_getAllParams());
-
+        $data = $this->_getAllParams();
+        
+        $model        = Axis::model('cms/category');
+        $modelContent = Axis::model('cms/category_content');
+        
+        $row = $model->save($data);
+        
+        //save content
+        foreach ($data['content'] as $languageId => $_rowContent) {
+            $modelContent->getRow($row->id, $languageId)
+                ->setFromArray($_rowContent)
+                ->save();
+        }
+        
         Axis::message()->addSuccess(
             Axis::translate('cms')->__(
                 'Category was saved successfully'
         ));
+        
         $this->_helper->json
-            ->setData(array('id' => $id))
+            ->setData(array('id' => $row->id))
             ->sendSuccess();
     }
 
@@ -231,15 +243,43 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
         
         $data = $this->_getAllParams();
 
-        $id = Axis::model('cms/page')->save($data);
+        $model         = Axis::model('cms/page');
+        $modelContent  = Axis::model('cms/page_content');
+        $modelCategory = Axis::model('cms/page_category');
+        
+        $row = $model->save($data);
+        
+        //save page content
+        foreach ($data['content'] as $languageId => $values) {
+            if (empty($values['link'])) {
+                $values['link'] = $row->name;
+            }
+            $modelContent->getRow($row->id, $languageId)
+                ->setFromArray($values)
+                ->save();
+        }
+        
+        //save category relation
+        $modelCategory->delete(
+            Axis::db()->quoteInto('cms_page_id = ?', $row->id)
+        );
+        $categories = array_filter(
+            Zend_Json::decode($data['category'])
+        );
+        foreach ($categories as $categoryId) {
+            $modelCategory->createRow(array(
+                'cms_category_id' => $categoryId,
+                'cms_page_id'     => $row->id
+            ))->save();
+        }
 
-        if (!isset($data['id']) || ($data['id'] != $id)) {
+        if (!isset($data['id']) || ($data['id'] != $row->id)) {
             Axis::dispatch('cms_page_add_success', array(
-                'page_id' => $id
+                'page_id' => $row->id
             ));
         } else {
             Axis::dispatch('cms_page_update_success', array(
-                'page_id' => $id
+                'page_id' => $row->id
             ));
         }
         Axis::message()->addSuccess(
@@ -248,7 +288,7 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
         ));
 
         $this->_helper->json
-            ->setData(array('id' => $id))
+            ->setData(array('id' => $row->id))
             ->sendSuccess();
     }
 
@@ -256,18 +296,13 @@ class Axis_Admin_Cms_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $pages = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $dataset = Zend_Json_Decoder::decode($this->_getParam('data'));
 
-        $modelPage = Axis::single('cms/page');
-        foreach ($pages as $pageId => $values) {
-            $modelPage->update(array(
-                'name'        => $values['name'],
-                'is_active'   => (int) $values['is_active'],
-                'comment'     => (int) $values['comment'],
-                'layout'      => $values['layout'],
-                'show_in_box' => $values['show_in_box']
-            ), Axis::db()->quoteInto('id = ?', $pageId));
+        $model = Axis::single('cms/page');
+        foreach ($dataset as $_row) {
+            $model->getRow($_row)->save();
         }
+        
         Axis::message()->addSuccess(
             Axis::translate('cms')->__(
                 'Page was saved successfully'

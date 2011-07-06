@@ -24,6 +24,7 @@ Ext.onReady(function(){
     Ext.QuickTips.init();
     
     var cacheTag = new Ext.data.Record.create([
+        'id',
         'name',
         'is_active',
         'lifetime'
@@ -46,12 +47,18 @@ Ext.onReady(function(){
     
     var cm = new Ext.grid.ColumnModel([
         {
+            header: 'Id'.l(),
+            dataIndex: 'id',
+            width: 60
+        }, {
+            id: 'name',
             header: 'Name'.l(),
             dataIndex: 'name',
             menuDisabled: true
         }, status, {
             header: 'Lifetime'.l(),
             dataIndex: 'lifetime',
+            width: 100,
             menuDisabled: true,
             editor: new Ext.form.TextField(),
             renderer: function(value) {
@@ -69,10 +76,7 @@ Ext.onReady(function(){
         cm: cm,
         ds: ds,
         plugins: status,
-        viewConfig: {
-            forceFit: true,
-            emptyText: 'No records found'.l()
-        },
+        autoExpandColumn: 'name',
         tbar: [{
             text: 'Save'.l(),
             iconCls: 'x-btn-text',
@@ -111,13 +115,13 @@ function save(flag) {
     }
     var data = {};
     Ext.getCmp('grid-cache').getStore().each(function(record) {
+        var row = record['data'];
         if (flag == 'disable') {
-            data[record.id] = 0;
+            row.is_active = 0;
         } else if (flag == 'enable') {
-            data[record.id] = 1;
-        } else {
-            data[record.id] = record['data'];
-        }
+            row.is_active = 1;
+        } 
+        data[record.id] = row;
     })
     
     var jsonData = Ext.encode(data);

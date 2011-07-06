@@ -55,6 +55,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         /* Relation exist or not */
         $childrens = Axis::single('sales/order_status_relation')
             ->getChildrens($this->order_status_id);
+        
         if (!in_array($statusId, $childrens)) {
             Axis::message()->addError(
                 Axis::translate('sales')->__(

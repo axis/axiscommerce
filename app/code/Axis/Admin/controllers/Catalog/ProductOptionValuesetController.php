@@ -137,11 +137,27 @@ class Axis_Admin_Catalog_ProductOptionValuesetController extends Axis_Admin_Cont
     public function saveValuesAction()
     {
         $this->_helper->layout->disableLayout();
-
-        return $this->_helper->json->sendJson(array(
-            'success' => Axis::model('catalog/product_option_value')
-                ->save(Zend_Json::decode($this->_getParam('data')))
-        ));
+        
+        $dataset     = Zend_Json::decode($this->_getParam('data'));
+        $model       = Axis::model('catalog/product_option_value');
+        $modelLabel  = Axis::single('catalog/product_option_value_text');
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+        
+        foreach ($dataset as $_row) {
+            $row = $model->getRow($_row);
+            $row->save();
+            foreach ($languageIds as $languageId) {
+                $rowLabel = $modelLabel->getRow($row->id, $languageId);
+                $rowLabel->name = $_row['name_' . $languageId];
+                $rowLabel->save();
+            }
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
+            )
+        );
+        return $this->_helper->json->sendSuccess();
     }
 
     public function deleteValuesAction()
