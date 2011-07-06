@@ -4,12 +4,13 @@ $question = $box->getData('question');
 $answers  = $box->getData('answers');
 
 echo $this->message();
+
 if (!$box->status) : ?>
 <script type="text/javascript">
 function validatePollBox(form) {
     var options = $('input.poll_vote', form);
-    for( i in options ) {
-        if(true == options[i].checked) {
+    for (i in options ) {
+        if (true == options[i].checked) {
             return true;
         }
     }
@@ -17,22 +18,30 @@ function validatePollBox(form) {
 }
 
 function sendForm(form) {
-    if (validatePollBox(form)) {
-
-        $.ajax({
-            type: "POST",
-            url : Axis.baseUrl + Axis.langUrl + '/poll/index/save',
-            data: $('#form-poll').serialize(),
-            success: function(response){
-                $('#poll-box-wrap').html(response.content);
-            },
-            dataType: 'json'
-        });
+    if (!validatePollBox(form)) {
+        return false;
     }
+
+    var voteBtn = $('#form-poll .btn-vote');
+    voteBtn.attr('disabled', 'disabled').addClass('loading');
+
+    $.post(form.action, $('#form-poll').serialize())
+        .success(function(response) {
+            $('#poll-box-wrap').html(response.content);
+        })
+        .error(function(response) {
+            if (response.status) {
+                alert('An error has been occured during request processing. Try again');
+            }
+        })
+        .complete(function() {
+            voteBtn.removeAttr('disabled').removeClass('loading');
+        });
+
     return false;
 }
-
 </script>
+
 <div id="poll-box-wrap">
     <form id="form-poll" onsubmit="return sendForm(this);" method="post" action="<?php echo $this->href('poll/index/save') ?>">
         <div>
