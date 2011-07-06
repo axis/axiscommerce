@@ -40,7 +40,8 @@ class Axis_Search_Model_Observer
     {
         $product = $data['product'];
         $indexer = Axis::model('search/indexer');
-        $rowset = Axis::model('catalog/product')->select(array('id', 'sku'))
+        
+        $select = Axis::model('catalog/product')->select(array('id', 'sku'))
             ->join('catalog_product_description', 
                 'cpd.product_id = cp.id', 
                 array('name', 'description')
@@ -65,9 +66,8 @@ class Axis_Search_Model_Observer
             ->order('cpd.language_id')
             ->group(array('cc.site_id', 'cpd.language_id', 'cp.id'))
             ->where('cp.id = ?', $product->id)
-            ->fetchRowset()
             ;
-        
+        $rowset = $select->fetchRowset();
         $index  = $path = null;
             
         foreach ($rowset as $row) {
@@ -88,6 +88,30 @@ class Axis_Search_Model_Observer
             if (count($hits)) {
                 $index->delete(current($hits));
             }
+        }
+        if ($index) {
+            $index->optimize();
+            $index->commit();
+        }
+        
+        $index  = $path = null;
+        $rowset = $select->addFilterByAvailability()
+            ->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            $_path = $indexer->getIndexPath(
+                $row->site_id  . '/' . $row->locale
+            );
+            //next index
+            if ($path !== $_path) {
+                //save prev index
+                if ($index) {
+                    $index->optimize();
+                    $index->commit();
+                }
+                $path = $_path;
+                $index = $indexer->getIndex($path);
+            }
             $index->addDocument(
                 $indexer->getDocument($row)
             );
@@ -103,6 +127,7 @@ class Axis_Search_Model_Observer
         $pageId = $data['page_id'];
         $indexer = Axis::model('search/indexer');
         $rowset = Axis::model('cms/page_content')->select('*')
+            ->join('cms_page', 'cp.id = cpc.cms_page_id', 'is_active')
             ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
             ->join('cms_category', 
                 'cc.id = cpc2.cms_category_id',
@@ -116,9 +141,9 @@ class Axis_Search_Model_Observer
             ->fetchRowset();
         
         $index  = $path = null;
-        foreach ($rowset as $_row) {
+        foreach ($rowset as $row) {
             $_path = $indexer->getIndexPath(
-                $_row->site_id  . '/' . $_row->locale
+                $row->site_id  . '/' . $row->locale
             );
             //next index
             if ($path !== $_path) {
@@ -130,13 +155,15 @@ class Axis_Search_Model_Observer
                 $path = $_path;
                 $index = $indexer->getIndex($path);
             }
-            $hits = $index->find("url:$_row->link");
+            $hits = $index->find("url:$row->link");
             if (count($hits)) {
                 $index->delete(current($hits));
             }
-            $index->addDocument(
-                $indexer->getDocument($_row)
-            );
+            if ($row->is_active) {
+                $index->addDocument(
+                    $indexer->getDocument($row)
+                );
+            }
         }
         if ($index) {
             $index->optimize();
