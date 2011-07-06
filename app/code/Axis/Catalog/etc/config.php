@@ -97,20 +97,6 @@ $config = array(
                     'model' => 'catalog/observer',
                     'method' => 'updatePriceIndexOnCustomerGroupAdd'
                 )
-            ),
-            'catalog_product_view' => array(
-                'catalog_product_view_log_event' => array(
-                    'type'   => 'model',
-                    'model'  => 'catalog/observer',
-                    'method' => 'addLogEventOnCatalogProductView'
-                )
-            ),
-            'catalog_product_remove_success' => array(
-                'remove_log_event' => array(
-                    'type' => 'model',
-                    'model' => 'catalog/observer',
-                    'method' => 'removeLogEventOnCatalogProductRemoveSuccess'
-                )
             )
         )
     )

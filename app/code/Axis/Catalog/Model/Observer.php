@@ -234,26 +234,4 @@ class Axis_Catalog_Model_Observer
             array($data['group']['id'])
         );
     }
-    
-    public function addLogEventOnCatalogProductView($observer) 
-    {
-        $product = $observer['product'];
-        if (!$product instanceof Axis_Catalog_Model_Product_Row){
-            return;
-        }
-        $visitor = Axis::single('log/visitor')->getVisitor();
-        Axis::model('log/event')->createRow(array(
-            'visitor_id' => $visitor->id,
-            'event_name' => 'catalog_product_view',
-            'object_id'  => $product->id
-        ))->save();
-    }
-    
-    public function removeLogEventOnCatalogProductRemoveSuccess($data) 
-    {
-        Axis::model('log/event')->delete(array(
-            Axis::db()->quoteInto('event_name = ? ', 'catalog_product_view'),
-            Axis::db()->quoteInto('object_id IN (?)', $data['product_ids'])
-        ));
-    }
 }
