@@ -946,7 +946,7 @@
     <p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Sed euismod odio consectetur augue elementum dictum non ac orci. Pellentesque nunc nunc, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
   </div>
   <div class="col-2">
-    <p><font color="#333399"><span style="background-color: rgb(255, 255, 255);">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Sed euismod odio consectetur augue elementum dictum non ac orci. </b><font size="3">Pellentesque nunc nunc</font></span></font>, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
+    <p><span style="color: #339">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Sed euismod odio consectetur augue elementum dictum non ac orci. </strong><span style="font-size: 1.2em;">Pellentesque nunc nunc</span></span>, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
   </div>
   <div class="col-3">
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod odio consectetur augue elementum dictum non ac orci. Pellentesque nunc nunc, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi.</p>
