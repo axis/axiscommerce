@@ -223,9 +223,16 @@ Ext.onReady(function(){
                 displayField: 'name',
                 typeAhead: true,
                 mode: 'local',
-                valueField: 'name',
+                valueField: 'id',
                 store: Page.layoutStore
-            })
+            }),
+            renderer: function(v) {
+                var record = Page.layoutStore.getById(v);
+                if (record) {
+                    return record.get('name');
+                }
+                return v;
+            }
         },
             status,
             comment,
