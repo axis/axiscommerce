@@ -38,7 +38,7 @@ class Axis_Admin_Model_Import_Profile extends Axis_Db_Table
     public function getList()
     {
         return $this->select()
-            ->order('updated_at DESC, created_at DESC')
+            ->order(array('updated_at DESC', 'created_at DESC'))
             ->fetchAll();
     }
 
