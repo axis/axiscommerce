@@ -513,5 +513,6 @@ Locale.module("core", {
     "Box Specific Configuration": "Конфігурація",
     "Basic Configuration": "Базова конфігурація",
     "Copy blocks and layouts from": "Копіювати блоки та макети з",
-    "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.": "Покладіть згенерований файл до кореневой директорії сайту.<br/> Натисніть Ок, щоб згенерувати файл."
+    "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.": "Покладіть згенерований файл до кореневой директорії сайту.<br/> Натисніть Ок, щоб згенерувати файл.",
+    "Are you sure want to delete old search indexes and create new for all products and cms pages?\nThis can take a while.": "Ви дійсно бажаєте видалити всі індекси та створити нові?\nЦе може зайняти деякий час."
 });
