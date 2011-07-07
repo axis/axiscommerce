@@ -344,7 +344,7 @@ var Onestep = (function() {
 
         init: function() {
             this.addObservers();
-            this.toggleDisplay();
+            this.toggleDisplay(!$('#billing_address-use_for_delivery').prop('checked'));
             if (!$('#delivery_address-id').length) {
                 Address.toggleZoneField($('.delivery-address'));
             }
