@@ -55,7 +55,7 @@ Ext.onReady(function() {
         mode: 'local',
         triggerAction: 'all',
         editable: false,
-        hiddenValue: 0,
+        initialValue: 0,
         store: Attribute.inputTypeStore
     });
 
@@ -76,7 +76,6 @@ Ext.onReady(function() {
         bodyStyle: 'padding: 10px;',
         defaults: {
             anchor: '-20',
-            initialValue: '',
             xtype: 'textfield'
         },
         reader: new Ext.data.JsonReader({
@@ -184,8 +183,7 @@ Ext.onReady(function() {
             }]
         }, {
             name: 'option[id]',
-            xtype: 'hidden',
-            initialValue: 0
+            xtype: 'hidden'
         }]
     });
 
