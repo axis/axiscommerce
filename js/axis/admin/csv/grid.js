@@ -166,6 +166,13 @@ Ext.onReady(function(){
                 'filter[qty_to]': selected.get('qty_to')
             });
         }
+
+        var directionCombo = Ext.getCmp('csv_direction');
+        directionCombo.fireEvent(
+            'beforeselect',
+            directionCombo,
+            directionCombo.getStore().getById(selected.get('direction'))
+        );
     }
 
     function removeProfile(){
@@ -192,5 +199,12 @@ Ext.onReady(function(){
         win.show();
         Ext.getCmp('tabpanel').activate(0);
         Ext.getCmp('form_profile_edit').getForm().clear();
+
+        var directionCombo = Ext.getCmp('csv_direction');
+        directionCombo.fireEvent(
+            'beforeselect',
+            directionCombo,
+            directionCombo.getStore().getAt(0)
+        );
     }
 })

@@ -61,7 +61,7 @@ class Axis_Admin_Model_Csv_Profile extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return Axis_Db_Table_Row 
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
@@ -78,6 +78,7 @@ class Axis_Admin_Model_Csv_Profile extends Axis_Db_Table
         if (empty($row->created_at)) {
             $row->created_at = $row->updated_at;
         }
+        $row->save();
         return $row;
     }
 
