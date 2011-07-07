@@ -5,22 +5,26 @@
     <div class="">
 
         <h4>
-            <a href="<?php
-                echo $pageUrl;?>" class="product-name" title="<?php
-                echo $this->page['nameHighlight'];?>"><?php
-                echo $this->page['nameHighlight'];?>
-            </a>
+            <a href="<?php echo $pageUrl;?>"
+                class="product-name"
+                title="<?php echo $this->page['nameHighlight'];?>"
+            ><?php echo $this->page['nameHighlight'];
+            ?></a>
         </h4>
 
         <div class="product-description">
             <?php
             if (!empty($this->page['contents'])) :
-                echo $this->page['contents'];
+                if (600 < strlen($this->page['contents'])) :
+                    echo substr(strip_tags($this->page['contents']), 0, 500) . '...';
+                else :
+                    echo $this->page['contents'];
+                endif;
             endif;
             ?>
         </div>
         <div class="product-url">
-            <a href="<?php 
+            <a href="<?php
                 echo $pageUrl;?>" class="product-name" title="<?php
                 echo $this->page['nameHighlight'];?>"><?php
                 echo $this->href(
