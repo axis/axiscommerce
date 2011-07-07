@@ -57,7 +57,7 @@ class Axis_Community_Model_Review_Select extends Axis_Db_Table_Select
         }
 
         return $this->joinLeft('catalog_product_description',
-            'cr.id = cpd.product_id AND cpd.language_id = ' . $languageId,
+            'cr.product_id = cpd.product_id AND cpd.language_id = ' . $languageId,
             array(
                 'product_name'              => 'name',
                 'product_image_seo_name'    => 'image_seo_name'
