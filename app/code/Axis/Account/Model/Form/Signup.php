@@ -91,7 +91,7 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             'login',
             array('legend' => 'General information')
         );
-        
+
         $rows = Axis::single('account/customer_field')->getFields();
         $groupsFields = array();
         foreach ($rows as $row) {
@@ -100,14 +100,14 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                 'id'       => 'field_' . $row['name'],
                 'required' => (boolean) $row['required'],
                 'label'    => $row['field_label'],
-                'class'    => 'input-text'
+                'class'    => in_array($row['field_type'], array('textarea', 'text')) ? 'input-text' : ''
             );
             if ($row['field_type'] == 'textarea') {
                 $config['rows'] = 6;
                 $config['cols'] = 60;
             }
             $this->addElement($row['field_type'], $field, $config);
-            
+
             $el = $this->getElement($field);
             if ($row['required']) {
                 $el->addValidator('NotEmpty')
@@ -116,7 +116,7 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             if (!empty($row['validator'])) {
                 $el->addValidator($row['validator']);
                 if ($row['validator'] == 'Date') {
-                    $el->setAttrib('class' , $el->getAttrib('class') . ' input-date');
+                    $el->setAttrib('class', $el->getAttrib('class') . ' input-date');
                 }
             }
             if (!empty($row['axis_validator'])) {
@@ -128,7 +128,9 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                         $row['customer_valueset_id'],
                         Axis_Locale::getLanguageId()
                     );
-                $el->setMultiOptions($values);
+                if (method_exists($el, 'setMultiOptions')) {
+                    $el->setMultiOptions($values);
+                }
             }
             $groupsFields[$row['customer_field_group_id']][$row['id']] = $field;
         }
@@ -139,7 +141,7 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                 ->getCustomGroups(
                     array_keys($groupsFields), Axis_Locale::getLanguageId()
                 );
-                
+
             foreach ($groups as $row) {
                 $groupName = empty($row['name']) ?
                         $row['id'] : $row['name'];

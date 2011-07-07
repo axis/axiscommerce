@@ -89,13 +89,11 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
                 $config['cols'] = 60;
             }
             $this->addElement($row['field_type'], $field, $config);
+
             $el = $this->getElement($field);
             if ($row['required']) {
                 $el->addValidator('NotEmpty')
-                    ->setAttrib(
-                        'class',
-                        $el->getAttrib('class') . ' required'
-                    );
+                    ->setAttrib('class', $el->getAttrib('class') . ' required');
             }
             if (!empty($row['validator'])) {
                 $el->addValidator($row['validator']);
