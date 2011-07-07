@@ -147,11 +147,12 @@ Ext.onReady(function() {
                     anchor: '-5'
                 },
                 labelWidth: 210,
-                items: [/*{
+                items: [{
                     fieldLabel: 'Use in Search Indexes'.l(),
                     name: 'option[searchable]',
-                    xtype: 'checkbox'
-                },*/ {
+                    xtype: 'hidden',
+                    initialValue: 1
+                }, {
                     fieldLabel: 'Use in Catalog Filters'.l(),
                     checked: true,
                     initialValue: 1,
