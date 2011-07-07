@@ -834,6 +834,7 @@ product-page-details { padding: 7px 12px 10px; }
 .lightbox-controls .next.disabled { visibility: hidden; }
 
 .lightbox-mask { z-index: 490; background: #000; position: absolute; top: 0; left: 0; }
+.lightbox-hidden { visibility: hidden; }
 .lightzoom-lens { background: #fff; border: 1px solid #ddd; }
 .lightzoom-stage { background: #fff; border: 1px solid #ddd; }
 

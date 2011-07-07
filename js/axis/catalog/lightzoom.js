@@ -376,7 +376,7 @@
 
                 this.show = function(){
                     this.setObserveKeyboard(true);
-                    $('select, object, embed').addClass('lightbox-hidden').hide();
+                    $('select, object, embed').addClass('lightbox-hidden');
                     $(this.container).show();
                     $(this.mask).show().fadeTo(settings.lightbox_fade_speed, settings.lightbox_mask_opacity);
                 };
@@ -390,7 +390,7 @@
                         $(self.mask).css({
                             'opacity': 0
                         }).hide();
-                        $('select, object, embed').removeClass('lightbox-hidden').show();
+                        $('select, object, embed').removeClass('lightbox-hidden');
                     })
                 };
 
