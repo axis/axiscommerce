@@ -73,7 +73,7 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
         $this->addDisplayGroup(array('email', 'firstname', 'lastname'), 'login', array(
             'legend' => 'General information'
         ));
-        
+
         $rows = Axis::single('account/customer_field')->getFields();
         $groupsFields = array();
         foreach ($rows as $row) {
@@ -82,21 +82,18 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
                 'id'       => 'field_' . $row['name'],
                 'required' => (boolean) $row['required'],
                 'label'    => $row['field_label'],
-                'class'    => 'input-text'
+                'class'    => in_array($row['field_type'], array('textarea', 'text')) ? 'input-text' : ''
             );
             if ($row['field_type'] == 'textarea') {
                 $config['rows'] = 6;
                 $config['cols'] = 60;
             }
             $this->addElement($row['field_type'], $field, $config);
+
             $el = $this->getElement($field);
             if ($row['required']) {
                 $el->addValidator('NotEmpty')
-                    ->setAttrib(
-                        'class',
-                        $el
-                            ->getAttrib('class') . ' required'
-                    );
+                    ->setAttrib('class', $el->getAttrib('class') . ' required');
             }
             if (!empty($row['validator'])) {
                 $el->addValidator($row['validator']);
@@ -141,16 +138,6 @@ class Axis_Account_Model_Form_ChangeInfo extends Axis_Form
             'label'     => 'Change password',
             'onchange'  => "togglePasswordForm(this.checked)"
         ));
-        $this->getElement('change_password_toggle')
-            ->addDecorator('Label', array(
-                'tag' => '',
-                'placement' => 'append',
-                'separator' => ''
-            ))
-            ->addDecorator('HtmlTag', array(
-                'tag' => 'div',
-                'class' => 'label-inline'
-            ));
         $this->addElement('password', 'password', array(
             'disabled' => 'disabled',
             'label'    => 'New password',

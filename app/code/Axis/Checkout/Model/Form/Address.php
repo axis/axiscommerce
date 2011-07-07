@@ -279,7 +279,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                 'id'        => 'field_' . $row['name'],
                 'required'  => (bool) $row['required'],
                 'label'     => $row['field_label'],
-                'class'     => 'input-text'
+                'class'     => in_array($row['field_type'], array('textarea', 'text')) ? 'input-text' : ''
             );
             if ($row['field_type'] == 'textarea') {
                 $config['rows'] = 6;
@@ -311,7 +311,9 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                         $row['customer_valueset_id'],
                         Axis_Locale::getLanguageId()
                     );
-                $field->setMultiOptions($values);
+                if (method_exists($field, 'setMultiOptions')) {
+                    $field->setMultiOptions($values);
+                }
             }
         }
 

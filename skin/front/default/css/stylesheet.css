@@ -103,6 +103,7 @@ form ul ul { padding: 0; }
 .axis-form li { padding:4px 8px; overflow: hidden; clear: both; }
 .axis-form label { font-weight: bold; color: #444; font-size: 1.1em; float: left;
     width: 150px; text-align: right; margin: 0 5px 0 0; }
+.axis-form label input { width: auto !important; }
 .axis-form label.error { text-align: left; }
 .axis-form .label-inline { clear: both; }
 .axis-form .label-inline label { display: inline; float: none; }
