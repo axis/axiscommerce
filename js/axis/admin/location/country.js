@@ -35,7 +35,7 @@ var Country = {
             address_format_id: ''
         });
         Country.grid.getStore().insert(0, record);
-        Country.grid.startEditing(0, 0);
+        Country.grid.startEditing(0, 2);
     },
 
     save: function() {
