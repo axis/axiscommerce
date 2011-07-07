@@ -195,7 +195,7 @@ Ext.onReady(function() {
             handler: function() {
                 CategoryTree.remove();
             }
-        }, {
+        }, '->', {
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             handler: function() {
                 CategoryTree.reload();
