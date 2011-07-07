@@ -70,7 +70,7 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
         $role = Axis::model('admin/acl_role')->createRow();
         $role->role_name = $this->_getParam('roleName');
         $role->save();
-        
+
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Role was added successfully'
@@ -96,7 +96,7 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
             'parentAllows'    => $this->acl->getParentRolesAllows($parents),
             'rules'           => $model->getRules($roleId)
         );
-        
+
         $this->_helper->json->setData($data)
             ->sendSuccess();
     }
@@ -118,7 +118,7 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-        
+
         $model       = Axis::model('admin/acl_role');
         $modelParent = Axis::model('admin/acl_role_parent');
         $modelRule   = Axis::model('admin/acl_rule');
@@ -127,7 +127,7 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
         $role   = $model->find($roleId)->current();
         $role->role_name = $this->_getParam('roleName');
         $role->save();
-        
+
         /* save parent roles */
         $parents = $this->_getParam('role', array());
         $modelParent->delete(
@@ -145,7 +145,7 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
         $modelRule->delete(
             $this->db->quoteInto('role_id = ?', $role->id)
         );
-        
+
         $allow = isset($rules['allow']) ? $rules['allow'] : array();
         foreach ($allow as $resourceId) {
             $modelRule->createRow(array(
@@ -154,11 +154,11 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
                 'permission'  => 'allow'
             ))->save();
         }
-        
+
         $deny = isset($rules['deny']) ? $rules['deny'] : array();
         foreach ($deny as $resourceId) {
-            $row = $modelRule->getRow($roleId,$resourceId);
-            $row->permission = 'allow';
+            $row = $modelRule->getRow($roleId, $resourceId);
+            $row->permission = 'deny';
             $row->save();
         }
 
