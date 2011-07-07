@@ -82,12 +82,12 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
     {
         return array(
             'text'        => 'text',
-            'radio'       => 'radio',
+            //'radio'       => 'radio', use select instead
             'select'      => 'select',
             'multiselect' => 'multiselect',
             'textarea'    => 'textarea',
-            'checkbox'    => 'checkbox',
-            'multiCheckbox' => 'multiCheckbox'
+            'checkbox'    => 'checkbox'//,
+            // 'multiCheckbox' => 'multiCheckbox' use multiselect instead
         );
     }
 

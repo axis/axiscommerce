@@ -117,7 +117,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         }
 
         parent::__construct($default);
-        
+
         $this->addElement('hidden', 'id', array(
             'validators' => array(
                 new Axis_Account_Model_Form_Validate_AddressId()
@@ -212,30 +212,30 @@ class Axis_Account_Model_Form_Address extends Axis_Form
             'class' => 'input-checkbox'
         ));
         $element = $this->getElement('default_billing');
-        $element->addDecorator('Label', array(
-                'tag' => '',
-                'placement' => 'append',
-                'separator' => ''
-            ))
-            ->addDecorator('HtmlTag', array(
-                'tag' => 'div',
-                'class' => 'label-inline'
-            ));
+//        $element->addDecorator('Label', array(
+//                'tag' => '',
+//                'placement' => 'append',
+//                'separator' => ''
+//            ))
+//            ->addDecorator('HtmlTag', array(
+//                'tag' => 'div',
+//                'class' => 'label-inline'
+//            ));
 
         $this->addElement('checkbox', 'default_shipping', array(
             'label' => 'Use as my default shipping address',
             'class' => 'input-checkbox'
         ));
         $element = $this->getElement('default_shipping');
-        $element->addDecorator('Label', array(
-                'tag' => '',
-                'placement' => 'append',
-                'separator' => ''
-            ))
-            ->addDecorator('HtmlTag', array(
-                'tag' => 'div',
-                'class' => 'label-inline'
-            ));
+//        $element->addDecorator('Label', array(
+//                'tag' => '',
+//                'placement' => 'append',
+//                'separator' => ''
+//            ))
+//            ->addDecorator('HtmlTag', array(
+//                'tag' => 'div',
+//                'class' => 'label-inline'
+//            ));
 
         $this->addElement('button', 'submit', array(
             'type' => 'submit',
@@ -274,7 +274,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
     {
         return $this->_zones;
     }
-    
+
     /**
      *
      * @param array $defaults
