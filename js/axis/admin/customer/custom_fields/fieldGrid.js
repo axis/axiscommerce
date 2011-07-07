@@ -18,7 +18,7 @@
  */
 
 Ext.onReady(function(){
-    
+
     var sm = new Ext.grid.CheckboxSelectionModel();
     var required = new Axis.grid.CheckColumn({
         header: "Required".l(),
@@ -30,20 +30,24 @@ Ext.onReady(function(){
         dataIndex: 'is_active',
         width: 60
     });
-    
+
     ds = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-           url: Axis.getUrl('customer_custom-fields/get-fields/groupId/') + groupId
-        }),
+        url: Axis.getUrl('customer_custom-fields/get-fields'),
+        baseParams: {
+            groupId: groupId
+        },
         reader: new Ext.data.JsonReader({
                 root: 'data',
                 id: 'id'
             },
             Field //see index.phtml
         ),
-        sortInfo:{field:'is_active', direction:'DESC'}
+        sortInfo:{
+            field:'is_active',
+            direction:'DESC'
+        }
     });
-    
+
     vss.on('load', function(){
         tryLoadGrid();
     })
@@ -56,7 +60,7 @@ Ext.onReady(function(){
     validatorStore.on('load', function(){
         tryLoadGrid();
     })
-    
+
     vss.on('exception', function(){
         vss.load();
     })
@@ -72,14 +76,14 @@ Ext.onReady(function(){
     ds.on('exception', function(){
         ds.load();
     })
-    
+
     var loadedStore = 0;
-    
+
     function tryLoadGrid(){
         if (++loadedStore == 4)
             ds.load();
     }
-    
+
     var cm = new Ext.grid.ColumnModel([
         sm, {
             header: 'Group*'.l(),
@@ -144,13 +148,13 @@ Ext.onReady(function(){
             }
         }
     ]);
-    cm.defaultSortable = true;  
-    
+    cm.defaultSortable = true;
+
     var grid = new Ext.grid.EditorGridPanel({
         store: ds,
         id: 'grid-fields',
         cm: cm,
-        sm: sm, 
+        sm: sm,
         renderTo: 'fields-grid',
         height: 400,
         plugins: [isActive, required],
@@ -179,10 +183,10 @@ Ext.onReady(function(){
             cls: 'x-btn-text-icon',
             handler : function(){
                 var data = {};
-                
+
                 var modified = ds.getModifiedRecords();
                 var length = modified.length;
-                
+
                 if (length > 0){
                     for (var i = 0; i < length; i++) {
                         data[modified[i]['id']] = modified[i]['data'];
@@ -204,15 +208,15 @@ Ext.onReady(function(){
             cls: 'x-btn-text-icon',
             handler : function(){
                 var selectedItems = grid.getSelectionModel().selections.items;
-                
+
                 if (selectedItems.length < 1)
-                    return; 
-                    
+                    return;
+
                 if (!confirm('Delete field(s)?'))
                     return;
-                    
+
                 var data = {};
-               
+
                 for (var i = 0; i < selectedItems.length; i++) {
                     data[i] = selectedItems[i].id;
                 }
@@ -239,7 +243,7 @@ Ext.onReady(function(){
             }
         }
     });
-        
+
     grid.on('rowdblclick', function(grid, index, e){
         Ext.getCmp('fieldEditWindow').show();
         Ext.getCmp('fieldForm').getForm().clear();
@@ -249,10 +253,10 @@ Ext.onReady(function(){
 
 function editField(){
     selected = Ext.getCmp('grid-fields').getSelectionModel().getSelected();
-    
+
     if (!selected)
         return;
-        
+
     Ext.getCmp('fieldEditWindow').show();
     Ext.getCmp('fieldForm').getForm().clear();
     fillForm(selected); //see index.phtml
