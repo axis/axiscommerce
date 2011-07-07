@@ -105,6 +105,7 @@ var GZone = {
                 data: Ext.encode(data)
             },
             callback: function() {
+                GZone.activeId = 0;
                 GZone.grid.getStore().reload();
             }
         });
