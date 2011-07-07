@@ -173,7 +173,6 @@ class Axis_Catalog_Model_Product_Option extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        Axis_FirePhp::log($data);
         if (!isset($data['id']) || !$row = $this->find($data['id'])->current()) {
             $row = $this->createRow();
         }
@@ -182,7 +181,7 @@ class Axis_Catalog_Model_Product_Option extends Axis_Db_Table
             'comparable', 'filterable', 'searchable', 'languagable', 'visible'
         );
         foreach ($options as $option) {
-            $data[$option] = isset($data[$option]);
+            $data[$option] = (int)isset($data[$option]);
         }
 
         $row->setFromArray($data);

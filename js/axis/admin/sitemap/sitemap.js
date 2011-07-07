@@ -41,9 +41,13 @@ Ext.onReady(function (){
             var filename = form.findField('filename').getValue() + '.xml';
 
             Ext.Msg.show({
-                msg: 'the file ({filename}) save it for later use in your site root (AXIS_ROOT)'.l('sitemap', filename),
+                modal: false,
+                msg: "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.".l('core', filename),
                 buttons: Ext.MessageBox.OK,
-                fn: function() {
+                fn: function(value) {
+                    if ('cancel' == value) {
+                        return;
+                    }
                     window.location = Axis.getUrl('sitemap_file/create')
                         + '?' + form.getValues(true);
                 },
@@ -90,7 +94,7 @@ Ext.onReady(function (){
                 data[i] = selectedItems[i].id;
             }
             var store = gridSitemap.getStore();
-            
+
             Ext.Ajax.request({
                 url: Axis.getUrl('sitemap_index/ping'),
                 params: {
@@ -166,7 +170,7 @@ Ext.onReady(function (){
             });
         }
     };
-    
+
     var storeSitemap = new Ext.data.GroupingStore({
         storeId: 'storeSitemap',
         url: Axis.getUrl('sitemap_index/list'),
@@ -332,7 +336,7 @@ Ext.onReady(function (){
             icon: Axis.skinUrl + '/images/icons/script_add.png',
             cls: 'x-btn-text-icon',
             handler : function(){
-                Ext.getCmp('form').getForm().reset();
+                Ext.getCmp('form').getForm().clear();
                 Ext.getCmp('window').show();
             }
         }, {
@@ -378,7 +382,7 @@ Ext.onReady(function (){
             gridSitemap
         ]
     });
-    
+
     storeSitemap.load({
         params: {start: 0, limit: 21}
     });
@@ -390,18 +394,18 @@ Ext.onReady(function (){
             anchor: '100%'
         },
         items: [{
-                fieldLabel: 'Filename'.l(),
-                maxLength: 55,
-                xtype: 'textfield',
-                allowBlank: false,
-                name: 'filename'
-            }, cmpSiteId.cloneConfig({
-                fieldLabel: 'Site'.l(),
-                name: 'site_id',
-                hiddenName: 'site_id',
-                allowBlank: false
-            })
-        ]
+            fieldLabel: 'Filename'.l(),
+            maxLength: 55,
+            xtype: 'textfield',
+            allowBlank: false,
+            name: 'filename',
+            initialValue: 'sitemap'
+        }, cmpSiteId.cloneConfig({
+            fieldLabel: 'Site'.l(),
+            name: 'site_id',
+            hiddenName: 'site_id',
+            allowBlank: false
+        })]
     });
 
     new Axis.Window({
@@ -430,6 +434,7 @@ Ext.onReady(function (){
         width: 700,
         height: 300,
         title: 'Ping Results'.l(),
+        bodyStyle: 'background: white;',
         buttons: [{
             text: 'Close'.l(),
             handler: function(){

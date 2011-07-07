@@ -56,13 +56,13 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
      */
     public function save($data)
     {
-        $row = $this->getRow($data); 
-        
+        $row = $this->getRow($data);
+
         $isExist = (bool) $this->select()
             ->where('sku = ?', $row->sku)
-            ->where('id <> ?', $row->id)
+            ->where('id <> ?', (int)$row->id)
             ->fetchOne();
-        
+
         if ($isExist) {
             throw new Axis_Exception(
                 Axis::translate('catalog')->__(
@@ -93,9 +93,9 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
         if (empty($row->created_on)) {
             $row->created_on = $row->modified_on;
         }
-        
+
         $row->save();
-        
+
         return $row;
     }
 

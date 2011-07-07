@@ -111,11 +111,11 @@ class Axis_Admin_Sales_OrderStatusController extends Axis_Admin_Controller_Back
         if (!sizeof($dataset)) {
             return;
         }
-        
+
         $model       = Axis::model('sales/order_status');
         $modelLabel  = Axis::model('sales/order_status_text');
         $languageIds = array_keys(Axis_Collect_Language::collect());
-        
+
         foreach ($dataset as $_row) {
             $row = $model->getRow($_row);
             $row->save();
@@ -136,31 +136,32 @@ class Axis_Admin_Sales_OrderStatusController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         $_row = $this->_getAllParams();
-        
+
         $model       = Axis::model('sales/order_status');
         $modelLabel  = Axis::model('sales/order_status_text');
         $languageIds = array_keys(Axis_Collect_Language::collect());
-        
+
         $row = $model->getRow($_row);
+        $row->system = (int)$row->system;
         $row->save();
-        
+
         foreach ($languageIds as $languageId) {
             $rowLabel = $modelLabel->getRow($row->id, $languageId);
             $rowLabel->status_name = $_row['status_name'][$languageId];
             $rowLabel->save();
         }
-        
+
         if (!$row->system) {
             $modelRelation = Axis::model('sales/order_status_relation');
             $modelRelation->delete(
                 $this->db->quoteInto('from_status = ?', $row->id) .
                 $this->db->quoteInto('OR to_status = ?', $row->id)
             );
-            
+
             $from = $this->_getParam('from');
             $modelRelation->add($from, $row->id);
-            
-            $childrens = array_filter(explode(',', $this->_getParam('to'))); 
+
+            $childrens = array_filter(explode(',', $this->_getParam('to')));
             foreach ($childrens as $child) {
                 $modelRelation->add($row->id, (int) $child);
             }

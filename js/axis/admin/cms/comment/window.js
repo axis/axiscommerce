@@ -105,6 +105,7 @@ Ext.onReady(function() {
                         fields: ['id', 'value'],
                         data: status
                     }),
+                    initialValue: 0,
                     displayField: 'value',
                     valueField: 'id',
                     mode: 'local',
