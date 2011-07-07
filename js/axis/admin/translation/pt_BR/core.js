@@ -512,5 +512,6 @@ Locale.module("core", {
     "Disable Wrapper": "Disable Wrapper",
     "Box Specific Configuration": "Box Specific Configuration",
     "Basic Configuration": "Basic Configuration",
-    "Copy blocks and layouts from": "Copy blocks and layouts from"
+    "Copy blocks and layouts from": "Copy blocks and layouts from",
+    "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.": "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file."
 });

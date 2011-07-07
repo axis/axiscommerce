@@ -512,5 +512,6 @@ Locale.module("core", {
     "Disable Wrapper": "Відключити обгортку",
     "Box Specific Configuration": "Конфігурація",
     "Basic Configuration": "Базова конфігурація",
-    "Copy blocks and layouts from": "Копіювати блоки та макети з"
+    "Copy blocks and layouts from": "Копіювати блоки та макети з",
+    "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.": "Покладіть згенерований файл до кореневой директорії сайту.<br/> Натисніть Ок, щоб згенерувати файл."
 });

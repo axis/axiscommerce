@@ -42,7 +42,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         $this->view->crawlers = array_values(
             Axis::model('sitemap/crawler')->toArray()
         );
-        
+
         $this->render();
     }
 
@@ -71,13 +71,16 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
     {
         $this->layout->disableLayout();
         $rowset = Zend_Json::decode($this->_getParam('data'));
-        
+
         $model = Axis::model('sitemap/sitemap');
         foreach ($rowset as $_row) {
             $row = $model->getRow($_row);
             $row->modified_on = Axis_Date::now()->toSQLString();
             if (!$row->id) {
                 $row->created_on = $row->modified_on;
+            }
+            if (empty($row->status)) {
+                $row->status = (int)$row->status;
             }
 
             $row->save();
@@ -95,7 +98,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
         }
         $crawlers = Axis::model('sitemap/crawler');
         $rowset  = Axis::model('sitemap/sitemap')->find($data);
-        
+
         function html2txt($document)
         {
             $document = preg_replace(array('/\n/', '/\s+/'), ' ', $document);
@@ -128,7 +131,7 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
                 if (200 !== $code) {
                     $status = false;
                 }
-                
+
                 $data[$row->id][$_crawlerId] = array(
                     'id'      => $row->id,
                     'uri'     => $uri,
