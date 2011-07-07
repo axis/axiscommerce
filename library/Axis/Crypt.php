@@ -35,7 +35,7 @@ class Axis_Crypt
     {
         $class = 'Axis_Crypt_' . 
             str_replace(' ', '_', ucwords(str_replace('_', ' ', $method)));
-        return new $class; 
+        return new $class(); 
     }
     
 }
