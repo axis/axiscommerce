@@ -85,7 +85,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
         $row = false;
         if (isset($data['id'])) {
             $row = $this->find($data['id'])->current();
-        } 
+        }
         if (!$row) {
             unset($data['id']);
             $row = $this->createRow();
@@ -99,14 +99,18 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
         if (Axis::single('catalog/hurl')->hasDuplicate(
                 $url,
                 array_keys(Axis_Collect_Site::collect()),
-                $row->id
+                (int)$row->id
             )) {
 
             throw new Axis_Exception(
                 Axis::translate('core')->__('Column %s should be unique', 'url')
             );
         }
-        
+
+        $row->setFromArray($data);
+        $row->image = empty($row->image) ? '' : '/' . trim($row->image, '/');
+        $row->save();
+
         //add description
         $modelDescription = Axis::model('catalog/product_manufacturer_description');
         foreach (Axis_Collect_Language::collect() as $languageId => $languangeName) {
@@ -117,7 +121,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
                 ->setFromArray($data['description'][$languageId])
                 ->save();
         }
-        
+
         //add relation site
         $modelHurl = Axis::model('catalog/hurl');
         foreach (Axis_Collect_Site::collect() as $siteId => $siteName) {
@@ -128,10 +132,6 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
                 'key_word' => $url
             ));
         }
-
-        $row->setFromArray($data);
-        $row->image = empty($row->image) ? '' : '/' . trim($row->image, '/');
-        $row->save();
 
         return $row;
     }
