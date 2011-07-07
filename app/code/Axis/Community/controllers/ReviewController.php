@@ -331,6 +331,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             ->setDescription();
 
         if ($this->_request->isPost()) {
+            $ratings = $this->_getRatings();
             $data = array(
                 'product_id' => $this->_getParam('product'),
                 'summary'    => $this->_getParam('summary'),
@@ -338,10 +339,24 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                 'title'      => $this->_getParam('title'),
                 'pros'       => $this->_getParam('pros'),
                 'cons'       => $this->_getParam('cons'),
-                'ratings'    => $this->_getRatings()
+                'ratings'    => $ratings
             );
             if ($form->isValid($this->_request->getPost())) {
-                Axis::single('community/review')->save($data);
+                $review = Axis::single('community/review')->save($data);
+                if ('approved' !== $review->status) {
+                    Axis::message()->addSuccess(
+                        Axis::translate('community')->__(
+                            'Review has been accepted for moderation'
+                        )
+                    );
+                }
+
+                Axis::message()->addSuccess(
+                    Axis::translate('community')->__(
+                        'Review was successfully saved'
+                ));
+                $review->setRating($ratings);
+                
                 Axis::dispatch('community_review_add_success', $data);
                 $this->_redirect(
                     $this->getRequest()->getServer('HTTP_REFERER')

@@ -37,7 +37,7 @@ class Axis_Community_Model_Review extends Axis_Db_Table
     protected $_rowClass = 'Axis_Community_Model_Review_Row';
     protected $_selectClass = 'Axis_Community_Model_Review_Select';
     protected $_primary = 'id';
-    protected $_dependentTables = array('Axis_Community_Review_Mark');
+    protected $_dependentTables = array('Axis_Community_Model_Review_Mark');
 
     /**
      * Retrieve the list of cutomer reviews
@@ -399,62 +399,26 @@ class Axis_Community_Model_Review extends Axis_Db_Table
      */
     public function save($data)
     {
-        if (!isset($data['customer_id'])) {
-            $data['customer_id'] = Axis::getCustomerId() ?
-                Axis::getCustomerId() : new Zend_Db_Expr('NULL');
-        } elseif (!is_numeric($data['customer_id'])
-                || !Axis::single('account/customer')->find($data['customer_id'])->current()) {
-
-            $data['customer_id'] = new Zend_Db_Expr('NULL');
+        $row = $this->getRow($data);
+        
+        $customer = null;
+        if (!empty($row->customer_id)) {
+            $customer = Axis::single('account/customer')->find($row->customer_id)
+                ->current();
         }
-        if (!isset($data['status'])) {
-            $data['status'] = $this->getDefaultStatus();
-            if ($data['status'] != 'approved') {
-                Axis::message()->addSuccess(
-                    Axis::translate('community')->__(
-                        'Review has been accepted for moderation'
-                    )
-                );
-            }
+        if (!$customer) {
+            $row->customer_id = new Zend_Db_Expr('NULL');
         }
-
-        if (!isset($data['id'])
-            || empty($data['id'])
-            || !$row = $this->find($data['id'])->current()) {
-
-            $row = $this->createRow();
+        if (empty($row->status)) {
+            $row->status = $this->getDefaultStatus();
+        }
+        if (empty($row->date_created)) {
             $row->date_created = Axis_Date::now()->toSQLString();
         }
-        unset($data['id']);
-        $row->setFromArray($data);
+        
         $row->save();
-
-        Axis::message()->addSuccess(
-            Axis::translate('community')->__(
-                'Review was successfully saved'
-        ));
-
-        $data['ratings'] = array_filter($data['ratings']);
-
-        if (!is_numeric($data['customer_id']) && count($data['ratings'])) {
-            Axis::message()->addNotice(
-                Axis::translate('community')->__(
-                    'Guests do not have the permission to vote. Review was saved without ratings'
-            ));
-        } elseif (count($data['ratings']) &&
-            Axis::single('community/review_mark')->isCustomerVoted(
-                $data['customer_id'], $data['product_id'], $row->id
-            )) {
-
-            Axis::message()->addNotice(
-                Axis::translate('community')->__(
-                    'You have already voted for this product. Review was saved without ratings'
-            ));
-        } elseif (count($data['ratings'])) {
-            $row->saveMark($data['ratings']);
-        }
-
-        return true;
+        
+        return $row;
     }
 
     /**
