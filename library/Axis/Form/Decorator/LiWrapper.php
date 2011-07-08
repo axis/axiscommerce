@@ -52,6 +52,6 @@ class Axis_Form_Decorator_LiWrapper extends Zend_Form_Decorator_Abstract
     {
         $elementName = $this->getElement()->getName();
 
-        return '<li class="li-wrappper" id="' . $elementName . '-wrapper">' . $content . '</li>';
+        return '<li class="li-wrapper" id="' . $elementName . '-wrapper">' . $content . '</li>';
     }
 }

@@ -101,6 +101,7 @@ form ul ul { padding: 0; }
     float: left; font: bold 1em Arial, Helvetica, sans-serif; margin: -26px 0 0;
     padding: 1px 8px; }
 .axis-form li { padding:4px 8px; overflow: hidden; clear: both; }
+.axis-form li.li-wrapper { padding: 0; }
 .axis-form label { font-weight: bold; color: #444; font-size: 1.1em; float: left;
     width: 150px; text-align: right; margin: 0 5px 0 0; }
 .axis-form label input { width: auto !important; }
