@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -101,16 +101,12 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
             return $this;
         }
 
-        if (!$row = $this->getStockRow()) {
-            $row = Axis::single('catalog/product_stock')->createRow();
-            $row->product_id = $this->id;
-        }
-
         foreach ($data as $col => $val) {
             if (empty($val)) {
                 $data[$col] = intval($data[$col]);
             }
         }
+        $row = $this->getStockRow();
         $oldStockData = $row->toArray();
         $row->setFromArray($data);
         $row->save();
@@ -134,8 +130,9 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         $mImageTitle = Axis::single('catalog/product_image_title');
         $languages   = Axis_Collect_Language::collect();
 
-        $imageTypes = array('base', 'listing', 'thumbnail');
-
+        $imageTypes     = array('base', 'listing', 'thumbnail');
+        $updatedImages  = array();
+        $imageIds       = array();
         foreach ($data as $image) {
             if (!isset($image['id'])
                 || !$row = $mImage->find($image['id'])->current()) {
@@ -150,6 +147,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 $row->delete();
             } else {
                 $row->save();
+                $imageIds[$row->id] = $row->id;
                 $mImageTitle->delete(
                     $this->getAdapter()->quoteInto('image_id = ? ', $row->id)
                 );
@@ -165,8 +163,18 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 foreach ($imageTypes as $type) {
                     if ($image['is_' . $type]) {
                         $this->{'image_' . $type} = $row->id;
+                        $updatedImages[$type] = true;
                     }
                 }
+            }
+        }
+
+        foreach ($imageTypes as $type) {
+            // if base, listing or thumbnail image was not updated
+            // while previously linked image with this type was recieved
+            // we should unset this type of image
+            if (empty($updatedImages[$type]) && in_array($this->{'image_' . $type}, $imageIds)) {
+                $this->{'image_' . $type} = new Zend_Db_Expr('NULL');
             }
         }
 
@@ -233,7 +241,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 $row->product_id = $this->id;
                 $row->language_id = $languageId;
             }
-            if ($data[$languageId]) {
+            if (!empty($data[$languageId])) {
                 $row->setFromArray($data[$languageId]);
             }
             $row->save();
@@ -576,11 +584,12 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         if (null === $languageId) {
             $languageId = Axis_Locale::getLanguageId();
         }
-        return Axis::single('catalog/product_description')->select('*')
+        $row = Axis::single('catalog/product_description')->select('*')
             ->where('product_id = ?', $this->id)
             ->where('language_id = ?', $languageId)
             ->fetchRow()
             ;
+        return $row ? $row->toArray() : false;
     }
 
     public function getProperties()
@@ -601,6 +610,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 $modifiers[$optionId] = array(
                     'id'            => $optionId,
                     'name'          => $row['option_name'],
+                    'code'          => $row['code'],
                     'description'   => $row['option_description'],
                     'type'          => $row['input_type'],
                     'visible'       => $row['visible'],
@@ -754,10 +764,10 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         // set variation
         if ($variationId) {
             $variation = Axis::single('catalog/product_variation')
-                ->fetchRow('id = ' . $variationId)
-                ->toArray();
+                ->find($variationId)
+                ->current();
             $price = self::getNewPrice(
-                $price, $variation['price'], $variation['price_type']
+                $price, $variation->price, $variation->price_type
             );
         }
         // set discount
@@ -826,7 +836,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 ->fetchRow();
 
             $weight = self::getNewWeight(
-                $weight, $variation['weight'], $variation['weight_type']
+                $weight, $variation->weight, $variation->weight_type
             );
         }
 
@@ -971,9 +981,14 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     public function getStockRow()
     {
         if (!$this->_stockRow) {
-            $this->_stockRow = Axis::single('catalog/product_stock')
-                ->find($this->id)
+            $mStock = Axis::model('catalog/product_stock');
+            $this->_stockRow = $mStock->find($this->id)
                 ->current();
+            if (!$this->_stockRow) { // saving new product
+                $this->_stockRow = $mStock->createRow();
+                $this->_stockRow->product_id = $this->id;
+            }
+            $this->_stockRow->setProductRow($this);
         }
         return $this->_stockRow;
     }
@@ -1003,7 +1018,8 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
                 "cpm.id = ch.key_id AND ch.key_type = 'm' AND ch.site_id = " . Axis::getSiteId(),
                 'key_word')
             ->where('cpm.id = ?', $this->manufacturer_id)
-            ->fetchRow();
+            ->fetchRow()
+            ->toArray();
     }
 
     /**

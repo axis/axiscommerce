@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Layout
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -102,7 +102,9 @@ class Axis_Layout extends Zend_Layout
                 foreach ($tabset as $tabBoxId => $_tabConfig) {
                     $blockContent .= $this->_getBlockContent($_tabConfig);
                 }
-                $blockContent = "<div class='tab-container box tabs-{$_config['tab_container']}'>{$blockContent}</div>";
+                if (!empty($blockContent)) {
+                    $blockContent = "<div class='tab-container box tabs-{$_config['tab_container']}'>{$blockContent}</div>";
+                }
             } else {
                 $blockContent = $this->_getBlockContent($_config);
                 $sortOrder = $_config['sort_order'];
@@ -122,11 +124,11 @@ class Axis_Layout extends Zend_Layout
         if (!$conf['box_show']) {
             return '';
         }
-        
+
         $block = $this->getView()->box(
             "{$conf['box_namespace']}_{$conf['box_module']}/{$conf['box_name']}"
         )->setFromArray($conf);
-        
+
         if ($block) {
             return $block->render();
         }

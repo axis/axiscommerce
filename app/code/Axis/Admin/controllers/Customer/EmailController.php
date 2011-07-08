@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -37,9 +37,9 @@ class Axis_Admin_Customer_EmailController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         $data = $this->_getAllParams();
-        $customer = Axis::model('account/customer')->fetchRow(
-            Axis::db()->quoteInto('email = ?', $data['email'])
-        );
+        $customer = Axis::model('account/customer')->select()
+            ->where('email = ?', $data['email'])
+            ->fetchRow();
 
         try {
             $mail = new Axis_Mail();

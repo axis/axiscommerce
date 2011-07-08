@@ -1,0 +1,18 @@
+<div class="box box-address-form delivery-address">
+    <div class="head"><span class="title"><?php echo $this->translate('checkout')->__('Delivery Address') ?></span></div>
+    <div class="content">
+        <?php
+            if (count($this->checkout['address_list'])) :
+                echo $this->formSelect(
+                    'delivery_address[id]',
+                    $this->checkout['delivery_address']->id,
+                    null,
+                    $this->addressOptions // see billing-address.phtml
+                );
+            endif;
+        ?>
+        <div class="address-form">
+            <?php echo $this->checkout['form_delivery_address']->render(); ?>
+        </div>
+    </div>
+</div>

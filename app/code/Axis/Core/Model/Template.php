@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -60,14 +60,19 @@ class Axis_Core_Model_Template extends Axis_Db_Table
      */
     public function save($data)
     {
-        if (empty($data['name']) || empty($data['default_layout'])) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'Required fields are missing'
-            ));
-            return false;
+        $row = false;
+        if (!empty($data['duplicate'])) {
+            $row = $this->duplicate($data['duplicate'], $data['name']);
+            if ($row) {
+                $row->default_layout = $data['default_layout'];
+                $row->save();
+            }
         }
-        $this->getRow($data)->save();
+
+        if (!$row) {
+            $this->getRow($data)->save();
+        }
+
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Template was saved successfully'
@@ -320,6 +325,8 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         }
         //import cms blocks
         $modelBlock = Axis::model('cms/block');
+        $languageIds  = array_keys(Axis_Collect_Language::collect());
+        $modelContent = Axis::model('cms/block_content');
         foreach ($cmsBlocks as $cmsBlock) {
             $cmsBlockId = $modelBlock->getIdByName($cmsBlock['name']);
             if ($cmsBlockId) {
@@ -330,12 +337,22 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                 );
                 continue;
             }
+
+            $row = $modelBlock->save($cmsBlock);
+            
+            //save cms block content
             $content = array();
-            foreach ($cmsBlock['content'] as $row) {
-                $content[$row['language_id']] = $row;
+            foreach ($cmsBlock['content'] as $rowContent) {
+                $content[$rowContent['language_id']] = $rowContent;
             }
-            $cmsBlock['content'] = $content;
-            $modelBlock->save($cmsBlock);
+            foreach ($languageIds as $languageId) {
+                if (!isset($content[$languageId])) {
+                    continue;
+                }
+                $modelContent->getRow($row->id, $languageId)
+                    ->setFromArray($content[$languageId])
+                    ->save();
+            }
         }
 
         return true;
@@ -351,5 +368,57 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             return Axis_Core_Model_Template::DEFAULT_TEMPLATE;
         }
         return $row->name;
+    }
+
+    /**
+     * Duplicates boxes and layout preferences from one theme to another
+     *
+     * @param string $from
+     * @param string $to    Must be unique value
+     * @return mixed Axis_Db_Table_Row|false
+     */
+    public function duplicate($from, $to)
+    {
+        $fromId = $this->getIdByName($from);
+        if (!$fromId) {
+            return false;
+        }
+
+        $data = $this->getFullInfo($fromId);
+        if ($toId = $this->getIdByName($to)) {
+            $template = $this->find($toId)->current();
+        } else {
+            $template = $this->createRow();
+            $template->name = $to;
+        }
+        $template->default_layout = $data['default_layout'];
+        $template->save();
+
+        //import boxes
+        $mTemplateBox       = Axis::model('core/template_box');
+        $mTemplateBoxPage   = Axis::model('core/template_box_page');
+        foreach ($data['boxes'] as $boxData) {
+            unset($boxData['id']);
+            $box = $mTemplateBox->createRow($boxData);
+            $box->template_id = $template->id;
+            $box->save();
+            foreach ($boxData['pages'] as $pageData) {
+                $page = $mTemplateBoxPage->createRow($pageData);
+                $page->box_id    = $box->id;
+                $page->page_id   = $pageData['id'];
+                $page->save();
+            }
+        }
+
+        //import layouts
+        $mTemplatePage = Axis::model('core/template_page');
+        foreach ($data['layouts'] as $layoutData) {
+            unset($layoutData['id']);
+            $layout = $mTemplatePage->createRow($layoutData);
+            $layout->template_id = $template->id;
+            $layout->save();
+        }
+
+        return $template;
     }
 }

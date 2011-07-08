@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,20 +33,6 @@
  */
 class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
 {
-
-    /**
-     * Acl Model
-     *
-     * @var Axis_Admin_Model_Acl_Role
-     */
-    private $_roles;
-
-    public function init()
-    {
-        parent::init();
-        $this->_roles = Axis::single('admin/acl_role');
-    }
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Roles');
@@ -56,12 +42,11 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
 
     public function getNodesAction()
     {
-        $nodes = $this->_roles->fetchAll();
-        foreach ($nodes as $item) {
+        foreach (Axis::model('admin/acl_role')->fetchAll() as $row) {
             $result[] = array(
-                'text' => $item->role_name,
-                'id'   => $item->id,
-                'leaf' => false,
+                'text'     => $row->role_name,
+                'id'       => $row->id,
+                'leaf'     => false,
                 'children' => array(),
                 'expanded' => true
             );
@@ -82,45 +67,46 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
 
     public function addAction()
     {
-        $id = $this->_roles->insert(array(
-            'role_name' => $this->_getParam('roleName')
-        ));
+        $role = Axis::model('admin/acl_role')->createRow();
+        $role->role_name = $this->_getParam('roleName');
+        $role->save();
+
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Role was added successfully'
             )
         );
-        $this->_helper->json->sendJson(array(
-            'success' => $id,
-            'id'      => $id
-        ));
+        $this->_helper->json->setId($role->id)
+            ->sendSuccess();
     }
 
     public function editAction()
     {
         $roleId = $this->_getParam('id');
+        $model = Axis::model('admin/acl_role');
 
-        $role = $this->_roles->find($roleId)->current();
+        $role = $model->find($roleId)->current();
 
-        $result = array(
-            'id'   => $role->id,
-            'name' => $role->role_name
+        $parents = $model->getParents($roleId);
+        $data = array(
+            'id'              => $role->id,
+            'name'            => $role->role_name,
+            'possibleParents' => (object) $model->getPossibleParents($roleId),
+            'parents'         => $parents,
+            'parentAllows'    => $this->acl->getParentRolesAllows($parents),
+            'rules'           => $model->getRules($roleId)
         );
 
-        $result['possibleParents'] = (object) $this->_roles->getPossibleParents($roleId);
-        $result['parents'] = $this->_roles->getParents($roleId);
-
-        $result['parentAllows'] = $this->acl->getParentRolesAllows($result['parents']);
-        $result['rules'] = $this->_roles->getRules($roleId);
-        $this->_helper->json->sendSuccess(array(
-            'data' => $result
-        ));
+        $this->_helper->json->setData($data)
+            ->sendSuccess();
     }
 
     public function deleteAction()
     {
         $roleId = $this->_getParam('roleId');
-        $this->_roles->delete($this->db->quoteInto('id = ?', $roleId));
+        Axis::model('admin/acl_role')->delete(
+            $this->db->quoteInto('id = ?', $roleId)
+        );
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Role was deleted successfully'
@@ -132,20 +118,49 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-        $roleId = $this->_getParam('roleId');
 
-        $this->_roles->update(
-            array('role_name' => $this->_getParam('roleName')),
-            $this->db->quoteInto('id = ?', $roleId)
-        );
+        $model       = Axis::model('admin/acl_role');
+        $modelParent = Axis::model('admin/acl_role_parent');
+        $modelRule   = Axis::model('admin/acl_rule');
+
+        $roleId = $this->_getParam('roleId');
+        $role   = $model->find($roleId)->current();
+        $role->role_name = $this->_getParam('roleName');
+        $role->save();
 
         /* save parent roles */
         $parents = $this->_getParam('role', array());
-        $this->_roles->saveParents($roleId, $parents);
+        $modelParent->delete(
+            $this->db->quoteInto('role_id = ?', $role->id)
+        );
+        foreach ($parents as $parentId) {
+            $modelParent->createRow(array(
+                'role_id'        => $roleId,
+                'role_parent_id' => $parentId
+            ))->save();
+        }
 
         /* save rules */
         $rules = $this->_getParam('rule');
-        $this->_roles->saveRules($roleId, $rules);
+        $modelRule->delete(
+            $this->db->quoteInto('role_id = ?', $role->id)
+        );
+
+        $allow = isset($rules['allow']) ? $rules['allow'] : array();
+        foreach ($allow as $resourceId) {
+            $modelRule->createRow(array(
+                'role_id'     => $roleId,
+                'resource_id' => $resourceId,
+                'permission'  => 'allow'
+            ))->save();
+        }
+
+        $deny = isset($rules['deny']) ? $rules['deny'] : array();
+        foreach ($deny as $resourceId) {
+            $row = $modelRule->getRow($roleId, $resourceId);
+            $row->permission = 'deny';
+            $row->save();
+        }
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(

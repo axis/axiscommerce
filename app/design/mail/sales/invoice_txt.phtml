@@ -27,7 +27,7 @@
     endif;
 ?>
     <?php echo $this->currency($product['final_price']); ?>
-    <?php echo $this->translate('sales')->__('Qty') . ': ' . $product['quantity'] ?>
+    <?php echo $this->translate('sales')->__('Qty') . ': ' . ($product['decimal'] ? $product['quantity'] : (int)$product['quantity']) ?>
     <?php echo $this->translate('checkout')->__('Subtotal'). ': ' . $this->currency($product['quantity'] * $product['final_price']); ?>
     <?php echo "\r\n" ?>
 <?php endforeach; ?>

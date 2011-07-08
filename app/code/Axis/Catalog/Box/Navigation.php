@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,16 +36,65 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
     protected $_title = 'Categories';
     protected $_class = 'box-category';
 
+    protected $_activeCategories = null;
+
     public function init()
     {
-        $siteId = Axis::getSiteId();
-        $tree = Axis::model('catalog/category')->cache()
-            ->getFlatTree(Axis_Locale::getLanguageId(), $siteId, true);
+        $categories = Axis::single('catalog/category')->select('*')
+            ->addName(Axis_Locale::getLanguageId())
+            ->addKeyWord()
+            ->order('cc.lft')
+            ->addSiteFilter(Axis::getSiteId())
+            ->addDisabledFilter()
+            ->fetchAll();
 
-        if (isset($tree[$siteId])) {
-            $this->setData('items', $tree[$siteId]);
+        if (!is_array($this->_activeCategories)) {
+            $this->_activeCategories = array();
+            if (Zend_Registry::isRegistered('catalog/current_category')) {
+                $this->_activeCategories = array_keys(
+                    Zend_Registry::get('catalog/current_category')
+                        ->cache()
+                        ->getParentItems()
+                );
+            }
         }
 
+        $container = $_container = new Zend_Navigation();
+        $lvl = 0;
+        $view = $this->getView();
+        foreach ($categories as $_category) {
+
+            $uri = $view->hurl(array(
+                'cat' => array(
+                    'value' => $_category['id'],
+                    'seo'   => $_category['key_word']
+                ),
+                'controller' => 'catalog',
+                'action'     => 'view'
+            ), false, true);
+
+            $class = 'nav-' . str_replace('.', '-', $_category['key_word']);
+
+            $page = new Zend_Navigation_Page_Uri(array(
+                'label'   => $_category['name'],
+                'title'   => $_category['name'],
+                'uri'     => $uri,
+                'order'   => $_category['lft'],
+                'class'   => $class,
+                'visible' => 'enabled' === $_category['status'] ? true : false,
+                'active'  => in_array($_category['id'], $this->_activeCategories)
+            ));
+
+            $lvl = $lvl - $_category['lvl'] + 1;
+            for ($i = 0; $i < $lvl; $i++) {
+                $_container = $_container->getParent();
+            }
+
+            $lvl = $_category['lvl'];
+            $_container->addPage($page);
+            $_container = $page;
+        }
+        $this->setData('menu', $container);
         return true;
     }
 }

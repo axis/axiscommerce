@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -75,10 +75,39 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
         $this->view->customerGroups = Axis_Collect_CustomerGroup::collect();
         $this->view->manufactures = Axis_Collect_Manufacturer::collect();
         $languageId = Axis_Locale::getLanguageId();
-        $this->view->categoryTrees = Axis::single('catalog/category')
-            ->getFlatTree($languageId);
-        $this->view->attributes = Axis::single('catalog/product_option')
-            ->getValueSets($languageId);
+
+        $this->view->categoryTrees = Axis::single('catalog/category')->select('*')
+            ->addName($languageId)
+            ->addKeyWord()
+            ->order('cc.lft')
+            ->fetchAllAndSortByColumn('site_id');
+        
+        
+        $select = Axis::model('catalog/product_option_value')->select('*')
+            ->joinLeft('catalog_product_option_value_text',
+                'cpov.id = cpovt.option_value_id',
+                'name')
+            ->where('cpovt.language_id = ?', $languageId)
+            ;
+        $valuesetValues = array();
+        foreach ($select->fetchAll() as $_row) {
+            $valuesetValues[$_row['valueset_id']][$_row['id']] = $_row['name'];
+        }
+        $select = Axis::single('catalog/product_option')
+                ->select('*')
+                ->addNameAndDescription($languageId)
+                ;
+        $attributes = array();
+        foreach ($select->fetchAll() as $_option) {
+            if (isset($valuesetValues[$_option['valueset_id']])) {
+                $attributes[$_option['id']] = array(
+                    'name'   => $_option['name'],
+                    'option' => $valuesetValues[$_option['valueset_id']]
+                );
+            }
+        }
+        
+        $this->view->attributes = $attributes;
     }
 
     public function editAction()

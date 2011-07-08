@@ -1,6 +1,7 @@
 app/etc/config.php
 library/Zend
 js/ext-3.3.1
+js/ckeditor
 media/cache/*
 media/category/*
 media/import/*

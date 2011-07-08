@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -52,23 +52,23 @@ Ext.onReady(function(){
             name: 'description[title]',
             xtype: 'langset'
         }, {
-            fieldLabel: 'Description'.l(),
-            defaultType: 'textarea',
-            name: 'description[description]',
-            xtype: 'langset'
-        }, {
             fieldLabel: 'Image'.l(),
             url: Axis.getUrl('catalog_manufacturer/save-image'),
             name: 'image',
             rootPath: 'media/manufacturer',
             rootText: 'manufacturer',
             xtype: 'imageuploadfield'
+        }, {
+            fieldLabel: 'Description'.l(),
+            defaultType: 'ckeditor',
+            height: 100,
+            name: 'description[description]',
+            xtype: 'langset'
         }]
     });
 
     var window = new Axis.Window({
         id: 'window',
-        height: 400,
         title: 'Manufacturer'.l(),
         items: form,
         buttons: [{

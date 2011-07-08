@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -40,6 +40,71 @@ class Axis_Account_Model_Form_Address extends Axis_Form
 
     protected $_translatorModule = 'account';
 
+    protected $_fieldConfig = array();
+
+    protected $_fields = array(
+        'firstname' => array(
+            'name' => 'firstname',
+            'type' => 'text',
+            'label' => 'Firstname',
+            'class' => 'input-text'
+        ),
+        'lastname' => array(
+            'name' => 'lastname',
+            'type' => 'text',
+            'label' => 'Lastname',
+            'class' => 'input-text'
+        ),
+        'company' => array(
+            'name' => 'company',
+            'type' => 'text',
+            'label' => 'Company',
+            'class' => 'input-text'
+        ),
+        'phone' => array(
+            'name' => 'phone',
+            'type' => 'text',
+            'label' => 'Telephone',
+            'class' => 'input-text'
+        ),
+        'fax' => array(
+            'name' => 'fax',
+            'type' => 'text',
+            'label' => 'Fax',
+            'class' => 'input-text'
+        ),
+        'street_address' => array(
+            'name' => 'street_address',
+            'type' => 'text',
+            'label' => 'Street',
+            'class' => 'input-text'
+        ),
+        'city' => array(
+            'name' => 'city',
+            'type' => 'text',
+            'label' => 'City',
+            'class' => 'input-text'
+        ),
+        'zone_id' => array(
+            'name' => 'zone_id',
+            'type' => 'select',
+            'label' => 'State/Province',
+            'class' => 'input-zone'
+        ),
+        'postcode' => array(
+            'name' => 'postcode',
+            'type' => 'text',
+            'label' => 'Zip/Postcode',
+            'class' => 'input-text'
+        ),
+        'country_id' => array(
+            'name' => 'country_id',
+            'type' => 'select',
+            'label' => 'Country',
+            'class' => 'input-country'
+        )
+    );
+
     public function __construct($options = null)
     {
         $default = array(
@@ -54,65 +119,22 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         parent::__construct($default);
 
         $this->addElement('hidden', 'id', array(
-                'validators' => array(
-                    new Axis_Account_Model_Form_Validate_AddressId()
-                )
-            ));
-        $this->addElement('text', 'firstname', array(
-            'required' => true,
-            'label' => 'Firstname',
-            'class' => 'input-text required'
-        ));
-        $this->addElement('text', 'lastname', array(
-            'required' => true,
-            'label' => 'Lastname',
-            'class' => 'input-text required'
-        ));
-        $this->addElement('text', 'company', array(
-            'label' => 'Company',
-            'class' => 'input-text'
-        ));
-        $this->addElement('text', 'phone', array(
-            'required' => true,
-            'label' => 'Telephone',
-            'class' => 'input-text required'
-        ));
-        $this->addElement('text', 'fax', array(
-            'label' => 'Fax',
-            'class' => 'input-text'
+            'validators' => array(
+                new Axis_Account_Model_Form_Validate_AddressId()
+            )
         ));
 
-        $this->addDisplayGroup(
-            array('firstname', 'lastname', 'company', 'phone', 'fax'),
-            'contact_info',
-            array('legend' => 'Contact information')
+        $configOptions = Axis::config('account/address_form')->toArray();
+        $this->_fieldConfig = array_merge(array(
+                'firstname_sort_order'  => -20,
+                'firstname_status'      => 'required',
+                'lastname_sort_order'   => -19,
+                'lastname_status'       => 'required'
+            ),
+            $configOptions
         );
-        $this->getDisplayGroup('contact_info')
-            ->addRow(array('firstname', 'lastname'), 'name')
-            ->addRow('company', 'company')
-            ->addRow(array('phone', 'fax'), 'communication');
+        uasort($this->_fields, array($this, '_sortFields'));
 
-        $this->getDisplayGroup('contact_info')->getRow('name')
-            ->addColumn('firstname', 'firstname')
-            ->addColumn('lastname', 'lastname');
-
-        $this->getDisplayGroup('contact_info')->getRow('communication')
-            ->addColumn('phone', 'phone')
-            ->addColumn('fax', 'fax');
-
-        $this->addElement('text', 'street_address', array(
-            'label' => 'Street',
-            'class' => 'input-text'
-        ));
-        $this->addElement('text', 'city', array(
-            'required' => true,
-            'label' => 'City',
-            'class' => 'input-text required'
-        ));
-        $this->addElement('select', 'zone_id', array(
-           'label' => 'State/Province',
-           'class' => 'input-text input-zone'
-        ));
         $countries = Axis_Collect_Country::collect();
         if (isset($countries['0'])
             && 'ALL WORLD COUNTRY' === $countries['0']) {
@@ -120,45 +142,100 @@ class Axis_Account_Model_Form_Address extends Axis_Form
             unset($countries['0']);
         }
 
+        $allowedCountries = $configOptions['country_id_allow'];
+        if (!in_array(0, $allowedCountries)) { // ALL WORLD COUNTRIES is not selected
+            $countries = array_intersect_key(
+                $countries,
+                array_flip($allowedCountries)
+            );
+        }
+        $countryIds     = array_keys($countries);
+        $defaultCountry = current($countryIds);
+        if (!empty($options['values']['country_id'])) {
+            $_defaultCountry = $options['values']['country_id'];
+            if (isset($countries[$_defaultCountry])) {
+                $defaultCountry = $_defaultCountry;
+            }
+        }
+
         $zones = Axis_Collect_Zone::collect();
         $this->_zones = $zones;
-        if (isset($zones[key($countries)]) && count($countries)) {
-            $this->getElement('zone_id')->options = $zones[key($countries)];
-        }
-        $this->addElement('text', 'postcode', array(
-            'required' => true,
-            'label' => 'Zip/Postcode',
-            'class' => 'input-text required'
-        ));
-        if (count($countries)) {
-            $this->addElement('select', 'country_id', array(
-                'required' => true,
-                'label' => 'Country',
-                'class' => 'input-text required input-country',
-                'validators' => array(
+
+        foreach ($this->_fields as $name => $values) {
+            $status = $this->_fieldConfig[$name . '_status'];
+            if ('disabled' == $status) {
+                continue;
+            }
+            $fieldOptions = array(
+                'value'     => empty($options['values'][$name]) ?
+                    '' : $options['values'][$name],
+                'required'  => ('required' === $status),
+                'label'     => $values['label'],
+                'class'     => $values['class']
+                    . ('required' === $status ? ' required' : '')
+            );
+
+            if ('country_id' == $name) {
+                $fieldOptions['validators'] = array(
                     new Zend_Validate_InArray(array_keys($countries))
-                )
-            ));
-            $this->getElement('country_id')->options = $countries;
+                );
+                $values['type'] = new Zend_Form_Element_Select($name, $fieldOptions);
+                $values['type']->removeDecorator('HtmlTag')
+                    ->addDecorator('HtmlTag', array(
+                        'tag'   => 'li',
+                        'class' => 'element-row'
+                    ));
+                $values['type']->options = $countries;
+            } else if ('zone_id' == $name) {
+                $values['type'] = new Zend_Form_Element_Select($name, $fieldOptions);
+                $values['type']->removeDecorator('HtmlTag')
+                    ->addDecorator('HtmlTag', array(
+                        'tag'   => 'li',
+                        'class' => 'element-row'
+                    ));
+                if (isset($zones[$defaultCountry]) && count($countries)) {
+                    $values['type']->options = $zones[$defaultCountry];
+                }
+            }
+
+            $this->addElement($values['type'], $name, $fieldOptions);
         }
 
         $this->addDisplayGroup(
-            array('street_address', 'city', 'zone_id', 'postcode', 'country_id'),
+            $this->getElements(),
             'address',
             array('legend' => 'Address')
         );
-        $this->getDisplayGroup('address')
-            ->addRow('street_address', 'row1')
-            ->addRow(array('city', 'country_id'), 'row2')
-            ->addRow(array('postcode', 'zone_id'), 'row3');
 
-        $this->getDisplayGroup('address')->getRow('row2')
-            ->addColumn('city', 'city')
-            ->addColumn('country_id', 'country_id');
+        $this->addElement('checkbox', 'default_billing', array(
+            'label' => 'Use as my default billing address',
+            'class' => 'input-checkbox'
+        ));
+        $element = $this->getElement('default_billing');
+//        $element->addDecorator('Label', array(
+//                'tag' => '',
+//                'placement' => 'append',
+//                'separator' => ''
+//            ))
+//            ->addDecorator('HtmlTag', array(
+//                'tag' => 'div',
+//                'class' => 'label-inline'
+//            ));
 
-        $this->getDisplayGroup('address')->getRow('row3')
-            ->addColumn('postcode', 'postcode')
-            ->addColumn('zone_id', 'zone_id');
+        $this->addElement('checkbox', 'default_shipping', array(
+            'label' => 'Use as my default shipping address',
+            'class' => 'input-checkbox'
+        ));
+        $element = $this->getElement('default_shipping');
+//        $element->addDecorator('Label', array(
+//                'tag' => '',
+//                'placement' => 'append',
+//                'separator' => ''
+//            ))
+//            ->addDecorator('HtmlTag', array(
+//                'tag' => 'div',
+//                'class' => 'label-inline'
+//            ));
 
         $this->addElement('button', 'submit', array(
             'type' => 'submit',
@@ -177,10 +254,13 @@ class Axis_Account_Model_Form_Address extends Axis_Form
     public function isValid($data)
     {
         if (isset($data['country_id'])) {
-            $this->getElement('zone_id')->setAttribs(array(
-                'options' => isset($this->_zones[$data['country_id']]) ?
-                    $this->_zones[$data['country_id']] : ''
-            ));
+            $zone = $this->getElement('zone_id');
+            if ($zone) {
+                $zone->setAttribs(array(
+                    'options' => isset($this->_zones[$data['country_id']]) ?
+                        $this->_zones[$data['country_id']] : ''
+                ));
+            }
         }
 
         return parent::isValid($data);
@@ -214,197 +294,13 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         return $this;
     }
 
-    public function addGuestField()
+    protected function _sortFields($a, $b)
     {
-        $element = $this->createElement('text', 'email', array(
-            'required'  => true,
-            'label'     => 'Email',
-            'class'     => 'input-text required email',
-            'validators' => array('EmailAddress')
-        ));
-
-        $this->getDisplayGroup('contact_info')
-            ->addElement($element);
-
-        $this->getDisplayGroup('contact_info')
-            ->addRow('email', 'email');
-
-        return $this;
-    }
-
-    /**
-     *
-     * @return  Axis_Account_Model_Form_Address Fluent interface
-     */
-    public function addRegisterField()
-    {
-        $this->addElement('text', 'email', array(
-            'required'  => true,
-            'label'     => 'Email',
-            'class'     => 'input-text required email',
-            'description' => 'Email will be used to login into your account',
-            'validators' => array(
-                'EmailAddress',
-                new Axis_Validate_Exists(
-                    Axis::single('account/customer'), 'email', 'site_id = ' . Axis::getSiteId()
-                )
-            )
-        ));
-        $this->addElement('password', 'register_password', array(
-            'required' => true,
-            'label'    => 'Password',
-            'class'    => 'input-text required password',
-            'validators' => array(
-                'NotEmpty',
-                new Axis_Validate_PasswordConfirmation(
-                    'register_password',
-                    'register_password_confirm'
-                )
-            )
-        ));
-        $this->addElement('password', 'register_password_confirm', array(
-            'required' => true,
-            'label'    => 'Confirm Password',
-            'class'     => 'input-text required password'
-        ));
-
-        $this->addDisplayGroup(
-            array('email', 'register_password', 'register_password_confirm'),
-            'login',
-            array('legend' => 'Login information')
-        );
-
-        $this->getDisplayGroup('login')
-            ->addRow(array('email'), 'row1', array('colsetClass' => 'col2-set'))
-            ->addRow(array('register_password', 'register_password_confirm'), 'row2');
-
-        $this->getDisplayGroup('login')
-            ->getRow('row1')
-            ->addColumn(array('email'), 'col1');
-
-        $this->getDisplayGroup('login')
-            ->getRow('row2')
-            ->addColumn(array('register_password'), 'col1')
-            ->addColumn(array('register_password_confirm'), 'col2');
-
-        $rows = Axis::single('account/customer_field')
-            ->getFields();
-        $groupsFields = array();
-        foreach ($rows as $row) {
-            $field = 'field_' . $row['id'];
-            $config = array(
-                'id' => 'field_' . $row['name'],
-                'required' => (boolean) $row['required'],
-                'label'    => $row['field_label'],
-                'class'    => 'input-text'
-            );
-            if ($row['field_type'] == 'textarea') {
-                $config['rows'] = 6;
-                $config['cols'] = 60;
-            }
-            $this->addElement($row['field_type'], $field, $config);
-
-            if ($row['required']) {
-                $this->getElement($field)
-                     ->addValidator('NotEmpty')
-                     ->setAttrib(
-                         'class',
-                         $this->getElement($field)->getAttrib('class')
-                            . ' required'
-                    );
-            }
-            if (!empty($row['validator'])) {
-                $this->getElement($field)->addValidator($row['validator']);
-                if ($row['validator'] == 'Date') {
-                    $this->getElement($field)
-                        ->setAttrib(
-                            'class' ,
-                            $this->getElement($field)
-                                ->getAttrib('class') . ' input-date'
-                        );
-                }
-            }
-            if (!empty($row['axis_validator'])) {
-                $this->getElement($field)
-                    ->addValidator(new $row['axis_validator']());
-            }
-            if (isset($row['customer_valueset_id'])) {
-                $values = Axis::single('account/Customer_ValueSet_Value')
-                    ->getCustomValues(
-                        $row['customer_valueset_id'],
-                        Axis_Locale::getLanguageId()
-                    );
-                $this->getElement($field)
-                     ->setMultiOptions($values);
-            }
-            $groupsFields[$row['customer_field_group_id']][$row['id']] = $field;
+        $aSort = $this->_fieldConfig[$a['name'] . '_sort_order'];
+        $bSort = $this->_fieldConfig[$b['name'] . '_sort_order'];
+        if ($aSort == $bSort) {
+            return 0;
         }
-
-        /* add field groups */
-        if (count($groupsFields)) {
-            $groups = Axis::single('account/customer_fieldGroup')
-                ->getCustomGroups(
-                    array_keys($groupsFields), Axis_Locale::getLanguageId()
-                );
-            foreach ($groups as $row) {
-                $groupName = empty($row['name']) ?
-                        $row['id'] : $row['name'];
-                $this->addDisplayGroup(
-                    array_values($groupsFields[$row['id']]),
-                    $groupName,
-                    array(
-                        'legend' => $row['group_label'],
-                        'colsetClass' => 'col2-set'
-                    )
-                );
-                $this->getDisplayGroup($groupName)->addColumn(
-                        array_values($groupsFields[$row['id']]), 'col'
-                    );
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return  Axis_Account_Model_Form_Address Fluent interface
-     */
-    public function addUseAsDefaultAddressCheckbox()
-    {
-        $element = $this->createElement('checkbox', 'default_billing', array(
-            'label' => 'Use as my default billing address',
-            'class' => 'input-checkbox'
-        ));
-        $element->addDecorator('Label', array(
-                'tag' => '',
-                'placement' => 'append',
-                'separator' => ''
-            ))
-            ->addDecorator('HtmlTag', array(
-                'tag' => 'div',
-                'class' => 'label-inline'
-            ));
-        $this->getDisplayGroup('address')
-            ->addElement($element)
-            ->addRow('default_billing', 'default_billing');
-
-        $element = $this->createElement('checkbox', 'default_shipping', array(
-            'label' => 'Use as my default shipping address',
-            'class' => 'input-checkbox'
-        ));
-        $element->addDecorator('Label', array(
-                'tag' => '',
-                'placement' => 'append',
-                'separator' => ''
-            ))
-            ->addDecorator('HtmlTag', array(
-                'tag' => 'div',
-                'class' => 'label-inline'
-            ));
-        $this->getDisplayGroup('address')
-            ->addElement($element)
-            ->addRow('default_shipping', 'default_shipping');
-
-        return $this;
+        return ($aSort < $bSort) ? -1 : 1;
     }
 }

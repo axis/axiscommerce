@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Box
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,6 +33,15 @@
  */
 class Axis_Core_Box_Virtual_Abstract extends Axis_Core_Box_Abstract
 {
+    /**
+     *
+     * @return string 
+     */
+    public function getTemplate()
+    {
+        return '';
+    }
+    
     /**
      *
      * @return string

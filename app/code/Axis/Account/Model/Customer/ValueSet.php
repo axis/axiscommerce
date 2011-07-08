@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -51,27 +51,9 @@ class Axis_Account_Model_Customer_ValueSet extends Axis_Db_Table
      */
     public function save($data)
     {
-        if (!sizeof($data))
+        if (empty($data['name'])) {
             return false;
-        
-        $row = array(
-            'name' => $data['valueSetName']
-        );
-        
-        $validator = new Zend_Validate_Digits();
-        
-        if ($validator->isValid($data['valueSetId'])) {
-            $valuesetId = $this->update(
-                $row, $this->getAdapter()->quoteInto('id = ?', $data['valueSetId'])
-            );
-        } else {
-            $valuesetId = $this->insert($row);
         }
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-            )
-        );
-        return $valuesetId;
+        return $this->getRow($data)->save();
     }
 }

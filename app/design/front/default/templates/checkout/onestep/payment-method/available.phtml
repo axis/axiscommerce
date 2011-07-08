@@ -1,0 +1,31 @@
+<?php echo $this->message() ?>
+
+<label id="payment-required" class="error" style="display: none;"><?php echo $this->translate('checkout')->__('Payment Method is required.') ?></label>
+
+<?php if (!count($this->checkout['payment_methods']['methods'])) : ?>
+
+    <p class="no-methods-available"><?php echo $this->translate('checkout')->__('We can not accept payment from this billing address.')?></p>
+
+<?php else : ?>
+
+    <ol>
+    <?php foreach ($this->checkout['payment_methods']['methods'] as $method) : ?>
+        <li class="payment-method">
+            <h5 class="payment-method-title">
+                <input type="radio" name="payment[method]" value="<?php echo $method['code'] ?>"
+                    id="payment_method-<?php echo $method['code'] ?>"
+                    class="payment-method-radio"
+                    <?php echo $method['code'] == $this->checkout['payment_methods']['currentMethodCode'] ? ' checked="checked"' : ''; ?>
+                /><label for="payment_method-<?php echo $method['code'] ?>"><?php
+                    echo $method['title']
+                ?></label>
+            </h5>
+            <?php echo $this->paymentForm($method['code'], 'form') ?>
+        </li>
+    <?php endforeach; ?>
+    </ol>
+    <script type="text/javascript">
+        Onestep.getPayment().activate();
+    </script>
+
+<?php endif; ?>

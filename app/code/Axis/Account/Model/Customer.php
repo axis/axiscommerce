@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -42,46 +42,33 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
     protected $_dependentTables = array('Axis_Account_Model_Customer_Detail');
 
     /**
-     * Update or insert customer row
      *
      * @param array $data
-     * @return array|false
+     * @return type 
      */
-    public function save(array $data)
+    public function create(array $data) 
     {
-        if (!isset($data['id']) || !$row = $this->find($data['id'])->current()) {
-            unset($data['id']);
-            $row = $this->createRow();
-            $row->created_at = Axis_Date::now()->toSQLString();
-            if (!isset($data['password']) || empty($data['password'])) {
-                $data['password'] = $this->generatePassword();
-            }
+        $row = $this->createRow($data);
+        
+        if (empty($row->password)) {
+            $row->password = $this->generatePassword();
         }
-        $password = '';
-        if (isset($data['password']) && !empty($data['password'])) {
-            $password = $data['password'];
-            $data['password'] = md5($data['password']);
-        } else {
-            unset($data['password']);
-        }
-
-        if (!isset($data['locale'])) {
-            $data['locale'] = Axis_Locale::getLocale()->toString();
-        }
-
-        $row->setFromArray($data);
+        $password = $row->password;
+        $row->password = md5($password);
+        
         $row->modified_at = Axis_Date::now()->toSQLString();
-
-        if (!$row->save()) {
-            return false;
+        
+        if (empty($row->created_at)) {
+            $row->created_at = $row->modified_at;
         }
-
-        Axis::single('account/customer_detail')->save($row->id, $data);
-
-        return array(
-            'id'        => $row->id,
-            'password'  => $password
-        );
+        
+        if (empty($row->locale)) {
+            $row->locale = Axis_Locale::getLocale()->toString();
+        }
+        
+        $row->save();
+        
+        return array($row, $password);
     }
 
     /**
@@ -127,7 +114,6 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
             Zend_Session::regenerateId();
             Axis::dispatch('account_customer_login_success', array('username' => $email));
             Axis::single('checkout/cart')->merge();
-            Axis::single('checkout/checkout')->getStorage()->asGuest = null;
         }
 
         return $this;
@@ -148,32 +134,6 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
     }
 
     /**
-     *
-     * @param string|array|Zend_Db-Select $where
-     * @return array
-     */
-    public function getCountList($where = null)
-    {
-        $select = $this->getAdapter()->select();
-        $select->from(
-                array('o' => $this->_prefix . 'account_customer'),
-                array("created_at" ,'COUNT(*) as hit')
-            )
-           ->group('created_at')
-           ->order('created_at');
-        if (is_string($where) && $where) {
-            $select->where($where);
-        } elseif (is_array($where)) {
-            foreach ($where as $condition) {
-                if ($condition) {
-                    $select->where($condition);
-                }
-            }
-        }
-        return $this->getAdapter()->fetchPairs($select->__toString());
-    }
-
-    /**
      * Checks, is user exists in database. If not - clearIdentity called
      *
      * @return void
@@ -183,7 +143,7 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
         if (!Axis::getCustomerId()) {
             return;
         }
-        if (!$customer = $this->find(Axis::getCustomerId())->current()) {
+        if (!$customer = Axis::getCustomer()) {
             return $this->logout();
         }
         if (!$customer->is_active) {
@@ -196,14 +156,16 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
 
     /**
      *
-     * @param int $customerId
+     * @param int $customerId [optional]
      * @return int|null
      */
-    public function getGroupId($customerId)
+    public function getGroupId($customerId = null)
     {
         $customerGroupId = null;
 
-        if ($customerId && $row = $this->find($customerId)->current()) {
+        if (!$customerId && $row = Axis::getCustomer()) {
+            $customerGroupId = $row->group_id;
+        } else if ($customerId && $row = $this->find($customerId)->current()) {
             $customerGroupId = $row->group_id;//parent::getGroupId()
         }
 

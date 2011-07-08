@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -221,12 +221,10 @@ class Axis_Core_Model_Module_Row extends Axis_Db_Table_Row
         if (!$this->isInstalled()) {
             return false;
         }
-        $upgradeModel = Axis::model('core/module_upgrade');
-        $select = $upgradeModel->select()
+        return Axis::model('core/module_upgrade')->select()
             ->where('module_id = ?', $this->id)
             ->order('id desc')
-            ->limit(1);
-        return $upgradeModel->fetchRow($select);
+            ->fetchRow();
     }
 
     public function install()

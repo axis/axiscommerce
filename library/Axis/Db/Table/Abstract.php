@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Db
  * @subpackage  Axis_Db_Table
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -284,6 +284,26 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     }
 
     /**
+     * Prepare data for table before save
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function _prepareDataForTable($data)
+    {
+        foreach ($this->info(self::METADATA) as $name => $values) {
+            if (!isset($data[$name]) || ($data[$name] instanceof Zend_Db_Expr)) {
+                continue;
+            }
+
+            if ('decimal' == $values['DATA_TYPE']) {
+                $data[$name] = Axis_Locale::getNumber($data[$name]);
+            }
+        }
+        return $data;
+    }
+
+    /**
      * @todo remove this, need use Axis::message in controllers
      *
      * @param  array  $data  Column-value pairs.
@@ -292,6 +312,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     public function insert(array $data)
     {
         try {
+            $data = $this->_prepareDataForTable($data);
             return parent::insert($data);
         } catch (Exception $e) {
             Axis::message()->addError($e->getMessage());
@@ -309,6 +330,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
     public function update(array $data, $where)
     {
         try {
+            $data = $this->_prepareDataForTable($data);
             return parent::update($data, $where);
         } catch (Exception $e) {
             Axis::message()->addError($e->getMessage());
@@ -407,7 +429,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
      * @return Zend_Db_Table_Row_Abstract|null The row results per the
      *     Zend_Db_Adapter fetch mode, or null if no row found.
      */
-    public function fetchRow($where = null, $order = null)
+    public function fetchRow($where = null, $order = null, $offset = null)
     {
         if (!($where instanceof Zend_Db_Table_Select)) {
             $select = $this->select()
@@ -422,10 +444,10 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
                 $this->_order($select, $order);
             }
 
-            $select->limit(1);
+            $select->limit(1, ((is_numeric($offset)) ? (int) $offset : null));
 
         } else {
-            $select = $where->limit(1);
+            $select = $where->limit(1, $where->getPart(Zend_Db_Select::LIMIT_OFFSET));
         }
 
         $rows = $this->_fetch($select);
@@ -451,7 +473,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
 
     /**
      * Returns the Row found or created with the primary keys or data array
-     * 
+     *
      * @param  mixed $key The value(s) of the primary keys.
      * @return Zend_Db_Table_Row_Abstract Row matching the criteria.
      * @throws Zend_Db_Table_Exception
@@ -476,7 +498,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
             }
             $data = $args[0];
         } else {
-        
+
             if (count($args) < count($keyNames)) {
                 require_once 'Zend/Db/Table/Exception.php';
                 throw new Zend_Db_Table_Exception("Too few columns for the primary key");
@@ -492,7 +514,7 @@ abstract class Axis_Db_Table_Abstract extends Zend_Db_Table_Abstract
             }
             $data = $primary;
         }
-        
+
         $select = $this->select();
         foreach ($primary as $key => $value) {
             $select->where("$key = ?", $value);

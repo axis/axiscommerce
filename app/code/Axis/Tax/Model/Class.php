@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Tax
  * @subpackage  Axis_Tax_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,54 +33,21 @@
  */
 class Axis_Tax_Model_Class extends Axis_Db_Table
 {
-    /**
-     * The default table name
-     */
     protected $_name = 'tax_class';
-
-    public function update(array $data, $where)
-    {
-        if (empty($data['modified_on'])) {
-            $data['modified_on'] = Axis_Date::now()->toSQLString();
-        }
-        return parent::update($data, $where);
-    }
-    
-    public function insert(array $data)
-    {
-        if (empty($data['created_on'])) {
-            $data['created_on'] = Axis_Date::now()->toSQLString();
-        }
-        return parent::insert($data);
-    }
 
     /**
      * Save data call backend
      * @param array $data
+     * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
-        if (!sizeof($data)) {
-            return false;
+        $row = $this->getRow($data);
+        $row->modified_on = Axis_Date::now()->toSQLString();
+        if (empty($row->created_on)) {
+            $row->created_on = $row->modified_on;
         }
-        $flag = true;
-        foreach ($data as $id => $row) {
-            if (isset($row['id'])) {// update
-                $flag = $flag && (bool) $this->update(
-                    array(
-                        'name' => $row['name'],
-                        'description' => $row['description']
-                    ),
-                    'id = ' . intval($id)
-                );
-                continue;
-            }
-
-            $flag = $flag && (bool) $this->insert(array(
-                'name' => $row['name'],
-                'description' => $row['description']
-            ));
-        }
-        return $flag;
+        $row->save();
+        return $row;
     }
 }

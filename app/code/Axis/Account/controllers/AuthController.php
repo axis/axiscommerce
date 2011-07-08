@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,31 +33,24 @@
  */
 class Axis_Account_AuthController extends Axis_Core_Controller_Front
 {
-
-    protected function _generatePassword()
-    {
-        mt_srand((double)microtime(1)*1000000);
-        return md5(mt_rand());
-    }
-
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('Auth'), '/account/auth'
-        );
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('account')->__('Auth'),
+            'controller' => 'auth',
+            'route'      => 'account'
+        ));
     }
 
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Log in or create an account'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
         if (Axis::getCustomerId()) {
             $this->_redirect('account');
         }
-
+        $this->setTitle(Axis::translate('account')->__(
+            'Log in or create an account'
+        ));
         $this->render();
     }
 
@@ -67,6 +60,16 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
             $this->_getParam('username'),
             $this->_getParam('password')
         );
+
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $this->_helper->layout->disableLayout();
+            if (Axis::getCustomerId()) { // bad login method design. try..catch or return information should be used
+                $this->_helper->json->sendSuccess();
+            } else {
+                $this->_helper->json->sendFailure();
+            }
+            return;
+        }
 
         $this->_redirect($this->_hasSnapshot() ?
             $this->_getSnapshot() :
@@ -85,27 +88,28 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
             $this->_redirect('account');
         }
 
-        $this->view->pageTitle = Axis::translate('account')->__('Create an Account');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('account')->__('Create an Account'));
+
         $form = Axis::single('account/form_signup');
 
-        if ($this->_request->isPost()) {
-            $request = $this->_request->getPost();
-            if ($form->isValid($request)) {
-                $mCustomer = Axis::single('account/customer');
-                $request['site_id'] = Axis::getSiteId();
-                $request['is_active'] = 1;
-                $result = $mCustomer->save($request);
-                $mCustomer->login($request['email'], $request['password']);
-
+        if ($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost();
+            if ($form->isValid($data)) {
+                $model = Axis::single('account/customer');
+                $data['site_id'] = Axis::getSiteId();
+                $data['is_active'] = 1;
+                list($row, $password) = $model->create($data);
+                $row->setDetails($data);
+                
                 Axis::dispatch('account_customer_register_success', array(
-                    'customer' => $mCustomer->find($result['id'])->current(),
-                    'password' => $result['password']
+                    'customer' => $row,
+                    'password' => $password
                 ));
-
+                
+                $model->login($data['email'], $password);
                 return $this->_redirect('account');
             } else {
-                $form->populate($request);
+                $form->populate($data);
             }
         }
 

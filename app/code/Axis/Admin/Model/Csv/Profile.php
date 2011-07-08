@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -58,45 +58,28 @@ class Axis_Admin_Model_Csv_Profile extends Axis_Db_Table
             ->fetchAll();
     }
 
-    public function save(array $data, array $filters)
+    /**
+     *
+     * @param array $data
+     * @return Axis_Db_Table_Row
+     */
+    public function save(array $data)
     {
-        if ($data['id'] == '') {
-            $data['created_at'] = Axis_Date::now()->toSQLString();
-            $data['updated_at'] = '0000-00-00 00:00:00';
-            unset($data['id']);
-            $row = $this->createRow();
-        } else {
-            $data['updated_at'] = Axis_Date::now()->toSQLString();
+        $row = false;
+        if (!empty($data['id'])) {
             $row = $this->find($data['id'])->current();
         }
-        $row->setFromArray($data);
-        $row->save();
-
-        if ($row->direction == 'export') {
-            $filter = $row->findDependentRowset('Axis_Admin_Model_Csv_Profile_Filter')->current();
-            if (!$filter)
-            {
-                $filter = Axis::single('admin/csv_profile_filter')->createRow();
-                $filter->profile_id = $row->id;
-            }
-            $filter->setFromArray($filters);
-            $filter->language_ids = trim($filters['language_ids'], ', ');
-            $filter->price_from = is_numeric($filters['price_from']) ?
-                    $filters['price_from'] : new Zend_Db_Expr('NULL');
-            $filter->price_to = is_numeric($filters['price_to']) ?
-                    $filters['price_to'] : new Zend_Db_Expr('NULL');
-            $filter->qty_from = is_numeric($filters['qty_from']) ?
-                    $filters['qty_from'] : new Zend_Db_Expr('NULL');
-            $filter->qty_to = is_numeric($filters['qty_to']) ?
-                    $filters['qty_to'] : new Zend_Db_Expr('NULL');
-            $filter->save();
+        if (!$row) {
+            unset($data['id']);
+            $row = $this->createRow();
         }
-        Axis::message()->addSuccess(
-            Axis::translate('admin')->__(
-                'Profile was saved successfully'
-            )
-        );
-        return true;
+        $row->setFromArray($data);
+        $row->updated_at = Axis_Date::now()->toSQLString();
+        if (empty($row->created_at)) {
+            $row->created_at = $row->updated_at;
+        }
+        $row->save();
+        return $row;
     }
 
     public function deleteByIds(array $ids)

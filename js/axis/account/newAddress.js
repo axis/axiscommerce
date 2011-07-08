@@ -16,19 +16,49 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 $(document).ready(function(){
+    
+    var elZone = $('.input-zone');
+    
+    elZone.after(
+        '<input type="text" class="'
+        + elZone.attr('class') + ' input-text" name="'
+        + elZone.attr('name') + '" id="'
+        + elZone.attr('id') + '"'
+        + ' />'
+    );
+        
+    function toggleZone(el)
+    {
+        var select = el, textfield = el.next();
+
+        if (select.children().length) {
+            select.insertAfter(textfield)
+                .removeAttr('disabled')
+                .show();
+            textfield.attr('disabled', 'disabled')
+                .hide();
+        } else {
+            select.insertAfter(textfield)
+                .attr('disabled', 'disabled')
+                .hide();
+            textfield.removeAttr('disabled')
+                .show();
+        }
+    }
+    toggleZone(elZone);
+    
     $('.input-country').change(function(){
-        var inputZone = $(this)
-            .parents('form')
-            .find('.input-zone');
 
-        inputZone.removeOption(/./);
+        elZone.removeOption(/./);
 
-        if (Zones[this.value])
-            inputZone.addOption(Zones[this.value], false);
+        if (Zones[this.value]) {
+            elZone.addOption(Zones[this.value], false);
+        }
+        toggleZone(elZone);
     });
 });
 

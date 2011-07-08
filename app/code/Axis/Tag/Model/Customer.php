@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Tag
  * @subpackage  Axis_Tag_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -172,96 +172,7 @@ class Axis_Tag_Model_Customer extends Axis_Db_Table
             self::STATUS_DISAPPROVED => Axis::translate('core')->__('Disapproved')
         );
     }
-
-    /**
-     * @return Axis_Db_Table_Row
-     */
-    public function getRowByTag($tag)
-    {
-        return $this->fetchRow(
-            $this->select()
-                ->where('name = ?', $tag)
-                ->where('customer_id = ?', Axis::getCustomerId())
-                ->where('site_id = ?', Axis::getSiteId())
-        );
-    }
-
-    /**
-    * Links recieved tags to product.
-    * Split tags by spaces and link each to productId
-    *
-    * @param string $tags
-    * @param int $productId
-    * @return bool
-    */
-    public function save($tags, $productId)
-    {
-        $tags = explode(',', $tags);
-
-        foreach ($tags as $tag) {
-            $tag = trim($tag);
-            if (empty($tag)) {
-                continue;
-            }
-            $tagCustomerRow = $this->getRowByTag($tag);
-
-            if ($tagCustomerRow instanceof Axis_Db_Table_Row) {
-
-                $rowsWithProductId = $tagCustomerRow
-                    ->findDependentRowset(Axis::single('tag/product'));
-                $exists = false;
-                foreach ($rowsWithProductId as $row) {
-                    if ($row->product_id == $productId) {
-                        $exists = true;
-                        break;
-                    }
-                }
-                if (!$exists) {
-                    Axis::single('tag/product')->insert(array(
-                        'customer_tag_id' => $tagCustomerRow->id,
-                        'product_id'      => $productId
-                    ));
-                    Axis::dispatch('tag_product_add_success', array(
-                        'tag'        => $tag,
-                        'product_id' => $productId
-                    ));
-                    Axis::message()->addSuccess(
-                        Axis::translate('tag')->__(
-                            "Tag '%s' was successfully added to product", $tag
-                        )
-                    );
-                } else {
-                    Axis::message()->addError(
-                        Axis::translate('tag')->__(
-                            "Your tag '%s' is already added to this product", $tag
-                        )
-                    );
-                }
-            } else {
-                $tagId = $this->insert(array(
-                    'customer_id' => Axis::getCustomerId(),
-                    'site_id'     => Axis::getSiteId(),
-                    'name'        => $tag,
-                    'status'      => $this->getDefaultStatus()
-                ));
-                Axis::single('tag/product')->insert(array(
-                    'customer_tag_id' => $tagId,
-                    'product_id'      => $productId
-                ));
-                Axis::dispatch('tag_product_add_success', array(
-                    'tag'        => $tag,
-                    'product_id' => $productId
-                ));
-                Axis::message()->addSuccess(
-                    Axis::translate('tag')->__(
-                        "Tag '%s' was successfully added to product", $tag
-                    )
-                );
-            }
-        }
-        return true;
-    }
-
+    
     /**
      * Retrieve the default tag status
      * @return int

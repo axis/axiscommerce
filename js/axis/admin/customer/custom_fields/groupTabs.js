@@ -18,18 +18,18 @@
  */
 
 Ext.onReady(function() {
- 
+
     var tabs = Ext.query("#axis-tabs a");
-    
+
     for (var i=0; i<tabs.length; i++){
         tabs[i].onclick = new Function("clickTab(\'" + tabs[i].id + "\'); return false;");
     }
-    
+
     $('#createButton').unbind().bind('click', function(){
-        createGroup(); 
+        createGroup();
         return false;
     });
-    
+
     if (groupId == '') {
         Ext.getDom('deleteButton').style.display = 'none';
         createGroup();
@@ -51,7 +51,7 @@ function clickTab(tabId){
         return;
     }
     //activating clicked tab
-    var elem = document.getElementById('axis-tabs').getElementsByTagName('a');  
+    var elem = document.getElementById('axis-tabs').getElementsByTagName('a');
     for (var i = 0; i < elem.length; i++) {
         elem[i].className = "";
     }
@@ -70,11 +70,11 @@ function loadGroupData(){
         url: Axis.getUrl('customer_custom-fields/get-group-info/groupId/') + groupId,
         success: function(response){
             var data = eval('('+ response.responseText +')');
-            Ext.getDom('groupName').value = data.data[0] ? data.data[0].name : '';
-            Ext.getDom('sortOrder').value = data.data[0] ? data.data[0].sort_order : '';
-            Ext.getDom('groupAct').value = data.data[0] ? data.data[0].is_active : '';
+            Ext.getDom('name').value = data.data[0] ? data.data[0].name : '';
+            Ext.getDom('sort_order').value = data.data[0] ? data.data[0].sort_order : '';
+            Ext.getDom('is_active').value = data.data[0] ? data.data[0].is_active : '';
             for (var i=0, length = data.data.length; i < length; i++){
-                Ext.getDom('groupTitle'+(data.data[i].language_id)).value = data.data[i].group_label;
+                Ext.getDom('group_label-' + data.data[i].language_id).value = data.data[i].group_label;
             }
         },
         failure: function(){
@@ -89,32 +89,32 @@ function createGroup() {
         alert ('Save your New group first');
         return;
     }
-    
+
     temp_groupId = groupId;
-    groupId = 'null';
+    groupId = null;
     editing_new_group = true;
-    
+
     Ext.query('span', 'deleteButton')[0].firstChild.nodeValue = 'Cancel';
     Ext.query('span', 'createButton')[0].firstChild.nodeValue = 'Save';
     $('#createButton').unbind().bind('click', function(){
-        saveGroup(); 
+        saveGroup();
         return false;
     });
-       
+
     var li = document.createElement('li');
     var a = document.createElement('a');
     var title = document.createTextNode('New group');
     a.href = '#';
-    
+
     if (Ext.query('.active', '#axis-tabs')[0]){
         Ext.query('.active', '#axis-tabs')[0].className = '';
     }
-    
+
     a.className = 'active';
     a.appendChild(title);
     li.appendChild(a);
     document.getElementById('axis-tabs').appendChild(li);
-    
+
     Ext.query('.active', '#axis-tabs')[0].id = 'new';
     $('#axis-tabs .active').bind('click', function(){
         clickTab(this.id);
@@ -122,71 +122,67 @@ function createGroup() {
     });
     //hide grid
     Ext.getDom('fields-grid').style.display = 'none';
-    
+
     //reset language tabs
     var el = Ext.query('input', 'language-tabs');
     for (var i = 0; i < el.length; i++) {
         el[i].value = '';
     }
-    Ext.getDom('sortOrder').value = '3';  
+    Ext.getDom('sort_order').value = '3';
 }
 
 function saveGroup(){
     var data = {};
-    
+
     var el = Ext.query('input', 'language-tabs');
     for (var i = 0; i < el.length; i++) {
        data[el[i].id] = el[i].value;
     }
-    data['groupId'] = groupId;
-    data['isActive'] = Ext.getDom('groupAct').value;
-    
+    data['id'] = groupId;
+    data['is_active'] = Ext.getDom('is_active').value;
+
     var jsonData = Ext.encode(data);
-    if (data['groupName'] == ''){
+    if (data['name'] == ''){
         alert('enter valid Group name');
         return;
-    } else {
-        Ext.Ajax.request({
-            url: Axis.getUrl('customer_custom-fields/ajax-save-group'),
-            params: {data: jsonData},
-            success: function(response){
-                if (editing_new_group){
-                    editing_new_group = false;
-                    //get id of new group from response
-                    var new_group = eval('('+ response.responseText +')');
-                    groupId = new_group.groupId;
-                    
-                    Ext.query('span', 'deleteButton')[0].firstChild.nodeValue = 'Delete group';
-                    //show grid
-                    Ext.getDom('fields-grid').style.display = 'block';
-                    //set tab id to tab-groupId                        
-                    Ext.getDom('new').id='tab-' + groupId;
-                }
-                                
-                //changing tab text
-                var active = Ext.query('.active', '#axis-tabs');
-                active[0].firstChild.nodeValue = data['groupTitle' + Axis.language];
-                //reloading grid
-                gs.reload();
-                ds.proxy.conn.url = Axis.getUrl('customer_custom-fields/get-fields/groupId/' + groupId + '/');
-                ds.load();
-                
-                //getting createButton back
-                Ext.query('span', 'createButton')[0].firstChild.nodeValue = 'Create group';
-                $('#createButton').unbind().bind('click', function(){
-                    createGroup(); 
-                    return false;
-                });
-                Ext.getDom('deleteButton').style.display = 'block';
-            }
-        })
     }
+    Ext.Ajax.request({
+        url: Axis.getUrl('customer_custom-fields/ajax-save-group'),
+        params: {data: jsonData},
+        success: function(response){
+            if (editing_new_group){
+                editing_new_group = false;
+                //get id of new group from response
+                var new_group = eval('('+ response.responseText +')');
+                groupId = new_group.group_id;
+
+                Ext.query('span', 'deleteButton')[0].firstChild.nodeValue = 'Delete group';
+                //show grid
+                Ext.getDom('fields-grid').style.display = 'block';
+                //set tab id to tab-groupId
+                Ext.getDom('new').id='tab-' + groupId;
+            }
+
+            //changing tab text
+            var active = Ext.query('.active', '#axis-tabs');
+            active[0].firstChild.nodeValue = data['group_label-' + Axis.language];
+            //reloading grid
+            gs.reload();
+            ds.baseParams.groupId = groupId;
+            ds.load();
+
+            //getting createButton back
+            Ext.query('span', 'createButton')[0].firstChild.nodeValue = 'Create group';
+            $('#createButton').unbind().bind('click', function(){
+                createGroup();
+                return false;
+            });
+            Ext.getDom('deleteButton').style.display = 'block';
+        }
+    });
 }
 
 function deleteGroup() {
-    if (!groupId) { //if groups not exist yet
-        return;
-    }
     if (editing_new_group){             //if new group not saved yet (other groups are exist)
         groupId = temp_groupId;
         Ext.get('new').parent().remove();
@@ -194,7 +190,7 @@ function deleteGroup() {
         Ext.query('span', 'deleteButton')[0].firstChild.nodeValue = 'Delete group';
         Ext.query('span', 'createButton')[0].firstChild.nodeValue = 'Create group';
         $('#createButton').unbind().bind('click', function(){
-            createGroup(); 
+            createGroup();
             return false;
         });
         //switching to previous active group
@@ -203,32 +199,36 @@ function deleteGroup() {
         ds.proxy.conn.url = Axis.getUrl('customer_custom-fields/get-fields/groupId/' + groupId + '/');
         ds.reload();
         loadGroupData();
-        
+
     } else { //if deleting existing and saved group
-        if (!confirm('Are you sure?'))
+        if (!groupId) { //if groups not exist yet
+            return;
+        }
+        if (!confirm('Are you sure?'.l())) {
             return false;
+        }
         Ext.Ajax.request({
             url: Axis.getUrl('customer_custom-fields/ajax-delete-group'),
             params: {id: groupId},
             callback: function() {
                 Ext.get('tab-' + groupId).parent().remove();
-                
+
                 Ext.Ajax.request({
                     url: Axis.getUrl('customer_custom-fields/get-groups'),
                     success: function(response) {
-                        var data = eval('('+ response.responseText +')');
-                        
-                        if (!data.data[0]){ //if last group was deleted
-                            createGroup();
-                            Ext.getDom('deleteButton').style.display = 'none';
+                        var response = eval('('+ response.responseText +')');
+
+                        for (var i in response.data) {
+                            groupId = response.data[i].id;
+                            Ext.getDom('tab-' + groupId).className = 'active';
+                            ds.baseParams.groupId = groupId;
+                            ds.reload();
+                            loadGroupData();
                             return;
                         }
-                        groupId = data.data[0].id;
-        
-                        Ext.getDom('tab-' + groupId ).className = 'active';
-                        ds.proxy.conn.url = Axis.getUrl('customer_custom-fields/get-fields/groupId/' + groupId + '/');
-                        ds.reload();
-                        loadGroupData();
+
+                        createGroup();
+                        Ext.getDom('deleteButton').style.display = 'none';
                     }
                 });
             }

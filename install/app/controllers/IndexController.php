@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Install
  * @subpackage  Axis_Install_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -336,7 +336,7 @@ class IndexController extends Zend_Controller_Action
             Axis::message()->addError($e->getTraceAsString());
             $this->_install->log($e->getMessage());
             $this->_install->log($e->getTraceAsString());
-            $this->_redirect('index/step-modules');
+            $this->_redirect('index/step-user');
         }
         $this->_redirect('index/step-finish');
     }

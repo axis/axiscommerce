@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,19 +33,6 @@
  */
 class Axis_Admin_Sales_OrderStatusController extends Axis_Admin_Controller_Back
 {
-    /**
-     * Order status' model
-     *
-     * @var Axis_Sales_Model_Order_Status
-     */
-    protected $_table;
-
-    public function init()
-    {
-        parent::init();
-        $this->_table = Axis::single('sales/order_status_text');
-    }
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('sales')->__('Order Status');
@@ -77,9 +64,10 @@ class Axis_Admin_Sales_OrderStatusController extends Axis_Admin_Controller_Back
 
         $parentId = $this->_getParam('parentId', null);
 
+        $model = Axis::single('sales/order_status');
         if (null === $parentId && $this->_hasParam('statusId')) {
-            $statusId = intval($this->_getParam('statusId'));
-            if (!Axis::single('sales/order_status')->getSystem($statusId)) {
+            $statusId = (int) $this->_getParam('statusId');
+            if (!$model->getSystem($statusId)) {
                 $parentId = current(Axis::single('sales/order_status_relation')
                     ->getParents($statusId)
                 );
@@ -88,7 +76,7 @@ class Axis_Admin_Sales_OrderStatusController extends Axis_Admin_Controller_Back
             }
         }
 
-        $data = Axis::single('sales/order_status')->getList($parentId);
+        $data = $model->getList($parentId);
         $result = array();
         foreach ($data as $row) {
             $result[$row['id']]['id'] = $row['id'];
@@ -118,35 +106,65 @@ class Axis_Admin_Sales_OrderStatusController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $data = Zend_Json::decode($this->_getParam('data'));
+        $dataset = Zend_Json::decode($this->_getParam('data'));
 
-        if (!sizeof($data)) {
+        if (!sizeof($dataset)) {
             return;
         }
-        return $this->_helper->json->sendJson(array(
-            'success' => Axis::single('sales/order_status')->batchSave($data)
+
+        $model       = Axis::model('sales/order_status');
+        $modelLabel  = Axis::model('sales/order_status_text');
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+
+        foreach ($dataset as $_row) {
+            $row = $model->getRow($_row);
+            $row->save();
+            foreach ($languageIds as $languageId) {
+                $rowLabel = $modelLabel->getRow($row->id, $languageId);
+                $rowLabel->status_name = $_row['status_name_' . $languageId];
+                $rowLabel->save();
+            }
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('sales')->__(
+                'Status was saved successfully'
         ));
+        return $this->_helper->json->sendSuccess();
     }
 
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-        $statusId = intval($this->_getParam('statusId', 0));
-        if ($statusId) {
-            $status = Axis::single('sales/order_status')->save(
-                $statusId,
-                $this->_getParam('name'),
-                intval($this->_getParam('from')),
-                array_filter(explode(',', $this->_getParam('to'))),
-                $this->_getParam('status_name')
+        $_row = $this->_getAllParams();
+
+        $model       = Axis::model('sales/order_status');
+        $modelLabel  = Axis::model('sales/order_status_text');
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+
+        $row = $model->getRow($_row);
+        $row->system = (int)$row->system;
+        $row->save();
+
+        foreach ($languageIds as $languageId) {
+            $rowLabel = $modelLabel->getRow($row->id, $languageId);
+            $rowLabel->status_name = $_row['status_name'][$languageId];
+            $rowLabel->save();
+        }
+
+        if (!$row->system) {
+            $modelRelation = Axis::model('sales/order_status_relation');
+            $modelRelation->delete(
+                $this->db->quoteInto('from_status = ?', $row->id) .
+                $this->db->quoteInto('OR to_status = ?', $row->id)
             );
-        } else {
-            Axis::single('sales/order_status')->add(
-                $this->_getParam('name'),
-                intval($this->_getParam('from')),
-                array_filter(explode(',', $this->_getParam('to'))),
-                $this->_getParam('status_name')
-            );
+
+            $from = $this->_getParam('from');
+            $modelRelation->add($from, $row->id);
+
+            $childrens = array_filter(explode(',', $this->_getParam('to')));
+            foreach ($childrens as $child) {
+                $modelRelation->add($row->id, (int) $child);
+            }
         }
         return $this->_helper->json->sendSuccess();
     }
@@ -221,9 +239,11 @@ class Axis_Admin_Sales_OrderStatusController extends Axis_Admin_Controller_Back
                 $statusText[$languageId]['status_name'] : '';
         }
 
+        $parents = $status->getParents();
+
         return $this->_helper->json->sendSuccess(array(
             'data' => array_merge(array(
-                'from' => current($status->getParents()),
+                'from' => current($parents),
                 'name' => $status->name,
                 'statusId' => $status->id,
                 'to' => implode(',', $status->getChildrens()),

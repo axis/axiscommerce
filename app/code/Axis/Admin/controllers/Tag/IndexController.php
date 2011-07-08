@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,18 +33,6 @@
  */
 class Axis_Admin_Tag_IndexController extends Axis_Admin_Controller_Back
 {
-    /**
-     *
-     * @var Axis_Tag_Model_Customer
-     */
-    private $_table;
-
-    public function init()
-    {
-        parent::init();
-        $this->_table = Axis::single('tag/customer');
-    }
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('tag')->__('Tags');
@@ -85,7 +73,7 @@ class Axis_Admin_Tag_IndexController extends Axis_Admin_Controller_Back
         }
 
         $this->_helper->json->sendJson(array(
-            'success' => (bool) $this->_table->delete(
+            'success' => (bool) Axis::model('tag/customer')->delete(
                 $this->db->quoteInto('id IN(?)', $data)
             )
         ));
@@ -98,13 +86,12 @@ class Axis_Admin_Tag_IndexController extends Axis_Admin_Controller_Back
         if (!$data) {
             return $this->_helper->json->sendFailure();
         }
-        $success = true;
-        foreach ($data as $tagRow) {
-            $tag = $this->_table->find($tagRow['id'])->current();
-            $tag->status = $tagRow['status'];
-            $success = $success && (bool)$tag->save();
+        $model = Axis::model('tag/customer');
+        foreach ($data as $_row) {
+            $row = $model->getRow($_row);
+            $row->save();
         }
 
-        $this->_helper->json->sendJson(array('success' => $success));
+        $this->_helper->json->sendSuccess();
     }
 }

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -55,5 +55,13 @@ Ext.intercept(Ext.form.Field.prototype, 'afterRender', function() {
                 enabled: true
             });
         }
+    }
+    
+    if (this.description){
+        this.getEl().insertHtml('afterEnd', 
+            '<div class="x-form-element-description">'
+                + this.description
+            + '</div>'
+        );
     }
 });

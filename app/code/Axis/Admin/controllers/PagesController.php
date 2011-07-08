@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -32,15 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Admin_PagesController extends Axis_Admin_Controller_Back
-{
-    protected $_table;
-    
-    public function init()
-    {
-        parent::init();
-        $this->_table = Axis::single('core/page');
-    }
-    
+{   
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('cms')->__('Pages');
@@ -51,24 +43,37 @@ class Axis_Admin_PagesController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         
-        $data = $this->_table->fetchAll()->toArray();
+        $data = Axis::single('core/page')->fetchAll()
+            ->toArray();
         
-        return $this->_helper->json->sendSuccess(array(
-            'data' => array_values($data)
-        ));
+        return $this->_helper->json
+            ->setData(array_values($data))
+            ->sendSuccess();
     }
     
     public function saveAction()
     {   
         $this->_helper->layout->disableLayout();
+        $dataset = Zend_Json::decode($this->_getParam('data'));
         
-        $data = Zend_Json::decode($this->_getParam('data'));
+        if (!sizeof($dataset)) {
+            Axis::message()->addError(
+                Axis::translate('core')->__(
+                    'No data to save'
+            ));
+            return $this->_helper->json->sendFailure();
+        }
+        $model = Axis::model('core/page');
         
-        $success = Axis::single('core/page')->save($data);
+        foreach ($dataset as $_row) {
+            $model->save($_row);
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
+        ));
         
-        $this->_helper->json->sendJson(array(
-            'success' => $success
-        ));        
+        $this->_helper->json->sendSuccess();        
     }
     
     public function deleteAction()
@@ -85,7 +90,9 @@ class Axis_Admin_PagesController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        $this->_table->delete($this->db->quoteInto('id IN(?)', $ids));
+        Axis::single('core/page')->delete(
+            $this->db->quoteInto('id IN(?)', $ids)
+        );
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(

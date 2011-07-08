@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -86,7 +86,7 @@ Ext.onReady(function() {
                         return;
                     }
                     Config.window.show();
-                    Config.window.body.update(response.responseText);
+                    Config.window.body.update(response.responseText, true);
                     $('#confValue').focus();
                 }
             });
@@ -104,7 +104,11 @@ Ext.onReady(function() {
             if (node.id != tree.root.id) {
                 ds.baseParams['filter[tree][field]']    = 'path';
                 ds.baseParams['filter[tree][operator]'] = 'STRICT_LIKE';
-                ds.baseParams['filter[tree][value]']    = node.id + '%';
+                ds.baseParams['filter[tree][value]']    = node.id + '/%';
+            }
+
+            if (ds.lastOptions && ds.lastOptions.params) {
+                ds.lastOptions.params.start = 0; // reset pagination
             }
 
             ds.reload();

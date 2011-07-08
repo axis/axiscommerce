@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -52,11 +52,34 @@ class Axis_Admin_Community_RatingController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('community/review_rating')->save(
-                Zend_Json_Decoder::decode($this->_getParam('data'))
-            )
-        ));
+        
+        $count       = 0; 
+        $dataset     = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $model       = Axis::model('community/review_rating');
+        $modelTitle  = Axis::single('community/review_rating_title');
+        $languageIds = array_keys(Axis_Collect_Language::collect());
+        
+        foreach ($dataset as $data) {
+            $row = $model->save($data);
+            //save title
+            foreach ($languageIds as $languageId) {
+                $rowTitle = $modelTitle->getRow($row->id, $languageId);
+                $rowTitle->title = empty($data['title_' . $languageId])
+                    ? $row->name : $data['title_' . $languageId];
+                
+                $rowTitle->save();
+            }
+            $count++;
+        }
+        
+        if ($count) {
+            Axis::message()->addSuccess(
+                Axis::translate('community')->__(
+                    "%d rating(s) was saved successfully", $count
+                )
+            );
+        }
+        $this->_helper->json->sendSuccess();
     }
     
     public function deleteAction()

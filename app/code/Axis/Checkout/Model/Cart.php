@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -209,7 +209,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
             $quantity = $stockRow->min_qty_allowed ? $stockRow->min_qty_allowed : 1;
         }
 
-        if ($stockRow->decimal) {
+        if (!$stockRow->decimal) {
             $quantity = floor($quantity);
         }
 
@@ -256,7 +256,10 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
 
         // Check for clon exists
         if (false !== ($clon = $this->_getClon($productId, $attributes))) {
-            $this->updateItem($clon['id'], $clon['quantity'] + $quantity);
+            $this->updateItem(
+                $clon['id'],
+                $clon['quantity'] + Axis_Locale::getNumber($quantity)
+            );
             return true;
         }
 
@@ -377,7 +380,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
             return false;
         }
 
-        if ($stockRow->decimal) {
+        if (!$stockRow->decimal) {
             $quantity = floor($quantity);
         }
 
@@ -431,25 +434,21 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
      */
     public function validateContent()
     {
-        $isValid = true;
-        foreach ($this->getProducts() as $cartProductRow) {
-            if (!$product = Axis::single('catalog/product')
-                    ->find($cartProductRow['product_id'])->current()) {
+        $isValid        = true;
+        $productIds     = array();
+        $cartProducts   = $this->getProducts();
+        foreach ($cartProducts as $cartProduct) {
+            $productIds[$cartProduct['id']] = $cartProduct['product_id'];
+        }
+        $products   = Axis::model('catalog/product')->find($productIds);
 
-                $isValid = false;
-                $this->deleteItem($cartProductRow['id']);
-                Axis::message()->addError(
-                    Axis::translate('checkout')->__(
-                        "Product '%s' is not found in stock. product_id = %s",
-                        $cartProductRow['name'],
-                        $cartProductRow['product_id']
-                    )
-                );
-                continue;
-            }
+        $loadedProductIds = array();
+        foreach ($products as $product) {
+            $loadedProductIds[] = $product->id;
+            $cartProductId      = array_search($product->id, $productIds);
+            $cartProductRow     = $cartProducts[$cartProductId];
 
             $stockRow = $product->getStockRow();
-
             if (!$stockRow->canAddToCart(
                     $cartProductRow['quantity'],
                     $cartProductRow['variation_id'])) {
@@ -480,6 +479,22 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
                 }
             }
         }
+
+        foreach (array_diff($productIds, $loadedProductIds) as $missedProductId) {
+            // shopping cart has deleted products
+            $isValid        = false;
+            $cartProductId  = array_search($missedProductId, $productIds);
+            $cartProductRow = $cartProducts[$cartProductId];
+            $this->deleteItem($cartProductRow['id']);
+            Axis::message()->addError(
+                Axis::translate('checkout')->__(
+                    "Product '%s' is not found in stock. product_id = %s",
+                    $cartProductRow['name'],
+                    $cartProductRow['product_id']
+                )
+            );
+        }
+
         if (!$isValid) {
             Axis::message()->addNotice(
                 Axis::translate('checkout')->__(
@@ -523,7 +538,7 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
     {
         $count = 0;
         $items = Axis::single('checkout/cart_product')
-            ->getProductsSimple($this->getCartId());
+            ->getProducts($this->getCartId());
         foreach ($items as $item) {
             if ($item['decimal']) {
                 $count++;
@@ -557,24 +572,20 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
         if (!$customerId = Axis::getCustomerId()) {
             return false;
         }
-        $previousCartRow = $this->fetchRow(
-            $this->getAdapter()->quoteInto('customer_id = ?', $customerId)
-        );
-        if ($previousCartRow && $previousCartRow->id != $this->getCartId()) {
+        $adapter            = $this->getAdapter();
+        $previousCartRow    = $this->select()
+            ->where('customer_id = ?', $customerId)
+            ->fetchRow();
 
-            $collection = $this->getAdapter()->select()
-                ->from(
-                    array('ccp' => $this->_prefix . 'checkout_cart_product'),
-                    array('*', 'checkout_cart_product_id' => 'id')
-                )
-                ->joinLeft(
-                    array('ccpa' => $this->_prefix . 'checkout_cart_product_attribute'),
-                    'ccp.id = ccpa.shopping_cart_product_id'
-                )
-                ->where('ccp.shopping_cart_id = ?', $previousCartRow->id)
-                ;
-            $previousCartProducts = $this->getAdapter()
-                ->fetchAll($collection->__toString());
+        if ($previousCartRow && $previousCartRow->id != $this->getCartId()) {
+            $previousCartProducts = Axis::model('checkout/cart_product')
+                ->select(array('*', 'checkout_cart_product_id' => 'id'))
+                ->joinLeft('checkout_cart_product_attribute',
+                    'ccp.id = ccpa.shopping_cart_product_id',
+                    '*'
+                )->where('ccp.shopping_cart_id = ?', $previousCartRow->id)
+                ->fetchAll();
+
             $result = array();
             foreach ($previousCartProducts as $p) {
                 if (!isset($result[$p['checkout_cart_product_id']])) {
@@ -603,26 +614,25 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
                     $clon['id'], $clon['quantity'] + $product['quantity']
                 );
                 $removedShoppingProductIds[] = $shopppingCartProductId;
-
             }
             if (count($removedShoppingProductIds)) {
                 Axis::single('checkout/cart_product')->delete(
-                    $this->getAdapter()->quoteInto('id IN (?)', $removedShoppingProductIds)
+                    $adapter->quoteInto('id IN (?)', $removedShoppingProductIds)
                 );
             }
             Axis::single('checkout/cart_product')->update(
-                array('shopping_cart_id' => $this->getCartId()),
-                $this->getAdapter()->quoteInto(
-                    'shopping_cart_id = ?', $previousCartRow->id
-                )
+                array(
+                    'shopping_cart_id' => $this->getCartId()
+                ),
+                $adapter->quoteInto('shopping_cart_id = ?', $previousCartRow->id)
             );
-            $this->delete(
-                $this->getAdapter()->quoteInto('customer_id = ?', $customerId)
-            );
+            $this->delete($adapter->quoteInto('customer_id = ?', $customerId));
         }
         $this->update(
-            array('customer_id' => $customerId),
-            $this->getAdapter()->quoteInto('id = ?', $this->getCartId())
+            array(
+                'customer_id' => $customerId
+            ),
+            $adapter->quoteInto('id = ?', $this->getCartId())
         );
         return true;
     }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,6 +33,11 @@
  */
 class Axis_Catalog_Model_Product_Stock_Row extends Axis_Db_Table_Row
 {
+    /**
+     * @var Axis_Catalog_Model_Product_Row
+     */
+    protected $_productRow = null;
+
     /**
      * @param int $quantity [optional]
      * @param int $variationId [optional]
@@ -146,10 +151,12 @@ class Axis_Catalog_Model_Product_Stock_Row extends Axis_Db_Table_Row
             }
             $quantity = $variation->quantity;
         } else {
-            $quantity = Axis::single('catalog/product')
-                ->find($this->product_id)
-                ->current()
-                ->quantity;
+            if (null === $this->_productRow) {
+                $this->_productRow = Axis::single('catalog/product')
+                    ->find($this->product_id)
+                    ->current();
+            }
+            $quantity = $this->_productRow->quantity;
         }
         if ($availableOnly) {
             $quantity -= $this->min_qty;
@@ -212,5 +219,15 @@ class Axis_Catalog_Model_Product_Stock_Row extends Axis_Db_Table_Row
             'stock'         => $this
         ));
         return true;
+    }
+
+    /**
+     * @param Axis_Catalog_Model_Product_Row $row
+     * @return Axis_Catalog_Model_Product_Stock_Row
+     */
+    public function setProductRow(Axis_Catalog_Model_Product_Row $row)
+    {
+        $this->_productRow = $row;
+        return $this;
     }
 }

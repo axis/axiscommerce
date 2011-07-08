@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -70,7 +70,7 @@ $config = array(
                     'method' => 'updatePriceIndexOnProductMove'
                 )
             ),
-            'catalog_product_remove_after' => array(
+            'catalog_product_remove_from_category' => array(
                 'update_price_index' => array(
                     'type' => 'model',
                     'model' => 'catalog/observer',

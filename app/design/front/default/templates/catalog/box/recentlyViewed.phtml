@@ -1,0 +1,59 @@
+<form action="<?php echo $this->href($this->catalogUrl . '/product-compare/compare') ?>" method="post" id="form-recently-viewed">
+    <ul class="grid-row">
+    <?php
+    foreach ($this->box->products as $prodId => $product) :
+        $productUrl = $this->hurl(array(
+            'product' => array('value' => $prodId, 'seo' => $product['key_word']),
+            'controller' => 'catalog',
+            'action' => 'product'
+        ), false, true);
+    ?>
+        <li class="product-item">
+            <?php
+            $imagePath = isset($product['images'][$product['image_listing']]) ?
+                $product['images'][$product['image_listing']]['path'] : '';
+            $imageTitle = isset($product['images'][$product['image_listing']]) ?
+                $product['images'][$product['image_listing']]['title'] : '';
+            ?>
+            <a href="<?php echo $productUrl ?>"
+               class="product-image"
+               title="<?php echo $this->escape($product['name']) ?>"
+            ><?php echo $this->imager('/product' . $imagePath, array(
+                'width'  => 50,
+                'height' => 50,
+                'alt' => $this->escape($imageTitle),
+                'seo' => $product['image_seo_name']
+            ));
+            ?></a>
+            <input type="checkbox" name="product_id[]" class="checkbox-compare"
+                value="<?php echo $product['id'] ?>"
+                title="<?php echo $this->translate('catalog')->__('Select to compare') ?>"/>
+        </li>
+
+    <?php
+    endforeach; ?>
+    </ul>
+    <div>
+    <?php echo $this->button($this->translate('catalog')->__('Compare Selected'), array(
+        'class' => 'alt-button btn-compare f-right',
+        'type' => 'submit'
+    ), 'button') ?>
+    </div>
+</form>
+
+<script type="text/javascript">
+//<![CDATA[
+$().ready(function() {
+    $("#form-recently-viewed").submit(function() { // this should be replaced with validation plugin
+        if ($('#form-recently-viewed .checkbox-compare:checked').length < 2) {
+            $('#form-recently-viewed label.error').remove();
+            var message = "<?php echo $this->translate('catalog')->__("Please select at least two products you'd like to compare.") ?>";
+            $('#form-recently-viewed .btn-compare').before(
+                "<label class='error'>" + message + "</label>"
+            );
+            return false;
+        }
+    });
+});
+//]]>
+</script>

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,37 +31,67 @@
  * @subpackage  Axis_Cms_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Cms_IndexController extends Axis_Core_Controller_Front
+class Axis_Cms_IndexController extends Axis_Cms_Controller_Abstract
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('cms')->__('Pages');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('cms')->__('Pages'), null, false);
 
-        $categories = Axis::single('cms/category')->getActiveCategory();
+        $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
+            ->addCategoryContentTable()
+            ->columns(array('ccc.link', 'ccc.title'))
+            ->addActiveFilter()
+            ->addSiteFilter(Axis::getSiteId())
+            ->addLanguageIdFilter(Axis_Locale::getLanguageId())
+            ->order('cc.parent_id')
+            ->where('ccc.link IS NOT NULL')
+            ->fetchAssoc();
 
-        $categoriesIds = array ();
-        foreach ($categories as $category) {
-             $categoriesIds[] = $category['id'];
+        $pages = Axis::single('cms/page')->select(array('id', 'name'))
+            ->join(array('cpca' => 'cms_page_category'),
+                'cp.id = cpca.cms_page_id',
+                'cms_category_id')
+            ->join('cms_page_content',
+                'cp.id = cpc.cms_page_id',
+                array('link', 'title'))
+            ->where('cp.is_active = 1')
+            ->where('cpc.language_id = ?', Axis_Locale::getLanguageId())
+            ->where('cpca.cms_category_id IN (?)', array_keys($categories))
+            ->order('cpca.cms_category_id')
+            ->fetchAssoc();
+
+        $menu = new Zend_Navigation();
+        foreach ($categories as $_category) {
+            $title = empty($_category['title']) ?
+                $_category['link'] : $_category['title'];
+            $page = new Zend_Navigation_Page_Mvc(array(
+                'category_id' => $_category['id'],
+                'label'       => $title,
+                'title'       => $title,
+                'route'       => 'cms_category',
+                'params'      => array('cat' => $_category['link']),
+                'class'       => 'icon-folder'
+            ));
+            $_container = $menu->findBy('category_id', $_category['parent_id']);
+            if (null === $_container) {
+                $_container = $menu;
+            }
+            $_container->addPage($page);
         }
-        $rowset = Axis::single('cms/page')->cache()->getPageListByActiveCategory(
-            $categoriesIds, Axis_Locale::getLanguageId()
-        )      ;
-        $pages = array();
-        foreach ($rowset as $page) {
-            $pages[$page['cms_category_id']][] = $page;
+
+        foreach($pages as $_page) {
+            $title = empty($_page['title']) ? $_page['link'] : $_page['title'];
+            $page = new Zend_Navigation_Page_Mvc(array(
+                'label'  => $title,
+                'title'  => $title,
+                'route'  => 'cms_page',
+                'params' => array('page' => $_page['link']),
+                'class'  => 'icon-page'
+            ));
+            $_container = $menu->findBy('category_id', $_page['cms_category_id']);
+            $_container->addPage($page);
         }
-        $result = array();
-        foreach ($categories as $category) {
-            $result[intval($category['parent_id'])][$category['id']] = array(
-                'id'    => $category['id'],
-                'title' => $category['title'],
-                'link'  => $category['link'],
-                'pages' => isset($pages[$category['id']]) ?
-                    $pages[$category['id']] : null
-            );
-        }
-        $this->view->tree = $result;
+        $this->view->menu = $menu;
         $this->render();
     }
 }

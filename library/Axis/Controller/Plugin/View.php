@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Controller
  * @subpackage  Plugin
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -96,14 +96,12 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         list($namespace, $module) = explode('_', $request->getModuleName(), 2);
         $view->namespace    = $namespace;
         $view->moduleName   = $module;
-
         $view->path         = $systemPath;
-        $view->skinPath     = $systemPath . '/skin/' . $area . '/' . $theme;
 
         $currentUrl = $request->getScheme() . '://'
              . $request->getHttpHost()
              . $request->getRequestUri();
-        
+
         $site = Axis::getSite();
 
         $view->baseUrl      = $site ?
@@ -127,6 +125,15 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         }
 
         $view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
+        $view->addHelperPath(
+            str_replace('_', '/', 'Zend_View_Helper_Navigation'),
+            'Zend_View_Helper_Navigation'
+        );
+
+        $view->addHelperPath(
+            $systemPath . '/library/Axis/View/Helper/Navigation',
+            'Axis_View_Helper_Navigation'
+        );
         $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
         $view->setScriptPath(array());
 

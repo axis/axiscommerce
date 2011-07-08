@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Log
  * @subpackage  Axis_Log_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -34,34 +34,5 @@
 class Axis_Log_Model_Visitor_Info extends Axis_Db_Table
 {
     protected $_name = 'log_visitor_info';
-
-    /**
-     *
-     * @param int $visitorId
-     * @return Axis_Log_Model_Visitor_Info
-     */
-    public function updateVisitorInfo($visitorId)
-    {
-        if (!function_exists('__ternar')) {
-            function __ternar($key) {
-                return isset($_SERVER[$key]) ? $_SERVER[$key] : '';
-            }
-        }
-        $rowData = array(
-            'visitor_id'           => $visitorId,
-            'http_refer'           => __ternar('HTTP_REFERER'),
-            'user_agent'           => __ternar('HTTP_USER_AGENT'),
-            'http_accept_charset'  => __ternar('HTTP_ACCEPT_CHARSET'),
-            'http_accept_language' => __ternar('HTTP_ACCEPT_LANGUAGE'),
-            'server_addr'          => __ternar('SERVER_ADDR'),
-            'remote_addr'          => __ternar('REMOTE_ADDR')
-        );
-        if (!$row = $this->fetchRow('visitor_id = ' . $visitorId)) {
-            $row = $this->createRow($rowData);
-        } else {
-            $row->setFromArray($rowData);
-        }
-        $row->save();
-        return $this;
-    }
+    
 }

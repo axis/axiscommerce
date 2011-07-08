@@ -20,20 +20,23 @@ $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->skinUrl('favico
     ->setProxy('axis_core')
     //appendStylesheet(href, media, conditional, extra)
     ->appendStylesheet('stylesheet.css')
-    ->appendStylesheet('custom.css')
+    ->appendStylesheet('custom.css');
+
+$this->headLink()
     ->appendStylesheet('ie.css', 'all', 'IE');
     //->appendStylesheet('ielte7.css', 'all', 'lte IE7');
 
 $this->headScript()
     ->setProxy('axis_core')
     //appendStylesheet(src, type, attributes)
-    ->offsetSetFile(-100, 'js/jquery/jquery-1.4.4.min.js')
-    ->appendFile('js/jquery/jquery-validate/jquery.validate.min.js')
+    ->offsetSetFile(-100, 'js/jquery/jquery-1.6.1.min.js')
+    ->offsetSetFile(-99, 'js/jquery/jquery-validation-1.8.1/jquery.validate.min.js')
     ->appendFile('js/axis/core/script.js')
     ->appendFile('js/axis/catalog/attributes.js')
     ->appendFile('js/axis/catalog/lightzoom.js')
     ->appendFile('js/axis/community/ratings.js')
-    ->appendFile('js/axis/core/messageStack.js');
+    ->appendFile('js/axis/core/messageStack.js')
+    ->appendFile('js/axis/core/axisWindow.js');
 
 $this->addJsValidateTranslation();
 

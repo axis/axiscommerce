@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -88,7 +88,18 @@ class Axis_Admin_Location_CountryController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        Axis::single('location/country')->save($data);
+        
+        $model = Axis::model('location/country');
+        foreach ($data as $_row) {
+            $row = $model->save($_row);
+            if ($row) {
+                Axis::message()->addSuccess(
+                    Axis::translate('location')->__(
+                        'Country "%s" has been saved succesfully', $row->name
+                    )
+                );
+            }
+        }
 
         return $this->_helper->json->sendSuccess();
     }

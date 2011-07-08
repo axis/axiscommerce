@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -47,12 +47,12 @@ class Axis_Core_Model_Template_Page extends Axis_Db_Table
      */
     public function add($layout, $page, $templateId = null, $parentPage = null, $priority = 100)
     {
-        $pageId = Axis::single('core/page')->add($page)->getPageIdByRequest($page);
+        $pageId = Axis::single('core/page')->add($page)->getIdByPage($page);
         if (null === $templateId) {
             $templateId = Axis::config('design/main/frontTemplateId');
         }
         if (!empty($parentPage)) {
-            $parentPage = Axis::single('core/page')->getPageIdByRequest($parentPage);
+            $parentPage = Axis::single('core/page')->getIdByPage($parentPage);
         }
 
         $this->insert(array(
@@ -79,7 +79,7 @@ class Axis_Core_Model_Template_Page extends Axis_Db_Table
 
             $templateId = Axis::config('design/main/frontTemplateId');
         }
-        $pageId = Axis::single('core/page')->getPageIdByRequest($page);
+        $pageId = Axis::single('core/page')->getIdByPage($page);
         if (!$pageId) {
             return $this;
         }
@@ -91,12 +91,13 @@ class Axis_Core_Model_Template_Page extends Axis_Db_Table
 
     /**
      *
-     * @param array $rowData
-     * @return mixed The primary key value(s), as an associative array if the
-     *     key is compound, or a scalar if the key is single-column.
+     * @param array $data
+     * @return Axis_Db_Table_Row
      */
-    public function save(array $rowData)
+    public function save(array $data)
     {
-        return $this->getRow($rowData)->save();
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 }

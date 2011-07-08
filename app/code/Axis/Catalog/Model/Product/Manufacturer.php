@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -82,9 +82,11 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
      */
     public function save($data)
     {
-        if (!isset($data['id'])
-            || !$row = $this->find($data['id'])->current()) {
-
+        $row = false;
+        if (isset($data['id'])) {
+            $row = $this->find($data['id'])->current();
+        }
+        if (!$row) {
             unset($data['id']);
             $row = $this->createRow();
         }
@@ -97,7 +99,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
         if (Axis::single('catalog/hurl')->hasDuplicate(
                 $url,
                 array_keys(Axis_Collect_Site::collect()),
-                $row->id
+                (int)$row->id
             )) {
 
             throw new Axis_Exception(
@@ -105,23 +107,25 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
             );
         }
 
-        $data['image'] = empty($data['image']) ? '' : '/' . trim($data['image'], '/');
-        $row->setFromArray($data)->save();
+        $row->setFromArray($data);
+        $row->image = empty($row->image) ? '' : '/' . trim($row->image, '/');
+        $row->save();
 
-        // description
-        if (isset($data['description'])) {
-            $mManufactureDescription =  Axis::model('catalog/product_manufacturer_description');
-            foreach (Axis_Collect_Language::collect() as $languageId => $languangeName) {
-                $mManufactureDescription->getRow($row->id, $languageId)
-                    ->setFromArray($data['description'][$languageId])
-                    ->save();
+        //add description
+        $modelDescription = Axis::model('catalog/product_manufacturer_description');
+        foreach (Axis_Collect_Language::collect() as $languageId => $languangeName) {
+            if (!isset($data['description'][$languageId])) {
+                continue;
             }
+            $modelDescription->getRow($row->id, $languageId)
+                ->setFromArray($data['description'][$languageId])
+                ->save();
         }
 
-        // url
-        $mHurl = Axis::model('catalog/hurl');
+        //add relation site
+        $modelHurl = Axis::model('catalog/hurl');
         foreach (Axis_Collect_Site::collect() as $siteId => $siteName) {
-            $mHurl->save(array(
+            $modelHurl->save(array(
                 'site_id'  => $siteId,
                 'key_id'   => $row->id,
                 'key_type' => 'm',
@@ -129,7 +133,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
             ));
         }
 
-        return $row->id;
+        return $row;
     }
 
     public function deleteByIds($ids)

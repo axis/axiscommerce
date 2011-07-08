@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -71,8 +71,8 @@ class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-        $data = Zend_Json::decode($this->_getParam('data'));
-        if (!sizeof($data)) {
+        $dataset = Zend_Json::decode($this->_getParam('data'));
+        if (!sizeof($dataset)) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     'No data to save'
@@ -80,28 +80,18 @@ class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        $exists = Axis::single('admin/user')->getExist(array_keys($data));
-
-        foreach ($data as $userId => $values) {
-            $row = array(
-                'role_id' => $values['role_id'],
-                'firstname' => $values['firstname'],
-                'lastname' => $values['lastname'],
-                'email' => $values['email'],
-                'username' => $values['username'],
-                'is_active' => $values['is_active'] ? $values['is_active'] : 0
-            );
-            if (!empty($values['password'])) {
-                $row['password'] = md5($values['password']);
-            }
-
-            if (in_array($userId, $exists)) {
-                Axis::single('admin/user')->update(
-                    $row, $this->db->quoteInto('id = ?', $userId)
-                );
+        $model = Axis::model('admin/user');
+        foreach ($dataset as $_row) {
+            if (!empty($_row['password'])) {
+                $_row['password'] = md5($_row['password']);
             } else {
-                Axis::single('admin/user')->insert($row);
+                unset($_row['password']);
             }
+            $row = $model->getRow($_row);
+            $row->is_active = false;
+            $row->is_active = !empty($_row['is_active']);
+            
+            $row->save();
         }
 
         Axis::message()->addSuccess(

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -52,11 +52,8 @@ class Axis_Catalog_Model_Category_Description extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        if ($row = $this->find($data['category_id'], $data['language_id'])->current()) {
-            $row->setFromArray($data);
-        } else {
-            $row = $this->createRow($data);
-        }
-        return $row->save();
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 }

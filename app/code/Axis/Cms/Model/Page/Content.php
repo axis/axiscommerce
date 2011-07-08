@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,4 +35,5 @@ class Axis_Cms_Model_Page_Content extends Axis_Db_Table
 {
     protected $_name = 'cms_page_content';
     protected $_primary = array('cms_page_id', 'language_id');
+    protected $_rowClass = 'Axis_Cms_Model_Page_Content_Row';
 }

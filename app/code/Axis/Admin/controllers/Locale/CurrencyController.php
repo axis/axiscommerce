@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -54,9 +54,9 @@ class Axis_Admin_Locale_CurrencyController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         
-        $data = Zend_Json::decode($this->_getParam('data'));
+        $dataset = Zend_Json::decode($this->_getParam('data'));
         
-        if (!sizeof($data)) {
+        if (!sizeof($dataset)) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     'No data to save'
@@ -64,8 +64,12 @@ class Axis_Admin_Locale_CurrencyController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        Axis::single('locale/currency')->batchSave($data);
-
+        
+        $model = Axis::model('locale/currency');
+        foreach ($dataset as $_row) {
+            $model->save($_row);
+        }
+        
         Axis::message()->addSuccess(
             Axis::translate('locale')->__(
                 'Currency was saved successfully'

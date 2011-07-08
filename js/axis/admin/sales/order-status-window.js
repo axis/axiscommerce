@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -73,19 +73,19 @@ Ext.onReady(function(){
                 anchor: '98%'
             }, {
                 xtype             : 'multiselect',
-                name              :  'to',
-                id                :  'multiselect',
-                fieldLabel        :  'To statuses'.l(),
-                dataFields        :  ['id', 'name'], 
-                store             :  orderStatusChild,
-                valueField        :  'id',
-                displayField      :  'name',
-                width             :  200,
-                height            :  100,
-                allowBlank        :  true
+                name              : 'to',
+                id                : 'multiselect',
+                fieldLabel        : 'To statuses'.l(),
+                dataFields        : ['id', 'name'], 
+                store             : orderStatusChild,
+                valueField        : 'id',
+                displayField      : 'name',
+                width             : 200,
+                height            : 100,
+                allowBlank        : true
         
             }, new Ext.form.Hidden({
-                name              :  'statusId',
+                name              :  'id',
                 id                :  'statusId'
             })
             ]

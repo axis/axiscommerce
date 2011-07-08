@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -92,34 +92,15 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             array('legend' => 'General information')
         );
 
-        $this->getDisplayGroup('login')
-            ->addRow(array('email'), 'row1', array('colsetClass' => 'col2-set'))
-            ->addRow(array('password', 'password_confirm'), 'row2')
-            ->addRow(array('firstname', 'lastname'), 'row3');
-
-        $this->getDisplayGroup('login')
-            ->getRow('row1')
-            ->addColumn(array('email'), 'col1');
-
-        $this->getDisplayGroup('login')
-            ->getRow('row2')
-            ->addColumn(array('password'), 'col1')
-            ->addColumn(array('password_confirm'), 'col2');
-
-        $this->getDisplayGroup('login')
-            ->getRow('row3')
-            ->addColumn(array('firstname'), 'col1')
-            ->addColumn(array('lastname'), 'col2');
-
         $rows = Axis::single('account/customer_field')->getFields();
         $groupsFields = array();
         foreach ($rows as $row) {
             $field = 'field_' . $row['id'];
             $config = array(
-                'id' => 'field_' . $row['name'],
+                'id'       => 'field_' . $row['name'],
                 'required' => (boolean) $row['required'],
                 'label'    => $row['field_label'],
-                'class'    => 'input-text'
+                'class'    => in_array($row['field_type'], array('textarea', 'text')) ? 'input-text' : ''
             );
             if ($row['field_type'] == 'textarea') {
                 $config['rows'] = 6;
@@ -127,29 +108,19 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
             }
             $this->addElement($row['field_type'], $field, $config);
 
+            $el = $this->getElement($field);
             if ($row['required']) {
-                $this->getElement($field)
-                     ->addValidator('NotEmpty')
-                     ->setAttrib(
-                         'class',
-                         $this->getElement($field)->getAttrib('class')
-                            . ' required'
-                    );
+                $el->addValidator('NotEmpty')
+                    ->setAttrib('class', $el->getAttrib('class') . ' required');
             }
             if (!empty($row['validator'])) {
-                $this->getElement($field)->addValidator($row['validator']);
+                $el->addValidator($row['validator']);
                 if ($row['validator'] == 'Date') {
-                    $this->getElement($field)
-                        ->setAttrib(
-                            'class' ,
-                            $this->getElement($field)
-                                ->getAttrib('class') . ' input-date'
-                        );
+                    $el->setAttrib('class', $el->getAttrib('class') . ' input-date');
                 }
             }
             if (!empty($row['axis_validator'])) {
-                $this->getElement($field)
-                    ->addValidator(new $row['axis_validator']());
+                $el->addValidator(new $row['axis_validator']());
             }
             if (isset($row['customer_valueset_id'])) {
                 $values = Axis::single('account/Customer_ValueSet_Value')
@@ -157,8 +128,9 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                         $row['customer_valueset_id'],
                         Axis_Locale::getLanguageId()
                     );
-                $this->getElement($field)
-                     ->setMultiOptions($values);
+                if (method_exists($el, 'setMultiOptions')) {
+                    $el->setMultiOptions($values);
+                }
             }
             $groupsFields[$row['customer_field_group_id']][$row['id']] = $field;
         }
@@ -176,21 +148,15 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                 $this->addDisplayGroup(
                     array_values($groupsFields[$row['id']]),
                     $groupName,
-                    array(
-                        'legend' => $row['group_label'],
-                        'colsetClass' => 'col2-set'
-                    )
+                    array('legend' => $row['group_label'])
                 );
                 $this->getDisplayGroup($groupName)
-                    ->setDisableTranslator(true)
-                    ->addColumn(
-                            array_values($groupsFields[$row['id']]), 'col'
-                        );
+                    ->setDisableTranslator(true);
             }
         }
 
         $this->addElement('button', 'submit', array(
-            'type' => 'submit',
+            'type'  => 'submit',
             'class' => 'button',
             'label' => 'Register'
         ));

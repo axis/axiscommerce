@@ -16,55 +16,147 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-
-var editWin, storeSitemap, resultWin;
 //http://sitemaps.org/protocol.php#location
 Ext.onReady(function (){
 
     Ext.QuickTips.init();
     var sitemap = {
-        addnew: function () {
-            $(':input','#sitemap-form')
-                .not(':button, :submit, :reset, :hidden')
-                .val('')
-                .removeAttr('checked')
-                .removeAttr('selected');
+        record: Ext.data.Record.create([
+           'id',
+           'filename',
+           {name: 'created_on', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+           {name: 'site_id', type: 'int'},
+           {name: 'status', type: 'int'},
+           {name: 'modified_on', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+           'crawlers'
+        ]),
+        generate: function () {
+            if (!Ext.getCmp('form').getForm().isValid()) {
+                return;
+            }
+            var form = Ext.getCmp('form').getForm();
+            var filename = form.findField('filename').getValue() + '.xml';
 
-            sitemapId = -1;
-            getWindow().show();
-            jQuery('#sitemap').show();
+            Ext.Msg.show({
+                modal: false,
+                msg: "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.".l('core', filename),
+                buttons: Ext.MessageBox.OK,
+                fn: function(value) {
+                    if ('cancel' == value) {
+                        return;
+                    }
+                    window.location = Axis.getUrl('sitemap_file/create')
+                        + '?' + form.getValues(true);
+                },
+                icon: Ext.MessageBox.INFO
+            });
         },
-        edit: function (id) {
-             var selectedItems = gridSitemap.getSelectionModel().selections.items;
-             if (typeof(id) !== "undefined") {
-                 sitemapId = id;
-             }
-             for (var i = 0; i < selectedItems.length; i++) {
-                 sitemapId = selectedItems[i].id;
-                 getWindow();
-                 editWin.show();
-                 jQuery('#sitemap-form-site').val(selectedItems[i].data.site_id);
-                 jQuery('#sitemap-form-engine').val(selectedItems[i].data.engines.split(','));
-                 jQuery('#sitemap-form-filename').val(selectedItems[i].data.filename);
-                 jQuery('#sitemap-form-savepath').val(selectedItems[i].data.savepath);
-                 jQuery('#sitemap').show();
-             }
+        add : function () {
+            storeFile.reload();
+            gridSitemap.stopEditing();
+            gridSitemap.getStore().insert(0, new sitemap.record({
+                'site_id': sites[0].id
+            }));
+            gridSitemap.startEditing(0, 2);
         },
-        remove: function (id) {
+        save: function () {
+            var store = gridSitemap.getStore();
+            var rowset = store.getModifiedRecords();
+            if (!rowset.length) {
+                return;
+            }
+
             var data = {};
-            if (typeof(id) !== "undefined") {
-                data[0] = id;
-            } else {
-                var selectedItems = gridSitemap.getSelectionModel().selections.items;
-                if (selectedItems.length < 1) {
-                    return;
+            for (var i = 0; i < rowset.length; i++) {
+                data[rowset[i]['id']] = rowset[i]['data'];
+            }
+            Ext.Ajax.request({
+                url: Axis.getUrl('sitemap_index/save'),
+                params: {
+                    data: Ext.encode(data)
+                },
+                callback: function() {
+                    store.commitChanges();
+                    store.reload();
                 }
-                for (var i = 0; i < selectedItems.length; i++) {
-                    data[i] = selectedItems[i].id;
+            });
+        },
+        ping: function () {
+            var data = {};
+            var selectedItems = gridSitemap.getSelectionModel().getSelections();
+            if (selectedItems.length < 1) {
+                return;
+            }
+            for (var i = 0; i < selectedItems.length; i++) {
+                data[i] = selectedItems[i].id;
+            }
+            var store = gridSitemap.getStore();
+
+            Ext.Ajax.request({
+                url: Axis.getUrl('sitemap_index/ping'),
+                params: {
+                    data: Ext.encode(data)
+                },
+                success: function(response, opts) {
+                    var data = Ext.decode(response.responseText).data;
+                    var html= '';
+
+                    var templateTr = new Ext.Template([
+                        '<tr>',
+                            '<td>{id}</td>',
+                            '<td>{crawler}</td>',
+                            '<td>{body}</td>',
+                            '<td>{code}</td>',
+                        '</tr>'
+                    ]);
+
+                    templateTr.compile();
+                    _html = '';
+                    for (var i in data) {
+                        if (typeof data[i] == 'function') {
+                            continue;
+                        }
+                        __html = '';
+                        for (var j in data[i]) {
+                            if (typeof data[i][j] == 'function') {
+                                continue;
+                            }
+                            __html = __html.concat(templateTr.apply(data[i][j]));
+                        }
+                        _html = _html.concat(__html);
+                    }
+                    html = html.concat(
+                    '<table id="sitemap-ping">',
+                       '<thead>',
+                           '<tr>',
+                               '<th>id</th>',
+                               '<th>crawler</th>',
+                               '<th>message</th>',
+                               '<th>code</th>',
+                           '</tr>',
+                       '</thead>',
+                       '<tbody>',
+                           _html,
+                       '<tbody>',
+                   '</table>');
+                    var window = Ext.getCmp('ping-window');
+                    window.show();
+                    window.update(html);
+                    store.reload();
                 }
+            });
+        },
+        remove: function () {
+            var data = {};
+            var selectedItems = gridSitemap.getSelectionModel().getSelections();
+            if (selectedItems.length < 1) {
+                return;
+            }
+            for (var i = 0; i < selectedItems.length; i++) {
+                data[i] = selectedItems[i].id;
             }
             if (!confirm('Are you sure?'.l())) {
                 return;
@@ -76,156 +168,72 @@ Ext.onReady(function (){
                     gridSitemap.getStore().reload();
                 }
             });
-        },
-        ping: function (id) {
-            var data = {};
-            if (typeof(id) !== "undefined") {
-                data[0] = id;
-            } else {
-                var selectedItems = gridSitemap.getSelectionModel().selections.items;
-                if (selectedItems.length < 1) {
-                    return;
-                }
-                for (var i = 0; i < selectedItems.length; i++) {
-                    data[i] = selectedItems[i].id;
-                }
-            }
-            for (var i = 0; i < engines.length; i++){
-                jQuery('#result-' + engines[i].name).html('Not used ') ;
-            }
-            Ext.Ajax.request({
-                url: Axis.getUrl('sitemap_index/ping'),
-                params: {
-                    ids: Ext.encode(data)
-                },
-                callback: function(options, success, response) {
-                    var oRet = Ext.decode(response.responseText);
-                    if (true == oRet.success ) {
-                        for (id in oRet.info) {
-                            for (var i = 0; i < engines.length; i++){
-                                 var value = 'Not used';
-                                 if (typeof(oRet.info[id][engines[i].name]) !== "undefined")
-                                    value = oRet.info[id][engines[i].name]['html_page'];
-                                jQuery('#result-' + engines[i].name).html(value);
-                            }
-                        }
-                        getResults();
-                        resultWin.setTitle('Results informing ');
-                        resultWin.show();
-                        jQuery('#result').show();
-                        resultWin.center();
-                        storeSitemap.reload();
-                    } else {
-                        Ext.Msg.show({
-                           title:'Error',
-                           msg: oRet.error,
-                           buttons: Ext.Msg.OK,
-                           //fn: processResult,
-                           //animEl: 'elId',
-                           icon: Ext.MessageBox.ERROR
-                        });
-                    }
-                }
-            });
-        },
-        save: function () {
-            Ext.Ajax.request({
-                url : Axis.getUrl('sitemap_index/save'),
-                form: 'sitemap-form',
-                params: {id: sitemapId},
-                callback: function(options, success, response) {
-                    var oRet = Ext.decode(response.responseText);
-                    if (true == oRet.success) {
-                        editWin.hide();
-                        jQuery('#sitemap-form-site').get(0).checked = false;
-                        jQuery('#sitemap-form-filename').val('');
-                        jQuery('#sitemap-form-savepath').val('');
-                        storeSitemap.reload();
-                    }
-                }
-            });
-        },
-        quicksave: function () {
-            var modified = gridSitemap.getStore().getModifiedRecords();
-            if (modified.length < 1) {
-                return;
-            }
-            var data = {};
-            for (var i = 0; i < modified.length; i++) {
-                data[modified[i]['data'].id] = {
-                    'site': modified[i]['data'].site_id,
-                    'engines': modified[i]['data'].engines
-                };
-            }
-            Ext.Ajax.request({
-                url: Axis.getUrl('sitemap_index/quick-save'),
-                params: {data: Ext.encode(data)},
-                callback: function() {
-                    gridSitemap.getStore().commitChanges();
-                    gridSitemap.getStore().reload();
-                }
-            })
         }
-
     };
 
-    storeSitemap = new Ext.data.GroupingStore({
+    var storeSitemap = new Ext.data.GroupingStore({
+        storeId: 'storeSitemap',
         url: Axis.getUrl('sitemap_index/list'),
         reader: new Ext.data.JsonReader({
-                root : 'sitemap',
+                root : 'data',
                 totalProperty: 'count',
                 id: 'id'
             },
-            ['id',
-            'filename',
-            {name: 'generated_at', type: 'date', dateFormat: 'Y-m-d'},
-            {name: 'usage_at', type: 'date', dateFormat: 'Y-m-d'},
-            'site_id',
-            'status',
-            'baseUrl',
-            'engines']
+            sitemap.record
         ),
         sortInfo: {field: 'id', direction: "ASC"},
         remoteSort: false
         //,groupField:'site_id'
     });
 
-    var actions = new Ext.ux.grid.RowActions({
-        header:'Actions'.l(),
-        actions:[{
-            iconCls:'icon-exec',
-            tooltip:'Ping'.l()
-        }, {
-            iconCls:'icon-edit',
-            tooltip:'Edit'.l()
-        }, {
-            iconCls:'icon-delete',
-            tooltip:'Delete'.l()
-        }],
-        callbacks: {
-            'icon-exec': function(grid, record, action, row, col) {
-                sitemap.ping(record.json.id);
-            },
-            'icon-edit': function(grid, record, action, row, col) {
-                sitemap.edit(record.json.id);
-            },
-            'icon-delete': function(grid, record, action, row, col) {
-                sitemap.remove(record.json.id);
-            }
-        }
-    });
-
     var storeSites = new Ext.data.JsonStore({
+        storeId: 'storeSites',
         id: 'id',
-        fields: ['id', 'name','base'],
+        fields: [{name:'id', type: 'int'}, 'name', 'base', 'secure'],
         data: sites
     });
 
-    var storeEngines = new Ext.data.JsonStore({
-        id: 'id',
-        fields: ['id', 'url','name'],
-        data: engines
+    var cmpSiteId = new Ext.form.ComboBox({
+        store: storeSites,
+        editable: false,
+        valueField: 'id',
+        displayField: 'name',
+        triggerAction: 'all',
+        mode: 'local'
     });
+
+    var storeFile = new Ext.data.JsonStore({
+        storeId: 'storeFile',
+        url: Axis.getUrl('sitemap_file/list'),
+        root : 'data',
+        id: 'filename',
+        fields: ['filename']
+    });
+
+    var cmpFile = new Ext.form.ComboBox({
+        store: storeFile,
+        editable: false,
+        valueField: 'filename',
+        displayField: 'filename',
+        triggerAction: 'all'
+    });
+
+    var storeCrawlers = new Ext.data.JsonStore({
+        id: 'id',
+        fields: ['id', 'url', 'name'],
+        data: crawlers
+    });
+
+    var cmpCrawlers = new Ext.ux.Andrie.Select({
+        fieldLabel:  'Field',
+        multiSelect: true,
+        store: storeCrawlers,
+        valueField: 'id',
+        displayField: 'name',
+        triggerAction: 'all',
+        mode: 'local',
+        beforeBlur : Ext.emptyFn
+    })
 
     var columnsSitemap = new Ext.grid.ColumnModel([
         {
@@ -238,13 +246,8 @@ Ext.onReady(function (){
             header: "Sites".l(),
             sortable: true,
             dataIndex: 'site_id',
-            editor: new Ext.form.ComboBox({
-                store:storeSites,
-                valueField:'id',
-                displayField:'name',
-                triggerAction:'all',
-                mode:'local'
-            }),
+            editor: cmpSiteId,
+            allowBlank: false,
             renderer: function(value) {
                 siteRecord = storeSites.getById(value);
                 if (siteRecord) {
@@ -252,64 +255,48 @@ Ext.onReady(function (){
                 }
                 return value;
             },
-            width: 200
+            width: 150
         }, {
-            header: "Engines".l(),
+            header: "Crawlers".l(),
             sortable: true,
-            width: 180,
-            dataIndex: 'engines', //must return from action.list type string, example 'google, ask'
-            editor: new Ext.ux.Andrie.Select(Ext.applyIf({
-                fieldLabel:  'Field',
-                multiSelect: true,
-                minLength: 1
-            }, {
-                store:storeEngines,
-                valueField:'id',
-                displayField:'name',
-                triggerAction:'all',
-                mode:'local'
-            })),
+            dataIndex: 'crawlers',
+            width: 150,
+            allowBlank: false,
+            editor: cmpCrawlers,
             renderer: function(value, meta) {
+                if (typeof(value) == 'undefined' || value == '') {
+                    return 'None'.l();
+                }
                 var ret = new Array();
                 value = value.split(',');
                 for (var i = 0, n = value.length; i < n; i++) {
-                    if (value[i] != '') {
-                        ret.push(storeEngines.getById(value[i]).data.name);
+                    var crawler = storeCrawlers.getById(value[i]);
+                    if (typeof(crawler) != 'undefined') {
+                        ret.push(crawler.data.name);
                     }
                 }
                 ret = ret.join(', ');
-                return ret ;
-            }
-        }, {
-            header: "Filename".l(),
-            width: 250,
-            sortable: true,
-            dataIndex: 'filename',
-            renderer: function(value, meta) {
-                var ret = Axis.baseUrl + '/' + value + '.xml';
                 return ret;
             }
         }, {
-            header: "Link for Search Engines".l(),
-            width: 250,
+            header: "Filename".l(),
+            width: 150,
+            sortable: true,
+            dataIndex: 'filename',
+            editor: cmpFile,
+            allowBlank: false
+        }, {
+            header: "Link".l(),
+            width: 150,
             dataIndex: 'filename',
             id: 'filename',
             renderer: function(value, meta, record) {
                 if (value == '' || !value) {
                     return "None".l();
                 } else {
-                    value = Axis.baseUrl + '/' + value + '.xml';
+                    value = Axis.baseUrl + '/' + value;
                 }
                 return String.format('<a href="{0}" target="_blank">{0}</a>', value);
-            }
-        }, {
-            header: 'Created'.l(),
-            width: 100,
-            sortable: true,
-            dataIndex: 'generated_at',
-            groupable:false,
-            renderer: function(v) {
-                return Ext.util.Format.date(v);
             }
         }, {
             header: "Status".l(),
@@ -319,35 +306,52 @@ Ext.onReady(function (){
             renderer: function(value, meta) {
                 return parseInt(value) ? 'Used'.l() : 'Unused'.l();
             }
-        },
-        actions
+        }, {
+            header: 'Modified'.l(),
+            width: 150,
+            sortable: true,
+            dataIndex: 'modified_on',
+            groupable: false,
+            renderer: function(v) {
+                return Ext.util.Format.date(v) + ' ' + Ext.util.Format.date(v, 'H:i:s');
+            }
+        }, {
+            header: 'Created'.l(),
+            width: 150,
+            sortable: true,
+            dataIndex: 'created_on',
+            groupable: false,
+            renderer: function(v) {
+                return Ext.util.Format.date(v) + ' ' + Ext.util.Format.date(v, 'H:i:s');
+            }
+        }
     ]);
 
     gridSitemap = new Axis.grid.EditorGridPanel({
         autoExpandColumn: 'filename',
         ds: storeSitemap,
         cm: columnsSitemap,
-        plugins:[actions],
         tbar: [{
+            text: 'Generate'.l(),
+            icon: Axis.skinUrl + '/images/icons/script_add.png',
+            cls: 'x-btn-text-icon',
+            handler : function(){
+                Ext.getCmp('form').getForm().clear();
+                Ext.getCmp('window').show();
+            }
+        }, {
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
             cls: 'x-btn-text-icon',
             handler : function(){
-                sitemap.addnew();
+                sitemap.add();
             }
         }, {
             text: 'Save'.l(),
             cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/save_multiple.png',
             handler: function(){
-                sitemap.quicksave();
-            }
-        }, {
-            text: 'Edit'.l(),
-            icon: Axis.skinUrl + '/images/icons/page_edit.png',
-            cls: 'x-btn-text-icon',
-            handler : function(){
-                sitemap.edit();
+                sitemap.save();
             }
         }, {
             text: 'Ping'.l(),
@@ -379,68 +383,64 @@ Ext.onReady(function (){
         ]
     });
 
-    function setSitemap(id) {
-       var store = gridSitemap.getStore();
-       store.lastOptions = {params:{start:0, limit:21}};
-       gridSitemap.filters.filters.get('id').setValue({'eq': id});
-    }
+    storeSitemap.load({
+        params: {start: 0, limit: 21}
+    });
 
-    if (typeof(sitemapId) !== "undefined") {
-        setSitemap(sitemapId);
-    } else {
-        storeSitemap.load({
-            params: {
-                start: 0,
-                limit: 21
+    var form = new Axis.FormPanel({
+        id: 'form',
+        bodyStyle: 'padding: 10px 10px 0px 10px;',
+        defaults: {
+            anchor: '100%'
+        },
+        items: [{
+            fieldLabel: 'Filename'.l(),
+            maxLength: 55,
+            xtype: 'textfield',
+            allowBlank: false,
+            name: 'filename',
+            initialValue: 'sitemap'
+        }, cmpSiteId.cloneConfig({
+            fieldLabel: 'Site'.l(),
+            name: 'site_id',
+            hiddenName: 'site_id',
+            allowBlank: false
+        })]
+    });
+
+    new Axis.Window({
+        id: 'window',
+        maximizable: true,
+        width: 310,
+        height: 175,
+        title: 'Generate Sitemap'.l(),
+        items: form,
+        buttons: [{
+            text: 'Save'.l(),
+            handler: function() {
+                sitemap.generate();
+                Ext.getCmp('window').hide();
             }
-        })
-    }
+        }, {
+            text: 'Cancel'.l(),
+            handler: function(){
+                Ext.getCmp('window').hide();
+            }
+        }]
+    });
 
-    function getWindow() {
-        if (!editWin) {
-            editWin = new Axis.Window({
-                title: 'Sitemap'.l(),
-                contentEl: 'sitemap',
-                width: 310,
-                height: 250,
-                plain: true,
-                buttons: [{
-                    text: 'Save'.l(),
-                    handler: function() {
-                        sitemap.save();
-                    }
-                },{
-                    text: 'Cancel'.l(),
-                    handler: function(){
-                        editWin.hide();
-                    }
-                }]
+    new Axis.Window({
+        id: 'ping-window',
+        width: 700,
+        height: 300,
+        title: 'Ping Results'.l(),
+        bodyStyle: 'background: white;',
+        buttons: [{
+            text: 'Close'.l(),
+            handler: function(){
+                Ext.getCmp('ping-window').hide();
+            }
+        }]
+    });
 
-            });
-        }
-        return editWin;
-    }
-
-    function getResults() {
-        if (!resultWin) {
-            resultWin = new Ext.Window({
-                contentEl: 'result',
-                layout: 'fit',
-                width: 600,
-                constrainHeader: true,
-                bodyStyle:{'background': '#fff'},
-                closeAction: 'hide',
-                plain: true,
-                autoScroll:true,
-                buttons: [{
-                    text: 'Close'.l(),
-                    handler: function(){
-                        resultWin.hide();
-                    }
-                }]
-
-            });
-        }
-        return resultWin;
-    }
 });

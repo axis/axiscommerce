@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -101,9 +101,9 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
             ->current()
             ->email;
 
-        $customer = Axis::model('account/customer')->fetchRow(
-            Axis::db()->quoteInto('email = ?', $data['email'])
-        );
+        $customer = Axis::model('account/customer')->select()
+            ->where('email = ?', $data['email'])
+            ->fetchRow();
 
         //@todo if null need firstname = full name from custom_info fields
         $firstname = $customer ? $customer->firstname : null;
@@ -148,14 +148,15 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
     public function setStatusAction()
     {
         $this->_helper->layout->disableLayout();
-        $row = Axis::single('contacts/message')->fetchRow(
-            $this->db->quoteInto('id = ?', $this->_getParam('id'))
-        );
-        $row->message_status = $this->_getParam('message_status');
+        
+        $id     = $this->_getParam('id');
+        $status = $this->_getParam('message_status');
+        
+        $row = Axis::single('contacts/message')->find($id)->current();
+        $row->message_status = $status;
+        $row->save();
 
-        $this->_helper->json->sendJson(array(
-            'success' => $row->save()
-        ));
+        $this->_helper->json->sendSuccess();
     }
 
     public function deleteDepartmentAction()
@@ -188,13 +189,22 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $data = array(
-            'id' => $this->_getParam('id', 0),
+        $rowData = array(
             'name'  => $this->_getParam('name'),
             'email' => $this->_getParam('email')
         );
-
-        Axis::single('contacts/department')->save($data);
+        $id = $this->_getParam('id');
+        $model = Axis::single('contacts/department');
+        $row = $model->find($id)->current();
+        if (!$row) {
+            $row = $model->createRow();
+        }
+        $row->setFromArray($rowData)->save();
+        Axis::message()->addSuccess(
+            Axis::translate('contacts')->__(
+               'Department was saved succesfully'
+            )
+        );
 
         $this->_helper->json->sendSuccess();
     }
@@ -203,35 +213,33 @@ class Axis_Admin_Contacts_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $items = Axis::single('contacts/department')->fetchAll();
+        $rowset = Axis::single('contacts/department')->fetchAll();
 
-        $result = array();
-        foreach ($items as $item) {
-            $result[] = array(
-                'text' => $item->name,
-                'id'   => $item->id,
+        $data = array();
+        foreach ($rowset as $row) {
+            $data[] = array(
+                'text' => $row->name,
+                'id'   => $row->id,
                 'leaf' => true
             );
         }
 
-        $this->_helper->json->sendRaw($result);
+        $this->_helper->json->sendRaw($data);
     }
 
     public function getDepartmentAction()
     {
         $this->_helper->layout->disableLayout();
 
-        $id = $this->_getParam('id', 0);
-
-        $result = array();
-        if ($id) {
-            $row = Axis::single('contacts/department')
-                ->fetchRow($this->db->quoteInto('id = ?', $id));
-            $result = $row->toArray();
+        $data = array();
+        $id = $this->_getParam('id');
+        $row = Axis::single('contacts/department')->find($id)->current();
+            
+        if ($row) {
+            $data = $row->toArray();
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data' => array($result)
-        ));
+        $this->_helper->json->setData($data)
+            ->sendSuccess();
     }
 }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Discount
  * @subpackage  Axis_Discount_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -52,12 +52,13 @@ class Axis_Discount_Model_Eav extends Axis_Db_Table
      */
     public function getRulesByDiscountId($discountId)
     {
-        $rows = $this->fetchAll(
-            $this->getAdapter()->quoteInto('discount_id = ?', $discountId)
-        )->toArray();
-
+        $rowset = $this->select()
+            ->where('discount_id = ?', $discountId)
+            ->fetchAll()
+            ;
+        
         $result = array();
-        foreach ($rows as $row) {
+        foreach ($rowset as $row) {
             if (strstr($row['entity'], '_')) {
                 list($entity, $etype) = explode('_', $row['entity'], 2);
                 $result['conditions'][$entity]['e-type'][] = $etype;
@@ -76,16 +77,13 @@ class Axis_Discount_Model_Eav extends Axis_Db_Table
 
     public function getDiscountIdBySpecialAndProductId($productId)
     {
-        $select = $this->getAdapter()->select();
-        $select->from(array('d1' => $this->_prefix . 'discount_eav'), array('discount_id'))
-            ->join(array('d2' => $this->_prefix . 'discount_eav'),
-                  'd1.discount_id = d2.discount_id',
-                  array())
-            ->where("d1.entity = 'productId'")
-            ->where('d1.value = ?', $productId)
-            ->where("d2.entity ='special'")
-            ->where('d2.value = 1');
-        $discountsIds = $this->getAdapter()->fetchAll($select->__toString());
-        return count($discountsIds) ? current(current($discountsIds)) : false;
+        return $this->select('discount_id')
+            ->join('discount_eav', 'de.discount_id = de2.discount_id')
+            ->where("de.entity = 'productId'")
+            ->where('de.value = ?', $productId)
+            ->where("de2.entity ='special'")
+            ->where('de2.value = 1')
+            ->fetchOne()
+            ;
     }
 }

@@ -4,12 +4,12 @@
 $this->headScript()->appendFile('/js/jquery/datepicker/ui.datepicker.js');
 $this->headLink()->appendStylesheet('/js/jquery/datepicker/ui.datepicker.css');
 
-echo $this->form->render($this); 
+echo $this->form->render($this);
 ?>
 
 <script type="text/javascript">
 function togglePasswordForm(status) {
-    $('#change_password_toggle').attr('checked', status);
+    $('#change_password_toggle').prop('checked', status);
     if (status) {
         $('#fieldset-change_password').show();
         $('#fieldset-change_password input').removeAttr('disabled');

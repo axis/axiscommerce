@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,10 +36,9 @@ Ext.onReady(function(){
         create: function (){
             grid.stopEditing();
             var record = new Item.record({
-                type: 'new',
                 module_name: '',
-                 controller_name: '*',
-                 action_name: '*'
+                controller_name: '*',
+                action_name: '*'
             });
             ds.insert(0, record);
             grid.getStore().getAt(0).set('module_name', '*');

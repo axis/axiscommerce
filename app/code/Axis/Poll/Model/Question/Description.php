@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Poll
  * @subpackage  Axis_Poll_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -34,31 +34,5 @@
 class Axis_Poll_Model_Question_Description extends Axis_Db_Table
 {
     protected $_name = 'poll_question_description';
-
-    /**
-     *
-     * @param int $questionId
-     * @param int $languageId
-     * @param string $question
-     * @return mixed The primary key value(s), as an associative array if the
-     *     key is compound, or a scalar if the key is single-column.
-     */
-    public function save($questionId, $languageId, $question)
-    {
-        $row = $this->fetchRow(array(
-            'question_id = ' . $questionId,
-            'language_id = ' . $languageId
-        ));
-
-        if (!$row instanceof Axis_Db_Table_Row) {
-            $row = $this->createRow(array(
-                'question_id' => $questionId,
-                'language_id' => $languageId,
-                'question'      => $question
-            ));
-        } else {
-            $row->question = $question;
-        }
-        return $row->save();
-    }
+    
 }

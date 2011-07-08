@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -51,9 +51,13 @@ class Axis_View_Helper_Href
      */
     public function href($href = '', $ssl = false)
     {
-        return (($ssl && $this->_enabledSsl) ? $this->view->secureUrl : $this->view->baseUrl)
-            . Axis_Locale::getLanguageUrl() . '/'
-            . ltrim($href, '/');
+        $baseUrl = ($ssl && $this->_enabledSsl) ?
+            $this->view->secureUrl : $this->view->baseUrl;
+
+        $locale = isset($options['locale']) ?
+            $options['locale'] : Axis_Locale::getLanguageUrl();
+        
+        return $baseUrl . $locale . '/' . ltrim($href, '/');
     }
 
     public function setView($view)

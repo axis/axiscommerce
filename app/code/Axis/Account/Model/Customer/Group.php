@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -41,73 +41,36 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
 
     /**
      *
-     * @param array $params
-     * @return array
-     */
-    public function getList($params = array())
-    {
-        $select = $this->getAdapter()->select();
-
-        $select->from($this->_prefix . 'account_customer_group');
-
-        if (isset($params['sort'])&& (isset($params['dir']))) {
-            $select->order($params['sort'] . ' ' . $params['dir']);
-        }
-
-        if (isset($params['where'])) {
-          $select->where($params['where']);
-        }
-
-        return $this->getAdapter()->fetchAll($select->__toString());
-    }
-
-    /**
-     * @return int
-     */
-    public function getCount()
-    {
-        return $this->getAdapter()->fetchOne(
-            'SELECT COUNT(*) FROM ' . $this->_prefix . 'account_customer_group'
-        );
-    }
-
-    /**
-     *
      * @param array $data
      * @return bool
      */
-    public function save($data)
+    public function save(array $data)
     {
-        foreach ($data as $values) {
-            if (!isset($values['id'])
-                || !$row = $this->find($values['id'])->current()) {
-
-                unset($values['id']);
-                $row = $this->createRow();
-                $oldGroupData = null;
-            } else {
-                if (Axis_Account_Model_Customer_Group::GROUP_GUEST_ID === $values['id']
-                    && Axis_Account_Model_Customer_Group::GROUP_ALL_ID === $values['id']) {
-                    // disallow to change system groups
-                    continue;
-                }
-                $oldGroupData = $row->toArray();
-            }
-
-            $row->setFromArray($values)
-                ->save();
-
-            Axis::dispatch('account_group_save_after', array(
-                'old_data'  => $oldGroupData,
-                'group'     => $row
-            ));
+        $row  = false;
+        if (isset($data['id'])) {
+            $row = $this->find($data['id'])->current();
+        }
+        if (!$row) {
+            unset($data['id']);
+            $row = $this->createRow();
+            $oldData = null;
+        } else {
+            $oldData = $row->toArray();
+        }
+        
+        if (self::GROUP_GUEST_ID === $row->id 
+            && self::GROUP_ALL_ID === $row->id) {
+            // disallow to change system groups
+            return;
         }
 
-        Axis::message()->addSuccess(
-            Axis::translate('account')->__(
-                'Group was saved successfully'
-            )
-        );
-        return true;
+        $row->setFromArray($data)
+            ->save();
+
+        Axis::dispatch('account_group_save_after', array(
+            'old_data'  => $oldData,
+            'group'     => $row
+        ));
+        return $row;
     }
 }

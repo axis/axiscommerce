@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Community
  * @subpackage  Axis_Community_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,18 +36,15 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('catalog')->__(
-                'Catalog'
-            ),
-            $this->view->catalogUrl
-        );
-        $this->view->crumbs()->add(
-            Axis::translate('community')->__(
-                'Reviews'
-            ),
-            'review'
-        );
+
+        $this->addBreadcrumb(array(
+            'label' => Axis::translate('catalog')->__('Catalog'),
+            'route' => 'product_catalog'
+        ));
+        $this->addBreadcrumb(array(
+            'label' => Axis::translate('community')->__('Reviews'),
+            'route' => 'community_review'
+        ));
     }
 
     /**
@@ -82,14 +79,11 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                 $keywords[$review['product']['name']] = $review['product']['name'];
             }
 
+            $title = Axis::translate('community')->__('Customer reviews');
             $this->view->meta()
-                ->setTitle(Axis::translate('community')->__(
-                    'Customer reviews'
-                ))
+                ->setTitle($title)
                 ->setKeywords(implode(',', $keywords))
-                ->setDescription(Axis::translate('community')->__(
-                    'Customer reviews'
-                ));
+                ->setDescription($title);
 
             $this->view->average_ratings = Axis::single('community/review')
                 ->getAverageProductRating(
@@ -113,10 +107,9 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         $this->view->review = array();
 
         if (!$this->_hasParam('id') || !is_numeric($this->_getParam('id'))) {
-            $this->view->pageTitle = Axis::translate('community')->__(
+            $this->setTitle(Axis::translate('community')->__(
                 'Review not found'
-            );
-            $this->view->meta()->setTitle($this->view->pageTitle);
+            ));
             $this->render();
             return;
         }
@@ -129,14 +122,14 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             $review = current($data['reviews']);
             $author = empty($review['author']) ?
                 Axis::translate('community')->__('Guest') : $review['author'];
-            $this->view->pageTitle = Axis::translate('community')->__(
+
+            $title = Axis::translate('community')->__(
                 "%s: Review by %s", $review['product']['name'], $author
             );
-            $this->view->meta()->setTitle(Axis::translate('community')->__(
-                    "%s: Review by %s", $review['product']['name'], $author
-                ))
-                ->setKeywords($review['product']['name'] . ',' . $author)
-            ;
+            $this->setTitle($title, false);
+            $this->view->meta()
+                ->setTitle($title)
+                ->setKeywords($review['product']['name'] . ',' . $author);
             $this->view->review = $review;
             $this->view->average_ratings = Axis::single('community/review')
                 ->getAverageProductRating(
@@ -144,10 +137,9 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                     Axis::config()->community->review->merge_average
                 );
         } else {
-            $this->view->pageTitle = Axis::translate('community')->__(
+            $this->setTitle(Axis::translate('community')->__(
                 'Review not found'
-            );
-            $this->view->meta()->setTitle($this->view->pageTitle);
+            ));
         }
 
         $this->render();
@@ -164,10 +156,10 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         );
 
         if (!$this->_hasParam('hurl')) {
-            $this->view->pageTitle = Axis::translate('community')->__(
-                'Review not found'
-            );
-            $this->view->meta()->setTitle($this->view->pageTitle);
+            $this->setTitle(
+                Axis::translate('community')->__(
+                    'Review not found'
+            ));
             $this->render('list-product');
             return;
         }
@@ -180,12 +172,12 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
 
         $paging = array(
             'perPage' => $this->_getPerPage(),
-            'sortBy' => $this->_getSortBy(),
-            'limit' => null === $params['limit'] ? 'all' : $params['limit'],
-            'order' => $params['order'],
-            'dir' => $params['dir'] == 'asc' ? 'desc' : 'asc',
-            'page' => $params['page'],
-            'count' => $this->view->data['count']
+            'sortBy'  => $this->_getSortBy(),
+            'limit'   => null === $params['limit'] ? 'all' : $params['limit'],
+            'order'   => $params['order'],
+            'dir'     => $params['dir'] == 'asc' ? 'desc' : 'asc',
+            'page'    => $params['page'],
+            'count'   => $this->view->data['count']
         );
         $this->view->paging = $paging;
 
@@ -202,16 +194,12 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                 );
         } else {
             if (!$product = Axis::single('catalog/product')->getByUrl($this->_getParam('hurl'))) {
-                $productName = $this->_getParam('hurl');
+                return $this->_forward('not-found', 'Error', 'Axis_Core');
             } else {
                 $description = $product->getDescription();
                 $productName = $description['name'];
                 $this->view->productId = $product->id;
             }
-            $this->view->meta()->setTitle(
-                Axis::translate('community')->__(
-                    'Review not found'
-            ));
         }
 
         if ($this->view->productId) {
@@ -221,17 +209,14 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             $this->view->formReview = $form;
         }
 
-        $this->view->crumbs()->add($productName);
-        $this->view->pageTitle = Axis::translate('community')->__(
+        $title = Axis::translate('community')->__(
             'Reviews for the %s', $productName
         );
+        $this->setTitle($title, false, $productName);
         $this->view->meta()
-            ->setTitle($this->view->pageTitle)
+            ->setTitle($title)
             ->setKeywords($productName)
-            ->setDescription(
-                Axis::translate('community')->__(
-                    'Reviews for the %s', $productName
-            ))
+            ->setDescription($title)
         ;
 
         $this->render('list-product');
@@ -242,17 +227,18 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
      */
     public function customerAction()
     {
+        $customerId = $this->_getParam('id');
+        if (!$customerId
+            || !is_numeric($customerId)
+            || !$customer = Axis::model('account/customer')->find($customerId)->current()) {
+
+            return $this->_forward('not-found', 'Error', 'Axis_Core');
+        }
+
         $this->view->data = array(
             'reviews' => array(),
             'count' => 0
         );
-
-        if (!$this->_hasParam('id') || !is_numeric($this->_getParam('id'))) {
-            $this->view->pageTitle = Axis::translate('community')->__('Review not found');
-            $this->view->meta()->setTitle($this->view->pageTitle);
-            $this->render('list');
-            return;
-        }
 
         $where = 'cr.customer_id = ' . (int)$this->_getParam('id');
         $params = $this->_getListingParams();
@@ -262,15 +248,27 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
 
         $paging = array(
             'perPage' => $this->_getPerPage(),
-            'sortBy' => $this->_getSortBy(),
-            'limit' => null === $params['limit'] ? 'all' : $params['limit'],
-            'order' => $params['order'],
-            'dir' => $params['dir'] == 'asc' ? 'desc' : 'asc',
-            'page' => $params['page'],
-            'count' => $this->view->data['count']
+            'sortBy'  => $this->_getSortBy(),
+            'limit'   => null === $params['limit'] ? 'all' : $params['limit'],
+            'order'   => $params['order'],
+            'dir'     => $params['dir'] == 'asc' ? 'desc' : 'asc',
+            'page'    => $params['page'],
+            'count'   => $this->view->data['count']
         );
         $this->view->paging = $paging;
         $this->view->comparable = true;
+
+        if (!$nickname = $customer->getExtraField('nickname')) {
+            $nickname = $customerId;
+        }
+
+        $this->view->customer   = $nickname;
+        $this->view->customerId = $customerId;
+
+        $title = Axis::translate('community')->__(
+            'Reviews written by customer %s', $nickname
+        );
+        $this->setTitle($title);
 
         if (count($this->view->data['reviews'])) {
             $productIds = array();
@@ -280,40 +278,20 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                 $keywords[$review['product']['name']] = $review['product']['name'];
             }
 
-            $nickname = $customerId = $this->_getParam('id');
-            if ($customer = Axis::single('account/customer')->find($customerId)->current()) {
-                $nick = $customer->getExtraField('nickname');
-                $nickname = $nick ? $nick : $nickname;
-            }
-
-            $this->view->customer = $nickname;
-            $this->view->customerId = $customerId;
-            $this->view->pageTitle = Axis::translate('community')->__(
-                'Reviews written by customer %s', $nickname
-            );
-            $this->view->meta()->setTitle(
-                    Axis::translate('community')->__(
-                        'Reviews written by customer %s', $nickname
-                ))
+            $this->view->meta()
                 ->setKeywords(implode(',', $keywords))
-                ->setDescription(
-                    Axis::translate('community')->__(
-                        'Reviews written by customer %s', $nickname
-                ))
-            ;
+                ->setDescription($title);
 
-            $this->view->average_ratings = Axis::single('community/review')
-                ->getAverageProductRating(
-                    $productIds, Axis::config()->community->review->merge_average
-                );
+            $mReview = Axis::model('community/review');
+            $this->view->average_ratings = $mReview->getAverageProductRating(
+                $productIds,
+                Axis::config('community/review/merge_average')
+            );
 
-            $this->view->average_customer_ratings = Axis::single('community/review')
-                ->getAverageCustomerRating(
-                    $customerId, Axis::config()->community->review->merge_average
-                );
-        } else {
-            $this->view->pageTitle = Axis::translate('community')->__('Review not found');
-            $this->view->meta()->setTitle($this->view->pageTitle);
+            $this->view->average_customer_ratings = $mReview->getAverageCustomerRating(
+                $customerId,
+                Axis::config('community/review/merge_average')
+            );
         }
 
         $this->render('list-customer');
@@ -323,15 +301,6 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     {
         $this->_setSnapshot($this->getRequest()->getServer('HTTP_REFERER'));
         $this->_forward('index', 'auth', 'Axis_Account');
-    }
-
-    public function compareAction()
-    {
-        Axis::single('catalog/product_compare')->clear();
-        foreach ($this->_getParam('product_id') as $productId) {
-            Axis::single('catalog/product_compare')->add($productId);
-        }
-        $this->_redirect($this->view->catalogUrl . '/product-compare');
     }
 
     public function addAction()
@@ -352,30 +321,43 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             $this->view->hurl = $product->getHumanUrl();
         }
 
-        $this->view->crumbs()->add($productName);
-        $this->view->pageTitle = Axis::translate('community')->__(
+        $title = Axis::translate('community')->__(
             'Add review for the %s', $productName
         );
+        $this->setTitle($title, false, $productName);
         $this->view->meta()
-            ->setTitle($this->view->pageTitle)
+            ->setTitle($title)
             ->setKeywords($productName)
-            ->setDescription(
-                Axis::translate('community')->__(
-                    'Add review for the %s', $productName
-            ));
+            ->setDescription();
 
         if ($this->_request->isPost()) {
+            $ratings = $this->_getRatings();
             $data = array(
-                'product_id' => $this->_getParam('product'),
-                'summary'    => $this->_getParam('summary'),
-                'author'     => $this->_getParam('author'),
-                'title'      => $this->_getParam('title'),
-                'pros'       => $this->_getParam('pros'),
-                'cons'       => $this->_getParam('cons'),
-                'ratings'    => $this->_getRatings()
+                'customer_id' => Axis::getCustomerId(), 
+                'product_id'  => $this->_getParam('product'),
+                'summary'     => $this->_getParam('summary'),
+                'author'      => $this->_getParam('author'),
+                'title'       => $this->_getParam('title'),
+                'pros'        => $this->_getParam('pros'),
+                'cons'        => $this->_getParam('cons'),
+                'ratings'     => $ratings
             );
             if ($form->isValid($this->_request->getPost())) {
-                Axis::single('community/review')->save($data);
+                $review = Axis::single('community/review')->save($data);
+                if ('approved' !== $review->status) {
+                    Axis::message()->addSuccess(
+                        Axis::translate('community')->__(
+                            'Review has been accepted for moderation'
+                        )
+                    );
+                }
+
+                Axis::message()->addSuccess(
+                    Axis::translate('community')->__(
+                        'Review was successfully saved'
+                ));
+                $review->setRating($ratings);
+                
                 Axis::dispatch('community_review_add_success', $data);
                 $this->_redirect(
                     $this->getRequest()->getServer('HTTP_REFERER')

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -124,10 +124,13 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
             $row->save();
 
             $assigns = array_filter(explode(',', $rowData['page_ids']));
-            $modelAssign->delete(array(
-                Axis::db()->quoteInto('box_id = ?', $row->id),
-                Axis::db()->quoteInto('page_id NOT IN (?)', $assigns)
-            ));
+            $_where = array(
+                Axis::db()->quoteInto('box_id = ?', $row->id)
+            );
+            if (count($assigns)) {
+                $_where[] = Axis::db()->quoteInto('page_id NOT IN (?)', $assigns);
+            }
+            $modelAssign->delete($_where);
             foreach ($assigns as $pageId) {
                 $_row = $modelAssign->find($row->id, $pageId)->current();
                 if (!$_row) {

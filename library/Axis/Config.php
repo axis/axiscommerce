@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Config
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -116,7 +116,7 @@ class Axis_Config extends Zend_Config
                     }
                     break;
                 case 'multiple':
-                    if (empty ($row['value'])) {
+                    if (!isset($row['value'])) {
                         $value = array();
                     } else {
                         $value = explode(self::MULTI_SEPARATOR, $row['value']);

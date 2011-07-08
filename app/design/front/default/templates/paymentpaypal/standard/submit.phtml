@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?php echo $this->translate('PaymentPaypal')->__('You will be redirected to PayPal in a few seconds.')?></title>
+    </head>
+    <body>
+        <div>
+        <?php echo $this->translate('PaymentPaypal')->__('You will be redirected to PayPal in a few seconds.')?>
+        <form action="<?php echo $this->action ?>" id="paypal_standard_checkout" method="post" style="display:none;">
+            <fieldset>
+                <?php foreach ($this->fields as $field => $value) :?>
+                <input name="<?php echo $field ?>" value="<?php echo $value ?>" type="hidden"/>
+                <?php endforeach;?>
+            </fieldset>
+        </form>
+        <script type="text/javascript">document.getElementById('paypal_standard_checkout').submit();</script>
+        </div>
+    </body>
+</html>

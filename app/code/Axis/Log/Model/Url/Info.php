@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Log
  * @subpackage  Axis_Log_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,26 +36,5 @@ class Axis_Log_Model_Url_Info extends Axis_Db_Table
     protected $_name = 'log_url_info';
 
     protected $_selectClass = 'Axis_Log_Model_Url_Info_Select';
-
-    /**
-     * @param string $url
-     * @param string $refer
-     * @return mixed         The primary key of the row inserted.
-     */
-    public function add($url = null, $refer = null)
-    {
-        $request = Zend_Controller_Front::getInstance()->getRequest();
-        if (null === $url) {
-            $url = $request->getScheme() . '://'
-            . $request->getHttpHost()
-            . $request->getRequestUri();
-        }
-        if (null === $refer) {
-            $refer = $request->getServer('HTTP_REFERER', '');
-        }
-        return $this->insert(array(
-            'url'   => $url,
-            'refer' => $refer
-        ));
-    }
+    
 }

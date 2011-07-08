@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -219,8 +219,15 @@ class Axis_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
         $groups = array();
         $mi = $ci = 0;
         foreach ($this as &$item) {
-            if (null !== $item->proxy && Axis::config('core/minify/css_' . $this->view->area, true)) {
-                $groups['proxy_' . $item->proxy][] =& $item;
+            if (null !== $item->proxy && Axis::config('core/minify/css_' . $this->view->area)) {
+                $proxy = $item->proxy;
+                if (isset($item->conditionalStylesheet)
+                    && !empty($item->conditionalStylesheet)
+                    && is_string($item->conditionalStylesheet)) {
+
+                    $proxy .= $item->conditionalStylesheet;
+                }
+                $groups['proxy_' . $proxy][] =& $item;
                 $ci++; // break conditionals array
                 $mi++; // break media array
             } else {

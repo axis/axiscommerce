@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -146,17 +146,18 @@ class Axis_Admin_Community_ReviewController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
 
         $data = $this->_getAllParams();
-        if (empty($data['customer_id'])) {
-            $data['customer_id'] = new Zend_Db_Expr('NULL');
-        }
-        $data['ratings'] = array();
-        foreach ($data['rating'] as $key => $rating) {
-            $data['ratings'][$key] = $rating;
-        }
+        
+        $review = Axis::model('community/review')->save($data);
 
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('community/review')->save($data)
+        Axis::message()->addSuccess(
+            Axis::translate('community')->__(
+                'Review was successfully saved'
         ));
+        
+        if (count($data['rating'])) {
+            $review->setRating($data['rating']);
+        }
+        $this->_helper->json->sendSuccess();
     }
 
     public function deleteAction()

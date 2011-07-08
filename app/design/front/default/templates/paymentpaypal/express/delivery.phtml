@@ -1,0 +1,20 @@
+<?php
+$this->headScript()->appendFile('/js/jquery/jquery.selectboxes.js');
+?>
+<script type="text/javascript">
+Zones = <?php echo Zend_Json_Encoder::encode($this->formAddress->getZones()); ?>;
+$(document).ready(function() {
+    $('.input-country').change(function(){
+        var inputZone = $(this)
+            .parents('form')
+            .find('.input-zone');
+
+        inputZone.removeOption(/./);
+
+        if (Zones[this.value])
+            inputZone.addOption(Zones[this.value], false);
+    });
+});
+</script>
+<?php echo $this->message(); ?>
+<?php echo $this->formAddress->render(); ?>

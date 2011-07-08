@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,11 +43,11 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
      */
     public function getValue($path, $siteId)
     {
-        $select = $this->select()->where('path = ?', $path)
-            ->where('site_id IN(?)', array_unique(array(0, $siteId)))
-            ->order('site_id desc')
-            ;
-        $row = $this->fetchRow($select);
+        $row = $this->select()
+            ->where('path = ?', $path)
+            ->where('site_id IN(?)', array(0, $siteId))
+            ->order('site_id DESC')
+            ->fetchRow();
         if ($row) {
             return $row->value;
         }
@@ -62,7 +62,11 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
      */
     public function save($data)
     {
-        if (!$row = $this->fetchRow('path = "' . $data['path'] . '"')) {
+        $row = $this->select()
+            ->where('path = ?', $data['path'])
+            ->fetchRow();
+        
+        if (!$row) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     "Config field '%s' was not found", $data['path']

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,28 +31,27 @@
  * @subpackage  Axis_Account_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_InfoController extends Axis_Account_Controller_Account
+class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
 {
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('Information'), '/account/info'
-        );
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('account')->__('Information'),
+            'controller' => 'info',
+            'route'      => 'account'
+        ));
     }
 
     public function indexAction()
     {
+        $this->_helper->layout->disableLayout();
         $this->_redirect('account/info/change');
     }
 
     public function changeAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__('Change Info');
-        $this->view->meta()->setTitle(
-            Axis::translate('account')->__(
-                'Change account info'
-        ));
+        $this->setTitle(Axis::translate('account')->__('Change Info'));
         $form = Axis::single('account/Form_ChangeInfo');
 
         if ($this->_request->isPost()) {
@@ -63,8 +62,20 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Account
                 $form->getElement('password_confirm')->clearValidators(); //removeValidator('NotEmpty');
             }
             if ($form->isValid($data)) {
-                $data['id'] = Axis::getCustomerId();
-                Axis::single('account/customer')->save($data);
+
+                $model = Axis::single('account/customer');
+                
+                $row = $model->find(Axis::getCustomerId())->current();
+                if (empty($data['password'])) {
+                    unset($data['password']);
+                } else {
+                    $data['password'] = md5($data['password']);
+                }
+                $row->setFromArray($data);
+                $row->modified_at = Axis_Date::now()->toSQLString();
+                $row->save();
+                $row->setDetails($data);
+
                 Axis::message()->addSuccess(
                     Axis::translate('Axis_Core')->__(
                         'Data was saved successfully'
@@ -72,19 +83,30 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Account
             }
         } else {
             $data = array();
-            $customer = Axis::single('account/customer')
-                ->find(Axis::getCustomerId())->current();
+            $customer = Axis::getCustomer();
             $extraInfo = $customer->findDependentRowset(
                 'Axis_Account_Model_Customer_Detail'
             );
             $data = $customer->toArray();
 
             foreach ($extraInfo as $row) {
-                $data['field_' . $row->customer_field_id] = empty($row->data) ?
-                    $row->customer_valueset_value_id : $row->data;
+                $value  = empty($row->data) ? $row->customer_valueset_value_id : $row->data;
+                
+                $isMulti = isset($data['field_' . $row->customer_field_id]);
+                
+                if ($isMulti && is_array($data['field_' . $row->customer_field_id])) {
+                    $data['field_' . $row->customer_field_id][] = $value;
+                } elseif ($isMulti) {
+                    $data['field_' . $row->customer_field_id] = array(
+                        $data['field_' . $row->customer_field_id],
+                        $value
+                    );
+                    
+                } else {
+                    $data['field_' . $row->customer_field_id] = $value;
+                }
             }
         }
-
         $form->populate($data);
         $this->view->form = $form;
         $this->render();

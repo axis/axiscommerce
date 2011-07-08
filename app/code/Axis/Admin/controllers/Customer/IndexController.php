@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -109,22 +109,22 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
 
         $data = Zend_Json::decode($this->_getParam('data'));
+        
+        $model = Axis::single('account/customer');
 
-        $modelCustomer = Axis::single('account/customer');
-
-        $success = 0;
-        foreach ($data as $id => $values) {
-            if (!$this->_isEmailValid($values['email'], $values['site_id'], $id)) {
+        foreach ($data as $id => $_row) {
+            if (!$this->_isEmailValid($_row['email'], $_row['site_id'], $id)) {
                 continue;
             }
-            $customer = $modelCustomer->find($id)->current();
-            $customer->setFromArray($values);
-            $customer->save();
-            $success++;
+            unset($_row['password']);
+            $row = $model->find($id)->current();
+            $row->setFromArray($_row)
+                ->save();
         }
 
-        Axis::message()->addSuccess(Axis::translate('Axis_Core')->__(
-            '%d record(s) was saved successfully', $success
+        Axis::message()->addSuccess(
+            Axis::translate('Axis_Core')->__(
+                '%d record(s) was saved successfully', count($data)
         ));
 
         return $this->_helper->json->sendSuccess();
@@ -240,45 +240,68 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
 
     public function saveCustomerAction()
     {
-        $customerData = $this->_getParam('customer') + $this->_getParam('custom_fields');
+        $_row    = $this->_getParam('customer'); 
+        $details = $this->_getParam('custom_fields', array());
 
-        if (!$this->_isEmailValid($customerData['email'], $customerData['site_id'], $customerData['id'])) {
+        if (!$this->_isEmailValid(
+                $_row['email'],  $_row['site_id'], $_row['id']
+            )) {
+
             return $this->_helper->json->sendFailure();
         }
-
-        if (!$result = Axis::single('account/customer')->save($customerData)) {
-            return $this->_helper->json->sendFailure();
-        }
-
-        /**
-         * @var Axis_Account_Model_Customer_Row
-         */
-        $customer = Axis::single('account/customer')->find($result['id'])->current();
-
-        // address
-        if ($this->_hasParam('address')) {
-            foreach (Zend_Json::decode($this->_getParam('address')) as $address) {
-                $customer->setAddress($address);
-            }
-        }
-
-        // if customer is new
-        if ($customer->id != $customerData['id']) {
-            Axis::message()->addSuccess(Axis::translate('Axis_Account')->__(
-                'Customer account was created successfully'
-            ));
-            Axis::dispatch('account_customer_register_success', array(
-                'customer' => $customer,
-                'password' => $result['password']
+        $model = Axis::single('account/customer');
+        $row = $model->find($_row['id'])->current(); 
+        $event = false;
+        if (!$row) {
+            list($row, $password) = $model->create($_row);
+            $event = true;
+            
+            Axis::message()->addSuccess(
+                Axis::translate('Axis_Account')->__(
+                    'Customer account was created successfully'
             ));
         } else {
-            Axis::message()->addSuccess(Axis::translate('Axis_Core')->__(
-                'Data was saved successfully'
+            if (empty($_row['password'])) {
+                unset($_row['password']);
+            } else {
+                $_row['password'] = md5($_row['password']);
+            }
+            $row->setFromArray($_row);
+            $row->modified_at = Axis_Date::now()->toSQLString();
+            $row->save();
+            Axis::message()->addSuccess(
+                Axis::translate('Axis_Core')->__(
+                    'Data was saved successfully'
             ));
         }
 
+        $row->setDetails($details);
+        
+        // address
+        if ($this->_hasParam('address')) {
+            $addresses = Zend_Json::decode($this->_getParam('address'));
+            
+            $modelAddress = Axis::single('account/customer_address');
+            foreach ($addresses as $address) {
+                if (!empty($address['id']) && $address['remove']) {
+                    $modelAddress->delete(
+                        Axis::db()->quoteInto('id = ?', $address['id'])
+                    );
+                } else {
+                    $row->setAddress($address);
+                }
+            }
+        }
+        
+        if ($event) {
+            Axis::dispatch('account_customer_register_success', array(
+                'customer' => $row,
+                'password' => $password
+            ));
+        }    
+
         $this->_helper->json->sendSuccess(array(
-            'data' => array('customer_id' => $customer->id)
+            'data' => array('customer_id' => $row->id)
         ));
     }
 
@@ -286,7 +309,7 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
     {
         $where = Axis::db()->quoteInto('site_id = ?', $siteId);
         if (null !== $customerId) {
-            $where .= ' AND ' . Axis::db()->quoteInto('id <> ?', $customerId);
+            $where .= Axis::db()->quoteInto(' AND id <> ?', $customerId);
         }
         $validator = new Axis_Validate_Exists(
             Axis::single('account/customer'),

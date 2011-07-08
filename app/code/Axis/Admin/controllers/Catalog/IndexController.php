@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -198,14 +198,14 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
 
             foreach ($options as $item) {
                 $items[] = array(
-                   'text' => $item['name'],
-                   'code' => $item['code'],
+                   'text'        => $item['name'],
+                   'code'        => $item['code'],
                    'option_name' => $item['name'],
-                   'id' => $item['id'],
-                   'option_id' => $item['id'],
-                   'parent' => null,
-                   'leaf' => in_array($item['input_type'], $leafOptions) ? true : false,
-                   'input_type' => $item['input_type'],
+                   'id'          => $item['id'],
+                   'option_id'   => $item['id'],
+                   'parent'      => null,
+                   'leaf'        => in_array($item['input_type'], $leafOptions) ? true : false,
+                   'input_type'  => $item['input_type'],
                    'languagable' => $item['languagable']
                 );
             }
@@ -248,17 +248,15 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $id = (int)$this->_getParam('product_id', 0);
-        $productRow = array();
-        $productRow[$id] = $this->_getParam('product');
+        $data = $this->_getParam('product');
 
         try {
-            $mProduct = Axis::model('catalog/product');
+            $model = Axis::model('catalog/product');
             $oldProductData = null;
-            if ($id && $oldProduct = $mProduct->find($id)->current()) {
+            if ($oldProduct = $model->find($data['id'])->current()) {
                 $oldProductData = $oldProduct->toArray();
             }
-            $product = $mProduct->save($productRow);
+            $product = $model->save($data);
         } catch (Axis_Exception $e) {
             Axis::message()->addError($e->getMessage());
             return $this->_helper->json->sendFailure();
@@ -283,7 +281,11 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             'old_data'  => $oldProductData,
             'product'   => $product
         ));
-
+        
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__('Data was saved successfully')
+        );
+        
         $this->_helper->json->sendSuccess(array(
             'data' => array('product_id' => $product->id))
         );
@@ -296,16 +298,16 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
         $siteId = $this->_getParam('siteId', Axis::getSiteId());
 
         $data = Zend_Json::decode($this->_getParam('data'));
-        $tableProduct = Axis::single('catalog/product');
+        $model = Axis::model('catalog/product');
 
         foreach ($data as $id => $values) {
-            $product = $tableProduct->find($id)->current();
-            $oldProductData = $product->toArray();
-            $product->setFromArray($values);
-            $product->save();
+            $row = $model->find($id)->current();
+            $oldProductData = $row->toArray();
+            $row->setFromArray($values);
+            $row->save();
             Axis::dispatch('catalog_product_save_after', array(
                 'old_data'  => $oldProductData,
-                'product'   => $product
+                'product'   => $row
             ));
         }
 
@@ -562,7 +564,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             $this->db->quoteInto('product_id IN (?)', $productIds)
         ));
 
-        Axis::dispatch('catalog_product_remove_after', array(
+        Axis::dispatch('catalog_product_remove_from_category', array(
             'product_ids' => $productIds,
             'category_ids' => array($categoryId)
         ));
@@ -583,7 +585,7 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             $this->db->quoteInto('product_id IN(?)', $productIds)
         ));
 
-        Axis::dispatch('catalog_product_remove_after', array(
+        Axis::dispatch('catalog_product_remove_from_category', array(
             'product_ids' => $productIds,
             'category_ids' => $categoryIds
         ));
@@ -653,21 +655,6 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
         ));
 
         $this->_helper->json->sendSuccess();
-    }
-
-    public function updateSearchIndexAction()
-    {
-        @require_once(
-            Axis::config()->system->path . '/scripts/searchIndexMaker.php'
-        );
-
-        Axis::message()->addSuccess(
-            Axis::translate('catalog')->__(
-                'Search indexes updated successfully'
-        ));
-
-        $referUrl = $this->getRequest()->getServer('HTTP_REFERER', 'cache');
-        $this->_redirect($referUrl);
     }
 
     public function updatePriceIndexAction()

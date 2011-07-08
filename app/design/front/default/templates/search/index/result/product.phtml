@@ -16,8 +16,8 @@
     <div class="product-content">
 
         <h4>
-            <a href="<?php echo $productUrl;?>" 
-                class="product-name" 
+            <a href="<?php echo $productUrl;?>"
+                class="product-name"
                 title="<?php echo $this->product['name'];?>"
             ><?php echo $this->product['nameHighlight'];?>
             </a>
@@ -26,13 +26,17 @@
         <div class="product-description">
             <?php
             if (!empty($this->product['contents'])) :
-                echo $this->product['contents'];
+                if (600 < strlen($this->product['contents'])) :
+                    echo substr(strip_tags($this->product['contents']), 0, 500) . '...';
+                else :
+                    echo $this->product['contents'];
+                endif;
             endif;
             ?>
         </div>
         <div class="product-url">
-            <a href="<?php echo $productUrl;?>" 
-                class="product-name" 
+            <a href="<?php echo $productUrl;?>"
+                class="product-name"
                 title="<?php echo $this->product['name'];?>"
             ><?php echo $this->href($this->catalogUrl . '/' . $this->product['urlHighlight']);?>
             </a>

@@ -1,0 +1,44 @@
+<div class="box box-address-form billing-address">
+    <div class="head"><span class="title"><?php echo $this->translate('checkout')->__('Billing Address') ?></span></div>
+    <div class="content">
+        <?php
+            if (count($this->checkout['address_list'])) :
+                $this->addressOptions = array(
+                    0 => 'New Address'
+                );
+                foreach ($this->checkout['address_list'] as $address) :
+                    $this->addressOptions[$address->id] = trim($this->address($address, ', '), ', ');
+                endforeach;
+
+                echo $this->formSelect(
+                    'billing_address[id]',
+                    $this->checkout['billing_address']->id,
+                    null,
+                    $this->addressOptions
+                );
+            endif;
+        ?>
+        <div class="address-form">
+            <?php echo $this->checkout['form_billing_address']->render(); ?>
+        </div>
+        <ul>
+            <li class="element-row last">
+                <?php if (Axis::config('checkout/address_form/shipping_address_enabled')) : ?>
+                    <label class="optional" for="billing_address-use_for_delivery"><?php echo $this->translate('checkout')->__('Use as Delivery Address') ?></label>
+                    <input type="hidden" value="0" name="billing_address[use_for_delivery]"/>
+                    <?php
+                        $checked = '';
+                        if ($this->checkout['billing_address']->id
+                            == $this->checkout['delivery_address']->id) :
+
+                            $checked = ' checked="checked"';
+                        endif;
+                    ?>
+                    <input type="checkbox"<?php echo $checked; ?> value="1" id="billing_address-use_for_delivery" name="billing_address[use_for_delivery]"/>
+                <?php else : ?>
+                    <input type="checkbox" checked="checked" style="display: none;" value="1" id="billing_address-use_for_delivery" name="billing_address[use_for_delivery]"/>
+                <?php endif; ?>
+            </li>
+        </ul>
+    </div>
+</div>

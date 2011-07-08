@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Locale
  * @subpackage  Axis_Locale_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -223,7 +223,8 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
         if (!isset($this->_data[$code])) {
             $this->_data[$code] = $this->select()
                 ->where('code = ?', $code)
-                ->fetchRow();
+                ->fetchRow()
+                ->toArray();
         }
 
         if (!empty($key)) {
@@ -291,66 +292,25 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
-    public function batchSave($data)
+    public function save(array $data)
     {
-        $result = true;
-        foreach ($data as $id => $values) {
-            $format = empty($values['format']) ?
-                new Zend_Db_Expr('NULL') : $values['format'];
-            $rowData = array(
-                'id'                 => $id,
-                'code'               => $values['code'],
-                'title'              => $values['title'],
-                'position'           => $values['position'],
-                'display'            => $values['display'],
-                'format'             => $format,
-                'currency_precision' => $values['currency_precision'],
-                'rate'               => $values['rate']
-            );
+        $data['rate'] = Axis_Locale::getNumber($data['rate']);
+        $row = $this->getRow($data);
+        if ($row->code === Axis::config('locale/main/currency')
+            && $row->rate != 1) {
 
-            $result = $result && (bool) $this->save($rowData);
+//            throw new Axis_Exception(
+            Axis::message()->addError(Axis::translate('locale')->__(
+                'Base currency rate should be 1.00'
+            ));
+            $row->rate = 1;
         }
-        return $result;
-    }
-
-    /**
-     *
-     * @param array $rowData
-     * @return mixed The primary key value(s), as an associative array if the
-     *     key is compound, or a scalar if the key is single-column.
-     */
-    public function save(array $rowData)
-    {
-        $id = false;
-        if (isset($rowData['id']) && null !== $rowData['id']) {
-
-            $id = $rowData['id'];
-            unset($rowData['id']);
+        if (empty($row->format)) {
+            $row->format = new Zend_Db_Expr('NULL');
         }
-
-        if (!$id || !$row = $this->fetchRow(
-                $this->getAdapter()->quoteInto('id = ?', $id)
-            )) {
-
-            $row = $this->createRow($rowData);
-        } else {
-            $row->setFromArray($rowData);
-
-            if ($row->code === Axis::config()->locale->main->currency &&
-                $row->rate != 1) {
-
-    //            throw new Axis_Exception(
-                Axis::message()->addError(Axis::translate('locale')->__(
-                    'Base currency rate should be 1.00'
-                ));
-                return false;
-            }
-        }
-
-        $row->rate = str_replace(',', '.', $row->rate);
-
-        return $row->save();
+        $row->save();
+        return $row;
     }
 }

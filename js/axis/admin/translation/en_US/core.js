@@ -511,5 +511,8 @@ Locale.module("core", {
     "Additional Configuration": "Additional Configuration",
     "Disable Wrapper": "Disable Wrapper",
     "Box Specific Configuration": "Box Specific Configuration",
-    "Basic Configuration": "Basic Configuration"
+    "Basic Configuration": "Basic Configuration",
+    "Copy blocks and layouts from": "Copy blocks and layouts from",
+    "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.": "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.",
+    "Are you sure want to delete old search indexes and create new for all products and cms pages?\nThis can take a while.": "Are you sure want to delete old search indexes and create new for all products and cms pages?\nThis can take a while."
 });

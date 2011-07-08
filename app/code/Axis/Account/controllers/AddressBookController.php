@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,7 +31,7 @@
  * @subpackage  Axis_Account_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
+class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstract
 {
     /**
      * @var int
@@ -42,24 +42,21 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
     {
         parent::init();
         $this->_customerId = Axis::getCustomerId();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('Address Book'),
-            '/account/address-book'
-        );
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('account')->__('Address Book'),
+            'controller' => 'address-book',
+            'route'      => 'account'
+
+        ));
     }
 
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Address Book'
-        );
-        $this->view->meta()->setTitle(
-            Axis::translate('account')->__(
-                'Address Book'
-        ));
+        $this->setTitle(Axis::translate('account')->__('Address Book'), null, false);
+
         $this->view->defaultBillingAddresId = false;
         $this->view->defaultShippingAddresId = false;
-        if ($customer = Axis::single('account/customer')->find(Axis::getCustomerId())->current()) {
+        if ($customer = Axis::getCustomer()) {
             $this->view->defaultBillingAddresId = $customer->default_billing_address_id;
             $this->view->defaultShippingAddresId = $customer->default_shipping_address_id;
         }
@@ -71,19 +68,14 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
 
     public function saveAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Saving address'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('account')->__('Saving address'));
+
         $params = $this->_getAllParams();
-        $form = Axis::model('account/Form_Address');
+        $form = Axis::model('account/form_address');
 
         if ($form->isValid($params)) {
             $params['customer_id'] = $this->_customerId;
-            Axis::single('account/customer')
-                ->find($params['customer_id'])
-                ->current()
-                ->setAddress($params);
+            Axis::getCustomer()->setAddress($params);
 
             if ($this->getRequest()->isXmlHttpRequest()) {
                 $this->_helper->json->sendRaw(true);
@@ -114,30 +106,28 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
 
     public function newAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Add new address'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
-        $form = Axis::single('account/Form_Address');
-        $form->addUseAsDefaultAddressCheckbox();
-        $this->view->form = $form;
+        $this->setTitle(
+            Axis::translate('account')->__(
+                'Add new address'
+        ));
+        $this->view->form = Axis::model('account/form_address');
         $this->render('form-address');
     }
 
     public function editAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'Edit address'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
-        $addressId = $this->_getParam('id');
-
-        $row = Axis::single('account/customer_address')->fetchRow(array(
-            $this->db->quoteInto('id = ?', $addressId),
-            $this->db->quoteInto('customer_id = ?', $this->_customerId)
+        $this->setTitle(
+            Axis::translate('account')->__(
+                'Edit address'
         ));
 
-        if (!$row instanceof  Axis_Db_Table_Row) {
+        $addressId = $this->_getParam('id');
+        $address = Axis::single('account/customer_address')->select()
+            ->where('id = ?', $addressId)
+            ->where('customer_id = ?', $this->_customerId)
+            ->fetchRow();
+
+        if (!$address instanceof  Axis_Db_Table_Row) {
             Axis::message()->addError(Axis::translate('account')->__(
                 'Address not found'
             ));
@@ -150,28 +140,22 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Account
 
         if ($this->getRequest()->isXmlHttpRequest()) {
             return $this->_helper->json->sendSuccess(array(
-                'data' => $row->toArray()
+                'data' => $address->toArray()
             ));
         }
 
-        $form = Axis::model('account/Form_Address');
-        $form->addUseAsDefaultAddressCheckbox();
+        $form = Axis::model('account/form_address');
 
-        $customer = Axis::single('account/customer')
-            ->find($this->_customerId)->current();
+        $customer = Axis::getCustomer();
 
-        $form->populate($row->toArray());
+        $form->populate($address->toArray());
 
         if ($customer->default_shipping_address_id == $addressId) {
-            $form->getDisplayGroup('address')
-                ->getRow('default_shipping')
-                ->getElement('default_shipping')
+            $form->getElement('default_shipping')
                 ->setOptions(array('value' => 1));
         }
         if ($customer->default_billing_address_id == $addressId) {
-            $form->getDisplayGroup('address')
-                ->getRow('default_billing')
-                ->getElement('default_billing')
+            $form->getElement('default_billing')
                 ->setOptions(array('value' => 1));
         }
 

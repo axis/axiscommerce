@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Search
  * @subpackage  Axis_Search_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,12 +43,13 @@ class Axis_Search_Model_Log_Query extends Axis_Db_Table
      */
     public function getQuery($query)
     {
-    	$row = $this->fetchRow($this->getAdapter()->quoteInto('`query` = ?', $query));
-    	if ($row) {
-            return $row;
+    	$row = $this->select()->where('query = ?', $query)->fetchRow();
+    	if (!$row) {
+            $row = $this->createRow();
+            $row->query = $query;
+            $row->save();
         }
-        $row = $this->createRow(array('query' => $query));
-        $row->save();
+        
     	return $row;
     }
 }

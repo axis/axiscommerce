@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -59,15 +59,14 @@ class Axis_Account_Model_Customer_FieldGroup extends Axis_Db_Table
      */
     public function getCurrentGroup($groupId)
     {
-        $select = $this->getAdapter()->select();
-        $select->from(array('ccfg' => $this->_prefix . 'account_customer_fieldgroup'))
-            ->join(array('ccfgl' => $this->_prefix . 'account_customer_fieldgroup_label'),
-                'ccfgl.customer_field_group_id = ccfg.id',
+        return $this->select('*')
+            ->join('account_customer_fieldgroup_label', 
+                'acfl.customer_field_group_id = acf.id',
                 array('group_label', 'language_id')
             )
-            ->where('ccfg.id = ' . intval($groupId));
-               
-        return $this->getAdapter()->fetchAll($select->__toString());
+            ->where('acf.id = ?', $groupId)
+            ->fetchAll()
+            ;
     }
 
     /**
@@ -85,17 +84,16 @@ class Axis_Account_Model_Customer_FieldGroup extends Axis_Db_Table
         if (null === $languageId) {
             $languageId = Axis_Locale::getLanguageId();
         }
-        
-        $where = $this->getAdapter()->quoteInto('IN(?)', $fieldGroupIds);
-        
-        return $this->getAdapter()->fetchAll(
-            "SELECT cfg.id, cfg.sort_order, cfgl.group_label, cfg.name 
-            FROM " . $this->_prefix . 'account_customer_fieldgroup' . " cfg
-            INNER JOIN " . $this->_prefix . "account_customer_fieldgroup_label cfgl
-               ON cfgl.customer_field_group_id = cfg.id
-            WHERE cfg.id $where AND cfgl.language_id = ?
-            ORDER BY cfg.sort_order", $languageId
-        );
+        return $this->select(array('id', 'sort_order', 'name')) //acf
+            ->join(
+                'account_customer_fieldgroup_label', 
+                'acfl.customer_field_group_id = acf.id',
+                'group_label'
+            )
+            ->where('acf.id IN(?)', $fieldGroupIds)
+            ->where('acfl.language_id = ?', $languageId)
+            ->fetchAll()
+            ;
     }
 
     /**
@@ -103,68 +101,10 @@ class Axis_Account_Model_Customer_FieldGroup extends Axis_Db_Table
      * @param array $data
      * @return mixed
      */
-    public function save($data)
+    public function save(array $data)
     {
-        $db = $this->getAdapter();
-        
-        if (!sizeof($data)) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'No data to save'
-                )
-            );
-            return false;
-        }
-            
-        $languageIds = array_keys(Axis_Collect_Language::collect());
-        
-        $label = Axis::single('account/Customer_FieldGroup_Label');
-        $groupName = preg_replace(
-            array("/[^a-z0-9\s+]/", "/\s+/"),
-            array('', '_'),
-            strtolower($data['groupName'])
-        );
-
-        $row = array(
-            'name' => $groupName,
-            'sort_order' => $data['sortOrder'],
-            'is_active' => $data['isActive']
-        ); 
-        
-        if ($data['groupId'] != 'null') {
-            $this->update($row, $db->quoteInto('id = ?', $data['groupId']));
-            foreach ($languageIds as $languageId) {
-                $label->update(
-                   array('group_label' => $data['groupTitle' . $languageId]),
-                   array(
-                       $db->quoteInto(
-                           'customer_field_group_id = ?', $data['groupId']
-                       ),
-                       'language_id = ' . $languageId
-                   )
-                );
-            }
-        } else {
-            $groupId = $this->insert($row);
-            foreach ($languageIds as $languageId) {
-                $label->insert(array(
-                    'customer_field_group_id' => $groupId,
-                    'language_id' => $languageId,
-                    'group_label' => $data['groupTitle' . $languageId]
-                ));
-            }
-            Axis::message()->addSuccess(
-                Axis::translate('account')->__(
-                    'Group was saved successfully'
-                )
-            );
-            return $groupId;
-        }
-        Axis::message()->addSuccess(
-            Axis::translate('account')->__(
-                'Group was saved successfully'
-            )
-        );
-        return $data['groupId'];
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -76,7 +76,10 @@ class Axis_Catalog_Model_Product_Option_ValueSet extends Axis_Db_Table
      */
     public function getCreate($name)
     {
-        $row = $this->fetchRow($this->select()->where('name = ?', $name));
+        $row = $this->select()
+            ->where('name = ?', $name)
+            ->fetchRow();
+        
         if (!$row) {
             $row = $this->createRow((array('name' => $name)));
             $row->save();

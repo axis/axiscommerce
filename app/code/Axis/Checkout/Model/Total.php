@@ -1,31 +1,31 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Model
@@ -39,14 +39,21 @@ class Axis_Checkout_Model_Total
      * @var array
      */
     private $_methods = array();
-    
+
     /**
      * Collects array, content order_total information
      *
      * @var array
      */
     private $_collects = null;
-    
+
+    /**
+     * Recollefct totals flag
+     *
+     * @var boolean
+     */
+    private $_recollect = false;
+
     /**
      * Apply all total methods for current total
      * @return void
@@ -76,13 +83,13 @@ class Axis_Checkout_Model_Total
         }
         return ($a['sortOrder'] > $b['sortOrder']) ? 1 : -1;
     }
-    
+
     public function getCollects()
     {
         if (null === $this->_collects) {
             $this->_runCollects();
         }
-        
+
         return $this->_collects;
     }
 
@@ -95,17 +102,20 @@ class Axis_Checkout_Model_Total
     {
         $this->_collects[$collect['code']] = $collect;
     }
-    
+
     /**
      * Retrieve final total sum for payment, including shipping price and taxes
-     * 
+     *
      * @param string $code module code
      * @return float
      */
     public function getTotal($code = null)
     {
         if (!empty($code)) {
-            if (null !== $this->_collects && isset($this->_collects[$code])) {
+            if (!$this->_recollect
+                && null !== $this->_collects
+                && isset($this->_collects[$code])) {
+
                 $total = $this->_collects[$code]['total'];
             } else {
                 $methodName = str_replace('Checkout_', '', $code);
@@ -119,7 +129,7 @@ class Axis_Checkout_Model_Total
                 }
             }
         } else {
-            if (null === $this->_collects) {
+            if ($this->_recollect || null === $this->_collects) {
                 $this->_runCollects();
             }
             $total = 0;
@@ -127,12 +137,13 @@ class Axis_Checkout_Model_Total
                 $total += $collect['total'];
             }
         }
+        $this->_recollect = false;
         return $total;
     }
-    
+
     /**
      * Return list of order totals
-     * 
+     *
      * @return array
      */
     protected function _getMethodNames()
@@ -160,10 +171,10 @@ class Axis_Checkout_Model_Total
         Axis::cache()->save($methods, 'order_total_methods', array('modules'));
         return $methods;
     }
-    
+
     /**
      * Retrieve Axis_Checkout_Model_Total_ methods list
-     * 
+     *
      * @return array
      */
     protected function _getMethods()
@@ -175,10 +186,10 @@ class Axis_Checkout_Model_Total
         }
         return $this->_methods;
     }
-    
+
     /**
      * Retrieve method by name. Method is saved to $_methods
-     * 
+     *
      * @param string $code
      * @return Axis_Checkout_Model_Total_Abstract
      */
@@ -195,5 +206,10 @@ class Axis_Checkout_Model_Total
             $this->_methods[$code] = new $className();
         }
         return $this->_methods[$code];
+    }
+
+    public function setRecollect($flag)
+    {
+        $this->_recollect = $flag;
     }
 }

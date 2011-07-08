@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -40,54 +40,13 @@ class Axis_Core_Model_Template_Mail extends Axis_Db_Table
      * Updates or add record
      * 
      * @param array $data
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
-        if (!sizeof($data)) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'No data to save'
-            ));
-            return false;
-        }
-
-        foreach ($data as $id => $rowset) {
-        
-            /* saving content into file */ 
-            if (!empty($data[$id]['content'])) {    
-                $file = Axis::config()->system->path . '/app/design/mail/' 
-                          . $data[$id]['template'] . '_'
-                          . $data[$id]['type'] . '.phtml';
-                if (!is_writable($file)) {
-                    Axis::message()->addError(
-                        Axis::translate('core')->__(
-                            "Can't open file with write permissions : %s", $file
-                    ));
-                } else {
-                    if (!@file_put_contents($file, $data[$id]['content'])) {
-                        Axis::message()->addError(
-                            Axis::translate('core')->__(
-                                "Can't write content to file :%s", $file
-                        ));
-                    }
-                }
-            }
-        
-            if (!isset($rowset['id']) 
-                || !$row = $this->find($rowset['id'])->current()) {
-                
-                $row = $this->createRow();
-            }
-            $row->setFromArray($rowset);
-            $row->save();
-        }
-        
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-        ));
-        return true;
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
     
     /**

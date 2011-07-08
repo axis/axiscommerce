@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -28,10 +28,9 @@ var Block = {
     },
 
     load: function(id) {
-        BlockWindow.form.getForm().clear();
         BlockWindow.form.getForm().load({
-            url:  Axis.getUrl('cms_block/get-data/id/') + id,
-            method: 'get',
+            url: Axis.getUrl('cms_block/get-data/id/') + id,
+            method: 'post',
             success: function(form, action) {
                 BlockWindow.el.show();
             }
@@ -106,6 +105,10 @@ Ext.onReady(function() {
             sortable: true
         },
         columns: [{
+            header: 'Id'.l(),
+            dataIndex: 'id',
+            width: 60
+        }, {
             header: 'Name'.l(),
             dataIndex: 'name',
             id: 'name'

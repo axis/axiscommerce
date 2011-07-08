@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Community
  * @subpackage  Axis_Community_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,19 +36,37 @@ class Axis_Community_Model_Review_Row extends Axis_Db_Table_Row
     /**
      * Adds marks to review
      * 
-     * @param array $marks rating_id => mark
+     * @param array $ratings rating_id => mark
      * @return Axis_Community_Model_Review_Row provides fluent interface
      */
-    public function saveMark(array $marks)
+    public function setRating(array $ratings) 
     {
-        foreach ($marks as $rating_id => $mark) {
-            if (!$row = Axis::single('community/review_mark')->find($this->id, $rating_id)->current()) {
-                $row = Axis::single('community/review_mark')->createRow();
+        $model = Axis::model('community/review_mark');
+        
+        foreach ($ratings as $ratingId => $mark) {
+                
+            if (empty($this->customer_id)) {
+                Axis::message()->addNotice(
+                    Axis::translate('community')->__(
+                        'Guests do not have the permission to vote. Review was saved without ratings'
+                ));
+                break;
             }
-            $row->setFromArray(array(
+
+            if ($model->isCustomerVoted(
+                $this->customer_id, $this->product_id, $this->id
+            )) {
+                Axis::message()->addNotice(
+                    Axis::translate('community')->__(
+                        'You have already voted for this product. Review was saved without ratings'
+                ));
+                break;
+            }
+
+            $row = $model->getRow(array(
                 'review_id' => $this->id,
-                'rating_id' => $rating_id,
-                'mark' => $mark
+                'rating_id' => $ratingId,
+                'mark'      => $mark
             ));
             $row->save();
         }

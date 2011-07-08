@@ -255,3 +255,6 @@
 "Remote Address (IP) Validation","Remote Address (IP) Validation"
 "User Agent (Browser) Validation","User Agent (Browser) Validation"
 "Please note that this message was sent to the following e-mail address: %s","Please note that this message was sent to the following e-mail address: %s"
+"Required","Required"
+"Optional","Optional"
+"Disabled","Disabled"

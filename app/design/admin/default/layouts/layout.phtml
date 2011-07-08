@@ -45,7 +45,7 @@
 
         $this->headScript()
             ->setProxy('axis_core')
-            ->offsetSetFile(-100, 'js/jquery/jquery-1.4.4.min.js')
+            ->offsetSetFile(-100, 'js/jquery/jquery-1.6.1.min.js')
             ->offsetSetFile(-98, 'js/ext-3.3.1/adapter/jquery/ext-jquery-adapter.js')
             ->offsetSetFile(-96, 'js/ext-3.3.1/ext-all-debug.js')
             ->offsetSetFile(-94, 'js/ext-3.3.1/examples/ux/ux-all-debug.js')
@@ -110,7 +110,7 @@
                 <a href="<?php echo $this->href('index')?>" id="logo">
                     <?php echo $this->image('logo.gif', 'alt="' . Axis::config()->core->company->name . '"'); ?>
                 </a>
-                <?php echo $this->box('admin/greeting'); ?>
+                <?php echo $this->box('admin/greeting')->render(); ?>
             </div>
         </div>
 

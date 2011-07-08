@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Install
  * @subpackage  Axis_Install_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -467,11 +467,13 @@ class Axis_Install_Model_Wizard
 
     public function applyTemplate()
     {
-        Axis::single('core/template')->importTemplateFromXmlFile(
+        $mTemplate = Axis::single('core/template');
+        $mTemplate->importTemplateFromXmlFile(
             AXIS_ROOT
              . '/app/code/Axis/Install/etc/'
              . 'default.xml'
         );
+        $mTemplate->duplicate('default', 'custom');
         return $this;
     }
 

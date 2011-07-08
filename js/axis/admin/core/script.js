@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -26,6 +26,19 @@ if (typeof Ext != 'object') {
         + "\n"
         + 'Download and unpack it under the js folder (AXIS_ROOT/js/ext-3.3.1)'
    );
+}
+
+if (typeof Range.prototype.createContextualFragment == "undefined") { // FIX IE9
+    Range.prototype.createContextualFragment = function(html) {
+        var doc = this.startContainer.ownerDocument;
+        var container = doc.createElement("div");
+        container.innerHTML = html;
+        var frag = doc.createDocumentFragment(), n;
+        while ( (n = container.firstChild) ) {
+            frag.appendChild(n);
+        }
+        return frag;
+    };
 }
 
 Axis.getUrl = function(url, disableSsl, front) {

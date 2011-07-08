@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -463,9 +463,9 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/cache/default_lifetime', 'core/Cache/Default Lifetime', '86400')
             ->add('core/translation/autodetect', 'core/Translation/Autodetect new words',  '0', 'bool', 'Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)')
 
-            ->add('core/minify/js_front', 'Core/Minify/Enable javascript merging the frontend', '1', 'bool')
+            ->add('core/minify/js_front', 'Core/Minify/Enable javascript merging the frontend', '0', 'bool')
             ->add('core/minify/js_admin', 'Core/Minify/Enable javascript merging on the backend', '0', 'bool')
-            ->add('core/minify/css_front', 'Enable css merging on the frontend', '1', 'bool')
+            ->add('core/minify/css_front', 'Enable css merging on the frontend', '0', 'bool')
             ->add('core/minify/css_admin', 'Enable css merging on the backend', '0', 'bool')
 
             ->add('mail', 'Mail', null, null, array('translation_module' => 'Axis_Core'))
@@ -494,8 +494,8 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('mail/mailboxes/email15', 'Email', 'test@axiscommerce.com')
 
             ->add('design', 'Design', null, null, array('translation_module' => 'Axis_Core'))
-            ->add('design/main/frontTemplateId', 'Design/General/Front Template', '1', 'select', array('model' => 'Template'))
-            ->add('design/main/adminTemplateId', 'Admin Template',  '1', 'select', array('model' => 'Template'))
+            ->add('design/main/frontTemplateId', 'Design/General/Front Template', 2, 'select', array('model' => 'Template'))
+            ->add('design/main/adminTemplateId', 'Admin Template',  1, 'select', array('model' => 'Template'))
             ->add('design/htmlHead/defaultTitle', 'Design/HTML Head/Default Title', 'Default Title')
             ->add('design/htmlHead/defaultDescription', 'Default Description', 'Default Description',  'text')
             ->add('design/htmlHead/defaultKeywords', 'Default Keywords',  'Axis, store', 'text')

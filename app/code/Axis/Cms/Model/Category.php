@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -37,49 +37,24 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
 
     protected $_rowClass = 'Axis_Cms_Model_Category_Row';
 
+    protected $_selectClass = 'Axis_Cms_Model_Category_Select';
+
     protected $_primary = 'id';
 
     /**
      * Update or insert category row
      *
      * @param array $data
-     * <code>
-     *  column_name => value,
-     *  content     => array(
-     *      langId => array()
-     *  )
-     * </code>
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
-        // $this->getRow($data)->save();
-
-        if (!isset($data['id'])
-            || !$row = $this->find($data['id'])->current()) {
-
-            $row = $this->createRow();
+        $row = $this->getRow($data);
+        if (empty($row->parent_id)) {
+            $row->parent_id = new Zend_Db_Expr('NULL');
         }
-        unset($data['id']);
-        if (empty($data['parent_id'])) {
-            $data['parent_id'] = new Zend_Db_Expr('NULL');
-        }
-        $row->setFromArray($data)->save();
-
-        $mContent = Axis::model('cms/category_content');
-        foreach ($data['content'] as $languageId => $values) {
-
-            // $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
-
-            if (!$rowContent = $mContent->find($row->id, $languageId)->current()) {
-                $rowContent = $mContent->createRow(array(
-                    'cms_category_id'   => $row->id,
-                    'language_id'       => $languageId
-                ));
-            }
-            $rowContent->setFromArray($values)->save();
-        }
-
-        return $row->id;
+        $row->save();
+        return $row;
     }
 
     public function getCategoryIdByLink($link)
@@ -93,19 +68,6 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
             ->where('ccc.link = ?', $link)
             ->where('cc.site_id = ?', Axis::getSiteId())
             ->fetchOne();
-    }
-
-    public function getActiveCategory()
-    {
-        return $this->select(array('id', 'parent_id'))
-            ->join('cms_category_content',
-                  'ccc.cms_category_id = cc.id',
-                  array('link', 'title')
-            )->where('cc.is_active = 1')
-            ->where('cc.site_id = ?', Axis::getSiteId())
-            ->where('ccc.language_id = ?', Axis_Locale::getLanguageId())
-            ->where('ccc.link is not null')
-            ->fetchAll();
     }
 
     /**
@@ -147,7 +109,8 @@ class Axis_Cms_Model_Category extends Axis_Db_Table
             ->fetchAssoc();
 
         if ($isPage) {
-            $id = current($this->getIdsByPage($id));
+            $ids = $this->getIdsByPage($id);
+            $id = current($ids);
         }
         $result = array();
         $this->_recurse($all, $id, $result);

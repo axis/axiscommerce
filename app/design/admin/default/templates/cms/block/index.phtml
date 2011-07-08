@@ -1,5 +1,9 @@
 <?php
 $this->headScript()
+    ->appendFile('js/ckeditor/ckeditor.js')
+    ->appendFile('js/axis/admin/core/ckeditor.js')
+    ->appendFile('js/ext-axis/src/widgets/form/CKEditor.js')
+
     ->appendFile('/js/axis/admin/cms/block/grid.js')
     ->appendFile('/js/axis/admin/cms/block/editor.js');
 ?>

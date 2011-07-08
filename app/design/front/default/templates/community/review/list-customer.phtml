@@ -20,7 +20,7 @@
 </div>
 
 <?php echo $this->render('review/list/toolbar.phtml') ?>
-<form id="form-compare" method="post" action="<?php echo $this->href('review/compare') ?>">
+<form id="form-compare" method="post" action="<?php echo $this->href($this->catalogUrl . '/product-compare/compare') ?>">
 <ol class="review-list">
 <?php foreach ($this->data['reviews'] as $review) :
     $product = $review['product'];

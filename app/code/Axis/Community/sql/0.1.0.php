@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Community
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -134,8 +134,8 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('community/review/rating_enabled', 'Enable ratings', 1, 'bool', 'Enable rating system in reviews')
             ->add('community/review/rating_title', 'Show rating title', 1, 'bool', 'Show rating titles')
             ->add('community/review/merge_average', 'Merge average ratings', 1, 'bool', 'Show average rating as one')
-            ->add('community/review/customer_status', 'Default customer review status', 'approved', 'select', 'Default review status written by registered customer', array('config_options' => 'pending,approved,disapproved'))
-            ->add('community/review/guest_status', 'Default guest review status', 'approved', 'select', 'Default review status written by guest', array('config_options' => 'pending,approved,disapproved'))
+            ->add('community/review/customer_status', 'Default customer review status', 'pending', 'select', 'Default review status written by registered customer', array('config_options' => 'pending,approved,disapproved'))
+            ->add('community/review/guest_status', 'Default guest review status', 'pending', 'select', 'Default review status written by guest', array('config_options' => 'pending,approved,disapproved'))
             ->add('community/review/guest_permission', 'Allow guest to write a reviews', 1, 'bool')
             ->add('community/review/perPage', 'Reviews showed per page', '10,25,50,all')
             ->add('community/review/perPageDefault', 'Default reviews count per page', '10')

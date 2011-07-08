@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Install
  * @subpackage  Axis_Install_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -52,7 +52,7 @@ class Axis_Install_Model_Installer
                     if (0 === strpos($stmt, '--') || 0 === strpos($stmt, '/*')) {
                         continue;
                     }
-                    Axis::db()->query($stmt);
+                    Axis::db()->getConnection()->exec($stmt);
                 } catch (Exception $e) {
                     if ($e->getMessage() == 'SQLSTATE[HY000]: General error: 2013 Lost connection to MySQL server during query'
                         && $tries < 10) {

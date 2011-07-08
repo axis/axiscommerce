@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Poll
  * @subpackage  Axis_Poll_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,37 +35,6 @@ class Axis_Poll_Model_Answer extends Axis_Db_Table
 {
     protected $_name = 'poll_answer';
 
-    /**
-     * @param int $id
-     * @param int $languageId
-     * @param int $questionId
-     * @param string $answer
-     * @return int 
-     */
-    public function save($id, $languageId, $questionId, $answer)
-    {
-        $row = $this->fetchRow(array(
-            'id = ' . $id,
-            'language_id = ' . $languageId,
-            'question_id = ' . $questionId
-        ));
-        
-        if (!$row instanceof Axis_Db_Table_Row) {
-            $rowData = array(
-                'language_id' => $languageId,
-                'question_id' => $questionId,
-                'answer'      => $answer
-            );
-            if ($id > 0) {
-                $rowData['id'] = $id;
-            }
-            $row = $this->createRow($rowData);
-        } else {
-            $row->answer = $answer;
-        }
-        return $row->save();
-    }
-    
     /**
      *
      * @param int $questionId
@@ -82,11 +51,8 @@ class Axis_Poll_Model_Answer extends Axis_Db_Table
         $count = null,
         $offset = null)
     {
-        $select = $this->getAdapter()->select();
-        $select->from(
-            array('a' => $this->_prefix . 'poll_answer'),
-            array('id', 'question_id', 'answer', 'language_id')
-        );
+        $select = $this->select(array('id', 'question_id', 'answer', 'language_id'))
+            ->joinLeft('poll_question', 'pa.question_id = pq.id');
         
         if (null !== $count) {
             $select->limit($count, $offset);
@@ -94,35 +60,25 @@ class Axis_Poll_Model_Answer extends Axis_Db_Table
         if (null !== $order) {
             $select->order($order);
         }
-        $select->joinLeft(array('q' => $this->_prefix . 'poll_question'),
-                          'a.question_id = q.id',
-                          array());
-	        
-	    if (false !== $questionId) {
-	        $select->where('q.id = ?', $questionId);
+        
+        if (false !== $questionId) {
+            $select->where('pq.id = ?', $questionId);
         }
-	    if (false !== $languageId) {
-	        $select->where('a.language_id = ? ', $languageId);
+        if (false !== $languageId) {
+            $select->where('pa.language_id = ?', $languageId);
         }
         
         return $select->query()->fetchAll();
     }
-    
-    public function getIdsByQuestionId($questionId)
-    {
-        return $this->getAdapter()->fetchCol(
-            "SELECT id FROM " . $this->_prefix . 'poll_answer' . " WHERE question_id = ? ", $questionId
-        );
-    }
-    
+      
     /*
      * @TODO rename
      */
     public function getAttitude($questionId, $answerId)
     {
-        return $this->getAdapter()->fetchOne(
-            "SELECT COUNT(id) FROM " . $this->_prefix . 'poll_answer' . " WHERE question_id = ? AND id = ?",
-            array($questionId, $answerId)
-        );
+        return $this->select()
+            ->where('question_id = ?', $questionId)
+            ->where('id = ?', $answerId)
+            ->count();
     }
 }

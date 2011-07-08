@@ -19,7 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Auth
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -60,9 +60,9 @@ class Axis_Auth_AdminAdapter implements Zend_Auth_Adapter_Interface
      */
     public function authenticate()
     {
-        $row = Axis::single('admin/user')->fetchRow(
-            Axis::db()->quoteInto("username = ?", $this->_username)
-        );
+        $row = Axis::single('admin/user')->select()
+            ->where('username = ?', $this->_username)
+            ->fetchRow();
         
         if (!$row) {
             $code = Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND;

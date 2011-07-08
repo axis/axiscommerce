@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,28 +33,9 @@
  */
 class Axis_Cms_Model_Page_Row extends Axis_Db_Table_Row 
 {
-    private function _cleanTag($blockName) 
-    {
-       return str_replace(array('{', '}'), '', $blockName);
-    }
-    
-    private function _getReplaceContent($blockName)
-    {
-       $blockName = $this->_cleanTag($blockName);
-       
-       list($tagType, $tagKey) = explode('_', $blockName, 2);
-       switch ($tagType) {
-           case 'static':
-               return Axis::single('cms/block')->getContentByName($tagKey);
-               break;
-       }
-       
-       return '';
-    }
-
     /**
      *
-     * @return string | array
+     * @return Axis_Cms_Model_Page_Content_Row
      */
     public function getContent()
     {
@@ -63,26 +44,18 @@ class Axis_Cms_Model_Page_Row extends Axis_Db_Table_Row
         $columns = array(
             'title',  'content', 'meta_keyword', 'meta_description', 'meta_title'
         );
-        $content = Axis::model('cms/page_content')
+        $row = Axis::model('cms/page_content')
             ->select($columns)
             ->joinLeft('cms_page', 'cp.id = cpc.cms_page_id', array('layout'))
             ->where('cpc.language_id = ?', $languageId)
             ->where('cpc.cms_page_id = ?', $this->id)
             ->fetchRow()
         ;
-        
-        //inserting blocks in content
-        $matches = array();
-        preg_match_all('/{{\w+}}/', $content['content'], $matches);
-        $i = 0;
-        
-        foreach ($matches[0] as $block) {
-           $content['content'] = str_replace(
-               $block, $this->_getReplaceContent($block), $content['content']
-           );
+        if (!$row) {
+            return false;
         }
-        
-        return $content;
+        $row->content = $row->getContent();
+        return $row;
     }
     
     public function getComments()

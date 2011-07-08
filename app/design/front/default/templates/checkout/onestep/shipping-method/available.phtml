@@ -1,0 +1,45 @@
+<?php echo $this->message() ?>
+
+<label id="shipping-required" class="error" style="display: none;"><?php echo $this->translate('checkout')->__('Shipping Method is required.') ?></label>
+
+<?php if (!count($this->checkout['shipping_methods']['methods'])) : ?>
+
+    <p class="no-methods-available"><?php echo $this->translate('checkout')->__('We can not deliver the goods at the listed address.')?></p>
+
+<?php else : ?>
+
+    <ol>
+    <?php foreach ($this->checkout['shipping_methods']['methods'] as $methodCode => $method) : ?>
+        <?php
+        if (!count($method)) :
+            continue;
+        endif;
+        ?>
+        <li class="shipping-method">
+            <h5 class="shipping-method-title">
+                <?php echo Axis_Shipping::getMethod($methodCode)->getTitle() ?>
+            </h5>
+            <ol class="shipping-types">
+            <?php foreach ($method as $type) : ?>
+                <li class="shipping-type">
+                    <h5 class="shipping-method-type-title">
+                        <input type="radio" name="shipping[method]" value="<?php echo $type['id'];?>"
+                            <?php echo $type['id'] == $this->checkout['shipping_methods']['currentMethodCode'] ? 'checked="checked"' : ''; ?>
+                            id="shipping_method-<?php echo $type['id'];?>"
+                            class="shipping-method-radio"
+                        /><label for="shipping_method-<?php echo $type['id'];?>"><?php
+                            echo $this->currency($type['price']) . ' ' . $type['title'];
+                        ?></label>
+                    </h5>
+                    <?php echo $this->shippingForm($type['id'], 'form')?>
+                </li>
+            <?php endforeach; ?>
+            </ol>
+        </li>
+    <?php endforeach; ?>
+    </ol>
+    <script type="text/javascript">
+        Onestep.getShipping().activate();
+    </script>
+
+<?php endif; ?>

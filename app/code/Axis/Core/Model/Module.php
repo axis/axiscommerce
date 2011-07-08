@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -270,8 +270,9 @@ class Axis_Core_Model_Module extends Axis_Db_Table
     public function getByCode($code)
     {
         try {
-            $where = $this->select()->where('code = ?', $code);
-            $row = $this->fetchRow($where);
+            $row = $this->select()
+                ->where('code = ?', $code)
+                ->fetchRow();
             if ($row) {
                 return $row;
             }

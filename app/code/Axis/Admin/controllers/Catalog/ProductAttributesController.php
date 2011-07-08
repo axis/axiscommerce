@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -65,33 +65,52 @@ class Axis_Admin_Catalog_ProductAttributesController extends Axis_Admin_Controll
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
-
-        return $this->_helper->json->sendJson(array(
-            'success' => Axis::single('catalog/product_option')
-                ->save($this->_getParam('option'))
-        ));
+        $data = $this->_getParam('option');
+        $row = Axis::single('catalog/product_option')->save($data);
+        
+        /* saving option text */
+        $modelDescription = Axis::model('catalog/product_option_text'); 
+        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
+            $rowText = $modelDescription->find($row->id, $languageId)
+                ->current();
+            if (!$rowText) {
+                $rowText = $modelDescription->createRow();
+                $rowText->option_id = $row->id;
+                $rowText->language_id = $languageId;
+            }
+            $rowText->setFromArray($data['text'][$languageId]);
+            $rowText->save();
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('catalog')->__(
+                'Option was saved successfully'
+            )
+        );
+        return $this->_helper->json->sendSuccess();
     }
 
     public function getDataAction()
     {
         $this->_helper->layout->disableLayout();
 
-        $id = $this->_getParam('id', 0);
+        $id = $this->_getParam('id', false);
 
-        $result = array();
-
-        if ($id && $row = Axis::single('catalog/product_option')->find($id)->current()) {
-            $result = $row->toArray();
-            $texts = $row->findDependentRowset('Axis_Catalog_Model_Product_Option_Text');
-            foreach ($texts as $text) {
-                $result['text']['lang_' . $text['language_id']]['name'] = $text['name'];
-                $result['text']['lang_' . $text['language_id']]['description'] = $text['description'];
+        $data = array();
+        $row = Axis::single('catalog/product_option')->find($id)->current();
+        
+        if ($row) {
+            $data = $row->toArray();
+            $rowset = $row->findDependentRowset('Axis_Catalog_Model_Product_Option_Text');
+            foreach ($rowset as $rowText) {
+                $data['text']['lang_' . $rowText->language_id] = array(
+                    'name'        => $rowText->name,
+                    'description' => $rowText->description
+                );
             }
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data' => $result
-        ));
+        $this->_helper->json->setData($data)
+            ->sendSuccess();
     }
 
     public function deleteAction()

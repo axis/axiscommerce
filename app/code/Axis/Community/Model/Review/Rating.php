@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Community
  * @subpackage  Axis_Community_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -44,23 +44,23 @@ class Axis_Community_Model_Review_Rating extends Axis_Db_Table
      */
     public function getList($enabledOnly = true, $currentLanguageOnly = true)
     {
+        $select = $this->select('*');
+        
         $on = 'crrt.rating_id = crr.id';
         if ($currentLanguageOnly) {
             $on .= ' AND crrt.language_id = ' . Axis_Locale::getLanguageId();
         }
-        $select = $this->getAdapter()->select()
-            ->from(array('crr' => $this->_prefix . 'community_review_rating'))
-            ->joinLeft(array('crrt' => $this->_prefix . 'community_review_rating_title'),
-                $on,
-                array('title', 'language_id'))
-            ->order('crrt.title DESC');
+        $select->joinLeft('community_review_rating_title',
+            $on, array('title', 'language_id')
+        );
+        $select->order('crrt.title DESC');
         
         if ($enabledOnly) {
             $select->where('status = ?', 'enabled');
         }
         
         $result = array();
-        foreach ($this->getAdapter()->fetchAll($select) as $rating) {
+        foreach ($select->fetchAll() as $rating) {
             if (!isset($result[$rating['id']])) {
                 $result[$rating['id']] = array(
                     'id' => $rating['id'],
@@ -80,58 +80,13 @@ class Axis_Community_Model_Review_Rating extends Axis_Db_Table
      * Update or insert rating or array of ratings
      * 
      * @param array $data
-     * id => array(
-     *    id => int, //optional
-     *    name => string, //required
-     *    title => array( //optional
-     *        language_id => title 
-     *    ),
-     *    status => enabled|disabled //optional
-     * )
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
-        $count = 0;
-        foreach ($data as $rating) {
-            if (!$this->validate($rating)) {
-                continue;
-            }
-            $count++;
-            if (!is_numeric($rating['id']) 
-                || !$row = $this->find($rating['id'])->current()) {
-
-                $row = $this->createRow();
-            }
-            $row->setFromArray(array(
-                'name' => $rating['name'],
-                'status' => isset($rating['status']) ? $rating['status'] : 'enabled'
-            ));
-            $row->save();
-
-            $ratingTitleModel = Axis::single('community/review_rating_title');
-            foreach (Axis_Collect_Language::collect() as $id => $language) {
-                $ratingTitleRow = $ratingTitleModel->find($row->id, $id)->current();
-                if (!$ratingTitleRow) {
-                    $ratingTitleRow = $ratingTitleModel->createRow(array(
-                        'rating_id' => $row->id,
-                        'language_id' => $id
-                    ));
-                }
-                $ratingTitleRow->title = (isset($rating['title_' . $id]) && !empty($rating['title_' . $id]))
-                    ? $rating['title_' . $id] : $rating['name'];
-                
-                $ratingTitleRow->save();
-            }
-        }
-        if ($count) {
-            Axis::message()->addSuccess(
-                Axis::translate('community')->__(
-                    "%d rating(s) was saved successfully", $count
-                )
-            );
-        }
-        return true;
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
     
     public function validate($data)

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Discount
  * @subpackage  Axis_Discount_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -68,15 +68,15 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
      *  Add/update discount
      *  return discount id
      *
-     * @param array $params
+     * @param array $data
      * @return int
      */
-    public function save($params)
+    public function save($data)
     {
-        if (!isset($params['id'])
-            || !$row = $this->find($params['id'])->current()) {
+        if (!isset($data['id'])
+            || !$row = $this->find($data['id'])->current()) {
 
-            unset($params['id']);
+            unset($data['id']);
             $row = $this->createRow();
             $oldDiscountData = null;
         } else {
@@ -84,34 +84,34 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             $oldDiscountData['products'] = $row->getApplicableProducts();
         }
 
-        if (empty($params['discountFromDate'])) {
-            $params['discountFromDate'] = new Zend_Db_Expr('NULL');
+        if (empty($data['discountFromDate'])) {
+            $data['discountFromDate'] = new Zend_Db_Expr('NULL');
         }
-        if (empty($params['discountToDate'])) {
-            $params['discountToDate'] = new Zend_Db_Expr('NULL');
+        if (empty($data['discountToDate'])) {
+            $data['discountToDate'] = new Zend_Db_Expr('NULL');
         }
-        if (!isset($params['discountPriority'])
-            || empty($params['discountPriority'])) {
+        if (!isset($data['discountPriority'])
+            || empty($data['discountPriority'])) {
 
-            $params['discountPriority'] = 125;
+            $data['discountPriority'] = 125;
         }
         $row->setFromArray(array(
-                'name'          => $params['discountName'],
+                'name'          => $data['discountName'],
                 'description'   => '', //@todo
-                'from_date'     => $params['discountFromDate'],
-                'to_date'       => $params['discountToDate'],
-                'is_active'     => $params['discountIsActive'],
-                'type'          => $params['discountOperator'],
-                'amount'        => $params['discountAmount'],
-                'priority'      => $params['discountPriority'],
-                'is_combined'   => $params['discountIsCombined']
+                'from_date'     => $data['discountFromDate'],
+                'to_date'       => $data['discountToDate'],
+                'is_active'     => $data['discountIsActive'],
+                'type'          => $data['discountOperator'],
+                'amount'        => $data['discountAmount'],
+                'priority'      => $data['discountPriority'],
+                'is_combined'   => $data['discountIsCombined']
             ))
             ->save();
 
         $mDiscountEav = Axis::model('discount/eav');
         $mDiscountEav->delete('discount_id = ' . $row->id);
-        if (isset($params['discountSites'])) {
-            foreach ($params['discountSites'] as $siteId) {
+        if (isset($data['discountSites'])) {
+            foreach ($data['discountSites'] as $siteId) {
                 $mDiscountEav->insert(array(
                     'discount_id' => $row->id,
                     'entity' => 'site',
@@ -119,8 +119,8 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 ));
             }
         }
-        if (isset($params['discountCustomerGroups'])) {
-            foreach ($params['discountCustomerGroups'] as $groupId) {
+        if (isset($data['discountCustomerGroups'])) {
+            foreach ($data['discountCustomerGroups'] as $groupId) {
                 $mDiscountEav->insert(array(
                     'discount_id' => $row->id,
                     'entity' => 'group',
@@ -128,18 +128,18 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 ));
             }
         }
-        if (isset($params['discountSpecial'])) {
+        if (isset($data['discountSpecial'])) {
             $mDiscountEav->insert(array(
                 'discount_id' => $row->id,
                 'entity' => 'special',
-                'value' => $params['discountSpecial']
+                'value' => $data['discountSpecial']
             ));
         }
 
-        if (!isset($params['condition'])) {
-            $params['condition'] = array();
+        if (!isset($data['condition'])) {
+            $data['condition'] = array();
         }
-        foreach ($params['condition'] as $conditionType => $subCondition) {
+        foreach ($data['condition'] as $conditionType => $subCondition) {
             if (in_array($conditionType, array('category', 'manufacture', 'productId'))) {
                 foreach ($subCondition as $condition) {
                     $mDiscountEav->insert(array(
@@ -509,8 +509,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
 
         //filtred
         $discountRules = array();
-        $customerGroupId = Axis::single('account/customer')
-            ->getGroupId(Axis::getCustomerId());
+        $customerGroupId = Axis::single('account/customer')->getGroupId();
 
         foreach ($productsRowset as $product) {
 
@@ -752,38 +751,32 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         if (null === $date) {
             $date = Axis_Date::now()->toPhpString("Y-m-d");
         }
-        $select = $this->getAdapter()->select();
-        $select->distinct()->from(array('d' => $this->_prefix . 'discount'), array())
-            ->join(array('e1' => $this->_prefix . 'discount_eav'),
-                "e1.discount_id = d.id AND e1.entity = 'special' AND e1.value = '1'",
-                array())
-            ->join(array('e2' => $this->_prefix . 'discount_eav'),
-                "e2.discount_id = e1.discount_id AND e2.entity = 'productId'",
-                array('value'))
+        $select = $this->select('de2.value')
+            ->distinct()
+            ->join('discount_eav',
+                "de.discount_id = d.id AND de.entity = 'special' AND de.value = '1'"
+            )
+            ->join('discount_eav',
+                "de2.discount_id = d.id AND de2.entity = 'productId'"
+            )
             ->where('d.is_active = 1')
             ->where('d.from_date <= ? OR d.from_date IS NULL', $date)
             ->where('? <= d.to_date OR d.to_date IS NULL', $date)
             ->order(array('d.from_date DESC', 'cp.id DESC'))
             ->limit($limit)
-            ->join(array('cpc' => $this->_prefix . 'catalog_product_category'),
-                'e2.value = cpc.product_id',
-                array())
-            ->join(array('c' => $this->_prefix . 'catalog_category'),
-                'cpc.category_id = c.id',
-                array())
-            ->where('c.site_id = ?', $siteId)
-            ->join(array('cp' => $this->_prefix . 'catalog_product'),
-                'e2.value = cp.id',
-                array())
-            ->where('cp.is_active = 1');
+            ->join('catalog_product_category', 'de2.value = cpc.product_id')
+            ->join('catalog_category', 'cpc.category_id = cc.id')
+            ->where('cc.site_id = ?', $siteId)
+            ->join('catalog_product', 'de2.value = cp.id')
+            ;
 
         if ($disabledCategories = Axis::single('catalog/category')->getDisabledIds()) {
-            $select->where('c.id NOT IN (?)', $disabledCategories);
+            $select->where('cc.id NOT IN (?)', $disabledCategories);
         }
 
         if (null != $categoryId) {
             $select->where('cpc.category_id = ? ', $categoryId);
         }
-        return $this->getAdapter()->fetchCol($select->__toString());
+        return $select->fetchCol();
     }
 }

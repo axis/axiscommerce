@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Form
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,18 +36,6 @@ class Axis_Form extends Zend_Form
      */
     private $_actionBar = null;
 
-    /**
-     * Array of Axis_Form_Row
-     * @var array
-     */
-    private $_rows = array();
-
-    /**
-     * Array of Axis_Form_Column
-     * @var array
-     */
-    private $_cols = array();
-
     protected $_translatorModule = 'Axis_Core';
 
     public function init()
@@ -60,11 +48,9 @@ class Axis_Form extends Zend_Form
     public function loadDefaultDecorators()
     {
         $this->setDecorators(array(
-            'Rowset',
-            'Colset',
             'FormElements',
             'ActionBar',
-            array('HtmlTag', array('tag' => 'div')),
+            array('HtmlTag', array('tag' => 'ul')),
             array('Form', array('class' => 'axis-form'))
         ));
     }
@@ -115,173 +101,6 @@ class Axis_Form extends Zend_Form
         return $this->_actionBar;
     }
 
-    public function addColumn(array $elements, $name, $options = null)
-    {
-        $group = array();
-        foreach ($elements as $element) {
-            if (isset($this->_elements[$element])) {
-                $add = $this->getElement($element);
-                if (null !== $add) {
-                    unset($this->_order[$element]);
-                    $group[] = $add;
-                }
-            }
-        }
-        if (empty($group)) {
-            require_once 'Zend/Form/Exception.php';
-            throw new Zend_Form_Exception('No valid elements specified for column');
-        }
-
-        $name = (string) $name;
-
-        if (is_array($options)) {
-            $options['elements'] = $group;
-        } elseif ($options instanceof Zend_Config) {
-            $options = $options->toArray();
-            $options['elements'] = $group;
-        } else {
-            $options = array('elements' => $group);
-        }
-
-        if (isset($options['columnClass'])) {
-            $class = $options['columnClass'];
-            unset($options['columnClass']);
-        } else {
-            $class = 'Axis_Form_Column';//$this->getDefaultRowsetClass();
-        }
-
-        if (!class_exists($class)) {
-            require_once 'Zend/Loader.php';
-            Zend_Loader::loadClass($class);
-        }
-        $this->_cols[$name] = new $class(
-            $name,
-            $this->getPluginLoader(self::DECORATOR),
-            $options
-        );
-
-        if (!empty($this->_rowsPrefixPaths)) {
-            $this->_cols[$name]->addPrefixPaths($this->_rowsPrefixPaths);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Retrieve a column
-     *
-     * @param  string $name
-     * @return Axis_Form_Column
-     */
-    public function getColumn($name)
-    {
-        $name = (string) $name;
-        if (isset($this->_cols[$name])) {
-            return $this->_cols[$name];
-        }
-        return null;
-    }
-
-    /**
-     * Returns array of columns
-     * @return array
-     */
-    public function getColumns()
-    {
-        return $this->_cols;
-    }
-
-    /**
-     * Checks is there are some columns in row
-     * @return bool
-     */
-    public function hasColumns()
-    {
-        return (bool) count($this->_cols);
-    }
-
-    public function addRow($elements, $name, $options = null)
-    {
-        if (!is_array($elements)) {
-            $elements = array($elements);
-        }
-
-        $group = array();
-        foreach ($elements as $element) {
-            if (isset($this->_elements[$element])) {
-                $add = $this->getElement($element);
-                if (null !== $add) {
-                    unset($this->_order[$element]);
-                    $group[] = $add;
-                }
-            }
-        }
-        if (empty($group)) {
-            require_once 'Zend/Form/Exception.php';
-            throw new Zend_Form_Exception('No valid elements specified for row');
-        }
-
-        $name = (string) $name;
-
-        if (is_array($options)) {
-            $options['elements'] = $group;
-        } elseif ($options instanceof Zend_Config) {
-            $options = $options->toArray();
-            $options['elements'] = $group;
-        } else {
-            $options = array('elements' => $group);
-        }
-
-        if (isset($options['rowClass'])) {
-            $class = $options['rowClass'];
-            unset($options['rowClass']);
-        } else {
-            $class = 'Axis_Form_Row';//$this->getDefaultRowsetClass();
-        }
-
-        if (!class_exists($class)) {
-            require_once 'Zend/Loader.php';
-            Zend_Loader::loadClass($class);
-        }
-        $this->_rows[$name] = new $class(
-            $name,
-            $this->getPluginLoader(self::DECORATOR),
-            $options
-        );
-
-        if (!empty($this->_rowsPrefixPaths)) {
-            $this->_rows[$name]->addPrefixPaths($this->_rowsPrefixPaths);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Retrieve a row
-     *
-     * @param  string $name
-     * @return Axis_Form_Row
-     */
-    public function getRow($name)
-    {
-        $name = (string) $name;
-        if (isset($this->_rows[$name])) {
-            return $this->_rows[$name];
-        }
-
-        return null;
-    }
-
-    public function getRows()
-    {
-        return $this->_rows;
-    }
-
-    public function hasRows()
-    {
-        return (bool) count($this->_rows);
-    }
-
     /**
      * Create an element
      *
@@ -297,45 +116,27 @@ class Axis_Form extends Zend_Form
      */
     public function createElement($type, $name, $options = null)
     {
-        if (!is_string($type)) {
-            require_once 'Zend/Form/Exception.php';
-            throw new Zend_Form_Exception('Element type must be a string indicating type');
-        }
+        $element = parent::createElement($type, $name, $options);
 
-        if (!is_string($name)) {
-            require_once 'Zend/Form/Exception.php';
-            throw new Zend_Form_Exception('Element name must be a string');
-        }
-
-        $prefixPaths              = array();
-        $prefixPaths['decorator'] = $this->getPluginLoader('decorator')->getPaths();
-        if (!empty($this->_elementPrefixPaths)) {
-            $prefixPaths = array_merge($prefixPaths, $this->_elementPrefixPaths);
-        }
-
-        if ($options instanceof Zend_Config) {
-            $options = $options->toArray();
-        }
-
-        if ((null === $options) || !is_array($options)) {
-            $options = array('prefixPath' => $prefixPaths);
-        } elseif (is_array($options)) {
-            if (array_key_exists('prefixPath', $options)) {
-                $options['prefixPath'] = array_merge($prefixPaths, $options['prefixPath']);
-            } else {
-                $options['prefixPath'] = $prefixPaths;
-            }
-        }
-
-        $class = $this->getPluginLoader(self::ELEMENT)->load($type);
-        $element = new $class($name, $options);
+        $liOptions = array(
+            'class' => 'element-row'
+        );
 
         switch ($type) {
             case 'submit': case 'button':
                 $element->clearDecorators()
                     ->addDecorator('ViewHelper');
             break;
+            case 'hidden':
+                $liOptions = array(
+                    'class' => 'element-hidden',
+                    'style' => 'display: none;'
+                );
             default:
+                $getId = create_function(
+                    '$decorator',
+                    'return $decorator->getElement()->getId() . "-row";'
+                );
                 $element->clearDecorators()
                     ->addDecorator('ViewHelper')
                     ->addDecorator('Errors')
@@ -343,7 +144,11 @@ class Axis_Form extends Zend_Form
                     ->addDecorator('Label', array(
                         'tag' => '',
                         'placement' => 'prepend'
-                    ));
+                    ))
+                    ->addDecorator('HtmlTag', array_merge($liOptions, array(
+                        'tag' => 'li',
+                        'id'  => array('callback' => $getId)
+                    )));
             break;
         }
 

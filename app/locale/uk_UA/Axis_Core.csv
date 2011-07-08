@@ -255,3 +255,6 @@
 "Remote Address (IP) Validation","Перевіряти віддалену адресу користувача (ip)"
 "User Agent (Browser) Validation","Перевіряти агент користувача (браузер)"
 "Please note that this message was sent to the following e-mail address: %s","Це повідомлення було надіслано адресату: %s"
+"Required","Обов'язковий"
+"Optional","Необов'язковий"
+"Disabled","Відключений"

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -50,7 +50,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
 
     public function getNodesAction()
     {
-        $rowset = Axis::model('core/template')->fetchAll();
+        $rowset = Axis::model('core/template')->fetchAll(null, 'name ASC');
         foreach ($rowset as $row) {
             $data[] = array(
                 'text'     => $row->name,

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -55,28 +55,25 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
         if (!$languageId) {
             $languageId = Axis_Locale::getLanguageId();
         }
-        $select = $this->getAdapter()->select();
-        $select->from(array('cd' => $this->_prefix . 'account_customer_detail'), array('customer_valueset_value_id' , 'data'))
-               ->join(array('cf' => $this->_prefix . 'account_customer_field'),
-               'cd.customer_field_id = cf.id')
-               ->where('cd.customer_id = ' . intval($this->id))
-               ->where('cf.name =  ?', $fieldName);
-        $rows = $this->getAdapter()->fetchAll($select->__toString());
-
-        if (isset($rows[0]) && !empty($rows[0]['data'])){
-            return $rows[0]['data'];
-        } elseif (isset($rows[0]) && !empty($rows[0]['customer_valueset_value_id'])) {
-            $valuesetIds = array();
-            foreach ($rows as $row) {
-                $valuesetIds[] = $row['customer_valueset_value_id'];
-            }
-
-            $select = $this->getAdapter()->select();
-            $select->from(array('cvvl' => $this->_prefix . 'account_customer_valueset_value_label'), 'label')
-                   ->where('cvvl.valueset_value_id IN  (?)', $valuesetIds)
-                   ->where('cvvl.language_id =  ?', $languageId);
-
-            return $this->getAdapter()->fetchCol($select->__toString());
+        $row = Axis::model('account/customer_detail')->select('*')
+            ->join('account_customer_field', 'acd.customer_field_id = acf.id')
+            ->where('acd.customer_id = ? ', $this->id)
+            ->where('acf.name =  ?', $fieldName)
+            ->fetchRow();
+        
+        if (!$row) {
+            return false;
+        }
+        
+        if ($row->data){
+            return $row->data;
+        } 
+        if ($row->customer_valueset_value_id) {
+            return Axis::model('account/customer_valueSet_value_label')
+                ->select('label')
+                ->where('valueset_value_id = ?', $row->customer_valueset_value_id)
+                ->where('language_id = ?', $languageId)
+                ->fetchCol();
         }
         return false;
     }
@@ -85,57 +82,98 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
      * Update, inserts or delete customer address.
      * To delete address add key 'remove' to address data
      *
-     * @param array $address
+     * @param array $data
      * @return int
      */
-    public function setAddress(array $address)
+    public function setAddress(array $data)
     {
-        $mAddress = Axis::single('account/customer_address');
+        $model = Axis::single('account/customer_address');
 
-        $address['customer_id'] = $this->id;
-        if (empty($address['zone_id'])) {
-            $address['zone_id'] = new Zend_Db_Expr('NULL');
+        $row = $isFirst = false;
+        if (!empty($data['id'])) {
+            $row = $model->find($data['id'])->current();
         }
-        if (!isset($address['remove'])) {
-            $address['remove'] = 0;
-        }
-
-        if (!isset($address['id'])
-            || !$row = $mAddress->find($address['id'])->current()) {
-
-            if ($address['remove']) {
-                return 0;
-            }
-
-            unset($address['id']);
-            $row = $mAddress->createRow($address);
-            $addressId = $row->save();
-
-            // if this is a first address - make it default for shipping and billing
-            $isFirstAddress = (bool) $mAddress->select()
+        if (!$row) {
+            $row = $model->createRow();
+            
+            $isFirsT = $model->select()
                 ->where('customer_id = ?', $this->id)
-                ->count('id') == 1;
-
-            if ($isFirstAddress) {
-                $this->default_billing_address_id  = $row->id;
-                $this->default_shipping_address_id = $row->id;
-            }
-        } elseif ($address['remove']) {
-            return $row->delete();
-        } else {
-            $row->setFromArray($address);
-            $addressId = $row->save();
-
-            if (isset($address['default_billing']) && $address['default_billing']) {
-                $this->default_billing_address_id  = $row->id;
-            }
-            if (isset($address['default_shipping']) && $address['default_shipping']) {
-                $this->default_shipping_address_id = $row->id;
-            }
+                ->count('id') == 0;
         }
-
+        $row->setFromArray($data);
+        $row->customer_id = $this->id;            
+        if (empty($row->zone_id)) {
+            $row->zone_id = new Zend_Db_Expr('NULL');
+        }
+        $row->save();
+        
+        if ((isset($data['default_billing']) && $data['default_billing']) 
+            || $isFirst) {
+            
+            $this->default_billing_address_id  = $row->id;
+        }
+        if ((isset($data['default_shipping']) && $data['default_shipping']) 
+            || $isFirst) {
+            
+            $this->default_shipping_address_id = $row->id;
+        }
+        
         $this->save();
 
-        return $addressId;
+        return $row->id;
+    }
+    
+    /**
+     *
+     * @param type $data 
+     */
+    public function setDetails($data) 
+    {
+        $modelDetail = Axis::model('account/customer_detail');
+        
+        $modelDetail->delete(
+            Axis::db()->quoteInto('customer_id = ?', $this->id)
+        );
+        
+        $fields = Axis::single('account/customer_field')->select()
+            ->fetchAssoc();
+        
+        $multiFields = Axis_Account_Model_Customer_Field::$fieldMulti;
+
+        foreach ($data as $id => $value) {
+            if (0 !== strpos($id, 'field_') || empty($value)) {
+                continue;
+            }
+            list(, $id) = explode('_', $id);
+            
+
+            $_row = array(
+                'customer_id'       => $this->id,
+                'customer_field_id' => $id
+            );
+            $isMultiField = in_array($fields[$id]['field_type'], $multiFields);
+
+            if ($isMultiField && is_string($value) && strpos($value, ',')) {
+                $value = explode(',', $value);
+            }
+
+            if ($isMultiField && is_array($value)) {
+                
+               foreach ($value as $_value) {
+                    $row = $modelDetail->createRow($_row);
+                    $row->customer_valueset_value_id = $_value;
+                    $row->save();
+                }
+                
+            } elseif($isMultiField) {
+                $row = $modelDetail->createRow($_row);
+                $row->customer_valueset_value_id = $value;
+                $row->save();
+            } else {
+                $row = $modelDetail->createRow($_row);
+                $row->data = $value;
+                $row->save();
+            }
+        }
     }
 }

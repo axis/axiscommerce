@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -37,18 +37,15 @@ class Axis_Admin_Model_Import_Profile extends Axis_Db_Table
 
     public function getList()
     {
-        $query = "SELECT *
-                  FROM  " . $this->_prefix . 'import_profile' . "
-                  ORDER BY updated_at DESC, created_at DESC";
-
-        return $this->getAdapter()->fetchAll($query);
+        return $this->select()
+            ->order(array('updated_at DESC', 'created_at DESC'))
+            ->fetchAll();
     }
 
     public function save($data)
     {
         if ($data['id'] == '') {
-            $data['created_at'] = Axis_Date::now()->toSQLString();
-            $data['updated_at'] = '0000-00-00 00:00:00';
+            $data['updated_at'] = $data['created_at'] = Axis_Date::now()->toSQLString();
             unset($data['id']);
             $row = $this->createRow();
         } else {

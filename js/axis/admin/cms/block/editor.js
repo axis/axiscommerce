@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -26,12 +26,17 @@ var BlockWindow = {
 
     form: null,
 
-    save: function() {
+    save: function(closeWindow) {
         BlockWindow.form.getForm().submit({
             url: Axis.getUrl('cms_block/save'),
-            success: function() {
-                BlockWindow.el.hide();
+            success: function(form, action) {
                 BlockGrid.reload();
+                if (closeWindow) {
+                    BlockWindow.el.hide();
+                } else {
+                    var response = Ext.decode(action.response.responseText);
+                    Block.load(response.data.id);
+                }
             }
         });
     }
@@ -54,14 +59,13 @@ Ext.onReady(function() {
 
     BlockWindow.form = new Axis.FormPanel({
         labelAlign: 'top',
-        bodyStyle: 'padding: 5px 5px 0px 5px',
+        bodyStyle: 'padding: 10px 10px 0px 10px',
         reader: new Ext.data.JsonReader({
             root: 'data'
         }, formFields),
         items: [{
             layout: 'column',
             border: false,
-            bodyStyle: 'padding: 5px 0px 0px',
             items: [{
                 columnWidth: '.5',
                 layout: 'form',
@@ -94,34 +98,39 @@ Ext.onReady(function() {
                     mode: 'local',
                     editable: false,
                     triggerAction: 'all',
-                    anchor: '100%',
+                    anchor: '-20',
                     maxLength: 45
                 }]
             }]
         }, {
+            allowBlank: false,
             name: 'content[content]',
             fieldLabel: 'Content'.l(),
             anchor: '-20',
-            height: 300,
-            defaultType: 'textarea',
+            height: 150,
+            defaultType: 'ckeditor',
             xtype: 'langset'
         }, {
             name: 'id',
-            initialValue: 0,
             xtype: 'hidden'
         }]
     });
 
     BlockWindow.el = new Axis.Window({
-        width: 640,
-        height: 500,
-        maximizable: true,
         title: 'Static Block'.l(),
         items: [BlockWindow.form],
         buttons: [{
             icon: Axis.skinUrl + '/images/icons/database_save.png',
             text: 'Save'.l(),
-            handler: BlockWindow.save
+            handler: function() {
+                BlockWindow.save(true);
+            }
+        }, {
+            icon: Axis.skinUrl + '/images/icons/database_save.png',
+            text: 'Save & Continue Edit'.l(),
+            handler: function() {
+                BlockWindow.save(false);
+            }
         }, {
             icon: Axis.skinUrl + '/images/icons/cancel.png',
             text: 'Cancel'.l(),

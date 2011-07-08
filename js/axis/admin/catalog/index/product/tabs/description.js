@@ -20,7 +20,7 @@
 Ext.onReady(function() {
 
     ProductWindow.formFields.push(
-        {name: 'product_id', mapping: 'product.id', type:'int'},
+        {name: 'product[id]', mapping: 'product.id', type:'int'},
         {name: 'product[is_active]', mapping: 'product.is_active', type: 'int'},
         {name: 'product[new_from]', mapping: 'product.new_from', type: 'date', dateFormat: 'Y-m-d h:i:s'},
         {name: 'product[new_to]', mapping: 'product.new_to', type: 'date', dateFormat: 'Y-m-d h:i:s'},
@@ -57,13 +57,13 @@ Ext.onReady(function() {
             name: 'description[name]',
             xtype: 'langset'
         }, {
-            defaultType: 'textarea',//'htmleditor',
+            defaultType: 'ckeditor',
             fieldLabel: 'Description'.l(),
             height: 150,
             name: 'description[description]',
             xtype: 'langset'
         }, {
-            defaultType: 'textarea',//'htmleditor',
+            defaultType: 'ckeditor',
             fieldLabel: 'Short Description'.l(),
             height: 70,
             name: 'description[short_description]',
@@ -141,8 +141,7 @@ Ext.onReady(function() {
                 }]
             }]
         }, {
-            initialValue: 0,
-            name: 'product_id',
+            name: 'product[id]',
             xtype: 'hidden'
         }]
     }, 10);

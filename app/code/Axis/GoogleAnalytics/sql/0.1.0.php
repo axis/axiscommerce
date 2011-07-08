@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_GoogleAnalytics
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,13 +30,11 @@ class Axis_GoogleAnalytics_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstr
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_field')
             ->add('analytics', 'Google analytics', null, null, array('translation_module' => 'Axis_GoogleAnalytics'))
             ->add('analytics/main/uacct', 'Google analytics/General/GOOGLE_ANALYTICS_UACCT', '', 'handler', '', array('model' => 'Crypt'))
-            ->add('analytics/main/used', 'Enabled', 0 , 'bool')
-            ->add('analytics/main/usedPageName', 'USE PAGENAME',1 , 'bool')
+            ->add('analytics/main/used', 'Enabled', 0, 'bool')
+            ->add('analytics/main/usedPageName', 'USE PAGENAME', 1, 'bool')
             ->add('analytics/main/affiliation', 'Optional partner or store affilation', '' )
             ->add('analytics/attributes/brackets', 'Google analytics/Products attributes/PRODUCTS ATTRIBUTES BRACKETS', '[]')
             ->add('analytics/attributes/delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
@@ -49,10 +47,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstr
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_field')->remove('analytics');
-        Axis::single('core/config_value')->remove('analytics');
         //Axis::single('core/template_box')->remove('Axis_GoogleAnalytics_Ga');
     }
 }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -96,11 +96,11 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
         $params = $this->_getAllParams();
 
         $params['products'] = Zend_Json::decode($params['products']);
-//        Axis_FirePhp::log($params);
         ////////////////////////////////////////////////////////////////////////
         //add new customer
         $newBillingAddress = $params['order']['billing_address_type'] == 0;
         $newDeliveryAddress = $params['order']['delivery_address_type'] == 0;
+        $event = false;
         if (-2 == $params['order']['customer_id']) {
             $customerRawData = array_merge($params['customer'], array(
                 'email'     => $params['order']['customer_email'],
@@ -108,17 +108,12 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 'site_id'   => $params['order']['site_id']
             ));
 
-            $customerSaveResult = Axis::single('account/customer')
-                ->save($customerRawData);
+            list($customer, $password) = Axis::single('account/customer')
+                ->create($customerRawData);
+            $event = true;
+            $customer->setDetails($customerRawData);
 
-            Axis::dispatch('account_customer_register_success', array(
-                'customer' => Axis::single('account/customer')
-                    ->find($customerSaveResult['id'])
-                    ->current(),
-                'password' => $customerSaveResult['password']
-            ));
-
-            $params['order']['customer_id'] = $customerSaveResult['id'];
+            $params['order']['customer_id'] = $customer->id;
             $newBillingAddress = $newDeliveryAddress = true;
         }
         if ($params['order']['customer_id'] < 0) {
@@ -169,6 +164,13 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 $customerRow->setAddress($address);
             }
         }
+        if ($event) {
+            Axis::dispatch('account_customer_register_success', array(
+                'customer' => $customer,
+                'password' => $password
+            ));
+        }
+        
         ////////////////////////////////////////////////////////////////////////
         //prepare order data
         $params['order']['currency_rate'] = Axis::single('locale/currency')

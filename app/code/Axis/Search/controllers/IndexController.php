@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Search
  * @subpackage  Axis_Search_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -42,10 +42,10 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
     {
         $paging = array();
         $queryStr = (string) $this->_getParam('q');
-        $this->view->pageTitle = Axis::translate('search')->__(
-            "Search results for '%s'", trim($queryStr)
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('search')->__(
+                "Search results for '%s'", trim($queryStr)
+        ));
         $this->view->query = $queryStr = trim($queryStr);
         $paging['page']  = $page  = (int) $this->_getParam('page', 1);
 

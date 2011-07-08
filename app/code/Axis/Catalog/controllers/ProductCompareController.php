@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,8 +35,10 @@ class Axis_Catalog_ProductCompareController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('catalog')->__('Product Comparison');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(
+            Axis::translate('catalog')->__(
+                'Product Comparison'
+        ));
 
         if (!Axis::single('catalog/product_compare')->hasItems()) {
             $this->render('empty');
@@ -89,5 +91,18 @@ class Axis_Catalog_ProductCompareController extends Axis_Core_Controller_Front
         }
         Axis::single('catalog/product_compare')->remove($productId);
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+    }
+
+    public function compareAction()
+    {
+        if (!$this->_hasParam('product_id')) {
+            return $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        }
+        $mCompare = Axis::model('catalog/product_compare');
+        $mCompare->clear();
+        foreach ($this->_getParam('product_id') as $productId) {
+            $mCompare->add($productId);
+        }
+        $this->_redirect($this->view->catalogUrl . '/product-compare');
     }
 }

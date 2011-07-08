@@ -1,0 +1,31 @@
+<ul>
+    <li>
+        <a href="<?php echo $this->href('search/') ?>"
+            rel="nofollow">
+            <?php echo $this->translate('search')->__('Advanced Search')?>
+        </a>
+    </li>
+    <li>
+        <a href="<?php echo $this->href('checkout/cart/', true) ?>"
+            rel="nofollow">
+            <?php echo $this->translate('checkout')->__('Shopping Cart')?>
+        </a>
+    </li>
+    <li>
+        <a href="<?php echo $this->href($this->catalogUrl) ?>">
+            <?php echo $this->translate('catalog')->__('Products')?>
+        </a>
+    </li>
+    <li>
+        <a href="<?php echo $this->href('account', true) ?>"
+            rel="nofollow">
+            <?php echo $this->translate('account')->__('Account')?>
+        </a>
+    </li>
+    <li>
+        <a href="<?php echo $this->href('contacts') ?>"
+            rel="nofollow">
+            <?php echo $this->translate('contacts')->__('Contact Us')?>
+        </a>
+    </li>
+</ul>

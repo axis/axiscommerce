@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -99,7 +99,7 @@ class Axis_View_Helper_Imager
 
         $src = trim($src, '/\\');
         if (empty($src) || !is_file($this->_imagesPath . '/' . $src)) {
-            $src = $this->view->skinPath . '/images/no_image.gif';
+            $src = $this->view->skinPath('images/no_image.gif');
             $filename = 'no_image';
         } else {
             $src = $this->_imagesPath. '/' . $src;
@@ -136,7 +136,7 @@ class Axis_View_Helper_Imager
             $image->resize($config['width'], $config['height']);
             if ($this->_watermarkDisplay && !$config['disableWatermark']) {
                 $image->applyWatermark(
-                    $this->view->skinPath . '/images/' . $this->_watermarkImage,
+                    $this->view->skinPath('images/' . $this->_watermarkImage),
                     $this->_watermarkPosition,
                     $this->_watermarkOpacity
                 );

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -225,8 +225,15 @@ class Axis_View_Helper_HeadScript extends Zend_View_Helper_HeadScript
 
             $item->offset = $offset;
 
-            if (null !== $item->attributes['proxy'] && Axis::config('core/minify/js_' . $this->view->area, true)) {
-                $groups['proxy_' . $item->attributes['proxy']][] =& $item;
+            if (null !== $item->attributes['proxy'] && Axis::config('core/minify/js_' . $this->view->area)) {
+                $proxy = $item->attributes['proxy'];
+                if (isset($item->attributes['conditional'])
+                    && !empty($item->attributes['conditional'])
+                    && is_string($item->attributes['conditional'])) {
+
+                    $proxy .= $item->attributes['conditional'];
+                }
+                $groups['proxy_' . $proxy][] =& $item;
                 $si++; // break scripts array
                 $gi++; // break general array
             } else {

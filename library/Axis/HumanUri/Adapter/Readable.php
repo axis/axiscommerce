@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_HumanUri
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -105,8 +105,8 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
                     $this->_params['manufacturer'] = array(
                         'value'         => $row['key_id'],
                         'seo'           => $row['key_word'],
-                        'title'         => $mDescription['title'],
-                        'description'   => $mDescription['description']
+                        'title'         => $mDescription->title,
+                        'description'   => $mDescription->description
                     );
                     break;
                 default:

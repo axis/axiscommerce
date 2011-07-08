@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,6 +33,15 @@
  */
 class Axis_View_Helper_Address
 {
+    protected $_addressFormats = array();
+
+    public function __construct()
+    {
+        $this->_addressFormats = Axis::model('location/address_format')
+            ->select()
+            ->fetchAssoc();
+    }
+
     /**
      *
      * @param Axis_Address $address
@@ -51,21 +60,17 @@ class Axis_View_Helper_Address
 //        '{{if fax}}F: {{fax}}EOL{{/if}}'
 //        ;
         $address = $address->toArray();
-        $formatAddressId = !empty($address['address_format_id']) ?
+        $addressFormatId = !empty($address['address_format_id']) ?
             $address['address_format_id'] :
                 Axis::config('locale/main/addressFormat');
 
-        $rowAddressFormat = Axis::single('location/address_format')
-            ->find($formatAddressId)
-            ->current();
-
-        if (!$rowAddressFormat instanceof Axis_Db_Table_Row) {
+        if (empty($this->_addressFormats[$addressFormatId])) {
             throw new Axis_Exception(
                 Axis::translate('location')->__(
                     'Not correct address format id'
             ));
         }
-        $template = $rowAddressFormat->address_format;
+        $template = $this->_addressFormats[$addressFormatId]['address_format'];
 
         if (isset($address['zone']['id'])
             && 0 == $address['zone']['id']) {

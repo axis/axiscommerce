@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -45,9 +45,10 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
     public function getAddress($address)
     {
         if (is_array($address)) {
-
-            $countryId = isset($address['country_id']) ? $address['country_id'] : false;
-            $zoneId = isset($address['zone_id']) ? $address['zone_id'] : false;
+            $countryId  = isset($address['country_id']) ?
+                $address['country_id'] : false;
+            $zoneId     = isset($address['zone_id']) ?
+                $address['zone_id'] : false;
         } else {
            $address = $this->find($address)->current();
             if (!$address instanceof Axis_Db_Table_Row) {
@@ -57,6 +58,7 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
             $zoneId    = $address->zone_id ? $address->zone_id : false;
             $address   = $address->toArray();
         }
+
         if ($countryId) {
             $address['country'] = Axis::single('location/country')
                 ->find($countryId)
@@ -81,6 +83,9 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
     {
         if (null === $customerId) {
             $customerId = Axis::getCustomerId();
+        }
+        if (null === $customerId) {
+            return array();
         }
 
         $addressList = $this->select()
@@ -112,22 +117,22 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
 
         $j = 0;
         for ($i = 0, $n = count($addressList); $i < $n; $i++) {
-            if ($addressList[$i]['id'] == $defaultBillingId
-                || $addressList[$i]['id'] == $defaultShippingId)
-            {
-                list($addressList[$i], $addressList[$j]) =
-                    array($addressList[$j], $addressList[$i]);
+            if ($addressList[$i]['id'] != $defaultBillingId
+                && $addressList[$i]['id'] != $defaultShippingId) {
 
-                if ($addressList[$i]['id'] == $defaultShippingId) {
-                    $addressList[$i]['default_shipping'] = 1;
-                }
-
-                if ($addressList[$i]['id'] == $defaultBillingId) {
-                    $addressList[$i]['default_billing'] = 1;
-                }
-
-                ++$j;
+                continue;
             }
+
+            if ($addressList[$i]['id'] == $defaultShippingId) {
+                $addressList[$i]['default_shipping'] = 1;
+            }
+            if ($addressList[$i]['id'] == $defaultBillingId) {
+                $addressList[$i]['default_billing'] = 1;
+            }
+            list($addressList[$i], $addressList[$j]) =
+                array($addressList[$j], $addressList[$i]);
+
+            ++$j;
         }
         foreach ($addressList as &$address) {
             $address = new Axis_Address($address);

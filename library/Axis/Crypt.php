@@ -19,7 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_Crypt
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,7 +35,7 @@ class Axis_Crypt
     {
         $class = 'Axis_Crypt_' . 
             str_replace(' ', '_', ucwords(str_replace('_', ' ', $method)));
-        return new $class; 
+        return new $class(); 
     }
     
 }

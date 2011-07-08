@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,7 +31,7 @@
  * @subpackage  Axis_Cms_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Cms_CommentController extends Axis_Core_Controller_Front
+class Axis_Cms_CommentController extends Axis_Cms_Controller_Abstract
 {
     protected function _addCommentForm($pageId)
     {
@@ -66,66 +66,54 @@ class Axis_Cms_CommentController extends Axis_Core_Controller_Front
     {
         $pageId = $this->_getParam('page');
         $this->view->page = array();
-        $this->view->crumbs()->add(
-            Axis::translate('cms')->__('Pages'), '/pages'
-        );
-
+        
         $currentPage = Axis::single('cms/page')
             ->cache()
             ->find($pageId)
             ->current();
 
         if (!$currentPage) {
-            $this->view->pageTitle = Axis::translate('cms')->__(
-                'Page not found'
-            );
-            $this->view->meta()->setTitle($this->view->pageTitle);
+            $this->setTitle(Axis::translate('cms')->__('Page not found'));
             $this->render();
             return;
         }
 
-        $content = $currentPage->cache()->getContent();
-
-        $this->view->page = array();
-        $this->view->pageTitle = $content['title'];
         $categories = Axis::single('cms/category')->getParentCategory($pageId, true);
-        foreach ($categories as $category) {
-           $this->view->crumbs()->add(
-               empty($category['title']) ?
-                   $category['link'] : $category['title'],
-               $this->view->href('/cat/' . $category['link'])
-           );
+        foreach ($categories as $_category) {
+            $label = empty($_category['title']) ? 
+                    $_category['link'] : $_category['title'];
+            $this->addBreadcrumb(array(
+                'label'  => $label,
+                'params' => array('cat' => $_category['link']),
+                'route'  => 'cms_category'
+            ));
         }
+        $rowContent = $currentPage->cache()->getContent();
+        $this->setTitle($rowContent->title);
 
-        $this->view->page['content'] = $content['content'];
-        $this->view->page['is_commented'] = $currentPage->comment;
+        $page = array(
+            'content'      => $rowContent->content,
+            'is_commented' => (bool) $currentPage->comment
+        );
 
         if ($currentPage->comment) {
             // get all comments
             $comments = $currentPage->cache()->getComments();
-            $i = 0;
             foreach ($comments as $comment) {
-                $this->view->page['comment'][$i]['author'] = $comment['author'];
-                $this->view->page['comment'][$i]['content'] = $comment['content'];
-                $this->view->page['comment'][$i]['created_on'] = $comment['created_on'];
-                $this->view->page['comment'][$i]['modified_on'] = $comment['modified_on'];
-                $this->view->page['comment'][$i]['status'] = $comment['status'];
-                $i++;
+                $page['comment'][] = $comment;
             }
-
             $this->_addCommentForm($pageId);
         }
-
-        $metaTitle = $content['meta_title'] == '' ?
-                $content['title'] : $content['meta_title'];
+        
+        $this->view->page = $page;
+        $metaTitle = empty($rowContent->meta_title) ?
+                $rowContent->title : $rowContent->meta_title;
         $this->view->meta()
             ->setTitle($metaTitle, 'cms_page', $pageId)
-            ->setDescription($content['meta_description'])
-            ->setKeywords($content['meta_keyword']);
+            ->setDescription($rowContent->meta_description)
+            ->setKeywords($rowContent->meta_keyword);
 
-        $layout = $currentPage->layout;
-        $this->_helper->layout->setLayout($layout);
-
+        $this->_helper->layout->setLayout($currentPage->layout);
         $this->render();
     }
 }

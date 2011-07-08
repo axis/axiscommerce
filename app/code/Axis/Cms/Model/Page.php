@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,13 +43,7 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
      * Update or insert page row
      *
      * @param array $data
-     * <code>
-     *  column_name => value,
-     *  content     => array(
-     *      langId => array()
-     *  ),
-     *  category => json_string
-     * </code>
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
@@ -58,25 +52,7 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
         }
         $row = $this->getRow($data);
         $row->save();
-
-        $mContent = Axis::model('cms/page_content');
-        foreach ($data['content'] as $languageId => $values) {
-            if (empty($values['link'])) {
-                $values['link'] = $row->name;
-            }
-            $mContent->getRow($row->id, $languageId)->setFromArray($values)->save();
-        }
-
-        $mPageCategory = Axis::model('cms/page_category');
-        $mPageCategory->delete(Axis::db()->quoteInto('cms_page_id = ?', $row->id));
-        foreach (Zend_Json::decode($data['category']) as $categoryId) {
-            $mPageCategory->insert(array(
-                'cms_category_id' => $categoryId,
-                'cms_page_id'     => $row->id
-            ));
-        }
-
-        return $row->id;
+        return $row;
     }
 
     public function getPageIdByLink($link)
@@ -128,23 +104,5 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
             ->where('cpc.link IS NOT NULL')
             ->fetchAll()
             ;
-    }
-
-    public function getPageListByActiveCategory($categoryIds, $languageId)
-    {
-        if (empty($categoryIds)) {
-            return array();
-        }
-        return $this->select(array('id', 'name'))
-            ->join(array('cptc' => 'cms_page_category'),
-                'cp.id = cptc.cms_page_id',
-                'cms_category_id')
-            ->join('cms_page_content',
-                'cp.id = cpc.cms_page_id',
-                array('link', 'title'))
-            ->where('cp.is_active = 1 ')
-            ->where('cpc.language_id = ?', $languageId)
-            ->where('cptc.cms_category_id IN (?)', $categoryIds)
-            ->fetchAssoc();
     }
 }

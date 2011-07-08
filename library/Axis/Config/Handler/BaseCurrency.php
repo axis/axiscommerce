@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Config
  * @subpackage  Axis_Config_Handler
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -41,9 +41,9 @@ class Axis_Config_Handler_BaseCurrency implements  Axis_Config_Handler_Interface
      */
     public static function getSaveValue($value)
     {
-        $row = Axis::single('locale/currency')->fetchRow(
-            Axis::db()->quoteInto('code = ?' , $value)
-        );
+        $row = Axis::single('locale/currency')->select()
+            ->where('code = ?' , $value)
+            ->fetchRow();
         if ($row instanceof Axis_Db_Table_Row && 1 !== $row->rate) {
             $row->rate = 1;
             $row->save();

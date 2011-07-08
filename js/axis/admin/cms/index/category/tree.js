@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -195,7 +195,7 @@ Ext.onReady(function() {
             handler: function() {
                 CategoryTree.remove();
             }
-        }, {
+        }, '->', {
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             handler: function() {
                 CategoryTree.reload();

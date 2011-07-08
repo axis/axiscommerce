@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Tag
  * @subpackage  Axis_Tag_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -53,26 +53,5 @@ class Axis_Tag_Model_Product extends Axis_Db_Table
         return $this->select()
             ->where('customer_tag_id = ?', $tagId)
             ->count();
-    }
-
-    /**
-     *
-     * @param $tagItemId
-     * @return mixed
-     */
-    public function deleteMy($tagItemId)
-    {
-        $row = $this->find($tagItemId)->current();
-        if (!$row) {
-            return false;
-        }
-        $parentRow = $row->findParentRow('Axis_Tag_Model_Customer');
-
-        if ($parentRow->customer_id != Axis::getCustomerId() ||
-            $parentRow->site_id != Axis::getSiteId()) {
-
-            return false;
-        }
-        return $row->delete();
     }
 }

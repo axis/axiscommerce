@@ -170,7 +170,7 @@
         <class>Axis_Catalog_Featured</class>
         <block>content</block>
         <sort_order>100</sort_order>
-        <config>{"products_count":3,"title":"Store hottest products","template":"catalog/box/highlight/grid.phtml"}</config>
+        <config>{"products_count":3,"columns_count":3,"title":"Store hottest products","template":"catalog/box/highlight/listing.phtml"}</config>
         <status>1</status>
         <page multiple="1">
             <module>core</module>
@@ -299,22 +299,6 @@
     <box multiple="1">
         <class>Axis_GoogleAnalytics_Ga</class>
         <block>beforeBodyEnd</block>
-        <sort_order>100</sort_order>
-        <config>{}</config>
-        <status>1</status>
-        <page multiple="1">
-            <module>*</module>
-            <controller>*</controller>
-            <action>*</action>
-            <show>1</show>
-            <block></block>
-            <template></template>
-            <tab_container></tab_container>
-        </page>
-    </box>
-    <box multiple="1">
-        <class>Axis_Log_Visitor</class>
-        <block>content</block>
         <sort_order>100</sort_order>
         <config>{}</config>
         <status>1</status>
@@ -663,6 +647,56 @@
             <tab_container></tab_container>
         </page>
     </box>
+    <box multiple="1">
+        <class>Axis_Core_Breadcrumbs</class>
+        <block>beforeContent</block>
+        <sort_order>100</sort_order>
+        <config>{"template":""}</config>
+        <status>1</status>
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>core</module>
+            <controller>index</controller>
+            <action>index</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+        <page multiple="1">
+            <module>checkout</module>
+            <controller>onestep</controller>
+            <action>*</action>
+            <show>0</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
+    <box multiple="1">
+        <class>Axis_Catalog_RecentlyViewed</class>
+        <block>right</block>
+        <sort_order>20</sort_order>
+        <config>{"template":"catalog/box/recentlyViewed.phtml","products_count":15}</config>
+        <status>1</status>
+        <page multiple="1">
+            <module>*</module>
+            <controller>*</controller>
+            <action>*</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
     <layout multiple="1">
         <layout>layout_2columns-left</layout>
         <page>
@@ -775,16 +809,7 @@
         <layout>layout_1column</layout>
         <page>
             <module>checkout</module>
-            <controller>onepage</controller>
-            <action>*</action>
-        </page>
-        <priority>100</priority>
-    </layout>
-    <layout multiple="1">
-        <layout>layout_1column</layout>
-        <page>
-            <module>checkout</module>
-            <controller>wizard</controller>
+            <controller>onestep</controller>
             <action>*</action>
         </page>
         <priority>100</priority>
@@ -817,7 +842,7 @@
         <priority>100</priority>
     </layout>
     <layout multiple="1">
-        <layout>layout_1column</layout>
+        <layout>layout_3columns</layout>
         <page>
             <module>*</module>
             <controller>*</controller>
@@ -921,7 +946,7 @@
     <p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Sed euismod odio consectetur augue elementum dictum non ac orci. Pellentesque nunc nunc, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
   </div>
   <div class="col-2">
-    <p><font color="#333399"><span style="background-color: rgb(255, 255, 255);">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Sed euismod odio consectetur augue elementum dictum non ac orci. </b><font size="3">Pellentesque nunc nunc</font></span></font>, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
+    <p><span style="color: #339">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Sed euismod odio consectetur augue elementum dictum non ac orci. </strong><span style="font-size: 1.2em;">Pellentesque nunc nunc</span></span>, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
   </div>
   <div class="col-3">
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod odio consectetur augue elementum dictum non ac orci. Pellentesque nunc nunc, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi.</p>

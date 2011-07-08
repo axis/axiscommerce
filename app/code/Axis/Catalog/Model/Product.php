@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -52,52 +52,50 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
      * Returns last saved product
      *
      * @param array $data
-     * @param int $siteId
      * @return Axis_Catalog_Model_Product_Row
      */
     public function save($data)
     {
-        foreach ($data as $id => $values) {
-            $isExist = $this->select()
-                ->where('sku = ?', $values['sku'])
-                ->where('id <> ?', $id)
-                ->fetchOne();
-            if ($isExist) {
-                throw new Axis_Exception(
-                    Axis::translate('catalog')->__(
-                        'Product sku must be unique value'
-                    )
-                );
-            }
+        $row = $this->getRow($data);
 
-            $values['new_from'] = empty($values['new_from']) ?
-                new Zend_Db_Expr('NULL') : $values['new_from'];
-            $values['new_to'] = empty($values['new_to']) ?
-                new Zend_Db_Expr('NULL') : $values['new_to'];
-            $values['featured_from'] = empty($values['featured_from']) ?
-                new Zend_Db_Expr('NULL') : $values['featured_from'];
-            $values['featured_to'] = empty($values['featured_to']) ?
-                new Zend_Db_Expr('NULL') : $values['featured_to'];
-            $values['cost'] = empty($values['cost']) ?
-                0 : $values['cost'];
+        $isExist = (bool) $this->select()
+            ->where('sku = ?', $row->sku)
+            ->where('id <> ?', (int)$row->id)
+            ->fetchOne();
 
-            if (!$id || !$row = $this->find($id)->current()) {
-                unset($id);
-                $row = $this->createRow();
-                $row->created_on = Axis_Date::now()->toSQLString();
-                $row->modified_on = new Zend_Db_Expr('NULL');
-            } else {
-                $row->modified_on = Axis_Date::now()->toSQLString();
-            }
-            if (empty($values['weight'])) {
-                $values['weight'] = 0;
-            }
-            $row->setFromArray($values);
-            $row->save();
+        if ($isExist) {
+            throw new Axis_Exception(
+                Axis::translate('catalog')->__(
+                    'Product sku must be unique value'
+                )
+            );
         }
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__('Data was saved successfully')
-        );
+
+        if (empty($row->new_from)) {
+            $row->new_from = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->new_to)) {
+            $row->new_to = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->featured_from)) {
+            $row->featured_from = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->featured_to)) {
+            $row->featured_to = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->weight)) {
+            $row->weight = 0;
+        }
+        if (empty($row->cost)) {
+            $row->cost = 0;
+        }
+        $row->modified_on = Axis_Date::now()->toSQLString();
+        if (empty($row->created_on)) {
+            $row->created_on = $row->modified_on;
+        }
+
+        $row->save();
+
         return $row;
     }
 
@@ -113,12 +111,13 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
             $siteId = Axis::getSiteId();
         }
 
-        return $this->fetchRow($this->select()
+        return $this->select()
             ->setIntegrityCheck(true)
             ->from('catalog_product')
             ->join('catalog_hurl', 'cp.id = ch.key_id')
             ->where('ch.key_type = ?', 'p')
             ->where('ch.site_id = ?', $siteId)
-            ->where('ch.key_word = ?', $url));
+            ->where('ch.key_word = ?', $url)
+            ->fetchRow();
     }
 }

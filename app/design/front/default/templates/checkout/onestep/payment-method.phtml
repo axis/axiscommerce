@@ -1,0 +1,10 @@
+<div class="box payment-methods">
+    <div class="head"><span class="title"><?php
+        echo $this->translate('checkout')->__('Payment Method')
+    ?></span><a href="#" id="payment-method-reset" class="method-reset"><?php
+        echo $this->translate('checkout')->__('Reset')
+    ?></a></div>
+    <div class="content" id="payment-method-load">
+        <?php echo $this->render('checkout/onestep/payment-method/available.phtml') ?>
+    </div>
+</div>

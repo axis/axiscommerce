@@ -49,7 +49,8 @@ Ext.onReady(function(){
         hiddenName: 'general[direction]',
         store: new Ext.data.SimpleStore({
             data: [['import', 'Import'.l()], ['export', 'Export'.l()]],
-            fields: ['identifier', 'name']
+            fields: ['identifier', 'name'],
+            idIndex: 0
         }),
         triggerAction: 'all',
         mode: 'local',
@@ -108,17 +109,8 @@ Ext.onReady(function(){
         }]
     }];
 
-    /* add event to fields on setValue function */
-    Ext.form.Field.prototype.setValue = Ext.form.Field.prototype.setValue.createSequence(function() {
-        this.fireEvent('valueset', this, this.value);
-    });
-
-    Ext.getCmp('csv_direction').on('valueset', function(combo, value){
-        var index = combo.store.find('identifier', value);
-        if (-1 === index) {
-            return;
-        }
-        if (combo.store.getAt(index).get('identifier') == 'export') {
+    Ext.getCmp('csv_direction').on('beforeselect', function(combo, record, index){
+        if (record.get('identifier') == 'export') {
             Ext.getCmp('tabpanel').unhideTabStripItem('product_filters');
             Ext.getCmp('export_from').setTitle('Export from'.l());
         } else {

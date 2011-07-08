@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Sitemap
  * @subpackage  Axis_Sitemap_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,91 +36,176 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('sitemap')->__(
-                'Sitemap'
-            ),
-            '/sitemap'
-        );
-        $this->view->meta()->setTitle(
-            Axis::translate('sitemap')->__(
-                'Sitemap'
+        $this->addBreadcrumb(array(
+            'label' => Axis::translate('sitemap')->__('Sitemap'),
+            'route' => 'sitemap'
         ));
     }
 
     public function getAllCategoriesAction()
     {
-        $this->view->pageTitle = Axis::translate('sitemap')->__(
+        $this->setTitle(Axis::translate('sitemap')->__(
             'Site Map Categories'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
-        $siteId = Axis::getSiteId();
-        $items = Axis::single('catalog/category')
-            ->getFlatTree(Axis_Locale::getLanguageId(), $siteId, true);
-        $this->view->items = current($items);
-        $this->view->items['siteId'] = $siteId;
-        $this->render();
+        ));
+        
+        $categories = Axis::single('catalog/category')->select('*')
+            ->addName(Axis_Locale::getLanguageId())
+            ->addKeyWord()
+            ->order('cc.lft')
+            ->addSiteFilter(Axis::getSiteId())
+            ->addDisabledFilter()
+            ->fetchAll();
+
+        $menu = $_container = new Zend_Navigation();
+        $lvl = 0;
+        foreach ($categories as $_category) {
+
+            $uri = $this->view->hurl(array(
+                'cat' => array(
+                    'value' => $_category['id'],
+                    'seo'   => $_category['key_word']
+                ),
+                'controller' => 'catalog',
+                'action'     => 'view'
+            ), false, true);
+
+            $class = 'nav-' . str_replace('.', '-', $_category['key_word']);
+
+            $page = new Zend_Navigation_Page_Uri(array(
+                'label'   => $_category['name'],
+                'title'   => $_category['name'],
+                'uri'     => $uri,
+                'order'   => $_category['lft'],
+                'class'   => $class,
+                'visible' => ('enabled' === $_category['status']) ? true : false
+            ));
+
+            $lvl = $lvl - $_category['lvl'] + 1;
+            for ($i = 0; $i < $lvl; $i++) {
+                $_container = $_container->getParent();
+            }
+
+            $lvl = $_category['lvl'];
+            $_container->addPage($page);
+            $_container = $page;
+        }
+
+        $this->view->menu = $menu;
+        $this->render('categories');
     }
 
     public function getAllProductsAction()
     {
-        $this->view->crumbs()->add(
-            Axis::translate('sitemap')->__('Products'), '/get-all-products'
-        );
-        $this->view->pageTitle = Axis::translate('sitemap')->__(
-            'Site Map All Products'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
-        $items = array();
-        $siteId = Axis::getSiteId();
-        $productRowset = Axis::single('sitemap/file')->getAllActiveProducts(
-            Axis_Locale::getLanguageId(), $siteId
-        );
-        foreach ($productRowset as $item) {
-            $item['lvl'] = 1 ;
-            $items[] = $item;
-        }
+        $this->setTitle(
+            Axis::translate('sitemap')->__(
+                'Site Map All Products'
+        ));
+        $products = Axis::single('catalog/product_category')->select()
+            ->distinct()
+            ->from('catalog_product_category', array())
+            ->joinLeft('catalog_product',
+                'cp.id = cpc.product_id',
+                array('id'))
+            ->addName(Axis_Locale::getLanguageId())
+            ->addKeyWord()
+            ->addActiveFilter()
+            ->addDateAvailableFilter()
+            ->addSiteFilter(Axis::getSiteId())
+            ->order('cpd.name')
+            ->fetchAll();
 
-        $this->view->items = $items;
-        $this->view->items['siteId'] = $siteId;
-        $this->render();
+        $menu = new Zend_Navigation();
+        foreach ($products as $_product) {
+            $uri = $this->view->hurl(array(
+                'cat' => array(
+                    'value' => $_product['id'],
+                    'seo'   => $_product['key_word']
+                ),
+                'controller' => 'catalog',
+                'action'     => 'view'
+            ), false, true);
+
+            $class = 'nav-' . str_replace('.', '-', $_product['key_word']);
+
+            $page = new Zend_Navigation_Page_Uri(array(
+                'label'   => $_product['name'],
+                'title'   => $_product['name'],
+                'uri'     => $uri,
+                'class'   => $class
+            ));
+
+            $menu->addPage($page);
+        }
+        $this->view->menu = $menu;
+        $this->render('products');
     }
 
     public function getAllPagesAction()
     {
-        $this->view->pageTitle = Axis::translate('sitemap')->__(
-            'Site Map All Pages'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('sitemap')->__('Site Map All Pages'));
+        
         $result = array();
-        $categories = Axis::single('cms/category')->getActiveCategory();
+        $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
+            ->addCategoryContentTable()
+            ->columns(array('ccc.link', 'ccc.title'))
+            ->addActiveFilter()
+            ->addSiteFilter(Axis::getSiteId())
+            ->addLanguageIdFilter(Axis_Locale::getLanguageId())
+            ->order('cc.parent_id')
+            ->where('ccc.link IS NOT NULL')
+            ->fetchAssoc();
 
-        $catsIds = array ();
-        foreach ($categories as $category) {
-             $catsIds[] = $category['id'];
+        $menu = new Zend_Navigation();
+        
+        foreach ($categories as $_category) {
+
+            $title = empty($_category['title']) ?
+                $_category['link'] : $_category['title'];
+
+            $page = new Zend_Navigation_Page_Mvc(array(
+                'category_id' => $_category['id'],
+                'label'       => $title,
+                'title'       => $title,
+                'route'       => 'cms_category',
+                'params'      => array('cat' => $_category['link']),
+                'class'       => 'icon-folder'
+            ));
+            $_container = $menu->findBy('category_id', $_category['parent_id']);
+            if (null === $_container) {
+                $_container = $menu;
+            }
+            $_container->addPage($page);
         }
 
-        $pages = array();
-        $countPages = 0;
-        if (Axis::config()->sitemap->cms->showPages) {
-            $pagesRowset = Axis::single('cms/page')
-                ->getPageListByActiveCategory($catsIds, Axis_Locale::getLanguageId());
-            foreach ($pagesRowset as $page) {
-                $pages[$page['cms_category_id']][] = $page;
-                $countPages++;
+        if (Axis::config('sitemap/cms/showPages') && !empty ($categories)) {
+            $pages = Axis::single('cms/page')->select(array('id', 'name'))
+                ->join(array('cpca' => 'cms_page_category'),
+                    'cp.id = cpca.cms_page_id',
+                    'cms_category_id')
+                ->join('cms_page_content',
+                    'cp.id = cpc.cms_page_id',
+                    array('link', 'title'))
+                ->where('cp.is_active = 1')
+                ->where('cpc.language_id = ?', Axis_Locale::getLanguageId())
+                ->where('cpca.cms_category_id IN (?)', array_keys($categories))
+                ->order('cpca.cms_category_id')
+                ->fetchAssoc();
+
+            foreach($pages as $_page) {
+                $title = empty($_page['title']) ? $_page['link'] : $_page['title'];
+
+                $page = new Zend_Navigation_Page_Mvc(array(
+                    'label'  => $title,
+                    'title'  => $title,
+                    'route'  => 'cms_page',
+                    'params' => array('page' => $_page['link']),
+                    'class'  => 'icon-page'
+                ));
+                $_container = $menu->findBy('category_id', $_page['cms_category_id']);
+                $_container->addPage($page);
             }
         }
-        foreach ($categories as $category) {
-            $result[intval($category['parent_id'])][$category['id']] = array(
-                'id'    => $category['id'],
-                'title' => $category['title'],
-                'link'  => $category['link'],
-                'pages' => isset($pages[$category['id']])
-                    ? $pages[$category['id']] : null
-            );
-        }
-        $this->view->treeCount = $countPages;
-        $this->view->tree = $result;
+        $this->view->menu = $menu;
         $this->render('pages');
     }
 }

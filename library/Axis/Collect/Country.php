@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Collect
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,15 +31,20 @@
  */
 class Axis_Collect_Country implements Axis_Collect_Interface
 {
+    protected static $_collection = null;
+
     /**
      * @static
      * @return array
      */
     public static function collect()
     {
-        return Axis::single('location/country')
-            ->select(array('id', 'name'))
-            ->fetchPairs();
+        if (null === self::$_collection) {
+            self::$_collection = Axis::single('location/country')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+        }
+        return self::$_collection;
     }
 
     /**
@@ -50,7 +55,17 @@ class Axis_Collect_Country implements Axis_Collect_Interface
      */
     public static function getName($id)
     {
-        if (!$id) return '';
-        return Axis::single('location/country')->getNameById($id);
+        self::collect();
+        if (strstr($id, ",")) {
+            $result = array();
+            foreach(explode(",", $id) as $key) {
+                if (array_key_exists($key, self::$_collection)) {
+                    $result[$key] = isset(self::$_collection[$key]) ?
+                        self::$_collection[$key] : 'Null';
+                }
+            }
+            return implode(", ", $result);
+        }
+        return isset(self::$_collection[$id]) ? self::$_collection[$id] : 'Null';
     }
 }

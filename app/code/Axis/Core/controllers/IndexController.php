@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,12 +33,6 @@
  */
 class IndexController extends Axis_Core_Controller_Front
 {
-    public function init()
-    {
-        parent::init();
-        $this->view->crumbs()->disable();
-    }
-
     public function indexAction()
     {
         $this->view->meta()

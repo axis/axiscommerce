@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,88 +43,13 @@ class Axis_Catalog_Model_Product_Option_Value extends Axis_Db_Table
         )
     );
 
-    /**
-     * Add new or Update existing option value
-     *
-     * @param array $data
-     * <pre>
-     *  array(
-     *      valueId => array(
-     *          id,
-     *          valueset_id,
-     *          sort_order,
-     *          name_langId
-     *      )
-     *  )
-     * </pre>
-     * @return bool
-     */
-    public function save(array $data)
-    {
-        $modelValueText = Axis::single('catalog/product_option_value_text');
-        $languageIds = array_keys(Axis_Collect_Language::collect());
-
-        foreach ($data as $values) {
-            if (isset($values['id'])) {// update
-                $this->update(array(
-                    'sort_order' => $values['sort_order']
-                ), 'id = ' . intval($values['id']));
-                foreach ($languageIds as $langId) {
-                    if (!$row = $modelValueText->find(
-                            intval($values['id']),
-                            intval($langId)
-                        )->current()) {
-
-                        $row = $modelValueText->createRow(array(
-                            'option_value_id' => intval($values['id']),
-                            'language_id' => intval($langId),
-                            'name' => $values['name_' . $langId]
-                        ));
-                    } else {
-                        $row->setFromArray(array(
-                            'name' => $values['name_' . $langId]
-                        ));
-                    }
-                    $row->save();
-                }
-            } else { // insert
-                $values['id'] = $this->insert(array(
-                    'valueset_id' => $values['valueset_id'],
-                    'sort_order' => $values['sort_order'])
-                );
-                foreach ($languageIds as $langId) {
-                    $modelValueText->insert(array(
-                        'option_value_id' => $values['id'],
-                        'language_id' => $langId,
-                        'name'        => $values['name_' . $langId]
-                    ));
-                }
-            }
-        }
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-            )
-        );
-        return true;
-    }
-
     public function getByText($valueText, $valuesetId)
     {
-        $select = $this->select()
-            ->from(array('v' => $this->_prefix . 'catalog_product_option_value'), 'id')
-            ->join(array('vt' => $this->_prefix . 'catalog_product_option_value_text'),
-                'vt.option_value_id = v.id',
-                array())
-            ->where('v.valueset_id = ?', $valuesetId)
-            ->where('vt.name = ?', $valueText)
-            ->limit(1);
-        $valueId = $this->getAdapter()->fetchOne($select);
-        if ($valueId) {
-            return $this->fetchRow(
-                $this->select()->where('id = ?', $valueId)
-            );
-        }
-        return $valueId;
+        return $this->select('*')
+            ->join('catalog_product_option_value_text',
+                'cpovt.option_value_id = cpov.id')
+            ->where('cpov.valueset_id = ?', $valuesetId)
+            ->where('cpovt.name = ?', $valueText)
+            ->fetchRow();
     }
 }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,18 +33,6 @@
  */
 class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
 {
-    /**
-     *
-     * @var Axis_Account_Model_Customer_Group
-     */
-    private $_table;
-    
-    public function init()
-    {
-        parent::init();
-        $this->_table =  Axis::single('account/customer_group');
-    }
-    
     public  function indexAction()
     {
         $this->view->pageTitle = Axis::translate('account')->__(
@@ -56,26 +44,27 @@ class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
     public function listAction()
     {
         $alpha = new Axis_Filter_DbField();
+        $sort  = $alpha->filter($this->_getParam('sort', 'id'));
+        $dir   = $alpha->filter($this->_getParam('dir', 'DESC'));
         
-        $params = array();
-        $params['sort']     = $alpha->filter($this->_getParam('sort', 'id'));
-        $params['dir']     = $alpha->filter($this->_getParam('dir', 'DESC'));
-        $params['where'] = 'id > 0';
+        $dataset = Axis::single('account/customer_group')->select()
+            ->order($sort . ' ' . $dir)
+            ->where('id <> ?', Axis_Account_Model_Customer_Group::GROUP_ALL_ID)
+            ->fetchAll()
+            ;
         
-        $dataset = $this->_table->getList($params);
-        
-        return $this->_helper->json->sendSuccess(array(
-            'data' => $dataset
-        ));
+        return $this->_helper->json
+            ->setData($dataset)
+            ->sendSuccess();
     }
     
     public function saveAction()
     {
         $this->_helper->layout->disableLayout();
         
-        $data = Zend_Json::decode($this->_getParam('data'));
+        $rowset = Zend_Json::decode($this->_getParam('data'));
         
-        if (!sizeof($data)) {
+        if (!sizeof($rowset)) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     'No data to save'
@@ -83,9 +72,16 @@ class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-            
-        $this->_table->save($data);
-            
+        
+        $model = Axis::single('account/customer_group');
+        foreach ($rowset as $_row) {
+            $model->save($_row);
+        }
+        Axis::message()->addSuccess(
+            Axis::translate('account')->__(
+                'Group was saved successfully'
+            )
+        );    
         return $this->_helper->json->sendSuccess();
     }
     
@@ -140,7 +136,7 @@ class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
         }
         
         if ($isValid) {
-            $this->_table->delete(
+            Axis::single('account/customer_group')->delete(
                 $this->db->quoteInto('id IN(?)', $customerGroupIds)
             );
             Axis::message()->addSuccess(
@@ -157,9 +153,9 @@ class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
     public function getGroupsAction()
     {
         $this->_helper->layout->disableLayout();
-        
-        $this->_helper->json->sendSuccess(array(
-           'data' => $this->_table->fetchAll()->toArray()
-        ));
+        $data = Axis::single('account/customer_group')->fetchAll()->toArray();
+        $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 }

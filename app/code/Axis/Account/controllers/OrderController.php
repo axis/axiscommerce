@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,29 +31,23 @@
  * @subpackage  Axis_Account_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_OrderController extends Axis_Account_Controller_Account
+class Axis_Account_OrderController extends Axis_Account_Controller_Abstract
 {
-    /**
-     * @var Axis_Sales_Model_Order
-     */
-    private $_table;
-
     public function init()
     {
         parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('account')->__('My Orders'), '/account/order'
-        );
-        $this->_table =  Axis::single('sales/order');
+        $this->addBreadcrumb(array(
+            'label'      => Axis::translate('account')->__('My Orders'), 
+            'controller' => 'order',
+            'route'      => 'account'
+        ));
     }
 
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__(
-            'My Orders'
-        );
-        $this->view->meta()->setTitle($this->view->pageTitle);
-        $this->view->orders = $this->_table->getOrdersByCustomer(
+        $title = Axis::translate('account')->__('My Orders');
+        $this->setTitle($title, $title, false);
+        $this->view->orders = Axis::single('sales/order')->getOrdersByCustomer(
             Axis::getCustomerId()
         );
         $this->render();
@@ -61,15 +55,14 @@ class Axis_Account_OrderController extends Axis_Account_Controller_Account
 
     public function viewAction()
     {
-        $this->view->pageTitle = Axis::translate('sales')->__('Order Information');
-        $this->view->meta()->setTitle($this->view->pageTitle);
+        $this->setTitle(Axis::translate('sales')->__('Order Information'));
         if ($this->_hasParam('orderId')) {
             $orderId = $this->_getParam('orderId');
         } else {
             $this->_redirect('/account/order');
         }
 
-        $order = $this->_table->fetchAll(array (
+        $order = Axis::single('sales/order')->fetchAll(array (
             $this->db->quoteInto('customer_id = ?', Axis::getCustomerId()),
             $this->db->quoteInto('site_id = ?', Axis::getSiteId()),
             $this->db->quoteInto('id = ?', intval($orderId))
@@ -123,7 +116,7 @@ class Axis_Account_OrderController extends Axis_Account_Controller_Account
         } else {
             $this->_redirect('/account/order');
         }
-        $order = $this->_table->fetchAll(array (
+        $order = Axis::single('sales/order')->fetchAll(array (
             $this->db->quoteInto('customer_id = ?', Axis::getCustomerId()),
             $this->db->quoteInto('site_id = ?', Axis::getSiteId()),
             $this->db->quoteInto('id = ?', intval($orderId))

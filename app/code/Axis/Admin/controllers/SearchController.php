@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -76,5 +76,120 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
         Axis::model('search/log')->delete($this->db->quoteInto('id IN (?)', $ids));
 
         $this->_helper->json->sendSuccess();
+    }
+    
+    public function updateIndexAction()
+    {
+        $this->_helper->layout->disableLayout();
+        
+        $indexer = Axis::model('search/indexer');
+        $session = Axis::session('search_index');
+
+        if ($this->_getParam('reset_session', false)) {
+            
+            $indexer->removeAllIndexesFromFilesystem();
+            $session->page = 1;
+            $session->processed = 0;
+            $session->completeProduct = false;
+        }
+        $rowCount = $this->_getParam('limit', 50);
+        
+        if (!$session->completeProduct) {
+            $select = Axis::model('catalog/product')->select(array('id', 'sku'))
+                ->join('catalog_product_description', 
+                    'cpd.product_id = cp.id', 
+                    array('name', 'description')
+                )->joinRight('locale_language',
+                    'll.id = cpd.language_id',
+                    'locale'
+                )->joinLeft('catalog_product_image', 
+                    'cpi.id = cp.image_thumbnail',
+                    array('image_thumbnail' => 'path')
+                )->joinLeft('catalog_product_image_title', 
+                    'cpit.image_id = cpi.id',
+                    array('image_title' => 'title')
+                )->join('catalog_product_category', 'cp.id = cpc.product_id')
+                ->join('catalog_category', 
+                    'cc.id = cpc.category_id', 
+                    'site_id'
+                )->joinLeft('catalog_hurl', 
+                    "ch.key_id = cp.id AND ch.key_type='p'", 
+                    'key_word'
+                )
+                ->order('cc.site_id')
+                ->order('cpd.language_id')
+                ->group(array('cc.site_id', 'cpd.language_id', 'cp.id'))
+                ->calcFoundRows()
+                ->limitPage($session->page, $rowCount)
+                ;
+        } else {
+            $select = Axis::model('cms/page_content')->select('*')
+                ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
+                ->join('cms_category', 
+                    'cc.id = cpc2.cms_category_id',
+                    'site_id'
+                )->joinRight('locale_language', 
+                    'll.id = cpc.language_id',
+                    'locale'
+                )
+                ->order('cc.site_id')
+                ->order('cpc.language_id')
+                ->calcFoundRows()
+                ;
+        } 
+        $rowset = $select->fetchRowset();
+        $count  = $select->foundRows();
+        $index  = $path = null;
+        
+        foreach ($rowset as $_row) {
+            $_path = $indexer->getIndexPath(
+                $_row->site_id  . '/' . $_row->locale
+            );
+            //next index
+            if ($path !== $_path) {
+                //save prev index
+                if ($index) {
+                    $index->optimize();
+                    $index->commit();
+                }
+                $path = $_path;
+                $index = $indexer->getIndex($path);
+            }
+                
+            $index->addDocument(
+                $indexer->getDocument($_row)
+            );
+            
+        }
+        if ($index) {
+            $index->optimize();
+            $index->commit();
+        }
+        $session->processed += $rowset->count();
+        $session->page++;
+        
+        Axis::message()->addSuccess(
+            Axis::translate('search')->__(
+                "%d of %d items(s) was processed",
+                $session->processed,
+                $count
+            )
+        );
+
+        $completed = false;
+        if ($count == $session->processed) {
+            if ($session->completeProduct) {
+                $completed = true;
+                $session->unsetAll();
+            } else {
+                $session->page = 1;
+                $session->processed = 0;
+                $session->completeProduct = true;
+            }
+        }
+
+        $this->_helper->json->sendSuccess(array(
+            'completed' => $completed
+        ));
     }
 }

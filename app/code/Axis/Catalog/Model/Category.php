@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -39,6 +39,8 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
 
     protected $_rowClass = 'Axis_Catalog_Model_Category_Row';
 
+    protected $_selectClass = 'Axis_Catalog_Model_Category_Select';
+
     protected $_dependentTables = array(
         'Axis_Catalog_Model_Category_Description'
     );
@@ -51,9 +53,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
      */
     public function insertItem(array $data, $parentId = 0)
     {
-        $parentRow = $this->fetchRow(
-            $this->getAdapter()->quoteInto('id = ?', $parentId)
-        );
+        $parentRow = $this->find($parentId)->current();
 
         if (!$parentRow)  {
             return false;
@@ -89,8 +89,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
      */
     public function deleteItem($id)
     {
-        $db = $this->getAdapter();
-        $row = $this->fetchRow($db->quoteInto('id = ?', $id));
+        $row = $this->find($id)->current();
         if (!$row) {
             return false;
         }
@@ -101,77 +100,23 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
          * update tree index
          */
 
-        $idForDelete = $this->select('id')
+        $childrenIds = $this->select('id')
             ->where("lft BETWEEN $row->lft AND $row->rgt")
             ->where('site_id = ?', $row->site_id)
             ->fetchCol()
             ;
 
-        if (!sizeof($idForDelete)) {
+        if (!sizeof($childrenIds)) {
             return false;
         }
 
-        $db->delete(
-            $this->_prefix . 'catalog_category_description',
-            $db->quoteInto('category_id IN(?)', $idForDelete)
-        );
-        $db->delete(
-            $this->_prefix . 'catalog_product_category',
-            $db->quoteInto('category_id IN(?)', $idForDelete)
-        );
         Axis::single('catalog/hurl')->delete(array(
-            $db->quoteInto('key_id IN(?)', $idForDelete),
+            $this->getAdapter()->quoteInto('key_id IN(?)', $childrenIds),
             "key_type = 'c'"
         ));
 
         $nstreeTable = new Axis_NSTree_Table();
         return $nstreeTable->deleteNode($id, true);
-    }
-
-    /**
-     * @param int $languageId
-     * @param mixed(array) $siteIds
-     * @param bool $isActive
-     * @return array
-     * <pre>
-     * [site_id => array, site_id => array]
-     * </pre>
-     */
-    public function getFlatTree($languageId, $siteIds = null, $activeOnly = false)
-    {
-        $select = $this->select(
-                array('id', 'site_id', 'lvl', 'lft', 'rgt')
-            )
-            ->joinLeft(
-                'catalog_category_description',
-                'ccd.category_id = cc.id AND ccd.language_id = :languageId',
-                'name'
-            )
-            ->joinLeft(
-                'catalog_hurl',
-                'ch.key_id = cc.id',
-                'key_word'
-            )
-            ->where("ch.key_type='c'")
-            ->order('cc.lft')
-            ->bind(array('languageId' => $languageId));
-
-        if (null !== $siteIds) {
-            $select->where('cc.site_id IN(?)', $siteIds);
-        }
-
-        if ($activeOnly && $disabledCategories = $this->getDisabledIds()) {
-            $select->where('cc.id NOT IN (?)', $disabledCategories);
-        }
-
-        $select = $select->query();
-        $tree = array();
-
-        while (($row = $select->fetch())) {
-            $tree[$row['site_id']][] = $row;
-        }
-
-        return $tree;
     }
 
     /**
@@ -207,26 +152,6 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     }
 
     /**
-     *
-     * @param int $categoryId
-     * @return mixed
-     */
-    public function getInfoWithKeyWord($categoryId)
-    {
-        if (!$categoryId) {
-            return false;
-        }
-        return $this->select('*')
-            ->joinLeft(
-                'catalog_hurl',
-                "ch.key_id = cc.id AND ch.key_type = 'c'",
-                'key_word'
-            )
-            ->where('cc.id = ?', $categoryId)
-            ->fetchRow();
-    }
-
-    /**
      * @param string $url
      * @param int $siteId [optional]
      * @return Axis_Catalog_Model_Category_Row
@@ -236,14 +161,15 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
         if (null === $siteId) {
             $siteId = Axis::getSiteId();
         }
-        return $this->fetchRow($this->select('*')
+        return $this->select('*')
             ->joinInner(
                 'catalog_hurl',
                 "ch.key_id = cc.id AND ch.key_type = 'c'"
             )
             ->where('ch.key_word = ?', $url)
             ->where('ch.site_id = ?', $siteId)
-        );
+            ->fetchRow()
+        ;
     }
 
     /**
@@ -257,11 +183,11 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
         if (null === $siteId) {
             $siteId = Axis::getSiteId();
         }
-        return $this->fetchRow(
-            $this->select()
-                ->where('site_id = ?', $siteId)
-                ->where('lvl = 0')
-        );
+        return $this->select()
+            ->where('site_id = ?', $siteId)
+            ->where('lvl = 0')
+            ->fetchRow()
+        ;
     }
 
     public function getRootCategories()
@@ -285,21 +211,21 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     public function getDisabledIds()
     {
         if (!Zend_Registry::isRegistered('catalog/disabled_categories')) {
-            $categories = $this->fetchAll(
-                "status = 'enabled' AND site_id = " . Axis::getSiteId(), 'lft'
-            );
-            $disabledCategories = $this->fetchAll(
-                "status = 'disabled' AND site_id = " . Axis::getSiteId(), 'lft'
-            );
+            $enableds  = $this->select('*')->order('lft')
+                ->where("status = 'enabled'")
+                ->fetchAll();
+            $disableds = $this->select('*')->order('lft')
+                ->where("status = 'disabled'")
+                ->fetchAll();
 
             $result = array();
-            foreach ($disabledCategories as $disabledCategory) {
-                $result[$disabledCategory['id']] = $disabledCategory['id'];
-                foreach ($categories as $category) {
-                    if ($category['lft'] > $disabledCategory['lft']
-                        && $category['rgt'] < $disabledCategory['rgt']) {
+            foreach ($disableds as $_disabled) {
+                $result[$_disabled['id']] = $_disabled['id'];
+                foreach ($enableds as $_enabled) {
+                    if ($_enabled['lft'] > $_disabled['lft']
+                        && $_enabled['rgt'] < $_disabled['rgt']) {
 
-                        $result[$category['id']] = $category['id'];
+                        $result[$_enabled['id']] = $_enabled['id'];
                     }
                 }
             }
@@ -352,5 +278,38 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
             ->where("ch.key_type = 'c'")
             ->order(array('cpc.category_id', 'cpc.product_id', 'cc1.lvl'))
             ->fetchAll();
+    }
+    
+    /**
+     *
+     * @param Axis_Db_Table_Row $site
+     * @return Axis_Db_Table_Row 
+     */
+    public function addNewRootCategory(Axis_Db_Table_Row $site) 
+    {
+        $modelDescription = Axis::model('catalog/category_description');
+        $languageIds      = array_keys(Axis_Collect_Language::collect());
+        $timestamp        = Axis_Date::now()->toSQLString();
+        $row = $this->createRow(array(
+            'site_id'     => $site->id,
+            'lft'         => 1,
+            'rgt'         => 2,
+            'lvl'         => 0,
+            'created_on'  => $timestamp,
+            'modified_on' => $timestamp,
+            'status'      => 'enabled'
+        ));
+        $row->save();
+        
+        foreach ($languageIds as $languageId) {
+            $modelDescription->createRow(array(
+                'category_id' => $row->id,
+                'language_id' => $languageId,
+                'name'        => $site->name,
+                'description' => 'Root Category'
+            ))->save();
+        }
+        
+        return $row;
     }
 }

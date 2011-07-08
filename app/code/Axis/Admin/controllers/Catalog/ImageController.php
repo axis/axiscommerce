@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -95,13 +95,13 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
                 continue;
             }
 
-            $path = str_replace('\\', '/', $f->getPathname());
+            $path = utf8_encode(str_replace('\\', '/', $f->getPathname()));
 
             $isDir = $f->isDir();
 
             if (($isDir && $mode != 'file') || (!$isDir && $mode != 'folder')) {
                 $item = array(
-                    'text'          => $f->getBasename(),
+                    'text'          => utf8_encode($f->getBasename()),
                     'absolute_path' => $path,
                     'path'          => str_replace(Axis::config('system/path') . '/', '', $path),
                     'absolute_url'  => $this->view->href(

@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -415,5 +415,28 @@ class Axis_Locale
     public static function getCurrencyList()
     {
         return Zend_Locale::getTranslationList('NameToCurrency', self::getLocale());
+    }
+
+    /**
+     * Returns number from string
+     *
+     * @param string $value
+     * @return float
+     */
+    public static function getNumber($value)
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        if (!is_string($value)) {
+            return floatval($value);
+        }
+
+        $value = str_replace('\'', '', $value);
+        $value = str_replace(' ', '', $value);
+        $value = str_replace(',', '.', $value);
+
+        return floatval($value);
     }
 }

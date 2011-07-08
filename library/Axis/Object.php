@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -145,9 +145,6 @@ class Axis_Object implements ArrayAccess
     public function setFromArray(array $data)
     {
         foreach ($data as $key => $value) {
-            if (empty($value)) {
-                continue;
-            }
             $this->setData($key, $value);
         }
 

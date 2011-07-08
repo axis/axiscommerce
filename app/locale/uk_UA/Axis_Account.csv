@@ -144,3 +144,7 @@
 "This link is valid for only %d hours, until %s.","Це посилання дійсне протягом %d годин, до %s."
 "Forgotten Password","Забутий пароль"
 "Customer account was created successfully","Акаунт було успішно створено"
+"State(Region) Id","№ Штата(Області)"
+"You can get the id of desired region at admin/location_zone","Ідентифікатор області можна знайти на сторінці admin/location_zone"
+"Allowed Countries","Дозволені країни"
+"Already registered? Log in, please","Увійдіть, якщо ви вже зареєстровані"

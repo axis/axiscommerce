@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Controller
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,26 +33,11 @@
  */
 class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 {
-    public function init()
-    {
-        parent::init();
-        $this->view->crumbs()->add(
-            Axis::translate('checkout')->__(
-                'Shopping Cart'
-            ),
-            '/checkout/cart'
-        );
-        $this->view->meta()->setTitle(
-            Axis::translate('checkout')->__(
-                'Shopping Cart'
-        ));
-    }
-
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('checkout')->__(
-            'Shopping Cart'
-        );
+        $this->setTitle(Axis::translate('checkout')->__('Shopping Cart'));
+
+        Axis::single('checkout/checkout')->clean();
 
         $request = $this->getRequest();
         if (null !== Axis::session()->lastUrl) {
@@ -75,6 +60,7 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 
     public function addAction()
     {
+        $this->_helper->layout->disableLayout();
         $productId        = $this->_getParam('productId', 0);
         $quantity         = $this->_getParam('quantity', false);
         $modifierOptions  = $this->_getParam('modifier', array());
@@ -92,7 +78,11 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
             ));
         }
         if ($result) {
-            $this->_redirect('/checkout/cart');
+            $location = Axis::config('checkout/cart/redirect');
+            if ('referer' == $location) {
+                $location = $this->getRequest()->getServer('HTTP_REFERER');
+            }
+            return $this->_redirect($location);
         }
         $keyword = Axis::single('catalog/hurl')->getProductUrl($productId);
         $this->_redirect('/' . $this->view->catalogUrl . '/' . $keyword);
@@ -100,6 +90,7 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 
     public function updateAction()
     {
+        $this->_helper->layout->disableLayout();
         $data = $this->_getParam('quantity');
         foreach ($data as $itemId => $quantity) {
             Axis::single('checkout/cart')->updateItem($itemId, $quantity);
@@ -110,12 +101,14 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
 
     public function removeAction()
     {
+        $this->_helper->layout->disableLayout();
         Axis::single('checkout/cart')->deleteItem($this->_getParam('scItemId', 0));
         $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
     }
 
     public function reOrderAction()
     {
+        $this->_helper->layout->disableLayout();
         if ($this->_hasParam('orderId')) {
            $orderId = $this->_getParam('orderId');
         } else {

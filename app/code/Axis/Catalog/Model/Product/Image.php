@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -52,23 +52,22 @@ class Axis_Catalog_Model_Product_Image extends Axis_Db_Table
         if (!is_array($productIds)) {
             $productIds = array($productIds);
         }
-        
-        $select = $this->getAdapter()->select()
-            ->from(array('cpi' => $this->_prefix . 'catalog_product_image'))
-            ->joinLeft(array('cpit' => $this->_prefix . 'catalog_product_image_title'),
+        $select = $this->select('*')
+            ->joinLeft('catalog_product_image_title',
                 'cpi.id = cpit.image_id AND cpit.language_id = ' . Axis_Locale::getLanguageId(),
                 'title'
             )
             ->where('cpi.product_id IN (?)', $productIds)
             ->order('cpi.sort_order')
-            ->order('cpi.id DESC');
+            ->order('cpi.id DESC')
+            ;
         
-        $result = array_fill_keys($productIds, array());
-        foreach ($this->getAdapter()->fetchAssoc($select) as $id => $image) {
-            $result[$image['product_id']][$id] = $image;
+        $dataset = array_fill_keys($productIds, array());
+        foreach ($select->fetchAssoc() as $id => $image) {
+            $dataset[$image['product_id']][$id] = $image;
         }
         
-    	return $result;
+    	return $dataset;
     }
     
     /**
@@ -79,16 +78,15 @@ class Axis_Catalog_Model_Product_Image extends Axis_Db_Table
      */
     public function getListBackend($productId)
     {
-        $select = $this->getAdapter()->select()
-            ->from(array('cpi' => $this->_prefix . 'catalog_product_image'))
-            ->joinLeft(array('cpit' => $this->_prefix . 'catalog_product_image_title'),
+        return $this->select('*')
+            ->joinLeft('catalog_product_image_title',
                 'cpi.id = cpit.image_id',
                 array('title', 'language_id')
             )
             ->where('cpi.product_id = ?', $productId)
             ->order('cpi.sort_order')
-            ->order('cpi.id DESC');
-        
-        return $this->getAdapter()->fetchAll($select);
+            ->order('cpi.id DESC')
+            ->fetchAll()
+            ;
     }
 }

@@ -1,33 +1,33 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * @copyright   Copyright 2008-2010 Axis
+ *
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
 Ext.onReady(function(){
     var modifiedSet = false;
     var deleted = false;
-    
+
     root = new Ext.tree.AsyncTreeNode({
         text: 'set'.l()
     });
-    
+
     valueSet = new Ext.tree.TreePanel({
         region: 'west',
         header: false,
@@ -52,7 +52,7 @@ Ext.onReady(function(){
                     allowDrag:false,
                     cls: 'newValueSet'
                 }));
-                
+
                 valueSet.getSelectionModel().select(node);
                 setTimeout(function(){
                     editor.editNode = node;
@@ -77,33 +77,32 @@ Ext.onReady(function(){
                            modifiedSet = true;
                            deleted = true;
                            valueGrid.disable();
-                       } 
+                       }
                     });
                 }
-               
+
             },
             scope: this
         },{
             text:'Save'.l(),
             handler: function(){
-                if (!valueSet.getSelectionModel().selNode) {
+                var node = valueSet.getSelectionModel().selNode;
+                if (!node) {
                     return;
                 }
                 data = {};
-                data['valueSetName'] = valueSet.getSelectionModel().selNode.text;
-                data['valueSetId'] = valueSet.getSelectionModel().selNode.id;
+                data['name'] = node.text;
+                data['id'] = node.id;
                 jsonData = Ext.encode(data);
                 Ext.Ajax.request({
                     url: Axis.getUrl('customer_custom-fields/ajax-save-value-set'),
                     params: {data: jsonData},
                     success: function(response) {
-                        if (valueSet.getSelectionModel().selNode.attributes.cls == 'newValueSet') {
-                            var new_valueSet = eval('('+ response.responseText +')');
-                            valuesetId = new_valueSet.valuesetId;
-                            valueSet.getSelectionModel().selNode.id = valuesetId;
-                            valueSet.getSelectionModel().selNode.attributes.cls = '';
-                            valueSet.getSelectionModel().selNode.getUI().removeClass('newValueSet');
-                        }
+                        valuesetId = Ext.decode(response.responseText).valueset_id;
+                        node.id = valuesetId;
+                        node.attributes.cls = '';
+                        node.getUI().removeClass('newValueSet');
+
                         vs.baseParams.valuesetId = valuesetId;
                         vs.reload();
                         modifiedSet = true;
@@ -114,9 +113,9 @@ Ext.onReady(function(){
             scope: this
         }]
     });
-    
+
     valueSet.setRootNode(root);
-    
+
     valueSet.on('click', function(node, e){
         if (node.attributes.cls == 'newValueSet') { //if valueSet is not saved
             valueGrid.disable();
@@ -127,19 +126,19 @@ Ext.onReady(function(){
             vs.reload();
         }
     });
-    
+
     editor = new Ext.tree.TreeEditor(valueSet, new Ext.form.Field({
         cancelOnEsc: true,
         allowBlank:false,
         selectOnFocus: false
     }));
-    
+
     vcm = new Ext.grid.ColumnModel(valuesetColumn);
     vcm.defaultSortable = true;
-    
+
     var Value = new Ext.data.Record.create(valuesetRow);
     var valueRowClear = new Value(valuesetRowClear);
-    
+
     vs = new Ext.data.Store({
         url: Axis.getUrl('customer_custom-fields/get-values'),
         reader: new Ext.data.JsonReader({
@@ -160,7 +159,7 @@ Ext.onReady(function(){
             forceFit: true,
             emptyText: 'No records found'.l()
         },
-        sm: sm2, 
+        sm: sm2,
         border: true,
         plugins: [isActive2],
         tbar: [{
@@ -180,20 +179,23 @@ Ext.onReady(function(){
             cls: 'x-btn-text-icon',
             handler : function(){
                 var data = {};
-                
+
                 var modified = vs.getModifiedRecords();
-                
+
                 if (!modified.length)
                     return false;
-                    
+
                 for (var i = 0, n = modified.length; i < n; i++) {
                     data[modified[i]['id']] = modified[i]['data'];
                 }
-                
+
                 var jsonData = Ext.encode(data);
                 Ext.Ajax.request({
                     url: Axis.getUrl('customer_custom-fields/ajax-save-value-set-values'),
-                    params: {data: jsonData, customer_valueset_id: valuesetId},
+                    params: {
+                        data: jsonData,
+                        customer_valueset_id: valuesetId
+                    },
                     callback: function() {
                         vs.commitChanges();
                         vs.reload();
@@ -206,15 +208,15 @@ Ext.onReady(function(){
             cls: 'x-btn-text-icon',
             handler : function(){
                 var selectedItems = valueGrid.getSelectionModel().selections.items;
-                
+
                 if (selectedItems.length < 1)
-                    return; 
-                    
+                    return;
+
                 if (!confirm('Delete field(s)?'))
                     return;
-                    
+
                 var data = {};
-               
+
                 for (var i = 0; i < selectedItems.length; i++) {
                     data[i] = selectedItems[i].id;
                 }
@@ -229,7 +231,7 @@ Ext.onReady(function(){
             }
         }]
     });
-    
+
     win = new Axis.Window({
         border: false,
         title: 'Customer valueset'.l(),
@@ -238,21 +240,21 @@ Ext.onReady(function(){
         layout: 'border',
         items: [valueGrid, valueSet]
     });
-    
+
     win.on('resize', function(){
         valueGrid.doLayout();
     })
-    
+
     win.on('beforehide', function(){
         editor.hide();
         if (modifiedSet) {
             Ext.getCmp('value-set-combo').store.reload();
             if (deleted)
                 ds.reload();
-            
+
             modifiedSet = false;
         }
-    });  
+    });
 })
 
 function editValues(){

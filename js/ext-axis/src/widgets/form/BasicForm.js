@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -181,7 +181,7 @@ Ext.form.BasicForm.override({
                     if (field.xtype == 'langset' && (fi = field.getField(id))) {
                         field.setValue(id, values[id]);
                     } else {
-                        if (field.setValue) {
+                        if (field.rendered && field.setValue) {
                             field.setValue(values[id]);
                         } else {
                             field.value = values[id];
@@ -189,7 +189,7 @@ Ext.form.BasicForm.override({
                     }
                     // modification end
                     if(this.trackResetOnLoad){
-                        field.originalValue = field.getValue ? field.getValue() : '';
+                        field.originalValue = (field.rendered && field.getValue) ? field.getValue() : '';
                     }
                 }
             }

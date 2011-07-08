@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Poll
  * @subpackage  Axis_Poll_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -40,71 +40,61 @@ class Axis_Poll_Model_Vote extends Axis_Db_Table
         if (false === $customerId) {
             $customerId = Axis::getCustomerId();
         }
+
+        $select = $this->select('*')
+            ->join('poll_answer', 'pa.id = pv.answer_id')
+            ->where('pa.question_id = ?', $questionId)
+            ;
         if (null === $customerId) {
-            $cWhere = 'AND pv.customer_id IS NULL ';
+            $select->where('pv.customer_id IS NULL');
             if (null === $ip) {
                 $ip = ip2long($_SERVER['REMOTE_ADDR']);
             }
-            $ipWhere = $this->getAdapter()->quoteInto('AND pv.ip = ? ', $ip);
+            $select->where('pv.ip = ?', $ip);
         } else {
-            $cWhere = "AND pv.customer_id = {$customerId} ";
-            $ipWhere = '';
-            //usually not used
+            $select->where('pv.customer_id = ?', $customerId);
             if (null !== $ip) {
-                $ipWhere = $this->getAdapter()->quoteInto('AND pv.ip = ? ', $ip);
+                $select->where('pv.ip = ?', $ip);
             }
         }
-
-        $query = "SELECT COUNT(*) FROM " . $this->_prefix . 'poll_vote' . " as  pv " .
-            'INNER JOIN ' . $this->_prefix . 'poll_answer pa ON pa.id = pv.answer_id ' .
-            "WHERE   pa.question_id = ? " .
-            $ipWhere .
-            $cWhere;
-        return (bool) $this->getAdapter()->fetchOne($query, $questionId);
+        return (bool) $select->count();
     }
 
     public function getVoteCount($customerId = false)
     {
-        if (false === $customerId) {
-            $cWhere = '';
+        $languageId = Axis_Locale::getLanguageId();
+        
+        $select = Axis::model('poll/answer')->select('question_id')
+            ->joinLeft('poll_vote', 'pv.answer_id = pa.id', 'COUNT(pv.id)')
+            ->where('pa.language_id = ?', $languageId)
+            ->group('pa.question_id')
+            ;
+        
+        if ($customerId) {
+            $select->where('pv.customer_id = ?', $customerId);
         } elseif (null === $customerId) {
-            $cWhere = 'AND v.customer_id IS NULL ';
-        } else {
-            $cWhere = "AND v.customer_id = {$customerId} ";
+            $select->where('pv.customer_id IS NULL');
         }
-
-        $rows =  $this->getAdapter()->fetchAll(
-            "SELECT a.question_id, count(v.id) as cnt  FROM " . $this->_prefix . "poll_answer a
-            LEFT JOIN " . $this->_prefix . "poll_vote AS v ON v.answer_id = a.id " .
-            'WHERE a.language_id = ? ' .
-            $cWhere .
-            'GROUP BY a.question_id',
-            Axis_Locale::getLanguageId()
-        );
-        $assigns = array();
-        foreach ($rows as $row) {
-            $assigns[intval($row['question_id'])] = intval($row['cnt']);
-        }
-        return $assigns;
+        
+        return $select->fetchPairs();
     }
 
     public function getResults()
     {
-        $rowset =  $this->getAdapter()->fetchAssoc(
-            'SELECT pv.answer_id, pa.question_id, COUNT(*) as cnt ' .
-            'FROM ' . $this->_prefix . 'poll_vote pv ' .
-            'INNER JOIN ' . $this->_prefix . 'poll_answer pa ON pa.id = pv.answer_id ' .
-            'WHERE pa.language_id = ? '.
-            'GROUP BY pv.answer_id ' .
-            'ORDER BY cnt',
-            Axis_Locale::getLanguageId()
-        );
-
-        $assigns = array();
+        $languageId = Axis_Locale::getLanguageId();
+        
+        $rowset = $this->select(array('answer_id', 'cnt' => 'COUNT(*)'))
+            ->join('poll_answer', 'pa.id = pv.answer_id', 'question_id')
+            ->where('pa.language_id = ?', $languageId)
+            ->group('pv.answer_id')
+            ->order('cnt')
+            ->fetchAssoc()
+            ;
+        $dataset = array();
         foreach ($rowset as $row) {
-            $assigns[$row['question_id']][$row['answer_id']] = $row;
+            $dataset[$row['question_id']][$row['answer_id']] = $row;
         }
-        return $assigns;
+        return $dataset;
     }
 
     /**

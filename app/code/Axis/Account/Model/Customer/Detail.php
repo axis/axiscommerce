@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,68 +43,20 @@ class Axis_Account_Model_Customer_Detail extends Axis_Db_Table
     );
     
     /**
-     * Updates customer extra info
-     * 
-     * @param int $customerId
-     * @param array $data
-     * @return void
-     */
-    public function save($customerId, $data)
-    {
-        $this->delete(
-            Axis::db()->quoteInto('customer_id = ?', $customerId)
-        );
-        
-        foreach ($data as $id => $value) {
-            if (false === strpos($id, 'field_')) {
-                continue;
-            }
-            $parts = explode('_', $id);
-            $id = array_pop($parts);
-            $row = array(
-                'customer_id' => $customerId,
-                'customer_field_id' => $id
-            );
-
-            if (is_string($value) && !empty ($value)) {
-                $fieldType = Axis::single('account/customer_field')
-                    ->find($id)->current()->field_type;
-                $multiFields = Axis_Account_Model_Customer_Field::$fieldMulti;
-                if (in_array($fieldType, $multiFields)) {
-                    $row['customer_valueset_value_id'] = $value;
-                } else {
-                    $row['data'] = $value;
-                }
-                $this->insert($row);
-            } elseif (is_array($value)) {
-                foreach ($value as $v) {
-                    $row['customer_valueset_value_id'] = $v;
-                    $this->insert($row);
-                }
-            }
-        }
-    }
-
-    /**
      *
      * @param string $nickname
      * @return bool
      */
     public function isExistNickname($nickname)
     {
-        $select = $this->getAdapter()->select()
-            ->from(array('acd' => $this->_prefix . 'account_customer_detail'), 'id')
-            ->joinInner(
-                array('acf' => $this->_prefix . 'account_customer_field'),
-                'acf.id = acd.customer_field_id',
-                array()
-            )
-            ->where("acf.name = 'nickname'")
+        $select = $this->select('id')
+            ->join('account_customer_field', 'acf.id = acd.customer_field_id')
+            ->where('acf.name = ?', 'nickname')
             ->where('acd.data = ?', $nickname)
             ;
         if ($customerId = Axis::getCustomerId()) {
-            $select->where("acd.customer_id <> ?", $customerId);
+            $select->where('acd.customer_id <> ?', $customerId);
         }
-        return (bool) $this->getAdapter()->fetchOne($select);
+        return (bool) $select->fetchOne();
     }
 }

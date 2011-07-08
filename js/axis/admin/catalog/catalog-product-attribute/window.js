@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2010 Axis
+ * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -55,7 +55,7 @@ Ext.onReady(function() {
         mode: 'local',
         triggerAction: 'all',
         editable: false,
-        hiddenValue: 0,
+        initialValue: 0,
         store: Attribute.inputTypeStore
     });
 
@@ -76,7 +76,6 @@ Ext.onReady(function() {
         bodyStyle: 'padding: 10px;',
         defaults: {
             anchor: '-20',
-            initialValue: '',
             xtype: 'textfield'
         },
         reader: new Ext.data.JsonReader({
@@ -147,11 +146,12 @@ Ext.onReady(function() {
                     anchor: '-5'
                 },
                 labelWidth: 210,
-                items: [/*{
+                items: [{
                     fieldLabel: 'Use in Search Indexes'.l(),
                     name: 'option[searchable]',
-                    xtype: 'checkbox'
-                },*/ {
+                    xtype: 'hidden',
+                    initialValue: 1
+                }, {
                     fieldLabel: 'Use in Catalog Filters'.l(),
                     checked: true,
                     initialValue: 1,
@@ -183,8 +183,7 @@ Ext.onReady(function() {
             }]
         }, {
             name: 'option[id]',
-            xtype: 'hidden',
-            initialValue: 0
+            xtype: 'hidden'
         }]
     });
 

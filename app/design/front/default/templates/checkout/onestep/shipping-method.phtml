@@ -1,0 +1,10 @@
+<div class="box shipping-methods">
+    <div class="head"><span class="title"><?php
+        echo $this->translate('checkout')->__('Shipping Method')
+    ?></span><a href="#" id="shipping-method-reset" class="method-reset"><?php
+        echo $this->translate('checkout')->__('Reset')
+    ?></a></div>
+    <div class="content" id="shipping-method-load">
+        <?php echo $this->render('checkout/onestep/shipping-method/available.phtml') ?>
+    </div>
+</div>
