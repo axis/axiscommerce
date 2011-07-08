@@ -116,11 +116,13 @@ form ul ul { padding: 0; }
 .axis-form .input-text,
 .axis-form textarea                                 { width: 450px; }
 .axis-form .description                             { margin-left: 155px; }
+.axis-form ul.errors,
 .axis-form label.error                              { margin-left: 155px; }
 .layout-1column .col-main .axis-form select         { width: 606px; }
 .layout-1column .col-main .axis-form .input-text,
 .layout-1column .col-main .axis-form textarea       { width: 600px; }
 .layout-3columns .col-main .axis-form label         { width: 120px; }
+.layout-3columns .col-main .axis-form ul.errors,
 .layout-3columns .col-main .axis-form label.error   { margin-left: 125px; }
 .layout-3columns .col-main .axis-form .description  { margin-left: 125px; }
 .layout-3columns .col-main .axis-form select        { width: 306px; }
