@@ -52,15 +52,27 @@ class Axis_View_Helper_ShippingForm
             $area = $this->view->area;
         }
 
-        $templatePath = $this->view->path . '/app/design/' . $area . '/'
-                      . $this->view->templateName . '/templates';
-
         $shortPath = 'shipping'
-                   . str_replace('_', '/', strtolower($shippingCode))
-                   . '/' . $template . '.phtml';
+            . str_replace('_', '/', strtolower($shippingCode))
+            . '/' . $template . '.phtml';
 
-        if (is_readable($templatePath . '/' . $shortPath)) {
-             return $this->view->render($shortPath);
+        $fallbackList = array_unique(array(
+            $this->view->templateName,
+            /* $this->view->defaultTemplate */
+            'fallback',
+            'default'
+        ));
+        foreach ($fallbackList as $fallback) {
+            $templatePath = $this->view->path 
+                . '/app/design/' 
+                . $area
+                . '/'
+                . $fallback
+                . '/templates';
+            
+            if (is_readable($templatePath . '/' . $shortPath)) {
+                return $this->view->render($shortPath);
+            }
         }
 
         return '';
