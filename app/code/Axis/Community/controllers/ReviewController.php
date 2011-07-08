@@ -333,13 +333,14 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         if ($this->_request->isPost()) {
             $ratings = $this->_getRatings();
             $data = array(
-                'product_id' => $this->_getParam('product'),
-                'summary'    => $this->_getParam('summary'),
-                'author'     => $this->_getParam('author'),
-                'title'      => $this->_getParam('title'),
-                'pros'       => $this->_getParam('pros'),
-                'cons'       => $this->_getParam('cons'),
-                'ratings'    => $ratings
+                'customer_id' => Axis::getCustomerId(), 
+                'product_id'  => $this->_getParam('product'),
+                'summary'     => $this->_getParam('summary'),
+                'author'      => $this->_getParam('author'),
+                'title'       => $this->_getParam('title'),
+                'pros'        => $this->_getParam('pros'),
+                'cons'        => $this->_getParam('cons'),
+                'ratings'     => $ratings
             );
             if ($form->isValid($this->_request->getPost())) {
                 $review = Axis::single('community/review')->save($data);
