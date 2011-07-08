@@ -322,7 +322,7 @@ class Axis_Community_Model_Review extends Axis_Db_Table
                 $averageMark['name'] : 'rating';
             $result[$averageMark['product_id']][$name] = array(
                 'title'      => isset($averageMark['title']) ?
-                    $averageMark['title'] : Axis::translate('community')->__('Rating'),
+                    $averageMark['title'] : '',
                 'mark'       => round($averageMark['average_mark'], 1),
                 'product_id' => $averageMark['product_id']
             );
@@ -369,7 +369,7 @@ class Axis_Community_Model_Review extends Axis_Db_Table
             $name = isset($averageMark['name']) ? $averageMark['name'] : 'rating';
             $result[$averageMark['customer_id']][$name] = array(
                 'title'       => isset($averageMark['title']) ?
-                    $averageMark['title'] : Axis::translate('community')->__('Rating'),
+                    $averageMark['title'] : '',
                 'mark'        => round($averageMark['average_mark'], 1),
                 'customer_id' => $averageMark['customer_id']
             );
@@ -400,7 +400,7 @@ class Axis_Community_Model_Review extends Axis_Db_Table
     public function save($data)
     {
         $row = $this->getRow($data);
-        
+
         $customer = null;
         if (!empty($row->customer_id)) {
             $customer = Axis::single('account/customer')->find($row->customer_id)
@@ -415,9 +415,9 @@ class Axis_Community_Model_Review extends Axis_Db_Table
         if (empty($row->date_created)) {
             $row->date_created = Axis_Date::now()->toSQLString();
         }
-        
+
         $row->save();
-        
+
         return $row;
     }
 
