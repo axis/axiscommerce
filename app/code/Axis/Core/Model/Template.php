@@ -346,11 +346,11 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                 $content[$rowContent['language_id']] = $rowContent;
             }
             foreach ($languageIds as $languageId) {
-                if (!isset($_row['content'][$languageId])) {
+                if (!isset($content[$languageId])) {
                     continue;
                 }
                 $modelContent->getRow($row->id, $languageId)
-                    ->setFromArray($_row['content'][$languageId])
+                    ->setFromArray($content[$languageId])
                     ->save();
             }
         }
