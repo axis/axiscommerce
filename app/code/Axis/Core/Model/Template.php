@@ -325,6 +325,8 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         }
         //import cms blocks
         $modelBlock = Axis::model('cms/block');
+        $languageIds  = array_keys(Axis_Collect_Language::collect());
+        $modelContent = Axis::model('cms/block_content');
         foreach ($cmsBlocks as $cmsBlock) {
             $cmsBlockId = $modelBlock->getIdByName($cmsBlock['name']);
             if ($cmsBlockId) {
@@ -335,12 +337,22 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                 );
                 continue;
             }
+
+            $row = $modelBlock->save($cmsBlock);
+            
+            //save cms block content
             $content = array();
-            foreach ($cmsBlock['content'] as $row) {
-                $content[$row['language_id']] = $row;
+            foreach ($cmsBlock['content'] as $rowContent) {
+                $content[$rowContent['language_id']] = $rowContent;
             }
-            $cmsBlock['content'] = $content;
-            $modelBlock->save($cmsBlock);
+            foreach ($languageIds as $languageId) {
+                if (!isset($_row['content'][$languageId])) {
+                    continue;
+                }
+                $modelContent->getRow($row->id, $languageId)
+                    ->setFromArray($_row['content'][$languageId])
+                    ->save();
+            }
         }
 
         return true;
