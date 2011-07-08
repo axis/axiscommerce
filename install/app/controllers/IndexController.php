@@ -336,7 +336,7 @@ class IndexController extends Zend_Controller_Action
             Axis::message()->addError($e->getTraceAsString());
             $this->_install->log($e->getMessage());
             $this->_install->log($e->getTraceAsString());
-            $this->_redirect('index/step-modules');
+            $this->_redirect('index/step-user');
         }
         $this->_redirect('index/step-finish');
     }
