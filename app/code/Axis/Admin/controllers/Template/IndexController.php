@@ -71,9 +71,12 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
 
         $data = $this->_getAllParams();
 
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('core/template')->save($data)
+        Axis::single('core/template')->save($data);
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Template was saved successfully'
         ));
+        $this->_helper->json->sendSuccess();
     }
 
     public function loadAction()

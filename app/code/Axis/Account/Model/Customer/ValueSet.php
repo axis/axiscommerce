@@ -47,13 +47,15 @@ class Axis_Account_Model_Customer_ValueSet extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return mixed (bool|int)
+     * @return mixed Axis_Db_Table_Row|void
      */
-    public function save($data)
+    public function save(array $data)
     {
         if (empty($data['name'])) {
-            return false;
+            return;
         }
-        return $this->getRow($data)->save();
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 }

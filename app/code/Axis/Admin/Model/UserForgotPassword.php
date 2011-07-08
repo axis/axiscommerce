@@ -39,6 +39,11 @@ class Axis_Admin_Model_UserForgotPassword extends Axis_Db_Table
      */
     protected $_name = 'admin_user_forgotpassword';
     
+    /**
+     *
+     * @param array $data
+     * @return Axis_Db_Table_Row 
+     */
     public function save(array $data)
     {
         $row = $this->getRow($data);

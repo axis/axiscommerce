@@ -58,8 +58,8 @@ class Axis_Core_Model_Cache extends Axis_Db_Table
                 ->fetchOne();
 
             $frontendOptions = array(
-                'lifetime'                  => $defaultLifetime,
-                'automatic_serialization'   => true
+                'lifetime'                => $defaultLifetime,
+                'automatic_serialization' => true
             );
             $cacheDir = Axis::config()->system->path . '/var/cache';
             if (!is_readable($cacheDir)) {

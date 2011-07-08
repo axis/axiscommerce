@@ -82,9 +82,9 @@ class Axis_Admin_Location_GeozoneController extends Axis_Admin_Controller_Back
             return;
         }
 
-        $modelGeozone = Axis::single('location/geozone');
+        $model = Axis::single('location/geozone');
         foreach ($data as $rowData) {
-            $modelGeozone->save($rowData);
+            $model->save($rowData);
         }
 
         $this->_helper->json->sendSuccess();

@@ -38,14 +38,15 @@ class Axis_Location_Model_Zone extends Axis_Db_Table
     /**
      *
      * @param array $row
-     * @return mixed The primary key value(s), as an associative array if the
-     *     key is compound, or a scalar if the key is single-column.
+     * @return mixed Axis_Db_Table_Row|void
      */
     public function save(array $row)
     {
         if (empty($row['code']) || empty($row['name'])) {
             return;
         }
-        return $this->getRow($row)->save();
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }   
 } 

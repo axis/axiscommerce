@@ -395,9 +395,9 @@ class Axis_Community_Model_Review extends Axis_Db_Table
      *      ...
      *    )
      *  )
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
         $row = $this->getRow($data);
         

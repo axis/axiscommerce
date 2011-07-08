@@ -90,14 +90,14 @@ class Axis_FirePhp
      * Write content to FirePhp log
      *
      * @static
-     * @param mixed $content
+     * @param mixed $data
      */
-    public static function log($content, $extras = null)
+    public static function log($data, $extras = null)
     {
         /*if(empty($content)) {
             $content = 'NULL';
         }*/
-        self::getLogger()->log($content, Zend_Log::INFO, $extras);
+        self::getLogger()->log($data, Zend_Log::INFO, $extras);
     }
     
     /**

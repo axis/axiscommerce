@@ -257,8 +257,8 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
         $this->_helper->layout->disableLayout();
         $data = Zend_Json::decode($this->_getParam('data'));
         
-        $valuesetId = Axis::single('account/Customer_ValueSet')->save($data);
-        if (!$valuesetId) {
+        $valueset = Axis::single('account/Customer_ValueSet')->save($data);
+        if (!$valueset) {
             $this->_helper->json->sendFailure();
             return;
         }
@@ -267,7 +267,8 @@ class Axis_Admin_Customer_CustomFieldsController extends Axis_Admin_Controller_B
                 'Data was saved successfully'
             )
         );
-        $this->_helper->json->setValuesetId($valuesetId)->sendSuccess();
+        $this->_helper->json->setValuesetId($valueset->id)
+            ->sendSuccess();
     }
     
     public function ajaxDeleteValueSetAction()

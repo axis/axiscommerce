@@ -56,9 +56,9 @@ class Axis_Core_Model_Template extends Axis_Db_Table
      * Save or insert template
      *
      * @param array $data
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
         $row = false;
         if (!empty($data['duplicate'])) {
@@ -70,14 +70,11 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         }
 
         if (!$row) {
-            $this->getRow($data)->save();
+            $row = $this->getRow($data);
+                
         }
-
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Template was saved successfully'
-        ));
-        return true;
+        $row->save();
+        return $row;
     }
 
     /**
