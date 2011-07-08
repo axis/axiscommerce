@@ -1010,7 +1010,6 @@ a.review-stars { outline: none; }
 .review-add, .review-view { margin: 2px 0; font-family: Tahoma; }
 .review-add a, .review-view a { text-decoration: none; color: #4f84d2; }
 .review-add a:hover, .review-view a:hover { text-decoration: underline; }
-.product-info .rating-title,
 .product-listing .rating-title { display: none; }
 .product-listing-grid .review-stars {  }
 .product-listing-grid .review-ratings { margin: 0 0 4px 0; }
