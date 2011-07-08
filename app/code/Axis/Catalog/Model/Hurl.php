@@ -53,7 +53,7 @@ class Axis_Catalog_Model_Hurl extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return mixed 
+     * @return Axis_Db_Table_Row 
      */
     public function save(array $data)
     {
@@ -67,7 +67,8 @@ class Axis_Catalog_Model_Hurl extends Axis_Db_Table
             $row = $this->createRow();
         }
         $row->setFromArray($data);
-        return $row->save();
+        $row->save();
+        return $row;
     }
     
     /**

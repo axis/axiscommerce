@@ -47,6 +47,7 @@ class Axis_Admin_Model_UserForgotPassword extends Axis_Db_Table
     public function save(array $data)
     {
         $row = $this->getRow($data);
+        //before save
         if (empty($row->created_at)) {
             $row->created_at = Axis_Date::now()->toSQLString();
         }

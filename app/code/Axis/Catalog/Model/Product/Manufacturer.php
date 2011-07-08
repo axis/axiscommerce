@@ -35,6 +35,8 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
 {
     protected $_name = 'catalog_product_manufacturer';
 
+    protected $_rowClass = 'Axis_Catalog_Model_Product_Manufacturer_Row';
+    
     protected $_selectClass = 'Axis_Catalog_Model_Product_Manufacturer_Select';
 
     protected $_dependentTables = array(
@@ -80,17 +82,12 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
      * @return int Manufacturer id
      * @throws Axis_Exception
      */
-    public function save($data)
+    public function save(array $data)
     {
-        $row = false;
-        if (isset($data['id'])) {
-            $row = $this->find($data['id'])->current();
-        }
-        if (!$row) {
-            unset($data['id']);
-            $row = $this->createRow();
-        }
+        $row = $this->getRow($data);
 
+        //$row->setUrl();
+        //before save
         $url = trim($data['key_word']);
         if (empty($url)) {
             $url = $data['name'];
@@ -106,33 +103,24 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
                 Axis::translate('core')->__('Column %s should be unique', 'url')
             );
         }
-
-        $row->setFromArray($data);
         $row->image = empty($row->image) ? '' : '/' . trim($row->image, '/');
+        //end before save
+        
         $row->save();
 
-        //add description
-        $modelDescription = Axis::model('catalog/product_manufacturer_description');
-        foreach (Axis_Collect_Language::collect() as $languageId => $languangeName) {
-            if (!isset($data['description'][$languageId])) {
-                continue;
-            }
-            $modelDescription->getRow($row->id, $languageId)
-                ->setFromArray($data['description'][$languageId])
-                ->save();
-        }
-
+        //after save
         //add relation site
-        $modelHurl = Axis::model('catalog/hurl');
+        $model = Axis::model('catalog/hurl');
         foreach (Axis_Collect_Site::collect() as $siteId => $siteName) {
-            $modelHurl->save(array(
+            $model->save(array(
                 'site_id'  => $siteId,
                 'key_id'   => $row->id,
                 'key_type' => 'm',
                 'key_word' => $url
             ));
         }
-
+        //end after save
+        
         return $row;
     }
 

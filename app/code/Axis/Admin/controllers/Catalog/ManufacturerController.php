@@ -136,6 +136,7 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
         $model = Axis::model('catalog/product_manufacturer');
         try {
             $row = $model->save($data);
+            $row->setDescriptions($data['description']);
             Axis::message()->addSuccess(
                 Axis::translate('catalog')->__('Data was successfully saved')
             );
@@ -144,11 +145,8 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             return $this->_helper->json->sendFailure();
         }
 
-        $this->_helper->json->sendJson(array(
-            'success' => (bool) $row->id,
-            'data'    => array(
-                'id' => $row
-            )
+        $this->_helper->json->sendSuccess(array(
+            'data'    => array('id' => $row->id)
         ));
     }
 

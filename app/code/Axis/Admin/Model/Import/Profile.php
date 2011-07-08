@@ -49,34 +49,14 @@ class Axis_Admin_Model_Import_Profile extends Axis_Db_Table
      */
     public function save(array $data)
     {
-<<<<<<< Updated upstream
         $row = $this->getRow($data);
+        //before save
         $row->updated_at = Axis_Date::now()->toSQLString();
         if (empty($row->created_at)) {
             $row->created_at = $row->updated_at;
         }
         $row->save();
-=======
-        Axis_FirePhp::log($data);
-        if ($data['id'] == '') {
-            $data['updated_at'] = $data['created_at'] = Axis_Date::now()->toSQLString();
-            unset($data['id']);
-            $row = $this->createRow();
-        } else {
-            $data['updated_at'] = Axis_Date::now()->toSQLString();
-            $row = $this->find($data['id'])->current();
-        }
-        $row->setFromArray($data);
         
-        $row->save();
-//        if ($result = $row->save()) {
-//            Axis::message()->addSuccess(
-//                Axis::translate('admin')->__(
-//                    'Profile was saved successfully'
-//                )
-//            );
-//        };
->>>>>>> Stashed changes
         return $row;
     }
 

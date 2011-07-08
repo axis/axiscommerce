@@ -173,23 +173,18 @@ class Axis_Catalog_Model_Product_Option extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        if (!isset($data['id']) || !$row = $this->find($data['id'])->current()) {
-            $row = $this->createRow();
-        }
-        unset($data['id']);
+        $row = $this->getRow($data);
         $options = array(
             'comparable', 'filterable', 'searchable', 'languagable', 'visible'
         );
         foreach ($options as $option) {
-            $data[$option] = (int)isset($data[$option]);
+            $row->$option = (int)isset($data[$option]);
         }
-
-        $row->setFromArray($data);
+        
         if (empty($row->valueset_id)) {
             $row->valueset_id = new Zend_Db_Expr('NULL');
         }
         $row->save();
-
         return $row;
     }
 

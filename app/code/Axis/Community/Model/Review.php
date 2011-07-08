@@ -401,6 +401,7 @@ class Axis_Community_Model_Review extends Axis_Db_Table
     {
         $row = $this->getRow($data);
         
+        //before save
         $customer = null;
         if (!empty($row->customer_id)) {
             $customer = Axis::single('account/customer')->find($row->customer_id)

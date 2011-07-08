@@ -51,10 +51,11 @@ class Axis_Account_Model_Customer_ValueSet extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        if (empty($data['name'])) {
+        $row = $this->getRow($data);
+        //before save (validate and throw e ?)
+        if (empty($row->name)) {
             return;
         }
-        $row = $this->getRow($data);
         $row->save();
         return $row;
     }
