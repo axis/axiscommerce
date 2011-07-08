@@ -9,7 +9,7 @@
             <a href="<?php echo $this->href('/' . $this->catalogUrl . '/' . $product['key_word']) ?>"
                 class="product-name"><?php echo $product['name'];?></a>
             <p class="product-price"><?php echo $this->currency($product['final_price'] * $product['quantity']);?></p>
-            
+
             <?php if (isset($product['attributes']) && count($product['attributes'])): ?>
             <div class="excerpt">
                 <div class="excerpt-full">
@@ -23,21 +23,21 @@
                 <span class="label-info"><?php echo $this->translate('checkout')->__('Details') ?></span>
             </div>
             <?php endif ?>
-            
+
             <p class="product-quantity"><?php
-            echo $this->translate('checkout')->__('%s item(s)', $product['decimal'] ? $product['quantity'] : (int)$product['quantity']);?> 
+            echo $this->translate('checkout')->__('%s item(s)', $product['decimal'] ? $product['quantity'] : (int)$product['quantity']);?>
             </p>
-        </div>  
+        </div>
         </li>
     <?php endforeach ?>
-    </ul> 
+    </ul>
 
 <div class="box-cart-total">
-    <p class="cart-total-text"><?php echo $this->translate('checkout')->__('End Price') . ': ' 
+    <p class="cart-total-text"><?php echo $this->translate('checkout')->__('End Price') . ': '
         . $this->currency($this->box->getSum());?></p>
     <?php echo $this->button($this->translate('checkout')->__('Checkout'), array(
         'class' => 'cart-checkout button',
-        'href' => $this->href('/checkout/onepage', true)
+        'href' => $this->href('checkout/onestep', true)
     )) ?>
 </div>
 <?php else : ?>
