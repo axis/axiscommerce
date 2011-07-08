@@ -22,6 +22,7 @@ class ReleaseMaker
             'tests',
             'app/etc/config.php',
             'js/ext-3.3.1/*',
+            'js/ckeditor/*',
             'media/*/*',      // skip all content inside every folder inside media
             'var/*/*',
             'var/axis_sample_data_latest.sql',
@@ -41,6 +42,16 @@ class ReleaseMaker
             'js/ext-3.3.1/src/locale/*',
             'js/ext-3.3.1/ext-all.js',
             'js/ext-3.3.1/license.txt',
+            'js/ckeditor/ckeditor.js',
+            'js/ckeditor/contents.css',
+            'js/ckeditor/config.js',
+            'js/ckeditor/LICENSE.html',
+            'js/ckeditor/adapters/*',
+            'js/ckeditor/images/*',
+            'js/ckeditor/lang/*',
+            'js/ckeditor/plugins/*',
+            'js/ckeditor/skins/kama/*',
+            'js/ckeditor/themes/*',
             'var/minify/*'
         )
     );

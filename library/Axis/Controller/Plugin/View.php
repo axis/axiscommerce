@@ -96,14 +96,12 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         list($namespace, $module) = explode('_', $request->getModuleName(), 2);
         $view->namespace    = $namespace;
         $view->moduleName   = $module;
-
         $view->path         = $systemPath;
-        $view->skinPath     = $systemPath . '/skin/' . $area . '/' . $theme;
 
         $currentUrl = $request->getScheme() . '://'
              . $request->getHttpHost()
              . $request->getRequestUri();
-        
+
         $site = Axis::getSite();
 
         $view->baseUrl      = $site ?
@@ -165,7 +163,7 @@ class Axis_Controller_Plugin_View extends Zend_Controller_Plugin_Abstract
         $view->doctype('XHTML1_STRICT');
 
         $view->setEncoding('UTF-8');
-        
+
         $layout = Axis_Layout::getMvcInstance();
 
         $layout->setView($view)->setLayoutPath(
