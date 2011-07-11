@@ -40,16 +40,12 @@ class Axis_Cms_Model_Page extends Axis_Db_Table
     protected $_selectClass = 'Axis_Cms_Model_Page_Select';
 
     /**
-     * Update or insert page row
      *
      * @param array $data
      * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
-        if (!$data['id']) {
-            unset($data['id']);
-        }
         $row = $this->getRow($data);
         $row->save();
         return $row;

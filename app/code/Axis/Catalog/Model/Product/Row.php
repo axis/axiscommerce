@@ -40,6 +40,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
 
     public function save()
     {
+        //before save
         if (empty($this->created_on)) {
             $this->created_on = Axis_Date::now()->toSQLString();
         }

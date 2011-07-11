@@ -79,20 +79,10 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
      * Insert or update config field
      *
      * @param array $data
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
-    public function save(array $data = null)
+    public function save(array $data)
     {
-        if (empty($data['config_options'])) {
-            $data['config_options'] = new Zend_Db_Expr('NULL');
-        }
-
-        $data['lvl'] = count(explode('/', $data['path']));
-
-        if ($data['lvl'] <= 2) {
-            $data['config_type'] = '';
-        }
-
         $row = $this->select()
             ->where('path = ?', $data['path'])
             ->fetchRow();
@@ -101,6 +91,17 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             $row = $this->createRow();
         } 
         $row->setFromArray($data);
+        
+        //before save
+        if (empty($row->config_options)) {
+            $row->config_options = new Zend_Db_Expr('NULL');
+        }
+        $row->lvl = count(explode('/', $row->path));
+        
+        if ($row->lvl <= 2) {
+            $row->config_type = '';
+        }
+        
         $row->save();
         
         return $row;

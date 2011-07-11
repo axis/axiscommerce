@@ -48,7 +48,7 @@ class Axis_Catalog_Model_Category_Description extends Axis_Db_Table
     /**
      *
      * @param arraay $data
-     * @return mixed
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {

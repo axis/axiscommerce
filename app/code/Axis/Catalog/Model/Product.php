@@ -54,10 +54,11 @@ class Axis_Catalog_Model_Product extends Axis_Db_Table
      * @param array $data
      * @return Axis_Catalog_Model_Product_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
         $row = $this->getRow($data);
 
+        //before save
         $isExist = (bool) $this->select()
             ->where('sku = ?', $row->sku)
             ->where('id <> ?', (int)$row->id)

@@ -354,6 +354,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
      */
     public function save()
     {
+        //before save
         //auto generate order number
         if (null === $this->number) {
             $this->number = md5(time());

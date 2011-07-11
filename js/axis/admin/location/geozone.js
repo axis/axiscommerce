@@ -114,7 +114,7 @@ var GZone = {
 
 var Assign = {
 
-    activeId: 0,
+    activeId: null,
 
     window: null,
 

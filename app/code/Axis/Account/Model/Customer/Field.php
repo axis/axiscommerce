@@ -113,12 +113,13 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return void
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
         $row = $this->getRow($data);
 
+        //before save
         if (empty($row->customer_valueset_id)) {
             $row->customer_valueset_id = new Zend_Db_Expr('NULL');
         }

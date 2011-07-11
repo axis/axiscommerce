@@ -40,9 +40,10 @@ class Axis_Location_Model_Geozone extends Axis_Db_Table
      * @param array $data
      * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
         $row = $this->getRow($data);
+        //before save
         $row->modified_on = Axis_Date::now()->toSQLString();
         if (empty($row->created_on)) {
             $row->created_on = $row->modified_on;

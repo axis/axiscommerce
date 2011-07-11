@@ -368,15 +368,15 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
     public function saveFieldAction()
     {
         $this->_helper->layout->disableLayout();
-        $_row = $this->_getAllParams();
-        if (empty($_row['path'])) {
+        $data = $this->_getAllParams();
+        if (empty($data['path'])) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     'Incorrect field path'
             ));
             return $this->_helper->json->sendFailure();
         }
-        Axis::model('core/config_field')->save($_row);
+        Axis::model('core/config_field')->save($data);
         
         Axis::message()->addSuccess(
             Axis::translate('core')->__(

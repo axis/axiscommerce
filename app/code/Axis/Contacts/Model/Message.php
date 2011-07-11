@@ -48,6 +48,7 @@ class Axis_Contacts_Model_Message extends Axis_Db_Table
     public function save(array $data)
     {
         $row = $this->createRow($data);
+        //before save
         $row->created_at = Axis_Date::now()->toSQLString();
         $row->save();
         return $row;

@@ -42,7 +42,7 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return bool
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {

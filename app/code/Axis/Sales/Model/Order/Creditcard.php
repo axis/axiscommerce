@@ -44,34 +44,37 @@ class Axis_Sales_Model_Order_Creditcard extends Axis_Db_Table
      */
     public function save(Axis_CreditCard $card, Axis_Sales_Model_Order_Row $order)
     {
-        $full_number = $card->getCcNumber();
+        $number = $card->getCcNumber();
         $ret = true;
 
-        switch (Axis::config()->payment->{$order->payment_method_code}->saveCCAction) {
+        switch (Axis::config("payment/{$order->payment_method_code}/saveCCAction")) {
             case 'last_four':
-                $number = str_repeat('X', (strlen($full_number) - 4)) .
-                    substr($full_number, -4);
+                $number = str_repeat('X', (strlen($number) - 4)) .
+                    substr($number, -4);
                 break;
             case 'first_last_four':
-                $number = substr($full_number, 0, 4) .
-                    str_repeat('X', (strlen($full_number) - 8)) .
-                    substr($full_number, -4);
+                $number = substr($number, 0, 4) .
+                    str_repeat('X', (strlen($number) - 8)) .
+                    substr($number, -4);
                 break;
             case 'partial_email':
-                $number = substr($full_number, 0, 4) .
-                    str_repeat('X', (strlen($full_number) - 8)) .
-                    substr($full_number, -4);
+                $number = substr($number, 0, 4) .
+                    str_repeat('X', (strlen($number) - 8)) .
+                    substr($number, -4);
 
+                // @todo use event
                 try {
                     $mail = new Axis_Mail();
                     $mail->setLocale(Axis::config('locale/main/language_admin'));
                     $configResult = $mail->setConfig(array(
-                        'subject' => Axis::translate('sales')->__('Order #%s. Credit card number'),
+                        'subject' => Axis::translate('sales')->__(
+                            'Order #%s. Credit card number'
+                        ),
                         'data'    => array(
                             'text' => Axis::translate('sales')->__(
                                 'Order #%s, Credit card middle digits: %s',
                                 $order->number,
-                                substr($full_number, 4, (strlen($full_number) - 8))
+                                substr($number, 4, (strlen($number) - 8))
                             )
                         ),
                         'to' => Axis_Collect_MailBoxes::getName(
@@ -88,7 +91,7 @@ class Axis_Sales_Model_Order_Creditcard extends Axis_Db_Table
                 }
                 break;
             case 'complete':
-                $number = $full_number;
+                $number = $number;
                 break;
             default:
                 return true;
@@ -96,15 +99,15 @@ class Axis_Sales_Model_Order_Creditcard extends Axis_Db_Table
 
         $crypt = Axis_Crypt::factory();
         $data = array(
-            'cc_type'   => $crypt->encrypt($card->getCcType()),
-            'cc_owner'  => $crypt->encrypt($card->getCcOwner()),
-            'cc_number' => $crypt->encrypt($number),
-            'cc_expires_year' => $crypt->encrypt($card->getCcExpiresYear()),
+            'cc_type'          => $crypt->encrypt($card->getCcType()),
+            'cc_owner'         => $crypt->encrypt($card->getCcOwner()),
+            'cc_number'        => $crypt->encrypt($number),
+            'cc_expires_year'  => $crypt->encrypt($card->getCcExpiresYear()),
             'cc_expires_month' => $crypt->encrypt($card->getCcExpiresMonth()),
-            'cc_cvv'    => Axis::config()->payment->{$order->payment_method_code}->saveCvv ?
+            'cc_cvv'           => Axis::config()->payment->{$order->payment_method_code}->saveCvv ?
                 $crypt->encrypt($card->getCcCvv()) : '',
-            'cc_issue_year'  => $crypt->encrypt($card->getCcIssueYear()),
-            'cc_issue_month'  => $crypt->encrypt($card->getCcIssueMonth())
+            'cc_issue_year'    => $crypt->encrypt($card->getCcIssueYear()),
+            'cc_issue_month'   => $crypt->encrypt($card->getCcIssueMonth())
         );
 
         if (!$row = $this->find($order->id)->current()) {

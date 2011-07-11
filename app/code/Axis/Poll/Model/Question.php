@@ -199,8 +199,9 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
     public function save(array $data) 
     {
         $row = $this->getRow($data);
+        //before save
         $row->changed_at = Axis_Date::now()->toSQLString();
-        if (null === $row->created_at) {
+        if (empty($row->created_at)) {
             $row->created_at = $row->changed_at;
         }
         $row->save();

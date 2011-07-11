@@ -141,7 +141,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table
      * @param array $data
      * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
         $row = $this->getRow($data);
         $row->save();

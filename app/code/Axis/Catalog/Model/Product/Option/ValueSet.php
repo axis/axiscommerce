@@ -45,27 +45,13 @@ class Axis_Catalog_Model_Product_Option_ValueSet extends Axis_Db_Table
      *    name  => string
      *  )
      * </pre>
-     * @return int Row id
+     * @return Axis_Db_Table_Row
      */
-    public function save($data)
+    public function save(array $data)
     {
-        foreach ($data as $values) {
-            if (!isset($values['id'])
-                || !$row = $this->find($values['id'])->current()) {
-
-                $row = $this->createRow();
-                unset($values['id']);
-            }
-            $row->setFromArray($values);
-            $row->save();
-        }
-
-        Axis::message()->addSuccess(
-            Axis::translate('catalog')->__(
-                'Data has been saved successfully'
-            )
-        );
-        return $row->id;
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 
     /**

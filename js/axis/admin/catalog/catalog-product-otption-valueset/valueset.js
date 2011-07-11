@@ -35,7 +35,7 @@ var Set = {
 
     create: function (){
         Set.form.getForm().setValues({
-            id: 0,
+            id: null,
             name: ''
         });
         Set.window.setTitle('New Valueset'.l());

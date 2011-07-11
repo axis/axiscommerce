@@ -71,7 +71,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
      * @param array $data
      * @return int
      */
-    public function save($data)
+    public function save(array $data)
     {
         if (!isset($data['id'])
             || !$row = $this->find($data['id'])->current()) {
@@ -107,12 +107,13 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 'is_combined'   => $data['discountIsCombined']
             ))
             ->save();
-
-        $mDiscountEav = Axis::model('discount/eav');
-        $mDiscountEav->delete('discount_id = ' . $row->id);
+        // ->setSites()->setGroups() 
+        //after save
+        $model = Axis::model('discount/eav');
+        $model->delete('discount_id = ' . $row->id);
         if (isset($data['discountSites'])) {
             foreach ($data['discountSites'] as $siteId) {
-                $mDiscountEav->insert(array(
+                $model->insert(array(
                     'discount_id' => $row->id,
                     'entity' => 'site',
                     'value' => $siteId
@@ -121,7 +122,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         }
         if (isset($data['discountCustomerGroups'])) {
             foreach ($data['discountCustomerGroups'] as $groupId) {
-                $mDiscountEav->insert(array(
+                $model->insert(array(
                     'discount_id' => $row->id,
                     'entity' => 'group',
                     'value' => $groupId
@@ -129,7 +130,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             }
         }
         if (isset($data['discountSpecial'])) {
-            $mDiscountEav->insert(array(
+            $model->insert(array(
                 'discount_id' => $row->id,
                 'entity' => 'special',
                 'value' => $data['discountSpecial']
@@ -142,7 +143,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         foreach ($data['condition'] as $conditionType => $subCondition) {
             if (in_array($conditionType, array('category', 'manufacture', 'productId'))) {
                 foreach ($subCondition as $condition) {
-                    $mDiscountEav->insert(array(
+                    $model->insert(array(
                         'discount_id' => $row->id,
                         'entity' => $conditionType,
                         'value' => $condition
@@ -150,12 +151,12 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 }
             } elseif ($conditionType == 'attribute') {
                 foreach ($subCondition['optionId'] as $id => $optionId) {
-                    $mDiscountEav->insert(array(
+                    $model->insert(array(
                         'discount_id' => $row->id,
                         'entity' => 'optionId',
                         'value' => $optionId
                     ));
-                    $mDiscountEav->insert(array(
+                    $model->insert(array(
                         'discount_id' => $row->id,
                         'entity' => 'option[' . $optionId . ']',
                         'value' => $subCondition['optionValueId'][$id]
@@ -164,7 +165,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             } else {
                 $countCustomCondition = count($subCondition['e-type']);
                 for ($i = 0; $i < $countCustomCondition; $i++) {
-                    $mDiscountEav->insert(array(
+                    $model->insert(array(
                         'discount_id' => $row->id,
                         'entity' => $conditionType . '_' . $subCondition['e-type'][$i],
                         'value' => $subCondition['value'][$i]
@@ -172,7 +173,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 }
             }
         }
-
+        
         Axis::dispatch('discount_save_after', array(
             'old_data' => $oldDiscountData,
             'discount' => $row

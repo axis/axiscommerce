@@ -52,9 +52,10 @@ class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
 
     public function getListAction()
     {
-        $this->_helper->json->sendSuccess(array(
-            'data'  => Axis::single('admin/import_profile')->getList()
-        ));
+        $data = Axis::single('admin/import_profile')->getList();
+        $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
     public function saveAction()
@@ -63,9 +64,14 @@ class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
 
         $data = $this->_getParam('profile');
 
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('admin/import_profile')->save($data)
-        ));
+        Axis::single('admin/import_profile')->save($data);
+            
+        Axis::message()->addSuccess(
+            Axis::translate('admin')->__(
+                'Profile was saved successfully'
+            )
+        );
+        $this->_helper->json->sendSuccess();
     }
 
     public function deleteAction()
@@ -74,9 +80,13 @@ class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
 
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
 
-        return $this->_helper->json->sendJson(array(
-            'success' => Axis::single('admin/import_profile')->delete($data)
-        ));
+        Axis::single('admin/import_profile')->delete($data);
+        Axis::message()->addSuccess(
+            Axis::translate('admin')->__(
+                'Profile was deleted successfully'
+            )
+        );
+        $this->_helper->json->sendSuccess();
     }
 
     public function connectAction()

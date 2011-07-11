@@ -42,38 +42,33 @@ class Axis_Admin_Model_Import_Profile extends Axis_Db_Table
             ->fetchAll();
     }
 
-    public function save($data)
+    /**
+     *
+     * @param array $data
+     * @return Axis_Db_Table_Row  
+     */
+    public function save(array $data)
     {
-        if ($data['id'] == '') {
-            $data['updated_at'] = $data['created_at'] = Axis_Date::now()->toSQLString();
-            unset($data['id']);
-            $row = $this->createRow();
-        } else {
-            $data['updated_at'] = Axis_Date::now()->toSQLString();
-            $row = $this->find($data['id'])->current();
+        $row = $this->getRow($data);
+        //before save
+        $row->updated_at = Axis_Date::now()->toSQLString();
+        if (empty($row->created_at)) {
+            $row->created_at = $row->updated_at;
         }
-        $row->setFromArray($data);
-        if ($result = $row->save()) {
-            Axis::message()->addSuccess(
-                Axis::translate('admin')->__(
-                    'Profile was saved successfully'
-                )
-            );
-        };
-        return $result;
+        $row->save();
+        
+        return $row;
     }
 
-    public function delete($data)
+    /**
+     *
+     * @param array $where
+     * @return int          The number of rows deleted. 
+     */
+    public function delete($where)
     {
-        $where = $this->getAdapter()->quoteInto('id IN(?)', $data);
-
-        if ($result = parent::delete($where)) {
-            Axis::message()->addSuccess(
-                Axis::translate('admin')->__(
-                    'Profile was deleted successfully'
-                )
-            );
-        };
-        return $result;
+        $where = $this->getAdapter()->quoteInto('id IN(?)', $where);
+        
+        return parent::delete($where);
     }
 }

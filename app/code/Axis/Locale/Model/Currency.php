@@ -296,20 +296,23 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        $data['rate'] = Axis_Locale::getNumber($data['rate']);
         $row = $this->getRow($data);
+        //before save
+        $row->rate = Axis_Locale::getNumber($row->rate);
         if ($row->code === Axis::config('locale/main/currency')
             && $row->rate != 1) {
 
 //            throw new Axis_Exception(
-            Axis::message()->addError(Axis::translate('locale')->__(
-                'Base currency rate should be 1.00'
+            Axis::message()->addError(
+                Axis::translate('locale')->__(
+                    'Base currency rate should be 1.00'
             ));
             $row->rate = 1;
         }
         if (empty($row->format)) {
             $row->format = new Zend_Db_Expr('NULL');
         }
+        //end before save
         $row->save();
         return $row;
     }

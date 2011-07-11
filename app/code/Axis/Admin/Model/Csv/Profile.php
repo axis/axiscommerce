@@ -65,15 +65,8 @@ class Axis_Admin_Model_Csv_Profile extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        $row = false;
-        if (!empty($data['id'])) {
-            $row = $this->find($data['id'])->current();
-        }
-        if (!$row) {
-            unset($data['id']);
-            $row = $this->createRow();
-        }
-        $row->setFromArray($data);
+        $row = $this->getRow($data);
+        //before save
         $row->updated_at = Axis_Date::now()->toSQLString();
         if (empty($row->created_at)) {
             $row->created_at = $row->updated_at;
