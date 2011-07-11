@@ -53,12 +53,12 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         // Attribute filters
         $filterSet['attributes'] = $this->_getAttributeFilters($filters);
 
-//        if ((count($filters) && !$this->hurl->hasParam('cat'))
-//            || (1 < count($filters) && $this->hurl->hasParam('cat'))) { // we don't show categories in filters
+        if ((count($filters) && !$this->hurl->hasParam('cat'))
+            || (1 < count($filters) && $this->hurl->hasParam('cat'))) { // we don't show categories in filters
 
-//            $this->filters = $filterSet;
-//            return true;
-//        }
+            $this->filters = $filterSet;
+            return true;
+        }
 
         foreach($filterSet as $filter) {
             if (count($filter)) {
