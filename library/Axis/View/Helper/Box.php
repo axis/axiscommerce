@@ -37,16 +37,19 @@ class Axis_View_Helper_Box
      * Return the singleton instance of box object
      *
      * @param string $block
+     * @param array $config
      * @return Axis_Core_Box_Abstract
      * @throws Axis_Exception
      */
-    public function box($block)
+    public function box($block, $config = array())
     {
         $block = Axis::getClass($block, 'Box');
-        
+
         if (Zend_Registry::isRegistered($block)) {
-            return Zend_Registry::get($block)->refresh();
+            return Zend_Registry::get($block)
+                ->refresh() // reset previously entered data
+                ->setFromArray($config);
         }
-        return Axis::single($block);
+        return Axis::single($block, $config);
     }
 }
