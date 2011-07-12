@@ -170,16 +170,17 @@ abstract class Axis_Method_Payment_Model_Abstract extends Axis_Method_Abstract
      */
     public function isAllowed($request)
     {
+        // Zend_Debug::dump($request);die;
         if (isset($this->_config->minOrderTotal) &&
             !empty($this->_config->minOrderTotal) &&
-            intval($request['price']) < intval($this->_config->minOrderTotal))
+            $request['price'] < $this->_config->minOrderTotal)
         {
             return false;
         }
 
         if (isset($this->_config->maxOrderTotal) &&
             !empty($this->_config->maxOrderTotal) &&
-            intval($request['price']) > intval($this->_config->maxOrderTotal))
+            $request['price'] > $this->_config->maxOrderTotal)
         {
             return false;
         }

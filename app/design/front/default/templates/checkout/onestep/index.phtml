@@ -41,7 +41,11 @@ Onestep.init({
         shopping_cart   : '<?php echo $this->href('checkout/onestep/update-shopping-cart', true) ?>'
     },
     zones: <?php echo Zend_Json::encode($this->checkout['form_billing_address']->getZones()); ?>,
-    ajax: <?php echo Zend_Json::encode(Axis::config('checkout/onestep_ajax')->toArray()); ?>
+    ajax: <?php echo Zend_Json::encode(Axis::config('checkout/onestep_ajax')->toArray()); ?>,
+    messages: {
+        product_remove_confirm: '<?php echo $this->translate('checkout')->__('Are you sure you want to remove this product from shopping cart?') ?>',
+        request_error: '<?php echo $this->translate('core')->__('An error has been occured during request processing. Try again') ?>'
+    }
 
 });
 </script>
