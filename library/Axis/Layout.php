@@ -126,8 +126,9 @@ class Axis_Layout extends Zend_Layout
         }
 
         $block = $this->getView()->box(
-            "{$conf['box_namespace']}_{$conf['box_module']}/{$conf['box_name']}"
-        )->setFromArray($conf);
+            "{$conf['box_namespace']}_{$conf['box_module']}/{$conf['box_name']}",
+            $conf
+        );
 
         if ($block) {
             return $block->render();
