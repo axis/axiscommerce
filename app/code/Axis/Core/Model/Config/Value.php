@@ -55,36 +55,6 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
     }
 
     /**
-     * Update config value
-     * 
-     * @param array $data
-     * @return Axis_Db_Table_Row
-     */
-    //@TODO MAYBE NOT USE 
-    public function save(array $data)
-    {
-        $row = $this->select()
-            ->where('path = ?', $data['path'])
-            ->fetchRow();
-        
-        if (!$row) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    "Config field '%s' was not found", $data['path']
-            ));
-            return;
-        }
-        $row->value = $data['value'];
-        $row->site_id = isset($data['site_id']) ? $data['site_id'] : 0;
-        $row->save();
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-        ));
-        return $row;
-    }
-    
-    /**
      * Removes config values, and all of it childrens
      * 
      * @param string $path
