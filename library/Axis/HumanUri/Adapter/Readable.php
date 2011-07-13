@@ -156,7 +156,6 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
         }
 
         foreach ($this->getSimpleKeys() as $key) {
-
             if (!empty($options[$key])) {
                 $url .= $key . '=' . $options[$key] . '/';
             } elseif (!$reset
@@ -167,6 +166,6 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
             }
         }
 
-        return str_replace(' ', '+', $url);
+        return str_replace(array(' ', '"'), array('+', '%22'), $url);
     }
 }

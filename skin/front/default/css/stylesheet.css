@@ -1297,6 +1297,18 @@ a.review-stars { outline: none; }
 .onestep-set .btn-submit span span { padding: 15px 0 15px 30px; }
 .onestep-set .btn-submit .icon { background: none; padding: 0; }
 
+.col-product-name {}
+.col-product-price { width: 100px; }
+.col-product-qty { width: 80px; }
+.col-product-final-price { width: 120px; }
+
+.qty-spinner { position: relative; width: 80px; height: 20px; }
+.qty-spinner label { display: none !important; }
+.qty-spinner .input-qty { position: absolute; left: 20px; width: 34px; height: 14px; }
+.qty-spinner .spinner { position: absolute; top: 0; width: 20px; height: 20px; line-height: 10px; font-size: .8em; padding: 0; }
+.qty-spinner .remove { left: 0; }
+.qty-spinner .add { right: 0; }
+
 /* Address */
 .address-row { margin: 0 0 7px 0; }
 .address { padding: 0; }

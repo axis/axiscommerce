@@ -1,6 +1,6 @@
 #nav { font-size: 1em; }
 #nav a {display: block; text-decoration: none; }
-#nav span { font: bold 1em Verdana, Geneva, Arial, Helvetica, sans-serif;  color: #c3cdd4; cursor: default; padding: 10px 10px 7px 8px; display: block; }
+#nav span { font: bold 1em Verdana, Geneva, Arial, Helvetica, sans-serif;  color: #c3cdd4; cursor: default; padding: 10px 10px 7px 8px; display: block; height: 16px; }
 #nav a span { cursor: pointer; }
 #nav span:hover { text-decoration: none; color: #fff; }
 #nav li { float: left; position: relative; color: #c3cdd4; z-index: 10; }
@@ -11,7 +11,7 @@
 
 /*root  level*/
 #nav li a {  }
-#nav li span { background: url(../images/nav.gif) no-repeat 100% -33px; }
+#nav li span { background: url(../images/nav.gif) no-repeat 100% -33px; height: auto; }
 #nav li.submenu > span { padding-right: 19px; background-position: 100% 5px; }
 #nav li.submenu:hover > span { background-position: 100% -71px; }
 

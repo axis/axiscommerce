@@ -48,16 +48,27 @@ class Axis_View_Helper_PaymentForm
             $this->view->payment = Axis_Payment::getMethod($paymentCode);
         }
 
-        $templatePath = $this->view->path . '/app/design/' 
-            . $this->view->area . '/'
-            . $this->view->templateName
-            . '/templates';
+        $shortPath = 'payment'
+            . str_replace('_', '/', strtolower($paymentCode))
+            . '/' . $template . '.phtml';
 
-        $shortPath = 'payment' . str_replace('_', '/', strtolower($paymentCode))
-                   . '/' . $template . '.phtml';
+        $fallbackList = array_unique(array(
+            $this->view->templateName,
+            /* $this->view->defaultTemplate */
+            'fallback',
+            'default'
+        ));
+        foreach ($fallbackList as $fallback) {
+            $templatePath = $this->view->path
+                . '/app/design/'
+                . $this->view->area
+                . '/'
+                . $fallback
+                . '/templates';
 
-        if (is_readable($templatePath . '/' . $shortPath)) {
-            return $this->view->render($shortPath);
+            if (is_readable($templatePath . '/' . $shortPath)) {
+                return $this->view->render($shortPath);
+            }
         }
 
         return '';

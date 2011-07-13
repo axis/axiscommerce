@@ -43,7 +43,7 @@ class Axis_Catalog_Box_Product extends Axis_Catalog_Box_Product_Abstract
         }
 
         if ($this->product instanceof Zend_Db_Table_Row
-            && $this->product->id === $this->product_id) {
+            && $this->product->id == $this->product_id) {
 
             return true;
         }

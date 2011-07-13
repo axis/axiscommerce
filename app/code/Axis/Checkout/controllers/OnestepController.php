@@ -265,12 +265,48 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
     }
 
     /**
-     * Updates shopping cart totals, avaialbe shipping and payment methods
+     * Updates shopping cart totals, available shipping and payment methods
      * Unset shipping and payment methods if needed
      */
     public function updateShoppingCartAction()
     {
-        //
+        $this->_helper->layout->disableLayout();
+
+        $checkout   = $this->_getCheckout();
+        $cart       = Axis::single('checkout/cart');
+        foreach ($this->_getParam('quantity') as $itemId => $quantity) {
+            $cart->updateItem($itemId, $quantity);
+        }
+
+        $shippingMethods = Axis_Shipping::getAllowedMethods(
+            $checkout->getShippingRequest()
+        );
+        $paymentMethods = Axis_Payment::getAllowedMethods(
+            $checkout->getPaymentRequest()
+        );
+        $this->view->checkout = array(
+            'shipping_methods'  => $shippingMethods,
+            'payment_methods'   => $paymentMethods,
+            'products'  => $checkout->getCart()->getProducts(),
+            'totals'    => $checkout->getTotal()->getCollects(),
+            'total'     => $checkout->getTotal()->getTotal()
+        );
+
+        if (!count($this->view->checkout['products'])) {
+            return $this->_helper->json->sendSuccess(array(
+                'redirect' => $this->view->href('checkout/cart', true)
+            ));
+        }
+
+        return $this->_helper->json->sendSuccess(array(
+            'sections' => $this->_renderSections(
+                array(
+                    'shopping-cart',
+                    'shipping-method',
+                    'payment-method'
+                )
+            )
+        ));
     }
 
     /**
@@ -310,7 +346,7 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
                 list($customer, $password) = $modelCustomer->create($userData);
                 $event = true;
                 $customer->setDetails($userData);
-                
+
                 $order->customer_id = $customer->id;
                 $order->save();
                 $modelCustomer->login($userData['email'], $password);
