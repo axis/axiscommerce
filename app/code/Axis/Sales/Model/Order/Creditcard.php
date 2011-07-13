@@ -36,86 +36,14 @@ class Axis_Sales_Model_Order_Creditcard extends Axis_Db_Table
     protected $_name = 'sales_order_creditcard';
 
     /**
-     * Insert or update creditcard order row
      *
-     * @param Axis_CreditCard            $card
-     * @param Axis_Sales_Model_Order_Row $order
-     * @return boolean
+     * @param array $data
+     * @return Axis_Db_Table_Row
      */
-    public function save(Axis_CreditCard $card, Axis_Sales_Model_Order_Row $order)
+    public function save(array $data) 
     {
-        $number = $card->getCcNumber();
-        $ret = true;
-
-        switch (Axis::config("payment/{$order->payment_method_code}/saveCCAction")) {
-            case 'last_four':
-                $number = str_repeat('X', (strlen($number) - 4)) .
-                    substr($number, -4);
-                break;
-            case 'first_last_four':
-                $number = substr($number, 0, 4) .
-                    str_repeat('X', (strlen($number) - 8)) .
-                    substr($number, -4);
-                break;
-            case 'partial_email':
-                $number = substr($number, 0, 4) .
-                    str_repeat('X', (strlen($number) - 8)) .
-                    substr($number, -4);
-
-                // @todo use event
-                try {
-                    $mail = new Axis_Mail();
-                    $mail->setLocale(Axis::config('locale/main/language_admin'));
-                    $configResult = $mail->setConfig(array(
-                        'subject' => Axis::translate('sales')->__(
-                            'Order #%s. Credit card number'
-                        ),
-                        'data'    => array(
-                            'text' => Axis::translate('sales')->__(
-                                'Order #%s, Credit card middle digits: %s',
-                                $order->number,
-                                substr($number, 4, (strlen($number) - 8))
-                            )
-                        ),
-                        'to' => Axis_Collect_MailBoxes::getName(
-                            Axis::config('sales/order/email')
-                        )
-                    ));
-                    $mail->send();
-
-                    if (!$configResult) {
-                        $ret = false;
-                    }
-                } catch (Zend_Mail_Transport_Exception $e) {
-                    $ret = false;
-                }
-                break;
-            case 'complete':
-                $number = $number;
-                break;
-            default:
-                return true;
-        }
-
-        $crypt = Axis_Crypt::factory();
-        $data = array(
-            'cc_type'          => $crypt->encrypt($card->getCcType()),
-            'cc_owner'         => $crypt->encrypt($card->getCcOwner()),
-            'cc_number'        => $crypt->encrypt($number),
-            'cc_expires_year'  => $crypt->encrypt($card->getCcExpiresYear()),
-            'cc_expires_month' => $crypt->encrypt($card->getCcExpiresMonth()),
-            'cc_cvv'           => Axis::config()->payment->{$order->payment_method_code}->saveCvv ?
-                $crypt->encrypt($card->getCcCvv()) : '',
-            'cc_issue_year'    => $crypt->encrypt($card->getCcIssueYear()),
-            'cc_issue_month'   => $crypt->encrypt($card->getCcIssueMonth())
-        );
-
-        if (!$row = $this->find($order->id)->current()) {
-            $row = $this->createRow();
-            $row->order_id = $order->id;
-        }
-        $row->setFromArray($data);
-
-        return $ret && $row->save();
+        $row = $this->getRow($data);
+        $row->save();
+        return $row;
     }
 }

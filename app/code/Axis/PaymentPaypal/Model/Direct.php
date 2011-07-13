@@ -60,8 +60,8 @@ class Axis_PaymentPaypal_Model_Direct extends Axis_PaymentPaypal_Model_Abstract
         $optionsAll = array_merge(
             $options,
             array(
-                'STREET' => $billing->getStreetAddress(),
-                'ZIP'    => $billing->getPostcode(),
+                'STREET'       => $billing->getStreetAddress(),
+                'ZIP'          => $billing->getPostcode(),
                 'BUTTONSOURCE' => $this->_buttonSourceDP,
                 'CURRENCY'     => $this->getBaseCurrencyCode(),
                 'IPADDRESS'    => $_SERVER['REMOTE_ADDR']
