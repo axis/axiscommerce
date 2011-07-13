@@ -125,9 +125,9 @@ function deleteCondition(el)
 //
 function saveBackDiscount()
 {
-    var params = {};
+    var params = {discount: {}};
     if (Discount.id)
-        params.id = Discount.id;
+        params['discount[id]'] = Discount.id;
     Ext.Ajax.request({
         url: Axis.getUrl('discount_index/save'),
         form: 'form-discount',

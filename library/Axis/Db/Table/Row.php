@@ -133,11 +133,30 @@ class Axis_Db_Table_Row extends Zend_Db_Table_Row_Abstract
     public function save()
     {
         try {
-            return parent::save();
+            $this->_preSave();
+            $return = parent::save();
+            $this->_postSave();
+            return $return;
         } catch (Exception $e) {
             Axis::message()->addError($e->getMessage());
             return false;
         }
+    }
+    
+    /**
+     * 
+     */
+    protected function _preSave() 
+    {
+        
+    }
+    
+    /**
+     * 
+     */
+    protected function _postSave() 
+    {
+        
     }
 
     /**

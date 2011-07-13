@@ -50,7 +50,7 @@ $this->setTabs(array(
                 </p>
             </div>
             <?php echo $this->formText(
-                'discountName',
+                'discount[name]',
                 isset($this->discount['name']) ? $this->discount['name'] : null,
                 array('size' => '50')
             );?>
@@ -58,19 +58,19 @@ $this->setTabs(array(
         <p>
             <label><?php echo $this->translate('discount')->__('Status')?></label>
             <?php echo $this->formSelect(
-                'discountIsActive',
+                'discount[is_active]',
                 isset($this->discount['is_active']) ? $this->discount['is_active'] : null,
                 null,
                 array('1' => 'Enabled', '0' => 'Disabled'
             )); ?>
         </p>
         <?php if (isset($this->discount['special']))
-            echo $this->formHidden('discountSpecial', $this->discount['special']);
+            echo $this->formHidden('discount[special]', $this->discount['special']);
          ?>
         <p>
             <label><?php echo $this->translate('core')->__('Sites')?></label>
             <?php echo $this->formSelect(
-                'discountSites[]',
+                'discount[site_ids]',
                 isset($this->discount['site_ids']) ? $this->discount['site_ids'] : null,
                 array('size' => '5'),
                 $this->sites
@@ -79,7 +79,7 @@ $this->setTabs(array(
         <p>
             <label><?php echo $this->translate('discount')->__('Customer Groups')?></label>
             <?php echo $this->formSelect(
-                'discountCustomerGroups[]',
+                'discount[customer_group_ids]',
                 isset($this->discount['customer_group_ids']) ? $this->discount['customer_group_ids'] : null,
                 array('size' => '5'),
                 $this->customerGroups
@@ -88,7 +88,7 @@ $this->setTabs(array(
         <p>
             <label><?php echo $this->translate('discount')->__('From Date')?></label>
             <?php echo $this->formText(
-                'discountFromDate',
+                'discount[from_date]',
                 isset($this->discount['from_date']) ? $this->discount['from_date'] : null,
                 array('class' => 'date-picker')
             );?>
@@ -96,7 +96,7 @@ $this->setTabs(array(
         <p>
             <label><?php echo $this->translate('discount')->__('To Date')?></label>
             <?php echo $this->formText(
-                'discountToDate',
+                'discount[to_date]',
                 isset($this->discount['to_date']) ? $this->discount['to_date'] : null,
                 array('class' => 'date-picker')
             );?>
@@ -104,7 +104,7 @@ $this->setTabs(array(
         <p>
             <label><?php echo $this->translate('discount')->__('Discount Priority')?></label>
             <?php echo $this->formText(
-                'discountPriority',
+                'discount[priority]',
                 isset($this->discount['priority']) ? $this->discount['priority'] : null,
                 array('size' => '50')
             );?>
@@ -112,7 +112,7 @@ $this->setTabs(array(
         <p>
             <label><?php echo $this->translate('discount')->__('Is Combined')?></label>
             <?php echo $this->formSelect(
-                'discountIsCombined',
+                'discount[is_combined]',
                 isset($this->discount['is_combined']) ? $this->discount['is_combined'] : null,
                 null,
                 array('1' => 'Enabled', '0' => 'Disabled'
@@ -121,7 +121,7 @@ $this->setTabs(array(
         <p>
             <label><?php echo $this->translate('discount')->__('Discount type')?></label>
             <?php echo $this->formSelect(
-                'discountOperator',
+                'discount[type]',
                 isset($this->discount['type']) ? $this->discount['type'] : null,
                 null,
                 array(
@@ -134,7 +134,7 @@ $this->setTabs(array(
         <p>
             <label><?php echo $this->translate('discount')->__('Update value')?></label>
             <?php echo $this->formText(
-                'discountAmount',
+                'discount[amount]',
                 isset($this->discount['amount']) ? $this->discount['amount'] : null
             ); ?>
         </p>

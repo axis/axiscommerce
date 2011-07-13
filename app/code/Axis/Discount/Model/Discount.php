@@ -66,120 +66,43 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
 
     /**
      *  Add/update discount
-     *  return discount id
      *
      * @param array $data
-     * @return int
+     * @return Axis_Db_Table_Row
      */
     public function save(array $data)
     {
-        if (!isset($data['id'])
-            || !$row = $this->find($data['id'])->current()) {
-
-            unset($data['id']);
-            $row = $this->createRow();
-            $oldDiscountData = null;
-        } else {
-            $oldDiscountData = $row->toArray();
-            $oldDiscountData['products'] = $row->getApplicableProducts();
-        }
-
-        if (empty($data['discountFromDate'])) {
-            $data['discountFromDate'] = new Zend_Db_Expr('NULL');
-        }
-        if (empty($data['discountToDate'])) {
-            $data['discountToDate'] = new Zend_Db_Expr('NULL');
-        }
-        if (!isset($data['discountPriority'])
-            || empty($data['discountPriority'])) {
-
-            $data['discountPriority'] = 125;
-        }
-        $row->setFromArray(array(
-                'name'          => $data['discountName'],
-                'description'   => '', //@todo
-                'from_date'     => $data['discountFromDate'],
-                'to_date'       => $data['discountToDate'],
-                'is_active'     => $data['discountIsActive'],
-                'type'          => $data['discountOperator'],
-                'amount'        => $data['discountAmount'],
-                'priority'      => $data['discountPriority'],
-                'is_combined'   => $data['discountIsCombined']
-            ))
-            ->save();
-        // ->setSites()->setGroups() 
-        //after save
-        $model = Axis::model('discount/eav');
-        $model->delete('discount_id = ' . $row->id);
-        if (isset($data['discountSites'])) {
-            foreach ($data['discountSites'] as $siteId) {
-                $model->insert(array(
-                    'discount_id' => $row->id,
-                    'entity' => 'site',
-                    'value' => $siteId
-                ));
-            }
-        }
-        if (isset($data['discountCustomerGroups'])) {
-            foreach ($data['discountCustomerGroups'] as $groupId) {
-                $model->insert(array(
-                    'discount_id' => $row->id,
-                    'entity' => 'group',
-                    'value' => $groupId
-                ));
-            }
-        }
-        if (isset($data['discountSpecial'])) {
-            $model->insert(array(
-                'discount_id' => $row->id,
-                'entity' => 'special',
-                'value' => $data['discountSpecial']
-            ));
-        }
-
-        if (!isset($data['condition'])) {
-            $data['condition'] = array();
-        }
-        foreach ($data['condition'] as $conditionType => $subCondition) {
-            if (in_array($conditionType, array('category', 'manufacture', 'productId'))) {
-                foreach ($subCondition as $condition) {
-                    $model->insert(array(
-                        'discount_id' => $row->id,
-                        'entity' => $conditionType,
-                        'value' => $condition
-                    ));
-                }
-            } elseif ($conditionType == 'attribute') {
-                foreach ($subCondition['optionId'] as $id => $optionId) {
-                    $model->insert(array(
-                        'discount_id' => $row->id,
-                        'entity' => 'optionId',
-                        'value' => $optionId
-                    ));
-                    $model->insert(array(
-                        'discount_id' => $row->id,
-                        'entity' => 'option[' . $optionId . ']',
-                        'value' => $subCondition['optionValueId'][$id]
-                    ));
-                }
-            } else {
-                $countCustomCondition = count($subCondition['e-type']);
-                for ($i = 0; $i < $countCustomCondition; $i++) {
-                    $model->insert(array(
-                        'discount_id' => $row->id,
-                        'entity' => $conditionType . '_' . $subCondition['e-type'][$i],
-                        'value' => $subCondition['value'][$i]
-                    ));
-                }
-            }
+        $row = false;
+        if (isset($data['id'])) {
+            $row = $this->find($data['id'])->current();
         }
         
+        if (!$row) {
+            $oldData = null;
+            $row = $this->createRow();
+        } else {
+            $oldData = $row->toArray();
+            $oldData['products'] = $row->getApplicableProducts();
+        }
+        $row->setFromArray($data);
+        
+        if (empty($row->from_date)) {
+            $row->from_date = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->to_date)) {
+            $row->to_date = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->priority)) {
+            $row->priority = 125;
+        }
+        
+        $row->save();
+        
         Axis::dispatch('discount_save_after', array(
-            'old_data' => $oldDiscountData,
+            'old_data' => $oldData,
             'discount' => $row
         ));
-
-        return $row->id;
+        return $row;
     }
 
     /**

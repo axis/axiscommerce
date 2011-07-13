@@ -101,8 +101,8 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
      */
     public function getApplicableProducts()
     {
-        $mDiscountEav = Axis::model('discount/eav');
-        $conditions = $mDiscountEav->select('*')
+        $model = Axis::model('discount/eav');
+        $conditions = $model->select('*')
             ->where('discount_id = ?', $this->id)
             ->fetchAll();
 
@@ -167,11 +167,11 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
                         continue;
                     }
                     $mapping = array(
-                        'equals'    => '=',
-                        'greate'    => '>=',
-                        'less'      => '<=',
-                        'date'      => 'created_on',
-                        'price'     => 'price'
+                        'equals' => '=',
+                        'greate' => '>=',
+                        'less'   => '<=',
+                        'date'   => 'created_on',
+                        'price'  => 'price'
                     );
                     list($attribute, $comparator) = explode('_', $key);
                     foreach ($values as $value) {
@@ -191,4 +191,120 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
 
         return $select->fetchAssoc();
     }
+    
+    
+    /**
+     *
+     * @param mixed $sites
+     * @return Axis_Discount_Model_Discount_Row 
+     */
+    public function setSites($sites) 
+    {
+        $model = Axis::single('discount/eav');
+        
+        if (!is_array($sites)) {
+            $sites = array($sites);
+        }
+        foreach ($sites as $siteId) {
+            $model->insert(array(
+                'discount_id' => $this->id,
+                'entity'      => 'site',
+                'value'       => $siteId
+            ));
+        }
+        return $this;
+    }
+    
+    /**
+     *
+     * @param mixed $groups
+     * @return Axis_Discount_Model_Discount_Row 
+     */
+    public function setCustomerGroups($groups) 
+    {
+        $model = Axis::single('discount/eav');
+        if (!is_array($groups)) {
+            $groups = array($groups);
+        }
+        foreach ($groups as $groupId) {
+            $model->insert(array(
+                'discount_id' => $this->id,
+                'entity'      => 'group',
+                'value'       => $groupId
+            ));
+        }
+        return $this;
+    }    
+    
+    /**
+     *
+     * @param array $special
+     * @return Axis_Discount_Model_Discount_Row 
+     */
+    public function setSpecial($special = true) 
+    {
+        $model = Axis::single('discount/eav');
+        if ($special) {
+            $model->insert(array(
+                'discount_id' => $this->id,
+                'entity'      => 'special',
+                'value'       => 1
+            ));
+        }
+        return $this;
+    }
+    
+    /**
+     *
+     * @param array $conditions
+     * @return Axis_Discount_Model_Discount_Row 
+     */
+    public function setConditions(array $conditions) 
+    {
+        $model = Axis::single('discount/eav');
+        foreach ($conditions as $type => $subs) {
+            
+            switch ($type) {
+                case 'category':
+                case 'manufacture':
+                case 'productId':
+                    foreach ($subs as $condition) {
+                        $model->insert(array(
+                            'discount_id' => $this->id,
+                            'entity'      => $type,
+                            'value'       => $condition
+                        ));
+                    }
+
+                    break;
+                    
+                case 'attribute':
+                    foreach ($subs['optionId'] as $id => $optionId) {
+                        $model->insert(array(
+                            'discount_id' => $this->id,
+                            'entity'      => 'optionId',
+                            'value'       => $optionId
+                        ));
+                        $model->insert(array(
+                            'discount_id' => $this->id,
+                            'entity'      => 'option[' . $optionId . ']',
+                            'value'       => $subs['optionValueId'][$id]
+                        ));
+                    }
+
+                    break;
+
+                default:
+                    for ($i = 0; $i < count($subs['e-type']); $i++) {
+                        $model->insert(array(
+                            'discount_id' => $this->id,
+                            'entity'      => $type . '_' . $subs['e-type'][$i],
+                            'value'       => $subs['value'][$i]
+                        ));
+                    }
+                    break;
+            }
+        }
+        return $this;
+    } 
 }

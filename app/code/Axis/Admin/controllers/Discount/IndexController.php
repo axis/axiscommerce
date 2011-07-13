@@ -141,16 +141,39 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
         $params = $this->_getAllParams();
-        $discountId = Axis::single('discount/discount')->save($params);
-
+        
+        $_row = $this->_getParam('discount', array());
+        $conditions = $this->_getParam('condition', array());
+        $discount = Axis::single('discount/discount')->save($_row);
+        
+        $model = Axis::model('discount/eav');
+        $model->delete('discount_id = ' . $discount->id);
+        
+        $sites = array();
+        if (!empty($_row['site_ids'])) {
+            $sites = $_row['site_ids'];
+        }
+        $groups = array();
+        if (!empty($_row['customer_group_ids'])) {
+            $groups = $_row['customer_group_ids'];
+        }
+        $special = false;
+        if (!empty($_row['special'])) {
+            $special = (bool) $_row['special'];
+        }
+        $discount->setSites($sites)
+            ->setCustomerGroups($groups)
+            ->setSpecial($special)
+            ->setConditions($conditions)
+            ;
         Axis::message()->addSuccess(
             Axis::translate('discount')->__(
-                "Discount '%s' successefull saved", $params['discountName']
+                "Discount '%s' successefull saved", $discount->name
             )
         );
 
         $this->_helper->json->sendSuccess(array(
-            'id' => $discountId
+            'id' => $discount->id
         ));
     }
 
@@ -159,9 +182,9 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
 
         $ids = Zend_Json::decode($this->_getParam('data'));
-        $mDiscount = Axis::model('discount/discount');
+        $model = Axis::model('discount/discount');
 
-        $discounts = $mDiscount->find($ids);
+        $discounts = $model->find($ids);
         foreach ($discounts as $discount) {
             $discountData = $discount->toArray();
             $discountData['products'] = $discount->getApplicableProducts();
