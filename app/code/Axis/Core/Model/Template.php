@@ -60,19 +60,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
      */
     public function save(array $data)
     {
-        $row = false;
-        if (!empty($data['duplicate'])) {
-            $row = $this->duplicate($data['duplicate'], $data['name']);
-            if ($row) {
-                $row->default_layout = $data['default_layout'];
-                $row->save();
-            }
-        }
-
-        if (!$row) {
-            $row = $this->getRow($data);
-                
-        }
+        $row = $this->getRow($data);
         $row->save();
         return $row;
     }
