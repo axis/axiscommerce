@@ -69,9 +69,17 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
-        $data = $this->_getAllParams();
-
-        Axis::single('core/template')->save($data);
+        $data  = $this->_getAllParams();
+        $model = Axis::single('core/template');
+        if (!empty($data['duplicate'])) {
+            $row = $model->duplicate($data['duplicate'], $data['name']);
+            if ($row) {
+                $row->default_layout = $data['default_layout'];
+                $row->save();
+            }
+        } else {
+            $model->save($data);
+        }
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Template was saved successfully'
