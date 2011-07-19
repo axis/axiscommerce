@@ -234,7 +234,9 @@ class Axis_Admin_Sitemap_FileController extends Axis_Admin_Controller_Back
                 }
             }
         }
-        $content = $this->view->navigation()->sitemap($menu)->render();
+        $content = $this->view->navigation()->sitemap($menu)
+            ->setUseSitemapValidators(false)
+            ->render();
 
         $this->getResponse()
             ->clearAllHeaders()
