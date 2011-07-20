@@ -67,6 +67,7 @@ class Axis_Checkout_Model_Total
             }
             $method->collect($this);
         }
+        $this->_recollect = false;
         uasort($this->_collects, array($this, '_sortCollects'));
     }
 
@@ -86,10 +87,9 @@ class Axis_Checkout_Model_Total
 
     public function getCollects()
     {
-        if (null === $this->_collects) {
+        if ($this->_recollect || null === $this->_collects) {
             $this->_runCollects();
         }
-
         return $this->_collects;
     }
 
@@ -121,9 +121,12 @@ class Axis_Checkout_Model_Total
                 $methodName = str_replace('Checkout_', '', $code);
                 $method = $this->getMethod($methodName);
                 if ($method->isEnabled()) {
+                    $resetCollects = (null === $this->_collects);
                     $method->collect($this);
                     $total = $this->_collects[$code]['total'];
-                    $this->_collects = null;
+                    if ($resetCollects) {
+                        $this->_collects = null;
+                    }
                 } else {
                     $total = 0;
                 }
@@ -136,8 +139,10 @@ class Axis_Checkout_Model_Total
             foreach ($this->_collects as $collect) {
                 $total += $collect['total'];
             }
+            if ($total < 0) {
+                $total = 0;
+            }
         }
-        $this->_recollect = false;
         return $total;
     }
 

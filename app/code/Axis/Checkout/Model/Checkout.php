@@ -200,10 +200,9 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
      */
     public function shipping()
     {
-        if (null === $this->_shipping && null !== $this->getShippingMethodCode()) {
-            $this->_shipping = Axis_Shipping::getMethod(
-                $this->getShippingMethodCode()
-            );
+        $code = $this->getShippingMethodCode();
+        if (null === $this->_shipping && null !== $code) {
+            $this->_shipping = Axis_Shipping::getMethod($code);
         }
         return $this->_shipping;
     }
@@ -215,11 +214,9 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
      */
     public function payment()
     {
-        if (null === $this->_payment && null !== $this->getPaymentMethodCode()) {
-
-            $this->_payment = Axis_Payment::getMethod(
-                $this->getPaymentMethodCode()
-            );
+        $code = $this->getPaymentMethodCode();
+        if (null === $this->_payment && null !== $code) {
+            $this->_payment = Axis_Payment::getMethod($code);
         }
         return $this->_payment;
     }
@@ -463,6 +460,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
             );
         }
 
+        $this->_shipping = $method;
         $this->setShippingMethodCode($data['method']);
     }
 
@@ -506,6 +504,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
         }
 
         $this->setPaymentMethodCode($data['method']);
+        $this->_payment = $method;
         $this->payment()->saveData($data);
     }
 
