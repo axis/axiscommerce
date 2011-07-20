@@ -71,12 +71,12 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
 
         $data  = $this->_getAllParams();
         $model = Axis::single('core/template');
-        if (!empty($data['duplicate'])) {
-            $row = $model->duplicate($data['duplicate'], $data['name']);
-            if ($row) {
-                $row->default_layout = $data['default_layout'];
-                $row->save();
-            }
+        if (!empty($data['duplicate']) 
+            &&  $row = $model->duplicate($data['duplicate'], $data['name'])) {
+            
+            $row->default_layout = $data['default_layout'];
+            $row->save();
+            
         } else {
             $model->save($data);
         }
