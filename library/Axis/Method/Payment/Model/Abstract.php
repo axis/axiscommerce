@@ -272,6 +272,7 @@ abstract class Axis_Method_Payment_Model_Abstract extends Axis_Method_Abstract
      */
     public function getTranslator()
     {
-        return Axis::translate('Payment' . current(explode('_', $this->_code)));
+        $codeArray = explode('_', $this->_code);
+        return Axis::translate('Payment' . current($codeArray));
     }
 }
