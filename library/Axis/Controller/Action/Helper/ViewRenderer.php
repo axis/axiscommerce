@@ -129,11 +129,13 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         }
         
         $this->_initVars();
+        $this->_initScriptPaths();
+        $this->_initDefaults();
     }
     
     protected function _initVars() 
     {
-//        return;
+        $view  = $this->view;
         $request = $this->getRequest();
         if (Axis_Area::isBackend()) {
             $templateId = Axis::config('design/main/adminTemplateId');
@@ -144,12 +146,12 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $theme = Axis::single('core/template')->getTemplateNameById($templateId);
         $systemPath = Axis::config('system/path');
 
-        $this->view->templateName = $theme;
-        $this->view->path         = $systemPath;
-        $this->view->area = $area = Axis_Area::getArea();
+        $view->templateName = $theme;
+        $view->path         = $systemPath;
+        $view->area = $area = Axis_Area::getArea();
         list($namespace, $module) = explode('_', $request->getModuleName(), 2);
-        $this->view->namespace    = $namespace;
-        $this->view->moduleName   = $module;
+        $view->namespace    = $namespace;
+        $view->moduleName   = $module;
         
 
         $currentUrl = $request->getScheme() . '://'
@@ -158,15 +160,23 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
 
         $site = Axis::getSite();
 
-        $this->view->baseUrl      = $site ?
+        $view->baseUrl      = $site ?
             $site->base : $this->getFrontController()->getBaseUrl();
-        $this->view->secureUrl    = $site ? $site->secure : $this->view->baseUrl;
-        $this->view->resourceUrl  = (0 === strpos($currentUrl, $this->view->secureUrl)) ?
-            $this->view->secureUrl : $this->view->baseUrl;
-        $this->view->catalogUrl   = Axis::config('catalog/main/route');
-
+        $view->secureUrl    = $site ? $site->secure : $view->baseUrl;
+        $view->resourceUrl  = (0 === strpos($currentUrl, $view->secureUrl)) ?
+            $view->secureUrl : $view->baseUrl;
+        $view->catalogUrl   = Axis::config('catalog/main/route');
+    }
+    
+    protected function _initScriptPaths()
+    {
         //@TODO every template shoud have own defaults
         //$view->defaultTemplate = 'default';
+
+        $view  = $this->view;
+        $path  = $view->path;
+        $area  = $view->area;
+        $theme = $view->templateName;
 
         if (Axis_Area::isFrontend()) {
             $modulePath = strtolower($module);
@@ -178,18 +188,18 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
             }
         }
 
-        $this->view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
-        $this->view->addHelperPath(
+        $view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
+        $view->addHelperPath(
             str_replace('_', '/', 'Zend_View_Helper_Navigation'),
             'Zend_View_Helper_Navigation'
         );
 
-        $this->view->addHelperPath(
+        $view->addHelperPath(
             $systemPath . '/library/Axis/View/Helper/Navigation',
             'Axis_View_Helper_Navigation'
         );
-        $this->view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
-        $this->view->setScriptPath(array());
+        $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
+        $view->setScriptPath(array());
 
         $themes = array_unique(array(
             $theme,
@@ -200,28 +210,32 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         foreach (array_reverse($themes) as $_theme) {
             $themePath = $systemPath . '/app/design/' . $area . '/' . $_theme;
             if (is_readable($themePath . '/helpers')) {
-                $this->view->addHelperPath($themePath . '/helpers', 'Axis_View_Helper');
+                $view->addHelperPath($themePath . '/helpers', 'Axis_View_Helper');
             }
             if (is_readable($themePath . '/templates')) {
-                $this->view->addScriptPath($themePath . '/templates');
-                $this->view->addScriptPath($themePath . '/templates/' . $modulePath);
+                $view->addScriptPath($themePath . '/templates');
+                $view->addScriptPath($themePath . '/templates/' . $modulePath);
             }
             if (is_readable($themePath . '/layouts')) {
-                $this->view->addScriptPath($themePath . '/layouts');
+                $view->addScriptPath($themePath . '/layouts');
             }
         }
-
+    }
+    
+    protected function _initDefaults()
+    {
+        $view = $this->view;
         // setting default meta tags
-        $this->view->meta()->setDefaults();
+        $view->meta()->setDefaults();
 
-        $this->view->doctype('XHTML1_STRICT');
+        $view->doctype('XHTML1_STRICT');
 
-        $this->view->setEncoding('UTF-8');
+        $view->setEncoding('UTF-8');
         
         //@todo move this code (where?)
         $layout = Axis_Layout::getMvcInstance();
 
-        $layout->setView($this->view)->setLayoutPath(
+        $layout->setView($view)->setLayoutPath(
             $systemPath . '/app/design/' . $area . '/' . $theme . '/layouts'
         );
      }
