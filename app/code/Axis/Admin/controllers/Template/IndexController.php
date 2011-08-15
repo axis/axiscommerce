@@ -76,7 +76,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             
             $row->default_layout = $data['default_layout'];
             $row->save();
-            
+
         } else {
             $model->save($data);
         }
