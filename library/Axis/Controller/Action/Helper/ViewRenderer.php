@@ -121,7 +121,7 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $this->_setOptions($options);
 
         $this->_autoAddBasePaths($path, $prefix);
-
+        
         // Register view with action controller (unless already registered)
         if ((null !== $this->_actionController) && (null === $this->_actionController->view)) {
             $this->_actionController->view       = $this->view;
@@ -143,15 +143,11 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
             $templateId = Axis::config('design/main/frontTemplateId');
         }
 
-        $theme = Axis::single('core/template')->getTemplateNameById($templateId);
-        $systemPath = Axis::config('system/path');
-
-        $view->templateName = $theme;
-        $view->path         = $systemPath;
-        $view->area = $area = Axis_Area::getArea();
-        list($namespace, $module) = explode('_', $request->getModuleName(), 2);
-        $view->namespace    = $namespace;
-        $view->moduleName   = $module;
+        $view->templateName = Axis::single('core/template')->getTemplateNameById($templateId);
+        $view->path         = Axis::config('system/path');
+        $view->area         = Axis_Area::getArea();
+        
+        list($view->namespace, $view->moduleName) = explode('_', $request->getModuleName(), 2);
         
 
         $currentUrl = $request->getScheme() . '://'
@@ -172,34 +168,30 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
     {
         //@TODO every template shoud have own defaults
         //$view->defaultTemplate = 'default';
-
         $view  = $this->view;
         $path  = $view->path;
         $area  = $view->area;
         $theme = $view->templateName;
-
+        
         if (Axis_Area::isFrontend()) {
-            $modulePath = strtolower($module);
+            $modulePath = strtolower($view->moduleName);
         } else {
-            $controller = $request->getControllerName();
+            $controllerName = $this->getRequest()->getControllerName();
             $modulePath = 'core';
-            if (strpos($controller, '_')) {
-                list($modulePath) = explode('_', $controller);
+            if (strpos($controllerName, '_')) {
+                list($modulePath) = explode('_', $controllerName);
             }
         }
 
-        $view->addFilterPath($systemPath . '/library/Axis/View/Filter', 'Axis_View_Filter');
-        $view->addHelperPath(
-            str_replace('_', '/', 'Zend_View_Helper_Navigation'),
-            'Zend_View_Helper_Navigation'
-        );
-
-        $view->addHelperPath(
-            $systemPath . '/library/Axis/View/Helper/Navigation',
-            'Axis_View_Helper_Navigation'
-        );
-        $view->addHelperPath($systemPath . '/library/Axis/View/Helper', 'Axis_View_Helper');
-        $view->setScriptPath(array());
+        $view->addFilterPath(
+                $path . '/library/Axis/View/Filter', 'Axis_View_Filter'
+            )->addHelperPath(
+                'Zend/View/Helper/Navigation', 'Zend_View_Helper_Navigation'
+            )->addHelperPath(
+                $path . '/library/Axis/View/Helper/Navigation', 'Axis_View_Helper_Navigation'
+            )->addHelperPath(
+                $path . '/library/Axis/View/Helper', 'Axis_View_Helper'
+            )->setScriptPath(array());
 
         $themes = array_unique(array(
             $theme,
@@ -208,7 +200,7 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
             'default'
         ));
         foreach (array_reverse($themes) as $_theme) {
-            $themePath = $systemPath . '/app/design/' . $area . '/' . $_theme;
+            $themePath = $path . '/app/design/' . $area . '/' . $_theme;
             if (is_readable($themePath . '/helpers')) {
                 $view->addHelperPath($themePath . '/helpers', 'Axis_View_Helper');
             }
@@ -221,7 +213,7 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
             }
         }
     }
-    
+
     protected function _initDefaults()
     {
         $view = $this->view;
@@ -231,12 +223,5 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $view->doctype('XHTML1_STRICT');
 
         $view->setEncoding('UTF-8');
-        
-        //@todo move this code (where?)
-        $layout = Axis_Layout::getMvcInstance();
-
-        $layout->setView($view)->setLayoutPath(
-            $systemPath . '/app/design/' . $area . '/' . $theme . '/layouts'
-        );
-     }
+    }
 }

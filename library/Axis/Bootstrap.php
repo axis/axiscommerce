@@ -353,9 +353,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 
         $jsonActionHelper = new Axis_Controller_Action_Helper_Json();
         Zend_Controller_Action_HelperBroker::addHelper($jsonActionHelper);
-        
-        $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_View($view), 50);
 
         return $view;
     }
