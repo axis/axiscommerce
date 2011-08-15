@@ -33,17 +33,11 @@
  */
 class Axis_Admin_InformerController extends Axis_Admin_Controller_Back
 {
-    public function init()
+    public function accessDeniedAction()
     {
-        $this->_disableAcl = true;
-        parent::init();
-    }
-    
-	public function accessDeniedAction()
-	{
-		$this->view->pageTitle = Axis::translate('admin')->__(
+        $this->view->pageTitle = Axis::translate('admin')->__(
             'Access Denied'
         );
-		$this->render();
-	}
+        $this->render();
+    }
 }

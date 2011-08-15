@@ -33,21 +33,15 @@
  */
 class Axis_Admin_Model_Acl extends Zend_Acl
 {
-    private $_rescs;
+    private $_cachedResources;
 
     public function __construct()
     {
-        $this->_loadResources();
-    }
-
-    protected function _loadResources()
-    {
         foreach ($this->_getResources() as $resource) {
+            $parentId = null;
             if (false !== ($pos = strrpos($resource['resource_id'], '/'))) {
                 $parentId = substr($resource['resource_id'], 0, $pos);
-            } else {
-                $parentId = null;
-            }
+            } 
             try {
                 $this->add(new Zend_Acl_Resource($resource['resource_id']), $parentId);
             } catch (Zend_Acl_Exception $e) {
@@ -69,23 +63,22 @@ class Axis_Admin_Model_Acl extends Zend_Acl
         } else {
             $roleId = (string) $role;
         }
-        $this->addRoleRecursive($role);
+        $this->_addRoleRecursive($role);
 
-        $rolesForLoad = Axis::single('admin/acl_role')->getAllParents($roleId);
-        $rolesForLoad[] = $roleId;
-
-        $stmt = Axis::single('admin/acl_rule')
+        $roles = Axis::single('admin/acl_role')->getAllParents($roleId);
+        $roles[] = $roleId;
+        
+        $rules = Axis::single('admin/acl_rule')
             ->select('*')
-            ->where('role_id IN(?)', $rolesForLoad)
-            ->query()
+            ->where('role_id IN(?)', $roles)
+            ->fetchRowset()
             ;
-
-        while ($row = $stmt->fetch()) {
-            if ($row['permission'] == 'allow') {
-                $this->allow($row['role_id'], $row['resource_id']);
-            } elseif ($row['permission'] == 'deny') {
-                $this->deny($row['role_id'], $row['resource_id']);
-            }
+        foreach ($rules as $rule) {
+            $action = 'deny';
+            if ('allow' === $rule->permission) {
+                $action = 'allow';
+            } 
+            $this->$action($rule->role_id, $rule->resource_id);
         }
     }
 
@@ -94,7 +87,7 @@ class Axis_Admin_Model_Acl extends Zend_Acl
      *
      * @param Zend_Acl_Role_Interface|string $role
      */
-    public function addRoleRecursive($role)
+    protected function _addRoleRecursive($role)
     {
         if ($role instanceof Zend_Acl_Role_Interface) {
             $roleId = $role->getRoleId();
@@ -105,7 +98,7 @@ class Axis_Admin_Model_Acl extends Zend_Acl
         $rolesTree = Axis::single('admin/acl_role')->getRolesTree();
         if (isset($rolesTree[$roleId]['parents'])) {
             foreach ($rolesTree[$roleId]['parents'] as $parentRoleId) {
-                $this->addRoleRecursive($parentRoleId);
+                $this->_addRoleRecursive($parentRoleId);
             }
         }
         if (!$this->hasRole($roleId))
@@ -123,8 +116,8 @@ class Axis_Admin_Model_Acl extends Zend_Acl
      */
     protected function _getResources()
     {
-        if (null === $this->_rescs
-            && !$this->_rescs = Axis::cache()->load('axis_acl_resources')) {
+        if (null === $this->_cachedResources
+            && !$this->_cachedResources = Axis::cache()->load('axis_acl_resources')) {
 
             $resources = Axis::single('admin/acl_resource')->select()->fetchAll();
             // ORDER BY is not working correctly with some mysql installations
@@ -132,9 +125,9 @@ class Axis_Admin_Model_Acl extends Zend_Acl
             Axis::cache()->save(
                 $resources, 'axis_acl_resources', array('modules')
             );
-            $this->_rescs = $resources;
+            $this->_cachedResources = $resources;
         }
-        return $this->_rescs;
+        return $this->_cachedResources;
     }
 
     /**
@@ -185,5 +178,26 @@ class Axis_Admin_Model_Acl extends Zend_Acl
         $this->removeRole('tmp');
 
         return $allows;
+    }
+    
+    /**
+     * @param int $role
+     * @param string $resource
+     * @return bool 
+     */
+    public function check($role, $resource) 
+    {
+        $resourceIds = explode('/', $resource);
+        while (count($resourceIds)) {
+            $resourceId = implode('/', $resourceIds);
+            if ($this->has($resourceId)) {
+                if (!$this->isAllowed($role, $resourceId)) {
+                    break;
+                } 
+                return true;
+            }
+            array_pop($resourceIds);
+        }
+        return false;
     }
 }

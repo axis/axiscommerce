@@ -34,24 +34,6 @@
  */
 abstract class Axis_Admin_Controller_Back extends Axis_Controller_Action
 {
-    /**
-     * Acl
-     * @var Axis_Acl
-     */
-    public $acl;
-
-    /**
-     *
-     * @var bool
-     */
-    protected $_disableAuth = false;
-
-    /**
-     *
-     * @var bool
-     */
-    protected $_disableAcl  = false;
-
     public function init()
     {
         parent::init();
@@ -59,19 +41,11 @@ abstract class Axis_Admin_Controller_Back extends Axis_Controller_Action
         $this->view->adminUrl = '/' . trim(
             Axis::config('core/backend/route'), '/ '
         );
-
-        Zend_Auth::getInstance()->setStorage(
-            new Zend_Auth_Storage_Session('admin')
-        );
-
-        $this->acl = Axis::single('admin/acl');
-        if (!empty(Axis::session()->roleId)) {
-            $this->acl->loadRules(Axis::session()->roleId);
-        }
     }
 
     public function preDispatch()
     {
+        //@todo move this code in action helper
         $request = $this->getRequest();
         $currentUrl = $request->getScheme() . '://'
             . $request->getHttpHost()
@@ -85,96 +59,6 @@ abstract class Axis_Admin_Controller_Back extends Axis_Controller_Action
             parent::_redirect($this->view->secureUrl . $requestUri, array(), false);
             die();
         }
-
-        $this->auth();
-        $this->checkPermission();
-    }
-
-    public function auth()
-    {
-        if ($this->_disableAuth) {
-            return;
-        }
-        if (!Zend_Auth::getInstance()->hasIdentity()) {
-            if ($this->getRequest()->isXmlHttpRequest()) {
-                Axis::message()->addError(
-                    Axis::translate('admin')->__(
-                        'Your session has been expired. Please relogin'
-                    )
-                );
-
-                $this->_helper->json->sendFailure();
-                return;
-                // Zend_Controller_Action_Helper_Json if $suppressExit = true;
-            }
-            $this->_forward('index', 'auth', 'Axis_Admin');
-        } elseif (!Axis::single('admin/user')->find(
-                Zend_Auth::getInstance()->getIdentity())->current()) {
-            $this->view->action('logout', 'auth', 'Axis_Admin');
-        }
-    }
-
-    public function checkPermission()
-    {
-        if ($this->_disableAcl) {
-            return true;
-        }
-
-        $request = $this->getRequest();
-
-        $action = $request->getActionName();
-        //$controller = str_replace('_', '/', $request->getControllerName());
-        $controller = $request->getControllerName();
-        $role = Axis::session()->roleId;
-        $resourceIds = explode('/', "admin/$controller/$action");
-        // admin is the name of parent resource_id
-
-        while (count($resourceIds)) {
-            $resourceId = implode('/', $resourceIds);
-            if ($this->acl->has($resourceId)) {
-                if ($this->acl->isAllowed($role, $resourceId)) {
-                    return true;
-                } else {
-                    break;
-                }
-            }
-            array_pop($resourceIds);
-        }
-
-        if ($request->isXmlHttpRequest()) {
-            Axis::message()->addError(
-                Axis::translate('admin')->__(
-                    'You have no permission for this operation'
-                )
-            );
-
-            $this->_helper->json->sendFailure();
-            return;
-            // Zend_Controller_Action_Helper_Json if $suppressExit = true;
-        }
-
-        $this->_forward('access-denied', 'informer', 'Axis_Admin');
-        return false;
-    }
-
-    /**
-     * Set "actionName to aclResource" assignment
-     *
-     * Assignment used for auto-checkPermission in preDispatch method
-     *
-     * Use this method in init() method
-     *
-     * Example:
-     * setActionToAclAssignment(array(
-     *  'index' => 'admin/site/view',
-     *  'edit'  => 'admin/site/edit'
-     * ))
-     *
-     * @param array
-     */
-    public function setActionToAclAssignment($assignment)
-    {
-        $this->_aclAssignment = $assignment;
     }
 
     /**

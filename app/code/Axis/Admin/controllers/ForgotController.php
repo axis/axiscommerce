@@ -33,13 +33,6 @@
  */
 class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
 {
-    public function init()
-    {
-        $this->_disableAcl  = true;
-        $this->_disableAuth = true;
-        parent::init();
-    }
-
     protected function _generatePassword()
     {
         mt_srand((double)microtime(1)*1000000);

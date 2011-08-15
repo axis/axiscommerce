@@ -311,6 +311,17 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Area(), 20);
     }
+    
+    protected function _initAuth()
+    {
+        $this->bootstrap('Area');
+        
+        $jsonHelper = new Axis_Controller_Action_Helper_Json();
+        Zend_Controller_Action_HelperBroker::addHelper($jsonHelper);
+        
+        $front = $this->getResource('FrontController');
+        $front->registerPlugin(new Axis_Controller_Plugin_Auth(), 30);
+    }
 
     protected function _initLocale()
     {
@@ -329,7 +340,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         //set locale
         $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 30);
+        $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 40);
     }
 
     protected function _initView()
@@ -344,7 +355,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
 
         $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_View($view), 40);
+        $front->registerPlugin(new Axis_Controller_Plugin_View($view), 50);
 
         return $view;
     }

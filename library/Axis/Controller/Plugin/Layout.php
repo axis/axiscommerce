@@ -74,6 +74,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
         }
         return false;
     }
+    
     protected function _initPages()
     {
         $request = $this->getRequest();

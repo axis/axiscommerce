@@ -91,6 +91,10 @@ class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
             $row->is_active = false;
             $row->is_active = !empty($_row['is_active']);
             
+            $row->modified = Axis_Date::now()->toSQLString();
+            if (empty($row->created)) {
+                $row->created = $row->modified;
+            }
             $row->save();
         }
 

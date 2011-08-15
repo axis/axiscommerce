@@ -42,10 +42,6 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $this->db = Axis::db();
 
         $this->layout = Axis_Layout::getMvcInstance();
-
-        //backend $this->_helper->removeHelper('json');
-        $this->_helper->addHelper(new Axis_Controller_Action_Helper_Json());
-
     }
 
     /**

@@ -56,20 +56,4 @@ class Axis_Admin_Model_User extends Axis_Db_Table
         }
         return $select->fetchCol();
     }
-    
-    public function update(array $data, $where)
-    {
-        if (empty($data['modified'])) {
-            $data['modified'] = Axis_Date::now()->toSQLString();
-        }
-        return parent::update($data, $where);
-    }
-    
-    public function insert(array $data)
-    {
-        if (empty($data['created'])) {
-            $data['created'] = Axis_Date::now()->toSQLString();
-        }
-        return parent::insert($data);
-    }
 }

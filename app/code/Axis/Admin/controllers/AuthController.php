@@ -33,13 +33,6 @@
  */
 class Axis_Admin_AuthController extends Axis_Admin_Controller_Back
 {
-    public function init()
-    {
-        $this->_disableAcl  = true;
-        $this->_disableAuth = true;
-        parent::init();
-    }
-
     public function indexAction()
     {
         if (Zend_Auth::getInstance()->hasIdentity()) {
