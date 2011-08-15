@@ -314,10 +314,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initAuth()
     {
-        $this->bootstrap('Area');
-        
-        $jsonHelper = new Axis_Controller_Action_Helper_Json();
-        Zend_Controller_Action_HelperBroker::addHelper($jsonHelper);
+        $this->bootstrap('View');
         
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Auth(), 30);
@@ -353,7 +350,10 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             ->setView($view)
             ->autoAddBasePaths(false);
         Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
-
+                
+        $jsonActionHelper = new Axis_Controller_Action_Helper_Json();
+        Zend_Controller_Action_HelperBroker::addHelper($jsonActionHelper);
+        
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_View($view), 50);
 
