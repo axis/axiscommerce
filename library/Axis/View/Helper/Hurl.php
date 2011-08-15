@@ -46,7 +46,9 @@ class Axis_View_Helper_Hurl
         
         $locale = isset($options['locale']) ?
             $options['locale'] : Axis_Locale::getLanguageUrl();
-        
+        if (!empty ($locale)) {
+            $locale = '/' . $locale;
+        }
         return $baseUrl
             . $locale . '/'
             . Axis::config('catalog/main/route')
