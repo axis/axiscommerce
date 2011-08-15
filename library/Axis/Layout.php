@@ -107,7 +107,6 @@ class Axis_Layout extends Zend_Layout
                 }
             } else {
                 $blockContent = $this->_getBlockContent($_config);
-                $sortOrder = $_config['sort_order'];
             }
 
             if ($_config['sort_order'] < 0) {

@@ -361,9 +361,16 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap('View');
         $layout = Axis_Layout::startMvc();
+        
+        $view = $this->getResource('View');
+        $layout->setView($view);        
+        
         $front = $this->getResource('FrontController');
         $front->unregisterPlugin('Zend_Layout_Controller_Plugin_Layout');
         $front->registerPlugin(new Axis_Controller_Plugin_Layout($layout), 99);
+        
+        $layoutActionHelper = new Axis_Controller_Action_Helper_Layout($layout);
+        Zend_Controller_Action_HelperBroker::addHelper($layoutActionHelper);
 
         return $layout;
     }
