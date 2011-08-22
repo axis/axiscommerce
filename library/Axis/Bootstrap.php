@@ -271,6 +271,17 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap('Cache');
         $router = new Axis_Controller_Router_Rewrite();
+        
+        // pre router config
+        $defaultLocale = Axis_Locale::getDefaultLocale();
+        $locales = Axis_Locale::getLocaleList();
+        
+        Axis_Controller_Router_Route::setDefaultLocale($defaultLocale);
+        Axis_Controller_Router_Route::setLocales($locales);
+
+//        Axis_Controller_Router_Route_Module::setDefaultLocale($defaultLocale);
+//        Axis_Controller_Router_Route_Module::setLocales($locales);
+        
         // include routes files
         $routeFiles = Axis::app()->getRoutes();
         foreach ($routeFiles as $routeFile) {
@@ -323,19 +334,10 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initLocale()
     {
         $this->bootstrap('Area');
-        $defaultLocale = Axis_Locale::getDefaultLocale();
-        $locales = Axis_Locale::getLocaleList();
 
         //set default timezone affect on date() and Axis_Date
         Axis_Locale::setTimezone(Axis_Locale::getDefaultTimezone());
-        // pre router config
-        Axis_Controller_Router_Route::setDefaultLocale($defaultLocale);
-        Axis_Controller_Router_Route::setLocales($locales);
 
-        Axis_Controller_Router_Route_Module::setDefaultLocale($defaultLocale);
-        Axis_Controller_Router_Route_Module::setLocales($locales);
-
-        //set locale
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 40);
     }
