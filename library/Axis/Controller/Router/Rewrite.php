@@ -97,4 +97,18 @@ class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
         }
         return $this->_routes;
     }
+    
+    /**
+     * Find a matching route to the current PATH_INFO and inject
+     * returning values to the Request object.
+     *
+     * @throws Zend_Controller_Router_Exception
+     * @return Zend_Controller_Request_Abstract Request object
+     */
+    public function route(Zend_Controller_Request_Abstract $request)
+    {
+        //sort routes
+        $this->sortRoutes();
+        return parent::route($request);
+    }
 }

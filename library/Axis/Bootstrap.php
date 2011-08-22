@@ -289,7 +289,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         $router->removeDefaultRoutes();
-        $router->sortRoutes();
 
         if (!($router instanceof Axis_Controller_Router_Rewrite)) {
             throw new Axis_Exception('Incorrect routes');
