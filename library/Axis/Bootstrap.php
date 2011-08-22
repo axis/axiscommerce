@@ -267,9 +267,26 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return Axis::cache();
     }
 
-    protected function _initRouter()
+    protected function _initFrontController()
     {
         $this->bootstrap('Cache');
+        $front = Zend_Controller_Front::getInstance();
+
+//        $front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
+//        $front->throwExceptions(false);
+        $front->setDefaultModule('Axis_Core');
+        $front->setControllerDirectory(Axis::app()->getControllers());
+//        $front->setParam('noViewRenderer', true);
+        $front->registerPlugin(
+            new Axis_Controller_Plugin_ErrorHandler_Override(), 10
+        );
+
+        return $front; // this is *VERY* important
+    }
+    
+    protected function _initRouter()
+    {
+        $this->bootstrap('FrontController');
         $router = new Axis_Controller_Router_Rewrite();
         
         // pre router config
@@ -293,43 +310,18 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         if (!($router instanceof Axis_Controller_Router_Rewrite)) {
             throw new Axis_Exception('Incorrect routes');
         }
-        return $router;
-    }
-
-    protected function _initFrontController()
-    {
-        $this->bootstrap('Router');
-        $front = Zend_Controller_Front::getInstance();
-
-        $router = $this->getResource('Router');
+        $front = $this->getResource('FrontController');
         $front->setRouter($router);
-//        $front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
-//        $front->throwExceptions(false);
-        $front->setDefaultModule('Axis_Core');
-        $front->setControllerDirectory(Axis::app()->getControllers());
-//        $front->setParam('noViewRenderer', true);
-        $front->registerPlugin(
-            new Axis_Controller_Plugin_ErrorHandler_Override(), 10
-        );
-
-        return $front; // this is *VERY* important
+        return $router;
     }
 
     protected function _initArea()
     {
-        $this->bootstrap('FrontController');
+        $this->bootstrap('Router');
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Area(), 20);
     }
     
-    protected function _initAuth()
-    {
-        $this->bootstrap('View');
-        
-        $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_Auth(), 30);
-    }
-
     protected function _initLocale()
     {
         $this->bootstrap('Area');
@@ -356,6 +348,14 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Controller_Action_HelperBroker::addHelper($jsonActionHelper);
 
         return $view;
+    }
+    
+    protected function _initAuth()
+    {
+        $this->bootstrap('View');
+        
+        $front = $this->getResource('FrontController');
+        $front->registerPlugin(new Axis_Controller_Plugin_Auth(), 30);
     }
 
     protected function _initLayout()
