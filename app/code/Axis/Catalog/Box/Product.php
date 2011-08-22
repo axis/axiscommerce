@@ -38,7 +38,7 @@ class Axis_Catalog_Box_Product extends Axis_Catalog_Box_Product_Abstract
 
     protected function _beforeRender()
     {
-        if (!$this->product_id) {
+        if (!$this->product_id = $this->_getProductId()) {
             return false;
         }
 

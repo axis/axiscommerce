@@ -36,28 +36,28 @@ abstract class Axis_Catalog_Box_Product_Abstract extends Axis_Core_Box_Abstract
 {
     protected function _getProductId()
     {
-        $productId = $this->product_id;
-        if (is_numeric($productId)){
-            return $productId;
-        }
-        $_hurl = Axis_HumanUri::getInstance();
-        if ($_hurl->hasParam('product') && ($productId = $_hurl->getParamValue('product'))) {
-            return $productId;
-        }
-        return Zend_Controller_Front::getInstance()->getRequest()->getParam('product', 0);
-    }
+        $productId = $this->product_id; // received from box configuration
 
-    public function init()
-    {
-        $this->product_id = $this->_getProductId();
+        if (!is_numeric($productId)) {
+            $_hurl = Axis_HumanUri::getInstance();
+            if ($_hurl->hasParam('product')) {
+                $productId = $_hurl->getParamValue('product');
+            }
+        }
+        if (!is_numeric($productId)) {
+            $productId = Zend_Controller_Front::getInstance()
+                ->getRequest()
+                ->getParam('product', 0);
+        }
 
         if (Zend_Registry::isRegistered('catalog/current_product')) {
             $product = Zend_Registry::get('catalog/current_product');
-            if (!$this->product_id || $product->id == $this->product_id) {
+            if (!$productId || $product->id == $productId) {
                 $this->product = $product;
             }
         }
-        return true;
+
+        return $productId;
     }
 
     public function getConfigurationFields()
