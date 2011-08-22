@@ -64,6 +64,11 @@ class ErrorController extends Axis_Core_Controller_Front
                 //return $this->notFoundAction();
             default:
                 // application error
+                Zend_Debug::dump(Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName());
+                Zend_Debug::dump(Axis_Area::isBackend());
+                Zend_Debug::dump($exception->getMessage());
+                Zend_Debug::dump($exception->getTraceAsString());
+                return;
                 $this->_helper->layout->setLayout('layout_error'); // hardcoded layout for application errors
                 $this->getResponse()->setHttpResponseCode(500);
                 $this->view->pageTitle = Axis::translate('core')->__(

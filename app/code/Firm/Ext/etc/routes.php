@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * Axis
  * 
@@ -18,24 +18,24 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @category    Axis
- * @package     Axis_Account
+ * @package     Axis_Tag
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('account', new Axis_Controller_Router_Route(
-    'account/:controller/:action/*',
+$router->addRoute('ext', new Axis_Controller_Router_Route(
+    'ext/:controller/:action/*',
     array(
-        'module' => 'Axis_Account',
+        'module' => 'Firm_Ext',
         'controller' => 'index',
         'action' => 'index'
     )
 ));
 
-$router->addRoute('admin/account', new Axis_Controller_Router_Route_Back(
-    'admin/account/:controller/:action/*',
+$router->addRoute('admin/ext', new Axis_Controller_Router_Route_Back(
+    'admin/ext/:controller/:action/*',
     array(
-        'module' => 'Axis_Account',
+        'module' => 'Firm_Ext',
         'controller' => 'index',
         'action' => 'index'
     )
-), 'admin');
+));

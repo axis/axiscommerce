@@ -18,24 +18,15 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @category    Axis
- * @package     Axis_Account
+ * @package     Axis_Tag
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('account', new Axis_Controller_Router_Route(
-    'account/:controller/:action/*',
-    array(
-        'module' => 'Axis_Account',
-        'controller' => 'index',
-        'action' => 'index'
+$config = array(
+    'Firm_Ext' => array(
+        'package' => 'Firm_Ext',
+        'name' => 'Ext',
+        'version' => '0.0.1',
+        'required' => 0
     )
-));
-
-$router->addRoute('admin/account', new Axis_Controller_Router_Route_Back(
-    'admin/account/:controller/:action/*',
-    array(
-        'module' => 'Axis_Account',
-        'controller' => 'index',
-        'action' => 'index'
-    )
-), 'admin');
+);

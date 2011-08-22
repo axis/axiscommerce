@@ -296,9 +296,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Axis_Controller_Router_Route::setDefaultLocale($defaultLocale);
         Axis_Controller_Router_Route::setLocales($locales);
 
-//        Axis_Controller_Router_Route_Module::setDefaultLocale($defaultLocale);
-//        Axis_Controller_Router_Route_Module::setLocales($locales);
-        
         // include routes files
         $routeFiles = Axis::app()->getRoutes();
         foreach ($routeFiles as $routeFile) {
@@ -312,19 +309,13 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
         $front = $this->getResource('FrontController');
         $front->setRouter($router);
+        
         return $router;
-    }
-
-    protected function _initArea()
-    {
-        $this->bootstrap('Router');
-        $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_Area(), 20);
     }
     
     protected function _initLocale()
     {
-        $this->bootstrap('Area');
+        $this->bootstrap('FrontController');
 
         //set default timezone affect on date() and Axis_Date
         Axis_Locale::setTimezone(Axis_Locale::getDefaultTimezone());
@@ -335,7 +326,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     protected function _initView()
     {
-        $this->bootstrap('Area');
+        $this->bootstrap('FrontController');
         $view = new Zend_View();
         $viewRenderer = new Axis_Controller_Action_Helper_ViewRenderer();
         $viewRenderer->setNeverRender()
