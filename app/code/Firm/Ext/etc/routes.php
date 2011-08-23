@@ -32,7 +32,7 @@ $router->addRoute('ext', new Axis_Controller_Router_Route_Front(
 ));
 
 $router->addRoute('admin/ext', new Axis_Controller_Router_Route_Back(
-    'admin/ext/:controller/:action/*',
+    'ext/:controller/:action/*',
     array(
         'module' => 'Firm_Ext',
         'controller' => 'index',

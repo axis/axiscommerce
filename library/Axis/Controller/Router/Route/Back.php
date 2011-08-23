@@ -35,6 +35,22 @@
 class Axis_Controller_Router_Route_Back extends Zend_Controller_Router_Route
 {
     /**
+     * Prepares the route for mapping by splitting (exploding) it
+     * to a corresponding atomic parts. These parts are assigned
+     * a position which is later used for matching and preparing values.
+     *
+     * @param string $route Map used to match with later submitted URL path
+     * @param array $defaults Defaults for map variables with keys as variable names
+     * @param array $reqs Regular expression requirements for variables (keys as variable names)
+     * @param Zend_Translate $translator Translator to use for this instance
+     */
+    public function __construct($route, $defaults = array(), $reqs = array(), Zend_Translate $translator = null, $locale = null)
+    {
+        $route = Axis::config('core/backend/route') . $this->_urlDelimiter . $route;
+        parent::__construct($route, $defaults, $reqs, $translator, $locale);
+    }
+    
+    /**
      * Matches a user submitted path with parts defined by a map. Assigns and
      * returns an array of variables on a successful match.
      *

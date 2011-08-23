@@ -32,7 +32,7 @@ $router->addRoute('account', new Axis_Controller_Router_Route_Front(
 ));
 
 $router->addRoute('admin/account', new Axis_Controller_Router_Route_Back(
-    'admin/account/:controller/:action/*',
+    'account/:controller/:action/*',
     array(
         'module' => 'Axis_Account',
         'controller' => 'index',

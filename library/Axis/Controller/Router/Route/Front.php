@@ -39,14 +39,14 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
      * @static
      * @var array
      */
-    protected static $_locales = array('en', 'ru');
+    protected static $_locales = array();
 
     /**
      *
      * @static
      * @var string
      */
-    protected static $_defaultLocale = 'en';
+    protected static $_defaultLocale;
 
     /**
      *
@@ -59,7 +59,7 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
      *
      * @var string
      */
-    private static $_currentLocale = 'en';
+    private static $_currentLocale;
 
     /**
      *
