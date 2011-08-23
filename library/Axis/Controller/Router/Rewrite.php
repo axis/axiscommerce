@@ -40,17 +40,6 @@ class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
      */
     protected $_dependency = array();
 
-    public function addDefaultRoutes()
-    {
-        if (!$this->hasRoute('default')) {
-            $dispatcher = $this->getFrontController()->getDispatcher();
-            $request = $this->getFrontController()->getRequest();
-
-            $compat = new Axis_Controller_Router_Route_Module(array(), $dispatcher, $request);
-            $this->_routes = array_merge(array('default' => $compat), $this->_routes);
-        }
-    }
-
     /**
      * Add route to the route chain
      *

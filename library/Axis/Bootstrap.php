@@ -293,8 +293,8 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $defaultLocale = Axis_Locale::getDefaultLocale();
         $locales = Axis_Locale::getLocaleList();
         
-        Axis_Controller_Router_Route::setDefaultLocale($defaultLocale);
-        Axis_Controller_Router_Route::setLocales($locales);
+        Axis_Controller_Router_Route_Front::setDefaultLocale($defaultLocale);
+        Axis_Controller_Router_Route_Front::setLocales($locales);
 
         // include routes files
         $routeFiles = Axis::app()->getRoutes();

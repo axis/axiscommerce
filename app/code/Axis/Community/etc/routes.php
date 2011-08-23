@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('community_review', new Axis_Controller_Router_Route(
+$router->addRoute('community_review', new Axis_Controller_Router_Route_Front(
     'review/:action/*',
     array(
         'module' => 'Axis_Community',
@@ -30,7 +30,7 @@ $router->addRoute('community_review', new Axis_Controller_Router_Route(
         'action' => 'index'
     )
 ));
-$router->addRoute('community_review_product', new Axis_Controller_Router_Route(
+$router->addRoute('community_review_product', new Axis_Controller_Router_Route_Front(
     'review/product/:hurl/*',
     array(
         'module' => 'Axis_Community',

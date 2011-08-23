@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('locale', new Axis_Controller_Router_Route(
+$router->addRoute('locale', new Axis_Controller_Router_Route_Front(
     'locale/:controller/:action/*',
     array(
         'module' => 'Axis_Locale',

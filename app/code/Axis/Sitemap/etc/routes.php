@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('sitemap', new Axis_Controller_Router_Route(
+$router->addRoute('sitemap', new Axis_Controller_Router_Route_Front(
     'sitemap/:controller/:action/*',
     array(
         'module' => 'Axis_Sitemap',
@@ -31,7 +31,7 @@ $router->addRoute('sitemap', new Axis_Controller_Router_Route(
     )
 ));
 
-$router->addRoute('sitemap_get-all-products', new Axis_Controller_Router_Route(
+$router->addRoute('sitemap_get-all-products', new Axis_Controller_Router_Route_Front(
     'sitemap/get-all-products',
     array(
         'module' => 'Axis_Sitemap',
@@ -39,7 +39,7 @@ $router->addRoute('sitemap_get-all-products', new Axis_Controller_Router_Route(
         'action' => 'get-all-products'
     )
 ));
-$router->addRoute('sitemap_get-all-pages', new Axis_Controller_Router_Route(
+$router->addRoute('sitemap_get-all-pages', new Axis_Controller_Router_Route_Front(
     'sitemap/get-all-pages',
     array(
         'module' => 'Axis_Sitemap',

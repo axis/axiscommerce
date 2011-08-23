@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('tag', new Axis_Controller_Router_Route(
+$router->addRoute('tag', new Axis_Controller_Router_Route_Front(
     'tag/:controller/:action/*',
     array(
         'module' => 'Axis_Tag',
@@ -30,7 +30,7 @@ $router->addRoute('tag', new Axis_Controller_Router_Route(
         'action' => 'index'
     )
 ));
-$router->addRoute('tag_show-products', new Axis_Controller_Router_Route(
+$router->addRoute('tag_show-products', new Axis_Controller_Router_Route_Front(
     'tag/show-products',
     array(
         'module' => 'Axis_Tag',
@@ -40,7 +40,7 @@ $router->addRoute('tag_show-products', new Axis_Controller_Router_Route(
 ));
 
 $router->addRoute('tag_account',
-    new Axis_Controller_Router_Route('account/tag/:action/*', array(
+    new Axis_Controller_Router_Route_Front('account/tag/:action/*', array(
         'module' => 'Axis_Tag',
         'controller' => 'account',
         'action' => 'index'

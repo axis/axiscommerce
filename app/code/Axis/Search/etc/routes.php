@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('search', new Axis_Controller_Router_Route(
+$router->addRoute('search', new Axis_Controller_Router_Route_Front(
     'search/:controller/:action/*',
     array(
         'module' => 'Axis_Search',
@@ -30,7 +30,7 @@ $router->addRoute('search', new Axis_Controller_Router_Route(
         'action' => 'index'
     )
 ));
-$router->addRoute('search_result', new Axis_Controller_Router_Route(
+$router->addRoute('search_result', new Axis_Controller_Router_Route_Front(
     'search/result/*',
     array(
         'module' => 'Axis_Search',

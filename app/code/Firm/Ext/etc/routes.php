@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('ext', new Axis_Controller_Router_Route(
+$router->addRoute('ext', new Axis_Controller_Router_Route_Front(
     'ext/:controller/:action/*',
     array(
         'module' => 'Firm_Ext',

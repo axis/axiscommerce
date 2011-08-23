@@ -32,7 +32,7 @@
  * @subpackage  Axis_Controller_Router
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
+class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
 {
     /**
      *

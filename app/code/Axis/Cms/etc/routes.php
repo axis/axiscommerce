@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('cms_default', new Axis_Controller_Router_Route(
+$router->addRoute('cms_default', new Axis_Controller_Router_Route_Front(
     'cms/:controller/:action/*',
     array(
         'module' => 'Axis_Cms',
@@ -30,7 +30,7 @@ $router->addRoute('cms_default', new Axis_Controller_Router_Route(
         'action' => 'index'
     )
 ));
-$router->addRoute('cms_page', new Axis_Controller_Router_Route(
+$router->addRoute('cms_page', new Axis_Controller_Router_Route_Front(
     'page/:page',
     array(
         'module' => 'Axis_Cms',
@@ -39,7 +39,7 @@ $router->addRoute('cms_page', new Axis_Controller_Router_Route(
         'page' => 'page'
     )
 ));
-$router->addRoute('cms_category', new Axis_Controller_Router_Route(
+$router->addRoute('cms_category', new Axis_Controller_Router_Route_Front(
     'cat/:cat',
     array(
         'module' => 'Axis_Cms',
@@ -48,7 +48,7 @@ $router->addRoute('cms_category', new Axis_Controller_Router_Route(
         'cat' => 'cat'
     )
 ));
-$router->addRoute('cms', new Axis_Controller_Router_Route(
+$router->addRoute('cms', new Axis_Controller_Router_Route_Front(
     'pages',
     array(
         'module' => 'Axis_Cms',

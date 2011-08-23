@@ -23,7 +23,7 @@
  * @license     GNU Public License V3.0
  */
 
-$router->addRoute('core', new Axis_Controller_Router_Route(
+$router->addRoute('core', new Axis_Controller_Router_Route_Front(
     ':controller/:action/*',
     array(
         'module' => 'Axis_Core',
@@ -32,7 +32,7 @@ $router->addRoute('core', new Axis_Controller_Router_Route(
     )
 ));
 
-$router->addRoute('sandbox', new Axis_Controller_Router_Route(
+$router->addRoute('sandbox', new Axis_Controller_Router_Route_Front(
     'sandbox',
     array(
         'module' => 'Axis_Core',

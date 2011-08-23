@@ -22,7 +22,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('checkout', new Axis_Controller_Router_Route(
+$router->addRoute('checkout', new Axis_Controller_Router_Route_Front(
     'checkout/:controller/:action/*',
     array(
         'module' => 'Axis_Checkout',
@@ -30,7 +30,7 @@ $router->addRoute('checkout', new Axis_Controller_Router_Route(
         'action' => 'index'
     )
 ));
-$router->addRoute('checkout_cancel', new Axis_Controller_Router_Route(
+$router->addRoute('checkout_cancel', new Axis_Controller_Router_Route_Front(
     'checkout/cancel/*',
     array(
         'module' => 'Axis_Checkout',
@@ -38,7 +38,7 @@ $router->addRoute('checkout_cancel', new Axis_Controller_Router_Route(
         'action' => 'cancel'
     )
 ));
-$router->addRoute('checkout_success', new Axis_Controller_Router_Route(
+$router->addRoute('checkout_success', new Axis_Controller_Router_Route_Front(
     'checkout/success/*',
     array(
         'module' => 'Axis_Checkout',
