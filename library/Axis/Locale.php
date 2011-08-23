@@ -149,9 +149,9 @@ class Axis_Locale
         if (!Zend_Registry::isRegistered('Zend_Locale')) {
 
             if (Axis_Area::isFrontend()
-                && Axis_Controller_Router_Route::hasLocaleInUrl()) {
+                && Axis_Controller_Router_Route_Front::hasLocaleInUrl()) {
 
-                self::setLocale(Axis_Controller_Router_Route::getCurrentLocale());
+                self::setLocale(Axis_Controller_Router_Route_Front::getCurrentLocale());
 
             } elseif (Axis_Area::isBackend()
                 && isset(Axis::session()->locale)) {

@@ -23,7 +23,7 @@
  * @license     GNU Public License V3.0
  */
 
-$router->addRoute('product_catalog', new Axis_Controller_Router_Route(
+$router->addRoute('product_catalog', new Axis_Controller_Router_Route_Front(
     Axis::config('catalog/main/route') . '/*',
     array(
         'module' => 'Axis_Catalog',
@@ -31,7 +31,7 @@ $router->addRoute('product_catalog', new Axis_Controller_Router_Route(
         'action' => 'view'
     )
 ));
-$router->addRoute('product_compare', new Axis_Controller_Router_Route(
+$router->addRoute('product_compare', new Axis_Controller_Router_Route_Front(
     Axis::config('catalog/main/route') . '/product-compare/:action/*',
     array(
         'module' => 'Axis_Catalog',

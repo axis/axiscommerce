@@ -33,9 +33,39 @@
  */
 class SandboxController extends Axis_Core_Controller_Front
 {
-
     public function indexAction()
     {
+//        $routeAdmin = new Axis_Controller_Router_Route_Admin(
+//            'admin/:controller/:action/*',
+//            array(
+//                'module' => 'Axis_Admin',
+//                'controller' => 'index',
+//                'action' => 'index'
+//            )
+//        );
+//        $routeAccount = new Axis_Controller_Router_Route_Admin(
+//            'admin/account/:controller/:action/*',
+//            array(
+//                'module' => 'Axis_Account',
+//                'controller' => 'index',
+//                'action' => 'index'
+//            )
+//        );
+//        
+//        $urls = array(
+//            'admin',
+//            'admin/',
+//            'admin/account',
+//            'admin/account/',
+//            'admin/account/index/view/id/3',
+//            'admin/account/customer/view/id/3'
+//        );
+//        foreach ($urls as $url) {
+//            Zend_Debug::dump($routeAdmin->match($url), $url );
+//            Zend_Debug::dump($routeAccount->match($url), $url );
+//            echo '--------------------------';
+//        }
+        
         $row = Axis::model('account/customer')->find(1)->current();
         $row->password  = 1; 
         $_row = array();

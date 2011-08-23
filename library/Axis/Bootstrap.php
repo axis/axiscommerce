@@ -267,32 +267,11 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return Axis::cache();
     }
 
-    protected function _initRouter()
-    {
-        $this->bootstrap('Cache');
-        $router = new Axis_Controller_Router_Rewrite();
-        // include routes files
-        $routeFiles = Axis::app()->getRoutes();
-        foreach ($routeFiles as $routeFile) {
-            include_once($routeFile);
-        }
-
-        $router->removeDefaultRoutes();
-        $router->sortRoutes();
-
-        if (!($router instanceof Axis_Controller_Router_Rewrite)) {
-            throw new Axis_Exception('Incorrect routes');
-        }
-        return $router;
-    }
-
     protected function _initFrontController()
     {
-        $this->bootstrap('Router');
+        $this->bootstrap('Cache');
         $front = Zend_Controller_Front::getInstance();
 
-        $router = $this->getResource('Router');
-        $front->setRouter($router);
 //        $front->setDispatcher(new Axis_Controller_Dispatcher_Standard());
 //        $front->throwExceptions(false);
         $front->setDefaultModule('Axis_Core');
@@ -304,45 +283,50 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         return $front; // this is *VERY* important
     }
-
-    protected function _initArea()
+    
+    protected function _initRouter()
     {
         $this->bootstrap('FrontController');
-        $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_Area(), 20);
-    }
-    
-    protected function _initAuth()
-    {
-        $this->bootstrap('View');
+        $router = new Axis_Controller_Router_Rewrite();
         
-        $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_Auth(), 30);
-    }
-
-    protected function _initLocale()
-    {
-        $this->bootstrap('Area');
+        // pre router config
         $defaultLocale = Axis_Locale::getDefaultLocale();
         $locales = Axis_Locale::getLocaleList();
+        
+        Axis_Controller_Router_Route_Front::setDefaultLocale($defaultLocale);
+        Axis_Controller_Router_Route_Front::setLocales($locales);
+
+        // include routes files
+        $routeFiles = Axis::app()->getRoutes();
+        foreach ($routeFiles as $routeFile) {
+            include_once($routeFile);
+        }
+
+        $router->removeDefaultRoutes();
+
+        if (!($router instanceof Axis_Controller_Router_Rewrite)) {
+            throw new Axis_Exception('Incorrect routes');
+        }
+        $front = $this->getResource('FrontController');
+        $front->setRouter($router);
+        
+        return $router;
+    }
+    
+    protected function _initLocale()
+    {
+        $this->bootstrap('FrontController');
 
         //set default timezone affect on date() and Axis_Date
         Axis_Locale::setTimezone(Axis_Locale::getDefaultTimezone());
-        // pre router config
-        Axis_Controller_Router_Route::setDefaultLocale($defaultLocale);
-        Axis_Controller_Router_Route::setLocales($locales);
 
-        Axis_Controller_Router_Route_Module::setDefaultLocale($defaultLocale);
-        Axis_Controller_Router_Route_Module::setLocales($locales);
-
-        //set locale
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 40);
     }
 
     protected function _initView()
     {
-        $this->bootstrap('Area');
+        $this->bootstrap('FrontController');
         $view = new Zend_View();
         $viewRenderer = new Axis_Controller_Action_Helper_ViewRenderer();
         $viewRenderer->setNeverRender()
@@ -355,6 +339,14 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Controller_Action_HelperBroker::addHelper($jsonActionHelper);
 
         return $view;
+    }
+    
+    protected function _initAuth()
+    {
+        $this->bootstrap('View');
+        
+        $front = $this->getResource('FrontController');
+        $front->registerPlugin(new Axis_Controller_Plugin_Auth(), 30);
     }
 
     protected function _initLayout()

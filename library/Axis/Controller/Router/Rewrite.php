@@ -40,17 +40,6 @@ class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
      */
     protected $_dependency = array();
 
-    public function addDefaultRoutes()
-    {
-        if (!$this->hasRoute('default')) {
-            $dispatcher = $this->getFrontController()->getDispatcher();
-            $request = $this->getFrontController()->getRequest();
-
-            $compat = new Axis_Controller_Router_Route_Module(array(), $dispatcher, $request);
-            $this->_routes = array_merge(array('default' => $compat), $this->_routes);
-        }
-    }
-
     /**
      * Add route to the route chain
      *
@@ -96,5 +85,19 @@ class Axis_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
                 + array_slice($this->_routes, $offset, NULL, true);
         }
         return $this->_routes;
+    }
+    
+    /**
+     * Find a matching route to the current PATH_INFO and inject
+     * returning values to the Request object.
+     *
+     * @throws Zend_Controller_Router_Exception
+     * @return Zend_Controller_Request_Abstract Request object
+     */
+    public function route(Zend_Controller_Request_Abstract $request)
+    {
+        //sort routes
+        $this->sortRoutes();
+        return parent::route($request);
     }
 }

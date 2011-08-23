@@ -32,21 +32,21 @@
  * @subpackage  Axis_Controller_Router
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
+class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
 {
     /**
      *
      * @static
      * @var array
      */
-    protected static $_locales = array('en', 'ru');
+    protected static $_locales = array();
 
     /**
      *
      * @static
      * @var string
      */
-    protected static $_defaultLocale = 'en';
+    protected static $_defaultLocale;
 
     /**
      *
@@ -59,7 +59,7 @@ class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
      *
      * @var string
      */
-    private static $_currentLocale = 'en';
+    private static $_currentLocale;
 
     /**
      *
@@ -88,7 +88,7 @@ class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
      * @param string $path Path used to match against this routing map
      * @return array|false An array of assigned values or a false on a mismatch
      */
-    public function match($path)
+    public function match($path, $partial = false)
     {
         $path = trim($path, $this->_urlDelimiter);
         $pathParts = explode($this->_urlDelimiter, $path, 2);
@@ -107,9 +107,10 @@ class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
 
         self::$_currentLocale = $currentLocale;
 
-        $params = parent::match($path);
+        $params = parent::match($path, $partial);
 
         if($params) {
+            Axis_Area::frontend();
             $params = array_merge($params, array('locale' => $currentLocale));
         }
 
@@ -141,10 +142,10 @@ class Axis_Controller_Router_Route extends Zend_Controller_Router_Route
      * @param  boolean $reset Whether or not to set route defaults with those provided in $data
      * @return string Route path with user submitted parameters
      */
-    public function assemble($data = array(), $reset = false, $encode = false)
+    public function assemble($data = array(), $reset = false, $encode = false, $partial = false)
     {
         if(!isset($data['locale'])) {
-            return parent::assemble($data, $reset, $encode);
+            return parent::assemble($data, $reset, $encode, $partial);
         }
         $locale = $data['locale'];
         unset($data['locale']);
