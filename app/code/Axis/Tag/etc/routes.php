@@ -31,7 +31,7 @@ $router->addRoute('tag', new Axis_Controller_Router_Route_Front(
     )
 ));
 $router->addRoute('tag_show-products', new Axis_Controller_Router_Route_Front(
-    'tag/show-products',
+    'tag/show-products/:tag',
     array(
         'module' => 'Axis_Tag',
         'controller' => 'index',
