@@ -43,24 +43,6 @@ abstract class Axis_Admin_Controller_Back extends Axis_Controller_Action
         );
     }
 
-    public function preDispatch()
-    {
-        //@todo move this code in action helper
-        $request = $this->getRequest();
-        $currentUrl = $request->getScheme() . '://'
-            . $request->getHttpHost()
-            . $request->getRequestUri();
-
-        if (Axis::config('core/backend/ssl')
-            && 0 !== strpos($currentUrl, $this->view->secureUrl)) {
-
-            $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
-            $requestUri = substr($request->getRequestUri(), strlen($baseUrl));
-            parent::_redirect($this->view->secureUrl . $requestUri, array(), false);
-            die();
-        }
-    }
-
     /**
      * Redirect to another URL. Adds adminRoute by default to given $url parameter
      *
