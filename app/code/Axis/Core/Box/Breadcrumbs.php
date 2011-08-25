@@ -35,8 +35,8 @@ class Axis_Core_Box_Breadcrumbs extends Axis_Core_Box_Abstract
 {
     public function init()
     {
-        $breadcrumbs = Zend_Registry::get('axis/breadcrumbs');
-        
+        $breadcrumbs = Zend_Controller_Action_HelperBroker::getStaticHelper('breadcrumbs')
+            ->getContainer();
         $this->setData('breadcrumbs', $breadcrumbs);
         return true;
     }
