@@ -55,7 +55,7 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
         foreach ($categories as $_category) {
             $label = empty($_category['title']) ? 
                     $_category['link'] : $_category['title'];
-            $this->addBreadcrumb(array(
+            $this->_helper->breadcrumbs(array(
                 'label'  => $label,
                 'params' => array('cat' => $_category['link']),
                 'route'  => 'cms_category'
@@ -111,7 +111,7 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
         foreach ($categories as $_category) {
             $label = empty($_category['title']) ? 
                     $_category['link'] : $_category['title'];
-            $this->addBreadcrumb(array(
+            $this->_helper->breadcrumbs(array(
                 'label'  => $label,
                 'params' => array('cat' => $_category['link']),
                 'route'  => 'cms_category'

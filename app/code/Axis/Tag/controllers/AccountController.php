@@ -43,7 +43,7 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
         if (!Axis::single('core/module')->getByCode('Axis_Tag')->isInstalled()) {
             $this->_redirect('/account');
         }
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('account')->__('Tags'),
             'route' => 'tag_account'
         ));

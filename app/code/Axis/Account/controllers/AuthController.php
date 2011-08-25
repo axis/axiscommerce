@@ -36,7 +36,7 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label'      => Axis::translate('account')->__('Auth'),
             'controller' => 'auth',
             'route'      => 'account'

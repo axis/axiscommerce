@@ -38,7 +38,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
     {
         parent::init();
         $this->hurl = Axis_HumanUri::getInstance();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('catalog')->__('Catalog'),
             'route' => 'product_catalog'
         ));
@@ -64,7 +64,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
                     'seo'   => $_category['key_word']
                 )
             ));
-            $this->addBreadcrumb(array(
+            $this->_helper->breadcrumbs(array(
                 'label' => $_category['name'],
                 'uri'   => $_uri
             ));
@@ -276,7 +276,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
                     'seo' => $_category['key_word']
                 )
             ), false, true);
-            $this->addBreadcrumb(array(
+            $this->_helper->breadcrumbs(array(
                 'label' => $_category['name'],
                 'uri'   => $_uri
             ));
@@ -354,7 +354,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
                 'seo'   => $product->getHumanUrl()
             )
         ), false, true);
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => $data['description']['name'],
             'uri'   => $_uri
         ));

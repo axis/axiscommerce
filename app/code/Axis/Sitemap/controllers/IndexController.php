@@ -36,7 +36,7 @@ class Axis_Sitemap_IndexController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('sitemap')->__('Sitemap'),
             'route' => 'sitemap'
         ));

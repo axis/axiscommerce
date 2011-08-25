@@ -310,6 +310,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $front = $this->getResource('FrontController');
         $front->setRouter($router);
         
+        $sslRedirectorActionHelper = new Axis_Controller_Action_Helper_SecureRedirector();
+        Zend_Controller_Action_HelperBroker::addHelper($sslRedirectorActionHelper);
+        
         return $router;
     }
     
@@ -337,6 +340,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 
         $jsonActionHelper = new Axis_Controller_Action_Helper_Json();
         Zend_Controller_Action_HelperBroker::addHelper($jsonActionHelper);
+        
+        $breadcrumbsActionHelper = new Axis_Controller_Action_Helper_Breadcrumbs();
+        Zend_Controller_Action_HelperBroker::addHelper($breadcrumbsActionHelper);
 
         return $view;
     }

@@ -33,20 +33,5 @@
  */
 class Axis_Core_Controller_Front_Secure extends Axis_Core_Controller_Front
 {
-    public function preDispatch()
-    {
-        $request = $this->getRequest();
-        $currentUrl = $request->getScheme() . '://'
-            . $request->getHttpHost() 
-            . $request->getRequestUri();
-        
-        if (Axis::config('core/frontend/ssl') 
-            && 0 !== strpos($currentUrl, $this->view->secureUrl)) {
-            
-            $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
-            $requestUri = substr($request->getRequestUri(), strlen($baseUrl));
-            $this->_redirect($this->view->secureUrl . $requestUri, array(), false);
-            die();
-        }
-    }
+    
 }

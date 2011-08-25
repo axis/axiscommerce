@@ -37,8 +37,8 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
     {
         parent::init();
         Axis::single('account/customer')->checkIdentity();
-        $this->setBreadcrumbs(null);
-        $this->addBreadcrumb(array(
+//        $this->setBreadcrumbs(null);
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('core')->__('Home'),
             'route' => 'core'
         ));
@@ -49,54 +49,6 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
         if (!Axis::getCustomerId()) {
             $this->_redirect('/account/auth');
         }
-    }
-
-    /**
-     *
-     * @param Zend_Navigation_Container $container
-     * @return Axis_Core_Controller_Front
-     */
-    public function setBreadcrumbs(Zend_Navigation_Container $container = null)
-    {
-        if (null === $container) {
-            $container = new Zend_Navigation();
-        }
-        Zend_Registry::set('axis/breadcrumbs', $container);
-        return $this;
-    }
-
-    /**
-     *
-     * @return Zend_Navigation_Container
-     */
-    public function getBreadcrumbs()
-    {
-        if (!Zend_Registry::isRegistered('axis/breadcrumbs')) {
-            $this->setBreadcrumbs();
-        }
-        return Zend_Registry::get('axis/breadcrumbs');
-    }
-
-    /**
-     *
-     * @param array $page
-     * @return Axis_Core_Controller_Front
-     */
-    public function addBreadcrumb(array $page)
-    {
-        $container = $this->getBreadcrumbs();
-
-        $iterator = new RecursiveIteratorIterator($container,
-                RecursiveIteratorIterator::SELF_FIRST);
-
-        foreach ($iterator as $_page) {
-            $container = $_page;
-        }
-
-        $page['active'] = true;
-        $container->addPage($page);
-//        $this->setBreadcrumbs($page);
-        return $this;
     }
 
     /**
@@ -120,7 +72,7 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
         }
         if (!empty($labelBreadcrumb)) {
             $request = $this->getRequest();
-            $this->addBreadcrumb(array(
+            $this->_helper->breadcrumbs(array(
                 'label'      => $labelBreadcrumb,
                 'module'     => $request->getModuleName(),
                 'controller' => $request->getControllerName(),
