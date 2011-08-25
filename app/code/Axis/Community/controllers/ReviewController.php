@@ -37,11 +37,11 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     {
         parent::init();
 
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('catalog')->__('Catalog'),
             'route' => 'product_catalog'
         ));
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('community')->__('Reviews'),
             'route' => 'community_review'
         ));

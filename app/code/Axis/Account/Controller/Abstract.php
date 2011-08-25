@@ -37,7 +37,7 @@ abstract class Axis_Account_Controller_Abstract extends Axis_Core_Controller_Fro
     {
         parent::init();
         $this->auth();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('account')->__('Account'),
             'route' => 'account'
         ));

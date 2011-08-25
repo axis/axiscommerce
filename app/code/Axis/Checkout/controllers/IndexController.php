@@ -41,7 +41,7 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
     public function init()
     {
         parent::init();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label'      => Axis::translate('checkout')->__('Checkout'),
             'controller' => 'cart',
             'route'      => 'checkout'

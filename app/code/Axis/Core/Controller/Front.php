@@ -38,7 +38,7 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
         parent::init();
         Axis::single('account/customer')->checkIdentity();
 //        $this->setBreadcrumbs(null);
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('core')->__('Home'),
             'route' => 'core'
         ));
@@ -49,17 +49,6 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
         if (!Axis::getCustomerId()) {
             $this->_redirect('/account/auth');
         }
-    }
-
-    /**
-     *
-     * @param array $page
-     * @return Axis_Core_Controller_Front
-     */
-    public function addBreadcrumb(array $page)
-    {
-        $this->_helper->breadcrumbs($page);
-        return $this;
     }
 
     /**
@@ -83,7 +72,7 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
         }
         if (!empty($labelBreadcrumb)) {
             $request = $this->getRequest();
-            $this->addBreadcrumb(array(
+            $this->_helper->breadcrumbs(array(
                 'label'      => $labelBreadcrumb,
                 'module'     => $request->getModuleName(),
                 'controller' => $request->getControllerName(),

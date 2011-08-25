@@ -36,7 +36,7 @@ class Axis_Account_OrderController extends Axis_Account_Controller_Abstract
     public function init()
     {
         parent::init();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label'      => Axis::translate('account')->__('My Orders'), 
             'controller' => 'order',
             'route'      => 'account'

@@ -37,7 +37,7 @@ class Axis_Tag_IndexController extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('tag')->__('Tags'),
             'route' => 'tag'
         ));

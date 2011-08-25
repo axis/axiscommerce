@@ -103,7 +103,7 @@ class ErrorController extends Axis_Core_Controller_Front
         $this->getResponse()->setHttpResponseCode(404);
         $this->view->pageTitle = Axis::translate('core')->__('Page not found');
         $this->view->meta()->setTitle('404 ' . $this->view->pageTitle);
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => $this->view->pageTitle,
             'controller' => 'error',
             'route'      => 'core'

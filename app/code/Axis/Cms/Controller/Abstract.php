@@ -36,7 +36,7 @@ abstract class Axis_Cms_Controller_Abstract extends Axis_Core_Controller_Front
     public function init()
     {
         parent::init();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('cms')->__('Pages'),
             'route' => 'cms_default'
         ));

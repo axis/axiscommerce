@@ -42,7 +42,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
     {
         parent::init();
         $this->_customerId = Axis::getCustomerId();
-        $this->addBreadcrumb(array(
+        $this->_helper->breadcrumbs(array(
             'label'      => Axis::translate('account')->__('Address Book'),
             'controller' => 'address-book',
             'route'      => 'account'
