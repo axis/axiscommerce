@@ -281,11 +281,11 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             'old_data'  => $oldProductData,
             'product'   => $product
         ));
-        
+
         Axis::message()->addSuccess(
             Axis::translate('core')->__('Data was saved successfully')
         );
-        
+
         $this->_helper->json->sendSuccess(array(
             'data' => array('product_id' => $product->id))
         );
@@ -599,9 +599,15 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
     {
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
         $destCategoryId = $this->_getParam('destination');
-        $destSiteId = Axis::single('catalog/category')->find($destCategoryId)
-            ->current()
-            ->site_id;
+        $destCategory   = Axis::single('catalog/category')->find($destCategoryId)
+            ->current();
+
+        if (!$destCategory) {
+            Axis::message()->addError(
+                Axis::translate('Axis_Catalog')->__('Destination category not found')
+            );
+            $this->_helper->json->sendFailure();
+        }
 
         $processed = array();
 
@@ -630,18 +636,18 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
 
             //remove if exist
             $modelProductCategory->delete(array(
-                $this->db->quoteInto('category_id = ?', $destCategoryId),
+                $this->db->quoteInto('category_id = ?', $destCategory->id),
                 $this->db->quoteInto('product_id = ?', $productId)
             ));
             // add
             $modelProductCategory->insert(array(
-                'category_id' => $destCategoryId,
+                'category_id' => $destCategory->id,
                 'product_id'  => $productId
             ));
 
             $modelCatalogHurl->save(array(
                 'key_word' => $keyWord,
-                'site_id'  => $destSiteId,
+                'site_id'  => $destCategory->site_id,
                 'key_type' => 'p',
                 'key_id'   => $productId
             ));
