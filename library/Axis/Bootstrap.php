@@ -280,6 +280,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $front->registerPlugin(
             new Axis_Controller_Plugin_ErrorHandler_Override(), 10
         );
+        
+        $authActionHelper = new Axis_Controller_Action_Helper_Auth();
+        Zend_Controller_Action_HelperBroker::addHelper($authActionHelper);
 
         return $front; // this is *VERY* important
     }
@@ -324,7 +327,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Axis_Locale::setTimezone(Axis_Locale::getDefaultTimezone());
 
         $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 40);
+        $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 20);
     }
 
     protected function _initView()
@@ -347,14 +350,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $view;
     }
     
-    protected function _initAuth()
-    {
-        $this->bootstrap('View');
-        
-        $front = $this->getResource('FrontController');
-        $front->registerPlugin(new Axis_Controller_Plugin_Auth(), 30);
-    }
-
     protected function _initLayout()
     {
         $this->bootstrap('View');

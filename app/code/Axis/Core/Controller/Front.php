@@ -37,18 +37,10 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
     {
         parent::init();
         Axis::single('account/customer')->checkIdentity();
-//        $this->setBreadcrumbs(null);
         $this->_helper->breadcrumbs(array(
             'label' => Axis::translate('core')->__('Home'),
             'route' => 'core'
         ));
-    }
-
-    public function auth()
-    {
-        if (!Axis::getCustomerId()) {
-            $this->_redirect('/account/auth');
-        }
     }
 
     /**
