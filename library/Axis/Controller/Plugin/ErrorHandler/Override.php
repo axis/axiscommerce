@@ -42,10 +42,10 @@ class Axis_Controller_Plugin_ErrorHandler_Override extends Zend_Controller_Plugi
      */
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-        if ($request->getParam('module') != 'Axis_Admin') {
+        if (!Axis_Area::isBackend()) {
             return;
         }
-        $errorHandler = Zend_Controller_Front::getInstance()
+        Zend_Controller_Front::getInstance()
             ->getPlugin('Zend_Controller_Plugin_ErrorHandler')
             ->setErrorHandlerModule('Axis_Admin');
     }
