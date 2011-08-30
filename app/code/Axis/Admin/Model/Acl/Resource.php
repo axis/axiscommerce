@@ -108,12 +108,23 @@ class Axis_Admin_Model_Acl_Resource extends Axis_Db_Table
     public function rename($oldResource, $newResource)
     {
 
-        $select = $this->select()->where('resource_id = ?', $oldResource);
-        $row = $this->fetchAll($select)->current();
+        $row = $this->select()
+            ->where('resource_id = ?', $oldResource)
+            ->fetchRow();
         if ($row) {
             $row->resource_id = $newResource;
             $row->save();
         }
+        
+        $rowset = Axis::single('admin/acl_rule')->select()
+            ->where('resource_id = ?', $oldResource)
+            ->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            $row->resource_id = $newResource;
+            $row->save();
+        }
+        
         return $this;
     }
 }
