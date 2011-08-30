@@ -102,4 +102,84 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
             'count' => $select->foundRows()
         ));
     }
+    
+    public function loadAction()
+    {
+        $this->_helper->layout->disableLayout();
+
+        if (!$customer = Axis::single('account/customer')->find((int)$this->_getParam('id'))->current()) {
+            Axis::message()->addError(Axis::translate('Axis_Account')->__(
+                "Customer '%s' not found", $this->_getParam('id')
+            ));
+            return $this->_helper->json->sendFailure();
+        }
+
+        $result = array();
+        $result['customer'] = $customer->toArray();
+
+        // custom fields
+        $result['custom_fields'] = array();
+        foreach ($customer->getDetails() as $item) {
+            if (isset($result['custom_fields']['field_' . $item['customer_field_id']])) {
+                $result['custom_fields']
+                    ['field_' . $item['customer_field_id']] .= ','
+                        . $item['customer_valueset_value_id'];
+            } else {
+                $result['custom_fields']
+                    ['field_' . $item['customer_field_id']] = isset($item['data']) ?
+                        $item['data'] : $item['customer_valueset_value_id'];
+            }
+        }
+
+        // address
+        $result['address'] = array();
+        $rowset = Axis::single('account/customer_address')
+            ->getSortListByCustomerId($customer->id);
+        foreach($rowset as $address) {
+            $result['address'][] = $address->toArray();
+        }
+
+        // orders
+        $orders = Axis::single('sales/order')->fetchAll(
+            $this->db->quoteInto('customer_id = ?', $customer->id)
+        );
+        $orderStatus = Axis_Collect_OrderStatus::collect();
+        $orderStatusText = Axis_Collect_OrderStatusText::collect();
+
+        $result['order'] = array();
+        foreach ($orders as $order) {
+            $result['order'] = $order->toArray();
+
+            $result['order']['product'] = array_values($order->getProducts());
+            foreach($result['order']['product'] as &$product) {
+                $product['price'] =
+                    $product['price'] * $order->currency_rate;
+                $product['final_price'] =
+                    $product['final_price'] * $order->currency_rate;
+                $product['product_subtotal'] =
+                    $product['final_price'] * $product['quantity'];
+            }
+
+            if (isset($orderStatusText[$order['order_status_id']])) {
+                $result['order']['status'] = $orderStatusText[$order['order_status_id']];
+            } else {
+                $result['order']['status'] = isset($orderStatus[$order['order_status_id']]) ?
+                    $orderStatus[$order['order_status_id']] : $order['order_status_id'];
+            }
+        }
+
+        // shopping cart
+        $result['shopping_cart'] = array();
+        if ($cart = Axis::single('checkout/cart')->getCustomerCart($customer->id)) {
+            $result['shopping_cart'] = array_values($cart->getProducts());
+            foreach ($result['shopping_cart'] as &$product) {
+                $product['attributes'] = array_values($product['attributes']);
+            }
+        }
+
+        return $this->_helper->json->sendSuccess(array(
+            'data' => $result
+        ));
+    }
+    
 }
