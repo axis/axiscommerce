@@ -69,4 +69,37 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
         $this->render();
     }
     
+    public function listAction()
+    {
+        $select = Axis::model('account/customer')->select('*')
+            ->calcFoundRows()
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 25),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
+
+        //extjs combobox compatible
+        if ($query = $this->_getParam('query')) {
+            $query = '%' . $query . '%';
+            $select->orWhere('ac.email LIKE ?', $query)
+                ->orWhere('ac.firstname LIKE ?', $query)
+                ->orWhere('ac.lastname LIKE ?', $query);
+        }
+
+        $accounts = $select->fetchAll();
+        foreach ($accounts as &$account) {
+            unset($account['password']);
+        }
+
+        return $this->_helper->json->sendSuccess(array(
+            'data'  => $accounts,
+            'count' => $select->foundRows()
+        ));
+    }
 }

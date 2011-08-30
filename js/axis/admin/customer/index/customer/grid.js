@@ -124,7 +124,7 @@ Ext.onReady(function() {
             totalProperty: 'count'
         }, CustomerGrid.record),
         remoteSort: true,
-        url: Axis.getUrl('customer_index/list')
+        url: Axis.getUrl('account/customer/list')
     });
 
     var actions = new Ext.ux.grid.RowActions({
