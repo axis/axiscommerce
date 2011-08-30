@@ -2,7 +2,7 @@
 
 <div class="product-page-details">
     <div class="product-media">
-        <?php echo $this->render('index/product/media.phtml'); ?>
+        <?php echo $this->render('catalog/index/product/media.phtml'); ?>
     </div>
 
     <div class="product-quick-view">
@@ -34,8 +34,8 @@
         <form method="post" action="<?php echo $this->href('/checkout/cart/add', true);?>" >
             <div>
             <?php echo $this->formHidden('productId', $this->product['id']);?>
-            <?php echo $this->render('index/product/addto.phtml') ?>
-            <?php echo $this->render('index/product/attributes.phtml') ?>
+            <?php echo $this->render('catalog/index/product/addto.phtml') ?>
+            <?php echo $this->render('catalog/index/product/attributes.phtml') ?>
             </div>
         </form>
 

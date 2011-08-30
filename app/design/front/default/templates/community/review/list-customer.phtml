@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<?php echo $this->render('review/list/toolbar.phtml') ?>
+<?php echo $this->render('community/review/list/toolbar.phtml') ?>
 <form id="form-compare" method="post" action="<?php echo $this->href($this->catalogUrl . '/product-compare/compare') ?>">
 <ol class="review-list">
 <?php foreach ($this->data['reviews'] as $review) :
@@ -93,7 +93,7 @@
 <?php endforeach; ?>
 </ol>
 </form>
-<?php echo $this->render('review/list/toolbar.phtml') ?>
+<?php echo $this->render('community/review/list/toolbar.phtml') ?>
 <?php else:
     echo $this->translate('community')->__("Review not found");
 endif;?>
