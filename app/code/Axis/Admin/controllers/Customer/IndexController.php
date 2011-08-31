@@ -35,6 +35,7 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
 {
     public function batchSaveAction()
     {
+        Axis_FirePhp::log($this->_getAllParams());
         $this->_helper->layout->disableLayout();
 
         $data = Zend_Json::decode($this->_getParam('data'));
@@ -59,37 +60,10 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
 
-    public function deleteAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-        if (!sizeof($data)) {
-            return;
-        }
-        Axis::single('account/customer')->delete(
-            $this->db->quoteInto('id IN(?)', $data)
-        );
-        return $this->_helper->json->sendSuccess();
-    }
-
-    public function getAddressListAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $addresses = array();
-        if ($customerId = (int)$this->_getParam('customerId')) {
-            $rowset = Axis::single('account/customer_address')
-                ->getSortListByCustomerId($customerId);
-
-            foreach($rowset as $address) {
-                $addresses[] = $address->toArray();
-            }
-        }
-
-        return $this->_helper->json->setData($addresses)->sendSuccess();
-    }
-
     public function saveCustomerAction()
     {
+        Axis_FirePhp::log($this->_getAllParams());
+//        return;
         $_row    = $this->_getParam('customer'); 
         $details = $this->_getParam('custom_fields', array());
 
@@ -173,5 +147,21 @@ class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
             return false;
         }
         return true;
+    }
+    
+    public function getAddressListAction()
+    {
+        $this->_helper->layout->disableLayout();
+        $addresses = array();
+        if ($customerId = (int)$this->_getParam('customerId')) {
+            $rowset = Axis::single('account/customer_address')
+                ->getSortListByCustomerId($customerId);
+
+            foreach($rowset as $address) {
+                $addresses[] = $address->toArray();
+            }
+        }
+
+        return $this->_helper->json->setData($addresses)->sendSuccess();
     }
 }

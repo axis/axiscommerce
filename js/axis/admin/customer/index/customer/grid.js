@@ -66,7 +66,7 @@ var CustomerGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('customer_index/delete'),
+            url: Axis.getUrl('account/customer/remove'),
             params: {
                 data: Ext.encode(data)
             },

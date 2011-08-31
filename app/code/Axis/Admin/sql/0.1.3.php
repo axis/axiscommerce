@@ -38,6 +38,7 @@ class Axis_Admin_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
         Axis::model('admin/acl_resource')
             ->rename('admin/customer_index/index', 'admin/account/customer/index')
             ->rename('admin/customer_index/list', 'admin/account/customer/list')
+            ->rename('admin/customer_index/delete', 'admin/account/customer/remove')
         ;
     }
 
