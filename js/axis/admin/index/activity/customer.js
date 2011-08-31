@@ -31,7 +31,7 @@ Ext.onReady(function() {
     }
 
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('customer_index/list'),
+        url: Axis.getUrl('account/customer/list'),
         baseParams: baseParams,
         reader: new Ext.data.JsonReader({
             root: 'data',
@@ -61,7 +61,7 @@ Ext.onReady(function() {
                 return String.format(
                     '<a href="{1}" target="_blank">{0}</a>',
                     value,
-                    Axis.getUrl('customer_index/index/customerId/' + record.get('id'))
+                    Axis.getUrl('account/customer/index/customerId/' + record.get('id'))
                 );
             },
         }, {

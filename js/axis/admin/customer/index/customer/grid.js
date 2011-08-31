@@ -66,7 +66,7 @@ var CustomerGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('customer_index/delete'),
+            url: Axis.getUrl('account/customer/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -88,7 +88,7 @@ var CustomerGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('customer_index/batch-save/'),
+            url: Axis.getUrl('account/customer/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -124,7 +124,7 @@ Ext.onReady(function() {
             totalProperty: 'count'
         }, CustomerGrid.record),
         remoteSort: true,
-        url: Axis.getUrl('customer_index/list')
+        url: Axis.getUrl('account/customer/list')
     });
 
     var actions = new Ext.ux.grid.RowActions({

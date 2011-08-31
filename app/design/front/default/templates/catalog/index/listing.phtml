@@ -27,7 +27,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
 
 <div class="box">
 
-<?php echo $this->render('index/product-listing-paging.phtml') ?>
+<?php echo $this->render('catalog/index/product-listing-paging.phtml') ?>
 
 <?php if ($this->mode == 'list' ): /* List listing */ ?>
     <ul class="product-listing product-listing-list" id="content-listing">
@@ -198,7 +198,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
     </script>
 <?php endif; ?>
 
-<?php echo $this->render('index/product-listing-paging.phtml'); ?>
+<?php echo $this->render('catalog/index/product-listing-paging.phtml'); ?>
 </div>
 
 <?php endif; ?>

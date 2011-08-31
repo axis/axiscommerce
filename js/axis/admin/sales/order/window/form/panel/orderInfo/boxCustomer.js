@@ -29,7 +29,7 @@ Ext.onReady(function(){
     var storeCustomerGroup = new Ext.data.Store({
 //        storeId: 'storeCustomerGroup',
         autoLoad: true,
-        url: Axis.getUrl('customer_group/list'),
+        url: Axis.getUrl('account/group/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -95,7 +95,7 @@ Ext.onReady(function(){
 //        remoteSort: true,
         proxy: new Ext.data.HttpProxy({
             method: 'POST',
-            url: Axis.getUrl('customer_index/list')
+            url: Axis.getUrl('account/customer/list')
         })
         ,listeners: {
             load: function(store, records, options) {

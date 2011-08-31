@@ -33,8 +33,23 @@
  */
 class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_Helper_ViewRenderer
 {
+    /**
+     * View script path specification string
+     * @var string
+     */
+    protected $_viewScriptPathSpec = ':module/:controller/:action.:suffix';
+    
+    /**
+     *
+     * @var bool 
+     */
     protected $_autoAddBasePaths = true;
 
+    /**
+     *
+     * @param bool $auto
+     * @return Axis_Controller_Action_Helper_ViewRenderer 
+     */
     public function autoAddBasePaths($auto = true)
     {
         $this->_autoAddBasePaths = (bool) $auto;
@@ -173,16 +188,6 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $area  = $view->area;
         $theme = $view->templateName;
         
-        if (Axis_Area::isFrontend()) {
-            $modulePath = strtolower($view->moduleName);
-        } else {
-            $controllerName = $this->getRequest()->getControllerName();
-            $modulePath = 'core';
-            if (strpos($controllerName, '_')) {
-                list($modulePath) = explode('_', $controllerName);
-            }
-        }
-
         $view->addFilterPath(
                 $path . '/library/Axis/View/Filter', 'Axis_View_Filter'
             )->addHelperPath(
@@ -206,12 +211,16 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
             }
             if (is_readable($themePath . '/templates')) {
                 $view->addScriptPath($themePath . '/templates');
-                $view->addScriptPath($themePath . '/templates/' . $modulePath);
             }
             if (is_readable($themePath . '/layouts')) {
                 $view->addScriptPath($themePath . '/layouts');
             }
         }
+        $this->getInflector()
+            ->addFilterRule('module', new Zend_Filter_PregReplace('/^.+_(.+)$/', '$1'))
+//            ->addFilterRule('module', new Zend_Filter_PregReplace('/^admin$/', ''))
+            ->addFilterRule('controller', new Zend_Filter_PregReplace('/^admin\/(.+)$/', '$1'))
+        ;
     }
 
     protected function _initDefaults()

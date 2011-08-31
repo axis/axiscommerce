@@ -35,7 +35,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('customer_wishlist/list'),
+        url: Axis.getUrl('account/wishlist/list'),
         reader: new Ext.data.JsonReader({
             root : 'data',
             totalProperty: 'count',
@@ -60,7 +60,7 @@ Ext.onReady(function() {
         return String.format(
             '<a href="{1}" target="_blank" >{0}</a>',
             value,
-            Axis.getUrl('customer_index/index/customerId/' + record.data.customer_id)
+            Axis.getUrl('account/customer/index/customerId/' + record.data.customer_id)
         );
     }
 
@@ -129,7 +129,7 @@ Ext.onReady(function() {
             icon: Axis.skinUrl + '/images/icons/refresh.png',
             cls: 'x-btn-icon',
             handler: function() {
-                gridWishlist.getStore().reload();
+                grid.getStore().reload();
             }
         }],
         bbar: new Axis.PagingToolbar({

@@ -89,7 +89,7 @@ Ext.onReady(function() {
                 return String.format(
                     '<a href="{1}" target="_blank">{0}</a>',
                     value,
-                    Axis.getUrl('customer_index/index/customerId/' + customerId)
+                    Axis.getUrl('account/customer/index/customerId/' + customerId)
                 );
             },
             filter: {
@@ -106,7 +106,7 @@ Ext.onReady(function() {
                 return String.format(
                     '<a href="{1}" target="_blank">{0}</a>',
                     value,
-                    Axis.getUrl('customer_index/index/customerId/' + customerId)
+                    Axis.getUrl('account/customer/index/customerId/' + customerId)
                 );
             },
             width: 210,

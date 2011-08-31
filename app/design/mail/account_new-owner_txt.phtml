@@ -8,7 +8,7 @@
 <?php echo $this->translate('account')->__('Email') ?>: <?php echo $this->customer->email ?>
 
 <?php $route = Axis::config('core/backend/route') ?>
-<?php echo $this->translate('core')->__('See Details Info');?>: <?php echo $this->href("{$route}/customer_index/index/customerId/", true, false) . $this->customer->id ?>
+<?php echo $this->translate('core')->__('See Details Info');?>: <?php echo $this->href("{$route}/account/customer/index/customerId/", true, false) . $this->customer->id ?>
 
 
 <?php echo $this->render('include/footer_txt.phtml') ?>

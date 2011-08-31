@@ -57,7 +57,7 @@ Ext.onReady(function () {
             return String.format(
                 '<a href="{1}">{0}</a>',
                 value,
-                Axis.getUrl('customer_index/index/customerId/' + record.data.customer_id)
+                Axis.getUrl('account/customer/index/customerId/' + record.data.customer_id)
             );
         } else if (!value) {
             return 'Undefined'.l();

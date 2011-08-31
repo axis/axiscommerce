@@ -40,7 +40,7 @@ var Customer = {
     load: function(id) {
         Customer.id = id;
         CustomerWindow.form.getForm().load({
-            url: Axis.getUrl('customer_index/get-customer-data/id/' + id),
+            url: Axis.getUrl('account/customer/load/id/' + id),
             method: 'get',
             success: function(form, action) {
                 var data = Ext.decode(action.response.responseText).data;

@@ -64,7 +64,7 @@ $imageTitle = isset($product['images'][$product['image_listing']]) ?
     </div>
 </div>
 
-<?php echo $this->render('review/list/toolbar.phtml') ?>
+<?php echo $this->render('community/review/list/toolbar.phtml') ?>
 <ol class="review-product-list">
 <?php foreach ($this->data['reviews'] as $review) :
 $authorName = $this->escape($review['author']);
@@ -92,7 +92,7 @@ endif;
 </li>
 <?php endforeach; ?>
 </ol>
-<?php echo $this->render('review/list/toolbar.phtml') ?>
+<?php echo $this->render('community/review/list/toolbar.phtml') ?>
 <?php else:
     echo $this->translate('community')->__('There are no reviews for this product yet');
 endif;?>

@@ -31,33 +31,21 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Customer_WishlistController extends Axis_Admin_Controller_Back
+class Axis_Account_Admin_AddressController extends Axis_Admin_Controller_Back
 {
-    public function indexAction()
+   public function listAction()
     {
-        $this->view->pageTitle = Axis::translate('account')->__('Wishlist');
-        $this->render();
-    }
+        $data = array();
+        if ($customerId = (int)$this->_getParam('customerId')) {
+            $rowset = Axis::single('account/customer_address')
+                ->getSortListByCustomerId($customerId);
 
-    public function listAction()
-    {
-        $select = Axis::model('account/wishlist')->select('*')
-            ->calcFoundRows()
-            ->addProductDescription()
-            ->addCustomerData()
-            ->addFilters($this->_getParam('filter', array()))
-            ->limit(
-                $this->_getParam('limit', 25),
-                $this->_getParam('start', 0)
-            )
-            ->order(
-                $this->_getParam('sort', 'id'),
-                $this->_getParam('dir', 'DESC')
-            );
+            foreach($rowset as $address) {
+                $data[] = $address->toArray();
+            }
+        }
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json->setData($data)
+            ->sendSuccess();
     }
 }
