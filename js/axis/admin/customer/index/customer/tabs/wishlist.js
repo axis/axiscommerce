@@ -42,7 +42,7 @@ var WishlistGrid = {
 Ext.onReady(function() {
 
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('customer_wishlist/list'),
+        url: Axis.getUrl('account/wishlist/list'),
         baseParams: {
             'limit'                     : 25,
             'filter[customer][field]'   : 'customer_id',

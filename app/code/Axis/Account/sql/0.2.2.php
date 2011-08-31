@@ -35,7 +35,8 @@ class Axis_Admin_Upgrade_0_2_2 extends Axis_Core_Model_Migration_Abstract
         Axis::model('admin/menu')
             ->edit('Manage Customers', null, 'account/customer')
             ->edit('Customer Groups', null, 'account/group')
-            
+            ->edit('Wishlist', null, 'account/wishlist')
+//            ->edit('Customer Info Fields',         null, 'account/wishlist')
         ;
         
         Axis::model('admin/acl_resource')
@@ -52,6 +53,10 @@ class Axis_Admin_Upgrade_0_2_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/customer_group/save', 'admin/account/group/batch-save')
             ->rename('admin/customer_group/delete', 'admin/account/group/remove')
             ->remove('admin/customer_group')
+            
+            ->rename('admin/customer_wishlist/index', 'admin/account/wishlist/index')
+            ->rename('admin/customer_wishlist/list', 'admin/account/wishlist/list')
+            ->remove('admin/customer_wishlist')
         ;
     }
 

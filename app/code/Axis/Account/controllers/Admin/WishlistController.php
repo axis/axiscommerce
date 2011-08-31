@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Customer_WishlistController extends Axis_Admin_Controller_Back
+class Axis_Account_Admin_WishlistController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
