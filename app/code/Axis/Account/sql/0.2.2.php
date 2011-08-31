@@ -51,7 +51,6 @@ class Axis_Admin_Upgrade_0_2_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/customer_group/list', 'admin/account/group/list')
             ->rename('admin/customer_group/save', 'admin/account/group/batch-save')
             ->rename('admin/customer_group/delete', 'admin/account/group/remove')
-            
             ->remove('admin/customer_group')
         ;
     }

@@ -29,7 +29,7 @@ Ext.onReady(function(){
     var storeCustomerGroup = new Ext.data.Store({
 //        storeId: 'storeCustomerGroup',
         autoLoad: true,
-        url: Axis.getUrl('customer_group/list'),
+        url: Axis.getUrl('account/group/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'

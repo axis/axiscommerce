@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
+class Axis_Account_Admin_GroupController extends Axis_Admin_Controller_Back
 {
     public  function indexAction()
     {
@@ -58,10 +58,8 @@ class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
             ->sendSuccess();
     }
     
-    public function saveAction()
+    public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-        
         $rowset = Zend_Json::decode($this->_getParam('data'));
         
         if (!sizeof($rowset)) {
@@ -85,10 +83,8 @@ class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
     
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-        
         $customerGroupIds = Zend_Json::decode($this->_getParam('data'));
 
         $isValid = true;
@@ -148,14 +144,5 @@ class Axis_Admin_Customer_GroupController extends Axis_Admin_Controller_Back
         $this->_helper->json->sendJson(array(
             'success' => $isValid
         ));
-    }
-    
-    public function getGroupsAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = Axis::single('account/customer_group')->fetchAll()->toArray();
-        $this->_helper->json
-            ->setData($data)
-            ->sendSuccess();
     }
 }

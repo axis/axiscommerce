@@ -26,7 +26,7 @@ Ext.onReady(function(){
     
      
      var ds = new Ext.data.Store({
-        url: Axis.getUrl('customer_group/list'),
+        url: Axis.getUrl('account/group/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -86,7 +86,7 @@ Ext.onReady(function(){
                  }
                  var jsonData = Ext.encode(data);
                  Ext.Ajax.request({
-                      url: Axis.getUrl('customer_group/save'),
+                      url: Axis.getUrl('account/group/batch-save'),
                       params: {data: jsonData},
                       callback: function() {
                            ds.reload();
@@ -107,7 +107,7 @@ Ext.onReady(function(){
                  }
                  var jsonData = Ext.encode(data);
                  Ext.Ajax.request({
-                      url: Axis.getUrl('customer_group/delete'),
+                      url: Axis.getUrl('account/group/remove'),
                       params: {data: jsonData},
                       callback: function() {
                            ds.reload();
