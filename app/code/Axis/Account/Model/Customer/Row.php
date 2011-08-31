@@ -60,14 +60,14 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
             ->where('acd.customer_id = ? ', $this->id)
             ->where('acf.name =  ?', $fieldName)
             ->fetchRow();
-        
+
         if (!$row) {
             return false;
         }
-        
+
         if ($row->data){
             return $row->data;
-        } 
+        }
         if ($row->customer_valueset_value_id) {
             return Axis::model('account/customer_valueSet_value_label')
                 ->select('label')
@@ -94,50 +94,50 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
             $row = $model->find($data['id'])->current();
         }
         if (!$row) {
+            unset($data['id']);
             $row = $model->createRow();
-            
-            $isFirsT = $model->select()
+            $isFirst = ($model->select()
                 ->where('customer_id = ?', $this->id)
-                ->count('id') == 0;
+                ->count('id') == 0);
         }
         $row->setFromArray($data);
-        $row->customer_id = $this->id;            
+        $row->customer_id = $this->id;
         if (empty($row->zone_id)) {
             $row->zone_id = new Zend_Db_Expr('NULL');
         }
         $row->save();
-        
-        if ((isset($data['default_billing']) && $data['default_billing']) 
+
+        if ((isset($data['default_billing']) && $data['default_billing'])
             || $isFirst) {
-            
+
             $this->default_billing_address_id  = $row->id;
         }
-        if ((isset($data['default_shipping']) && $data['default_shipping']) 
+        if ((isset($data['default_shipping']) && $data['default_shipping'])
             || $isFirst) {
-            
+
             $this->default_shipping_address_id = $row->id;
         }
-        
+
         $this->save();
 
         return $row->id;
     }
-    
+
     /**
      *
-     * @param type $data 
+     * @param type $data
      */
-    public function setDetails($data) 
+    public function setDetails($data)
     {
         $modelDetail = Axis::model('account/customer_detail');
-        
+
         $modelDetail->delete(
             Axis::db()->quoteInto('customer_id = ?', $this->id)
         );
-        
+
         $fields = Axis::single('account/customer_field')->select()
             ->fetchAssoc();
-        
+
         $multiFields = Axis_Account_Model_Customer_Field::$fieldMulti;
 
         foreach ($data as $id => $value) {
@@ -145,7 +145,7 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
                 continue;
             }
             list(, $id) = explode('_', $id);
-            
+
 
             $_row = array(
                 'customer_id'       => $this->id,
@@ -158,13 +158,13 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
             }
 
             if ($isMultiField && is_array($value)) {
-                
+
                foreach ($value as $_value) {
                     $row = $modelDetail->createRow($_row);
                     $row->customer_valueset_value_id = $_value;
                     $row->save();
                 }
-                
+
             } elseif($isMultiField) {
                 $row = $modelDetail->createRow($_row);
                 $row->customer_valueset_value_id = $value;
