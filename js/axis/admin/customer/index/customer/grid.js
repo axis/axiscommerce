@@ -88,7 +88,7 @@ var CustomerGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('customer_index/batch-save/'),
+            url: Axis.getUrl('account/customer/batch-save'),
             params: {
                 data: Ext.encode(data)
             },

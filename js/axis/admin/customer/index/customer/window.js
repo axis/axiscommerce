@@ -94,7 +94,7 @@ var CustomerWindow = {
     save: function(closeWindow) {
         CustomerWindow.getData();
         CustomerWindow.form.getForm().submit({
-            url: Axis.getUrl('customer_index/save-customer'),
+            url: Axis.getUrl('account/customer/save'),
             params: CustomerWindow.data,
             submitEmptyText: false,
             success: function(form, action) {
