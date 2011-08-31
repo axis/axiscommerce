@@ -183,7 +183,7 @@ Ext.onReady(function(){
         remoteSort: true,
         proxy: new Ext.data.HttpProxy({
             method: 'POST',
-            url: Axis.getUrl('customer_index/get-address-list')
+            url: Axis.getUrl('account/address/list')
         }),
         listeners: {
             load: function(store, records, options) {

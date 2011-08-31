@@ -39,6 +39,9 @@ class Axis_Admin_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/customer_index/index', 'admin/account/customer/index')
             ->rename('admin/customer_index/list', 'admin/account/customer/list')
             ->rename('admin/customer_index/delete', 'admin/account/customer/remove')
+            ->rename('admin/customer_index/save-customer', 'admin/account/customer/save')
+            ->rename('admin/customer_index/batch-save', 'admin/account/customer/batch-save')
+            ->rename('admin/customer_index/get-address-list', 'admin/account/address/list')
         ;
     }
 

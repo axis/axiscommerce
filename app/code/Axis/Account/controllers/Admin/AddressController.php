@@ -31,7 +31,21 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Customer_IndexController extends Axis_Admin_Controller_Back
+class Axis_Account_Admin_AddressController extends Axis_Admin_Controller_Back
 {
+   public function listAction()
+    {
+        $data = array();
+        if ($customerId = (int)$this->_getParam('customerId')) {
+            $rowset = Axis::single('account/customer_address')
+                ->getSortListByCustomerId($customerId);
 
+            foreach($rowset as $address) {
+                $data[] = $address->toArray();
+            }
+        }
+
+        return $this->_helper->json->setData($data)
+            ->sendSuccess();
+    }
 }
