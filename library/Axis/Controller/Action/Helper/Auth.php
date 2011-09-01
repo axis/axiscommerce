@@ -87,12 +87,22 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
         }
         
         //ACL
-        $acl    = Axis::single('admin/acl');
+        $modelAcl    = Axis::single('admin/acl');
         $roleId = Axis::session()->roleId;
         if (!empty($roleId)) {
-            $acl->loadRules($roleId);
+            $modelAcl->loadRules($roleId);
         }
-        if (false === $acl->check($roleId, "admin/$controllerName/$actionName")) {
+        $viewRenderrer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+        $inflector = $viewRenderrer->getInflector();
+        $params = array(
+            'module'     => $request->getModuleName(),
+            'controller' => $controllerName,
+            'action'     => $actionName
+        );
+        $inflector->setTarget('admin/:module/:controller/:action');
+        $resource = $inflector->filter($params);
+        
+        if (false === $modelAcl->check($roleId, $resource)) {
             if ($request->isXmlHttpRequest()) {
                 Axis::message()->addError(
                     Axis::translate('admin')->__(
