@@ -66,16 +66,18 @@ class Axis_Account_Upgrade_0_2_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/customer_custom-fields/ajax-save-group',              'admin/account/field-group/save')
             ->rename('admin/customer_custom-fields/ajax-delete-group',            'admin/account/field-group/remove')
             
-            ->rename('admin/customer_custom-fields/ajax-delete-value-set' ,       'admin/account/field/ajax-delete-value-set')
+            ->rename('admin/customer_custom-fields/get-value-sets',               'admin/account/field-value-set/list')
+            ->rename('admin/customer_custom-fields/ajax-save-value-set',          'admin/account/field-value-set/save')
+            ->rename('admin/customer_custom-fields/ajax-delete-value-set' ,       'admin/account/field-value-set/remove')
+            
             ->rename('admin/customer_custom-fields/ajax-delete-value-set-values', 'admin/account/field/ajax-delete-value-set-values')
-            ->rename('admin/customer_custom-fields/ajax-save-value-set',          'admin/account/field/ajax-save-value-set')
             ->rename('admin/customer_custom-fields/ajax-save-value-set-values',   'admin/account/field/ajax-save-value-set-values')
             ->rename('admin/customer_custom-fields/batch-save-fields',            'admin/account/field/batch-save-fields')
             ->rename('admin/customer_custom-fields/delete-fields',                'admin/account/field/delete-fields')
             ->rename('admin/customer_custom-fields/get-fields',                   'admin/account/field/get-fields')
             ->rename('admin/customer_custom-fields/get-type',                     'admin/account/field/get-type')
             ->rename('admin/customer_custom-fields/get-validator',                'admin/account/field/get-validator')
-            ->rename('admin/customer_custom-fields/get-value-sets',               'admin/account/field/get-value-sets')
+            
             ->rename('admin/customer_custom-fields/get-values',                   'admin/account/field/get-values')
             ->rename('admin/customer_custom-fields/index',                        'admin/account/field/index')
             ->rename('admin/customer_custom-fields/save-field',                   'admin/account/field/save-field')

@@ -42,7 +42,7 @@ Ext.onReady(function(){
         enableDD: false,
         rootVisible: false,
         loader: new Ext.tree.TreeLoader({
-            url: Axis.getUrl('account/field/get-value-sets')
+            url: Axis.getUrl('account/field-value-set/list')
         }),
         tbar: [{
             text:'Add'.l(),
@@ -70,7 +70,7 @@ Ext.onReady(function(){
                     valueSet.getSelectionModel().selNode.remove();
                 } else if (confirm('Are you sure?')) {
                     Ext.Ajax.request({
-                       url: Axis.getUrl('account/field/ajax-delete-value-set'),
+                       url: Axis.getUrl('account/field-value-set/remove'),
                        params: {id: valuesetId},
                        success: function() {
                            valueSet.getSelectionModel().selNode.remove();
@@ -95,7 +95,7 @@ Ext.onReady(function(){
                 data['id'] = node.id;
                 jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('account/field/ajax-save-value-set'),
+                    url: Axis.getUrl('account/field-value-set/save'),
                     params: {data: jsonData},
                     success: function(response) {
                         valuesetId = Ext.decode(response.responseText).valueset_id;

@@ -146,26 +146,7 @@ class Axis_Account_Admin_FieldController extends Axis_Admin_Controller_Back
         );
         $this->_helper->json->sendSuccess();
     }
-    
-    public function getValueSetsAction()
-    {
-        $this->getHelper('layout')->disableLayout();
-        
-        $result = array();
-        $rowset = Axis::single('account/Customer_ValueSet')->fetchAll();
-
-        foreach ($rowset as $row) {
-            $result[] = array(
-                'leaf' => true,
-                'id' => $row->id,
-                'text' => $row->name,
-                'iconCls' => 'folder'
-            );
-        }
-        
-        $this->_helper->json->sendRaw($result);
-    }
-    
+   
     public function getValuesAction()
     {
         $this->_helper->layout->disableLayout();
@@ -177,43 +158,7 @@ class Axis_Account_Admin_FieldController extends Axis_Admin_Controller_Back
                 ->getValues($valuesetId)
         ));
     }
-    
-    public function ajaxSaveValueSetAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = Zend_Json::decode($this->_getParam('data'));
-        
-        $valueset = Axis::single('account/Customer_ValueSet')->save($data);
-        if (!$valueset) {
-            $this->_helper->json->sendFailure();
-            return;
-        }
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-            )
-        );
-        $this->_helper->json->setValuesetId($valueset->id)
-            ->sendSuccess();
-    }
-    
-    public function ajaxDeleteValueSetAction()
-    {
-        $this->_helper->layout->disableLayout();
-        
-        $data = $this->_getParam('id');
-        
-        Axis::single('account/Customer_ValueSet')
-            ->delete($this->db->quoteInto('id IN(?)', $data));
-
-        Axis::message()->addSuccess(
-            Axis::translate('admin')->__(
-                'Group was deleted successfully'
-            )
-        );
-        $this->_helper->json->sendSuccess();
-    }
-    
+       
     public function ajaxSaveValueSetValuesAction()
     {
         $this->_helper->layout->disableLayout();
