@@ -59,7 +59,7 @@ Ext.onReady(function(){
     vss = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
             method: 'get',
-            url: Axis.getUrl('account/field-value-set/list')
+            url: Axis.getUrl('account/value-set/list')
         }),
         reader: new Ext.data.JsonReader({id: 'id'}, value),
         autoLoad: true
