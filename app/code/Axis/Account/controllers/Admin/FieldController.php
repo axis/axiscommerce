@@ -71,15 +71,6 @@ class Axis_Account_Admin_FieldController extends Axis_Admin_Controller_Back
         
         return $this->_helper->json->sendRaw($result);
     }
-    
-    public function getGroupsAction()
-    {
-        $this->getHelper('layout')->disableLayout();
-        $data = Axis::model('account/Customer_FieldGroup')->getGroups(
-            Axis_Locale::getLanguageId()
-        );
-        return $this->_helper->json->setData($data)->sendSuccess();
-    }
 
     public function getFieldsAction()
     {
@@ -88,16 +79,6 @@ class Axis_Account_Admin_FieldController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess(array(
             'data'  => Axis::single('account/customer_field')
                 ->getFieldsByGroup((int) $this->_getParam('groupId'))
-        ));
-    }
-
-    public function getGroupInfoAction()
-    {
-        $this->getHelper('layout')->disableLayout();
-         
-        $this->_helper->json->sendSuccess(array(
-            'data' => Axis::single('account/Customer_FieldGroup')
-                ->getCurrentGroup($this->_getParam('groupId'))
         ));
     }
 
@@ -148,44 +129,6 @@ class Axis_Account_Admin_FieldController extends Axis_Admin_Controller_Back
         $this->_helper->json->sendSuccess();
     }
     
-    public function ajaxSaveGroupAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = Zend_Json::decode($this->_getParam('data'));
-        if (!sizeof($data)) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'No data to save'
-                )
-            );
-            return $this->_helper->json->sendFailure();
-        }
-        $data['name'] = preg_replace(
-            array("/[^a-z0-9\s+]/", "/\s+/"),
-            array('', '_'),
-            strtolower($data['name'])
-        );
-        
-        $row = Axis::model('account/Customer_FieldGroup')->save($data);
-        Axis::message()->addSuccess(
-            Axis::translate('account')->__(
-                'Group was saved successfully'
-            )
-        );
-        
-        $languageIds = array_keys(Axis_Collect_Language::collect());
-        $modelLabel = Axis::model('account/Customer_FieldGroup_Label');
-        foreach ($languageIds as $languageId) {
-            $rowLabel = $modelLabel->getRow($row->id, $languageId);
-            $rowLabel->group_label = $data['group_label-' . $languageId];
-            $rowLabel->save();
-        }
-        
-        $this->_helper->json
-            ->setGroupId($row->id)
-            ->sendSuccess();
-    }
-    
     public function deleteFieldsAction()
     {
         $this->_helper->layout->disableLayout();
@@ -204,23 +147,6 @@ class Axis_Account_Admin_FieldController extends Axis_Admin_Controller_Back
         $this->_helper->json->sendSuccess();
     }
     
-    public function ajaxDeleteGroupAction()
-    {
-        $this->_helper->layout->disableLayout();
-        
-        $data = $this->_getParam('id');
-        
-        Axis::single('account/Customer_FieldGroup')
-            ->delete($this->db->quoteInto('id IN(?)', $data));
-
-        Axis::message()->addSuccess(
-            Axis::translate('admin')->__(
-                'Group was deleted successfully'
-            )
-        );
-        $this->_helper->json->sendSuccess();
-    }
-
     public function getValueSetsAction()
     {
         $this->getHelper('layout')->disableLayout();
