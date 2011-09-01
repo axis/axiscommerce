@@ -45,17 +45,16 @@ class Axis_Account_Admin_ValueSetValueController extends Axis_Admin_Controller_B
        
     public function saveAction()
     {
-        $dataset = Zend_Json::decode($this->_getParam('data'));
-        $valuesetId = $this->_getParam('customer_valueset_id');
-        
-        $modelValue  = Axis::single('account/Customer_ValueSet_Value');
+        $_rowset     = Zend_Json::decode($this->_getParam('data'));
+        $valuesetId  = $this->_getParam('customer_valueset_id');
+        $model       = Axis::single('account/Customer_ValueSet_Value');
         $modelLabel  = Axis::single('account/Customer_ValueSet_Value_Label');
         $languageIds = array_keys(Axis_Collect_Language::collect());
-        foreach ($dataset as $_row) {
+        foreach ($_rowset as $_row) {
             if (!isset($_row['customer_valueset_id'])) {
                 $_row['customer_valueset_id'] = $valuesetId;
             }
-            $row = $modelValue->getRow($_row);
+            $row = $model->getRow($_row);
             $row->save();
             foreach ($languageIds as $languageId) {
                 $rowLabel = $modelLabel->getRow($row->id, $languageId);
@@ -68,17 +67,14 @@ class Axis_Account_Admin_ValueSetValueController extends Axis_Admin_Controller_B
                 'Data was saved successfully'
             )
         );
-
         return $this->_helper->json->sendSuccess();
     }
     
     public function removeAction()
     {
         $data = Zend_Json::decode($this->_getParam('data'));
-        
         Axis::single('account/Customer_ValueSet_Value')
             ->delete($this->db->quoteInto('id IN(?)', $data));
-
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Field was deleted successfully'

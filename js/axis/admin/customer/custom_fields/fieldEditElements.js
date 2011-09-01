@@ -20,7 +20,7 @@
 Ext.onReady(function(){
     
     validatorStore = new Ext.data.Store({
-        url: Axis.getUrl('account/field/get-validator'),
+        url: Axis.getUrl('account/field/list-validator'),
         reader: new Ext.data.ArrayReader({
             id: 1
         }, [{
@@ -105,7 +105,7 @@ Ext.onReady(function(){
     })
     
     typeStore = new Ext.data.Store({
-        url: Axis.getUrl('account/field/get-type'),
+        url: Axis.getUrl('account/field/list-type'),
         reader: new Ext.data.ArrayReader({
             id: 1
         }, [{

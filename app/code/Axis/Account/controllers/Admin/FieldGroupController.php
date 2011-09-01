@@ -84,7 +84,7 @@ class Axis_Account_Admin_FieldGroupController extends Axis_Admin_Controller_Back
             $rowLabel->save();
         }
         
-        $this->_helper->json
+        return $this->_helper->json
             ->setGroupId($row->id)
             ->sendSuccess();
     }
@@ -92,7 +92,6 @@ class Axis_Account_Admin_FieldGroupController extends Axis_Admin_Controller_Back
     public function removeAction()
     {
         $data = $this->_getParam('id');
-        
         Axis::single('account/Customer_FieldGroup')
             ->delete($this->db->quoteInto('id IN(?)', $data));
 
@@ -101,6 +100,6 @@ class Axis_Account_Admin_FieldGroupController extends Axis_Admin_Controller_Back
                 'Group was deleted successfully'
             )
         );
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 }

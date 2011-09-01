@@ -37,7 +37,6 @@ class Axis_Account_Admin_ValueSetController extends Axis_Admin_Controller_Back
     {
         $data = array();
         $rowset = Axis::model('account/Customer_ValueSet')->fetchAll();
-
         foreach ($rowset as $row) {
             $data[] = array(
                 'leaf'    => true,
@@ -46,15 +45,13 @@ class Axis_Account_Admin_ValueSetController extends Axis_Admin_Controller_Back
                 'iconCls' => 'folder'
             );
         }
-        
         return $this->_helper->json->sendRaw($data);
     }
     
     public function saveAction()
     {
         $_row = Zend_Json::decode($this->_getParam('data'));
-        
-        $row = Axis::model('account/Customer_ValueSet')->save($_row);
+        $row  = Axis::model('account/Customer_ValueSet')->save($_row);
         if (!$row) {
             return $this->_helper->json->sendFailure();
         }
@@ -71,10 +68,8 @@ class Axis_Account_Admin_ValueSetController extends Axis_Admin_Controller_Back
     public function removeAction()
     {
         $id = $this->_getParam('id');
-        
         Axis::single('account/Customer_ValueSet')
             ->delete($this->db->quoteInto('id IN(?)', $id));
-
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Group was deleted successfully'

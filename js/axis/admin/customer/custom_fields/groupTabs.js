@@ -58,7 +58,7 @@ function clickTab(tabId){
     document.getElementById(tabId).className = "active";
     groupId = tabId.replace(/tab-/, '');
     //reloading grid
-    ds.proxy.conn.url = Axis.getUrl('account/field/get-fields/groupId/' + groupId + '/');
+    ds.proxy.conn.url = Axis.getUrl('account/field/list/groupId/' + groupId + '/');
     ds.load();
     loadGroupData();
     return false;
@@ -199,7 +199,7 @@ function deleteGroup() {
         //switching to previous active group
         Ext.getDom('fields-grid').style.display = 'block';
         Ext.getDom('tab-' + groupId ).className = 'active';
-        ds.proxy.conn.url = Axis.getUrl('account/field/get-fields/groupId/' + groupId + '/');
+        ds.proxy.conn.url = Axis.getUrl('account/field/list/groupId/' + groupId + '/');
         ds.reload();
         loadGroupData();
 

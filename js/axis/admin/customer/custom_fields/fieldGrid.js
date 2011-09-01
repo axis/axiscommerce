@@ -32,7 +32,7 @@ Ext.onReady(function(){
     });
 
     ds = new Ext.data.Store({
-        url: Axis.getUrl('account/field/get-fields'),
+        url: Axis.getUrl('account/field/list'),
         baseParams: {
             groupId: groupId
         },
@@ -193,7 +193,7 @@ Ext.onReady(function(){
                     }
                     var jsonData = Ext.encode(data);
                     Ext.Ajax.request({
-                        url: Axis.getUrl('account/field/batch-save-fields'),
+                        url: Axis.getUrl('account/field/batch-save'),
                         params: {data: jsonData},
                         callback: function() {
                             ds.commitChanges();
@@ -222,7 +222,7 @@ Ext.onReady(function(){
                 }
                 var jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('account/field/delete-fields'),
+                    url: Axis.getUrl('account/field/remove'),
                     params: {data: jsonData},
                     callback: function() {
                         ds.reload();
