@@ -42,7 +42,7 @@ Ext.onReady(function(){
         enableDD: false,
         rootVisible: false,
         loader: new Ext.tree.TreeLoader({
-            url: Axis.getUrl('customer_custom-fields/get-value-sets')
+            url: Axis.getUrl('account/field/get-value-sets')
         }),
         tbar: [{
             text:'Add'.l(),
@@ -70,7 +70,7 @@ Ext.onReady(function(){
                     valueSet.getSelectionModel().selNode.remove();
                 } else if (confirm('Are you sure?')) {
                     Ext.Ajax.request({
-                       url: Axis.getUrl('customer_custom-fields/ajax-delete-value-set'),
+                       url: Axis.getUrl('account/field/ajax-delete-value-set'),
                        params: {id: valuesetId},
                        success: function() {
                            valueSet.getSelectionModel().selNode.remove();
@@ -95,7 +95,7 @@ Ext.onReady(function(){
                 data['id'] = node.id;
                 jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('customer_custom-fields/ajax-save-value-set'),
+                    url: Axis.getUrl('account/field/ajax-save-value-set'),
                     params: {data: jsonData},
                     success: function(response) {
                         valuesetId = Ext.decode(response.responseText).valueset_id;
@@ -140,7 +140,7 @@ Ext.onReady(function(){
     var valueRowClear = new Value(valuesetRowClear);
 
     vs = new Ext.data.Store({
-        url: Axis.getUrl('customer_custom-fields/get-values'),
+        url: Axis.getUrl('account/field/get-values'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -191,7 +191,7 @@ Ext.onReady(function(){
 
                 var jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('customer_custom-fields/ajax-save-value-set-values'),
+                    url: Axis.getUrl('account/field/ajax-save-value-set-values'),
                     params: {
                         data: jsonData,
                         customer_valueset_id: valuesetId
@@ -222,7 +222,7 @@ Ext.onReady(function(){
                 }
                 var jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('customer_custom-fields/ajax-delete-value-set-values'),
+                    url: Axis.getUrl('account/field/ajax-delete-value-set-values'),
                     params: {data: jsonData},
                     callback: function() {
                         vs.reload();

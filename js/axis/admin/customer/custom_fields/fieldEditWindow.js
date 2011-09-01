@@ -146,7 +146,7 @@ Ext.onReady(function(){
 
 function save(){
     Ext.getCmp('fieldForm').getForm().submit({
-        url: Axis.getUrl('customer_custom-fields/save-field'),
+        url: Axis.getUrl('account/field/save-field'),
         success: function(){
             Ext.getCmp('fieldEditWindow').hide();
             Ext.getCmp('grid-fields').store.reload();
