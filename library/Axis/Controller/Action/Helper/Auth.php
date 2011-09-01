@@ -85,7 +85,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
                 ->setDispatched(false);
             return;
         }
-
+        
         //ACL
         $acl    = Axis::single('admin/acl');
         $roleId = Axis::session()->roleId;
