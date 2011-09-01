@@ -169,7 +169,7 @@ class Axis_Admin_Model_Menu extends Axis_Db_Table
         $menuPath = explode('->', $path);
         $oldTitle = $menuPath[count($menuPath) - 1];
         $row = $this->find($this->getIdByTitle($oldTitle))->current();
-        if (!row) {
+        if (!$row) {
             throw new Axis_Exception("Menu item with path : \"{$path}\" not exist");
         }
         if (null !== $title) {
