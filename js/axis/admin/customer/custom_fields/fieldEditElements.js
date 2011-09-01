@@ -20,7 +20,7 @@
 Ext.onReady(function(){
     
     validatorStore = new Ext.data.Store({
-        url: Axis.getUrl('customer_custom-fields/get-validator'),
+        url: Axis.getUrl('account/field/list-validator'),
         reader: new Ext.data.ArrayReader({
             id: 1
         }, [{
@@ -59,7 +59,7 @@ Ext.onReady(function(){
     vss = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
             method: 'get',
-            url: Axis.getUrl('customer_custom-fields/get-value-sets')
+            url: Axis.getUrl('account/value-set/list')
         }),
         reader: new Ext.data.JsonReader({id: 'id'}, value),
         autoLoad: true
@@ -81,7 +81,7 @@ Ext.onReady(function(){
     gs = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
             method: 'get',
-            url: Axis.getUrl('customer_custom-fields/get-groups')
+            url: Axis.getUrl('account/field-group/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
@@ -105,7 +105,7 @@ Ext.onReady(function(){
     })
     
     typeStore = new Ext.data.Store({
-        url: Axis.getUrl('customer_custom-fields/get-type'),
+        url: Axis.getUrl('account/field/list-type'),
         reader: new Ext.data.ArrayReader({
             id: 1
         }, [{

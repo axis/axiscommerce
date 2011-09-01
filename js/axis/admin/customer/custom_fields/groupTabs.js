@@ -58,7 +58,7 @@ function clickTab(tabId){
     document.getElementById(tabId).className = "active";
     groupId = tabId.replace(/tab-/, '');
     //reloading grid
-    ds.proxy.conn.url = Axis.getUrl('customer_custom-fields/get-fields/groupId/' + groupId + '/');
+    ds.proxy.conn.url = Axis.getUrl('account/field/list/groupId/' + groupId + '/');
     ds.load();
     loadGroupData();
     return false;
@@ -67,7 +67,10 @@ function clickTab(tabId){
 function loadGroupData(){
     //reloading groupInfo tabs
     Ext.Ajax.request({
-        url: Axis.getUrl('customer_custom-fields/get-group-info/groupId/') + groupId,
+        url: Axis.getUrl('account/field-group/load/'),
+        params: {
+            groupId: groupId
+        }, 
         success: function(response){
             var data = eval('('+ response.responseText +')');
             Ext.getDom('name').value = data.data[0] ? data.data[0].name : '';
@@ -147,7 +150,7 @@ function saveGroup(){
         return;
     }
     Ext.Ajax.request({
-        url: Axis.getUrl('customer_custom-fields/ajax-save-group'),
+        url: Axis.getUrl('account/field-group/save'),
         params: {data: jsonData},
         success: function(response){
             if (editing_new_group){
@@ -196,7 +199,7 @@ function deleteGroup() {
         //switching to previous active group
         Ext.getDom('fields-grid').style.display = 'block';
         Ext.getDom('tab-' + groupId ).className = 'active';
-        ds.proxy.conn.url = Axis.getUrl('customer_custom-fields/get-fields/groupId/' + groupId + '/');
+        ds.proxy.conn.url = Axis.getUrl('account/field/list/groupId/' + groupId + '/');
         ds.reload();
         loadGroupData();
 
@@ -208,13 +211,13 @@ function deleteGroup() {
             return false;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('customer_custom-fields/ajax-delete-group'),
+            url: Axis.getUrl('account/field-group/remove'),
             params: {id: groupId},
             callback: function() {
                 Ext.get('tab-' + groupId).parent().remove();
 
                 Ext.Ajax.request({
-                    url: Axis.getUrl('customer_custom-fields/get-groups'),
+                    url: Axis.getUrl('account/field-group/list'),
                     success: function(response) {
                         var response = eval('('+ response.responseText +')');
 

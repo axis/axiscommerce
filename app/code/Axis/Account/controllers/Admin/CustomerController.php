@@ -243,7 +243,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
             ));
         }    
 
-        $this->_helper->json->sendSuccess(array(
+        return $this->_helper->json->sendSuccess(array(
             'data' => array('customer_id' => $row->id)
         ));
     }
