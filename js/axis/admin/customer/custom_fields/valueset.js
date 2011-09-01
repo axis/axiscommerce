@@ -140,7 +140,7 @@ Ext.onReady(function(){
     var valueRowClear = new Value(valuesetRowClear);
 
     vs = new Ext.data.Store({
-        url: Axis.getUrl('account/field/get-values'),
+        url: Axis.getUrl('account/value-set-value/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -191,7 +191,7 @@ Ext.onReady(function(){
 
                 var jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('account/field/ajax-save-value-set-values'),
+                    url: Axis.getUrl('account/value-set-value/save'),
                     params: {
                         data: jsonData,
                         customer_valueset_id: valuesetId
@@ -222,7 +222,7 @@ Ext.onReady(function(){
                 }
                 var jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('account/field/ajax-delete-value-set-values'),
+                    url: Axis.getUrl('account/value-set-value/remove'),
                     params: {data: jsonData},
                     callback: function() {
                         vs.reload();
