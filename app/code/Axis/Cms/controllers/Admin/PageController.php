@@ -148,7 +148,7 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
 
     public function batchSaveAction()
     {
-        $_rowset = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
         $model = Axis::single('cms/page');
         foreach ($_rowset as $_row) {
             $model->getRow($_row)->save();

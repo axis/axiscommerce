@@ -28,7 +28,7 @@ var BlockWindow = {
 
     save: function(closeWindow) {
         BlockWindow.form.getForm().submit({
-            url: Axis.getUrl('cms_block/save'),
+            url: Axis.getUrl('cms/block/save'),
             success: function(form, action) {
                 BlockGrid.reload();
                 if (closeWindow) {

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
+class Axis_Cms_Admin_BlockController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -41,26 +41,21 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $select = Axis::model('cms/block')->select('*')
-            ->calcFoundRows();
-
-        $this->_helper->json->sendSuccess(array(
-            'data' => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        $select = Axis::model('cms/block')->select('*')->calcFoundRows();
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess();
     }
 
-    public function getDataAction()
+    public function loadAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        if (!$row = Axis::model('cms/block')
-                ->find($this->_getParam('id'))->current()) {
-
-            Axis::message()->addError(Axis::translate('Axis_Cms')->__(
-                'Block %s not found', $this->_getParam('id')
+        $id = $this->_getParam('id');
+        $row = Axis::model('cms/block')->find($id)->current();
+        if (!$row) {
+            Axis::message()->addError(
+                Axis::translate('Axis_Cms')->__(
+                    'Block %s not found', $id
             ));
             return $this->_helper->json->sendFailure();
         }
@@ -78,15 +73,13 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
             $data['content']['lang_' . $languageId] = $content[$languageId];
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data' => $data
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-        
         $_row = $this->_getAllParams();
         $row  = Axis::model('cms/block')->save($_row);
         
@@ -102,42 +95,35 @@ class Axis_Admin_Cms_BlockController extends Axis_Admin_Controller_Back
                 ->save();
         }
         
-        Axis::message()->addSuccess(Axis::translate('core')->__(
-            'Data was saved successfully'
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
         ));
-        $this->_helper->json->sendSuccess(array(
-            'data' => array(
-                'id' => $row->id
-            )
-        ));
+        return $this->_helper->json
+            ->setData(array('id' => $row->id))
+            ->sendSuccess();
     }
 
     public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-
-        $mBlock = Axis::model('cms/block');
-        foreach ($data as $values) {
-            $mBlock->save($values);
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
+        $model = Axis::model('cms/block');
+        foreach ($_rowset as $_row) {
+            $model->save($_row);
         }
-        Axis::message()->addSuccess(Axis::translate('core')->__(
-            'Data was saved successfully'
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__(
+                'Data was saved successfully'
         ));
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('cms/block')->delete(
-                $this->db->quoteInto('id IN(?)', $data)
-            )
-        ));
+        $data = Zend_Json::decode($this->_getParam('data'));
+        Axis::single('cms/block')->delete(
+            $this->db->quoteInto('id IN(?)', $data)
+        );
+        return $this->_helper->json->sendSuccess();
     }
 }
