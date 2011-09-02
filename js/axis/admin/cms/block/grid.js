@@ -29,7 +29,10 @@ var Block = {
 
     load: function(id) {
         BlockWindow.form.getForm().load({
-            url: Axis.getUrl('cms_block/get-data/id/') + id,
+            url: Axis.getUrl('cms/block/load/'),
+            params: {
+              id: id  
+            },
             method: 'post',
             success: function(form, action) {
                 BlockWindow.el.show();
@@ -53,7 +56,7 @@ var BlockGrid = {
             data[i] = selectedItems[i].id;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('cms_block/delete'),
+            url: Axis.getUrl('cms/block/delete'),
             params: {
                 data: Ext.encode(data)
             },
@@ -74,7 +77,7 @@ var BlockGrid = {
             data[modified[i]['id']] = modified[i]['data'];
         }
         Ext.Ajax.request({
-            url:  Axis.getUrl('cms_block/batch-save'),
+            url:  Axis.getUrl('cms/block/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -117,7 +120,7 @@ Ext.onReady(function() {
 
     var ds = new Ext.data.Store({
         autoLoad: true,
-        url: Axis.getUrl('cms_block/list'),
+        url: Axis.getUrl('cms/block/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             idProperty: 'id'

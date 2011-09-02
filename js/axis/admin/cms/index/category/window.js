@@ -30,7 +30,7 @@ var CategoryWindow = {
 
     save: function(closeWindow) {
         CategoryWindow.form.getForm().submit({
-            url: Axis.getUrl('cms_index/save-category'),
+            url: Axis.getUrl('cms/category/save'),
             success: function(form, action) {
                 CategoryTree.reload();
                 if (closeWindow) {

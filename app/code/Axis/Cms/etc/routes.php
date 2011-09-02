@@ -56,3 +56,12 @@ $router->addRoute('cms', new Axis_Controller_Router_Route_Front(
         'action' => 'index'
     )
 ));
+
+$router->addRoute('admin/cms', new Axis_Controller_Router_Route_Back(
+    'cms/:controller/:action/*',
+    array(
+        'module' => 'Axis_Cms',
+        'controller' => 'index',
+        'action' => 'index'
+    )
+), 'admin');

@@ -70,7 +70,7 @@ Ext.onReady(function() {
     });
 
     var ctLoader = new Ext.tree.TreeLoader({
-        url: Axis.getUrl('cms_comment/get-page-tree'),
+        url: Axis.getUrl('cms/comment/get-page-tree'),
         listeners: {
             'beforeload': function(stLoader, node) {
                 CommentTree.el.root.appendChild([

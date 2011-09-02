@@ -48,7 +48,7 @@ var CommentGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('cms_comment/quick-save'),
+            url: Axis.getUrl('cms/comment/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -87,7 +87,7 @@ var CommentGrid = {
             data[i] = selectedItems[i].id;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('cms_comment/delete-comment'),
+            url: Axis.getUrl('cms/comment/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -116,7 +116,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('cms_comment/get-comments'),
+        url: Axis.getUrl('cms/comment/list'),
         reader: new Ext.data.JsonReader({
             totalProperty: 'count',
             root: 'data',
