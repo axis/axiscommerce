@@ -33,6 +33,7 @@ class Axis_Cms_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
         Axis::model('admin/menu')
             ->edit('Categories/Pages', null, 'cms/page')
             ->edit('Static Blocks', null, 'cms/block')
+            ->edit('Page Comments', null, 'cms/comment')
         ;
         
         Axis::model('admin/acl_resource')
