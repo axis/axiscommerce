@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
+class Axis_Cms_Admin_CommentController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -40,10 +40,8 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    public function getCommentsAction()
+    public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $filterTree = $this->_getParam('filterTree');
 
         $select = Axis::model('cms/page_comment')->select('*')
@@ -65,26 +63,24 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
             $select->addFilterByUncategorized();
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess();
     }
 
-    public function saveCommentAction()
+    public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $data = $this->_getAllParams();
+        $_row = $this->_getAllParams();
         $isNew = false;
-        if (isset($data['id']) && !$data['id']) {
-            unset($data['id']);
+        if (isset($_row['id']) && !$_row['id']) {
+            unset($_row['id']);
             $isNew = true;
-            $data['created_on'] = Axis_Date::now()->toSQLString();
+            $_row['created_on'] = Axis_Date::now()->toSQLString();
         } else {
-            $data['modified'] = Axis_Date::now()->toSQLString();
+            $_row['modified'] = Axis_Date::now()->toSQLString();
         }
-        $row = Axis::model('cms/page_comment')->getRow($data);
+        $row = Axis::model('cms/page_comment')->getRow($_row);
         $row->save();
 
         if ($isNew) {
@@ -98,21 +94,19 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
                 'Data was saved successfully'
         ));
 
-        $this->_helper->json->sendSuccess(array(
-            'id' => $row->id
-        ));
+        return $this->_helper->json
+            ->setId($row->id)
+            ->sendSuccess();
     }
 
-    public function quickSaveAction()
+    public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-        $mComment = Axis::model('cms/page_comment');
-        foreach ($data as $commentId => $values) {
-            $mComment->find($commentId)
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
+        $model = Axis::model('cms/page_comment');
+        foreach ($_rowset as $id => $_row) {
+            $model->find($id)
                 ->current()
-                ->setFromArray($values)
+                ->setFromArray($_row)
                 ->save();
         }
 
@@ -121,55 +115,43 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
                 'Data was saved successfully'
         ));
 
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
-    public function deleteCommentAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-
+        $data = Zend_Json::decode($this->_getParam('data'));
         Axis::single('cms/page_comment')->delete(
-            $this->db->quoteInto('id IN(?)',
-                Zend_Json_Decoder::decode($this->_getParam('data'))
+            $this->db->quoteInto('id IN(?)', $data
         ));
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
+    
 
     public function getPageTreeAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $sites = Axis_Collect_Site::collect();
-        $result = array();
-
         function getChilds($node, $root) {
-            $result = array();
-
-            $tableCmsCategory = Axis::single('cms/category');
+            $data = array();
+            $select = Axis::single('cms/category')->select('*');
             if ($root) {
-                $cats = $tableCmsCategory->select('*')
-                    ->where('cc.site_id = ?', $node)
-                    ->where('cc.parent_id is NULL')
-                    ->fetchAssoc();
+                $select->where('cc.site_id = ?', $node)
+                    ->where('cc.parent_id is NULL');
             } else {
-                $cats = $tableCmsCategory->select('*')
-                    ->where('cc.parent_id = ?', $node)
-                    ->fetchAssoc();
+                $select->where('cc.parent_id = ?', $node);
             }
-
             //get categories
-            foreach ($cats as $cat) {
-                $result[] = array(
+            foreach ($select->fetchAssoc() as $_category) {
+                $data[] = array(
                     'leaf'     => false,
-                    'id'       => "_" . $cat['id'],
+                    'id'       => "_" . $_category['id'],
                     'siteId'   => 'null',
-                    'catId'    => $cat['id'],
+                    'catId'    => $_category['id'],
                     'pageId'   => 'null',
-                    'text'     => $cat['name'],
+                    'text'     => $_category['name'],
                     'iconCls'  => 'icon-folder',
                     'expanded' => true,
-                    'cls'      => $cat['is_active'] ? '' : 'disabledNode',
-                    'children' => getChilds($cat['id'], false)
+                    'cls'      => $_category['is_active'] ? '' : 'disabledNode',
+                    'children' => getChilds($_category['id'], false)
                 );
             }
 
@@ -184,7 +166,7 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
                         ->fetchAll();
 
                     foreach ($pages as $page) {
-                    $result[] = array(
+                    $data[] = array(
                         'leaf'    => true,
                         'siteId'  => 'null',
                         'catId'   => 'null',
@@ -195,7 +177,7 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
                     );
                 }
             }
-            return $result;
+            return $data;
         }
 
         //load pages that is not linked with category
@@ -221,8 +203,9 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
                 return $result;
         }
 
+        $data = array();
         //custom root node (uncategorized)
-        $result[] = array(
+        $data[] = array(
             'leaf'     => false,
             'id'       => 'lost',
             'siteId'   => 'null',
@@ -235,8 +218,8 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
         );
 
         //autogenerated nodes
-        foreach ($sites as $siteId => $siteName) {
-            $result[] = array(
+        foreach (Axis_Collect_Site::collect() as $siteId => $siteName) {
+            $data[] = array(
                     'leaf'     => false,
                     'id'       => "__" . $siteId,
                     'siteId'   => $siteId,
@@ -249,6 +232,6 @@ class Axis_Admin_Cms_CommentController extends Axis_Admin_Controller_Back
             );
         }
 
-        $this->_helper->json->sendRaw($result);
+        $this->_helper->json->sendRaw($data);
     }
 }

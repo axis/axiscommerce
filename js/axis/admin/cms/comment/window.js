@@ -36,7 +36,7 @@ var CommentWindow = {
 
     save: function(closeWindow) {
         CommentWindow.form.getForm().submit({
-            url: Axis.getUrl('cms_comment/save-comment'),
+            url: Axis.getUrl('cms/comment/save'),
             success: function(form, action) {
                 CommentGrid.el.getStore().reload();
                 if (closeWindow) {

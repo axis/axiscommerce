@@ -37,9 +37,7 @@ class Axis_Cms_Admin_CategoryController extends Axis_Admin_Controller_Back
     {
         function getChilds($node, $root) {
             $data = array();
-            $model = Axis::model('cms/category');
-
-            $select = $model->select('*');
+            $select = Axis::model('cms/category')->select('*');
             if ($root) {
                 $select->where('cc.site_id = ?', $node)
                     ->where('cc.parent_id is NULL');
