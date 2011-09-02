@@ -42,7 +42,7 @@ var Page = {
     load: function(id) {
         Page.id = id;
         PageWindow.form.getForm().load({
-            url: Axis.getUrl('cms_index/get-page-data/id/' + id),
+            url: Axis.getUrl('cms/page/get-page-data/id/' + id),
             success: function(form, action) {
                 var data = Ext.decode(action.response.responseText).data;
                 PageWindow.el.setTitle(data.name);

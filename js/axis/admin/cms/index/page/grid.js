@@ -35,7 +35,7 @@ var PageGrid = {
             data[i] = selectedItems[i].id;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('cms_index/delete-page'),
+            url: Axis.getUrl('cms/page/delete-page'),
             params: {
                 data: Ext.encode(data)
             },
@@ -61,7 +61,7 @@ var PageGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('cms_index/batch-page-save'),
+            url: Axis.getUrl('cms/page/batch-page-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -89,7 +89,7 @@ Ext.onReady(function(){
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('cms_index/get-pages'),
+        url: Axis.getUrl('cms/page/get-pages'),
         reader: new Ext.data.JsonReader({
             totalProperty: 'count',
             root: 'data',
