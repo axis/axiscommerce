@@ -56,13 +56,11 @@ class Axis_Account_Upgrade_0_2_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/customer_group/list', 'admin/account/group/list')
             ->rename('admin/customer_group/save', 'admin/account/group/batch-save')
             ->rename('admin/customer_group/delete', 'admin/account/group/remove')
-            ->rename('admin/customer_group', 'admin/account/group')
             ->remove('admin/customer_group')
             
             ->add('admin/account/wishlist', 'Customer Wishlist')
             ->rename('admin/customer_wishlist/index', 'admin/account/wishlist/index')
             ->rename('admin/customer_wishlist/list', 'admin/account/wishlist/list')
-            ->rename('admin/customer_wishlist', 'admin/account/wishlist')
             ->remove('admin/customer_wishlist')
             
             ->add('admin/account/field-group', 'Account Field Groups')
