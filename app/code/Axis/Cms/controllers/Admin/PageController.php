@@ -38,151 +38,9 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
         $this->view->pageTitle = Axis::translate('cms')->__('Categories/Pages');
         $this->render();
     }
-
-    public function getSiteTreeAction()
+    
+    public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        function getChilds($node, $root) {
-            $result = array();
-            $tableCmsCategory = Axis::model('cms/category');
-
-            if ($root) {
-                $cats = $tableCmsCategory->select('*')
-                    ->where('cc.site_id = ?', $node)
-                    ->where('cc.parent_id is NULL')
-                    ->fetchAssoc();
-            } else {
-                $cats = $tableCmsCategory->select('*')
-                    ->where('cc.parent_id = ?', $node)
-                    ->fetchAssoc();
-            }
-
-            //get categories
-            foreach ($cats as $cat) {
-                $result[] = array(
-                    'leaf'      => false,
-                    'id'        => $cat['id'],
-                    'site_id'   => $cat['site_id'],
-                    'text'      => $cat['name'],
-                    'iconCls'   => 'icon-folder',
-                    'expanded'  => true,
-                    'cls'       => $cat['is_active'] ? '' : 'disabledNode',
-                    'children'  => getChilds($cat['id'], false)
-                );
-            }
-            return $result;
-        }
-
-        $result = array();
-        foreach (Axis_Collect_Site::collect() as $siteId => $siteName) {
-            $result[] = array(
-                'leaf'     => false,
-                'id'       => "_" . $siteId, // preventing duplicate ids. siteId == $cat['id]
-                'site_id'  => $siteId,
-                'text'     => $siteName,
-                'checked'  => 'undefined',
-                'iconCls'  => 'icon-folder',
-                'cls'      => 'root-node',
-                'expanded' => true,
-                'children' => getChilds($siteId, true)
-            );
-        }
-
-        $this->_helper->json->sendRaw($result);
-    }
-
-    public function saveCategoryAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = $this->_getAllParams();
-        
-        $model        = Axis::model('cms/category');
-        $modelContent = Axis::model('cms/category_content');
-        
-        $row = $model->save($data);
-        
-        //save content
-        foreach ($data['content'] as $languageId => $_rowContent) {
-            $modelContent->getRow($row->id, $languageId)
-                ->setFromArray($_rowContent)
-                ->save();
-        }
-        
-        Axis::message()->addSuccess(
-            Axis::translate('cms')->__(
-                'Category was saved successfully'
-        ));
-        
-        $this->_helper->json
-            ->setData(array('id' => $row->id))
-            ->sendSuccess();
-    }
-
-    public function moveCategoryAction()
-    {
-        $this->_helper->layout->disableLayout();
-
-        $data = $this->_getAllParams();
-        if (empty($data['parent_id'])) {
-            $data['parent_id'] = new Zend_Db_Expr('NULL');
-        }
-        Axis::model('cms/category')->find($data['id'])
-            ->current()
-            ->setFromArray($data)
-            ->save();
-
-        $this->_helper->json->sendSuccess();
-    }
-
-    public function getCategoryDataAction()
-    {
-        $this->_helper->layout->disableLayout();
-
-        $rowCategory = Axis::single('cms/category')
-            ->find($this->_getParam('id'))
-            ->current();
-
-        $category = $rowCategory->toArray();
-        $content = Axis::model('cms/category_content')
-            ->select(array('language_id', '*'))
-            ->where('ccc.cms_category_id = ?', $rowCategory->id)
-            ->fetchAssoc();
-
-        foreach(Axis_Collect_Language::collect() as $languageId => $lName) {
-            $category['content']['lang' . '_' . $languageId] =
-                isset($content[$languageId]) ? $content[$languageId] : array();
-        }
-
-        $this->_helper->json->sendSuccess(array(
-            'data' => $category
-        ));
-    }
-
-    public function deleteCategoryAction()
-    {
-        $this->_helper->layout->disableLayout();
-
-        $categoryId = $this->_getParam('id');
-
-        $success = Axis::model('cms/category')->delete(
-            Axis::db()->quoteInto('id IN(?)', $categoryId)
-        );
-        if ($success) {
-            Axis::message()->addSuccess(
-                Axis::translate('cms')->__(
-                    'Category was deleted successfully'
-            ));
-        }
-        $this->_helper->json->sendJson(array(
-            'success' => $success
-        ));
-    }
-
-    public function getPagesAction()
-    {
-        $this->_helper->layout->disableLayout();
-
         $select = Axis::model('cms/page')->select('*')
             ->calcFoundRows()
             ->addCategoryName()
@@ -201,18 +59,17 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
             $select->addFilterByUncategorized();
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess();
     }
 
-    public function getPageDataAction()
+    public function loadAction()
     {
-        $this->_helper->layout->disableLayout();
-
+        $id = $this->_getParam('id');
         $rowPage = Axis::single('cms/page')
-            ->find($this->_getParam('id'))
+            ->find($id)
             ->current();
 
         $content = Axis::model('cms/page_content')
@@ -225,32 +82,29 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
             ->where('cpc.cms_page_id = ?', $rowPage->id)
             ->fetchCol();
 
-        $page = $rowPage->toArray();
-        $page['category'] = $category;
+        $data = $rowPage->toArray();
+        $data['category'] = $category;
         foreach(Axis_Collect_Language::collect() as $languageId => $lName) {
-            $page['content']['lang_' . $languageId] =
+            $data['content']['lang_' . $languageId] =
                 isset($content[$languageId]) ? $content[$languageId] : array();
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data' => $page
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
-    public function savePageAction()
+    public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-        
-        $data = $this->_getAllParams();
-
+        $_row          = $this->_getAllParams();
         $model         = Axis::model('cms/page');
         $modelContent  = Axis::model('cms/page_content');
         $modelCategory = Axis::model('cms/page_category');
         
-        $row = $model->save($data);
+        $row = $model->save($_row);
         
         //save page content
-        foreach ($data['content'] as $languageId => $values) {
+        foreach ($_row['content'] as $languageId => $values) {
             if (empty($values['link'])) {
                 $values['link'] = $row->name;
             }
@@ -264,7 +118,7 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
             Axis::db()->quoteInto('cms_page_id = ?', $row->id)
         );
         $categories = array_filter(
-            Zend_Json::decode($data['category'])
+            Zend_Json::decode($_row['category'])
         );
         foreach ($categories as $categoryId) {
             $modelCategory->createRow(array(
@@ -273,7 +127,7 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
             ))->save();
         }
 
-        if (!isset($data['id']) || ($data['id'] != $row->id)) {
+        if (!isset($_row['id']) || ($_row['id'] != $row->id)) {
             Axis::dispatch('cms_page_add_success', array(
                 'page_id' => $row->id
             ));
@@ -287,19 +141,16 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
                 'Page was saved successfully'
         ));
 
-        $this->_helper->json
+        return $this->_helper->json
             ->setData(array('id' => $row->id))
             ->sendSuccess();
     }
 
-    public function batchPageSaveAction()
+    public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $dataset = Zend_Json_Decoder::decode($this->_getParam('data'));
-
+        $_rowset = Zend_Json_Decoder::decode($this->_getParam('data'));
         $model = Axis::single('cms/page');
-        foreach ($dataset as $_row) {
+        foreach ($_rowset as $_row) {
             $model->getRow($_row)->save();
         }
         
@@ -307,13 +158,11 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
             Axis::translate('cms')->__(
                 'Page was saved successfully'
         ));
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
-    public function deletePageAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $data = Zend_Json::decode($this->_getParam('data'));
         Axis::model('cms/page')->delete(
             Axis::db()->quoteInto('id IN (?)', $data)
@@ -322,6 +171,6 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
             Axis::translate('cms')->__(
                 'Page was deleted successfully'
         ));
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 }

@@ -61,7 +61,7 @@ var PageWindow = {
     save: function(closeWindow) {
         PageWindow.getData();
         PageWindow.form.getForm().submit({
-            url: Axis.getUrl('cms/page/save-page'),
+            url: Axis.getUrl('cms/page/save'),
             params: PageWindow.data,
             success: function(form, action) {
                 PageGrid.el.getStore().reload();

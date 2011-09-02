@@ -60,7 +60,7 @@ var CategoryTree = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('cms/page/delete-category'),
+            url: Axis.getUrl('cms/category/remove'),
             params: {
                 id: selected.id
             },
@@ -113,7 +113,7 @@ var CategoryTree = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('cms/page/move-category'),
+            url: Axis.getUrl('cms/category/move'),
             params: {
                 id          : dropNode.id,
                 parent_id   : isNaN(parentNode.id) ? null : parentNode.id,
@@ -135,7 +135,7 @@ Ext.onReady(function() {
     });
 
     var stLoader = new Ext.tree.TreeLoader({
-        url: Axis.getUrl('cms/page/get-site-tree'),
+        url: Axis.getUrl('cms/category/list'),
         listeners: {
             'beforeload': function(loader, node) {
                 CategoryTree.el.root.appendChild([

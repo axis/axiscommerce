@@ -43,7 +43,10 @@ var Category = {
     load: function(id) {
         Category.id = id;
         CategoryWindow.form.getForm().load({
-            url: Axis.getUrl('cms/page/get-category-data/id/' + id),
+            url: Axis.getUrl('cms/category/load'),
+            params: {
+                id: id
+            },
             success: function(form, action) {
                 var data = Ext.decode(action.response.responseText).data;
                 CategoryWindow.el.setTitle(data.name);

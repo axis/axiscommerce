@@ -36,20 +36,22 @@ class Axis_Cms_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
         
         Axis::model('admin/acl_resource')
 //            ->add('admin/cms', 'CMS')
-//            ->add('admin/cms_index', 'Categories/Pages')
             ->add('admin/cms/page', 'Pages')
-            ->rename("admin/cms_index/delete-category", "admin/cms/page/delete-category")
-            ->rename("admin/cms_index/delete-page", "admin/cms/page/delete-page")
-            ->rename("admin/cms_index/get-category", "admin/cms/page/get-category-data")
-            ->rename("admin/cms_index/get-page-data", "admin/cms/page/get-page-data")
-            ->rename("admin/cms_index/get-pages", "admin/cms/page/get-pages")
-            ->rename("admin/cms_index/get-site-tree", "admin/cms/page/get-site-tree")
-            ->rename("admin/cms_index/index", "admin/cms/page/index")
-            ->rename("admin/cms_index/move-category", "admin/cms/page/move-category")
-            ->rename("admin/cms_index/quick-save-page", "admin/cms/page/quick-save-page")
-            ->rename("admin/cms_index/save-category", "admin/cms/page/save-category")
-            ->rename("admin/cms_index/save-page", "admin/cms/page/save-page")
+            ->rename('admin/cms_index/index',           'admin/cms/page/index')
+            ->rename('admin/cms_index/get-pages',       'admin/cms/page/list')
+            ->rename('admin/cms_index/get-page-data',   'admin/cms/page/load')
+            ->rename('admin/cms_index/save-page',       'admin/cms/page/save')
+            ->rename('admin/cms_index/quick-save-page', 'admin/cms/page/batch-save')
+            ->rename('admin/cms_index/delete-page',     'admin/cms/page/remove')
             
+            ->add('admin/cms/category', 'Categories')
+            ->rename('admin/cms_index/get-site-tree',   'admin/cms/category/list')
+            ->rename('admin/cms_index/get-category',    'admin/cms/category/load')
+            ->rename('admin/cms_index/save-category',   'admin/cms/category/save')
+            ->rename('admin/cms_index/delete-category', 'admin/cms/category/remove')
+            ->rename('admin/cms_index/move-category',   'admin/cms/category/move')
+            
+            ->remove('admin/cms_index')
         ;
     }
 

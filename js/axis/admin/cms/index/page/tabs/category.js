@@ -112,7 +112,7 @@ Ext.onReady(function() {
         rootVisible: false,
         autoScroll: true,
         loader: new Ext.tree.TreeLoader({
-            url: Axis.getUrl('cms/page/get-site-tree'),
+            url: Axis.getUrl('cms/category/list'),
             baseAttrs: {
                 checked: false,
                 expanded: true
