@@ -62,7 +62,8 @@ Ext.onReady(function() {
         columns: [{
             header: "Query".l(),
             id: 'query',
-            dataIndex: 'query'
+            dataIndex: 'query',
+            renderer: Axis.escape
         }, {
             header: "Results".l(),
             width: 50,

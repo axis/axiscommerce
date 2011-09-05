@@ -45,9 +45,9 @@ var Customer = {
             success: function(form, action) {
                 var data = Ext.decode(action.response.responseText).data;
                 CustomerWindow.el.setTitle(
-                    data.customer.firstname
+                    Axis.escape(data.customer.firstname
                     + ' '
-                    + data.customer.lastname
+                    + data.customer.lastname)
                     + ': '
                     + data.customer.email
                 );

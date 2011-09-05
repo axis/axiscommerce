@@ -47,6 +47,7 @@ Ext.onReady(function(){
         header: 'Comment'.l(),
         id: 'comments',
         dataIndex: 'comments',
+        renderer: Axis.escape,
         menuDisabled: true
     }, {
         header: 'Date added'.l(),

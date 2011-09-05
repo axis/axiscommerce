@@ -73,11 +73,13 @@ Ext.onReady(function(){
             filter: {
                 operator: 'LIKE'
             },
+            renderer: Axis.escape,
             width: 120
         }, {
             header: 'Title'.l(),
             dataIndex: 'title',
             id: 'title',
+            renderer: Axis.escape,
             filter: {
                 operator: 'LIKE'
             }

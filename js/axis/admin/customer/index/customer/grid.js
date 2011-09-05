@@ -173,6 +173,7 @@ Ext.onReady(function() {
             editor: new Ext.form.TextField({
                 allowBlank: false
             }),
+            renderer: Axis.escape,
             width: 180
         }, {
             dataIndex: 'lastname',
@@ -180,6 +181,7 @@ Ext.onReady(function() {
             editor: new Ext.form.TextField({
                 allowBlank: false
             }),
+            renderer: Axis.escape,
             width: 180
         }, {
             dataIndex: 'email',

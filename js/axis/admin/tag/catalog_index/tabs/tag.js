@@ -77,7 +77,8 @@ Ext.onReady(function() {
         }, {
             dataIndex: 'name',
             id: 'name',
-            header: 'Tag'.l()
+            header: 'Tag'.l(),
+            renderer: Axis.escape
         }]
     });
 

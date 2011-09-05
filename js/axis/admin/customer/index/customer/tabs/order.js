@@ -146,7 +146,7 @@ Ext.onReady(function() {
                     paymentMethod += String.format(
                         '<p class="payment-method-item"><label>{0}:</label><span>{1}</span></p>',
                         row.title,
-                        (value = record.get(row.dataIndex)) ? value : ''
+                        (value = record.get(row.dataIndex)) ? Axis.escape(value) : ''
                     );
                 }, this);
                 paymentMethod += '</div>';
@@ -170,7 +170,7 @@ Ext.onReady(function() {
                     shippingMethod += String.format(
                         '<p class="shipping-method-item"><label>{0}:</label><span>{1}</span></p>',
                         row.title,
-                        (value = record.get(row.dataIndex)) ? value : ''
+                        (value = record.get(row.dataIndex)) ? Axis.escape(value) : ''
                     );
                 }, this);
                 shippingMethod += '</div>';

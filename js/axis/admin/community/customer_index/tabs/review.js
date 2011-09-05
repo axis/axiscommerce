@@ -91,7 +91,7 @@ Ext.onReady(function() {
                     html += String.format(
                         '<div class="review-item expander-row"><label>{0}:</label><div>{1}</div></div>',
                         row.title,
-                        (value = record.get(row.dataIndex)) ? value : ''
+                        (value = record.get(row.dataIndex)) ? Axis.escape(value) : ''
                     );
                 }, this);
                 html += '</div>';
@@ -113,7 +113,8 @@ Ext.onReady(function() {
         }, {
             dataIndex: 'title',
             id: 'title',
-            header: 'Title'.l()
+            header: 'Title'.l(),
+            renderer: Axis.escape
         }, {
             dataIndex: 'product_name',
             header: 'Product Name'.l(),

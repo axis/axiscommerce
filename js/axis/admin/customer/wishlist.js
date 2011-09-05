@@ -26,7 +26,7 @@ Ext.onReady(function() {
 
     var expander = new  Ext.grid.RowExpander({
          tpl : new Ext.Template(
-             '<p><b>' + 'Comment'.l() + ':</b> {wish_comment}</p>'
+             '<p><b>' + 'Comment'.l() + ':</b> {wish_comment:htmlEncode}</p>'
          )
     });
 

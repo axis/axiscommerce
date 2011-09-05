@@ -91,9 +91,9 @@ var Contact = {
         var template = new Ext.Template.from('tpl-message');
         Contact.window.items.first().body.update(template.applyTemplate({
             'from'      : mail,
-            'subject'   : subject,
-            'message'   : message,
-            'custom'    : custom.replace(/\n/, '<br />'),
+            'subject'   : Axis.escape(subject),
+            'message'   : Axis.escape(message),
+            'custom'    : Axis.escape(custom).replace(/\n/, '<br />'),
             'datetime'  : datetime
         }));
 
@@ -247,11 +247,13 @@ Ext.onReady(function() {
         }, {
             header: "Subject".l(),
             dataIndex: 'subject',
+            renderer: Axis.escape,
             width: 190
         }, {
             header: "Message".l(),
             dataIndex: 'message',
             id: 'message',
+            renderer: Axis.escape,
             width: 250
         }, {
             header: "Created On".l(),

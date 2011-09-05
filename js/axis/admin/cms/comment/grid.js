@@ -152,9 +152,9 @@ Ext.onReady(function() {
 
     var commentExpander = new Ext.grid.RowExpander({
         tpl : new Ext.Template(
-            '<p style="padding-left: 45px; margin: 5px 0px;"><b>Author:</b> {author}</p>',
+            '<p style="padding-left: 45px; margin: 5px 0px;"><b>Author:</b> {author:htmlEncode}</p>',
             '<p style="padding-left: 45px; margin: 5px 0px;"><b>Email:</b> {email}</p>',
-            '<div style="padding: 0px 8px 5px 45px; line-height: 17px; text-align: justify"><b>Content:</b> {content}</div>'
+            '<div style="padding: 0px 8px 5px 45px; line-height: 17px; text-align: justify"><b>Content:</b> {content:htmlEncode}</div>'
         )
     });
 
