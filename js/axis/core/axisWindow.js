@@ -29,7 +29,7 @@
 var AxisWindow = function(el, trigger, params) {
     this.window = el;
     this.window.hide();
-    this.window.appendTo(document.body);
+    this.window.appendTo(document.body); // move DOM to the body to prevent positioning issues
 
     params.trigger = trigger;
     this.params = $.extend({
@@ -46,6 +46,10 @@ var AxisWindow = function(el, trigger, params) {
     $(params.trigger).click(function(e) {
         e.preventDefault();
         self.show();
+    });
+    this.window.find('.close').click(function(e) {
+        e.preventDefault();
+        self.hide();
     });
     $(document).keydown(function(e) {
         var keyCode = e.keyCode;
