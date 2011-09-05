@@ -69,7 +69,7 @@ class Axis_Location_Model_Geozone_Zone extends Axis_Db_Table
         $row = $this->getRow($data);
         //before save
         $row->modified_on = Axis_Date::now()->toSQLString();
-        if ($row->created_on) {
+        if (!$row->created_on) {
             $row->created_on = $row->modified_on;
         }
         $row->save();
