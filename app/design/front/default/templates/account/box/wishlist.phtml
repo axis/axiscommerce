@@ -39,7 +39,7 @@ foreach ($this->box->getData('wishlist') as $wl):
         <td class="price">
             <?php echo $this->price($wl['product']['prices']) ?>
         </td>
-        <td class="comment"><?php echo $wl['wish_comment'];?></td>
+        <td class="comment"><?php echo $this->escape($wl['wish_comment']);?></td>
         <td class="date"><?php echo $wl['created_on']; ?></td>
         <td class="links">
             <ul class="no-bullet no-indent">
