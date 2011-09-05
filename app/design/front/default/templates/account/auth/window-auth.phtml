@@ -1,6 +1,6 @@
 <div class="axis-window" id="window-login" style="display: none;">
     <div class="axis-window-inner">
-        <div class="head"><span class="title"><?php echo $this->translate('account')->__('Login') ?></span></div>
+        <div class="head"><span class="title"><?php echo $this->translate('account')->__('Login') ?><a href="#" title="<?php echo $this->translate('catalog')->__('Close') ?>" class="close"><?php echo $this->translate('catalog')->__('Close') ?></a></span></div>
         <div class="content">
             <form method="post" id="form-login" class="axis-form" action="<?php echo $this->href('account/auth/login', true) ?>">
                 <ul>

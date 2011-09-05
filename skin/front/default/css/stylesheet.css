@@ -196,12 +196,19 @@ a.button, a.alt-button { float: left; line-height: 13px !important; text-decorat
 .axis-window-inner { background: #fff; padding: 2px; }
 .axis-window .head { padding: 4px 7px 4px; border-bottom: 1px solid #ddd; }
 .axis-window .title { font: bold 1.2em Arial,Helvetica,sans-serif; color: #555; }
+.axis-window .head .close { float: right; width: 22px; height: 22px; text-indent: -9999px;
+    background: url(../images/close.gif) no-repeat 100% 4px;
+    opacity: 0.5;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+}
+.axis-window .head .close:hover { opacity: 1; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"; }
 .axis-window .content { padding: 7px 0 0; }
 .axis-window-mask { position: absolute; left: 0; top: 0; background: #000;
     opacity: 0.3;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
     filter: alpha(opacity=30);
-    z-index: 998; }
+    z-index: 998;
+}
 
 .axis-window .axis-form label { width: 80px; }
 .axis-window .axis-form label.error { margin-left: 85px; }
