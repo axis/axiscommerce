@@ -55,11 +55,11 @@ var Contact = {
     sendmail: function() {
         formMail.expand();
         formMail.getForm().submit({
-            url: Axis.getUrl('contacts_index/send'),
+            url: Axis.getUrl('contacts/index/send'),
             success: function() {
                 Contact.window.hide();
                 Ext.Ajax.request({
-                    url: Axis.getUrl('contacts_index/set-status'),
+                    url: Axis.getUrl('contacts/index/save'),
                     params: {
                         id: Contact.getSelectedId(),
                         message_status: 'replied'
@@ -108,7 +108,7 @@ var Contact = {
         Contact.window.items.first().expand();
 
         Ext.Ajax.request({
-            url: Axis.getUrl('contacts_index/set-status'),
+            url: Axis.getUrl('contacts/index/save'),
             params: {
                 id: Contact.getSelectedId(),
                 message_status: 'read'
@@ -134,7 +134,7 @@ var Contact = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('contacts_index/delete'),
+            url: Axis.getUrl('contacts/index/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -154,7 +154,7 @@ var Department = {
              return false;
          }
          Ext.Ajax.request({
-             url: Axis.getUrl('contacts_index/delete-department'),
+             url: Axis.getUrl('contacts/department/remove'),
              method: 'post',
              params: {
                  id: Dep.id
@@ -168,7 +168,7 @@ var Department = {
 
     saveDepartment: function() {
         formDepart.getForm().submit({
-            url: Axis.getUrl('contacts_index/save-department'),
+            url: Axis.getUrl('contacts/department/save'),
             params: {
                 id: Dep.id
             },
@@ -191,7 +191,7 @@ var Department = {
          }
          winDepart.show();
          formDepart.getForm().load({
-             'url': Axis.getUrl('contacts_index/get-department'),
+             'url': Axis.getUrl('contacts/department/load'),
              'method': 'post',
              'params': {id: Dep.id}
          });
@@ -219,7 +219,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('contacts_index/list'),
+        url: Axis.getUrl('contacts/index/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
@@ -490,7 +490,7 @@ Ext.onReady(function() {
     Department.tree = new Ext.tree.TreePanel({
         root : root,
         loader: new Ext.tree.TreeLoader({
-            dataUrl: Axis.getUrl('contacts_index/get-departments')
+            dataUrl: Axis.getUrl('contacts/department/list')
         }),
         autoScroll:true,
         width: 230,

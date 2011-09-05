@@ -38,3 +38,12 @@ $router->addRoute('contacts_send', new Axis_Controller_Router_Route_Front(
         'action' => 'send'
     )
 ));
+
+$router->addRoute('admin/contacts', new Axis_Controller_Router_Route_Back(
+    'contacts/:controller/:action/*',
+    array(
+        'module' => 'Axis_Contacts',
+        'controller' => 'index',
+        'action' => 'index'
+    )
+), 'admin');
