@@ -49,7 +49,7 @@ Ext.onReady(function () {
             field: 'id',
             direction: 'DESC'
         },
-        url: Axis.getUrl('tag_index/list')
+        url: Axis.getUrl('tag/list')
     });
 
     function renderCustomer(value, meta, record) {
@@ -214,7 +214,7 @@ function save() {
         data[modified[i]['id']] = modified[i]['data'];
     }
     Ext.Ajax.request({
-        url: Axis.getUrl('tag_index/save'),
+        url: Axis.getUrl('tag/batch-save'),
         params: {data: Ext.encode(data)},
         callback: function() {
             Ext.getCmp('gridTag').getStore().commitChanges();
@@ -236,7 +236,7 @@ function remove() {
     }
 
     Ext.Ajax.request({
-        url: Axis.getUrl('tag_index/delete'),
+        url: Axis.getUrl('tag/remove'),
         params: {data:  Ext.encode(data)},
         callback: function() {
             Ext.getCmp('gridTag').getStore().reload();
