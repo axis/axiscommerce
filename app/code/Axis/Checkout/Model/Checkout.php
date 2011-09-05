@@ -407,16 +407,21 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
      *  :country_id => int
      *  :zone_id    => int
      *  :postcode   => string
+     *  :firstname  => string
+     *  :lastname   => string
      * </pre>
      */
     public function getDefaultAddress()
     {
-        $config = Axis::config('checkout/default_values');
+        $config     = Axis::config('checkout/default_values');
+        $customer   = Axis::getCustomer();
         return array(
             'id'            => 0,
             'country_id'    => $config->country_id,
             'zone_id'       => $config->zone_id,
-            'postcode'      => $config->postcode
+            'postcode'      => $config->postcode,
+            'firstname'     => $customer ? $customer->firstname : '',
+            'lastname'      => $customer ? $customer->lastname  : ''
         );
     }
 
