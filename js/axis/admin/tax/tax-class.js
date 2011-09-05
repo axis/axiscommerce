@@ -60,7 +60,7 @@ var TaxClass = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('tax_class/save'),
+            url: Axis.getUrl('tax/class/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -87,7 +87,7 @@ var TaxClass = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('tax_class/delete'),
+            url: Axis.getUrl('tax/class/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -126,7 +126,7 @@ Ext.onReady(function() {
             field: 'id',
             direction: 'DESC'
         },
-        url: Axis.getUrl('tax_class/list')
+        url: Axis.getUrl('tax/class/list')
     });
 
     var cm = new Ext.grid.ColumnModel({
