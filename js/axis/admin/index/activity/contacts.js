@@ -35,7 +35,7 @@ Ext.onReady(function() {
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
-            id: 'id'
+            idProperty: 'id'
         }, Ext.data.Record.create([
             {name: 'id', type: 'int'},
             {name: 'email'},
@@ -75,7 +75,8 @@ Ext.onReady(function() {
         },{
             id: 'subject',
             header: "Subject".l(),
-            dataIndex: 'subject'
+            dataIndex: 'subject',
+            renderer: Axis.escape
         },{
             header: "Created On".l(),
             dataIndex: 'created_at',

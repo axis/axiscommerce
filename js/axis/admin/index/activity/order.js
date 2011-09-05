@@ -69,7 +69,7 @@ Ext.onReady(function() {
             renderer: function (value, meta, record) {
                 return String.format(
                     '<a href="{1}" target="_blank">{0}</a>',
-                    value + ' ' + record.get('billing_lastname'),
+                    Axis.escape(value + ' ' + record.get('billing_lastname')),
                     Axis.getUrl('sales_order/index/orderId/' + record.get('id'))
                 );
             },

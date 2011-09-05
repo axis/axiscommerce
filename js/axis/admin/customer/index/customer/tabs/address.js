@@ -149,7 +149,7 @@ Ext.onReady(function() {
                     html += String.format(
                         '<p class="account-address-item expander-row"><label>{0}</label><span>{1}</span></p>',
                         row.title,
-                        record.get(row.dataIndex)
+                        Axis.escape(record.get(row.dataIndex))
                     );
                 }, this);
                 html += '</div>';
@@ -200,6 +200,7 @@ Ext.onReady(function() {
             editor: new Ext.form.TextField({
                 allowBlank: false
             }),
+            renderer: Axis.escape,
             width: 100
         }, {
             dataIndex: 'lastname',
@@ -207,6 +208,7 @@ Ext.onReady(function() {
             editor: new Ext.form.TextField({
                 allowBlank: false
             }),
+            renderer: Axis.escape,
             width: 100
         }, {
             dataIndex: 'phone',
@@ -214,13 +216,15 @@ Ext.onReady(function() {
             header: 'Phone'.l(),
             editor: new Ext.form.TextField({
                 allowBlank: false
-            })
+            }),
+            renderer: Axis.escape
         }, {
             dataIndex: 'city',
             header: 'City'.l(),
             editor: new Ext.form.TextField({
                 allowBlank: false
             }),
+            renderer: Axis.escape,
             width: 110
         }, {
             dataIndex: 'postcode',
@@ -228,6 +232,7 @@ Ext.onReady(function() {
             editor: new Ext.form.TextField({
                 allowBlank: false
             }),
+            renderer: Axis.escape,
             width: 90
         },
         //defaultBilling,

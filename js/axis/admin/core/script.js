@@ -57,6 +57,10 @@ Axis.getUrl = function(url, disableSsl, front) {
     return prefix + '/' + url;
 };
 
+Axis.escape = function (string) {
+    return Ext.util.Format.htmlEncode(string);
+};
+
 Ext.ux.Table = {
      colorize: function() {
           $(".axis-table tr").mouseover(function() {

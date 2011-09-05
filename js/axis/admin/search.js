@@ -80,7 +80,8 @@ Ext.onReady(function() {
             table: 'slq',
             filter: {
                 operator: 'LIKE'
-            }
+            },
+            renderer: Axis.escape
         }, {
             header: "Results".l(),
             dataIndex: 'num_results',

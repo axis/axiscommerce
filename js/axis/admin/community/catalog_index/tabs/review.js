@@ -89,7 +89,7 @@ Ext.onReady(function() {
                     html += String.format(
                         '<div class="review-item expander-row"><label>{0}:</label><div>{1}</div></div>',
                         row.title,
-                        (value = record.get(row.dataIndex)) ? value : ''
+                        (value = record.get(row.dataIndex)) ? Axis.escape(value) : ''
                     );
                 }, this);
                 html += '</div>';
@@ -111,6 +111,7 @@ Ext.onReady(function() {
             dataIndex: 'title',
             id: 'title',
             header: 'Title'.l(),
+            renderer: Axis.escape,
             width: 100
         }, {
             dataIndex: 'author',

@@ -82,6 +82,7 @@ Ext.onReady(function() {
         }, {
             dataIndex   : 'name',
             id          : 'tag',
+            renderer    : Axis.escape,
             header      : 'Tag'.l()
         }, {
             dataIndex   : 'product_name',

@@ -88,7 +88,7 @@ Ext.onReady(function() {
                 }
                 return String.format(
                     '<a href="{1}" target="_blank">{0}</a>',
-                    value,
+                    Axis.escape(value),
                     Axis.getUrl('account/customer/index/customerId/' + customerId)
                 );
             },

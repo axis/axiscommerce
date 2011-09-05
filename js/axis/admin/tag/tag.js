@@ -87,6 +87,7 @@ Ext.onReady(function () {
             dataIndex   : 'name',
             groupable   : true,
             width       : 170,
+            renderer    : Axis.escape,
             filter: {
                 operator: 'LIKE'
             }
