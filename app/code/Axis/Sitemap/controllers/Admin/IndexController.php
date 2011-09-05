@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
+class Axis_Sitemap_Admin_IndexController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -48,8 +48,6 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $this->layout->disableLayout();
-
         $filter = $this->_getParam('filter', array());
         $limit  = $this->_getParam('limit', 20);
         $start  = $this->_getParam('start', 0);
@@ -62,18 +60,18 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             ->order("{$sort} {$dir}")
             ;
 
-        $this->_helper->json->setData($select->fetchAll())
+        return $this->_helper->json
+            ->setData($select->fetchAll())
             ->setCount($select->foundRows())
-             ->sendSuccess();
+            ->sendSuccess();
     }
 
-    public function saveAction()
+    public function batchSaveAction()
     {
-        $this->layout->disableLayout();
-        $rowset = Zend_Json::decode($this->_getParam('data'));
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
 
         $model = Axis::model('sitemap/sitemap');
-        foreach ($rowset as $_row) {
+        foreach ($_rowset as $_row) {
             $row = $model->getRow($_row);
             $row->modified_on = Axis_Date::now()->toSQLString();
             if (!$row->id) {
@@ -85,13 +83,24 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
 
             $row->save();
         }
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
+    public function removeAction()
+    {
+        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
+        if (!$data) {
+            return $this->_helper->json->sendFailure();
+        }
+        Axis::single('sitemap/sitemap')->delete(
+            $this->db->quoteInto('id IN(?)', $data)
+        );
+        return $this->_helper->json->sendSuccess();
+    }
+    
     public function pingAction()
     {
-        $this->_helper->layout->disableLayout();
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $data = Zend_Json::decode($this->_getParam('data'));
 
         if (!$data) {
             return $this->_helper->json->sendFailure();
@@ -144,19 +153,8 @@ class Axis_Admin_Sitemap_IndexController extends Axis_Admin_Controller_Back
             $row->modified_on = Axis_Date::now()->toSQLString();
             $row->save();
         }
-        $this->_helper->json->setData($data)->sendSuccess();
-    }
-
-    public function removeAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $ids = Zend_Json_Decoder::decode($this->_getParam('data'));
-        if (!$ids) {
-            return $this->_helper->json->sendFailure();
-        }
-        Axis::single('sitemap/sitemap')->delete(
-            $this->db->quoteInto('id IN(?)', $ids)
-        );
-        return $this->_helper->json->sendSuccess();
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 }

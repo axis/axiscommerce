@@ -48,7 +48,7 @@ Ext.onReady(function (){
                     if ('cancel' == value) {
                         return;
                     }
-                    window.location = Axis.getUrl('sitemap_file/create')
+                    window.location = Axis.getUrl('sitemap/file/create')
                         + '?' + form.getValues(true);
                 },
                 icon: Ext.MessageBox.INFO
@@ -74,7 +74,7 @@ Ext.onReady(function (){
                 data[rowset[i]['id']] = rowset[i]['data'];
             }
             Ext.Ajax.request({
-                url: Axis.getUrl('sitemap_index/save'),
+                url: Axis.getUrl('sitemap/batch-save'),
                 params: {
                     data: Ext.encode(data)
                 },
@@ -96,7 +96,7 @@ Ext.onReady(function (){
             var store = gridSitemap.getStore();
 
             Ext.Ajax.request({
-                url: Axis.getUrl('sitemap_index/ping'),
+                url: Axis.getUrl('sitemap/ping'),
                 params: {
                     data: Ext.encode(data)
                 },
@@ -162,7 +162,7 @@ Ext.onReady(function (){
                 return;
             }
             Ext.Ajax.request({
-                url: Axis.getUrl('sitemap_index/remove'),
+                url: Axis.getUrl('sitemap/remove'),
                 params: {data: Ext.encode(data)},
                 callback: function() {
                     gridSitemap.getStore().reload();
@@ -173,7 +173,7 @@ Ext.onReady(function (){
 
     var storeSitemap = new Ext.data.GroupingStore({
         storeId: 'storeSitemap',
-        url: Axis.getUrl('sitemap_index/list'),
+        url: Axis.getUrl('sitemap/list'),
         reader: new Ext.data.JsonReader({
                 root : 'data',
                 totalProperty: 'count',
@@ -204,7 +204,7 @@ Ext.onReady(function (){
 
     var storeFile = new Ext.data.JsonStore({
         storeId: 'storeFile',
-        url: Axis.getUrl('sitemap_file/list'),
+        url: Axis.getUrl('sitemap/file/list'),
         root : 'data',
         id: 'filename',
         fields: ['filename']

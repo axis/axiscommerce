@@ -31,15 +31,8 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
+class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
 {
-    /**
-     * Question model
-     *
-     * @var Axis_Poll_Model_Question
-     */
-    protected $_table;
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('poll')->__('Polls');
@@ -50,24 +43,25 @@ class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-        $questions = Axis::single('poll/question')->getQuestionsBack();
-        $this->_helper->json->sendSuccess(array('data' => $questions));
+        $data = Axis::single('poll/question')->getQuestionsBack();
+        
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
-    public function getQuestionAction()
+    public function loadAction()
     {
-        $this->_helper->layout->disableLayout();
-        $questionId = $this->_getParam('id');
+        $id = $this->_getParam('id');
 
         $data = array(
-            'id'    => $questionId,
+            'id'    => $id,
             'sites' => Axis::single('poll/question_site')
-                ->getSitesIds($questionId)
+                ->getSitesIds($id)
         );
 
-        $question = Axis::single('poll/question')
-            ->getQuestionById($questionId);
+        $question = Axis::single('poll/question')->getQuestionById($id);
+        
         foreach ($question as $lngQuestion) {
             $data['status'] = $lngQuestion['status'];
             $data['type'] = $lngQuestion['type'];
@@ -75,54 +69,33 @@ class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
         }
 
         $answers = Axis::single('poll/answer')->getAnswers(
-            false, $questionId
+            false, $id
         );
 
         foreach ($answers as $answer) {
             $data['answer'][$answer['id']]['text'][$answer['language_id']]
                 = $answer['answer'];
         }
-        $this->_helper->json->sendSuccess(
+        return $this->_helper->json->sendSuccess(
             array('data' => array($data))
-        );
-    }
-    public function getResultAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $questionId = $this->_getParam('id', false);
-        if (!$questionId) {
-            return $this->_helper->json->sendFailure();
-        }
-        $results = Axis::single('poll/question')
-            ->find($questionId)->current()->getResults();
-        $answers = Axis::single('poll/answer')->getAnswers(
-            Axis_Locale::getLanguageId(), $questionId
-        );
-        foreach ($answers as &$answer) {
-            $answer['count'] = isset($results[$answer['id']]['cnt']) ?
-                $results[$answer['id']]['cnt'] : 0;
-        }
-        $this->_helper->json->sendSuccess(
-            array('data' => $answers)
         );
     }
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-        $data        = $this->_getAllParams();
+        $_row        = $this->_getAllParams();
         $model       = Axis::model('poll/question');
         $modelLabel  = Axis::model('poll/question_description');
         $modelSite   = Axis::model('poll/question_site');
         $modelAnswer = Axis::single('poll/answer');
         $languageIds = array_keys(Axis_Collect_Language::collect());
 
-        $row = $model->save($data);
+        $row = $model->save($_row);
 
         //save description
         foreach ($languageIds as $languageId) {
             $rowDescription = $modelLabel->getRow($row->id, $languageId);
-            $rowDescription->question = $data['description'][$languageId];
+            $rowDescription->question = $_row['description'][$languageId];
             $rowDescription->save();
         }
 
@@ -131,7 +104,7 @@ class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
             $this->db->quoteInto('question_id = ?', $row->id)
         );
         $sites = array_filter(
-            explode(',', $data['sites'])
+            explode(',', $_row['sites'])
         );
         foreach ($sites as $siteId) {
 
@@ -154,46 +127,33 @@ class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
         );
         foreach ($answers as $answerId => $_dataset) {
             foreach ($_dataset as $languageId => $answer) {
-                $data = array(
+                $_row = array(
                     'language_id' => $languageId,
                     'question_id' => $row->id,
                     'answer'      => $answer
 
                 );
                 if (0 < $answerId) {
-                    $data['id'] = $answerId;
+                    $_row['id'] = $answerId;
                 }
-                $rowAnswer = $modelAnswer->createRow($data);
-                $ret = $rowAnswer->save();
+                $rowAnswer = $modelAnswer->createRow($_row);
+                $rowAnswer->save();
                 $answerId = $rowAnswer->id;
             }
         }
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
-    public function deleteAction()
+    public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-        $ids = Zend_Json_Decoder::decode($this->_getParam('data'));
-        if (!$ids) {
-            return $this->_helper->json->sendFailure();
-        }
-        Axis::single('poll/question')
-            ->delete($this->db->quoteInto('id IN(?)', $ids));
-        $this->_helper->json->sendSuccess();
-    }
-
-    public function quickSaveAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $dataset = Zend_Json_Decoder::decode($this->_getParam('data'));
-        if (!$dataset)  {
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
+        if (!$_rowset)  {
             return $this->_helper->json->sendFailure();
         }
         $model     = Axis::model('poll/question');
         $modelSite = Axis::model('poll/question_site');
 
-        foreach ($dataset as $_row) {
+        foreach ($_rowset as $_row) {
             $row = $model->save($_row);
             //save site relation
             $modelSite->delete(
@@ -207,13 +167,23 @@ class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
                 ))->save();
             }
         }
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
+    }
+    
+    public function removeAction()
+    {
+        $data = Zend_Json::decode($this->_getParam('data'));
+        if (!$data) {
+            return $this->_helper->json->sendFailure();
+        }
+        Axis::single('poll/question')
+            ->delete($this->db->quoteInto('id IN(?)', $data));
+        return $this->_helper->json->sendSuccess();
     }
 
     public function clearAction()
     {
-        $this->_helper->layout->disableLayout();
-        $paramQuestionIds = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $paramQuestionIds = Zend_Json::decode($this->_getParam('data'));
         if (!$paramQuestionIds) {
             return $this->_helper->json->sendFailure();
         }
@@ -230,6 +200,26 @@ class Axis_Admin_Poll_IndexController extends Axis_Admin_Controller_Back
             $this->db->quoteInto('answer_id IN(?)', $answersIds)
         );
 
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
+    }
+    
+    public function getResultAction()
+    {
+        $questionId = $this->_getParam('id', false);
+        if (!$questionId) {
+            return $this->_helper->json->sendFailure();
+        }
+        $results = Axis::single('poll/question')
+            ->find($questionId)->current()->getResults();
+        $data = Axis::single('poll/answer')->getAnswers(
+            Axis_Locale::getLanguageId(), $questionId
+        );
+        foreach ($data as &$answer) {
+            $answer['count'] = isset($results[$answer['id']]['cnt']) ?
+                $results[$answer['id']]['cnt'] : 0;
+        }
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 }

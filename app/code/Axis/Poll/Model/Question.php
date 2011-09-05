@@ -57,8 +57,7 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
     }
 
     /**
-     *
-     * @uses  admin/poll_index/get-question
+     * admin/poll/load
      * @param int $questionId
      * @return array
      */
@@ -164,7 +163,7 @@ class Axis_Poll_Model_Question extends Axis_Db_Table
 
     /**
      *
-     * @uses admin/poll_index/list
+     * admin/poll/list
      * @return array
      */
     public function getQuestionsBack()

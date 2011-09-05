@@ -31,12 +31,10 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Sitemap_FileController extends Axis_Admin_Controller_Back
+class Axis_Sitemap_Admin_FileController extends Axis_Admin_Controller_Back
 {
     public function createAction()
     {
-        $this->layout->disableLayout();
-
         $filename = $this->_getParam('filename');
         $alpha = new Zend_Filter_Alnum();
         $filename = $alpha->filter($filename);
@@ -254,7 +252,6 @@ class Axis_Admin_Sitemap_FileController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $this->layout->disableLayout();
         $data = array();
         $handler = opendir(Axis::config('system/path'));
         while ($file = readdir($handler)) {
@@ -268,6 +265,8 @@ class Axis_Admin_Sitemap_FileController extends Axis_Admin_Controller_Back
             $data[] = array('filename' => $file);
         }
         closedir($handler);
-        return $this->_helper->json->setData($data)->sendSuccess();
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 }

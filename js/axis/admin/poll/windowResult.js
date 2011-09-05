@@ -24,7 +24,7 @@ Ext.chart.Chart.CHART_URL = Axis.secureUrl + '/js/ext-3.3.1/resources/charts.swf
 Ext.onReady(function () {
 
     var store = new Ext.data.JsonStore({
-        url: Axis.getUrl('poll_index/get-result'),
+        url: Axis.getUrl('poll/get-result'),
         root: 'data',
         storeId: 'storeResults',
         fields: ['answer', 'count']
