@@ -47,3 +47,19 @@ $router->addRoute('sitemap_get-all-pages', new Axis_Controller_Router_Route_Fron
         'action' => 'get-all-pages'
     )
 ));
+$router->addRoute('admin/sitemap', new Axis_Controller_Router_Route_Back(
+    'sitemap/:action/*',
+    array(
+        'module' => 'Axis_Sitemap',
+        'controller' => 'index',
+        'action' => 'index'
+    )
+), 'admin');
+$router->addRoute('admin/sitemap/file', new Axis_Controller_Router_Route_Back(
+    'sitemap/file/:action/*',
+    array(
+        'module' => 'Axis_Sitemap',
+        'controller' => 'file',
+        'action' => 'list'
+    )
+), 'admin/sitemap');

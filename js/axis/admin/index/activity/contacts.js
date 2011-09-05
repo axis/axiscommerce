@@ -53,7 +53,7 @@ Ext.onReady(function() {
             field: 'created_at',
             direction: 'DESC'
         },
-        url: Axis.getUrl('contacts_index/list')
+        url: Axis.getUrl('contacts/index/list')
     });
 
     var cm = new Ext.grid.ColumnModel({
@@ -68,7 +68,7 @@ Ext.onReady(function() {
             //     return String.format(
             //         '<a href="{1}" target="_blank">{0}</a>',
             //         value,
-            //         Axis.getUrl('contacts_index/index/mailId/' + record.get('id'))
+            //         Axis.getUrl('contacts/index/index/mailId/' + record.get('id'))
             //     );
             // },
             width: 150

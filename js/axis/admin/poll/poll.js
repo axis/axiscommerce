@@ -119,7 +119,7 @@ Ext.onReady(function () {
 //
                 Ext.getCmp('form-question').getForm().clear();
                 Ext.getCmp('form-question').getForm().load({
-                    url: Axis.getUrl('poll_index/get-question'),
+                    url: Axis.getUrl('poll/load'),
                     params : {id : id},
                     success: function(form, action) {
                         var response = Ext.decode(action.response.responseText).data[0];
@@ -149,7 +149,7 @@ Ext.onReady(function () {
                     };
                 }
                 Ext.Ajax.request({
-                    url: Axis.getUrl('poll_index/quick-save'),
+                    url: Axis.getUrl('poll/batch-save'),
                     params: {data: Ext.encode(data)},
                     callback: function() {
                         Ext.getCmp('grid-poll').getStore().commitChanges();
@@ -160,7 +160,7 @@ Ext.onReady(function () {
             //////////////////////////////
             saveQuestion: function() {
                 Ext.getCmp('form-question').getForm().submit({
-                    url: Axis.getUrl('poll_index/save'),
+                    url: Axis.getUrl('poll/save'),
                     success: function(form, response) {
                         Ext.getCmp('window-question').hide();
                         form.clear();
@@ -180,7 +180,7 @@ Ext.onReady(function () {
                 }
                 Ext.Ajax.request({
                     params: {data: Ext.encode(data)},
-                    url: Axis.getUrl('poll_index/delete'),
+                    url: Axis.getUrl('poll/remove'),
                     callback: function() {
                         Ext.getCmp('grid-poll').getStore().reload();
                     }
@@ -192,7 +192,7 @@ Ext.onReady(function () {
                 }    
                 Ext.Ajax.request({
                     params : {data :  [id]},
-                    url: Axis.getUrl('poll_index/delete'),
+                    url: Axis.getUrl('poll/remove'),
                     callback: function(response, options) {
                         Ext.getCmp('grid-poll').getStore().reload();
                     }
@@ -213,7 +213,7 @@ Ext.onReady(function () {
                     data[i] = selectedItems[i].id;
                 }
                 Ext.Ajax.request({
-                    url: Axis.getUrl('poll_index/clear'),
+                    url: Axis.getUrl('poll/clear'),
                     params: {data: Ext.encode(data)},
                     callback: function() {
                         Ext.getCmp('grid-poll').getStore().reload();

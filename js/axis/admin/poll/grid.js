@@ -26,7 +26,7 @@ Ext.onReady(function () {
 
     var dataStore = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('poll_index/list')
+            url: Axis.getUrl('poll/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
