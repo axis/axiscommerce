@@ -52,7 +52,7 @@ var Country = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('location_country/save'),
+            url: Axis.getUrl('location/country/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -79,7 +79,7 @@ var Country = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('location_country/delete'),
+            url: Axis.getUrl('location/country/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -117,7 +117,7 @@ Ext.onReady(function() {
             field: 'name',
             direction: 'ASC'
         },
-        url: Axis.getUrl('location_country/list')
+        url: Axis.getUrl('location/country/list')
     });
 
     var cm = new Ext.grid.ColumnModel({

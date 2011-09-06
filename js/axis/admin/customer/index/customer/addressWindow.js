@@ -141,7 +141,7 @@ Axis.AddressWindow = Ext.extend(Ext.util.Observable, {
                                 start: 0,
                                 limit: 300
                             },
-                            url: Axis.getUrl('location_country/list/show_allcountry/0'),
+                            url: Axis.getUrl('location/country/list/show_allcountry/0'),
                             root: 'data',
                             idProperty: 'id',
                             fields: [
@@ -190,7 +190,7 @@ Axis.AddressWindow = Ext.extend(Ext.util.Observable, {
                                 start: 0,
                                 limit: 10000
                             },
-                            url: Axis.getUrl('location_zone/list/show_allzones/0'),
+                            url: Axis.getUrl('location/zone/list/show_allzones/0'),
                             root: 'data',
                             idProperty: 'id',
                             fields: [

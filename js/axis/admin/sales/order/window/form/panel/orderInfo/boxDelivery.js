@@ -31,7 +31,7 @@ Ext.onReady(function(){
         autoLoad: true,
         baseParams: {start: 0, limit: 300, show_allcountry: 0},
         proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('location_country/list')
+            url: Axis.getUrl('location/country/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
@@ -53,7 +53,7 @@ Ext.onReady(function(){
         autoLoad: true,
         baseParams: {start: 0, limit: 1000, show_allzones: 0},
         proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('location_zone/list')
+            url: Axis.getUrl('location/zone/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
