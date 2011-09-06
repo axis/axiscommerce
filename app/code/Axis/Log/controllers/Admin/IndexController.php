@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_LogController extends Axis_Admin_Controller_Back
+class Axis_Log_Admin_IndexController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -41,8 +41,12 @@ class Axis_Admin_LogController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
+        $filter = $this->_getParam('filter', array());
+        $start  = $this->_getParam('start', 0);
+        $limit  = $this->_getParam('limit', 25);
+        $sort   = $this->_getParam('sort', 'id');
+        $dir    = $this->_getParam('dir', 'DESC');
+        
         $select = Axis::single('log/url_info')
             ->select(array('url', 'hit' => 'COUNT(*)'))
             ->calcFoundRows()
@@ -50,16 +54,17 @@ class Axis_Admin_LogController extends Axis_Admin_Controller_Back
                'lu.url_id = lui.id',
                array('date' => 'LEFT(visit_at, 10)')
             )
-            ->addFilters($this->_getParam('filter', array()))
+            ->addFilters($filter)
             ->group('date')
             ->group('lui.url')
             ->where('LEFT(visit_at, 10) IS NOT NULL')
-            ->limit($this->_getParam('limit', 25), $this->_getParam('start', 0))
-            ->order($this->_getParam('sort', 'id') . ' ' . $this->_getParam('dir', 'DESC'));
+            ->limit($limit, $start)
+            ->order($sort . ' ' . $dir);
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess()
+        ;
     }
 }
