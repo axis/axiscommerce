@@ -112,6 +112,32 @@ class Axis_Admin_Catalog_IndexController extends Axis_Admin_Controller_Back
             'count' => $count
         ));
     }
+    
+    public function simpleListAction()
+    {
+        $model = Axis::model('catalog/product');
+        $select = $model->select('id');
+
+        if ($this->_hasParam('id')) {
+            $select->where('cp.id = ?', $this->_getParam('id'));
+        } elseif ($this->_getParam('query') != '') {
+            $select->addFilter('cpd.name', $this->_getParam('query'), 'LIKE');
+        }
+
+        $list = $select->addDescription()
+            ->limit(
+                $this->_getParam('limit', 40),
+                $this->_getParam('start', 0)
+            )
+            ->order(array('cpd.name ASC', 'cp.id DESC'))
+            ->fetchList();
+
+        return $this->_helper->json
+            ->setData(array_values($list['data']))
+            ->setTotalCount($list['count'])
+            ->sendSuccess()
+        ;
+    }
 
     public function listBestsellerAction()
     {

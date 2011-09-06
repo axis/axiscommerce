@@ -80,7 +80,7 @@ Ext.onReady(function() {
             text: 'Save'.l(),
             handler: function(){
                 form.getForm().submit({
-                    url: Axis.getUrl('community_review/save'),
+                    url: Axis.getUrl('community/review/save'),
                     method: 'post',
                     success: function(){
                         window.hide();

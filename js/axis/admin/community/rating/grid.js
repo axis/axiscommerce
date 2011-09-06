@@ -30,7 +30,7 @@ Ext.onReady(function(){
     var rating_object = Ext.data.Record.create(record);
     
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('community_rating/get-list'),
+        url: Axis.getUrl('community/rating/list'),
         method: 'get',
         reader: new Ext.data.JsonReader({
             id: 'id',
@@ -160,7 +160,7 @@ Ext.onReady(function(){
         var jsonData = Ext.encode(data);
         
         Ext.Ajax.request({
-            url: Axis.getUrl('community_rating/save'),
+            url: Axis.getUrl('community/rating/batch-save'),
             method: 'post',
             params: {
                 data: jsonData
@@ -186,7 +186,7 @@ Ext.onReady(function(){
         }
         var jsonData = Ext.encode(obj);
         Ext.Ajax.request({
-            url: Axis.getUrl('community_rating/delete'),
+            url: Axis.getUrl('community/rating/remove'),
             method: 'post',
             params: {
                 data: jsonData

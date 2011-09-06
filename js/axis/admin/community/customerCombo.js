@@ -29,7 +29,7 @@ Ext.onReady(function(){
     ]);
 
     var customer_store = new Ext.data.Store({
-        url: Axis.getUrl('community_review/get-customer-list'),
+        url: Axis.getUrl('account/customer/list'),
         reader: new Ext.data.JsonReader({
             id: 'id',
             totalProperty: 'count',

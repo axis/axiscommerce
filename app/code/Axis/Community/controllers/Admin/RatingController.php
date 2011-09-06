@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Community_RatingController extends Axis_Admin_Controller_Back
+class Axis_Community_Admin_RatingController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -41,31 +41,30 @@ class Axis_Admin_Community_RatingController extends Axis_Admin_Controller_Back
         $this->render();
     }
     
-    public function getListAction()
+    public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-        $this->_helper->json->sendSuccess(array(
-            'data' => Axis::single('community/review_rating')->getList(false, false)
-        ));
+        $data = Axis::single('community/review_rating')->getList(false, false);
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess()
+        ;
     }
     
-    public function saveAction()
+    public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-        
         $count       = 0; 
-        $dataset     = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $_rowset     = Zend_Json::decode($this->_getParam('data'));
         $model       = Axis::model('community/review_rating');
         $modelTitle  = Axis::single('community/review_rating_title');
         $languageIds = array_keys(Axis_Collect_Language::collect());
         
-        foreach ($dataset as $data) {
-            $row = $model->save($data);
+        foreach ($_rowset as $_row) {
+            $row = $model->save($_row);
             //save title
             foreach ($languageIds as $languageId) {
                 $rowTitle = $modelTitle->getRow($row->id, $languageId);
-                $rowTitle->title = empty($data['title_' . $languageId])
-                    ? $row->name : $data['title_' . $languageId];
+                $rowTitle->title = empty($_row['title_' . $languageId])
+                    ? $row->name : $_row['title_' . $languageId];
                 
                 $rowTitle->save();
             }
@@ -79,16 +78,13 @@ class Axis_Admin_Community_RatingController extends Axis_Admin_Controller_Back
                 )
             );
         }
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
     
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-        
-        Axis::single('community/review_rating')
-            ->remove(Zend_Json_Decoder::decode($this->_getParam('data')));
-            
-        $this->_helper->json->sendSuccess();
+        $data = Zend_Json::decode($this->_getParam('data'));
+        Axis::single('community/review_rating')->remove($data);
+        return $this->_helper->json->sendSuccess();
     }
 }

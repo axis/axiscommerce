@@ -36,7 +36,7 @@ Ext.onReady(function(){
             field: 'id',
             direction: 'DESC'
         },
-        url: Axis.getUrl('community_review/get-list')
+        url: Axis.getUrl('community/review/list')
     });
 
     var cm = new Ext.grid.ColumnModel({
@@ -215,7 +215,7 @@ Ext.onReady(function(){
         }
         var jsonData = Ext.encode(obj);
         Ext.Ajax.request({
-            url: Axis.getUrl('community_review/delete'),
+            url: Axis.getUrl('community/review/remove'),
             method: 'post',
             params: {
                 data: jsonData

@@ -84,23 +84,25 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
                 . $this->_getParam('dir', 'DESC')
             );
 
-        //extjs combobox compatible
-        if ($query = $this->_getParam('query')) {
+        if ($customerId = $this->_getParam('id')) {
+            $select->where('ac.id = ?', $customerId);
+        } elseif ($query = $this->_getParam('query')) {
             $query = '%' . $query . '%';
             $select->orWhere('ac.email LIKE ?', $query)
                 ->orWhere('ac.firstname LIKE ?', $query)
                 ->orWhere('ac.lastname LIKE ?', $query);
         }
 
-        $accounts = $select->fetchAll();
-        foreach ($accounts as &$account) {
-            unset($account['password']);
+        $data = $select->fetchAll();
+        foreach ($data as &$_account) {
+            unset($_account['password']);
         }
 
-        return $this->_helper->json->sendSuccess(array(
-            'data'  => $accounts,
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->setCount($select->foundRows())
+            ->sendSuccess()
+        ;
     }
     
     public function loadAction()
@@ -175,9 +177,10 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
             }
         }
 
-        return $this->_helper->json->sendSuccess(array(
-            'data' => $data
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess()
+        ;
     }
     
     public function saveAction()
@@ -243,9 +246,10 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
             ));
         }    
 
-        return $this->_helper->json->sendSuccess(array(
-            'data' => array('customer_id' => $row->id)
-        ));
+        return $this->_helper->json
+            ->setData(array('customer_id' => $row->id))
+            ->sendSuccess()
+        ;
     }
     
     public function batchSaveAction()
