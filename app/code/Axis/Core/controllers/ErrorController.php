@@ -103,6 +103,6 @@ class ErrorController extends Axis_Core_Controller_Front
             'controller' => 'error',
             'route'      => 'core'
         ));
-        $this->render('error/404', null, true);
+        $this->render('core/error/404', null, true);
     }
 }
