@@ -46,7 +46,7 @@ Ext.onReady(function(){
         
         save: function() {
             Ext.getCmp('form_language').getForm().submit({
-                url: Axis.getUrl('locale_language/save'),
+                url: Axis.getUrl('locale/language/save'),
                 success: function(form, response) {
                     form.clear();
                     window.hide();
@@ -67,7 +67,7 @@ Ext.onReady(function(){
             }
                 
             Ext.Ajax.request({
-                url: Axis.getUrl('locale_language/delete'),
+                url: Axis.getUrl('locale/language/remove'),
                 params: {data: Ext.encode(data)},
                 callback: function() {
                     ds.reload();
@@ -80,7 +80,7 @@ Ext.onReady(function(){
     
     var ds = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('locale_language/list')
+            url: Axis.getUrl('locale/language/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',

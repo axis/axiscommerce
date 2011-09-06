@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Locale_CurrencyController extends Axis_Admin_Controller_Back
+class Axis_Locale_Admin_CurrencyController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -50,10 +50,31 @@ class Axis_Admin_Locale_CurrencyController extends Axis_Admin_Controller_Back
             ->sendSuccess();
     }
     
+    public function saveAction()
+    {
+        $data = $this->_getParam('currency');
+        
+        if (!sizeof($data)) {
+            Axis::message()->addError(
+                Axis::translate('core')->__(
+                    'No data to save'
+                )
+            );
+            return $this->_helper->json->sendFailure();
+        }
+        
+        Axis::single('locale/currency')->save($data);
+
+        Axis::message()->addSuccess(
+            Axis::translate('locale')->__(
+                'Currency was saved successfully'
+            )
+        );
+        return $this->_helper->json->sendSuccess();
+    }
+    
     public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-        
         $dataset = Zend_Json::decode($this->_getParam('data'));
         
         if (!sizeof($dataset)) {
@@ -78,35 +99,8 @@ class Axis_Admin_Locale_CurrencyController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
     
-    public function saveAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-        
-        $data = $this->_getParam('currency');
-        
-        if (!sizeof($data)) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'No data to save'
-                )
-            );
-            return $this->_helper->json->sendFailure();
-        }
-        
-        Axis::single('locale/currency')->save($data);
-
-        Axis::message()->addSuccess(
-            Axis::translate('locale')->__(
-                'Currency was saved successfully'
-            )
-        );
-        return $this->_helper->json->sendSuccess();
-    }
-    
-    public function deleteAction()
-    {
-        $this->layout->disableLayout();
-        
         $data = Zend_Json::decode($this->_getParam('data'));
         
         if (!sizeof($data)) {

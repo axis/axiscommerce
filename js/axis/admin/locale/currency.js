@@ -56,7 +56,7 @@ Ext.onReady(function() {
 
         save: function() {
             Ext.getCmp('form_currency').getForm().submit({
-                url: Axis.getUrl('locale_currency/save'),
+                url: Axis.getUrl('locale/currency/save'),
                 success: function(form, response) {
                     form.clear();
                     window.hide();
@@ -78,7 +78,7 @@ Ext.onReady(function() {
             }
             var jsonData = Ext.encode(data);
             Ext.Ajax.request({
-                url: Axis.getUrl('locale_currency/batch-save'),
+                url: Axis.getUrl('locale/currency/batch-save'),
                 params: {data: jsonData},
                 callback: function() {
                     ds.reload();
@@ -102,7 +102,7 @@ Ext.onReady(function() {
             }
             var jsonData = Ext.encode(data);
             Ext.Ajax.request({
-                url: Axis.getUrl('locale_currency/delete'),
+                url: Axis.getUrl('locale/currency/remove'),
                 params: {data: jsonData},
                 callback: function() {
                     ds.reload();
@@ -113,7 +113,7 @@ Ext.onReady(function() {
 
     var ds = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('locale_currency/list')
+            url: Axis.getUrl('locale/currency/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
