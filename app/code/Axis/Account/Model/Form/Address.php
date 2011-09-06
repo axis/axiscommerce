@@ -42,6 +42,8 @@ class Axis_Account_Model_Form_Address extends Axis_Form
 
     protected $_fieldConfig = array();
 
+    protected $_eventPrefix = 'account_form_address';
+
     protected $_fields = array(
         'firstname' => array(
             'name' => 'firstname',
@@ -115,15 +117,18 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         if (is_array($options)) {
             $default = array_merge($default, $options);
         }
-
         parent::__construct($default);
+    }
 
+    public function init()
+    {
         $this->addElement('hidden', 'id', array(
             'validators' => array(
                 new Axis_Account_Model_Form_Validate_AddressId()
             )
         ));
 
+//        $defaultValues = $this->getAttrib('values');
         $configOptions = Axis::config('account/address_form')->toArray();
         $this->_fieldConfig = array_merge(array(
                 'firstname_sort_order'  => -20,
@@ -133,7 +138,6 @@ class Axis_Account_Model_Form_Address extends Axis_Form
             ),
             $configOptions
         );
-        uasort($this->_fields, array($this, '_sortFields'));
 
         $countries = Axis_Collect_Country::collect();
         if (isset($countries['0'])
@@ -151,29 +155,31 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         }
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
-        if (!empty($options['values']['country_id'])) {
-            $_defaultCountry = $options['values']['country_id'];
-            if (isset($countries[$_defaultCountry])) {
-                $defaultCountry = $_defaultCountry;
-            }
-        }
+//        if (!empty($defaultValues['country_id'])) {
+//            $_defaultCountry = $defaultValues['country_id'];
+//            if (isset($countries[$_defaultCountry])) {
+//                $defaultCountry = $_defaultCountry;
+//            }
+//        }
 
         $zones = Axis_Collect_Zone::collect();
         $this->_zones = $zones;
-
         foreach ($this->_fields as $name => $values) {
             $status = $this->_fieldConfig[$name . '_status'];
             if ('disabled' == $status) {
                 continue;
             }
             $fieldOptions = array(
-                'value'     => empty($options['values'][$name]) ?
-                    '' : $options['values'][$name],
+//                'value'     => empty($defaultValues[$name]) ?
+//                    '' : $defaultValues[$name],
                 'required'  => ('required' === $status),
                 'label'     => $values['label'],
                 'class'     => $values['class']
                     . ('required' === $status ? ' required' : '')
             );
+            if (isset($this->_fieldConfig[$name . '_sort_order'])) {
+                $fieldOptions['order'] = $this->_fieldConfig[$name . '_sort_order'];
+            }
 
             if ('country_id' == $name) {
                 $fieldOptions['validators'] = array(
@@ -212,30 +218,12 @@ class Axis_Account_Model_Form_Address extends Axis_Form
             'class' => 'input-checkbox'
         ));
         $element = $this->getElement('default_billing');
-//        $element->addDecorator('Label', array(
-//                'tag' => '',
-//                'placement' => 'append',
-//                'separator' => ''
-//            ))
-//            ->addDecorator('HtmlTag', array(
-//                'tag' => 'div',
-//                'class' => 'label-inline'
-//            ));
 
         $this->addElement('checkbox', 'default_shipping', array(
             'label' => 'Use as my default shipping address',
             'class' => 'input-checkbox'
         ));
         $element = $this->getElement('default_shipping');
-//        $element->addDecorator('Label', array(
-//                'tag' => '',
-//                'placement' => 'append',
-//                'separator' => ''
-//            ))
-//            ->addDecorator('HtmlTag', array(
-//                'tag' => 'div',
-//                'class' => 'label-inline'
-//            ));
 
         $this->addElement('button', 'submit', array(
             'type' => 'submit',
@@ -292,15 +280,5 @@ class Axis_Account_Model_Form_Address extends Axis_Form
             $this->setDefault('zone_id', $defaults['zone_id']);
         }
         return $this;
-    }
-
-    protected function _sortFields($a, $b)
-    {
-        $aSort = $this->_fieldConfig[$a['name'] . '_sort_order'];
-        $bSort = $this->_fieldConfig[$b['name'] . '_sort_order'];
-        if ($aSort == $bSort) {
-            return 0;
-        }
-        return ($aSort < $bSort) ? -1 : 1;
     }
 }

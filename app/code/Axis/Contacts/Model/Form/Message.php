@@ -35,6 +35,8 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
 {
     protected $_translatorModule = 'contacts';
 
+    protected $_eventPrefix = 'contacts_form_message';
+
     public function __construct($options = null)
     {
         $default = array(
@@ -45,14 +47,16 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
         if (is_array($options)) {
             $default = array_merge($default, $options);
         }
+        parent::__construct($default);
+    }
 
-       parent::__construct($default);
-
-       $this->addElement('text', 'email', array(
-           'required'   => true,
-           'label'      => 'Email',
-           'class'      => 'input-text required email',
-           'validators' => array('EmailAddress')
+    public function init()
+    {
+        $this->addElement('text', 'email', array(
+            'required'   => true,
+            'label'      => 'Email',
+            'class'      => 'input-text required email',
+            'validators' => array('EmailAddress')
         ));
         $this->addElement('text', 'name', array(
             'required' => true,

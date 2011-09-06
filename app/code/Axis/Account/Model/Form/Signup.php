@@ -35,6 +35,8 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
 {
     protected $_translatorModule = 'account';
 
+    protected $_eventPrefix = 'account_form_signup';
+
     public function __construct($options = array())
     {
         $default = array(
@@ -45,8 +47,10 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
         $default = array_merge($default, $options);
 
         parent::__construct($default);
-        $db = Axis::db();
+    }
 
+    public function init()
+    {
         $this->addElement('text', 'email', array(
             'required'  => true,
             'label'     => 'Email',

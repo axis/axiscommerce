@@ -38,11 +38,28 @@ class Axis_Form extends Zend_Form
 
     protected $_translatorModule = 'Axis_Core';
 
-    public function init()
+    protected $_eventPrefix = null;
+
+    /**
+     * Constructor. Overriden to add events after form initialization
+     *
+     * Registers form view helper as decorator
+     *
+     * @param mixed $options
+     * @return void
+     */
+    public function __construct($options = null)
     {
         $this->setDefaultDisplayGroupClass('Axis_Form_DisplayGroup');
         $this->addPrefixPath('Axis_Form_Decorator', 'Axis/Form/Decorator', 'decorator');
         $this->setTranslator(Axis::translate($this->_translatorModule)->getAdapter());
+
+        parent::__construct($options);
+
+        Axis::dispatch('form_construct_after', $this); // global event for all forms
+        if ($this->_eventPrefix) {
+            Axis::dispatch($this->_eventPrefix . '_construct_after', $this);
+        }
     }
 
     public function loadDefaultDecorators()
