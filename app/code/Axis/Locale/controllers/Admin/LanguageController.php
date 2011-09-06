@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Locale_LanguageController extends Axis_Admin_Controller_Back
+class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -41,8 +41,6 @@ class Axis_Admin_Locale_LanguageController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $dbField = new Axis_Filter_DbField();
         $order = $dbField->filter($this->_getParam('sort', 'id')) . ' '
                . $dbField->filter($this->_getParam('dir', 'ASC'));
@@ -65,11 +63,9 @@ class Axis_Admin_Locale_LanguageController extends Axis_Admin_Controller_Back
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-        
         $language = $this->_getParam('language');
-        $locale = $this->_getParam('locale_code');
-        $id = $this->_getParam('id');
+        $locale   = $this->_getParam('locale_code');
+        $id       = $this->_getParam('id');
         
         if (!strstr($locale, '_')) {
             Axis::message()->addError(
@@ -87,9 +83,9 @@ class Axis_Admin_Locale_LanguageController extends Axis_Admin_Controller_Back
         }
         
         $row->setFromArray(array(
-            'code' => $code,
+            'code'     => $code,
             'language' => $language,
-            'locale' => $locale
+            'locale'   => $locale
         ));
         
         $row->save();
@@ -101,21 +97,22 @@ class Axis_Admin_Locale_LanguageController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
     
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->getHelper('layout')->disableLayout();
-        $ids = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $data = Zend_Json::decode($this->_getParam('data'));
         
-        if (!count($ids)) {
+        if (!count($data)) {
             Axis::message()->addError(
                 Axis::translate('locale')->__(
                     'No language found to delete'
             ));
             return $this->_helper->json->sendFailure();
         }
-        Axis::single('locale/language')->delete($this->db->quoteInto('id IN(?)', $ids));
+        Axis::single('locale/language')->delete(
+            $this->db->quoteInto('id IN(?)', $data)
+        );
         
-        Axis::dispatch('locale_language_delete', $ids);
+        Axis::dispatch('locale_language_delete', $data);
 
         Axis::message()->addSuccess(
             Axis::translate('locale')->__(

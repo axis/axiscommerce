@@ -30,3 +30,12 @@ $router->addRoute('locale', new Axis_Controller_Router_Route_Front(
         'action' => 'index'
     )
 ));
+
+$router->addRoute('admin/locale', new Axis_Controller_Router_Route_Back(
+    'locale/:controller/:action/*',
+    array(
+        'module' => 'Axis_Locale',
+        'controller' => 'language',
+        'action' => 'index'
+    )
+), 'admin');

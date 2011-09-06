@@ -47,3 +47,13 @@ $router->addRoute('tag_account',
     )),
     'account' // run before 'account' route
 );
+
+
+$router->addRoute('admin/tag', new Axis_Controller_Router_Route_Back(
+    'tag/:action/*',
+    array(
+        'module' => 'Axis_Tag',
+        'controller' => 'index',
+        'action' => 'index'
+    )
+), 'admin');

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Tag_IndexController extends Axis_Admin_Controller_Back
+class Axis_Tag_Admin_IndexController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -58,40 +58,38 @@ class Axis_Admin_Tag_IndexController extends Axis_Admin_Controller_Back
             ->order($this->_getParam('sort', 'id') . ' ' . $this->_getParam('dir', 'DESC'))
             ->fetchAll();
 
-        $this->_helper->json->sendSuccess(array(
-            'count' => $select->foundRows(),
-            'data'  => $data
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->setCount($select->foundRows())
+            ->sendSuccess()
+        ;
     }
 
-    public function deleteAction()
+    public function batchSaveAction()
     {
-        $this->layout->disableLayout();
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
+        if (!$_rowset) {
+            return $this->_helper->json->sendFailure();
+        }
+        $model = Axis::model('tag/customer');
+        foreach ($_rowset as $_row) {
+            $row = $model->getRow($_row);
+            $row->save();
+        }
+
+        return $this->_helper->json->sendSuccess();
+    }
+    
+    public function removeAction()
+    {
         $data = Zend_Json::decode($this->_getParam('data'));
         if (!sizeof($data)) {
             return;
         }
 
-        $this->_helper->json->sendJson(array(
-            'success' => (bool) Axis::model('tag/customer')->delete(
-                $this->db->quoteInto('id IN(?)', $data)
-            )
-        ));
-    }
-
-    public function saveAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-        if (!$data) {
-            return $this->_helper->json->sendFailure();
-        }
-        $model = Axis::model('tag/customer');
-        foreach ($data as $_row) {
-            $row = $model->getRow($_row);
-            $row->save();
-        }
-
-        $this->_helper->json->sendSuccess();
+        Axis::model('tag/customer')->delete(
+            $this->db->quoteInto('id IN(?)', $data)
+        );
+        return $this->_helper->json->sendSuccess();
     }
 }

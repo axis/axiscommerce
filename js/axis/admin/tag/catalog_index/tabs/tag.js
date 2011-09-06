@@ -47,7 +47,7 @@ var TagGrid = {
 Ext.onReady(function() {
 
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('tag_index/list'),
+        url: Axis.getUrl('tag/list'),
         baseParams: {
             limit: 25
         },

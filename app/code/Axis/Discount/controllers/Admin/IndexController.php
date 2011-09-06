@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
+class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -63,10 +63,11 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
             $select->addFilterByNonSpecial();
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess()
+        ;
     }
 
     private function _initForm()
@@ -110,7 +111,7 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
         $this->view->attributes = $attributes;
     }
 
-    public function editAction()
+    public function loadAction()
     {
         $this->view->pageTitle = Axis::translate('discount')->__(
             'Edit Discount'
@@ -122,7 +123,7 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
             ->current();
 
         if (!$discount instanceof Axis_Db_Table_Row) {
-            $this->_redirect('/discount_index/create');
+            $this->_redirect('/discount/create');
         }
         $this->view->discount = $discount->getCustomInfo();
         $this->render('form-discount');
@@ -139,15 +140,13 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-        $params = $this->_getAllParams();
-        
-        $_row = $this->_getParam('discount', array());
+        $_row       = $this->_getParam('discount', array());
         $conditions = $this->_getParam('condition', array());
-        $discount = Axis::single('discount/discount')->save($_row);
+        
+        $row = Axis::single('discount/discount')->save($_row);
         
         $model = Axis::model('discount/eav');
-        $model->delete('discount_id = ' . $discount->id);
+        $model->delete('discount_id = ' . $row->id);
         
         $sites = array();
         if (!empty($_row['site_ids'])) {
@@ -161,26 +160,25 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
         if (!empty($_row['special'])) {
             $special = (bool) $_row['special'];
         }
-        $discount->setSites($sites)
+        $row->setSites($sites)
             ->setCustomerGroups($groups)
             ->setSpecial($special)
             ->setConditions($conditions)
             ;
         Axis::message()->addSuccess(
             Axis::translate('discount')->__(
-                "Discount '%s' successefull saved", $discount->name
+                "Discount '%s' successefull saved", $row->name
             )
         );
 
-        $this->_helper->json->sendSuccess(array(
-            'id' => $discount->id
-        ));
+        return $this->_helper->json
+            ->setId($row->id)
+            ->sendSuccess()
+        ;
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $ids = Zend_Json::decode($this->_getParam('data'));
         $model = Axis::model('discount/discount');
 
@@ -196,8 +194,6 @@ class Axis_Admin_Discount_IndexController extends Axis_Admin_Controller_Back
             ));
         }
 
-        $this->_helper->json->sendJson(array(
-            'success' => true
-        ));
+        return $this->_helper->json->sendSuccess();
     }
 }

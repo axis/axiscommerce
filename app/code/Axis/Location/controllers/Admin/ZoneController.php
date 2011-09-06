@@ -31,27 +31,24 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Location_CountryController extends Axis_Admin_Controller_Back
+class Axis_Location_Admin_ZoneController extends Axis_Admin_Controller_Back
 {
-
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('location')->__('Countries');
+        $this->view->pageTitle = Axis::translate('location')->__('States / Provinces');
 
-        $this->view->addressFormats = Axis::model('location/address_format')
-            ->select(array('id', 'name'))
-            ->fetchPairs();
+        $this->view->countries = Axis::single('location/country')
+            ->fetchAll()
+            ->toArray();
 
         $this->render();
     }
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
+        $showAllZones = (bool) $this->_getParam('show_allzones', true);
 
-        $showAllcountry = (bool) $this->_getParam('show_allcountry', true);
-
-        $select = Axis::single('location/country')->select('*')
+        $select = Axis::single('location/zone')->select('*')
             ->calcFoundRows()
             ->addFilters($this->_getParam('filter', array()))
             ->limit(
@@ -64,23 +61,22 @@ class Axis_Admin_Location_CountryController extends Axis_Admin_Controller_Back
                 . $this->_getParam('dir', 'ASC')
             );
 
-        if (!$showAllcountry) {
+        if (!$showAllZones) {
             $select->where('id <> 0');
         }
 
-        return $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess()
+        ;
     }
 
-    public function saveAction()
+    public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
 
-        $data = Zend_Json::decode($this->_getParam('data'));
-
-        if (!sizeof($data)) {
+        if (!sizeof($_rowset)) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
                     'No data to save'
@@ -88,52 +84,36 @@ class Axis_Admin_Location_CountryController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        
-        $model = Axis::model('location/country');
-        foreach ($data as $_row) {
-            $row = $model->save($_row);
-            if ($row) {
-                Axis::message()->addSuccess(
-                    Axis::translate('location')->__(
-                        'Country "%s" has been saved succesfully', $row->name
-                    )
-                );
-            }
+        $model = Axis::single('location/zone');
+        foreach ($_rowset  as $_row) {
+            $model->save($_row);
         }
 
         return $this->_helper->json->sendSuccess();
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
+        $data = Zend_Json::decode($this->_getParam('data'));
 
-        $ids = Zend_Json_Decoder::decode($this->_getParam('data'));
-
-        if (!count($ids)) {
+        if (!count($data)) {
             Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'No data to save'
+                Axis::translate('location')->__(
+                    'No zone found to delete'
                 )
             );
+
             return $this->_helper->json->sendFailure();
         }
-        Axis::single('location/country')->delete(
-            $this->db->quoteInto('id IN(?)', $ids)
+        Axis::single('location/zone')->delete(
+            $this->db->quoteInto('id IN(?)', $data)
         );
 
         Axis::message()->addSuccess(
             Axis::translate('location')->__(
-                'Country was deleted successfully'
+                'Zone was deleted successfully'
             )
         );
         return $this->_helper->json->sendSuccess();
-    }
-
-    public function getAddressFormatAction()
-    {
-        return $this->_helper->json->sendSuccess(array(
-            'data' => Axis::model('location/address_format')->select('*')->fetchAll()
-        ));
     }
 }

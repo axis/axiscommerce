@@ -109,7 +109,7 @@ function deleteCondition(el)
 //    if (Discount.id)
 //        params.id = Discount.id;
 //    Ext.Ajax.request({
-//        url: Axis.getUrl('discount_index/save'),
+//        url: Axis.getUrl('discount/save'),
 //        form: 'form-discount',
 //        params : params,
 //        callback: function(options, success, response) {
@@ -129,11 +129,11 @@ function saveBackDiscount()
     if (Discount.id)
         params['discount[id]'] = Discount.id;
     Ext.Ajax.request({
-        url: Axis.getUrl('discount_index/save'),
+        url: Axis.getUrl('discount/save'),
         form: 'form-discount',
         params : params,
         callback: function(options, success, response) {
-            window.location = Axis.getUrl('discount_index/');
+            window.location = Axis.getUrl('discount');
         }
     });
 }
@@ -142,5 +142,5 @@ function deleteDiscount()
 {
     if (!confirm('Delete discount?'))
         return false;
-    window.location = Axis.getUrl('discount_index/delete/id/') + Discount.id;
+    window.location = Axis.getUrl('discount/remove/id/') + Discount.id;
 }

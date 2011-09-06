@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * Axis
  * 
@@ -18,32 +18,16 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @category    Axis
- * @package     Axis_Community
+ * @package     Axis_Location
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-$router->addRoute('community_review', new Axis_Controller_Router_Route_Front(
-    'review/:action/*',
-    array(
-        'module' => 'Axis_Community',
-        'controller' => 'review',
-        'action' => 'index'
-    )
-));
-$router->addRoute('community_review_product', new Axis_Controller_Router_Route_Front(
-    'review/product/:hurl/*',
-    array(
-        'module' => 'Axis_Community',
-        'controller' => 'review',
-        'action' => 'product'
-    )
-));
 
-$router->addRoute('admin/community', new Axis_Controller_Router_Route_Back(
-    'community/:controller/:action/*',
+$router->addRoute('admin/location', new Axis_Controller_Router_Route_Back(
+    'location/:controller/:action/*',
     array(
-        'module' => 'Axis_Community',
-        'controller' => 'review',
+        'module' => 'Axis_Location',
+        'controller' => 'country',
         'action' => 'index'
     )
 ), 'admin');

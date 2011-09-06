@@ -63,7 +63,7 @@ var GZone = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('location_geozone/save'),
+            url: Axis.getUrl('location/geozone/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -100,7 +100,7 @@ var GZone = {
         }
 
         Ext.Ajax.request({
-            url:  Axis.getUrl('location_geozone/delete'),
+            url:  Axis.getUrl('location/geozone/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -133,7 +133,7 @@ var Assign = {
         var aId = Assign.grid.getStore().data.items[rowIndex].id;
         Assign.activeId = aId;
         Ext.Ajax.request({
-            url:  Axis.getUrl('location_geozone/get-assign'),
+            url:  Axis.getUrl('location/geozone-zone/load'),
             method: 'post',
             params: {
                 id: Assign.activeId
@@ -158,7 +158,7 @@ var Assign = {
     save: function() {
         Assign.window.disable();
         Ext.Ajax.request({
-            url:  Axis.getUrl('location_geozone/save-assign'),
+            url:  Axis.getUrl('location/geozone-zone/save'),
             method: 'post',
             params: {
                 geozone_id: GZone.activeId,
@@ -206,7 +206,7 @@ Ext.onReady(function() {
             field: 'id',
             direction: 'DESC'
         },
-        url:  Axis.getUrl('location_geozone/list')
+        url:  Axis.getUrl('location/geozone/list')
     });
 
     var cmGZone = new Ext.grid.ColumnModel({
@@ -294,7 +294,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url:  Axis.getUrl('location_geozone/list-assigns'),
+        url:  Axis.getUrl('location/geozone-zone/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -372,7 +372,7 @@ Ext.onReady(function() {
                 }
 
                 Ext.Ajax.request({
-                    url:  Axis.getUrl('location_geozone/delete-assigns'),
+                    url:  Axis.getUrl('location/geozone-zone/remove'),
                     params: {
                         data: Ext.encode(data)
                     },

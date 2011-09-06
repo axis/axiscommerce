@@ -53,7 +53,7 @@ var Zone = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('location_zone/save'),
+            url: Axis.getUrl('location/zone/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -82,7 +82,7 @@ var Zone = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('location_zone/delete'),
+            url: Axis.getUrl('location/zone/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -113,7 +113,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('location_zone/list'),
+        url: Axis.getUrl('location/zone/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',

@@ -32,7 +32,7 @@ Ext.onReady(function(){
 
     var storeCurrency = new Ext.data.Store({
         storeId: 'storeCurrency',
-        url:  Axis.getUrl('locale_currency/list'),
+        url:  Axis.getUrl('locale/currency/list'),
         totalProperty: 'count',
 //        autoLoad: true,
         reader: new Ext.data.JsonReader({

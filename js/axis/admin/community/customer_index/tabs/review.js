@@ -47,7 +47,7 @@ var ReviewGrid = {
 Ext.onReady(function() {
 
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('community_review/get-list'),
+        url: Axis.getUrl('community/review/list'),
         baseParams: {
             'limit': 25,
             'filter[customer][field]': 'cr.customer_id',

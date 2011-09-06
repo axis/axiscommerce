@@ -45,7 +45,7 @@ Ext.onReady(function () {
             field: 'id',
             direction: 'DESC'
         },
-        url: Axis.getUrl('discount_index/list')
+        url: Axis.getUrl('discount/list')
     });
 
     var cm = new Ext.grid.ColumnModel({
@@ -128,7 +128,7 @@ Ext.onReady(function () {
                 icon: Axis.skinUrl + '/images/icons/add.png',
                 cls: 'x-btn-text-icon',
                 handler : function() {
-                    window.location = Axis.getUrl('discount_index/create');
+                    window.location = Axis.getUrl('discount/create');
                 }
             },{
                 text: 'Delete'.l(),
@@ -148,7 +148,7 @@ Ext.onReady(function () {
                     }
 
                     Ext.Ajax.request({
-                        url: Axis.getUrl('discount_index/delete'),
+                        url: Axis.getUrl('discount/remove'),
                         params: {data: Ext.encode(data)},
                         callback: function() {
                             grid.getStore().reload();
@@ -166,7 +166,7 @@ Ext.onReady(function () {
                         return;
                     }
                     window.location = Axis.getUrl(
-                        'discount_index/edit/id/' + selectedItems[0]['data']['id']
+                        'discount/load/id/' + selectedItems[0]['data']['id']
                     );
                 }
             },
@@ -198,7 +198,7 @@ Ext.onReady(function () {
     }});
     Ext.getCmp('gridDiscount').on('rowdblclick', function(grid, rowIndex, e){
         var row = Ext.getCmp('gridDiscount').getStore().getAt(rowIndex);
-        window.location = Axis.getUrl('discount_index/edit/id/')
+        window.location = Axis.getUrl('discount/load/id/')
             + row.data.id;
     });
 

@@ -61,7 +61,7 @@ var TaxRate = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('tax_rate/save'),
+            url: Axis.getUrl('tax/rate/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -86,7 +86,7 @@ var TaxRate = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('tax_rate/delete'),
+            url: Axis.getUrl('tax/rate/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -146,7 +146,7 @@ Ext.onReady(function() {
             field: 'id',
             direction: 'DESC'
         },
-        url: Axis.getUrl('tax_rate/list')
+        url: Axis.getUrl('tax/rate/list')
     });
 
     var cm = new Ext.grid.ColumnModel({

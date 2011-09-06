@@ -14,10 +14,10 @@ $this->setButtons(array(
         'title' => 'Revoke Token',
         'class' => 'alt-button',
         'onclick' => "Ext.Ajax.request({
-            url: '{$this->href('/gbase_index/revoke-token')}',
+            url: '{$this->href('/googlebase/revoke-token')}',
             method: 'get',
             callback: function() {
-                window.location = '{$this->href('/gbase_index')}';
+                window.location = '{$this->href('/googlebase')}';
             }
         })"
     )

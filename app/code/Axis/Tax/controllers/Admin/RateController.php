@@ -31,19 +31,30 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Tax_ClassController extends Axis_Admin_Controller_Back
+class Axis_Tax_Admin_RateController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('tax')->__('Tax Classes');
+        $this->view->pageTitle = Axis::translate('tax')->__('Tax Rates');
+
+        $this->view->zones = Axis::single('location/geozone')
+            ->fetchAll()
+            ->toArray();
+
+        $this->view->taxClasses = Axis::single('tax/class')
+            ->fetchAll()
+            ->toArray();
+
+        $this->view->customerGroups = Axis::single('account/customer_group')
+            ->fetchAll()
+            ->toArray();
+
         $this->render();
     }
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $select = Axis::single('tax/class')->select('*')
+        $select = Axis::single('tax/rate')->select('*')
             ->calcFoundRows()
             ->addFilters($this->_getParam('filter', array()))
             ->limit(
@@ -56,39 +67,38 @@ class Axis_Admin_Tax_ClassController extends Axis_Admin_Controller_Back
                 . $this->_getParam('dir', 'DESC')
             );
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess()
+        ;
     }
 
-    public function saveAction()
+    public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-        $dataset = Zend_Json::decode($this->_getParam('data'));
-        if (!sizeof($dataset)) {
-            return $this->_helper->json->sendFailure();
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
+        if (!count($_rowset)) {
+            return;
         }
-        $model = Axis::model('tax/class');
-        foreach ($dataset as $_row) {
-            $model->save($_row);
+        $modelTaxRate = Axis::model('tax/rate');
+
+        foreach ($_rowset as $_row) {
+            $modelTaxRate->getRow($_row)->save();
         }
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
+
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->getHelper('layout')->disableLayout();
-
-        $ids = Zend_Json_Decoder::decode($this->_getParam('data'));
-        if (!count($ids)) {
+        $data = Zend_Json::decode($this->_getParam('data'));
+        if (!count($data)) {
             return;
         }
 
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('tax/class')->delete(
-                $this->db->quoteInto('id IN (?)', $ids)
-            )
-        ));
+        Axis::single('tax/rate')->delete(
+            $this->db->quoteInto('id IN (?)', $data)
+        );
+        return $this->_helper->json->sendSuccess();
     }
 }
