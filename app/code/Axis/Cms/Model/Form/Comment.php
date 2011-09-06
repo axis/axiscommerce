@@ -35,10 +35,11 @@ class Axis_Cms_Model_Form_Comment extends Axis_Form
 {
     protected $_translatorModule = 'account';
 
+    protected $_eventPrefix = 'cms_form_comment';
+
     public function __construct($options = null)
     {
         $page = $options['pageId'];
-        unset($options['pageId']);
         $default = array(
             'id' => 'form-page-comment',
             'action' => Zend_Controller_Front::getInstance()->getBaseUrl()
@@ -51,6 +52,12 @@ class Axis_Cms_Model_Form_Comment extends Axis_Form
         }
 
         parent::__construct($default);
+    }
+
+    public function init()
+    {
+        $page = $this->getAttrib('pageId');
+        $this->removeAttrib('pageId');
         $customer = Axis::getCustomer();
         if ($customer) {
             $name = $customer->firstname . ' ' . $customer->lastname;

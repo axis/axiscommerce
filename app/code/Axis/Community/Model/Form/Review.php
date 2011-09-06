@@ -35,13 +35,14 @@ class Axis_Community_Model_Form_Review extends Axis_Form
 {
     protected $_translatorModule = 'community';
 
+    protected $_eventPrefix = 'community_form_review';
+
     /**
      * @param array $options[productId => int]
      */
     function __construct($options = null)
     {
         $product = $options['productId'];
-        unset($options['productId']);
         $default = array(
             'id' => 'form-review',
             'action' => Zend_Controller_Front::getInstance()->getBaseUrl()
@@ -53,7 +54,12 @@ class Axis_Community_Model_Form_Review extends Axis_Form
         }
 
         parent::__construct($default);
+    }
 
+    public function init()
+    {
+        $product = $this->getAttrib('productId');
+        $this->removeAttrib('productId');
         $this->addElement('hidden', 'product', array(
             'value' => $product
         ));

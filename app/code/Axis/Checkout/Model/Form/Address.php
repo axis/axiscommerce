@@ -42,6 +42,8 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
 
     protected $_fieldConfig = array();
 
+    protected $_eventPrefix = 'checkout_form_address';
+
     protected $_fields = array(
         'firstname' => array(
             'name' => 'firstname',
@@ -116,7 +118,11 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         }
 
         parent::__construct($default);
+    }
 
+    public function init()
+    {
+        $defaultValues = $this->getAttrib('values');
         $configOptions = Axis::config('account/address_form')->toArray();
         $this->_fieldConfig = array_merge(array(
                 'firstname_sort_order'  => -20,
@@ -126,14 +132,13 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
             ),
             $configOptions
         );
-        uasort($this->_fields, array($this, '_sortFields'));
 
         $form = $this;
-        if (!empty($default['subform'])) {
+        if ($subform = $this->getAttrib('subform')) {
             $form = new Axis_Form(); // makes possible to use brackets in field names
             $form->setIsArray(true);
             $form->removeDecorator('Form');
-            $this->addSubForm($form, $default['subform']);
+            $this->addSubForm($form, $subform);
         }
 
         $countries = Axis_Collect_Country::collect();
@@ -152,8 +157,8 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         }
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
-        if (!empty($options['values']['country_id'])) {
-            $_defaultCountry = $options['values']['country_id'];
+        if (!empty($defaultValues['country_id'])) {
+            $_defaultCountry = $defaultValues['country_id'];
             if (isset($countries[$_defaultCountry])) {
                 $defaultCountry = $_defaultCountry;
             }
@@ -162,7 +167,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         $zones = Axis_Collect_Zone::collect();
         $this->_zones = $zones;
 
-        if ('billing_address' == $default['subform']
+        if ('billing_address' == $subform
             && !$customerId = Axis::getCustomerId()) {
 
             $form->addElement('text', 'email', array(
@@ -179,13 +184,16 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                 continue;
             }
             $fieldOptions = array(
-                'value'     => empty($options['values'][$name]) ?
-                    '' : $options['values'][$name],
+                'value'     => empty($defaultValues[$name]) ?
+                    '' : $defaultValues[$name],
                 'required'  => ('required' === $status),
                 'label'     => $values['label'],
                 'class'     => $values['class']
                     . ('required' === $status ? ' required' : '')
             );
+            if (isset($this->_fieldConfig[$name . '_sort_order'])) {
+                $fieldOptions['order'] = $this->_fieldConfig[$name . '_sort_order'];
+            }
 
             if ('country_id' == $name) {
                 $fieldOptions['validators'] = array(
@@ -213,7 +221,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
             $form->addElement($values['type'], $name, $fieldOptions);
         }
 
-        $form->addDisplayGroup($form->getElements(), $default['subform']);
+        $form->addDisplayGroup($form->getElements(), $subform);
     }
 
     /**
@@ -351,15 +359,5 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
     public function getZones()
     {
         return $this->_zones;
-    }
-
-    protected function _sortFields($a, $b)
-    {
-        $aSort = $this->_fieldConfig[$a['name'] . '_sort_order'];
-        $bSort = $this->_fieldConfig[$b['name'] . '_sort_order'];
-        if ($aSort == $bSort) {
-            return 0;
-        }
-        return ($aSort < $bSort) ? -1 : 1;
     }
 }
