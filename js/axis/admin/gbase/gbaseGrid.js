@@ -25,7 +25,7 @@ Ext.onReady(function(){
     Ext.DomHelper.insertFirst(Ext.get('targetCountry'), '<option value="">All</option>')
     
     var gbaseStore = new Ext.data.GroupingStore({
-        url: Axis.getUrl('gbase_index/get-gbase-data/'),
+        url: Axis.getUrl('googlebase/load/'),
         reader: new Ext.data.JsonReader({
             id: 'id',
             totalProperty: 'total_count',
@@ -296,7 +296,7 @@ function ajaxUpdate(items, clearSession){
     }
     
     Ext.Ajax.request({
-        url: Axis.getUrl('gbase_index/update'),
+        url: Axis.getUrl('googlebase/update'),
         method: 'post',
         params: {
             items: items,
@@ -329,7 +329,7 @@ function ajaxDelete(items, clearSession){
     }
     
     Ext.Ajax.request({
-        url: Axis.getUrl('gbase_index/delete'),
+        url: Axis.getUrl('googlebase/remove'),
         method: 'post',
         params: {
             items: items,
@@ -362,7 +362,7 @@ function ajaxSetDraft(params, clearSession){
     }
     
     Ext.Ajax.request({
-        url: Axis.getUrl('gbase_index/set-status'),
+        url: Axis.getUrl('googlebase/set-status'),
         method: 'post',
         params: {
             items: params['items'],

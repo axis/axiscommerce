@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Gbase_IndexController extends Axis_Admin_Controller_Back
+class Axis_GoogleBase_Admin_IndexController extends Axis_Admin_Controller_Back
 {
     /**
      *
@@ -463,7 +463,7 @@ class Axis_Admin_Gbase_IndexController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    public function getGbaseDataAction()
+    public function loadAction()
     {
         $this->_helper->layout->disableLayout();
 
@@ -685,7 +685,7 @@ class Axis_Admin_Gbase_IndexController extends Axis_Admin_Controller_Back
         ));
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
         $timeStartScript = time();
 

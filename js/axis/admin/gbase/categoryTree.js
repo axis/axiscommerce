@@ -132,7 +132,7 @@ var CategoryGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('gbase_index/export-branch'),
+            url: Axis.getUrl('googlebase/export-branch'),
             params: Ext.apply(params, {
                 clearSession: clearSession
             }),
