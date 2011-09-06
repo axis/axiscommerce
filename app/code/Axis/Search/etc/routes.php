@@ -38,3 +38,12 @@ $router->addRoute('search_result', new Axis_Controller_Router_Route_Front(
         'action' => 'result'
     )
 ));
+
+$router->addRoute('admin/search', new Axis_Controller_Router_Route_Back(
+    'search/:action/*',
+    array(
+        'module' => 'Axis_Search',
+        'controller' => 'index',
+        'action' => 'index'
+    )
+), 'admin');

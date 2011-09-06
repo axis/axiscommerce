@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
+class Axis_Search_Admin_IndexController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -41,47 +41,43 @@ class Axis_Admin_SearchController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
+        $filter = $this->_getParam('filter', array());
+        $limit  = $this->_getParam('limit', 20);
+        $start  = $this->_getParam('start', 0);
+        $sort   = $this->_getParam('sort', 'id');
+        $dir    = $this->_getParam('dir', 'DESC');
         $select = Axis::model('search/log')->select('*')
             ->calcFoundRows()
             ->addCustomer()
             ->addQuery()
-            ->addFilters($this->_getParam('filter', array()))
-            ->limit(
-                $this->_getParam('limit', 20),
-                $this->_getParam('start', 0)
-            )
-            ->order(
-                $this->_getParam('sort', 'id')
-                . ' '
-                . $this->_getParam('dir', 'DESC')
-            );
+            ->addFilters($filter)
+            ->limit($limit, $start)
+            ->order($sort . ' ' . $dir)
+        ;
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows(),
-        ));
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess()
+        ;
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $ids = Zend_Json_Decoder::decode($this->_getParam('data', array()));
-        if (!count($ids)) {
+        $data = Zend_Json::decode($this->_getParam('data', array()));
+        if (!count($data)) {
             return;
         }
 
-        Axis::model('search/log')->delete($this->db->quoteInto('id IN (?)', $ids));
+        Axis::model('search/log')->delete(
+            $this->db->quoteInto('id IN (?)', $data)
+        );
 
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
     
     public function updateIndexAction()
     {
-        $this->_helper->layout->disableLayout();
-        
         $indexer = Axis::model('search/indexer');
         $session = Axis::session('search_index');
 
