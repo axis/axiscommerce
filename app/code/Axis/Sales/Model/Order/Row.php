@@ -55,7 +55,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         /* Relation exist or not */
         $childrens = Axis::single('sales/order_status_relation')
             ->getChildrens($this->order_status_id);
-        
+
         if (!in_array($statusId, $childrens)) {
             Axis::message()->addError(
                 Axis::translate('sales')->__(
@@ -267,8 +267,18 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         if ($this->billing_state) {
             $zone = Axis::single('location/zone')->select()
                 ->where('name = ?', $this->billing_state)
-                ->fetchRow()
-                ->toArray();
+                ->fetchRow();
+
+            if ($zone) {
+                $zone = $zone->toArray();
+            } else {
+                $zone = array(
+                    'id'            => null,
+                    'code'          => $this->billing_state,
+                    'name'          => $this->billing_state,
+                    'country_id'    => $country['id']
+                );
+            }
         }
 
         $billing->setFirstname($this->billing_firstname)
@@ -280,13 +290,11 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             ->setZone($zone)
             ->setPostcode($this->billing_postcode)
             ->setCountry($country)
-
             ->setPhone($this->billing_phone)
             ->setFax($this->billing_fax)
             ->setAddressFormat($this->billing_address_format_id)
             ->setCustomerId($this->customer_id)
-            ->setTaxId(/*@todo*/)
-            ;
+            ->setTaxId(/*@todo*/);
 
         return $billing;
     }
@@ -308,8 +316,18 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
         if ($this->delivery_state) {
             $zone = Axis::single('location/zone')->select()
                 ->where('name = ?', $this->delivery_state)
-                ->fetchRow()
-                ->toArray();
+                ->fetchRow();
+
+            if ($zone) {
+                $zone = $zone->toArray();
+            } else {
+                $zone = array(
+                    'id'            => null,
+                    'code'          => $this->delivery_state,
+                    'name'          => $this->delivery_state,
+                    'country_id'    => $country['id']
+                );
+            }
         }
 
         $delivery->setFirstname($this->delivery_firstname)

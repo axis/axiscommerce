@@ -189,6 +189,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
                 $values['type']->removeDecorator('HtmlTag')
                     ->addDecorator('HtmlTag', array(
                         'tag'   => 'li',
+                        'id'    => "{$name}-row",
                         'class' => 'element-row'
                     ));
                 $values['type']->options = $countries;
@@ -197,11 +198,18 @@ class Axis_Account_Model_Form_Address extends Axis_Form
                 $values['type']->removeDecorator('HtmlTag')
                     ->addDecorator('HtmlTag', array(
                         'tag'   => 'li',
+                        'id'    => "{$name}-row",
                         'class' => 'element-row'
                     ));
                 if (isset($zones[$defaultCountry]) && count($countries)) {
                     $values['type']->options = $zones[$defaultCountry];
                 }
+
+                // zone name field
+                $zoneNameOptions = $fieldOptions;
+                $zoneNameOptions['order']++;
+                $zoneNameOptions['class'] .= ' input-text';
+                $this->addElement('text', 'state', $zoneNameOptions);
             }
 
             $this->addElement($values['type'], $name, $fieldOptions);
@@ -241,13 +249,15 @@ class Axis_Account_Model_Form_Address extends Axis_Form
      */
     public function isValid($data)
     {
-        if (isset($data['country_id'])) {
-            $zone = $this->getElement('zone_id');
-            if ($zone) {
+        if (isset($data['country_id']) && $zone = $this->getElement('zone_id')) {
+            if (!empty($this->_zones[$data['country_id']])) {
                 $zone->setAttribs(array(
-                    'options' => isset($this->_zones[$data['country_id']]) ?
-                        $this->_zones[$data['country_id']] : ''
+                    'options' => $this->_zones[$data['country_id']]
                 ));
+                $this->getElement('state')->setRequired(false);
+            } else {
+                $zone->setRegisterInArrayValidator(false);
+                $zone->setRequired(false);
             }
         }
 

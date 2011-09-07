@@ -102,8 +102,10 @@ class Axis_Account_Model_Customer_Row extends Axis_Db_Table_Row
         }
         $row->setFromArray($data);
         $row->customer_id = $this->id;
-        if (empty($row->zone_id)) {
+        if (empty($row->zone_id) || isset($data['state'])) {
             $row->zone_id = new Zend_Db_Expr('NULL');
+        } else {
+            $row->state = '';
         }
         $row->save();
 

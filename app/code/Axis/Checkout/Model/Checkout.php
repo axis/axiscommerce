@@ -272,8 +272,12 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
     public function setDelivery($address)
     {
         if (is_array($address)) {
+            $defaultAddress = $this->getDefaultAddress();
+            if (!empty($address['state'])) {
+                unset($defaultAddress['zone_id']);
+            }
             $address = array_merge(
-                $this->getDefaultAddress(),
+                $defaultAddress,
                 $address
             );
         }
@@ -309,8 +313,12 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
     public function setBilling($address)
     {
         if (is_array($address)) {
+            $defaultAddress = $this->getDefaultAddress();
+            if (!empty($address['state'])) {
+                unset($defaultAddress['zone_id']);
+            }
             $address = array_merge(
-                $this->getDefaultAddress(),
+                $defaultAddress,
                 $address
             );
         }

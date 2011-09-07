@@ -22,47 +22,38 @@
 
 $(document).ready(function() {
 
-    var elZone = $('select.input-zone');
-
-    elZone.after(
-        '<input type="text" class="'
-        + elZone.attr('class') + ' input-text" name="'
-        + elZone.attr('name') + '" id="'
-        + elZone.attr('id') + '"'
-        + ' />'
-    );
-
-    function toggleZone(el) {
-        var select      = el,
-            textfield   = el.parent().find('input.input-zone');
-
+    function toggleZone(select) {
+        var textfield = $('#state-row').find('input');
         if (select.children().length) {
-            select.insertAfter(textfield)
-                .removeAttr('disabled')
+            select.removeAttr('disabled')
+                .parent('li')
                 .show();
             textfield.attr('disabled', 'disabled')
+                .parent('li')
                 .hide();
         } else {
-            select.insertAfter(textfield)
-                .attr('disabled', 'disabled')
+            select.attr('disabled', 'disabled')
+                .parent('li')
                 .hide();
             textfield.removeAttr('disabled')
+                .parent('li')
                 .show();
         }
     }
-    toggleZone(elZone);
+    toggleZone($('#zone_id-row').find('select'));
 
     $('.input-country').change(function() {
-        elZone.html('');
+        var zoneSelect = $('#zone_id-row').find('select');
+        zoneSelect.html('');
         if (Zones[this.value]) {
             for (var id in Zones[this.value]) {
                 var zone    = Zones[this.value][id],
                     option  = '<option label="' + zone + '" value="' + id + '">'
                         + zone
                         + '</option>';
-                elZone.append(option);
+                zoneSelect.append(option);
             }
         }
-        toggleZone(elZone);
+        toggleZone(zoneSelect);
     });
 });

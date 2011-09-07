@@ -103,6 +103,19 @@ class Axis_Address extends Axis_Object
             $this->_data[$name] = $value;
         }
 
+        if (!empty($data['state']) && empty($this->_data['zone']['id'])) {
+            $zoneData = array(
+                'id'    => null,
+                'name'  => $data['state'],
+                'code'  => $data['state'],
+                'country_id' => $this->country ? $this->country->id : null
+            );
+            if (!$this->zone) {
+                $this->zone = new Axis_Object();
+            }
+            $this->zone->setFromArray($zoneData);
+        }
+
         return $this;
     }
 

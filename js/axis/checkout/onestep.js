@@ -161,16 +161,6 @@ var Onestep = (function() {
         zones: {},
 
         init: function() {
-            // add textfield near the zone combobox
-            $('.input-zone').each(function() {
-                $(this).after(
-                    '<input type="text" class="'
-                    + $(this).attr('class') + ' input-text" name="'
-                    + $(this).attr('name') + '" id="'
-                    + $(this).attr('id') + '"'
-                    + ' />'
-                );
-            });
             this.addObservers();
         },
 
@@ -181,8 +171,7 @@ var Onestep = (function() {
             // if zones is not available for selected country textfield will be shown instead of combo
             $('select.input-country').change(function() {
                 var subform     = this.id.replace('country_id', ''),
-                    zoneSelect  = $('select#' + subform + 'zone_id'),
-                    zoneInput   = $('input#' + subform + 'zone_id');
+                    zoneSelect  = $('select#' + subform + 'zone_id');
 
                 zoneSelect.html('');
                 if (self.zones[this.value]) {
@@ -219,16 +208,18 @@ var Onestep = (function() {
                     zoneInput = container.find('input.input-zone');
 
                 if (zoneCombo.children().length) {
-                    zoneCombo.insertBefore(zoneInput)
-                        .removeAttr('disabled')
+                    zoneCombo.removeAttr('disabled')
+                        .parent('li')
                         .show();
                     zoneInput.attr('disabled', 'disabled')
+                        .parent('li')
                         .hide();
                 } else {
-                    zoneCombo.insertAfter(zoneInput)
-                        .attr('disabled', 'disabled')
+                    zoneCombo.attr('disabled', 'disabled')
+                        .parent('li')
                         .hide();
                     zoneInput.removeAttr('disabled')
+                        .parent('li')
                         .show();
                 }
             });
