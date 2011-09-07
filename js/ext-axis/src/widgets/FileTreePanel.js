@@ -44,7 +44,7 @@ Axis.FileTreePanel = Ext.extend(Ext.ux.FileTreePanel, {
     
     singleUpload: false, // server works properly only with this config
     
-    url: Axis.getUrl('catalog_image/tree-panel'),
+    url: Axis.getUrl('catalog/image/cmd'),
     
     confirmOverwrite:function(filename, callback, scope) {
         Ext.Msg.show({

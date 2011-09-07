@@ -107,7 +107,7 @@ Ext.onReady(function() {
                 return String.format(
                     '<a href="{1}" target="_blank">{0} </a>',
                     value,
-                    Axis.getUrl('catalog_index/index/productId/' + record.get('product_id'))
+                    Axis.getUrl('catalog/product/index/productId/' + record.get('product_id'))
                 );
             }
         }, {

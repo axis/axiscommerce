@@ -53,7 +53,7 @@ Ext.onReady(function(){
             xtype: 'langset'
         }, {
             fieldLabel: 'Image'.l(),
-            url: Axis.getUrl('catalog_manufacturer/save-image'),
+            url: Axis.getUrl('catalog/manufacturer/save-image'),
             name: 'image',
             rootPath: 'media/manufacturer',
             rootText: 'manufacturer',
@@ -75,7 +75,7 @@ Ext.onReady(function(){
             text: 'Save'.l(),
             handler: function(){
                 form.getForm().submit({
-                    url: Axis.getUrl('catalog_manufacturer/save'),
+                    url: Axis.getUrl('catalog/manufacturer/save'),
                     method: 'post',
                     success: function(){
                         window.hide();

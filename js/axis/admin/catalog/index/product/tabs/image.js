@@ -173,7 +173,7 @@ Ext.onReady(function() {
         id: 'product-file-upload',
         maxFileSize: null,
         store: uploaderStore,
-        url: Axis.getUrl('catalog_index/save-image'),
+        url: Axis.getUrl('catalog/product/save-image'),
         listeners: {
             allfinished: {
                 scope: this,

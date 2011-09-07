@@ -33,7 +33,7 @@ var CategoryWindow = {
 
     save: function(closeWindow) {
         CategoryWindow.form.getForm().submit({
-            url: Axis.getUrl('catalog_category/save'),
+            url: Axis.getUrl('catalog/category/save'),
             method: 'post',
             success: function(form, response) {
                 CategoryGrid.reload();
@@ -211,7 +211,7 @@ Ext.onReady(function() {
                             xtype: 'fieldset',
                             items: [{
                                 fieldLabel: 'Image'.l(),
-                                url: Axis.getUrl('catalog_category/save-image'),
+                                url: Axis.getUrl('catalog/category/save-image'),
                                 name: 'image[base][src]',
                                 rootPath: 'media/category',
                                 rootText: 'category',
@@ -234,7 +234,7 @@ Ext.onReady(function() {
                             xtype: 'fieldset',
                             items: [{
                                 fieldLabel: 'Image'.l(),
-                                url: Axis.getUrl('catalog_category/save-image'),
+                                url: Axis.getUrl('catalog/category/save-image'),
                                 name: 'image[listing][src]',
                                 rootPath: 'media/category',
                                 rootText: 'category',

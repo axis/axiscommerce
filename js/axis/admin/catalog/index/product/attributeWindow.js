@@ -71,7 +71,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
             },
             leaf_field_name: 'leaf',
             parent_id_field_name: 'parent',
-            url: Axis.getUrl('catalog_index/get-options'),
+            url: Axis.getUrl('catalog/product-option/nlist'),
             listeners: {
                 load: {
                     scope: this,

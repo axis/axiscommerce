@@ -43,7 +43,7 @@ Ext.onReady(function(){
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('catalog_manufacturer/list'),
+        url: Axis.getUrl('catalog/manufacturer/list'),
         reader: new Ext.data.JsonReader({
             root : 'data',
             totalProperty: 'count',
@@ -186,7 +186,7 @@ Ext.onReady(function(){
             data[modified[i]['id']] = modified[i]['data'];
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_manufacturer/batch-save'),
+            url: Axis.getUrl('catalog/manufacturer/batch-save'),
             method: 'post',
             params: {
                 data: Ext.encode(data)
@@ -212,7 +212,7 @@ Ext.onReady(function(){
             data[i] = selections[i]['id'];
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_manufacturer/delete'),
+            url: Axis.getUrl('catalog/manufacturer/delete'),
             method: 'post',
             params: {
                 data: Ext.encode(data)

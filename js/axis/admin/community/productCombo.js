@@ -25,7 +25,7 @@ Ext.onReady(function(){
     ]);
     
     var product_store = new Ext.data.Store({
-        url: Axis.getUrl('catalog_index/simple-list'),
+        url: Axis.getUrl('catalog/product/simple-list'),
         reader: new Ext.data.JsonReader({
             id: 'product_id',
             totalProperty: 'totalCount',

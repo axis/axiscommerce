@@ -196,7 +196,7 @@ Ext.onReady(function() {
             idProperty: 'id'
         }, CategoryGrid.record),
         rootFieldName: 'site_id',
-        url: Axis.getUrl('catalog_category/get-flat-tree')
+        url: Axis.getUrl('catalog/category/list')
     });
 
     var cm = new Ext.grid.ColumnModel({

@@ -109,7 +109,7 @@ var CategoryGrid = {
         moveType['above'] = 'moveBefore';
 
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_category/move/'),
+            url: Axis.getUrl('catalog/category/move'),
             method: 'post',
             params: {
                 catId: record.id,
@@ -193,7 +193,7 @@ var CategoryGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_category/delete/'),
+            url: Axis.getUrl('catalog/category/remove'),
             method: 'post',
             params: { data: Ext.encode(data) },
             callback: function() {
@@ -229,7 +229,7 @@ Ext.onReady(function() {
             idProperty: 'id'
         }, CategoryGrid.record),
         rootFieldName: 'site_id',
-        url: Axis.getUrl('catalog_category/get-flat-tree')
+        url: Axis.getUrl('catalog/category/list')
     });
 
     var actions = new Ext.ux.grid.RowActions({

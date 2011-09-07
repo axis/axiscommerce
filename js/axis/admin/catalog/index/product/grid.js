@@ -101,7 +101,7 @@ var ProductGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_index/') + url,
+            url: Axis.getUrl('catalog/product/') + url,
             params: params,
             callback: function() {
                 ProductGrid.reload();
@@ -122,7 +122,7 @@ var ProductGrid = {
 
         var jsonData = Ext.encode(data);
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_index/batch-save-product/'),
+            url: Axis.getUrl('catalog/product/batch-save'),
             params: {
                 data: jsonData,
                 siteId: ProductGrid.getSiteId()
@@ -192,7 +192,7 @@ var ProductBuffer = {
             return;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_index/move-products/'),
+            url: Axis.getUrl('catalog/product/batch-move'),
             params: {
                 data: Ext.encode(ProductBuffer.data),
                 destination: destination
@@ -290,7 +290,7 @@ Ext.onReady(function() {
             field: 'id',
             direction: 'DESC'
         },
-        url: Axis.getUrl('catalog_index/list-products')
+        url: Axis.getUrl('catalog/product/list')
     });
 
     var actions = new Ext.ux.grid.RowActions({

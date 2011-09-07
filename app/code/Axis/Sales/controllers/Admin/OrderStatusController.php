@@ -202,6 +202,7 @@ class Axis_Sales_Admin_OrderStatusController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
 
+    //@todo merge with list action
     public function getChildsAction()
     {
         $parentId = $this->_getParam('parentId', null);
