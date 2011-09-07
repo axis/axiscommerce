@@ -6,6 +6,4 @@
 var Zones = <?php echo Zend_Json_Encoder::encode($this->form->getZones()); ?>;
 $('#' + '<?php echo $this->form->getAttrib('id') ?>').validate();
 </script>
-<?php $this->headScript()
-    ->appendFile('js/jquery/jquery.selectboxes.js')
-    ->appendFile('js/axis/account/newAddress.js') ?>
+<?php $this->headScript()->appendFile('js/axis/account/newAddress.js') ?>

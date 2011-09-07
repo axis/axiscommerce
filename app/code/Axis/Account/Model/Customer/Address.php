@@ -50,7 +50,7 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
             $zoneId     = isset($address['zone_id']) ?
                 $address['zone_id'] : false;
         } else {
-           $address = $this->find($address)->current();
+            $address = $this->find($address)->current();
             if (!$address instanceof Axis_Db_Table_Row) {
                 return false;
             }
@@ -93,8 +93,8 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
             ->where('customer_id = ?', $customerId)
             ->addCountry()
             ->addZone()
-            ->fetchAll()
-        ;
+            ->fetchAll();
+
         foreach ($addressList as &$address) {
             foreach ($address as $key => $value)  {
                 list($prefix,) = explode('_', $key, 2);
