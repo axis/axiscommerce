@@ -114,7 +114,7 @@ Ext.onReady(function() {
             emptyText: 'None'.l(),
             store: new Ext.data.Store({
                 autoLoad: true,
-                url: Axis.getUrl('catalog_product-option-valueset/list-sets'),
+                url: Axis.getUrl('catalog/product-option-valueset/list'),
                 reader: new Ext.data.JsonReader({
                     root: 'data',
                     idProperty: 'id'
@@ -198,7 +198,7 @@ Ext.onReady(function() {
             text: 'Save'.l(),
             handler: function() {
                 Attribute.form.getForm().submit({
-                    url: Axis.getUrl('catalog_product-attributes/save'),
+                    url: Axis.getUrl('catalog/product-option/save'),
                     success: function(form, action) {
                         Attribute.window.hide();
                         Attribute.grid.getStore().reload();

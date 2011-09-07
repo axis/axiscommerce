@@ -23,7 +23,7 @@
 Ext.onReady(function(){
     
     var orderStatus = new Ext.data.Store({
-        url:  Axis.getUrl('sales_order-status/list'),
+        url:  Axis.getUrl('sales/order-status/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -35,7 +35,7 @@ Ext.onReady(function(){
     orderStatus.load();
     
     orderStatusChild = new Ext.data.Store({
-        url:  Axis.getUrl('sales_order-status/get-childs'),
+        url:  Axis.getUrl('sales/order-status/get-childs'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -139,7 +139,7 @@ Ext.onReady(function(){
             text: 'Save'.l(),
             handler: function () {
              Ext.getCmp('formOrder').getForm().submit({
-                 url:  Axis.getUrl('sales_order-status/save'),
+                 url:  Axis.getUrl('sales/order-status/save'),
                  method : 'POST',
                  success : function(form, response) {
                     Ext.getCmp('grid-status').getStore().reload();

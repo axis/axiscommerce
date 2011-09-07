@@ -42,7 +42,7 @@ var Product = {
     load: function(id) {
         Product.id = id;
         ProductWindow.form.getForm().load({
-            url: Axis.getUrl('catalog_index/get-product-data/id/' + id),
+            url: Axis.getUrl('catalog/product/load/id/' + id),
             method: 'get',
             success: function(form, action) {
                 var data = Ext.decode(action.response.responseText).data;
@@ -64,7 +64,7 @@ var Product = {
             return;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_index/update-price-index'),
+            url: Axis.getUrl('catalog/product/update-price-index'),
             params: {
                 limit       : 50,
                 skip_session: skipSession

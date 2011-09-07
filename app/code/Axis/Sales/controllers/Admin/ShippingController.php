@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Sales_ShippingController extends Axis_Admin_Controller_Back
+class Axis_Sales_Admin_ShippingController extends Axis_Admin_Controller_Back
 {
     public function listAction()
     {
@@ -107,12 +107,12 @@ class Axis_Admin_Sales_ShippingController extends Axis_Admin_Controller_Back
             ->toArray();
         
         $allowedMethods = Axis_Shipping::getAllowedMethods($request);
-        $result = array();
+        $data = array();
         foreach ($allowedMethods['methods'] as $methodCode => $types) {
             $shipping = Axis_Shipping::getMethod($methodCode);
             $title = $shipping->getTitle();
             foreach ($types as $type) {
-                $result[] = array(
+                $data[] = array(
                     'code'  => $type['id'],
                     'title' => $type['title'],
                     'name'  => $title . ' ' . $type['title'] . ' ' . $type['price'],
@@ -125,7 +125,7 @@ class Axis_Admin_Sales_ShippingController extends Axis_Admin_Controller_Back
         }
         
         return $this->_helper->json
-            ->setData($result)
+            ->setData($data)
             ->sendSuccess();
     }
 

@@ -31,41 +31,37 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
+class Axis_Catalog_Admin_CategoryController extends Axis_Admin_Controller_Back
 {
-    public function init()
+    public function listAction()
     {
-        parent::init();
-        $this->_helper->layout->disableLayout();
-    }
+        $data = Axis::model('catalog/category')->getNestedTreeData();
 
-    public function getFlatTreeAction()
-    {
-        $categories = Axis::model('catalog/category')->getNestedTreeData();
-
-        foreach ($categories as &$category) {
-            if ($category['lvl'] == 0) {
-                $category['disable_edit'] = true;
-                $category['disable_delete'] = true;
+        foreach ($data as &$_category) {
+            if ($_category['lvl'] == 0) {
+                $_category['disable_edit'] = true;
+                $_category['disable_delete'] = true;
             } else {
-                $category['disable_edit'] = false;
-                $category['disable_delete'] = false;
+                $_category['disable_edit'] = false;
+                $_category['disable_delete'] = false;
             }
         }
 
-        $this->_helper->json
-            ->setData($categories)
+        return $this->_helper->json
+            ->setData($data)
             ->sendSuccess();
     }
 
     public function getRootCategoriesAction()
     {
-        $this->_helper->json->sendSuccess(array(
-            'data' => Axis::model('catalog/category')->getRootCategories()
-        ));
+        $data = Axis::model('catalog/category')->getRootCategories();
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess()
+        ;
     }
 
-    public function getDataAction()
+    public function loadAction()
     {
         $categoryId = $this->_getParam('categoryId');
         $row = Axis::model('catalog/category')->select('*')
@@ -92,7 +88,10 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
             }
         }
 
-        $this->_helper->json->setData($data)->sendSuccess();
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess()
+        ;
     }
 
     /**
@@ -217,24 +216,25 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
             )
         );
 
-        $this->_helper->json->sendSuccess(array(
-            'data' => array('category_id' => $categoryId))
-        );
+        return $this->_helper->json
+            ->setData(array('category_id' => $categoryId))
+            ->sendSuccess()
+        ;
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $categoryIds = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $data = Zend_Json::decode($this->_getParam('data'));
 
-        $mCategory = Axis::model('catalog/category');
-        foreach ($categoryIds as $categoryId) {
-            $mCategory->deleteItem($categoryId);
+        $model = Axis::model('catalog/category');
+        foreach ($data as $categoryId) {
+            $model->deleteItem($categoryId);
             Axis::dispatch('catalog_category_remove_success', array(
                 'category_id' => $categoryId
             ));
         }
 
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
     public function moveAction()
@@ -243,22 +243,21 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
         $newParentId    = $this->_getParam('newParentId');
         $categoryId     = $this->_getParam('catId');
 
-        $nsTreeTable = new Axis_NSTree_Table();
+        $model = new Axis_NSTree_Table();
 
         switch ($moveType) {
             case 'moveTo':
-                $success = $nsTreeTable
-                    ->replaceNode($categoryId, $newParentId);
+                $success = $model->replaceNode($categoryId, $newParentId);
                 break;
             case 'moveBefore':
-                $success = $nsTreeTable
-                    ->replaceBefore($categoryId, $newParentId);
+                $success = $model->replaceBefore($categoryId, $newParentId);
                 break;
         }
 
-        $this->_helper->json->sendJson(array(
-            'success' => $success
-        ));
+        if (!$success) {
+            return $this->_helper->json->sendFailure();
+        }
+        return $this->_helper->json->sendSuccess();
     }
 
     public function saveImageAction()
@@ -272,7 +271,7 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
                 ->setUseDispersion(true)
                 ->save(Axis::config()->system->path . '/media/category');
 
-            $result = array(
+            $data = array(
                 'success' => true,
                 'data' => array(
                     'path' => $file['path'],
@@ -280,7 +279,7 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
                 )
             );
         } catch (Axis_Exception $e) {
-            $result = array(
+            $data = array(
                 'success' => false,
                 'messages' => array(
                     'error' => $e->getMessage()
@@ -288,6 +287,6 @@ class Axis_Admin_Catalog_CategoryController extends Axis_Admin_Controller_Back
             );
         }
 
-        return $this->getResponse()->appendBody(Zend_Json_Encoder::encode($result));
+        return $this->getResponse()->appendBody(Zend_Json::encode($data));
     }
 }

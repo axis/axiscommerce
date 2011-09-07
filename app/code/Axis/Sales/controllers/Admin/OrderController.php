@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
+class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -47,8 +47,6 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $select = Axis::single('sales/order')->select('*')
             ->columns(array(
                 'order_total_customer' => new Zend_Db_Expr('currency_rate * order_total')
@@ -66,33 +64,111 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 . $this->_getParam('dir', 'DESC')
             );
 
-        $orders = $select->fetchAll();
-        $mCurrency = Axis::single('locale/currency');
+        $data = $select->fetchAll();
+        $modelCurrency = Axis::single('locale/currency');
         $mainStoreCurrency = Axis::config('locale/main/currency');
 
         // add currency symbols to totals
-        foreach ($orders as &$order) {
-            $order['order_total_base'] =
-                $order['order_total'] . ' ' . $mainStoreCurrency;
+        foreach ($data as &$_o) {
+            $_o['order_total_base'] = $_o['order_total'] . ' ' . $mainStoreCurrency;
 
             // find the precision of user selected currency
-            $precision = $mCurrency->getData($order['currency'], 'currency_precision');
+            $precision = $modelCurrency->getData($_o['currency'], 'currency_precision');
             if (empty($precision)) {
                 $precision = 2;
             }
-            $order['order_total_customer'] =
-                round($order['order_total_customer'], $precision) . ' ' . $order['currency'];
+            $_o['order_total_customer'] =
+                round($_o['order_total_customer'], $precision) . ' ' . $_o['currency'];
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $orders,
-            'count' => $select->count()
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->setCount($select->count())
+            ->sendSuccess()
+        ;
+    }
+    
+    public function loadAction()
+    {
+        $orderId = $this->_getParam('orderId');
+        $this->view->order = $order = Axis::single('sales/order')
+            ->find($orderId)
+            ->current();
+
+        $products = $order->getProducts();
+        foreach($products as &$product) {
+            $product['price'] =
+                $product['price'] * $order->currency_rate;
+            $product['final_price'] =
+                $product['final_price'] * $order->currency_rate;
+            $product['tax_rate'] = $product['tax'] * 100 / $product['final_price'];
+        }
+        $data['products'] = array_values($products);
+
+        $totals = $order->getTotals();
+        foreach ($totals as &$total) {
+            $total['value'] = $total['value'] * $order->currency_rate;
+        }
+        $this->view->totals = $data['totals'] = $totals;
+
+
+        $data['history'] = $order->getStatusHistory();
+        $customer = Axis::single('account/customer')
+            ->find($order->customer_id)
+            ->current();
+        if ($customer instanceof Axis_Db_Table_Row) {
+            $data['customer'] = $customer->toArray();
+            unset($data['customer']['password']);//paranoid
+            $data['customer']['group'] = Axis::single('account/customer_group')
+                ->getName($customer->group_id);
+        } else {
+            $data['customer'] = array(
+                'firstname' => '-//-',
+                'lastname'  => '-//-',
+                'group'     => 'Guest',
+                'group_id'  => Axis_Account_Model_Customer_Group::GROUP_GUEST_ID,
+                'email'     => $order->customer_email
+            );
+        }
+
+        $delivery = $order->getDelivery();
+        $data['address']['delivery'] = $delivery->toFlatArray();
+        $billing = $order->getBilling();
+        $data['address']['billing'] = $billing->toFlatArray();
+
+        $this->view->cc = Axis::single('sales/order_creditcard')
+            ->find($order->id)
+            ->current();
+        $form = $this->view->paymentForm($order->payment_method_code, 'view');
+        $data['payment'] = array(
+            'name' => $order->payment_method,
+            'code' => $order->payment_method_code,
+            'form' => $form
+        );
+        $data['shipping'] = array(
+            'name' => $order->shipping_method,
+            'code' => $order->shipping_method_code
+//            'form' => $this->view->shippingForm($order->shipping_method_code, 'view')
+        );
+
+        $order = $order->toArray();
+        $order['status_name'] =
+            Axis_Collect_OrderStatusText::getName($order['order_status_id']);
+        $order['site_name'] =
+            Axis_Collect_Site::getName($order['site_id']);
+        // convert price with rates that was available
+        // during order was created (not current rates)
+        $order['order_total'] = $order['order_total'] * $order['currency_rate'];
+        $data['order'] = $order;
+
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess()
+        ;
     }
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
         $params = $this->_getAllParams();
 
         $params['products'] = Zend_Json::decode($params['products']);
@@ -253,14 +329,14 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
 
         return $this->_helper->json
             ->setData(array('order_id' => $orderRow->id))
-            ->sendSuccess();
+            ->sendSuccess()
+        ;
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-        $orderIds = Zend_Json_Decoder::decode($this->_getParam('data'));
-        if (!sizeof($orderIds)) {
+        $data = Zend_Json::decode($this->_getParam('data'));
+        if (!sizeof($data)) {
             Axis::message()->addError(
                 Axis::translate('admin')->__(
                     'No data to delete'
@@ -268,7 +344,9 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        Axis::single('sales/order')->delete($this->db->quoteInto('id IN(?)', $orderIds));
+        Axis::single('sales/order')->delete(
+            $this->db->quoteInto('id IN(?)', $data)
+        );
         Axis::message()->addSuccess(
             Axis::translate('sales')->__(
                 'Order was deleted successfully'
@@ -280,14 +358,14 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
     public function printAction()
     {
         $this->_helper->layout->disableLayout();
-        $orderIds = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $orderIds = Zend_Json::decode($this->_getParam('data'));
         if (!sizeof($orderIds)) {
             Axis::message()->addError(
                 Axis::translate('sales')->__(
                     'No data to print'
                 )
             );
-            return $this->_redirect('sales_order');
+            return $this->_redirect('sales/order');
         }
         asort($orderIds);
 
@@ -301,7 +379,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
         $firstOrderId = current($orderIds);
 
         foreach ($orderIds as $orderId) {
-            $orders[$orderId] = $rowset[$orderId]->toArray();
+            $orders[$orderId]                = $rowset[$orderId]->toArray();
             $orders[$orderId]['products']    = $rowset[$orderId]->getProducts();
             $orders[$orderId]['totals']      = $rowset[$orderId]->getTotals();
             $orders[$orderId]['billing']     = $rowset[$orderId]->getBilling();
@@ -340,115 +418,8 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
         }
     }
 
-    public function getOrderInfoAction()
+    public function addProductAction()
     {
-        $this->_helper->layout->disableLayout();
-        $orderId = $this->_getParam('orderId');
-        $this->view->order = $order = Axis::single('sales/order')
-            ->find($orderId)
-            ->current();
-
-        $products = $order->getProducts();
-        foreach($products as &$product) {
-            $product['price'] =
-                $product['price'] * $order->currency_rate;
-            $product['final_price'] =
-                $product['final_price'] * $order->currency_rate;
-            $product['tax_rate'] = $product['tax'] * 100 / $product['final_price'];
-        }
-        $data['products'] = array_values($products);
-
-        $totals = $order->getTotals();
-        foreach ($totals as &$total) {
-            $total['value'] = $total['value'] * $order->currency_rate;
-        }
-        $this->view->totals = $data['totals'] = $totals;
-
-
-        $data['history'] = $order->getStatusHistory();
-        $customer = Axis::single('account/customer')
-            ->find($order->customer_id)
-            ->current();
-        if ($customer instanceof Axis_Db_Table_Row) {
-            $data['customer'] = $customer->toArray();
-            unset($data['customer']['password']);//paranoid
-            $data['customer']['group'] = Axis::single('account/customer_group')
-                ->getName($customer->group_id);
-        } else {
-            $data['customer'] = array(
-                'firstname' => '-//-',
-                'lastname'  => '-//-',
-                'group'     => 'Guest',
-                'group_id'  => Axis_Account_Model_Customer_Group::GROUP_GUEST_ID,
-                'email'     => $order->customer_email
-            );
-        }
-
-        $delivery = $order->getDelivery();
-        $data['address']['delivery'] = $delivery->toFlatArray();
-        $billing = $order->getBilling();
-        $data['address']['billing'] = $billing->toFlatArray();
-
-        $this->view->cc = Axis::single('sales/order_creditcard')
-            ->find($order->id)
-            ->current();
-        $form = $this->view->paymentForm($order->payment_method_code, 'view');
-        $data['payment'] = array(
-            'name' => $order->payment_method,
-            'code' => $order->payment_method_code,
-            'form' => $form
-        );
-        $data['shipping'] = array(
-            'name' => $order->shipping_method,
-            'code' => $order->shipping_method_code
-//            'form' => $this->view->shippingForm($order->shipping_method_code, 'view')
-        );
-
-        $order = $order->toArray();
-        $order['status_name'] =
-            Axis_Collect_OrderStatusText::getName($order['order_status_id']);
-        $order['site_name'] =
-            Axis_Collect_Site::getName($order['site_id']);
-        // convert price with rates that was available
-        // during order was created (not current rates)
-        $order['order_total'] = $order['order_total'] * $order['currency_rate'];
-        $data['order'] = $order;
-
-        $this->_helper->json
-            ->setData($data)
-            ->sendSuccess();
-    }
-
-    public function getProductAttributeFormAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $productId = $this->_getParam('productId');
-        /**
-         * @var $product Axis_Catalog_Model_Product_Row
-         */
-        $product = Axis::single('catalog/product')
-            ->find($productId)
-            ->current();
-        if (!$product instanceof Axis_Catalog_Model_Product_Row) {
-           return $this->_helper->json->sendFalure();
-        }
-        $data['properties']  = $product->getProperties();
-        $data['modifiers']   = $product->getModifiers();
-        $variations = $product->getVariationAttributesData();
-        foreach ($variations as $key => $value) {
-            $data[$key] = $value;
-        }
-        $data['price'] = $product->getPriceRules();
-        $this->view->product = $data;
-        $formHtml = $this->view->render('order/get-product-attribute-form.phtml');
-        return $this->_helper->json
-           ->setData(array('form' => $formHtml, 'variations' => $variations))
-           ->sendSuccess();
-    }
-
-    public function addProductToOrderAction()
-    {
-        $this->_helper->layout->disableLayout();
         $params = Zend_Json::decode($this->_getParam('data'));
 
         $data = array();
@@ -544,7 +515,7 @@ class Axis_Admin_Sales_OrderController extends Axis_Admin_Controller_Back
                 'variation_id'  => $variationId
             );
         }
-        $this->_helper->json
+        return $this->_helper->json
             ->setData($data)
             ->sendSuccess();
     }

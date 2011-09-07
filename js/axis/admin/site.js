@@ -41,7 +41,7 @@ Ext.onReady(function(){
     ])
 
     var rootCategoriesStore = new Ext.data.Store({
-        url: Axis.getUrl('catalog_category/get-root-categories'),
+        url: Axis.getUrl('catalog/category/get-root-categories'),
         //data: categories,
         reader: new Ext.data.JsonReader({
             idProperty: 'id',

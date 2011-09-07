@@ -65,7 +65,7 @@ Ext.onReady(function(){
             field: 'id',
             direction: 'DESC'
         },
-        url: Axis.getUrl('catalog_index/list-products')
+        url: Axis.getUrl('catalog/product/list')
     });
 
     var cm = new Ext.grid.ColumnModel({

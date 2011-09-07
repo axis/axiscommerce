@@ -46,7 +46,7 @@ Ext.onReady(function() {
             field: 'ordered',
             direction: 'DESC'
         },
-        url: Axis.getUrl('catalog_index/list-bestseller')
+        url: Axis.getUrl('catalog/product/list-bestseller')
     });
 
     var cm = new Ext.grid.ColumnModel({
@@ -62,7 +62,7 @@ Ext.onReady(function() {
                 return String.format(
                     '<a href="{1}" target="_blank">{0}</a>',
                     value,
-                    Axis.getUrl('catalog_index/index/productId/' + record.get('id'))
+                    Axis.getUrl('catalog/product/index/productId/' + record.get('id'))
                 );
             }
         }, {

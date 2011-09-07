@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Back
+class Axis_Catalog_Admin_ManufacturerController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -58,10 +58,11 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             );
 
         if (!$ids = $select->fetchCol()) {
-            return $this->_helper->json->sendSuccess(array(
-                'count' => 0,
-                'data'  => array()
-            ));
+            return $this->_helper->json
+                ->setData(array())
+                ->setCount(0)
+                ->sendSuccess()
+            ;
         }
 
         $count = $select->foundRows();
@@ -76,62 +77,30 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
                 . $this->_getParam('dir', 'DESC')
             );
 
-        $result = array();
+        $data = array();
         foreach ($select->fetchAll() as $manufacturer) {
             $langId = $manufacturer['language_id'];
-            if (!isset($result[$manufacturer['id']])) {
-                $result[$manufacturer['id']] = $manufacturer;
-                $result[$manufacturer['id']]['description'] = array();
-                unset($result[$manufacturer['id']]['title']);
-                unset($result[$manufacturer['id']]['language_id']);
-                unset($result[$manufacturer['id']]['manufacturer_id']);
+            if (!isset($data[$manufacturer['id']])) {
+                $data[$manufacturer['id']] = $manufacturer;
+                $data[$manufacturer['id']]['description'] = array();
+                unset($data[$manufacturer['id']]['title']);
+                unset($data[$manufacturer['id']]['language_id']);
+                unset($data[$manufacturer['id']]['manufacturer_id']);
             }
-            $result[$manufacturer['id']]['description']['lang_' . $langId] = array(
+            $data[$manufacturer['id']]['description']['lang_' . $langId] = array(
                 'title'         => $manufacturer['title'],
                 'description'   => $manufacturer['description']
             );
         }
-
-        return $this->_helper->json->sendSuccess(array(
-            'data'  => array_values($result),
-            'count' => $count
-        ));
-    }
-
-    public function saveImageAction()
-    {
-        $this->_helper->layout->disableLayout();
-
-        try {
-            $uploader = new Axis_File_Uploader('image');
-            $file = $uploader
-                ->setAllowedExtensions(array('jpg','jpeg','gif','png'))
-                ->setUseDispersion(true)
-                ->save(Axis::config()->system->path . '/media/manufacturer');
-
-            $result = array(
-                'success' => true,
-                'data' => array(
-                    'path' => $file['path'],
-                    'file' => $file['file']
-                )
-            );
-        } catch (Axis_Exception $e) {
-            $result = array(
-                'success' => false,
-                'messages' => array(
-                    'error' => $e->getMessage()
-                )
-            );
-        }
-
-        return $this->getResponse()->appendBody(Zend_Json_Encoder::encode($result));
+        return $this->_helper->json
+            ->setData(array_values($data))
+            ->setCount($count)
+            ->sendSuccess()
+        ;
     }
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $data  = $this->_getAllParams();
         $model = Axis::model('catalog/product_manufacturer');
         try {
@@ -145,42 +114,39 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             return $this->_helper->json->sendFailure();
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data'    => array('id' => $row->id)
-        ));
+        return $this->_helper->json
+            ->setData(array('id' => $row->id))
+            ->sendSuccess()
+        ;
     }
 
     public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $model   = Axis::model('catalog/product_manufacturer');
-        $dataset = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $_rowset = Zend_Json::decode($this->_getParam('data'));
         $i       = 0;
-        foreach ($dataset as $data) {
+        foreach ($_rowset as $_row) {
             try {
-                $model->save($data);
+                $model->save($_row);
                 $i++;
             } catch (Axis_Exception $e) {
                 Axis::message()->addError($e->getMessage());
             }
         }
 
-        if ($i) {
-            Axis::message()->addSuccess(
-                Axis::translate('core')->__('%d record(s) was saved successfully', $i)
-            );
+        if (!$i) {
+            return $this->_helper->json->sendFailure();
         }
-
-        $this->_helper->json->sendJson(array(
-            'success' => (bool) $i
-        ));
+        Axis::message()->addSuccess(
+            Axis::translate('core')->__('%d record(s) was saved successfully', $i)
+        );
+        return $this->_helper->json->sendSuccess();
     }
-
-    public function deleteAction()
+    
+    public function removeAction()
     {
-        $ids = Zend_Json_Decoder::decode($this->_getParam('data'));
-        if (!count($ids)) {
+        $data = Zend_Json::decode($this->_getParam('data'));
+        if (!count($data)) {
             Axis::message()->addError(
                 Axis::translate('catalog')->__(
                     'Invalid data recieved'
@@ -188,9 +154,40 @@ class Axis_Admin_Catalog_ManufacturerController extends Axis_Admin_Controller_Ba
             );
             return $this->_helper->json->sendFailure();
         }
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('catalog/product_manufacturer')
-                ->deleteByIds($ids)
-        ));
+        Axis::single('catalog/product_manufacturer')->deleteByIds($data);
+        
+        return $this->_helper->json->sendSuccess();
+    }
+    
+    public function saveImageAction()
+    {
+        $this->_helper->layout->disableLayout();
+
+        try {
+            $uploader = new Axis_File_Uploader('image');
+            $file = $uploader
+                ->setAllowedExtensions(array('jpg','jpeg','gif','png'))
+                ->setUseDispersion(true)
+                ->save(Axis::config()->system->path . '/media/manufacturer');
+
+            $data = array(
+                'success' => true,
+                'data' => array(
+                    'path' => $file['path'],
+                    'file' => $file['file']
+                )
+            );
+        } catch (Axis_Exception $e) {
+            $data = array(
+                'success' => false,
+                'messages' => array(
+                    'error' => $e->getMessage()
+                )
+            );
+        }
+
+        return $this->getResponse()->appendBody(
+            Zend_Json::encode($data)
+        );
     }
 }

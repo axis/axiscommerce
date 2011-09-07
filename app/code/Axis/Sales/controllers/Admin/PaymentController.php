@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Sales_PaymentController extends Axis_Admin_Controller_Back
+class Axis_Sales_Admin_PaymentController extends Axis_Admin_Controller_Back
 {
    
     public function listAction()

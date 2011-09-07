@@ -35,7 +35,7 @@ var AttributeGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_product-attributes/delete'),
+            url: Axis.getUrl('catalog/product-option/remove'),
             params: {data: Ext.encode(data)},
             callback: function() {
                 Attribute.grid.getStore().reload();
@@ -57,7 +57,7 @@ Ext.onReady(function() {
 
     var ds = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('catalog_product-attributes/list')
+            url: Axis.getUrl('catalog/product-option/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',

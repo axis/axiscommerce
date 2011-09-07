@@ -45,7 +45,7 @@ var Attribute = {
 
     load: function(id) {
         Attribute.form.getForm().load({
-            url: Axis.getUrl('catalog_product-attributes/get-data/id/' + id),
+            url: Axis.getUrl('catalog/product-option/load/id/' + id),
             method: 'get',
             success: function(form, action) {
                 var data = Ext.decode(action.response.responseText).data;

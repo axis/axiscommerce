@@ -81,7 +81,7 @@ Ext.onReady(function(){
                 return;
             }
             Ext.Ajax.request({
-                url: Axis.getUrl('sales_order/add-product-to-order'),
+                url: Axis.getUrl('sales/order/add-product'),
                 method: 'post',
                 params: {data: Ext.encode(selections)},
                 success: function(response, options) {
@@ -217,7 +217,7 @@ Ext.onReady(function(){
         ]),
         remoteSort: true,
         pruneModifiedRecords: true,
-        url: Axis.getUrl('catalog_index/list-products'),
+        url: Axis.getUrl('catalog/product/list'),
         listeners: {
             beforeload: function(store, options) {
                 var siteId = Order.form.getForm().findField('order[site_id]').value;
@@ -250,7 +250,7 @@ Ext.onReady(function(){
 
             Ext.Ajax.request({
                 url: Axis.getUrl(
-                    'sales_order/get-product-attribute-form/productId/' + record.id
+                    'catalog/product-option/get-form/productId/' + record.id
                 ),
                 method: 'post',
                 disableCaching: true,

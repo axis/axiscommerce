@@ -91,7 +91,7 @@ var ProductWindow = {
     save: function(closeWindow) {
         ProductWindow.getData();
         ProductWindow.form.getForm().submit({
-            url: Axis.getUrl('catalog_index/save-product'),
+            url: Axis.getUrl('catalog/product/save'),
             params: ProductWindow.data,
             success: function(form, action) {
                 ProductGrid.reload();

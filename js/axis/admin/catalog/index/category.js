@@ -54,7 +54,7 @@ var Category = {
      */
     load: function(id) {
         CategoryWindow.form.getForm().load({
-            url: Axis.getUrl('catalog_category/get-data/categoryId/' + id),
+            url: Axis.getUrl('catalog/category/load/categoryId/' + id),
             method: 'get',
             success: function(form, response) {
                 var response = Ext.decode(response.response.responseText);

@@ -23,7 +23,7 @@ var ProductCategoryGrid = {
 
     clearData: function() {
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_category/get-flat-tree'),
+            url: Axis.getUrl('catalog/category/list'),
             success: function(response) {
                 var categories = Ext.decode(response.responseText).data;
                 var belongs_to = [];

@@ -54,7 +54,7 @@ var Set = {
 
     save: function() {
         Set.form.getForm().submit({
-            url: Axis.getUrl('catalog_product-option-valueset/save-set'),
+            url: Axis.getUrl('catalog/product-option-valueset/save'),
             success: function(form, action) {
                 var response = Ext.decode(action.response.responseText);
                 Set.window.hide();
@@ -80,7 +80,7 @@ var Set = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_product-option-valueset/delete-sets'),
+            url: Axis.getUrl('catalog/product-option-valueset/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -129,7 +129,7 @@ var Value = {
 
         var jsonData = Ext.encode(data);
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog_product-option-valueset/save-values'),
+            url: Axis.getUrl('catalog/product-option-value/batch-save'),
             params: {
                 data: jsonData,
                 setId: Value.grid.getStore().baseParams.setId
@@ -152,7 +152,7 @@ Ext.onReady(function(){
     var dsSet = new Ext.data.Store({
         autoLoad: true,
         proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('catalog_product-option-valueset/list-sets')
+            url: Axis.getUrl('catalog/product-option-valueset/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
@@ -288,7 +288,7 @@ Ext.onReady(function(){
 
     var valueStore = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
-            url: Axis.getUrl('catalog_product-option-valueset/list-values')
+            url: Axis.getUrl('catalog/product-option-value/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
@@ -346,7 +346,7 @@ Ext.onReady(function(){
                     data[i] = selectedItems[i].id;
                 }
                 Ext.Ajax.request({
-                    url: Axis.getUrl('catalog_product-option-valueset/delete-values'),
+                    url: Axis.getUrl('catalog/product-option-value/remove'),
                     params: {
                         data: Ext.encode(data)
                     },

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Axis
  * 
@@ -18,32 +18,15 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @category    Axis
- * @package     Axis_Catalog
+ * @package     Axis_Cms
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-$router->addRoute('product_catalog', new Axis_Controller_Router_Route_Front(
-    Axis::config('catalog/main/route') . '/*',
+$router->addRoute('admin/log', new Axis_Controller_Router_Route_Back(
+    'log/:action/*',
     array(
-        'module' => 'Axis_Catalog',
-        'controller' => 'index',
-        'action' => 'view'
-    )
-));
-$router->addRoute('product_compare', new Axis_Controller_Router_Route_Front(
-    Axis::config('catalog/main/route') . '/product-compare/:action/*',
-    array(
-        'module' => 'Axis_Catalog',
-        'controller' => 'product-compare',
-        'action' => 'index'
-    )
-));
-
-$router->addRoute('admin/catalog', new Axis_Controller_Router_Route_Back(
-    'catalog/:controller/:action/*',
-    array(
-        'module' => 'Axis_Catalog',
+        'module' => 'Axis_Log',
         'controller' => 'index',
         'action' => 'index'
     )

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
+class Axis_Catalog_Admin_ImageController extends Axis_Admin_Controller_Back
 {
     /**
      * @param string $path
@@ -203,7 +203,7 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
             }
         }
 
-        return $this->getResponse()->appendBody(Zend_Json_Encoder::encode($result));
+        return $this->getResponse()->appendBody(Zend_Json::encode($result));
     }
 
     public function _deleteAction()
@@ -244,7 +244,7 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
        return $this->_helper->json->sendSuccess();
     }
 
-    public function treePanelAction()
+    public function cmdAction()
     {
         $this->_helper->layout->disableLayout();
 
@@ -255,7 +255,7 @@ class Axis_Admin_Catalog_ImageController extends Axis_Admin_Controller_Back
             Axis::message()->addError(Axis::translate('catalog')->__(
                 'Method %s not exist', $method
             ));
-            return $this->getResponse()->appendBody(Zend_Json_Encoder::encode(array(
+            return $this->getResponse()->appendBody(Zend_Json::encode(array(
                 'success' => false,
                 'messages' => Axis::message()->get()
             )));
