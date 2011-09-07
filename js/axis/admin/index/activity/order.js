@@ -54,7 +54,7 @@ Ext.onReady(function() {
             field: 'date_purchased_on',
             direction: 'DESC'
         },
-        url: Axis.getUrl('sales_order/list')
+        url: Axis.getUrl('sales/order/list')
     });
 
     var cm = new Ext.grid.ColumnModel({
@@ -70,7 +70,7 @@ Ext.onReady(function() {
                 return String.format(
                     '<a href="{1}" target="_blank">{0}</a>',
                     Axis.escape(value + ' ' + record.get('billing_lastname')),
-                    Axis.getUrl('sales_order/index/orderId/' + record.get('id'))
+                    Axis.getUrl('sales/order/index/orderId/' + record.get('id'))
                 );
             },
         }, {

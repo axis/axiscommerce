@@ -30,7 +30,7 @@
                                 <p style="margin: 1px 0 4px;">
                                     <?php echo $this->translate('sales')->__('An order has been created on %s', $this->site) ?>
                                     <?php $route = Axis::config('core/backend/route') ?>
-                                    <a href="<?php echo $this->href($route . '/sales_order/index/orderId/', true, false) . $this->order['id']?>"><?php echo $this->translate('account')->__('View Order')?></a>
+                                    <a href="<?php echo $this->href($route . '/sales/order/index/orderId/', true, false) . $this->order['id']?>"><?php echo $this->translate('account')->__('View Order')?></a>
                                 </p>
                                 <?php echo $this->render('sales/invoice_html.phtml'); ?>
                             </td>

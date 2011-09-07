@@ -2,7 +2,7 @@
 
 
 <?php $route = Axis::config('core/backend/route') ?>
-<?php echo $this->translate('account')->__('View Order') ?>: <?php echo $this->href($route . '/sales_order/index/orderId/', true, false) . $this->order['id']?>
+<?php echo $this->translate('account')->__('View Order') ?>: <?php echo $this->href($route . '/sales/order/index/orderId/', true, false) . $this->order['id']?>
 
 
 <?php echo $this->render('sales/invoice_txt.phtml') ?>

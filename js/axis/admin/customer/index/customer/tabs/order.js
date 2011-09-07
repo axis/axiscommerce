@@ -193,7 +193,7 @@ Ext.onReady(function() {
         }],
         callbacks: {
             'icon-page-edit': function(grid, record, action, row, col) {
-                window.open(Axis.getUrl('sales_order/index/orderId/' + record.get('id')));
+                window.open(Axis.getUrl('sales/order/index/orderId/' + record.get('id')));
             }
         }
     });

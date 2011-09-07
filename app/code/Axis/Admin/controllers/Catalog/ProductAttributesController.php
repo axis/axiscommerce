@@ -126,5 +126,31 @@ class Axis_Admin_Catalog_ProductAttributesController extends Axis_Admin_Controll
         );
         return $this->_helper->json->sendSuccess();
     }
-
+    
+    public function getFormAction()
+    {
+        $this->_helper->layout->disableLayout();
+        $productId = $this->_getParam('productId');
+        /**
+         * @var $product Axis_Catalog_Model_Product_Row
+         */
+        $product = Axis::single('catalog/product')
+            ->find($productId)
+            ->current();
+        if (!$product instanceof Axis_Catalog_Model_Product_Row) {
+           return $this->_helper->json->sendFalure();
+        }
+        $data['properties']  = $product->getProperties();
+        $data['modifiers']   = $product->getModifiers();
+        $variations = $product->getVariationAttributesData();
+        foreach ($variations as $key => $value) {
+            $data[$key] = $value;
+        }
+        $data['price'] = $product->getPriceRules();
+        $this->view->product = $data;
+        $formHtml = $this->view->render('admin/catalog/product-attributes/get-form.phtml');
+        return $this->_helper->json
+           ->setData(array('form' => $formHtml, 'variations' => $variations))
+           ->sendSuccess();
+    }
 }

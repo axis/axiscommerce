@@ -54,7 +54,7 @@ Ext.onReady(function(){
             };
             orderStatusChild.load();
             Ext.getCmp('formOrder').load({
-                url: Axis.getUrl('sales_order-status/get-info'),
+                url: Axis.getUrl('sales/order-status/load'),
                 params: {'statusId': id},
                 method: 'post'
             });
@@ -73,7 +73,7 @@ Ext.onReady(function(){
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('sales_order-status/batch-save'),
+                url: Axis.getUrl('sales/order-status/batch-save'),
                 params: {
                     data: Ext.encode(data)
                 },
@@ -97,7 +97,7 @@ Ext.onReady(function(){
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('sales_order-status/delete'),
+                url: Axis.getUrl('sales/order-status/remove'),
                 params: {data: Ext.encode(data)},
                 callback: function() {
                     ds.reload();
@@ -117,7 +117,7 @@ Ext.onReady(function(){
     Item.record = Ext.data.Record.create(record);
 
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('sales_order-status/list'),
+        url: Axis.getUrl('sales/order-status/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',

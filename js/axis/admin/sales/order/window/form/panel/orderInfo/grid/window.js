@@ -81,7 +81,7 @@ Ext.onReady(function(){
                 return;
             }
             Ext.Ajax.request({
-                url: Axis.getUrl('sales_order/add-product-to-order'),
+                url: Axis.getUrl('sales/order/add-product'),
                 method: 'post',
                 params: {data: Ext.encode(selections)},
                 success: function(response, options) {
@@ -250,7 +250,7 @@ Ext.onReady(function(){
 
             Ext.Ajax.request({
                 url: Axis.getUrl(
-                    'sales_order/get-product-attribute-form/productId/' + record.id
+                    'catalog_product-attributes/get-form/productId/' + record.id
                 ),
                 method: 'post',
                 disableCaching: true,

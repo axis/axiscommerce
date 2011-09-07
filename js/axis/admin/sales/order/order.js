@@ -64,7 +64,7 @@ Ext.onReady(function(){
 //            console.log(Order.form.getForm().clear);
 
             form.load({
-                url: Axis.getUrl('sales_order/get-order-info/orderId/') + Order.activeId,
+                url: Axis.getUrl('sales/order/load/orderId/') + Order.activeId,
                 method: 'post',
                 success: function(form, action) {
                     var data = Ext.decode(action.response.responseText).data;
@@ -100,7 +100,7 @@ Ext.onReady(function(){
             var form = Order.form.getForm();
 
             form.submit({
-                url: Axis.getUrl('sales_order/save'),
+                url: Axis.getUrl('sales/order/save'),
                 params: {
                     products: Ext.getCmp('grid-products').getStore().getData()
                 },
@@ -129,7 +129,7 @@ Ext.onReady(function(){
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('sales_order-status/batch-save'),
+                url: Axis.getUrl('sales/order-status/batch-save'),
                 params: {
                     data: Ext.encode(data)
                 },
@@ -146,7 +146,7 @@ Ext.onReady(function(){
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('sales_order/delete'),
+                url: Axis.getUrl('sales/order/remove'),
                 params: {data: Ext.encode(orderIds)},
                 callback: function(){
                     Ext.getCmp('grid-order').getStore().reload();

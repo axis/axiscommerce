@@ -33,7 +33,7 @@ Ext.onReady(function(){
     var storeOrderStatusses = new Ext.data.Store({
         storeId: 'storeOrderStatusses',
 //        autoLoad: true,
-        url:  Axis.getUrl('sales_order-status/get-childs'),
+        url:  Axis.getUrl('sales/order-status/get-childs'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'

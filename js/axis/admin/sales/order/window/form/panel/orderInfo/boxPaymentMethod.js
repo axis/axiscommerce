@@ -24,7 +24,7 @@ Ext.onReady(function(){
 
     var storePaymentMethod = new Ext.data.Store({
         storeId: 'storePaymentMethod',
-        url:  Axis.getUrl('sales_payment/list'),
+        url:  Axis.getUrl('sales/payment/list'),
 //        totalProperty: 'count',
 //        autoLoad: true,
         reader: new Ext.data.JsonReader({

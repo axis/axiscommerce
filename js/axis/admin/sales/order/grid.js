@@ -39,7 +39,7 @@ Ext.onReady(function() {
             field: 'id',
             direction: 'DESC'
         },
-        url: Axis.getUrl('sales_order/list')
+        url: Axis.getUrl('sales/order/list')
     });
 
     var actions = new Ext.ux.grid.RowActions({

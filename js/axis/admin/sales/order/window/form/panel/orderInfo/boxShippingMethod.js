@@ -24,7 +24,7 @@ Ext.onReady(function(){
 
     var storeShippingMethod = new Ext.data.Store({
         storeId: 'storeShippingMethod',
-        url:  Axis.getUrl('sales_shipping/list'),
+        url:  Axis.getUrl('sales/shipping/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
