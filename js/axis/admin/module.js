@@ -41,7 +41,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('module/get-list'),
+        url: Axis.getUrl('core/module/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             idProperty: 'code', // not installed modules doesn't have id
@@ -76,7 +76,7 @@ Ext.onReady(function() {
             hideIndex: 'hide_install',
             callback: function(grid, record, action, row, col) {
                 Ext.Ajax.request({
-                    url: Axis.getUrl('module/install/code/' + record.get('code')),
+                    url: Axis.getUrl('core/module/install/code/' + record.get('code')),
                     callback: callback
                 })
             }
@@ -87,7 +87,7 @@ Ext.onReady(function() {
             hideIndex: 'hide_upgrade',
             callback: function(grid, record, action, row, col) {
                 Ext.Ajax.request({
-                    url: Axis.getUrl('module/upgrade/code/' + record.get('code')),
+                    url: Axis.getUrl('core/module/upgrade/code/' + record.get('code')),
                     callback: callback
                 })
             }
@@ -97,7 +97,7 @@ Ext.onReady(function() {
             hideIndex: 'hide_uninstall',
             callback: function(grid, record, action, row, col) {
                 Ext.Ajax.request({
-                    url: Axis.getUrl('module/uninstall/code/' + record.get('code')),
+                    url: Axis.getUrl('core/module/uninstall/code/' + record.get('code')),
                     callback: callback
                 })
             }
@@ -147,7 +147,7 @@ Ext.onReady(function() {
             icon: Axis.skinUrl + '/images/icons/package_green.png',
             handler: function() {
                 Ext.Ajax.request({
-                    url: Axis.getUrl('module/install'),
+                    url: Axis.getUrl('core/module/install'),
                     callback: callback
                 })
             }
@@ -156,7 +156,7 @@ Ext.onReady(function() {
             icon: Axis.skinUrl + '/images/icons/lightbulb.png',
             handler: function() {
                 Ext.Ajax.request({
-                    url: Axis.getUrl('module/upgrade'),
+                    url: Axis.getUrl('core/module/upgrade'),
                     callback: callback
                 })
             }

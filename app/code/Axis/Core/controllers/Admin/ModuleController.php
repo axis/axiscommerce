@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_ModuleController extends Axis_Admin_Controller_Back
+class Admin_ModuleController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -39,34 +39,32 @@ class Axis_Admin_ModuleController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    public function getListAction()
+    public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $result = array();
+        $data = array();
         $i = 0;
 
-        $modelModule = Axis::model('core/module');
-        $codes = $modelModule->getListFromFilesystem();
+        $model = Axis::model('core/module');
+        $codes = $model->getListFromFilesystem();
         foreach ($codes as $i => $code) {
-            $module = $modelModule->getByCode($code);
+            $module = $model->getByCode($code);
 
-            $result[$i]                     = $module->toArray();
-            $result[$i]['version']          = $module->getVersion();
-            $result[$i]['hide_install']     = $module->isInstalled();
-            $result[$i]['hide_uninstall']   = !$module->isInstalled() || !$module->hasUninstall();
-            $result[$i]['hide_upgrade']     = !$module->hasUpgrade();
+            $data[$i]                     = $module->toArray();
+            $data[$i]['version']          = $module->getVersion();
+            $data[$i]['hide_install']     = $module->isInstalled();
+            $data[$i]['hide_uninstall']   = !$module->isInstalled() || !$module->hasUninstall();
+            $data[$i]['hide_upgrade']     = !$module->hasUpgrade();
 
             $upgrades = $module->getAvailableUpgrades();
             if (count($upgrades)) {
                 if ($module->hasUpgrade()) {
-                    $result[$i]['upgrade_tooltip'] = Axis::translate('admin')->__(
+                    $data[$i]['upgrade_tooltip'] = Axis::translate('admin')->__(
                         'Apply upgrades %s', implode(', ', $upgrades)
                     );
                 }
                 if (!$module->isInstalled()) {
                     $upgrade = $upgrades[count($upgrades) - 1];
-                    $result[$i]['install_tooltip'] = Axis::translate('admin')->__(
+                    $data[$i]['install_tooltip'] = Axis::translate('admin')->__(
                         'Install %s', $upgrade
                     );
                 }
@@ -74,37 +72,36 @@ class Axis_Admin_ModuleController extends Axis_Admin_Controller_Back
         }
 
         // apply grid filter
-        $result = $this->_filter($result);
-        $count = count($result);
+        $data = $this->_filter($data);
+        $count = count($data);
 
         if ($count) {
             // apply sorting
-            usort($result, array($this, '_cmp'));
+            usort($data, array($this, '_cmp'));
             // apply pagination
             $limit = $this->_getParam('limit', 25);
             $start = $this->_getParam('start', 0);
-            $result = array_chunk($result, $limit);
-            $result = $result[$start/$limit];
+            $data = array_chunk($data, $limit);
+            $data = $data[$start/$limit];
         }
 
-        return $this->_helper->json->sendSuccess(array(
-            'data'  => $result,
-            'count' => $count
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->setCount($count)
+            ->sendSuccess()
+        ;
     }
 
     public function installAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $mModule = Axis::model('core/module');
+        $model = Axis::model('core/module');
         if (!$this->_hasParam('code')) {
-            foreach ($mModule->getListFromFilesystem() as $code) {
-                $module = $mModule->getByCode($code);
+            foreach ($model->getListFromFilesystem() as $code) {
+                $module = $model->getByCode($code);
                 $module->install();
             }
         } else {
-            $module = $mModule->getByCode($this->_getParam('code'));
+            $module = $model->getByCode($this->_getParam('code'));
             $module->install();
         }
         return $this->_helper->json->sendSuccess();
@@ -112,24 +109,21 @@ class Axis_Admin_ModuleController extends Axis_Admin_Controller_Back
 
     public function uninstallAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $module = Axis::single('core/module')->getByCode($this->_getParam('code'));
+        $code = $this->_getParam('code');
+        $module = Axis::single('core/module')->getByCode($code);
         $module->uninstall();
         return $this->_helper->json->sendSuccess();
     }
 
     public function upgradeAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $mModule = Axis::model('core/module');
+        $model = Axis::model('core/module');
         if (!$this->_hasParam('code')) {
-            foreach ($mModule->fetchAll() as $module) {
+            foreach ($model->fetchAll() as $module) {
                 $module->upgradeAll();
             }
         } else {
-            $module = $mModule->getByCode($this->_getParam('code'));
+            $module = $model->getByCode($this->_getParam('code'));
             $module->upgradeAll();
         }
         return $this->_helper->json->sendSuccess();

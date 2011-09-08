@@ -140,7 +140,7 @@ Ext.onReady(function(){
     var ds = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
             method: 'get',
-            url: Axis.getUrl('site/get-list')
+            url: Axis.getUrl('core/site/list')
         }),
         reader: new Ext.data.JsonReader({
             root: 'data',
@@ -226,7 +226,7 @@ Ext.onReady(function(){
 
         var jsonData = Ext.encode(data);
         Ext.Ajax.request({
-            url: Axis.getUrl('site/save'),
+            url: Axis.getUrl('core/site/batch-save'),
             params: {data: jsonData},
             callback: function() {
                 grid.getStore().commitChanges();
@@ -250,7 +250,7 @@ Ext.onReady(function(){
         }
         var jsonData = Ext.encode(data);
         Ext.Ajax.request({
-            url: Axis.getUrl('site/delete'),
+            url: Axis.getUrl('core/site/remove'),
             params: {data: jsonData},
             callback: function() {
                 rootCategoriesStore.load();

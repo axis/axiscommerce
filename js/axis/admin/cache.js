@@ -31,7 +31,7 @@ Ext.onReady(function(){
     ]);
     
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('cache/get-list'),
+        url: Axis.getUrl('core/cache/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -126,7 +126,7 @@ function save(flag) {
     
     var jsonData = Ext.encode(data);
     Ext.Ajax.request({
-        url: Axis.getUrl('cache/save'),
+        url: Axis.getUrl('core/cache/batch-save'),
         params: {data: jsonData},
         callback: function() {
             Ext.getCmp('grid-cache').getStore().commitChanges();
@@ -147,13 +147,13 @@ function clear() {
     
     var jsonData = Ext.encode(data);
     Ext.Ajax.request({
-        url: Axis.getUrl('cache/clean'),
+        url: Axis.getUrl('core/cache/remove'),
         params: {data: jsonData}
     })
 }
 
 function clearAll() {
     Ext.Ajax.request({
-        url: Axis.getUrl('cache/clean-all')
+        url: Axis.getUrl('core/cache/remove')
     })
 }

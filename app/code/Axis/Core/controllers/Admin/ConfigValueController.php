@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
+class Admin_ConfigValueController extends Axis_Admin_Controller_Back
 {
     private function _optionsToArray($option)
     {
@@ -95,20 +95,10 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    public function getNodesAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $node = $this->_getParam('node', '0');
-
-        $this->_helper->json->sendRaw(
-            Axis::single('core/config_field')->getNodes($node)
-        );
-    }
-
     public function listAction()
     {
-        $mConfigField = Axis::model('core/config_field');
-        $select = $mConfigField->select('id')
+        $model = Axis::model('core/config_field');
+        $select = $model->select('id')
             ->calcFoundRows()
             ->addFilters($this->_getParam('filter', array()))
             ->where('lvl = 3')
@@ -124,10 +114,10 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
 
         $ids    = $select->fetchCol();
         $count  = $select->foundRows();
-        $data   = array();
+        $_data   = array();
 
         if (count($ids)) {
-            $select = $mConfigField->select('*')
+            $select = $model->select('*')
                 ->calcFoundRows()
                 ->addValue()
                 ->where('ccf.id IN (?)', $ids)
@@ -142,54 +132,56 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
                 $select->where('ccv.site_id IN (?)', array(0, $this->_getParam('site_id')));
             }
 
-            $data = $select->fetchAll();
+            $_data = $select->fetchAll();
         }
 
         $rowset = new Axis_Db_Table_Rowset(array(
-            'table'    => $mConfigField,
-            'data'     => $data,
+            'table'    => $model,
+            'data'     => $_data,
             'readOnly' => $select->isReadOnly(),
-            'rowClass' => $mConfigField->getRowClass(),
+            'rowClass' => $model->getRowClass(),
             'stored'   => true
         ));
 
-        $values = array();
+        $data = array();
         foreach ($rowset as $row) {
-            if (isset($values[$row->id])) {
+            if (isset($data[$row->id])) {
                 continue;
             }
-            $values[$row->id] = $row->toArray();
-            $values[$row->id]['title'] =
+            $data[$row->id] = $row->toArray();
+            $data[$row->id]['title'] =
                 Axis::translate($row->getTranslationModule())->__($row->title);
 
             if (null != $row->config_options) {
-                $values[$row->id]['config_options'] = $this->_optionsToArray($row->config_options);
+                $data[$row->id]['config_options'] = $this->_optionsToArray($row->config_options);
             }
 
             if ('bool' == $row->config_type) {
-                $values[$row->id]['value'] = $row->value ? 'Yes' : 'No' ;
+                $_value = $row->value ? 'Yes' : 'No' ;
             } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
-                $values[$row->id]['value'] = '****************';
+                $_value = '****************';
             } elseif ('handler' !== $row->config_type && !empty($row->model)) {
-                $values[$row->id]['value'] = $this->_getName($row->model, $row->value);
+                $_value = $this->_getName($row->model, $row->value);
             } else if (in_array($row->config_type, array('select', 'multiple'))
-                && isset($values[$row->id]['config_options'][$row->value])) {
+                && isset($data[$row->id]['config_options'][$row->value])) {
 
-                $values[$row->id]['value'] = $values[$row->id]['config_options'][$row->value];
+                $_value = $data[$row->id]['config_options'][$row->value];
             } else {
-                $values[$row->id]['value'] = $row->value;
+                $_value = $row->value;
             }
-
-            $values[$row->id]['from'] = $row->site_id ? 'site' : 'global';
+            
+            $data[$row->id]['value'] = $_value;
+            $data[$row->id]['from'] = $row->site_id ? 'site' : 'global';
         }
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => array_values($values),
-            'count' => $count
-        ));
+        return $this->_helper->json
+            ->setData(array_values($data))
+            ->setCount($count)
+            ->sendSuccess()
+        ;
     }
 
-    public function editAction()
+    public function loadAction()
     {
         $this->_helper->layout->disableLayout();
         $siteId = $this->_getParam('siteId');
@@ -236,28 +228,28 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-        $path      = $this->_getParam('path');
-        $siteId    = $this->_getParam('siteId');
-        $confValue = $this->_getParam('confValue');
+        $path   = $this->_getParam('path');
+        $siteId = $this->_getParam('siteId');
+        $value  = $this->_getParam('confValue');
+        $model  = Axis::model('core/config_value');
 
-        $field = Axis::single('core/config_field')->select()
+        $rowField = Axis::single('core/config_field')->select()
             ->where('path = ?', $path)
             ->fetchRow();
 
-        if ($field->config_type === 'handler') {
+        if ($rowField->config_type === 'handler') {
 
             //@todo kostul
-            if (in_array($field->model, array('ShippingTableRateImport', 'ShippingTableRateExport'))) {
-                $confValue = array($confValue, 'siteId' => $siteId);
+            if (in_array($rowField->model, array('ShippingTableRateImport', 'ShippingTableRateExport'))) {
+                $value = array($value, 'siteId' => $siteId);
             }
 
-            $confValue = $this->_getSaveValue($field->model, $confValue, array());
-        } elseif (is_array($confValue)) {
-            $confValue = implode(Axis_Config::MULTI_SEPARATOR, $confValue);
+            $value = $this->_getSaveValue($rowField->model, $value, array());
+        } elseif (is_array($value)) {
+            $value = implode(Axis_Config::MULTI_SEPARATOR, $value);
         }
 
-        $value = Axis::single('core/config_value')->select()
+        $row = $model->select()
             ->where('path = ?', $path)
             ->where('site_id = ?', $siteId)
             ->fetchRow();
@@ -265,53 +257,53 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
          * if such row not founded then create new record
          * It possible when we redeclare global config-value for site
          */
-        if (!$value) {
-            $value = Axis::single('core/config_value')->createRow(array(
-                'config_field_id' => $field->id,
+        if (!$row) {
+            $row = $model->createRow(array(
+                'config_field_id' => $rowField->id,
                 'path'            => $path,
                 'site_id'         => $siteId
             ));
         }
-        $value->value = $confValue;
-        $value->save();
+        $row->value = $value;
+        $row->save();
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Configuration option was saved successfully'
             )
         );
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
     public function useGlobalAction()
     {
-        $this->_helper->layout->disableLayout();
         $siteId = (int) $this->_getParam('siteId');
-        if (!$siteId)
+        if (!$siteId) {
             return;
-
-        $pathItems = Zend_Json_Decoder::decode($this->_getParam('pathItems'));
+        }
+        $pathItems = Zend_Json::decode($this->_getParam('pathItems'));
         $where = array($this->db->quoteInto('site_id = ?', $siteId));
+        $model = Axis::single('core/config_value');
+        
         foreach ($pathItems as $path) {
             $where[1] = $this->db->quoteInto('path = ?', $path);
-            Axis::single('core/config_value')->delete($where);
+            $model->delete($where);
         }
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Use global successfully'
             )
         );
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
     public function copyGlobalAction()
     {
-        $this->_helper->layout->disableLayout();
         $siteId = (int) $this->_getParam('siteId');
         if (!$siteId)
             return;
 
-        $pathItems = Zend_Json_Decoder::decode($this->_getParam('pathItems'));
+        $pathItems = Zend_Json::decode($this->_getParam('pathItems'));
         $where = array($this->db->quoteInto('site_id = ?', $siteId));
         $model = Axis::single('core/config_value');
         foreach ($pathItems as $path) {
@@ -335,53 +327,6 @@ class Axis_Admin_ConfigurationController extends Axis_Admin_Controller_Back
                 'Copy global %s successfully', implode(',', $pathItems)
             )
         );
-        $this->_helper->json->sendSuccess();
-    }
-
-    public function getFieldTypesAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = array();
-        foreach (Axis_Collect_Configuration_Field::collect() as $id => $type) {
-            $data[] = array('id' => $type, 'type' => $type);
-        }
-        array_unshift($data, array('id' => '', 'type' => null));
-        $this->_helper->json->sendSuccess(array(
-            'data' => $data
-        ));
-    }
-
-    public function getFieldModelsAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = array();
-        foreach (Axis_Collect_Collect::collect() as $id => $type) {
-            $data[] = array('id' => strtolower($id), 'name' => $type);
-        }
-        sort($data);
-        array_unshift($data, array('id' => '', 'name' => null));
-        $this->_helper->json->sendSuccess(array(
-            'data' => $data
-        ));
-    }
-
-    public function saveFieldAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $data = $this->_getAllParams();
-        if (empty($data['path'])) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'Incorrect field path'
-            ));
-            return $this->_helper->json->sendFailure();
-        }
-        Axis::model('core/config_field')->save($data);
-        
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-        ));
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 }
