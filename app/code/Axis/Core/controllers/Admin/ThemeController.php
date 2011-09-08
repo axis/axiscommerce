@@ -31,9 +31,8 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
+class Admin_ThemeController extends Axis_Admin_Controller_Back
 {
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Templates');
@@ -48,9 +47,12 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    public function getNodesAction()
+    public function listAction()
     {
-        $rowset = Axis::model('core/template')->fetchAll(null, 'name ASC');
+        $rowset = Axis::model('core/template')->select()
+            ->order('name ASC')
+            ->fetchRowset();
+        
         foreach ($rowset as $row) {
             $data[] = array(
                 'text'     => $row->name,
@@ -62,13 +64,23 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             );
         }
 
-        $this->_helper->json->sendRaw($data);
+        return $this->_helper->json->sendRaw($data);
+    }
+    
+    public function loadAction()
+    {
+        $themeId = $this->_getParam('templateId');
+
+        $data = Axis::single('core/template')->find($themeId)
+            ->current()
+            ->toArray();
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $data  = $this->_getAllParams();
         $model = Axis::single('core/template');
         if (!empty($data['duplicate']) 
@@ -84,31 +96,17 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             Axis::translate('core')->__(
                 'Template was saved successfully'
         ));
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
-    public function loadAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $templateId = $this->_getParam('templateId');
-
-        $data = Axis::single('core/template')->find($templateId)
-            ->current()
-            ->toArray();
-        $this->_helper->json->setData($data)->sendSuccess();
-    }
-
-    public function deleteAction()
-    {
-        $this->_helper->layout->disableLayout();
-
         $themeId = $this->_getParam('templateId');
         if (!$themeId) {
             return $this->_helper->json->sendFailure();
         }
-        $modelTheme = Axis::model('core/template');
-        if ($modelTheme->isUsed($themeId)) {
+        $model = Axis::model('core/template');
+        if ($model->isUsed($themeId)) {
             Axis::message()->addError(
                 Axis::translate('admin')->__(
                     "Template is used already and can't be deleted"
@@ -117,7 +115,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
 
-        $modelTheme->delete($this->db->quoteInto('id = ? ', $themeId));
+        $model->delete($this->db->quoteInto('id = ? ', $themeId));
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
@@ -127,6 +125,8 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
 
+    
+    // @todo create import contrl
     public function listXmlTemplatesAction()
     {
         $this->_helper->layout->disableLayout();
@@ -173,7 +173,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
                 )
             );
             return $this->getResponse()->appendBody(
-                Zend_Json_Encoder::encode($result)
+                Zend_Json::encode($result)
             );
         }
 
@@ -184,7 +184,7 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
             !$model->validateBeforeImport($themeFile)) {
 
             return $this->getResponse()->appendBody(
-                Zend_Json_Encoder::encode(array(
+                Zend_Json::encode(array(
                     'errorCode' => 'template_exists'
                 ))
             );
@@ -192,13 +192,13 @@ class Axis_Admin_Template_IndexController extends Axis_Admin_Controller_Back
 
         if (!$model->importTemplateFromXmlFile($themeFile)) {
             return $this->getResponse()->appendBody(
-                Zend_Json_Encoder::encode(array(
+                Zend_Json::encode(array(
                     'success' => false
                 ))
             );
         }
         return $this->getResponse()->appendBody(
-            Zend_Json_Encoder::encode(array(
+            Zend_Json::encode(array(
                 'success' => true,
                 'messages' => array(
                     'success' => Axis::translate('admin')->__(

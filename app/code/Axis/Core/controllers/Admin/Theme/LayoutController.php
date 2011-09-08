@@ -31,12 +31,11 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
+class Admin_Theme_LayoutController extends Axis_Admin_Controller_Back
 {
 
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
         if ($this->_hasParam('templateId')) {
             $templateId = $this->_getParam('templateId');
             $theme = Axis::single('core/template')->getTemplateNameById($templateId);
@@ -87,6 +86,8 @@ class Axis_Admin_Template_LayoutController extends Axis_Admin_Controller_Back
             );
         }
 
-        return $this->_helper->json->setData($data)->sendSuccess();
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 }

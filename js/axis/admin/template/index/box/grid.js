@@ -81,7 +81,7 @@ Box.Grid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('template_box/delete'),
+            url: Axis.getUrl('core/theme_block/remove'),
             params: {
                 data: Ext.encode(data)
             },
@@ -103,7 +103,7 @@ Box.Grid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('template_box/batch-save'),
+            url: Axis.getUrl('core/theme_block/batch-save'),
             params: {
                 data: Ext.encode(data)
             },
@@ -131,7 +131,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('template_box/list'),
+        url: Axis.getUrl('core/theme_block/list'),
         reader: new Ext.data.JsonReader({
             totalProperty: 'count',
             root: 'data',

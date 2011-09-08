@@ -31,35 +31,59 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
+class Admin_Theme_BlockController extends Axis_Admin_Controller_Back
 {
     public function listAction()
     {
-        $this->_helper->layout->disableLayout();
-
+        $filter = $this->_getParam('filter', array());
+        $limit  = $this->_getParam('limit', 25);
+        $start  = $this->_getParam('start', 0);
+        $order  = $this->_getParam('sort', 'id') . ' ' . $this->_getParam('dir', 'DESC');
+        
         $select = Axis::model('core/template_box')->select('*')
             ->calcFoundRows()
             ->addPageIds()
-            ->addFilters($this->_getParam('filter', array()))
-            ->limit(
-                $this->_getParam('limit', 25),
-                $this->_getParam('start', 0)
-            )
-            ->order(
-                $this->_getParam('sort', 'id')
-                . ' '
-                . $this->_getParam('dir', 'DESC')
-            );
+            ->addFilters($filter)
+            ->limit($limit, $start)
+            ->order($order);
 
-        $this->_helper->json->sendSuccess(array(
-            'data'  => $select->fetchAll(),
-            'count' => $select->foundRows()
-        ));
+        return $this->_helper->json
+            ->setData($select->fetchAll())
+            ->setCount($select->foundRows())
+            ->sendSuccess();
     }
+    
+    public function loadAction()
+    {
+        $id = $this->_getParam('id');
+        $data = Axis::model('core/template_box')->find($id)->current()
+            ->toArray();
 
+        list($namespace, $module, $name) = explode('_', $data['class']);
+        $boxClass   = Axis::getClass($namespace . '_' . $module . '/' . $name, 'Box');
+        $boxObject  = Axis::model($boxClass, array(
+            'supress_init' => true
+        ));
+
+        $data['configuration_fields'] = $boxObject->getConfigurationFields();
+        $data['configuration_values'] = $boxObject->getConfigurationValues();
+
+        $select = Axis::model('core/template_box_page')
+            ->select('*')
+            ->where('box_id = ?', $id);
+
+        $data['assignments'] = array();
+        foreach ($select->fetchAll() as $assignment) {
+            $data['assignments'][] = $assignment;
+        }
+
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
+    }
+    
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
         $data = $this->_getAllParams();
 
         $config = trim($data['additional_configuration']);
@@ -72,12 +96,11 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
             array_merge($config, $data['configuration'])
         );
 
-        $row = Axis::model('core/template_box')
-            ->getRow($data['box']);
+        $row = Axis::model('core/template_box')->getRow($data['box']);
         $row->save();
 
-        $mBoxPage = Axis::model('core/template_box_page');
-        $mBoxPage->delete(Axis::db()->quoteInto('box_id = ?', $row->id));
+        $modelBoxToPage = Axis::model('core/template_box_page');
+        $modelBoxToPage->delete(Axis::db()->quoteInto('box_id = ?', $row->id));
 
         if (isset($data['assignments'])) {
             $assignments = Zend_Json::decode($data['assignments']);
@@ -93,7 +116,7 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
                 }
 
                 $_rowData['box_id'] = $row->id;
-                $rowBoxPage = $mBoxPage->getRow($_rowData);
+                $rowBoxPage = $modelBoxToPage->getRow($_rowData);
                 if ($_rowData['remove']) {
                     $rowBoxPage->delete();
                 } else {
@@ -105,25 +128,23 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
             Axis::translate('core')->__('Box was saved successfully')
         );
         return $this->_helper->json
-            ->setData(array('id' => $row->id))
+            ->setData($row->toArray())
             ->sendSuccess();
     }
 
     public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $data = Zend_Json::decode($this->_getParam('data'));
-        $modelBlock = Axis::single('core/template_box');
+        $dataset = Zend_Json::decode($this->_getParam('data'));
+        $model = Axis::single('core/template_box');
         $modelAssign = Axis::model('core/template_box_page');
-        foreach ($data as $rowData) {
-            if (!isset($rowData['id'])) {
-                $rowData['config'] = '{}';
+        foreach ($dataset as $data) {
+            if (!isset($data['id'])) {
+                $data['config'] = '{}';
             }
-            $row = $modelBlock->getRow($rowData);
+            $row = $model->getRow($data);
             $row->save();
 
-            $assigns = array_filter(explode(',', $rowData['page_ids']));
+            $assigns = array_filter(explode(',', $data['page_ids']));
             $_where = array(
                 Axis::db()->quoteInto('box_id = ?', $row->id)
             );
@@ -150,44 +171,9 @@ class Axis_Admin_Template_BoxController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
 
-    public function editAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-
-        $id = $this->_getParam('id');
-        $box = Axis::model('core/template_box')
-            ->find($id)
-            ->current()
-            ->toArray();
-
-        list($namespace, $module, $name) = explode('_', $box['class']);
-        $boxClass   = Axis::getClass($namespace . '_' . $module . '/' . $name, 'Box');
-        $boxObject  = Axis::model($boxClass, array(
-            'supress_init' => true
-        ));
-
-        $box['configuration_fields'] = $boxObject->getConfigurationFields();
-        $box['configuration_values'] = $boxObject->getConfigurationValues();
-
-        $select = Axis::model('core/template_box_page')
-            ->select('*')
-            ->where('box_id = ?', $id);
-
-        $box['assignments'] = array();
-        foreach ($select->fetchAll() as $assignment) {
-            $box['assignments'][] = $assignment;
-        }
-
-        return $this->_helper->json->sendSuccess(array(
-            'data' => $box
-        ));
-    }
-
-    public function deleteAction()
-    {
-        $this->_helper->layout->disableLayout();
-
-        $ids = Zend_Json_Decoder::decode($this->_getParam('data'));
+        $ids = Zend_Json::decode($this->_getParam('data'));
 
         if (!count($ids)) {
             Axis::message()->addError(

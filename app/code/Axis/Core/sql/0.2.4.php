@@ -34,10 +34,10 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->edit('Cache Management', null, 'core/cache')
             ->edit('Configuration', null, 'core/config-value')
             ->edit('Modules', null, 'core/module')
-//            ->add('Design Control', null, 100, 'Axis_Admin')
-//            ->add('Design Control->Templates', 'template_index', 10)
+            ->edit('Pages', null, 'core/page')
+            ->edit('Site', null, 'core/site')
+            ->edit('Templates', null, 'core/theme')
 //            ->add('Design Control->Email Templates', 'template_mail', 20)
-//            ->add('Design Control->Pages', 'pages', 30)
         ;
         
         Axis::model('admin/acl_resource')
@@ -84,6 +84,43 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/site/save', 'admin/core/site/batch-save')
             ->rename('admin/site/delete', 'admin/core/site/remove')
             ->remove('admin/site')
+            
+            ->rename('admin/template_index', 'admin/core/theme')
+            ->rename('admin/template_index/index', 'admin/core/theme/index')
+            ->rename('admin/template_index/get-nodes', 'admin/core/theme/list')
+            ->rename('admin/template_index/load', 'admin/core/theme/load')
+            ->rename('admin/template_index/save', 'admin/core/theme/save')
+            ->rename('admin/template_index/delete', 'admin/core/theme/remove')
+            ->rename('admin/template_index/list-xml-templates', 'admin/core/theme/list-xml-templates')
+            ->rename('admin/template_index/export', 'admin/core/theme/export')
+            ->rename('admin/template_index/import', 'admin/core/theme/import')
+            ->remove('admin/template_index')
+            
+            ->rename('admin/template_box', 'admin/core/theme_block')
+//            ->rename('admin/template_box/index')
+            ->rename('admin/template_box/list', 'admin/core/theme_block/list')
+            ->rename('admin/template_box/edit', 'admin/core/theme_block/load')
+            ->rename('admin/template_box/save', 'admin/core/theme_block/save')
+            ->rename('admin/template_box/batch-save', 'admin/core/theme_block/batch-save')
+            ->rename('admin/template_box/delete', 'admin/core/theme_block/remove')
+//            
+            ->rename('admin/template_page', 'admin/core/theme_page')
+            ->rename('admin/template_page/list', 'admin/core/theme_page/list')
+            ->rename('admin/template_page/save', 'admin/core/theme_page/batch-save')
+            ->rename('admin/template_page/delete', 'admin/core/theme_page/remove')
+            
+            ->rename('admin/template_layout', 'admin/core/theme_layout')
+            ->rename('admin/template_layout/list', 'admin/core/theme_layout/list')
+//
+//            ->add('admin/template_mail', 'Emails Templates')
+//            ->add('admin/template_mail/delete')
+//            ->add('admin/template_mail/get-info')
+//            ->add('admin/template_mail/index')
+//            ->add('admin/template_mail/list')
+//            ->add('admin/template_mail/list-event')
+//            ->add('admin/template_mail/list-mail')
+//            ->add('admin/template_mail/list-template')
+//            ->add('admin/template_mail/save')
             ;
     }
 

@@ -62,7 +62,7 @@ var Page = {
 Ext.onReady(function() {
 
     Page.layoutStore = new Ext.data.Store({
-        url: Axis.getUrl('template_layout/list'),
+        url: Axis.getUrl('core/theme_layout/list'),
         reader: new Ext.data.JsonReader({
             root: 'data'
         }, ['id', 'name']),

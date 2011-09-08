@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Template_MailController extends Axis_Admin_Controller_Back
+class Admin_Theme_MailController extends Axis_Admin_Controller_Back
 {
     protected $_table;
 

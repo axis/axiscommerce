@@ -42,7 +42,7 @@ Box.Window = {
     save: function(closeWindow) {
         Box.Window.getData();
         Box.Window.form.getForm().submit({
-            url: Axis.getUrl('template_box/save'),
+            url: Axis.getUrl('core/theme_block/save'),
             params: Box.Window.data,
             success: function(form, action) {
                 Box.Grid.reload();
