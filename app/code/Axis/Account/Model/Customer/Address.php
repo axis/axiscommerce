@@ -139,4 +139,28 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
         }
         return $addressList;
     }
+
+    /**
+     * Retrieve default address values from config
+     *
+     * @return array
+     * <pre>
+     *  :country_id => int,
+     *  :zone_id    => int,
+     *  :city       => string
+     *  ...
+     * </pre>
+     */
+    public function getDefaultValues()
+    {
+        $config = Axis::config('account/address_form')->toArray();
+        $values = array();
+        foreach ($config as $key => $value) {
+            if (!strstr($key, '_value')) {
+                continue;
+            }
+            $values[str_replace('_value', '', $key)] = $value;
+        }
+        return $values;
+    }
 }
