@@ -128,7 +128,6 @@ class Axis_Account_Model_Form_Address extends Axis_Form
             )
         ));
 
-//        $defaultValues = $this->getAttrib('values');
         $configOptions = Axis::config('account/address_form')->toArray();
         $this->_fieldConfig = array_merge(array(
                 'firstname_sort_order'  => -20,
@@ -155,12 +154,6 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         }
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
-//        if (!empty($defaultValues['country_id'])) {
-//            $_defaultCountry = $defaultValues['country_id'];
-//            if (isset($countries[$_defaultCountry])) {
-//                $defaultCountry = $_defaultCountry;
-//            }
-//        }
 
         $zones = Axis_Collect_Zone::collect();
         $this->_zones = $zones;
@@ -170,8 +163,6 @@ class Axis_Account_Model_Form_Address extends Axis_Form
                 continue;
             }
             $fieldOptions = array(
-//                'value'     => empty($defaultValues[$name]) ?
-//                    '' : $defaultValues[$name],
                 'required'  => ('required' === $status),
                 'label'     => $values['label'],
                 'class'     => $values['class']

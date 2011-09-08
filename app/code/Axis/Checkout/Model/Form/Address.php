@@ -122,7 +122,6 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
 
     public function init()
     {
-        $defaultValues = $this->getAttrib('values');
         $configOptions = Axis::config('account/address_form')->toArray();
         $this->_fieldConfig = array_merge(array(
                 'firstname_sort_order'  => -20,
@@ -157,12 +156,6 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         }
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
-        if (!empty($defaultValues['country_id'])) {
-            $_defaultCountry = $defaultValues['country_id'];
-            if (isset($countries[$_defaultCountry])) {
-                $defaultCountry = $_defaultCountry;
-            }
-        }
 
         $zones = Axis_Collect_Zone::collect();
         $this->_zones = $zones;
@@ -184,8 +177,6 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                 continue;
             }
             $fieldOptions = array(
-                'value'     => empty($defaultValues[$name]) ?
-                    '' : $defaultValues[$name],
                 'required'  => ('required' === $status),
                 'label'     => $values['label'],
                 'class'     => $values['class']
@@ -223,7 +214,6 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                 $zoneNameOptions = $fieldOptions;
                 $zoneNameOptions['order']++;
                 $zoneNameOptions['class'] .= ' input-text';
-                unset($zoneNameOptions['value']);
                 $form->addElement('text', 'state', $zoneNameOptions);
             }
 
@@ -371,5 +361,29 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
     public function getZones()
     {
         return $this->_zones;
+    }
+
+    /**
+     *
+     * @param array $defaults
+     * @return Axis_Account_Model_Form_Address Fluent interface
+     */
+    public function setDefaults(array $defaults)
+    {
+        parent::setDefaults($defaults);
+
+        $form = $this;
+        if ($subform = $this->getSubForms()) {
+            $form = current($subform);
+        }
+        if (array_key_exists('zone_id', $defaults)
+            && isset($this->_zones[$defaults['country_id']])) {
+
+            $form->getElement('zone_id')->setAttribs(array(
+                'options' =>  $this->_zones[$defaults['country_id']]
+            ));
+            $form->setDefault('zone_id', $defaults['zone_id']);
+        }
+        return $this;
     }
 }

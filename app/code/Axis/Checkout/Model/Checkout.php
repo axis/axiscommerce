@@ -421,16 +421,13 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
      */
     public function getDefaultAddress()
     {
-        $config     = Axis::config('checkout/default_values');
-        $customer   = Axis::getCustomer();
-        return array(
+        $defaults = Axis::model('account/customer_address')->getDefaultValues();
+        $customer = Axis::getCustomer();
+        return array_merge($defaults, array(
             'id'            => 0,
-            'country_id'    => $config->country_id,
-            'zone_id'       => $config->zone_id,
-            'postcode'      => $config->postcode,
             'firstname'     => $customer ? $customer->firstname : '',
             'lastname'      => $customer ? $customer->lastname  : ''
-        );
+        ));
     }
 
     /**
@@ -605,9 +602,9 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
     public function getAddressForm($type = 'billing')
     {
         $addressForm = Axis::model('checkout/form_address', array(
-            'subform' => $type . '_address',
-            'values'  => $this->{'get'.ucfirst($type)}()->toFlatArray()
+            'subform' => $type . '_address'
         ));
+        $addressForm->populate($this->{'get'.ucfirst($type)}()->toFlatArray());
         $addressForm->removeDecorator('Form');
         $addressForm->removeDecorator('HtmlTag');
 
