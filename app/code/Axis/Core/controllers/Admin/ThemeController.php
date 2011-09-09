@@ -125,28 +125,6 @@ class Admin_ThemeController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
 
-    
-    // @todo create import contrl
-    public function listXmlTemplatesAction()
-    {
-        $this->_helper->layout->disableLayout();
-
-        $data = array();
-        $handler = opendir(Axis::config('system/path') . '/var/templates/');
-        while ($file = readdir($handler)) {
-            if (is_dir($file)) {
-                continue;
-            }
-            $pathinfo = pathinfo($file);
-            if ('xml' !== $pathinfo['extension']) {
-                continue;
-            }
-            $data[] = array('template' => $file);
-        }
-        closedir($handler);
-        return $this->_helper->json->setData($data)->sendSuccess();
-    }
-
     public function importAction()
     {
         $this->_helper->layout->disableLayout();
