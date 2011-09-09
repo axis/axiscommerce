@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
+class Axis_Admin_UserController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -42,20 +42,19 @@ class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    public function getListAction()
+    public function listAction()
     {
+        $filter = $this->_getParam('filter', array());
+        $limit  = $this->_getParam('limit', 25);
+        $start  = $this->_getParam('start', 0);
+        $order  = $this->_getParam('sort', 'id') . ' '
+                . $this->_getParam('dir', 'DESC');
+            
         $select = Axis::single('admin/user')->select()
             ->calcFoundRows()
-            ->addFilters($this->_getParam('filter', array()))
-            ->limit(
-                $this->_getParam('limit', 25),
-                $this->_getParam('start', 0)
-            )
-            ->order(
-                $this->_getParam('sort', 'id')
-                . ' '
-                . $this->_getParam('dir', 'DESC')
-            );
+            ->addFilters($filter)
+            ->limit($limit, $start)
+            ->order($order);
 
         $data = $select->fetchAll();
 
@@ -68,10 +67,10 @@ class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
             ->sendSuccess();
     }
 
-    public function saveAction()
+    public function batchSaveAction()
     {
-        $this->_helper->layout->disableLayout();
         $dataset = Zend_Json::decode($this->_getParam('data'));
+        
         if (!sizeof($dataset)) {
             Axis::message()->addError(
                 Axis::translate('core')->__(
@@ -81,15 +80,15 @@ class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
         $model = Axis::model('admin/user');
-        foreach ($dataset as $_row) {
-            if (!empty($_row['password'])) {
-                $_row['password'] = md5($_row['password']);
+        foreach ($dataset as $data) {
+            if (!empty($data['password'])) {
+                $data['password'] = md5($data['password']);
             } else {
-                unset($_row['password']);
+                unset($data['password']);
             }
-            $row = $model->getRow($_row);
+            $row = $model->getRow($data);
             $row->is_active = false;
-            $row->is_active = !empty($_row['is_active']);
+            $row->is_active = !empty($data['is_active']);
             
             $row->modified = Axis_Date::now()->toSQLString();
             if (empty($row->created)) {
@@ -106,10 +105,8 @@ class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $data = Zend_Json::decode($this->_getParam('data'));
 
         if (!count($data)) {
@@ -134,15 +131,5 @@ class Axis_Admin_UsersController extends Axis_Admin_Controller_Back
             )
         );
         return $this->_helper->json->sendSuccess();
-    }
-
-    public function getRolesAction()
-    {
-        $roles = array_values(
-            Axis::single('admin/acl_role')->fetchAll()->toArray()
-        );
-        return $this->_helper->json
-            ->setData($roles)
-            ->sendSuccess();
     }
 }

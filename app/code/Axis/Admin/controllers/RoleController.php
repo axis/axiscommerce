@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
+class Axis_Admin_RoleController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
@@ -39,11 +39,11 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
         $this->view->resources = Axis::single('admin/acl_resource')->getTree();
         $this->render();
     }
-
-    public function getNodesAction()
+ 
+    public function listAction()
     {
         foreach (Axis::model('admin/acl_role')->fetchAll() as $row) {
-            $result[] = array(
+            $data[] = array(
                 'text'     => $row->role_name,
                 'id'       => $row->id,
                 'leaf'     => false,
@@ -52,86 +52,47 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
             );
         }
 
-        $this->_helper->json->sendRaw($result);
+        return $this->_helper->json->sendRaw($data);
     }
-
-    public function getParentAllowsAction()
+    
+    public function loadAction()
     {
-        $parents = Zend_Json::decode($this->_getParam('parents'));
-        $allows = array();
-        if (count($parents)) {
-            $allows = Axis::single('admin/acl')->getParentRolesAllows($parents);
-        }
-        $this->_helper->json->sendRaw($allows);
-    }
+        $roleId   = $this->_getParam('id');
+        $model    = Axis::model('admin/acl_role');
+        $modelAcl = Axis::single('admin/acl');
 
-    public function addAction()
-    {
-        $role = Axis::model('admin/acl_role')->createRow();
-        $role->role_name = $this->_getParam('roleName');
-        $role->save();
-
-        Axis::message()->addSuccess(
-            Axis::translate('admin')->__(
-                'Role was added successfully'
-            )
-        );
-        $this->_helper->json->setId($role->id)
-            ->sendSuccess();
-    }
-
-    public function editAction()
-    {
-        $roleId = $this->_getParam('id');
-        $model = Axis::model('admin/acl_role');
-
-        $role = $model->find($roleId)->current();
+        $row = $model->find($roleId)->current();
 
         $parents = $model->getParents($roleId);
         $data = array(
-            'id'              => $role->id,
-            'name'            => $role->role_name,
+            'id'              => $row->id,
+            'name'            => $row->role_name,
             'possibleParents' => (object) $model->getPossibleParents($roleId),
             'parents'         => $parents,
-            'parentAllows'    => Axis::single('admin/acl')->getParentRolesAllows($parents),
+            'parentAllows'    => $modelAcl->getParentRolesAllows($parents),
             'rules'           => $model->getRules($roleId)
         );
 
-        $this->_helper->json->setData($data)
+        return $this->_helper->json
+            ->setData($data)
             ->sendSuccess();
     }
-
-    public function deleteAction()
-    {
-        $roleId = $this->_getParam('roleId');
-        Axis::model('admin/acl_role')->delete(
-            $this->db->quoteInto('id = ?', $roleId)
-        );
-        Axis::message()->addSuccess(
-            Axis::translate('admin')->__(
-                'Role was deleted successfully'
-            )
-        );
-        $this->_helper->json->sendSuccess();
-    }
-
+    
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $model       = Axis::model('admin/acl_role');
         $modelParent = Axis::model('admin/acl_role_parent');
         $modelRule   = Axis::model('admin/acl_rule');
 
         $roleId = $this->_getParam('roleId');
-        $role   = $model->find($roleId)->current();
-        $role->role_name = $this->_getParam('roleName');
-        $role->save();
+        $row    = $model->find($roleId)->current();
+        $row->role_name = $this->_getParam('roleName');
+        $row->save();
 
         /* save parent roles */
         $parents = $this->_getParam('role', array());
         $modelParent->delete(
-            $this->db->quoteInto('role_id = ?', $role->id)
+            $this->db->quoteInto('role_id = ?', $row->id)
         );
         foreach ($parents as $parentId) {
             $modelParent->createRow(array(
@@ -143,7 +104,7 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
         /* save rules */
         $rules = $this->_getParam('rule');
         $modelRule->delete(
-            $this->db->quoteInto('role_id = ?', $role->id)
+            $this->db->quoteInto('role_id = ?', $row->id)
         );
 
         $allow = isset($rules['allow']) ? $rules['allow'] : array();
@@ -167,6 +128,46 @@ class Axis_Admin_RolesController extends Axis_Admin_Controller_Back
                 'Role was saved successfully'
             )
         );
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
+    }
+
+    public function addAction()
+    {
+        $row = Axis::model('admin/acl_role')->createRow();
+        $row->role_name = $this->_getParam('roleName');
+        $row->save();
+
+        Axis::message()->addSuccess(
+            Axis::translate('admin')->__(
+                'Role was added successfully'
+            )
+        );
+        return $this->_helper->json
+            ->setId($row->id)
+            ->sendSuccess();
+    }
+
+    public function removeAction()
+    {
+        $roleId = $this->_getParam('roleId');
+        Axis::model('admin/acl_role')->delete(
+            $this->db->quoteInto('id = ?', $roleId)
+        );
+        Axis::message()->addSuccess(
+            Axis::translate('admin')->__(
+                'Role was deleted successfully'
+            )
+        );
+        return $this->_helper->json->sendSuccess();
+    }
+
+    public function listParentAction()
+    {
+        $parents = Zend_Json::decode($this->_getParam('parents'));
+        $data = array();
+        if (count($parents)) {
+            $data = Axis::single('admin/acl')->getParentRolesAllows($parents);
+        }
+        return $this->_helper->json->sendRaw($data);
     }
 }
