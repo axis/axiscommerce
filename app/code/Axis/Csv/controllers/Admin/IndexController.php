@@ -31,7 +31,7 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
+class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
 {
     private $_valuesCache = array();
     private $_optionsCache = array();
@@ -49,22 +49,21 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    public function getListAction()
+    public function listAction()
     {
-        $this->_helper->json->sendSuccess(array(
-            'data' => Axis::single('admin/csv_profile')->getList()
-        ));
+        $data = Axis::single('csv/profile')->getList();
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
-    public function getSupportedTypesAction()
+    public function listTypeAction()
     {
-        $this->_helper->json->sendRaw($this->_supportedTypes);
+        return $this->_helper->json->sendRaw($this->_supportedTypes);
     }
 
     public function runAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $data = $this->_getParam('general');
         $filters = $this->_getParam('filter');
 
@@ -76,31 +75,29 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
             );
             $this->_helper->json->sendFailure();
         }
-        $response = call_user_func(
+        $messages = call_user_func(
             array($this, '_' . $data['direction'] . ucfirst($data['type'])),
             $data, $filters
         );
 
-        $this->_helper->json->sendSuccess(array(
-            'messages' => $response
-        ));
+        return $this->_helper->json
+            ->setMessages($messages)
+            ->sendSuccess();
     }
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $data         = $this->_getParam('general');
         $filters      = $this->_getParam('filter');
         $data['site'] = trim($filters['site'], ',');
 
-        $row = Axis::model('admin/csv_profile')->save($data);//, $filters);
+        $row = Axis::model('csv/profile')->save($data);//, $filters);
         
         
         if ('export' == $row->direction) {
             $rowFilter = $row->findDependentRowset('Axis_Admin_Model_Csv_Profile_Filter')->current();
             if (!$rowFilter) {
-                $rowFilter = Axis::single('admin/csv_profile_filter')->createRow();
+                $rowFilter = Axis::single('csv/profile_filter')->createRow();
                 $rowFilter->profile_id = $row->id;
             }
             $rowFilter->setFromArray($filters);
@@ -124,18 +121,16 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
                 'Profile was saved successfully'
             )
         );
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
+        $data = Zend_Json::decode($this->_getParam('data'));
 
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-
-        $this->_helper->json->sendJson(array(
-            'success' => Axis::single('admin/csv_profile')->deleteByIds($data)
-        ));
+        Axis::single('csv/profile')->deleteByIds($data);
+            
+        return $this->_helper->json->sendSuccess();
     }
 
     private function _getCsvProductTitles($type = null)
@@ -290,7 +285,7 @@ class Axis_Admin_CsvController extends Axis_Admin_Controller_Back
         $step = 30;
 
         $mProduct = Axis::single('catalog/product');
-        $mCsvProfile = Axis::single('admin/csv_profile');
+        $mCsvProfile = Axis::single('csv/profile');
         // Export products
         while (!$end) {
             $products = $mCsvProfile->getProductSet($lastExportedId, $step, $filters);

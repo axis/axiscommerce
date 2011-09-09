@@ -31,11 +31,11 @@
  * @subpackage  Axis_Admin_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Model_Csv_Profile extends Axis_Db_Table
+class Axis_Csv_Model_Profile extends Axis_Db_Table
 {
     protected $_name = 'csv_profile';
 
-    protected $_dependentTables = array('Axis_Admin_Model_Csv_Profile_Filter');
+    protected $_dependentTables = array('Axis_Csv_Model_Profile_Filter');
 
     public function getList()
     {
