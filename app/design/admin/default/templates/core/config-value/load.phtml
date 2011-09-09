@@ -1,0 +1,46 @@
+<form method="post" action="<?php echo $this->href('core/config-value/save');?>" id="form-edit"
+      onsubmit="Config.save(); return false;">
+<?php
+    echo $this->formHidden('siteId', $this->siteId);
+    echo $this->formHidden('path', $this->configPath);
+?>
+<h3 class="config-title"> <?php echo $this->confField['title'];?> </h3>
+<dl class="general-form">
+    <?php if (!empty($this->confField['description'])) : ?>
+        <dt><label><?php echo $this->translate('admin')->__('Description');?>: </label></dt>
+        <dd><?php echo $this->confField['description'];?></dd>
+    <?php endif; ?>
+    <dt><label for="confValue"><?php echo $this->translate('admin')->__('Value');?>:</label></dt>
+    <dd><?php
+    switch ($this->confField['config_type']) {
+        case 'bool':
+            echo $this->formRadio('confValue', $this->confValue, null,
+                array('1' => $this->translate('admin')->__('Yes'), '0' => $this->translate('admin')->__('No')));
+            break;
+        case 'select':
+            echo $this->formSelect('confValue', $this->confValue, null, $this->confField['config_options']);
+            break;
+        case 'multiple':
+            echo $this->formSelect(
+                'confValue',
+                $this->confValue,
+                array(
+                    'multiple'  => 'multiple',
+                    'size'      => 10
+                ),
+                $this->confField['config_options']
+            );
+            break;
+        case 'text':
+            echo $this->formTextarea('confValue', $this->confValue, array('rows' => 8, 'cols' => 45));
+            break;
+        case 'handler':
+            echo $this->confField['config_options'];
+            break;
+
+        default:
+            echo $this->formText('confValue', $this->confValue, array('size' => '50'));
+    }
+    ?></dd>
+</dl>
+</form>

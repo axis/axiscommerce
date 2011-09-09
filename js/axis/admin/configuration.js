@@ -53,7 +53,7 @@ Ext.onReady(function() {
 
         saveField : function() {
             Ext.getCmp('form_new_field').getForm().submit({
-                url: Axis.getUrl('configuration/save-field'),
+                url: Axis.getUrl('core/config-field/save'),
                 success: function() {
                     var path = Ext.getCmp('form_new_field').getForm().findField('path').getValue();
                     Ext.getCmp('add_new_field').hide();
@@ -76,7 +76,7 @@ Ext.onReady(function() {
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('configuration/edit'),
+                url: Axis.getUrl('core/config-value/load'),
                 params: {
                     path: row.id,
                     siteId: Config.siteId
@@ -131,7 +131,7 @@ Ext.onReady(function() {
             }
             var items = Config.getSelectedIds();
             Ext.Ajax.request({
-                url: Axis.getUrl('configuration/use-global'),
+                url: Axis.getUrl('core/config-value/use-global'),
                 params: {
                     pathItems: Ext.encode(items),
                     siteId: Config.siteId
@@ -148,7 +148,7 @@ Ext.onReady(function() {
             }
             var items = Config.getSelectedIds();
             Ext.Ajax.request({
-                url: Axis.getUrl('configuration/copy-global'),
+                url: Axis.getUrl('core/config-value/copy-global'),
                 params: {
                     pathItems: Ext.encode(items),
                     siteId: Config.siteId
@@ -186,7 +186,7 @@ Ext.onReady(function() {
        hiddenName: 'config_type',
        fieldLabel: 'Type'.l(),
        store: new Ext.data.JsonStore({
-              url: Axis.getUrl('configuration/get-field-types'),
+              url: Axis.getUrl('core/config-field/list-type'),
            fields: ['id', 'type'],
            id: 'id',
            root: 'data',
@@ -206,7 +206,7 @@ Ext.onReady(function() {
        fieldLabel: 'Model'.l(),
        hiddenName: 'model',
        store: new Ext.data.JsonStore({
-           url: Axis.getUrl('configuration/get-field-models'),
+           url: Axis.getUrl('core/config-field/list-model'),
            fields: ['id', 'name'],
            id: 'id',
            root: 'data',
@@ -345,7 +345,7 @@ Ext.onReady(function() {
         animate: false,
         containerScroll: true,
         loader: new Ext.tree.TreeLoader({
-            dataUrl: Axis.getUrl('configuration/get-nodes')
+            dataUrl: Axis.getUrl('core/config-field/list')
         }),
         tbar: treeToolBar
     });
@@ -367,7 +367,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('configuration/list'),
+        url: Axis.getUrl('core/config-value/list'),
         reader: new Ext.data.JsonReader({
             id: 'path',
             root: 'data',

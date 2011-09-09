@@ -58,7 +58,7 @@ Ext.onReady(function(){
             }
             
             Ext.Ajax.request({
-                url: Axis.getUrl('pages/save'),
+                url: Axis.getUrl('core/page/batch-save'),
                 params: {
                     data: Ext.encode(data)
                 },
@@ -86,7 +86,7 @@ Ext.onReady(function(){
             }
                 
             Ext.Ajax.request({
-                url: Axis.getUrl('pages/delete'),
+                url: Axis.getUrl('core/page/remove'),
                 params: {data: Ext.encode(data)},
                 callback: function() {
                     ds.reload();
@@ -98,7 +98,7 @@ Ext.onReady(function(){
     Ext.QuickTips.init();
     
     var ds = new Ext.data.GroupingStore({
-        url: Axis.getUrl('pages/list'),
+        url: Axis.getUrl('core/page/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',

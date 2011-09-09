@@ -41,7 +41,7 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
 
     public function registerAction()
     {
-        $this->layout->disableLayout();
+        $this->_helper->layout->disableLayout();
         $email = $this->_getParam('email', null);
         if (!$this->_request->isPost()) {
             $this->render();
@@ -103,7 +103,7 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
 
     public function indexAction()
     {
-        $this->layout->disableLayout();
+        $this->_helper->layout->disableLayout();
         $hash = $this->_getParam('hash', null);
         $this->view->hash = $hash;
         if (!$username = Axis::single('admin/UserForgotPassword')

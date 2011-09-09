@@ -43,7 +43,7 @@ Ext.onReady(function(){
     ])
 
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('csv/get-list'),
+        url: Axis.getUrl('csv/list'),
         reader: new Ext.data.JsonReader({
             id: 'id',
             root: 'data'
@@ -187,7 +187,7 @@ Ext.onReady(function(){
             data[i] = selected[i].id;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('csv/delete'),
+            url: Axis.getUrl('csv/remove'),
             params: {data: Ext.encode(data)},
             success: reload
         })

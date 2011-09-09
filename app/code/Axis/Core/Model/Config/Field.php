@@ -218,37 +218,4 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
 
         return $this;
     }
-
-    /**
-     * Return nodes on Ext.tree format
-     *
-     * @param string $node
-     * @return array
-     */
-    public function getNodes($node)
-    {
-        if ('0' == $node) {
-            $nodes = $this->fetchAll('lvl = 1', 'title ASC');
-        } else {
-            $nodes = $this->fetchAll(
-                array('lvl = 2', "`path` like '$node/%'"), 'title ASC'
-            );
-        }
-
-        $i = 0;
-        foreach ($nodes as $item) {
-            $result[$i] = array(
-                'text' => Axis::translate($item->getTranslationModule())
-                    ->__($item->title),
-                'id'   => $item->path,
-                'leaf' => false
-            );
-            if ($node != '0') {
-                $result[$i]['children'] = array();
-                $result[$i]['expanded'] = true;
-            }
-            ++$i;
-        }
-        return $result;
-    }
 }

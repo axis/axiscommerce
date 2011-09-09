@@ -23,7 +23,7 @@ Ext.onReady(function(){
 
     var supportedTypes = new Ext.form.ComboBox({
         store: new Ext.data.Store({
-            url: Axis.getUrl('csv/get-supported-types'),
+            url: Axis.getUrl('csv/list-type'),
             reader: new Ext.data.ArrayReader({
             }, [
                'name', 'identifier'

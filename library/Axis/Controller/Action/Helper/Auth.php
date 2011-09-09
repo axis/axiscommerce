@@ -114,7 +114,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
                 return;
             }
             $request->setModuleName('Axis_Admin')
-                ->setControllerName('informer')
+                ->setControllerName('error')
                 ->setActionName('access-denied')
                 ->setDispatched(false);
         }

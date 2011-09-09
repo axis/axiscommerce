@@ -396,7 +396,7 @@ Ext.onReady(function() {
     });
 
     var mailStore = new Ext.data.Store({
-        url:  Axis.getUrl('template_mail/list-mail'),
+        url:  Axis.getUrl('core/mail/list-mail'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'

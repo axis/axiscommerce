@@ -53,7 +53,7 @@ Ext.onReady(function(){
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('users/get-list'),
+        url: Axis.getUrl('user/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
@@ -189,7 +189,7 @@ Ext.onReady(function(){
                 }
                 var jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('users/save'),
+                    url: Axis.getUrl('user/batch-save'),
                     params: {data: jsonData},
                     callback: function() {
                         ds.commitChanges();
@@ -214,7 +214,7 @@ Ext.onReady(function(){
                 }
                 var jsonData = Ext.encode(data);
                 Ext.Ajax.request({
-                    url: Axis.getUrl('users/delete'),
+                    url: Axis.getUrl('user/remove'),
                     params: {data: jsonData},
                     callback: function() {
                         ds.reload();

@@ -57,4 +57,12 @@ class Axis_Admin_ErrorController extends Axis_Admin_Controller_Back
             $this->render();
         }
     }
+    
+    public function accessDeniedAction()
+    {
+        $this->view->pageTitle = Axis::translate('admin')->__(
+            'Access Denied'
+        );
+        $this->render();
+    }
 }

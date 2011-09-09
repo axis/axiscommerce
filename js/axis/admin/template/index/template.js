@@ -43,7 +43,7 @@ Ext.onReady(function() {
             if (tree.getSelectionModel().getSelectedNode() && tree.getSelectionModel().getSelectedNode().isSelected()) {
                 var templateId = tree.getSelectionModel().getSelectedNode().id;
                 templateForm.getForm().load({
-                    url:   Axis.getUrl('template_index/load/'),
+                    url:   Axis.getUrl('core/theme/load/'),
                     params: {templateId: templateId},
                     method: 'post'
                 });
@@ -60,7 +60,7 @@ Ext.onReady(function() {
                 return;
 
             Ext.Ajax.request({
-                url: Axis.getUrl('template_index/delete'),
+                url: Axis.getUrl('core/theme/remove'),
                 params: {templateId: selectedItem.id},
                 method: 'post',
                 callback: function(request, success, response) {
@@ -124,7 +124,7 @@ Ext.onReady(function() {
             if (!template) {
                 return;
             }
-            window.location = Axis.getUrl('template_index/export')
+            window.location = Axis.getUrl('core/theme/export')
                 + '/templateId/'
                 + template.id;
         }
@@ -153,7 +153,7 @@ Ext.onReady(function() {
         animate: false,
         containerScroll: true,
         loader: new Ext.tree.TreeLoader({
-            dataUrl: Axis.getUrl('template_index/get-nodes')
+            dataUrl: Axis.getUrl('core/theme/list')
         }),
         tbar: {
             enableOverflow: true,
@@ -204,7 +204,7 @@ Ext.onReady(function() {
     });
 
     var importForm = new Ext.FormPanel({
-        url: Axis.getUrl('template_index/import'),
+        url: Axis.getUrl('core/theme/import'),
         fileUpload: true,
         defaults: {
             anchor: '100%',
@@ -220,7 +220,7 @@ Ext.onReady(function() {
     });
 
     var templateForm = new Axis.FormPanel({
-        url: Axis.getUrl('template_index/save'),
+        url: Axis.getUrl('core/theme/save'),
         defaults: {
             anchor: '100%'
         },

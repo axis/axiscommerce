@@ -36,7 +36,7 @@ Ext.onReady(function(){
             Ext.getCmp('remove-role-button').enable();
             Ext.Ajax.request({
                 method: 'post',
-                url: Axis.getUrl('roles/edit'),
+                url: Axis.getUrl('role/load'),
                 params: {
                     id: node.id
                 },
@@ -101,7 +101,10 @@ Ext.onReady(function(){
                 return;
             }
             Ext.Ajax.request({
-                url: Axis.getUrl('roles/save/roleId/') + Role.id,
+                url: Axis.getUrl('role/save'),
+                params : {
+                    roleId: Role.id
+                },
                 form: 'form-role'
             });
         },
@@ -109,7 +112,7 @@ Ext.onReady(function(){
         add: function() {
             var name = $('#new-role-name');
             Ext.Ajax.request({
-                url: Axis.getUrl('roles/add'),
+                url: Axis.getUrl('role/add'),
                 params: {
                     'roleName': name.val()
                 },
@@ -139,7 +142,7 @@ Ext.onReady(function(){
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('roles/delete'),
+                url: Axis.getUrl('role/remove'),
                 params: {
                     'roleId': node.id
                 },
@@ -160,7 +163,7 @@ Ext.onReady(function(){
 
         loadParent: function() {
             Ext.Ajax.request({
-                url: Axis.getUrl('roles/list'),
+                url: Axis.getUrl('role/list'),
                 success: function(response, options) {
                     $('#parent-roles').html(response.responseText);
                     $('#parent-roles input').change(function(){
@@ -178,7 +181,7 @@ Ext.onReady(function(){
             });
 
             Ext.Ajax.request({
-                url: Axis.getUrl('roles/get-parent-allows'),
+                url: Axis.getUrl('role/list-parent'),
                 params: {
                     'parents': Ext.encode(parents)
                 },
@@ -221,7 +224,7 @@ Ext.onReady(function(){
         region: 'west',
         split: true,
         loader: new Ext.tree.TreeLoader({
-            dataUrl: Axis.getUrl('roles/get-nodes')
+            dataUrl: Axis.getUrl('role/list')
         }),
         tbar: treeToolBar
     });

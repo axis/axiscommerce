@@ -66,7 +66,7 @@ Ext.onReady(function() {
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('template_page/save'),
+                url: Axis.getUrl('core/theme_page/batch-save'),
                 params: {
                     data: Ext.encode(data),
                     tId: Layout.templateId
@@ -93,7 +93,7 @@ Ext.onReady(function() {
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('template_page/delete'),
+                url: Axis.getUrl('core/theme_page/remove'),
                 params: {
                     data: Ext.encode(data),
                     tId: Layout.templateId
@@ -130,7 +130,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('template_page/list'),
+        url: Axis.getUrl('core/theme_page/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -144,7 +144,7 @@ Ext.onReady(function() {
     });
 
     var dsLayout = new Ext.data.Store({
-        url:  Axis.getUrl('template_layout/list'),
+        url:  Axis.getUrl('core/theme_layout/list'),
         reader: new Ext.data.JsonReader({
             root: 'data'
         }, ['id', 'name']),

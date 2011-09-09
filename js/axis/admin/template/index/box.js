@@ -31,7 +31,10 @@ var Box = {
 
     load: function(id) {
         Box.Window.form.getForm().load({
-            url: Axis.getUrl('template_box/edit/id/' + id),
+            url: Axis.getUrl('core/theme_block/load/'),
+            params: {
+                id: id
+            },
             method: 'get',
             success: function(form, action) {
                 var data = Ext.decode(action.response.responseText).data;
