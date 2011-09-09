@@ -60,7 +60,7 @@ Ext.onReady(function(){
             }
             
             Ext.Ajax.request({
-                url:  Axis.getUrl('template_mail/save'),
+                url:  Axis.getUrl('core/mail/batch-save'),
                 params: {
                     data: Ext.encode(data)
                 },
@@ -72,7 +72,7 @@ Ext.onReady(function(){
         },
         edit: function(row) {
              editorForm.getForm().load({
-                url:   Axis.getUrl('template_mail/get-info/'),
+                url:   Axis.getUrl('core/mail/load'),
                 params: {templateId: row.id},
                 method: 'post'
             });
@@ -95,7 +95,7 @@ Ext.onReady(function(){
             }
                 
             Ext.Ajax.request({
-                url: Axis.getUrl('template_mail/delete'),
+                url: Axis.getUrl('core/mail/remove'),
                 params: {data: Ext.encode(data)},
                 callback: function() {
                     ds.reload();
@@ -107,7 +107,7 @@ Ext.onReady(function(){
     Ext.QuickTips.init();
     
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('template_mail/list'),
+        url: Axis.getUrl('core/mail/list'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             totalProperty: 'count',
@@ -128,7 +128,7 @@ Ext.onReady(function(){
     });
     
     var eventStore = new Ext.data.Store({
-        url:  Axis.getUrl('template_mail/list-event'),
+        url:  Axis.getUrl('core/mail/list-event'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -140,7 +140,7 @@ Ext.onReady(function(){
     });
     
     var templateStore = new Ext.data.Store({
-        url:  Axis.getUrl('template_mail/list-template'),
+        url:  Axis.getUrl('core/mail/list-template'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -152,7 +152,7 @@ Ext.onReady(function(){
     });
     
     var mailStore = new Ext.data.Store({
-        url:  Axis.getUrl('template_mail/list-mail'),
+        url:  Axis.getUrl('core/mail/list-mail'),
         reader: new Ext.data.JsonReader({
             root: 'data',
             id: 'id'
@@ -345,7 +345,7 @@ Ext.onReady(function(){
     });
     
     var editorForm = new Ext.FormPanel({
-        url: Axis.getUrl('template_mail/save'),
+        url: Axis.getUrl('core/mail/batch-save'),
         border: false,
         bodyStyle: 'padding:5px 5px 0',
         labelWidth: 70,

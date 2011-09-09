@@ -32,12 +32,12 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
     {
         Axis::model('admin/menu')
             ->edit('Cache Management', null, 'core/cache')
-            ->edit('Configuration', null, 'core/config-value')
-            ->edit('Modules', null, 'core/module')
-            ->edit('Pages', null, 'core/page')
-            ->edit('Site', null, 'core/site')
-            ->edit('Templates', null, 'core/theme')
-//            ->add('Design Control->Email Templates', 'template_mail', 20)
+            ->edit('Configuration',    null, 'core/config-value')
+            ->edit('Modules',          null, 'core/module')
+            ->edit('Pages',            null, 'core/page')
+            ->edit('Site',             null, 'core/site')
+            ->edit('Templates',        null, 'core/theme')
+            ->edit('Email Templates',  null, 'core/mail')
         ;
         
         Axis::model('admin/acl_resource')
@@ -76,7 +76,7 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/pages/list', 'admin/core/page/list')
             ->rename('admin/pages/save', 'admin/core/page/batch-save')
             ->rename('admin/pages/delete', 'admin/core/page/remove')
-            ->rename('admin/pages')
+            ->remove('admin/pages')
             
             ->rename('admin/site', 'admin/core/site')
             ->rename('admin/site/index', 'admin/core/site/index')
@@ -103,7 +103,7 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/template_box/save', 'admin/core/theme_block/save')
             ->rename('admin/template_box/batch-save', 'admin/core/theme_block/batch-save')
             ->rename('admin/template_box/delete', 'admin/core/theme_block/remove')
-//            
+
             ->rename('admin/template_page', 'admin/core/theme_page')
             ->rename('admin/template_page/list', 'admin/core/theme_page/list')
             ->rename('admin/template_page/save', 'admin/core/theme_page/batch-save')
@@ -111,16 +111,18 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             
             ->rename('admin/template_layout', 'admin/core/theme_layout')
             ->rename('admin/template_layout/list', 'admin/core/theme_layout/list')
-//
-//            ->add('admin/template_mail', 'Emails Templates')
-//            ->add('admin/template_mail/delete')
-//            ->add('admin/template_mail/get-info')
-//            ->add('admin/template_mail/index')
-//            ->add('admin/template_mail/list')
-//            ->add('admin/template_mail/list-event')
-//            ->add('admin/template_mail/list-mail')
-//            ->add('admin/template_mail/list-template')
-//            ->add('admin/template_mail/save')
+
+            ->rename('admin/template_mail', 'admin/core/mail')
+            ->rename('admin/template_mail/index', 'admin/core/mail/index')
+            ->rename('admin/template_mail/list', 'admin/core/mail/list')
+            ->rename('admin/template_mail/get-info', 'admin/core/mail/load')
+            ->rename('admin/template_mail/list-event', 'admin/core/mail/list-event')
+            ->rename('admin/template_mail/list-template', 'admin/core/mail/list-template')
+            ->rename('admin/template_mail/list-mail', 'admin/core/mail/list-mail')
+            ->rename('admin/template_mail/save', 'admin/core/mail/batch-save')
+            ->rename('admin/template_mail/delete', 'admin/core/mail/remove')
+            
+            ->remove('admin/template_')
             ;
     }
 

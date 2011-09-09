@@ -31,20 +31,10 @@
  * @subpackage  Axis_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Admin_Theme_MailController extends Axis_Admin_Controller_Back
+class Admin_MailController extends Axis_Admin_Controller_Back
 {
-    protected $_table;
-
-    public function init()
-    {
-        parent::init();
-        $this->getHelper('layout')->disableLayout();
-        $this->_table = Axis::single('core/template_mail');
-    }
-
     public function indexAction()
     {
-        $this->_helper->layout->enableLayout();
         $this->view->pageTitle = Axis::translate('admin')->__(
             'Email Templates'
         );
@@ -54,27 +44,39 @@ class Admin_Theme_MailController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $data = $this->_table->fetchAll()->toArray();
-        $this->_helper->json->sendSuccess(array(
-            'data' => array_values($data),
-            'count'   => count($data)
-        ));
+        $data = Axis::single('core/template_mail')->fetchAll()->toArray();
+        
+        return $this->_helper->json
+            ->setData(array_values($data))
+            ->setCount(count($data))
+            ->sendSuccess();
+    }
+    
+    public function loadAction() 
+    {
+        $templateId = $this->_getParam('templateId');
+        
+        $data = Axis::single('core/template_mail')->getInfo($templateId);
+        
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();          
     }
 
     public function listEventAction()
     {
         $events = Axis_Collect_MailEvent::collect();
         
-        $result = array();
+        $data = array();
         $i = 0;
         foreach ($events as $eventKey => $event) {
-            $result[$i] = array('name' => $event, 'id' => $eventKey);
+            $data[$i] = array('name' => $event, 'id' => $eventKey);
             $i++;
         }
         
-        $this->_helper->json->sendSuccess(array(
-            'data' => $result
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
     
     public function listTemplateAction()
@@ -88,31 +90,29 @@ class Admin_Theme_MailController extends Axis_Admin_Controller_Back
             $i++;
         }
         
-        $this->_helper->json->sendSuccess(array(
-            'data' => $data
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
     
     public function listMailAction()
     {
         $templates = Axis_Collect_MailBoxes::collect();
         
-        $result = array();
+        $data = array();
         $i = 0;
         foreach ($templates as $templateKey => $template) {
-            $result[$i] = array('name' => $template, 'id' => $templateKey);
+            $data[$i] = array('name' => $template, 'id' => $templateKey);
             $i++;
         }
         
-        $this->_helper->json->sendSuccess(array(
-            'data' => $result
-        ));
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-        
         if ($this->_getParam('data', false)) {
             $data = Zend_Json::decode($this->_getParam('data'));
         } else {
@@ -160,7 +160,7 @@ class Admin_Theme_MailController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
     
-    public function deleteAction()
+    public function removeAction()
     {
         $ids = Zend_Json::decode($this->_getParam('data'));
         
@@ -172,7 +172,9 @@ class Admin_Theme_MailController extends Axis_Admin_Controller_Back
             );
             return $this->_helper->json->sendFailure();
         }
-        $this->_table->delete($this->db->quoteInto('id IN(?)', $ids));
+        Axis::single('core/template_mail')->delete(
+            $this->db->quoteInto('id IN(?)', $ids)
+        );
 
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
@@ -180,18 +182,5 @@ class Admin_Theme_MailController extends Axis_Admin_Controller_Back
             )
         );
         return $this->_helper->json->sendSuccess();
-    }
-    
-    public function getInfoAction() 
-    {
-        $this->_helper->layout->disableLayout();
-        
-        $templateId = $this->_getParam('templateId');
-        
-        $info = Axis::single('core/template_mail')->getInfo($templateId);
-        
-        return $this->_helper->json->sendSuccess(array(
-            'data' => $info
-        ));          
     }
 }
