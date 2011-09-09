@@ -27,11 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Model
+ * @package     Axis_Import
+ * @subpackage  Axis_Import_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Model_Import_Profile extends Axis_Db_Table
+class Axis_Import_Model_Profile extends Axis_Db_Table
 {
     protected $_name = 'import_profile';
 

@@ -35,7 +35,7 @@ Ext.onReady(function(){
     ])
 
     var ds = new Ext.data.Store({
-        url: Axis.getUrl('import_index/get-list'),
+        url: Axis.getUrl('import/list'),
         reader: new Ext.data.JsonReader({
             id: 'id',
             root: 'data'
@@ -153,7 +153,7 @@ Ext.onReady(function(){
             data[i] = selected[i].id;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('import_index/delete'),
+            url: Axis.getUrl('import/remove'),
             params: {data: Ext.encode(data)},
             success: reload
         })

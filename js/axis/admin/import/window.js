@@ -23,7 +23,7 @@ Ext.onReady(function(){
 
     var supportedTypes = new Ext.form.ComboBox({
         store: new Ext.data.Store({
-            url: Axis.getUrl('import_index/get-supported-types'),
+            url: Axis.getUrl('import/list-type'),
             reader: new Ext.data.ArrayReader({
                 id: 0
             }, Ext.data.Record.create([
@@ -247,7 +247,7 @@ Ext.onReady(function(){
             Ext.getCmp('tabpanel').activate(error_tab);
         }
         form.getForm().submit({
-            url: Axis.getUrl('import_index/save'),
+            url: Axis.getUrl('import/save'),
             success: function(){
                 Ext.getCmp('window_profile').hide();
                 Ext.getCmp('grid-profile').store.reload();
@@ -258,7 +258,7 @@ Ext.onReady(function(){
     function connect(){
         Ext.getCmp('connectButton').disable();
         Ext.Ajax.request({
-            url: Axis.getUrl('import_index/connect'),
+            url: Axis.getUrl('import/connect'),
             params: {
                 'profile[type]':    form.getForm().findField('profile[type]').getValue(),
                 'profile[host]':    form.getForm().findField('profile[host]').getValue(),
@@ -289,7 +289,7 @@ function ajaxImportData(clearSession){
     }
 
     Ext.getCmp('form_profile_edit').getForm().submit({
-        url: Axis.getUrl('import_index/import'),
+        url: Axis.getUrl('import/import'),
         params: {
             'clearSession': clearSession
         },
@@ -370,7 +370,7 @@ function setImportReady(data){
 function removeImportReady() {
     if (Ext.getCmp('window_profile').buttons[0].disabled)
         Ext.Ajax.request({
-            url: Axis.getUrl('import_index/disconnect'),
+            url: Axis.getUrl('import/disconnect'),
             params: {
                 'profile[type]':    Ext.getCmp('form_profile_edit').getForm().findField('profile[type]').getValue(),
                 'profile[host]':    Ext.getCmp('form_profile_edit').getForm().findField('profile[host]').getValue(),

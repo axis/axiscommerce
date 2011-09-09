@@ -27,12 +27,12 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Model
+ * @package     Axis_Import
+ * @subpackage  Axis_Import_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-abstract class Axis_Admin_Model_Import_Abstract implements Axis_Admin_Model_Import_Interface
+abstract class Axis_Import_Model_Abstract implements Axis_Import_Model_Interface
 {
     const HUMAN_URL = 'catalog_hurl';
     const CATEGORY = 'catalog_category';

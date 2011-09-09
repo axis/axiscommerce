@@ -27,11 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Model
+ * @package     Axis_Import
+ * @subpackage  Axis_Import_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Model_Import_Creloaded extends Axis_Admin_Model_Import_Abstract
+class Axis_Import_Model_Creloaded extends Axis_Import_Model_Abstract
 {
     private $_priority_queue = array(
         'Categories'      => 'category',

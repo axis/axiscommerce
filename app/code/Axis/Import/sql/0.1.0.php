@@ -18,12 +18,12 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Oscommerce
+ * @package     Axis_Import
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-class Axis_Oscommerce_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
+class Axis_Import_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.0';
     protected $_info = 'install';
@@ -35,7 +35,7 @@ class Axis_Oscommerce_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         $installer->run("
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('import_profile')}`;
-        CREATE TABLE  `{$installer->getTable('import_profile')}` (
+        CREATE TABLE  IF NOT EXISTS `{$installer->getTable('import_profile')}` (
           `id` int(10) unsigned NOT NULL auto_increment,
           `name` varchar(128) NOT NULL,
           `host` varchar(255) NOT NULL,
@@ -57,6 +57,7 @@ class Axis_Oscommerce_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('Administrate->Import/Export->OsCommerce', 'import_index', 20);
 
         Axis::single('admin/acl_resource')
+            ->remove('admin/import')
             ->add('admin/import', 'Import')
             ->add('admin/import_index', 'OsCommerce')
             ->add("admin/import_index/connect")

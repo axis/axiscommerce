@@ -27,11 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Model
+ * @package     Axis_Import
+ * @subpackage  Axis_Import_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-interface Axis_Admin_Model_Import_Interface
+interface Axis_Import_Model_Interface
 {
     public static function getInstance($data);
 

@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Controller
+ * @package     Axis_Import
+ * @subpackage  Axis_Import_Controller
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,21 +27,16 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Controller
+ * @package     Axis_Import
+ * @subpackage  Axis_Import_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
+class Axis_Import_Admin_IndexController extends Axis_Admin_Controller_Back
 {
     private $_adapter;
     private $_supportedTypes = array(
         array('0', 'Creloaded')
     );
-
-    public function getSupportedTypesAction()
-    {
-        $this->_helper->json->sendRaw($this->_supportedTypes);
-    }
 
     public function indexAction()
     {
@@ -50,49 +45,49 @@ class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
         $this->render();
     }
 
-    public function getListAction()
+    public function listAction()
     {
-        $data = Axis::single('admin/import_profile')->getList();
-        $this->_helper->json
+        $data = Axis::single('import/profile')->getList();
+        
+        return $this->_helper->json
             ->setData($data)
             ->sendSuccess();
     }
 
     public function saveAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $data = $this->_getParam('profile');
 
-        Axis::single('admin/import_profile')->save($data);
+        Axis::single('import/profile')->save($data);
             
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Profile was saved successfully'
             )
         );
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
 
-    public function deleteAction()
+    public function removeAction()
     {
-        $this->_helper->layout->disableLayout();
+        $data = Zend_Json::decode($this->_getParam('data'));
 
-        $data = Zend_Json_Decoder::decode($this->_getParam('data'));
-
-        Axis::single('admin/import_profile')->delete($data);
+        Axis::single('import/profile')->delete($data);
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Profile was deleted successfully'
             )
         );
-        $this->_helper->json->sendSuccess();
+        return $this->_helper->json->sendSuccess();
+    }
+    
+    public function listTypeAction()
+    {
+        $this->_helper->json->sendRaw($this->_supportedTypes);
     }
 
     public function connectAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $profileOptions = $this->_getParam('profile');
 
         $this->_adapter = $this->_getAdapter($profileOptions);
@@ -108,18 +103,17 @@ class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
         $languages = $this->_adapter->getLanguages();
         $queue = $this->_adapter->getQueue();
 
-        $this->_helper->json->sendSuccess(array(
-            'data' => array(
-                'languages' => $languages,
-                'queue' => $queue
-            )
-        ));
+        $data = array(
+            'languages' => $languages,
+            'queue'     => $queue
+        );
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess();
     }
 
     public function importAction()
     {
-        $this->_helper->layout->disableLayout();
-
         $profile_options = $this->_getParam('profile');
         $general_options = $this->_getParam('general');
         $language_options = array_filter($this->_getParam('language', array()));
@@ -179,31 +173,31 @@ class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
 
         $group_to_import = Axis::session()->group_queue[Axis::session()->group_iterator];
 
-        $result = array();
+        $data = array();
 
-        $result = $this->_adapter->import(
+        $data = $this->_adapter->import(
             $group_to_import,
             $language_options,
             $general_options['site'],
             $primary_language
         );
 
-        $result['finalize'] = false;
+        $data['finalize'] = false;
 
-        if ($result['completed_group'] && isset(Axis::session()->group_queue[Axis::session()->group_iterator+1])) {
+        if ($data['completed_group'] && isset(Axis::session()->group_queue[Axis::session()->group_iterator+1])) {
             Axis::session()->group_iterator++;
-        } elseif ($result['completed_group']) {
-            $result['finalize'] = true;
+        } elseif ($data['completed_group']) {
+            $data['finalize'] = true;
         }
 
         return $this->_helper->json->sendSuccess(array(
             'silent' => true,
-            'group' => $group_to_import,
-            'finalize' => $result['finalize'],
-            'processed' => $result['processed'],
-            'imported' => $result['imported'],
-            'messages' => $result['messages'],
-            'group' => $result['group']
+            'group' => $group_to_import, //wtf 1
+            'finalize' => $data['finalize'],
+            'processed' => $data['processed'],
+            'imported' => $data['imported'],
+            'messages' => $data['messages'],
+            'group' => $data['group'] //wtf 2
         ));
     }
 
@@ -212,7 +206,7 @@ class Axis_Admin_Import_IndexController extends Axis_Admin_Controller_Back
         $data['adapter'] = $this->db;
         $data['image_path'] = Axis::config()->system->path . '/media';
 
-        return call_user_func(array('Axis_Admin_Model_Import_'.$data['type'], 'getInstance'), $data);
+        return call_user_func(array('Axis_Import_Model_'.$data['type'], 'getInstance'), $data);
     }
 
     public function disconnectAction()

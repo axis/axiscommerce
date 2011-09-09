@@ -18,13 +18,13 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @category    Axis
- * @package     Axis_Oscommerce
+ * @package     Axis_Import
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 $config = array(
-    'Axis_Oscommerce' => array(
-        'package' => 'Axis_Catalog',
+    'Axis_Import' => array(
+        'package' => 'Axis_Import',
         'name' => 'Oscommerce import',
         'version' => '0.1.0',
         'required' => 0
