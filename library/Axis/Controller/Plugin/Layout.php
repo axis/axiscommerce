@@ -261,6 +261,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             || ($layout->getMvcSuccessfulActionOnly()
                 && (!empty($helper) && !$helper->isActionControllerSuccessful())))
         {
+            $layout->setLayout(null);
             return;
         }
 
