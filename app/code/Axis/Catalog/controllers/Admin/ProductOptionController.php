@@ -160,7 +160,7 @@ class Axis_Catalog_Admin_ProductOptionController extends Axis_Admin_Controller_B
         }
         $data['price'] = $product->getPriceRules();
         $this->view->product = $data;
-        $formHtml = $this->view->render('admin/catalog/product-attributes/get-form.phtml');
+        $formHtml = $this->view->render('catalog/product-option/get-form.phtml');
         return $this->_helper->json
            ->setData(array('form' => $formHtml, 'variations' => $variations))
            ->sendSuccess();
