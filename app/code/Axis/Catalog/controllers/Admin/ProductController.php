@@ -113,7 +113,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
             'count' => $count
         ));
     }
-    
+
     public function simpleListAction()
     {
         $model = Axis::model('catalog/product');
@@ -199,7 +199,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
             ->sendSuccess()
         ;
     }
-    
+
     public function loadAction()
     {
         if ($this->_hasParam('id')) {
@@ -246,7 +246,9 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
 
         /* get categories with marker 'belongs_to' */
         $categories = Axis::single('catalog/category')->getNestedTreeData();
-        $data['belongs_to'] = array_keys($product->getCategories());
+        $productCategories = Axis::single('catalog/product_category')
+            ->getCategoriesByProductIds(array($product->id));
+        $data['belongs_to'] = $productCategories[$product->id];
         foreach ($categories as &$category) {
             if (in_array($category['id'], $data['belongs_to'])) {
                 $category['belongs_to'] = 1;
@@ -375,7 +377,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
         if ($stock) {
             $data['stock'] = $stock->toArray();
         }
-        
+
         return $this->_helper->json
             ->setData($data)
             ->sendSuccess()
