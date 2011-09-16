@@ -63,62 +63,73 @@ class Axis_Catalog_Admin_ProductOptionController extends Axis_Admin_Controller_B
             ->sendSuccess()
         ;
     }
-    
+
     public function loadAction()
     {
-        $id = $this->_getParam('id', false);
+        $rowset = Axis::model('catalog/product_option')
+            ->select(array('cpot.language_id', '*'))
+            ->joinLeft(
+                'catalog_product_option_text',
+                'cpot.option_id = cpo.id',
+                '*'
+            )
+            ->where('cpo.id = ?', $this->_getParam('id', 0))
+            ->fetchAssoc();
 
-        $data = array();
-        $row = Axis::single('catalog/product_option')->find($id)->current();
-        
-        if ($row) {
-            $data = $row->toArray();
-            $rowset = $row->findDependentRowset('Axis_Catalog_Model_Product_Option_Text');
-            foreach ($rowset as $rowText) {
-                $data['text']['lang_' . $rowText->language_id] = array(
-                    'name'        => $rowText->name,
-                    'description' => $rowText->description
-                );
-            }
+        if (!$rowset) {
+            Axis::message()->addError(
+                Axis::translate('catalog')->__(
+                    'Option %s not found', $this->_getParam('id', 0)
+                )
+            );
+            return $this->_helper->json->sendFailure();
         }
 
-        return $this->_helper->json
+        $data = current($rowset);
+        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
+            if (!isset($rowset[$languageId]['name'])) {
+                $rowset[$languageId]['name'] = '';
+                $rowset[$languageId]['description'] = '';
+            }
+            $data['text']['lang_' . $languageId] = array(
+                'name'        => $rowset[$languageId]['name'],
+                'description' => $rowset[$languageId]['description']
+            );
+        }
+
+        $this->_helper->json
             ->setData($data)
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function saveAction()
     {
-        $_row = $this->_getParam('option');
-        $row = Axis::single('catalog/product_option')->save($_row);
-        
-        /* saving option text */
-        $modelDescription = Axis::model('catalog/product_option_text'); 
-        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
-            $rowText = $modelDescription->find($row->id, $languageId)
-                ->current();
-            if (!$rowText) {
-                $rowText = $modelDescription->createRow();
-                $rowText->option_id = $row->id;
-                $rowText->language_id = $languageId;
-            }
-            $rowText->setFromArray($_row['text'][$languageId]);
-            $rowText->save();
+        $data = $this->_getParam('option');
+        $row = Axis::single('catalog/product_option')->save($data);
+
+        $mText = Axis::model('catalog/product_option_text');
+        foreach ($data['text'] as $languageId => $values) {
+            $rowText = $mText->getRow($row->id, $languageId);
+            $rowText->setFromArray($values)->save();
         }
+
         Axis::message()->addSuccess(
             Axis::translate('catalog')->__(
                 'Option was saved successfully'
             )
         );
-        return $this->_helper->json->sendSuccess();
+        return $this->_helper->json
+            ->setData(array(
+                'id' => $row->id
+            ))
+            ->sendSuccess();
     }
 
     public function removeAction()
     {
         $data = Zend_Json::decode($this->_getParam('data'));
         Axis::single('catalog/product_option')->delete(
-            $this->db->quoteInto('id IN(?)', $data
+            $this->db->quoteInto('id IN (?)', $data
         ));
         Axis::message()->addSuccess(
             Axis::translate('catalog')->__(
@@ -127,7 +138,7 @@ class Axis_Catalog_Admin_ProductOptionController extends Axis_Admin_Controller_B
         );
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function getFormAction()
     {
         $this->_helper->layout->disableLayout();
@@ -154,7 +165,7 @@ class Axis_Catalog_Admin_ProductOptionController extends Axis_Admin_Controller_B
            ->setData(array('form' => $formHtml, 'variations' => $variations))
            ->sendSuccess();
     }
-    
+
     public function nlistAction()
     {
         $id = $this->_getParam('node', 0); // option_id
