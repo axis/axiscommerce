@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
@@ -35,41 +35,40 @@ class Axis_Account_Admin_ValueSetController extends Axis_Admin_Controller_Back
 {
     public function listAction()
     {
-        $data = array();
-        $rowset = Axis::model('account/Customer_ValueSet')->fetchAll();
-        foreach ($rowset as $row) {
-            $data[] = array(
-                'leaf'    => true,
-                'id'      => $row->id,
-                'text'    => $row->name,
-                'iconCls' => 'folder'
-            );
-        }
-        return $this->_helper->json->sendRaw($data);
+        $dataset = Axis::single('account/customer_valueSet')->select()
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            )
+            ->fetchAll();
+
+        return $this->_helper->json
+            ->setData($dataset)
+            ->sendSuccess();
     }
-    
-    public function saveAction()
+
+    public function batchSaveAction()
     {
-        $_row = Zend_Json::decode($this->_getParam('data'));
-        $row  = Axis::model('account/Customer_ValueSet')->save($_row);
-        if (!$row) {
-            return $this->_helper->json->sendFailure();
+        $dataset    = Zend_Json::decode($this->_getParam('data'));
+        $model      = Axis::model('account/customer_valueSet');
+        foreach ($dataset as $data) {
+            $row = $model->getRow($data);
+            $row->save();
         }
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Data was saved successfully'
             )
         );
-        return $this->_helper->json
-            ->setValuesetId($row->id)
-            ->sendSuccess();
+        return $this->_helper->json->sendSuccess();
     }
-    
+
     public function removeAction()
     {
-        $id = $this->_getParam('id');
-        Axis::single('account/Customer_ValueSet')
-            ->delete($this->db->quoteInto('id IN(?)', $id));
+        $data = Zend_Json::decode($this->_getParam('data'));
+        Axis::model('account/customer_valueSet')
+            ->delete($this->db->quoteInto('id IN (?)', $data));
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Group was deleted successfully'

@@ -1,231 +1,30 @@
-<?php $this->headScript()->appendFile('/js/axis/admin/customer/custom_fields/fieldEditElements.js'); ?>
-<?php $this->headScript()->appendFile('/js/axis/admin/customer/custom_fields/groupTabs.js'); ?>
-<?php $this->headScript()->appendFile('/js/axis/admin/customer/custom_fields/fieldGrid.js'); ?>
-<?php $this->headScript()->appendFile('/js/axis/admin/customer/custom_fields/groupPanel.js'); ?>
-<?php $this->headScript()->appendFile('/js/axis/admin/customer/custom_fields/fieldEditWindow.js'); ?>
-<?php $this->headScript()->appendFile('/js/axis/admin/customer/custom_fields/valueset.js'); ?>
-
 <?php
+$this->headScript()
+    ->appendFile('js/axis/admin/customer/field/valueset/grid.js')
+    ->appendFile('js/axis/admin/customer/field/valueset/valueGrid.js')
+    ->appendFile('js/axis/admin/customer/field/valueset/window.js')
+
+    ->appendFile('js/axis/admin/customer/field/group.js')
+    ->appendFile('js/axis/admin/customer/field/group/grid.js')
+    ->appendFile('js/axis/admin/customer/field/group/window.js')
+
+    ->appendFile('js/axis/admin/customer/field/field.js')
+    ->appendFile('js/axis/admin/customer/field/field/grid.js')
+    ->appendFile('js/axis/admin/customer/field/field/window.js')
+
+    ->appendFile('js/axis/admin/customer/field/panel.js');
+
 $this->setButtons(array(
-    array(
-        'title' => $this->translate('Axis_Admin')->__('Back'),
-        'onclick' => 'history.back()',
-        'class' => 'alt-button'
-    ),
-    array(
-        'title' => $this->translate('Axis_Account')->__('Delete group'),
-        'onclick' => 'deleteGroup(); return false;',
-        'class' => 'alt-button',
-        'id' => 'deleteButton'
-    ),
     array(
         'title' => $this->translate('Axis_Account')->__('Value sets'),
         'class' => 'button',
-        'id' => 'editValueSetButton',
-        'onclick' => 'editValues(); return false;'
-    ),
-    array(
-        'title' => $this->translate('Axis_Account')->__('Create group'),
-        'class' => 'button',
-        'id' => 'createButton'
+        'onclick' => 'ValuesetWindow.show(); return false;'
     )
 ));
-$this->setTabs($this->fieldGroups, false);
 
-//groupName field
-echo $this->formText('name', '', array('size' => '18'));
-//Sort Order field
-echo $this->formText('sort_order', '', array('size' => '2'));
-//group is_active field
-echo $this->formSelect('is_active', null, null, array('0' => 'Disabled', '1' => 'Enabled'));
-
-$_languages = Axis_Collect_Language::collect();
 ?>
-
-<table cellpadding="0" cellspacing="0" width="100%" id="ext-cmp-layout">
-    <tr><td>
-        <div id="language-tabs" class="form-wrapper">
-            <?php foreach ($_languages as $languageId => $language) { ?>
-                <div id="langTabItem<?php echo $languageId; ?>" class="x-hide-display simple-fields">
-                    <label><?php echo $this->translate('account')->__('Group title') ?>: </label>
-                    <?php echo $this->formText("group_label[{$languageId}]", ''); ?>
-                </div>
-            <?php } ?>
-        </div>
-     </td></tr>
-</table>
-
-<table cellpadding="0" cellspacing="0" width="100%" id="ext-cmp-layout">
-    <tr><td><div id="fields-grid" class="form-wrapper"></div></td></tr>
-</table>
 
 <script type="text/javascript">
-
-var ds, gs, temp_groupId, validatorStore, typeStore;
-var editing_new_group = false;
-
-var groupId = '<?php reset($this->fieldGroups); echo key($this->fieldGroups); ?>';
-
-var groupTab = [
-<?php
-    $js = '';
-    foreach ($_languages as $languageId => $language) {
-        $language = addslashes($language);
-        $js .= "{
-        contentEl: 'langTabItem$languageId',
-        title: '$language'
-        },\n";
-    }
-    echo substr($js, 0, -2);
-?>
-];
-
-var valueSet, valuesetId, root, valuesetColumn, isActive2;
-var editor, vs;
-
-var sm2 = new Ext.grid.CheckboxSelectionModel();
-
-isActive2 = new Ext.grid.CheckColumn({
-    header: 'Visibility'.l(),
-    dataIndex: 'is_active',
-    width: 60
-});
-
-//column model
-valuesetColumn = [
-<?php
-$js = "
-    sm2, {
-       header: 'Id'.l(),
-       dataIndex: 'id',
-       width: 30
-    },
-    isActive2,";
-    foreach ($_languages as $languageId => $language) {
-        $language = addslashes($language);
-        $js .= "{
-            header: 'Value*" . $language . "',
-            dataIndex: 'label" . $languageId . "',
-            width: 100,
-            editor: new Ext.form.TextField({
-                allowBlank: true
-            })
-        },";
-    }
-    $js .= "
-    {
-       header: 'Sort Order'.l(),
-       dataIndex: 'sort_order',
-       width: 80,
-       editor: new Ext.form.TextField({
-           allowBlank: false
-       })
-    }";
-    echo $js;
-?>
-];
-
-//valueset value record
-var valuesetRow = [
-<?php
-    $js = "
-    'id',
-    'is_active',
-    'customer_valueset_id',";
-    foreach ($_languages as $languageId => $language) {
-        $language = addslashes($language);
-        $js .= "'label" . $languageId . "',";
-    }
-    $js .= "'sort_order'";
-    echo $js;
-?>
-];
-
-//new valueset value
-var valuesetRowClear = {
-<?php
-$js = "
-    'new': true,
-    is_active: 1,";
-    foreach ($_languages as $languageId => $language) {
-        $language = addslashes($language);
-        $js .= "label" . $languageId . ": '',";
-    }
-    $js .= "sort_order: '3'";
-    echo $js;
-?>};
-
-//field titles
-var fieldTitle = [
-<?php
-$js = "";
-foreach ($_languages as $languageId => $language) {
-    $language = addslashes($language);
-    $js .= "{name: 'data[field_label" . $languageId . "]',";
-    $js .= "fieldLabel: '" . $language . "',";
-    $js .= "xtype: 'textfield',";
-    $js .= "anchor: '98%'},";
-}
-echo substr($js, 0, -1);
-?>
-];
-
-var Field = Ext.data.Record.create([
-    {name: 'id', type: 'int'},
-    {name: 'name', type: 'string'},
-    <?php
-        $fields = "";
-        foreach ($_languages as $languageId => $language) {
-            $language = addslashes($language);
-            $fields .= "{name: 'field_label$languageId',  type: 'string'},\n";
-        }
-        echo $fields;
-    ?>
-    {name: 'customer_field_group_id', type: 'int'},
-    {name: 'field_type', type: 'string'},
-    {name: 'required', type: 'int'},
-    {name: 'is_active', type: 'int'},
-    {name: 'customer_valueset_id', type: 'int'},
-    {name: 'sort_order', type: 'int'},
-    {name: 'validator'},
-    {name: 'axis_validator'}
-]);
-
-function fillForm(row, defaults){
-    if (defaults) {
-        Ext.getCmp('fieldForm').getForm().setValues({
-            'data[id]':         'new',
-            'data[name]':       '',
-            'data[field_type]': 'text',
-            'data[sort_order]': '3',
-            'data[is_active]':  true,
-            'data[required]':   false,
-            'data[customer_field_group_id]': groupId,
-            'data[customer_valueset_id]':    '',
-            'data[validator]':  '',
-            'data[axis_validator]':  ''
-        })
-    } else {
-        Ext.getCmp('fieldForm').getForm().setValues({
-        <?php
-            $fields = "";
-            foreach ($_languages as $languageId => $language) {
-                $language = addslashes($language);
-                $fields .= "'data[field_label$languageId]': row.get('field_label$languageId'),\n";
-            }
-            echo $fields;
-        ?>
-            'data[id]':         row.get('id'),
-            'data[name]':       row.get('name'),
-            'data[field_type]': row.get('field_type'),
-            'data[sort_order]': row.get('sort_order'),
-            'data[is_active]':  row.get('is_active'),
-            'data[required]':   row.get('required'),
-            'data[customer_field_group_id]': row.get('customer_field_group_id'),
-            'data[customer_valueset_id]':    row.get('customer_valueset_id'),
-            'data[validator]':  row.get('validator'),
-            'data[axis_validator]':  row.get('axis_validator')
-        });
-    }
-}
+var validators = <?php echo Zend_Json::encode($this->validators) ?>;
+var fieldTypes = <?php echo Zend_Json::encode($this->fieldTypes) ?>;
 </script>
