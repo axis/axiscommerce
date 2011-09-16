@@ -91,7 +91,6 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/template_index/load', 'admin/core/theme/load')
             ->rename('admin/template_index/save', 'admin/core/theme/save')
             ->rename('admin/template_index/delete', 'admin/core/theme/remove')
-            ->rename('admin/template_index/list-xml-templates', 'admin/core/theme/list-xml-templates')
             ->rename('admin/template_index/export', 'admin/core/theme/export')
             ->rename('admin/template_index/import', 'admin/core/theme/import')
             ->remove('admin/template_index')
