@@ -34,9 +34,12 @@
 class Axis_Account_Model_Customer_Field extends Axis_Db_Table
 {
     protected $_name = 'account_customer_field';
+
     protected $_dependentTables = array(
         'Axis_Account_Model_Customer_Field_Label'
     );
+
+    protected $_selectClass = 'Axis_Account_Model_Customer_Field_Select';
 
     /**
      *
