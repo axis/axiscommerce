@@ -119,14 +119,29 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
         if (empty($code)) {
             $code = $this->getCode();
         }
-        if (!isset($this->_instanses[$code])) {
+        if (!isset($this->_currency[$code])) {
             $options = $this->_getCurrencyOptions($code);
             Zend_Currency::setCache(Axis::cache());
-            $currency = new Zend_Currency(
-                $options['currency'],
-                $options['format'] === null ?
-                    Axis_Locale::getLocale() : $options['format']
-            );
+            try {
+                $currency = new Zend_Currency(
+                    $options['currency'],
+                    $options['format'] === null ?
+                        Axis_Locale::getLocale() : $options['format']
+                );
+            } catch (Zend_Currency_Exception $e) {
+                Axis::message()->addError(
+                    $e->getMessage()
+                    . ": "
+                    . Axis::translate('locale')->__(
+                        "Try to change the format of this currency to English (United States) - en_US"
+                    )
+                );
+                $options = $this->_getSystemSafeCurrencyOptions();
+                $currency = new Zend_Currency(
+                    $options['currency'],
+                    $options['format']
+                );
+            }
             $currency->setFormat($options);
             $this->_currency[$code] = $currency;
         }
@@ -210,6 +225,23 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
             'display'   => (int) $row['display'],
             'format'    => $row['format'],
             'precision' => (int) $row['currency_precision']
+        );
+    }
+
+    /**
+     * Returns system safe currency options.
+     * Used when creating a requested Zend_Currency was failed.
+     *
+     * @return array
+     */
+    private function _getSystemSafeCurrencyOptions()
+    {
+        return array(
+            'currency'  => 'USD',
+            'position'  => 8,
+            'display'   => 1,
+            'format'    => 'en_US',
+            'precision' => 1
         );
     }
 
