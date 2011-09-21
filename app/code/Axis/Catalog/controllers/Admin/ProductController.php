@@ -465,6 +465,8 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
 
     public function saveImageAction()
     {
+        $this->_helper->layout->disableLayout();
+
         try {
             $uploader = new Axis_File_Uploader('image');
             $file = $uploader

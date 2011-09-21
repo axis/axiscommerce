@@ -75,7 +75,7 @@
                     'display': 'block'
                 });
                 $(this).bind(settings.zoom_on_trigger, function(){
-                    zoomer.show(collection.get(this.href));
+                    zoomer.show(collection.get($(this).attr('href')));
                     return false;
                 });
                 $(this).bind(settings.zoom_off_trigger, function(){
@@ -88,7 +88,7 @@
             if (settings.lightbox_trigger != 'none') {
                 var lightbox = new Lightbox();
                 $(this).add(settings.lightbox_collection).bind(settings.lightbox_trigger, function(){
-                    lightbox.set(collection.get(this.href)).show();
+                    lightbox.set(collection.get($(this).attr('href'))).show();
                     return false;
                 });
                 //lightbox controls
@@ -154,14 +154,14 @@
                 $(el).parent('li').siblings('li').removeClass('active');
                 $(el).parent('li').addClass('active');
                 $(link.el).attr({
-                    'href': el.href,
-                    'title': el.title
+                    'href'  : $(el).attr('href'),
+                    'title' : el.title
                 });
                 var img = $(el).find('.image-medium').get(0);
                 $(link.el).children('img').attr({
-                    'src': img.src,
-                    'title': img.title,
-                    'alt': img.alt
+                    'src'   : $(img).attr('src'),
+                    'title' : img.title,
+                    'alt'   : img.alt
                 });
                 if (zoomer) {
                     zoomer.hide();
@@ -304,7 +304,7 @@
 
                     this.activate = function(image){
                         this.image.attr({
-                            'src': image.src,
+                            'src': $(image).attr('src'),
                             'alt': image.title
                         });
                     };
@@ -423,7 +423,7 @@
                         queue: false,
                         duration: settings.lightbox_resize_speed,
                         complete: function(){
-                            self.image.attr('src', image.src);
+                            self.image.attr('src', image.attr('src'));
                             self.image.attr('alt', image.title);
                             self.image.fadeIn(settings.lightbox_fade_speed);
                             self.updateMask.apply(self);
@@ -565,7 +565,7 @@
                 this.set = function(collection){
                     var self = this;
                     collection.each(function(i, el){
-                        self.add(el.href, el.href, el.title);
+                        self.add($(el).attr('href'), $(el).attr('href'), el.title);
                     })
                 };
 
