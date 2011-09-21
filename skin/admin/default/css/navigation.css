@@ -11,7 +11,7 @@
 
 /*root  level*/
 #nav li a {  }
-#nav li span { background: url(../images/nav.gif) no-repeat 100% -33px; height: auto; }
+#nav li span { background: url(../images/nav.gif) no-repeat 100% -33px; }
 #nav li.submenu > span { padding-right: 19px; background-position: 100% 5px; }
 #nav li.submenu:hover > span { background-position: 100% -71px; }
 
@@ -19,7 +19,7 @@
 #nav ul li { width: 15em; background: #f0f3f5 url(../images/menudiv.gif) repeat-x 0 0; padding-top: 1px; text-align: left; }
 #nav ul li:first-child { background-image: none; padding-top: 0; }
 #nav ul li a { text-transform: capitalize; text-decoration: none; font-weight: normal; }
-#nav ul li span { padding: 7px 5px; color: #083346; background-color: #f0f3f5; background-position: -1000px -1000px; }
+#nav ul li span { padding: 7px 5px; color: #083346; background-color: #f0f3f5; background-position: -1000px -1000px; height: auto; }
 #nav ul li:hover > span,
 #nav ul li span:hover { color: #083346; background-color: #fff; }
 #nav ul li.submenu > span { background-position: 100% -112px; }
