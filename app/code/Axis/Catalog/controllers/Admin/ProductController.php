@@ -246,9 +246,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
 
         /* get categories with marker 'belongs_to' */
         $categories = Axis::single('catalog/category')->getNestedTreeData();
-        $productCategories = Axis::single('catalog/product_category')
-            ->getCategoriesByProductIds(array($product->id));
-        $data['belongs_to'] = $productCategories[$product->id];
+        $data['belongs_to'] = array_keys($product->getCategories());
         foreach ($categories as &$category) {
             if (in_array($category['id'], $data['belongs_to'])) {
                 $category['belongs_to'] = 1;
