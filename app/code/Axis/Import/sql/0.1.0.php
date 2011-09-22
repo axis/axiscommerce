@@ -51,11 +51,6 @@ class Axis_Import_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('admin/menu')
-            ->add('Administrate', null, 110, 'Axis_Admin')
-            ->add('Administrate->Import/Export', null, 70)
-            ->add('Administrate->Import/Export->OsCommerce', 'import_index', 20);
-
         Axis::single('admin/acl_resource')
             ->remove('admin/import')
             ->add('admin/import', 'Import')
@@ -77,8 +72,6 @@ class Axis_Import_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         $installer->run("
             DROP TABLE IF EXISTS `{$installer->getTable('import_profile')}`;
         ");
-
-        Axis::single('admin/menu')->remove('Administrate->Import/Export->OsCommerce');
 
         Axis::single('admin/acl_resource')
             ->add('admin/import');

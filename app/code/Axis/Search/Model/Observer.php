@@ -40,26 +40,26 @@ class Axis_Search_Model_Observer
     {
         $product = $data['product'];
         $indexer = Axis::model('search/indexer');
-        
+
         $select = Axis::model('catalog/product')->select(array('id', 'sku'))
-            ->join('catalog_product_description', 
-                'cpd.product_id = cp.id', 
+            ->join('catalog_product_description',
+                'cpd.product_id = cp.id',
                 array('name', 'description')
             )->joinRight('locale_language',
                 'll.id = cpd.language_id',
                 'locale'
-            )->joinLeft('catalog_product_image', 
+            )->joinLeft('catalog_product_image',
                 'cpi.id = cp.image_thumbnail',
                 array('image_thumbnail' => 'path')
-            )->joinLeft('catalog_product_image_title', 
+            )->joinLeft('catalog_product_image_title',
                 'cpit.image_id = cpi.id',
                 array('image_title' => 'title')
             )->join('catalog_product_category', 'cp.id = cpc.product_id')
-            ->join('catalog_category', 
-                'cc.id = cpc.category_id', 
+            ->join('catalog_category',
+                'cc.id = cpc.category_id',
                 'site_id'
-            )->joinLeft('catalog_hurl', 
-                "ch.key_id = cp.id AND ch.key_type='p'", 
+            )->joinLeft('catalog_hurl',
+                "ch.key_id = cp.id AND ch.key_type='p'",
                 'key_word'
             )
             ->order('cc.site_id')
@@ -69,7 +69,7 @@ class Axis_Search_Model_Observer
             ;
         $rowset = $select->fetchRowset();
         $index  = $path = null;
-            
+
         foreach ($rowset as $row) {
             $_path = $indexer->getIndexPath(
                 $row->site_id  . '/' . $row->locale
@@ -93,11 +93,11 @@ class Axis_Search_Model_Observer
             $index->optimize();
             $index->commit();
         }
-        
+
         $index  = $path = null;
         $rowset = $select->addFilterByAvailability()
             ->fetchRowset();
-        
+
         foreach ($rowset as $row) {
             $_path = $indexer->getIndexPath(
                 $row->site_id  . '/' . $row->locale
@@ -121,25 +121,25 @@ class Axis_Search_Model_Observer
             $index->commit();
         }
     }
-    
-    public function updateSearchIndexOnCmsPageAddSuccess(array $data) 
+
+    public function updateSearchIndexOnCmsPageAddSuccess(array $data)
     {
         $pageId = $data['page_id'];
         $indexer = Axis::model('search/indexer');
         $rowset = Axis::model('cms/page_content')->select('*')
             ->join('cms_page', 'cp.id = cpc.cms_page_id', 'is_active')
             ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
-            ->join('cms_category', 
+            ->join('cms_category',
                 'cc.id = cpc2.cms_category_id',
                 'site_id'
-            )->joinRight('locale_language', 
+            )->joinRight('locale_language',
                 'll.id = cpc.language_id',
                 'locale'
             )->where('cpc.cms_page_id = ?', $pageId)
             ->order('cc.site_id')
             ->order('cpc.language_id')
             ->fetchRowset();
-        
+
         $index  = $path = null;
         foreach ($rowset as $row) {
             $_path = $indexer->getIndexPath(
@@ -169,5 +169,26 @@ class Axis_Search_Model_Observer
             $index->optimize();
             $index->commit();
         }
+    }
+
+    public function prepareAdminNavigationBox(Axis_Admin_Box_Navigation $box)
+    {
+        $box->addItem(array(
+            'catalog' => array(
+                'pages' => array(
+                    'reports' => array(
+                        'pages' => array(
+                            'search/index' => array(
+                                'label'         => 'Search Queries',
+                                'order'         => 10,
+                                'translator'    => 'Axis_Search',
+                                'module'        => 'Axis_Search',
+                                'route'         => 'admin/search'
+                            )
+                        )
+                    )
+                )
+            )
+        ));
     }
 }

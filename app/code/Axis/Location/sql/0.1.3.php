@@ -30,12 +30,6 @@ class Axis_Location_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/menu')
-            ->remove('Locations / Taxes->Zones')
-            ->remove('Locations / Taxes->Zones Definitions')
-            ->add('Locations / Taxes->States / Provinces', 'location_zone', 20, 'Axis_Location')
-            ->add('Locations / Taxes->Geozones', 'location_geozone', 30, 'Axis_Location');
-
         Axis::single('admin/acl_resource')
             ->remove('admin/location_zone')
 

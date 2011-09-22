@@ -25,11 +25,11 @@
 
 $config = array(
     'Axis_Catalog' => array(
-        'package' => 'Axis_Catalog',
-        'name' => 'Catalog',
-        'version' => '0.2.3',
+        'package'  => 'Axis_Catalog',
+        'name'     => 'Catalog',
+        'version'  => '0.2.3',
         'required' => 1,
-        'events' => array(
+        'events'   => array(
             'catalog_product_update_stock' => array(
                 'notify' => array(
                     'type' => 'model',
@@ -96,6 +96,13 @@ $config = array(
                     'type' => 'model',
                     'model' => 'catalog/observer',
                     'method' => 'updatePriceIndexOnCustomerGroupAdd'
+                )
+            ),
+            'admin_box_navigation_prepare' => array(
+                'prepare_menu' => array(
+                    'type'   => 'model',
+                    'model'  => 'catalog/observer',
+                    'method' => 'prepareAdminNavigationBox'
                 )
             )
         )

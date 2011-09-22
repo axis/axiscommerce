@@ -240,12 +240,6 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('sales/order/order_number_pattern', 'Pattern for Custom Order Number', '100000000', 'Please notice: Changing code pattern for existing orders in database can cause problems.')
             ->add('sales/order/email', 'Order notifications reciever', 'email1', 'select', 'All notifications about new orders will be sended to this email', array('model' => 'MailBoxes'));
 
-        Axis::single('admin/menu')
-            ->add('Localization', null, 80, 'Axis_Locale')
-            ->add('Localization->Order statuses', 'sales_order-status', 30, 'Axis_Sales')
-            ->add('Sales', null, 30, 'Axis_Sales')
-            ->add('Sales->Orders', 'sales_order', 10);
-
         Axis::single('admin/acl_resource')
             ->add('admin/sales', 'Sales')
             ->add('admin/sales_order', 'Orders')

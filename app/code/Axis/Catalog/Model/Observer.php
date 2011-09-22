@@ -234,4 +234,57 @@ class Axis_Catalog_Model_Observer
             array($data['group']['id'])
         );
     }
+
+    public function prepareAdminNavigationBox(Axis_Admin_Box_Navigation $box)
+    {
+        $box->addItem(array(
+            'catalog' => array(
+                'label'         => 'Catalog',
+                'order'         => 20,
+                'translator'    => 'Axis_Catalog',
+                'uri'           => '#',
+                'pages' => array(
+                    'catalog/product' => array(
+                        'label'         => 'Product Catalog',
+                        'order'         => 10,
+                        'module'        => 'Axis_Catalog',
+                        'controller'    => 'product',
+                        'action'        => 'index',
+                        'route'         => 'admin/catalog'
+                    ),
+                    'catalog/product-attributes' => array(
+                        'label'         => 'Product Attributes',
+                        'order'         => 20,
+                        'uri'           => '#',
+                        'pages'         => array(
+                            'catalog/product-option' => array(
+                                'label'         => 'Attributes',
+                                'order'         => 10,
+                                'module'        => 'Axis_Catalog',
+                                'controller'    => 'product-option',
+                                'action'        => 'index',
+                                'route'         => 'admin/catalog'
+                            ),
+                            'catalog/product-option-valueset' => array(
+                                'label'         => 'Value Sets',
+                                'order'         => 20,
+                                'module'        => 'Axis_Catalog',
+                                'controller'    => 'product-option-valueset',
+                                'action'        => 'index',
+                                'route'         => 'admin/catalog'
+                            ),
+                        )
+                    ),
+                    'catalog/manufacturer' => array(
+                        'label'         => 'Product Brands',
+                        'order'         => 30,
+                        'module'        => 'Axis_Catalog',
+                        'controller'    => 'manufacturer',
+                        'action'        => 'index',
+                        'route'         => 'admin/catalog'
+                    )
+                )
+            )
+        ));
+    }
 }

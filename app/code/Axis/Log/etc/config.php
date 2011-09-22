@@ -25,11 +25,11 @@
 
 $config = array(
     'Axis_Log' => array(
-        'package' => 'Axis_Log',
-        'name' => 'Log',
-        'version' => '0.1.1',
+        'package'  => 'Axis_Log',
+        'name'     => 'Log',
+        'version'  => '0.1.1',
         'required' => 1,
-        'events' => array(
+        'events'   => array(
             'controller_action_postdispatch' => array(
                 'core' => array(
                     'type'   => 'single',
@@ -63,6 +63,13 @@ $config = array(
                     'type' => 'model',
                     'model' => 'log/observer',
                     'method' => 'removeLogEventOnCatalogProductRemoveSuccess'
+                )
+            ),
+            'admin_box_navigation_prepare' => array(
+                'prepare_menu' => array(
+                    'type'   => 'model',
+                    'model'  => 'log/observer',
+                    'method' => 'prepareAdminNavigationBox'
                 )
             )
         )

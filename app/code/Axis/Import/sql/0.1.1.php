@@ -31,9 +31,6 @@ class Axis_Import_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         Axis::single('core/module')->delete("code = 'Axis_Oscommerce'");
-        
-        Axis::single('admin/menu')
-            ->edit('OsCommerce', null, 'import');
 
         Axis::single('admin/acl_resource')
             ->rename('admin/import_index/index', 'admin/import/index')
@@ -55,8 +52,6 @@ class Axis_Import_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 //        $installer->run('
 //            DROP TABLE IF EXISTS `{$installer->getTable('import_profile')}`;
 //        ');
-
-        Axis::single('admin/menu')->remove('Administrate->Import/Export->OsCommerce');
 
         Axis::single('admin/acl_resource')
             ->rename('admin/import');

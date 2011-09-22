@@ -30,16 +30,6 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::model('admin/menu')
-            ->edit('Cache Management', null, 'core/cache')
-            ->edit('Configuration',    null, 'core/config-value')
-            ->edit('Modules',          null, 'core/module')
-            ->edit('Pages',            null, 'core/page')
-            ->edit('Site',             null, 'core/site')
-            ->edit('Templates',        null, 'core/theme')
-            ->edit('Email Templates',  null, 'core/mail')
-        ;
-        
         Axis::model('admin/acl_resource')
             ->add('admin/core')
             ->rename('admin/cache', 'admin/core/cache')
@@ -49,13 +39,13 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/cache/clean', 'admin/core/cache/remove')
             ->remove('admin/cache/clean-all')
             ->remove('admin/cache')
-            
+
             ->rename('admin/configuration', 'admin/core/config-field')
             ->rename('admin/configuration/get-nodes', 'admin/core/config-field/list')
             ->rename('admin/configuration/save-field', 'admin/core/config-field/save')
             ->rename('admin/configuration/get-field-types', 'admin/core/config-field/list-type')
             ->rename('admin/configuration/get-field-models', 'admin/core/config-field/list-model')
-            
+
             ->add('admin/core/config-value')
             ->rename('admin/configuration/list', 'admin/core/config-value/list')
             ->rename('admin/configuration/edit', 'admin/core/config-value/load')
@@ -63,28 +53,28 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/configuration/use-global', 'admin/core/config-value/use-global')
             ->rename('admin/configuration/copy-global', 'admin/core/config-value/copy-global')
             ->remove('admin/configuration/')
-            
+
             ->rename('admin/module', 'admin/core/module')
             ->rename('admin/module/get-list', 'admin/core/module/list')
             ->rename('admin/module/install', 'admin/core/module/install')
             ->rename('admin/module/uninstall', 'admin/core/module/uninstall')
             ->rename('admin/module/upgrade/', 'admin/core/module/upgrade')
             ->remove('admin/module/')
-            
+
             ->rename('admin/pages', 'admin/core/page')
             ->rename('admin/pages/index', 'admin/core/page/index')
             ->rename('admin/pages/list', 'admin/core/page/list')
             ->rename('admin/pages/save', 'admin/core/page/batch-save')
             ->rename('admin/pages/delete', 'admin/core/page/remove')
             ->remove('admin/pages')
-            
+
             ->rename('admin/site', 'admin/core/site')
             ->rename('admin/site/index', 'admin/core/site/index')
             ->rename('admin/site/get-list', 'admin/core/site/list')
             ->rename('admin/site/save', 'admin/core/site/batch-save')
             ->rename('admin/site/delete', 'admin/core/site/remove')
             ->remove('admin/site')
-            
+
             ->rename('admin/template_index', 'admin/core/theme')
             ->rename('admin/template_index/index', 'admin/core/theme/index')
             ->rename('admin/template_index/get-nodes', 'admin/core/theme/list')
@@ -94,7 +84,7 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/template_index/export', 'admin/core/theme/export')
             ->rename('admin/template_index/import', 'admin/core/theme/import')
             ->remove('admin/template_index')
-            
+
             ->rename('admin/template_box', 'admin/core/theme_block')
 //            ->rename('admin/template_box/index')
             ->rename('admin/template_box/list', 'admin/core/theme_block/list')
@@ -107,7 +97,7 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/template_page/list', 'admin/core/theme_page/list')
             ->rename('admin/template_page/save', 'admin/core/theme_page/batch-save')
             ->rename('admin/template_page/delete', 'admin/core/theme_page/remove')
-            
+
             ->rename('admin/template_layout', 'admin/core/theme_layout')
             ->rename('admin/template_layout/list', 'admin/core/theme_layout/list')
 
@@ -120,7 +110,7 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/template_mail/list-mail', 'admin/core/mail/list-mail')
             ->rename('admin/template_mail/save', 'admin/core/mail/batch-save')
             ->rename('admin/template_mail/delete', 'admin/core/mail/remove')
-            
+
             ->remove('admin/template_')
             ;
     }

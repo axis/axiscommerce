@@ -30,11 +30,6 @@ class Axis_Admin_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-         Axis::single('admin/menu')
-            ->edit('Roles', null, 'role')
-            ->edit('Admin Users', null, 'user')
-         ;
-        
         Axis::single('admin/acl_resource')
             ->rename('admin/roles', 'admin/role')
             ->rename('admin/roles/index', 'admin/role/index')
@@ -45,7 +40,7 @@ class Axis_Admin_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/roles/delete', 'admin/role/remove')
             ->rename('admin/roles/get-parent-allows', 'admin/role/list-parent')
             ->remove('admin/roles')
-            
+
             ->rename('admin/users', 'admin/user')
             ->rename('admin/users/index', 'admin/user/index')
             ->rename('admin/users/get-list', 'admin/user/list')

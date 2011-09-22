@@ -30,12 +30,6 @@ class Axis_Cms_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::model('admin/menu')
-            ->edit('Categories/Pages', null, 'cms/page')
-            ->edit('Static Blocks', null, 'cms/block')
-            ->edit('Page Comments', null, 'cms/comment')
-        ;
-        
         Axis::model('admin/acl_resource')
 //            ->add('admin/cms', 'CMS')
             ->add('admin/cms/page', 'Pages')
@@ -52,7 +46,7 @@ class Axis_Cms_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/cms_index/delete-category', 'admin/cms/category/remove')
             ->rename('admin/cms_index/move-category',   'admin/cms/category/move')
             ->remove('admin/cms_index')
-            
+
             ->add('admin/cms/block', 'Static Blocks')
             ->rename('admin/cms_block/index',            'admin/cms/block/index')
             ->rename('admin/cms_block/get-blocks',       'admin/cms/block/list')
@@ -61,7 +55,7 @@ class Axis_Cms_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/cms_block/quick-save-block', 'admin/cms/block/batch-save')
             ->rename('admin/cms_block/delete-block',     'admin/cms/block/remove')
             ->remove('admin/cms_block')
-            
+
             ->add('admin/cms/comment', 'Page Comments')
             ->rename('admin/cms_comment/index',          'admin/cms/comment/index')
             ->rename('admin/cms_comment/get-comments',   'admin/cms/comment/list')
@@ -69,7 +63,7 @@ class Axis_Cms_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/cms_comment/quick-save',     'admin/cms/comment/batch-save')
             ->rename('admin/cms_comment/delete-comment', 'admin/cms/comment/remove')
             ->rename('admin/cms_comment/get-page-tree',  'admin/cms/comment/get-page-tree')
-            
+
             ->remove('admin/cms_comment')
         ;
     }

@@ -120,4 +120,28 @@ class Axis_Log_Model_Observer
             Axis::db()->quoteInto('object_id IN (?)', $data['product_ids'])
         ));
     }
+
+    public function prepareAdminNavigationBox(Axis_Admin_Box_Navigation $box)
+    {
+        $box->addItem(array(
+            'catalog' => array(
+                'pages' => array(
+                    'reports' => array(
+                        'label'         => 'Reports',
+                        'order'         => 60,
+                        'uri'           => '#',
+                        'translator'    => 'Axis_Admin',
+                        'pages'         => array(
+                            'pageviews' => array(
+                                'label'         => 'Pageviews',
+                                'order'         => 20,
+                                'module'        => 'Axis_Log',
+                                'route'         => 'admin/log'
+                            )
+                        )
+                    )
+                )
+            )
+        ));
+    }
 }

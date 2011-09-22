@@ -33,6 +33,14 @@
  */
 class Axis_View_Helper_Navigation_Menu extends Zend_View_Helper_Navigation_Menu
 {
+    /**
+     * Whether translator should be used for page labels and titles
+     * Axis needs to use the translator only on the backend
+     *
+     * @var bool
+     */
+    protected $_useTranslator = false;
+
     protected $_disableWrapper = false;
 
     /**
@@ -51,12 +59,26 @@ class Axis_View_Helper_Navigation_Menu extends Zend_View_Helper_Navigation_Menu
         $title = $page->getTitle();
 
         // translate label and title?
-        if ($this->getUseTranslator() && $t = $this->getTranslator()) {
-            if (is_string($label) && !empty($label)) {
-                $label = $t->translate($label);
+        if ($this->getUseTranslator()/* && $t = $this->getTranslator()*/) {
+            $_page          = $page;
+            $pageTranslator = null;
+
+            while ($_page instanceof Zend_Navigation_Page
+                && !$pageTranslator = $_page->get('translator')) {
+
+                $_page = $_page->getParent();
             }
-            if (is_string($title) && !empty($title)) {
-                $title = $t->translate($title);
+
+            if ($pageTranslator) {
+                $t = Axis::translate($pageTranslator);
+                if (is_string($label) && !empty($label)) {
+                    // $label = $t->translate($label);
+                    $label = $t->__($label);
+                }
+                if (is_string($title) && !empty($title)) {
+                    // $title = $t->translate($title);
+                    $title = $t->__($title);
+                }
             }
         }
 
@@ -131,7 +153,7 @@ class Axis_View_Helper_Navigation_Menu extends Zend_View_Helper_Navigation_Menu
                 $liClass .= ' active';
             }
             $liClass .= ' ' . $subPage->getClass();
-            
+
             $html .= $indent . '    <li class="' . $liClass . '">' . self::EOL;
             $html .= $indent . '        ' . $this->htmlify($subPage) . self::EOL;
             $html .= $indent . '    </li>' . self::EOL;
@@ -212,7 +234,7 @@ class Axis_View_Helper_Navigation_Menu extends Zend_View_Helper_Navigation_Menu
             $depth -= $minDepth;
             $myIndent = $indent . str_repeat('        ', $depth);
 
-            
+
             if ($depth > $prevDepth) {
                 // start new ul tag
 
@@ -243,7 +265,7 @@ class Axis_View_Helper_Navigation_Menu extends Zend_View_Helper_Navigation_Menu
                 $liClass .= ' active';
             }
             $liClass .= ' ' . $page->getClass();
-            
+
             $html .= $myIndent . '    <li class="' . $liClass . '">' . self::EOL
                    . $myIndent . '        ' . $this->htmlify($page) . self::EOL;
 
