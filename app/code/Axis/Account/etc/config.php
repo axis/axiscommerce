@@ -22,25 +22,33 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
+
 $config = array(
     'Axis_Account' => array(
-        'package' => 'Axis_Account',
-        'name' => 'Account',
-        'version' => '0.1.6',
+        'package'  => 'Axis_Account',
+        'name'     => 'Account',
+        'version'  => '0.1.6',
         'required' => 1,
-        'events' => array(
+        'events'   => array(
             'account_customer_register_success' => array(
                 'notify_email' => array(
-                    'type' => 'model',
-                    'model' => 'account/observer',
+                    'type'   => 'model',
+                    'model'  => 'account/observer',
                     'method' => 'notifyCustomerRegistration'
                 ),
             ),
             'account_box_navigation_prepare' => array(
                 'prepare_menu' => array(
-                    'type' => 'model',
-                    'model' => 'account/observer',
+                    'type'   => 'model',
+                    'model'  => 'account/observer',
                     'method' => 'prepareAccountNavigationBox'
+                )
+            ),
+            'admin_box_navigation_prepare' => array(
+                'prepare_menu' => array(
+                    'type'   => 'model',
+                    'model'  => 'account/observer',
+                    'method' => 'prepareAdminNavigationBox'
                 )
             )
         )

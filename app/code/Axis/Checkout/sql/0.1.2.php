@@ -76,11 +76,6 @@ class Axis_Checkout_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        /*@todo customers shopping carts view page
-        Axis::single('admin/menu')
-            ->add('Customers->Shopping cart', 'checkout_cart');
-        */
-
         Axis::single('core/cache')
             ->add('order_total_methods', 1);
 

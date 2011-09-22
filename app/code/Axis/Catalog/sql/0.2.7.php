@@ -30,13 +30,6 @@ class Axis_Catalog_Upgrade_0_2_7 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/menu')
-            ->edit('Product Catalog', null, 'catalog/product')
-            ->edit('Attributes', null, 'catalog/product-option')
-            ->edit('Value Sets', null, 'catalog/product-option-valueset')
-            ->edit('Product Brands', null, 'catalog/manufacturer')
-        ;
-        
         Axis::single('admin/acl_resource')
             ->rename('admin/catalog_index', 'admin/catalog/product')
             ->rename('admin/catalog_index/index', 'admin/catalog/product/index')
@@ -67,7 +60,7 @@ class Axis_Catalog_Upgrade_0_2_7 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/catalog_product-option-valueset/list-sets', 'admin/catalog/product-option-valueset/list')
             ->rename('admin/catalog_product-option-valueset/save-set', 'admin/catalog/product-option-valueset/save')
             ->rename('admin/catalog_product-option-valueset/delete-sets', 'admin/catalog/product-option-valueset/remove')
-            
+
             ->rename('admin/catalog_product-option-valueset/list-values',   'admin/catalog/product-option-value/list')
             ->rename('admin/catalog_product-option-valueset/save-values',   'admin/catalog/product-option-value/batch-save')
             ->rename('admin/catalog_product-option-valueset/delete-values', 'admin/catalog/product-option-value/remove')

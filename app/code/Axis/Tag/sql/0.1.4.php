@@ -30,10 +30,6 @@ class Axis_Tag_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/menu')
-            ->edit('Tags', null, 'tag/index')
-        ;
-
         Axis::single('admin/acl_resource')
             ->rename('admin/tag_index/index', 'admin/tag/index')
             ->rename('admin/tag_index/list', 'admin/tag/list')

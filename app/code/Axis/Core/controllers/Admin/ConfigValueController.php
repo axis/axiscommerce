@@ -169,7 +169,7 @@ class Admin_ConfigValueController extends Axis_Admin_Controller_Back
             } else {
                 $_value = $row->value;
             }
-            
+
             $data[$row->id]['value'] = $_value;
             $data[$row->id]['from'] = $row->site_id ? 'site' : 'global';
         }
@@ -284,7 +284,7 @@ class Admin_ConfigValueController extends Axis_Admin_Controller_Back
         $pathItems = Zend_Json::decode($this->_getParam('pathItems'));
         $where = array($this->db->quoteInto('site_id = ?', $siteId));
         $model = Axis::single('core/config_value');
-        
+
         foreach ($pathItems as $path) {
             $where[1] = $this->db->quoteInto('path = ?', $path);
             $model->delete($where);

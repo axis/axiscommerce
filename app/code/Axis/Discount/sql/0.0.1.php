@@ -66,12 +66,7 @@ class Axis_Discount_Upgrade_0_0_1 extends Axis_Core_Model_Migration_Abstract
             ->add("admin/discount_index/delete")
             ->add("admin/discount_index/edit")
             ->add("admin/discount_index/index")
-            ->add("admin/discount_index/save")
-            ;
-
-        Axis::single('admin/menu')
-            ->add('Marketing', null, 40, 'Axis_Admin')
-            ->add('Marketing->Discounts', 'discount_index', 10, 'Axis_Discount');
+            ->add("admin/discount_index/save");
     }
 
     public function down()

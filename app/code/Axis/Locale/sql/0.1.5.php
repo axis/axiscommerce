@@ -30,11 +30,6 @@ class Axis_Locale_Upgrade_0_1_5 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/menu')
-            ->edit('Currencies', null, 'locale/currency')
-            ->edit('Languages', null, 'locale/language')
-        ;
-
         Axis::single('admin/acl_resource')
             ->rename('admin/locale_currency',            'admin/locale/currency')
             ->rename('admin/locale_currency/index',      'admin/locale/currency/index')

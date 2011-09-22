@@ -261,13 +261,6 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             ->add("admin/customer_email")
             ->add("admin/customer_email/send");
 
-        Axis::single('admin/menu')
-            ->add('Customers', null, 60, 'Axis_Account')
-            ->add('Customers->Manage Customers', 'customer_index', 10)
-            ->add('Customers->Customer Groups', 'customer_group', 20)
-            ->add('Customers->Wishlist', 'customer_wishlist', 30)
-            ->add('Customers->Customer Info Fields', 'customer_custom-fields', 40);
-
         Axis::single('core/page')
             ->add('account/*/*')
             ->add('account/auth/*')

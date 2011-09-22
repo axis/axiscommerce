@@ -105,10 +105,6 @@ class Axis_Poll_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('admin/menu')
-            ->add('CMS', null, 90, 'Axis_Cms')
-            ->add('CMS->Polls', 'poll_index', 40, 'Axis_Poll');
-
         Axis::single('admin/acl_resource')
             ->add('admin/poll', 'Polls All')
             ->add('admin/poll_index', 'Polls')
@@ -135,8 +131,6 @@ class Axis_Poll_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('poll_question_site')}`;
             DROP TABLE IF EXISTS `{$installer->getTable('poll_vote')}`;
         ");
-
-        Axis::single('admin/menu')->remove('CMS->Polls');
 
         Axis::single('admin/acl_resource')->remove('admin/poll');
 

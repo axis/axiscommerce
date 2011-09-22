@@ -30,11 +30,6 @@ class Axis_Poll_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-
-        Axis::single('admin/menu')
-            ->edit('Polls', null, 'poll')
-        ;
-
         Axis::single('admin/acl_resource')
             ->rename('admin/poll_index/index',        'admin/poll/index')
             ->rename('admin/poll_index/list',         'admin/poll/list')
@@ -45,11 +40,11 @@ class Axis_Poll_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/poll_index/clear',        'admin/poll/clear')
             ->remove('admin/poll_index')
             ;
-        
+
     }
 
     public function down()
     {
-        
+
     }
 }

@@ -63,11 +63,6 @@ class Axis_Search_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('admin/menu')
-            ->add('Catalog', null, 20, 'Axis_Catalog')
-            ->add('Catalog->Reports', null, 60, 'Axis_Admin')
-            ->add('Catalog->Reports->Search Queries', 'search', 10, 'Axis_Search');
-
         Axis::single('admin/acl_resource')
             ->add('admin/search', 'Search Reports')
             ->add("admin/search/delete")

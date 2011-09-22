@@ -36,10 +36,27 @@ class Axis_Tag_Model_Observer
 
     /**
      *
-     * @param Axis_Account_Box_Navigation $box 
+     * @param Axis_Account_Box_Navigation $box
      */
     public function prepareAccountNavigationBox(Axis_Account_Box_Navigation $box)
     {
         $box->addItem($box->getView()->href('account/tag', true), 'My Tags', 'link-tags', 60);
+    }
+
+    public function prepareAdminNavigationBox(Axis_Admin_Box_Navigation $box)
+    {
+        $box->addItem(array(
+            'catalog' => array(
+                'pages' => array(
+                    'tags' => array(
+                        'label'         => 'Tags',
+                        'order'         => 50,
+                        'translator'    => 'Axis_Tag',
+                        'module'        => 'Axis_Tag',
+                        'route'         => 'admin/tag'
+                    )
+                )
+            )
+        ));
     }
 }

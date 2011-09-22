@@ -105,4 +105,50 @@ class Axis_Account_Model_Observer
             ->addItem($view->href('account/wishlist', true), 'My Wishlist', 'link-wishlist', 50)
             ->addItem($view->href('account/auth/logout', true), 'Logout', 'link-logout', 100);
     }
+
+    public function prepareAdminNavigationBox(Axis_Admin_Box_Navigation $box)
+    {
+        $box->addItem(array(
+            'customer' => array(
+                'label'         => 'Customers',
+                'order'         => 60,
+                'uri'           => '#',
+                'translator'    => 'Axis_Account',
+                'pages'         => array(
+                    'customer/index' => array(
+                        'label'         => 'Manage Customers',
+                        'order'         => 10,
+                        'module'        => 'Axis_Account',
+                        'controller'    => 'customer',
+                        'action'        => 'index',
+                        'route'         => 'admin/account'
+                    ),
+                    'customer/group' => array(
+                        'label'         => 'Customer Groups',
+                        'order'         => 20,
+                        'module'        => 'Axis_Account',
+                        'controller'    => 'group',
+                        'action'        => 'index',
+                        'route'         => 'admin/account'
+                    ),
+                    'customer/wishlist' => array(
+                        'label'         => 'Wishlist',
+                        'order'         => 30,
+                        'module'        => 'Axis_Account',
+                        'controller'    => 'wishlist',
+                        'action'        => 'index',
+                        'route'         => 'admin/account'
+                    ),
+                    'customer/field' => array(
+                        'label'         => 'Customer Info Fields',
+                        'order'         => 40,
+                        'module'        => 'Axis_Account',
+                        'controller'    => 'field',
+                        'action'        => 'index',
+                        'route'         => 'admin/account'
+                    )
+                )
+            )
+        ));
+    }
 }

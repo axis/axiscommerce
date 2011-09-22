@@ -25,9 +25,18 @@
 
 $config = array(
     'Axis_Discount' => array(
-        'package' => 'Axis_Discount',
-        'name' => 'Discount',
-        'version' => '0.0.1',
-        'required' => 1
+        'package'  => 'Axis_Discount',
+        'name'     => 'Discount',
+        'version'  => '0.0.1',
+        'required' => 1,
+        'events'   => array(
+            'admin_box_navigation_prepare' => array(
+                'prepare_menu' => array(
+                    'type'   => 'model',
+                    'model'  => 'discount/observer',
+                    'method' => 'prepareAdminNavigationBox'
+                )
+            )
+        )
     )
 );

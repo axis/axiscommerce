@@ -546,12 +546,6 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             'address_summary'   => '{{firstname}} {{lastname}}'
         ));
 
-        Axis::single('admin/menu')
-            ->add('Locations / Taxes', null, 70, 'Axis_Location')
-            ->add('Locations / Taxes->Countries', 'location_country', 10, 'Axis_Location')
-            ->add('Locations / Taxes->Zones', 'location_zone', 20, 'Axis_Location')
-            ->add('Locations / Taxes->Zones Definitions', 'location_zone-definition', 30, 'Axis_Location');
-
         Axis::single('admin/acl_resource')
             ->add('admin/location', 'Locations/Taxes')
             ->add('admin/location_country', 'Countries')
