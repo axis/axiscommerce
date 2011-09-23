@@ -20,10 +20,43 @@
  * @license     GNU Public License V3.0
  */
 
+var ModuleGrid = {
+
+    el: null,
+
+    save: function() {
+        var modified = ModuleGrid.el.store.getModifiedRecords();
+        if (!modified.length) {
+            return false;
+        }
+
+        var data = {};
+        for (var i = 0, n = modified.length; i < n; i++) {
+            data[modified[i]['id']] = modified[i]['data'];
+        }
+
+        var jsonData = Ext.encode(data);
+        Ext.Ajax.request({
+            url: Axis.getUrl('core/module/batch-save'),
+            params: {
+                data: jsonData
+            },
+            callback: function() {
+                ModuleGrid.el.store.commitChanges();
+                ModuleGrid.reload();
+            }
+        });
+    },
+
+    reload: function() {
+        ModuleGrid.el.store.reload();
+    }
+};
+
 Ext.onReady(function() {
     Ext.QuickTips.init();
 
-    var module = new Ext.data.Record.create([
+    var record = new Ext.data.Record.create([
         {name: 'code'},
         {name: 'name'},
         {name: 'package'},
@@ -46,7 +79,7 @@ Ext.onReady(function() {
             root: 'data',
             idProperty: 'code', // not installed modules doesn't have id
             totalProperty: 'count'
-        }, module),
+        }, record),
         remoteSort: true,
         sortInfo: {
             field: 'name',
@@ -54,19 +87,19 @@ Ext.onReady(function() {
         }
     });
 
-    // var status = new Axis.grid.CheckColumn({
-    //     header: "Status".l(),
-    //     dataIndex: 'is_active',
-    //     width: 90,
-    //     filter: {
-    //         editable: false,
-    //         resetValue: 'reset',
-    //         store: new Ext.data.ArrayStore({
-    //             data: [[0, 'Disabled'.l()], [1, 'Enabled'.l()]],
-    //             fields: ['id', 'name']
-    //         })
-    //     }
-    // });
+    var status = new Axis.grid.CheckColumn({
+        header: "Status".l(),
+        dataIndex: 'is_active',
+        width: 90,
+        filter: {
+            editable: false,
+            resetValue: 'reset',
+            store: new Ext.data.ArrayStore({
+                data: [[0, 'Disabled'.l()], [1, 'Enabled'.l()]],
+                fields: ['id', 'name']
+            })
+        }
+    });
 
     var actions = new Ext.ux.grid.RowActions({
         actions: [{
@@ -77,8 +110,8 @@ Ext.onReady(function() {
             callback: function(grid, record, action, row, col) {
                 Ext.Ajax.request({
                     url: Axis.getUrl('core/module/install/code/' + record.get('code')),
-                    callback: callback
-                })
+                    callback: ModuleGrid.reload
+                });
             }
         }, {
             iconCls: 'icon icon-light',
@@ -88,8 +121,8 @@ Ext.onReady(function() {
             callback: function(grid, record, action, row, col) {
                 Ext.Ajax.request({
                     url: Axis.getUrl('core/module/upgrade/code/' + record.get('code')),
-                    callback: callback
-                })
+                    callback: ModuleGrid.reload
+                });
             }
         }, {
             iconCls: 'icon icon-bin',
@@ -98,8 +131,8 @@ Ext.onReady(function() {
             callback: function(grid, record, action, row, col) {
                 Ext.Ajax.request({
                     url: Axis.getUrl('core/module/uninstall/code/' + record.get('code')),
-                    callback: callback
-                })
+                    callback: ModuleGrid.reload
+                });
             }
         }]
     });
@@ -125,17 +158,17 @@ Ext.onReady(function() {
                 rangeField: true
             }
         },
-        //status,
+        status,
         actions]
     });
 
-    var grid = new Axis.grid.EditorGridPanel({
+    ModuleGrid.el = new Axis.grid.EditorGridPanel({
         autoExpandColumn: 'name',
         cm: cm,
         ds: ds,
         id: 'grid-module',
         plugins: [
-            //status,
+            status,
             actions,
             new Axis.grid.Filter()
         ],
@@ -143,13 +176,17 @@ Ext.onReady(function() {
             store: ds
         }),
         tbar: [{
+            handler: ModuleGrid.save,
+            icon: Axis.skinUrl + '/images/icons/save_multiple.png',
+            text: 'Save'.l()
+        }, {
             text: 'Install All'.l(),
             icon: Axis.skinUrl + '/images/icons/package_green.png',
             handler: function() {
                 Ext.Ajax.request({
                     url: Axis.getUrl('core/module/install'),
-                    callback: callback
-                })
+                    callback: ModuleGrid.reload
+                });
             }
         }, {
             text: 'Upgrade All'.l(),
@@ -157,34 +194,19 @@ Ext.onReady(function() {
             handler: function() {
                 Ext.Ajax.request({
                     url: Axis.getUrl('core/module/upgrade'),
-                    callback: callback
-                })
+                    callback: ModuleGrid.reload
+                });
             }
         }, '->', {
             text: 'Reload'.l(),
             icon: Axis.skinUrl + '/images/icons/refresh.png',
-            handler: reload
+            handler: ModuleGrid.reload
         }]
     });
 
     new Axis.Panel({
         items: [
-            grid
+            ModuleGrid.el
         ]
     });
-
-    function reload() {
-        ds.reload();
-    }
-
-    function callback(request, success, response) {
-        if (response.responseText == '') {
-            window.location.reload();
-        } else {
-            var response = Ext.decode(response.responseText);
-            if (response.success == true) { //@todo if reloadRequired == true
-                window.location.reload()
-            }
-        }
-    }
 });
