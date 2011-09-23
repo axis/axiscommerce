@@ -30,21 +30,15 @@ class Axis_Account_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $defaultAddressValues = Axis::config('checkout/default_values');
-
         Axis::single('core/config_field')
             ->add('account/address_form/company_value', 'Company Default Value')
             ->add('account/address_form/phone_value', 'Phone Default Value')
             ->add('account/address_form/fax_value', 'Fax Default Value')
             ->add('account/address_form/street_address_value', 'Street Address Default Value')
             ->add('account/address_form/city_value', 'City Default Value')
-            ->add('account/address_form/zone_id_value', 'State(Region) Default Value', $defaultAddressValues->zone_id, 'string', 'You can get the id of desired region at [admin]/location/zone')
-            ->add('account/address_form/postcode_value', 'Postcode Default Value', $defaultAddressValues->postcode)
-            ->add('account/address_form/country_id_value', 'Country Default Value', $defaultAddressValues->country_id, 'select', array('model' => 'Country'))
-
-            ->remove('checkout/default_values/country_id')
-            ->remove('checkout/default_values/zone_id')
-            ->remove('checkout/default_values/postcode');
+            ->add('account/address_form/zone_id_value', 'State(Region) Default Value', 12, 'string', 'You can get the id of desired region at [admin]/location/zone')
+            ->add('account/address_form/postcode_value', 'Postcode Default Value', 90064)
+            ->add('account/address_form/country_id_value', 'Country Default Value', 223, 'select', array('model' => 'Country'));
     }
 
     public function down()

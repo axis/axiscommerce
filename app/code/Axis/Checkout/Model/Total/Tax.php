@@ -50,7 +50,7 @@ class Axis_Checkout_Model_Total_Tax extends Axis_Checkout_Model_Total_Abstract
         }
 
         $address = $checkout->getStorage()->{$taxBasis};
-        if (!$address) {
+        if (!$address || !$address->hasCountry()) {
             return false;
         }
 
