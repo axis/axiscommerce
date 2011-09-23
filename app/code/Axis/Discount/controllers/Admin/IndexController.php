@@ -110,7 +110,7 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
         
         $this->view->attributes = $attributes;
     }
-
+    // @todo remove getCustomInfo, form-discount with childs(js also)
     public function loadAction()
     {
         $this->view->pageTitle = Axis::translate('discount')->__(
@@ -127,6 +127,70 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
         }
         $this->view->discount = $discount->getCustomInfo();
         $this->render('form-discount');
+    }
+    
+    public function load1Action()
+    {
+        $discount = Axis::single('discount/discount')
+            ->find($this->_getParam('id', 0))
+            ->current();
+
+//        $discount = $discount->getCustomInfo();
+        $data = array('discount' => $discount->toArray());
+        
+        $data['eav'] = $discount->getRules();
+
+//        if (isset($rules['conditions'])) {
+//            $data['eav']['conditions'] = $rules['conditions'];
+//        }
+//        if (isset($rules['category'])) {
+//            $data['eav']['category'] = $rules['category'];
+//        }
+//        if (isset($rules['productId'])) {
+//            $data['eav']['productId'] = $rules['productId'];
+//        }
+//
+//        if (isset($rules['manufacture'])) {
+//            $data['eav']['manufacture'] = array_intersect(
+//                $rules['manufacture'],
+//                array_keys(Axis_Collect_Manufacturer::collect())
+//            );
+//        }
+//        if (isset($rules['site'])) {
+//            $data['eav']['site'] = array_intersect(
+//                $rules['site'],
+//                array_keys(Axis_Collect_Site::collect())
+//            );
+//        }
+//        if (isset($rules['group'])) {
+//            $data['eav']['group'] = array_intersect(
+//                $rules['group'],
+//                array_keys(Axis_Collect_CustomerGroup::collect())
+//            );
+//        }
+//
+//        if (isset($rules['special'])) {
+//            $data['eav']['special'] = current($rules['special']);
+//        }
+//        if (isset($rules['optionId'])) {
+//            $data['eav']['optionId'] = $rules['optionId'];
+////            foreach ($rules['optionId'] as $optionId) {
+////                if (!isset($rules['option[' . $optionId . ']'])) {
+////                    continue;
+////                }
+////                foreach ($rules['option[' . $optionId . ']'] as $optionValueId) {
+////                    $data['eav']['attributes'][] = array(
+////                        'optionId' => $optionId,
+////                        'optionValueId' => $optionValueId
+////                    );
+////                }
+////            }
+//
+//        }
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess()
+        ;
     }
 
     public function createAction()

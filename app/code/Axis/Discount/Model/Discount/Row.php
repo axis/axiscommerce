@@ -40,40 +40,40 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
      */
     public function getCustomInfo()
     {
-        $array = $this->toArray();
-        $rules = Axis::single('discount/eav')->getRulesByDiscountId($this->id);
+        $dataset = $this->toArray();
+        $rules = $this->getRules();
 
         if (isset($rules['conditions'])) {
-            $array['conditions'] = $rules['conditions'];
+            $dataset['conditions'] = $rules['conditions'];
         }
         if (isset($rules['category'])) {
-            $array['category'] = $rules['category'];
+            $dataset['category'] = $rules['category'];
         }
         if (isset($rules['productId'])) {
-            $array['productId'] = $rules['productId'];
+            $dataset['productId'] = $rules['productId'];
         }
 
         if (isset($rules['manufacture'])) {
-            $array['manufacture'] = array_intersect(
+            $dataset['manufacture'] = array_intersect(
                 $rules['manufacture'],
                 array_keys(Axis_Collect_Manufacturer::collect())
             );
         }
         if (isset($rules['site'])) {
-            $array['site_ids'] = array_intersect(
+            $dataset['site_ids'] = array_intersect(
                 $rules['site'],
                 array_keys(Axis_Collect_Site::collect())
             );
         }
         if (isset($rules['group'])) {
-            $array['customer_group_ids'] = array_intersect(
+            $dataset['customer_group_ids'] = array_intersect(
                 $rules['group'],
                 array_keys(Axis_Collect_CustomerGroup::collect())
             );
         }
 
         if (isset($rules['special'])) {
-            $array['special'] = current($rules['special']);
+            $dataset['special'] = current($rules['special']);
         }
         if (isset($rules['optionId'])) {
             foreach ($rules['optionId'] as $optionId) {
@@ -81,7 +81,7 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
                     continue;
                 }
                 foreach ($rules['option[' . $optionId . ']'] as $optionValueId) {
-                    $array['attributes'][] = array(
+                    $dataset['attributes'][] = array(
                         'optionId' => $optionId,
                         'optionValueId' => $optionValueId
                     );
@@ -90,7 +90,7 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
 
         }
 
-        return $array;
+        return $dataset;
     }
 
     /**
@@ -307,4 +307,35 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
         }
         return $this;
     } 
+    
+     /**
+     *
+     * @return array
+     */
+    public function getRules()
+    {
+        $rowset = Axis::model('discount/eav')->select()
+            ->where('discount_id = ?', $this->id)
+            ->fetchAll()
+            ;
+        
+        $dataset = array();
+        foreach ($rowset as $row) {
+            if (strstr($row['entity'], '_')) {
+                list($entity, $etype) = explode('_', $row['entity'], 2);
+                $value = $row['value'];
+                if (substr($entity, 0, strlen('date')) === 'date') {
+                    $value = Axis_Date::timestamp($row['value'])
+                        ->toPhpString("Y-m-d");
+                }
+//                $dataset['conditions'][$entity]['e-type'][] = $etype;
+//                $dataset['conditions'][$entity]['value'][] = $value;
+                
+                $dataset[$entity][$etype][] = $value;
+            } else {
+                $dataset[$row['entity']][] = intval($row['value']);
+            }
+        }
+        return $dataset;
+    }
 }

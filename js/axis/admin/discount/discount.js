@@ -196,10 +196,33 @@ Ext.onReady(function () {
     Ext.getCmp('gridDiscount').getStore().load({params:{
         start:0, limit:25, displayMode: 'without-special'
     }});
+
     Ext.getCmp('gridDiscount').on('rowdblclick', function(grid, rowIndex, e){
         var row = Ext.getCmp('gridDiscount').getStore().getAt(rowIndex);
-        window.location = Axis.getUrl('discount/load/id/')
-            + row.data.id;
+        
+        discountWindow.form.getForm().load({
+            url     : Axis.getUrl('discount/load1/'),
+            params  : {id : row.data.id},  
+            method  : 'get',
+            success : function(form, action) {
+                var data = Ext.decode(action.response.responseText).data;
+                discountWindow.el.setTitle(data.discount.name);
+                discountWindow.show();
+                
+                discountWindowFormSiteTab.onLoad(data.eav.site);
+                discountWindowFormGroupTab.onLoad(data.eav.group);
+                discountWindowFormManufacturerTab.onLoad(data.eav.manufacture);
+                discountWindowFormProductTab.onLoad(data.eav.productId);
+//                discountWindowFormCategoriesTab.onLoad(data.eav.category);
+                
+            },
+            failure: function() {
+                console.log(arguments);
+            }
+        });
+        
+//        window.location = Axis.getUrl('discount/load/id/')
+//            + row.data.id;
     });
 
     Ext.get('tbar-display-mode').on('change', function(event, element) {

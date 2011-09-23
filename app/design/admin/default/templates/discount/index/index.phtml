@@ -1,5 +1,15 @@
 <?php
-$this->headScript()->appendFile('/js/axis/admin/discount/discount.js');
+$this->headScript()
+    ->appendFile('/js/ext-ux/multiselect/ComboSelect.js')
+    ->appendFile('js/ext-axis/src/widgets/form/ComboSelect.js')
+    ->appendFile('/js/axis/admin/discount/discount.js')
+    ->appendFile('/js/axis/admin/discount/tabs/general.js')
+    ->appendFile('/js/axis/admin/discount/tabs/site.js')
+    ->appendFile('/js/axis/admin/discount/tabs/group.js')
+    ->appendFile('/js/axis/admin/discount/tabs/manufacturer.js')
+    ->appendFile('/js/axis/admin/discount/tabs/categories.js')
+    ->appendFile('/js/axis/admin/discount/tabs/product.js')
+    ->appendFile('/js/axis/admin/discount/window.js');
 ?>
 <?php $this->setButtons(array(
     array(
