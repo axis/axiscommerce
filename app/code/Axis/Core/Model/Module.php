@@ -289,8 +289,8 @@ class Axis_Core_Model_Module extends Axis_Db_Table
     public function createFromCode($code)
     {
         $row = $this->createRow(array(
-            'code' => $code,
-            'is_active' => 1
+            'code'      => $code,
+            'is_active' => 0
         ));
         $row->setFromArray($row->getConfig());
         return $row;

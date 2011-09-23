@@ -88,8 +88,31 @@ class Admin_ModuleController extends Axis_Admin_Controller_Back
         return $this->_helper->json
             ->setData($data)
             ->setCount($count)
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
+    }
+
+    public function batchSaveAction()
+    {
+        $dataset    = Zend_Json::decode($this->_getParam('data'));
+        $model      = Axis::model('core/module');
+
+        foreach ($dataset as $code => $data) {
+            $row = $model->getByCode($code);
+            if (!$row->isInstalled()) {
+                $row->install();
+            } elseif ($row->getConfig('required')) {
+                $data['is_active'] = 1;
+            }
+            $row->setFromArray($data);
+            $row->save();
+        }
+
+        Axis_Core_Model_Cache::getCache()->clean(
+            Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG,
+            array('modules', 'config')
+        );
+
+        return $this->_helper->json->sendSuccess();
     }
 
     public function installAction()
@@ -104,6 +127,12 @@ class Admin_ModuleController extends Axis_Admin_Controller_Back
             $module = $model->getByCode($this->_getParam('code'));
             $module->install();
         }
+
+        Axis_Core_Model_Cache::getCache()->clean(
+            Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG,
+            array('modules', 'config')
+        );
+
         return $this->_helper->json->sendSuccess();
     }
 
@@ -112,6 +141,12 @@ class Admin_ModuleController extends Axis_Admin_Controller_Back
         $code = $this->_getParam('code');
         $module = Axis::single('core/module')->getByCode($code);
         $module->uninstall();
+
+        Axis_Core_Model_Cache::getCache()->clean(
+            Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG,
+            array('modules', 'config')
+        );
+
         return $this->_helper->json->sendSuccess();
     }
 
@@ -126,6 +161,12 @@ class Admin_ModuleController extends Axis_Admin_Controller_Back
             $module = $model->getByCode($this->_getParam('code'));
             $module->upgradeAll();
         }
+
+        Axis_Core_Model_Cache::getCache()->clean(
+            Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG,
+            array('modules', 'config')
+        );
+
         return $this->_helper->json->sendSuccess();
     }
 
