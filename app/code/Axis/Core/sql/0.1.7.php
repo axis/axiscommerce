@@ -510,7 +510,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ;
 
         Axis::single('core/cache')
-            ->add('modules', 0, 864000) //10 days
+            ->add('modules', 1, 864000) //10 days
             ->add('config', 0, 864000)
             ->add('query', 0)
             ->add('Zend_Translate', 1, 864000);

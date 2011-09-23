@@ -61,7 +61,7 @@ class Axis_Locale_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
         ");
 
         Axis::single('core/cache')
-            ->add('locales', 0, 864000); //10 days
+            ->add('locales', 1, 864000); //10 days
 
         Axis::single('admin/acl_resource')
             ->add('admin/locale', 'Locale')
