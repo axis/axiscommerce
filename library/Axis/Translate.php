@@ -65,6 +65,11 @@ class Axis_Translate extends Zend_Translate
             $filename   = $this->_getFileName($locale);
         }
 
+        // custom modules can be without translation for default locale
+        if (!is_readable($filename)) {
+            $filename = $this->_getSafeFileName();
+        }
+
         parent::__construct(array(
             'adapter'   => self::AN_CSV,
             'content'   => $filename,
@@ -124,7 +129,23 @@ class Axis_Translate extends Zend_Translate
      */
     protected function _getFileName($locale)
     {
-        return AXIS_ROOT . '/app/locale/' . $locale . '/' . $this->_module . '.csv';
+        return Axis::config('system/path')
+            . '/app/locale/'
+            . $locale
+            . '/' . $this->_module . '.csv';
+    }
+
+    /**
+     * Returns the existing translation filename.
+     * Used when no translation file is found.
+     *
+     * @param string $locale
+     * @param string $module
+     * @return string
+     */
+    protected function _getSafeFileName()
+    {
+        return Axis::config('system/path') . '/app/locale/en_US/Axis_Core.csv';
     }
 
     /**
