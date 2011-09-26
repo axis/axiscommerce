@@ -53,6 +53,7 @@ Ext.onReady(function() {
         {name: 'eav[manufacturer]',     mapping: 'eav.manufacturer'},
         {name: 'eav[category]',         mapping: 'eav.category'},
         {name: 'eav[productId]',        mapping: 'eav.productId'},
+        {name: 'eav[price]',            mapping: 'eav.price'}
     ];
     
     discountWindow.form = new Axis.FormPanel({
@@ -82,7 +83,8 @@ Ext.onReady(function() {
                 discountWindowFormGroupTab.el,
                 discountWindowFormManufacturerTab.el, 
 //                discountWindowFormCategoriesTab.el,
-                discountWindowFormProductTab.el
+                discountWindowFormProductTab.el,
+                discountWindowFormPriceTab.el
 //                discountWindowFormConditionTab.el
             ]
         }]
