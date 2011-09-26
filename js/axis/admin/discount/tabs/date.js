@@ -57,31 +57,31 @@
             header: 'Value'.l(),
             dataIndex: 'value',
             id: 'value',
-            editor: new Ext.form.TextField({
-                allowBlank: false,
-                maxLength: 128
+            editor: new Ext.form.DateField({
+                allowBlank: false
+//                maxLength: 128
             })
         }]
     });
     
     var grid = new Axis.grid.EditorGridPanel({
-        title: 'Price'.l(),
+        title: 'Data'.l(),
         cm: cm,
         store: ds,
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
             handler : function() {
-                discountWindowFormPriceTab.add('equals', 0);
+                discountWindowFormDateTab.add('equals', 0);
             }
         }],
         massAction: false
     });
     
-    discountWindowFormPriceTab = {
+    discountWindowFormDateTab = {
         el: grid,
         onLoad: function(data) {
-            this.el.getStore().removeAll(); 
+            this.el.getStore().removeAll();
             Ext.each(data.equals, function(value) {
                 this.add('equals', value);
             }, this);

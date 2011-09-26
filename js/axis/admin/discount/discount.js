@@ -214,6 +214,7 @@ Ext.onReady(function () {
                 discountWindowFormManufacturerTab.onLoad(data.eav.manufacture);
                 discountWindowFormProductTab.onLoad(data.eav.productId);
                 discountWindowFormPriceTab.onLoad(data.eav.price);
+                discountWindowFormDateTab.onLoad(data.eav.date);
 //                discountWindowFormCategoriesTab.onLoad(data.eav.category);
                 
             },
