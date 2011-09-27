@@ -28,9 +28,9 @@ define('AXIS_ROOT', realpath('../'));
 set_include_path(
   realpath('../app/code') . PATH_SEPARATOR
   . realpath('../library') . PATH_SEPARATOR
+  . AXIS_ROOT . '/install' . PATH_SEPARATOR
   . get_include_path()
 );
-
 
 @include_once 'Zend/Loader/Autoloader.php';
 if (!class_exists('Zend_Loader')) {
