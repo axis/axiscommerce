@@ -42,8 +42,8 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
             $this->_frontAuth($request);
         }
     }
-    
-    protected function _backAuth($request) 
+
+    protected function _backAuth($request)
     {
         $auth = Zend_Auth::getInstance();
         $auth->setStorage(new Zend_Auth_Storage_Session('admin'));
@@ -85,7 +85,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
                 ->setDispatched(false);
             return;
         }
-        
+
         //ACL
         $modelAcl    = Axis::single('admin/acl');
         $roleId = Axis::session()->roleId;
@@ -101,7 +101,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
         );
         $inflector->setTarget('admin/:module/:controller/:action');
         $resource = $inflector->filter($params);
-        
+
         if (false === $modelAcl->check($roleId, $resource)) {
             if ($request->isXmlHttpRequest()) {
                 Axis::message()->addError(
@@ -119,15 +119,16 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
                 ->setDispatched(false);
         }
     }
-    
-    protected function _frontAuth($request) 
+
+    protected function _frontAuth($request)
     {
-        if (!Axis::getCustomerId() 
+        if (!Axis::getCustomerId()
                 && $this->getActionController() instanceof Axis_Account_Controller_Abstract) {
-                
-                $request->setModuleName('Axis_Account')
-                    ->setControllerName('auth')
-                    ->setDispatched(false);
-            }
+
+            $request->setModuleName('Axis_Account')
+                ->setControllerName('auth')
+                ->setActionName('index')
+                ->setDispatched(false);
+        }
     }
 }
