@@ -48,7 +48,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
 
         $modelCustomerValueSetValue = Axis::model('account/Customer_ValueSet_Value');
         $modelCustomerFields = Axis::model('account/customer_field');
-        
+
         $fieldGroups = Axis::single('account/Customer_FieldGroup')
             ->getGroups(Axis_Locale::getLanguageId());
 
@@ -68,7 +68,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
         }
         $this->render();
     }
-    
+
     public function listAction()
     {
         $select = Axis::model('account/customer')->select('*')
@@ -104,7 +104,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
             ->sendSuccess()
         ;
     }
-    
+
     public function loadAction()
     {
         if (!$customer = Axis::single('account/customer')->find((int)$this->_getParam('id'))->current()) {
@@ -147,11 +147,12 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
         $orderStatusText = Axis_Collect_OrderStatusText::collect();
 
         $data['order'] = array();
+        $i = 0;
         foreach ($orders as $order) {
-            $data['order'] = $order->toArray();
+            $data['order'][$i] = $order->toArray();
 
-            $data['order']['product'] = array_values($order->getProducts());
-            foreach($data['order']['product'] as &$product) {
+            $data['order'][$i]['product'] = array_values($order->getProducts());
+            foreach($data['order'][$i]['product'] as &$product) {
                 $product['price'] =
                     $product['price'] * $order->currency_rate;
                 $product['final_price'] =
@@ -161,11 +162,12 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
             }
 
             if (isset($orderStatusText[$order['order_status_id']])) {
-                $data['order']['status'] = $orderStatusText[$order['order_status_id']];
+                $data['order'][$i]['status'] = $orderStatusText[$order['order_status_id']];
             } else {
-                $data['order']['status'] = isset($orderStatus[$order['order_status_id']]) ?
+                $data['order'][$i]['status'] = isset($orderStatus[$order['order_status_id']]) ?
                     $orderStatus[$order['order_status_id']] : $order['order_status_id'];
             }
+            $i++;
         }
 
         // shopping cart
@@ -182,10 +184,10 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
             ->sendSuccess()
         ;
     }
-    
+
     public function saveAction()
     {
-        $_row    = $this->_getParam('customer'); 
+        $_row    = $this->_getParam('customer');
         $details = $this->_getParam('custom_fields', array());
 
         if (!$this->_isEmailValid(
@@ -194,14 +196,14 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
 
             return $this->_helper->json->sendFailure();
         }
-        
+
         $model = Axis::single('account/customer');
-        $row = $model->find($_row['id'])->current(); 
+        $row = $model->find($_row['id'])->current();
         $event = false;
         if (!$row) {
             list($row, $password) = $model->create($_row);
             $event = true;
-            
+
             Axis::message()->addSuccess(
                 Axis::translate('Axis_Account')->__(
                     'Customer account was created successfully'
@@ -222,11 +224,11 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
         }
 
         $row->setDetails($details);
-        
+
         // address
         if ($this->_hasParam('address')) {
             $addresses = Zend_Json::decode($this->_getParam('address'));
-            
+
             $modelAddress = Axis::single('account/customer_address');
             foreach ($addresses as $address) {
                 if (!empty($address['id']) && $address['remove']) {
@@ -238,24 +240,24 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
                 }
             }
         }
-        
+
         if ($event) {
             Axis::dispatch('account_customer_register_success', array(
                 'customer' => $row,
                 'password' => $password
             ));
-        }    
+        }
 
         return $this->_helper->json
             ->setData(array('customer_id' => $row->id))
             ->sendSuccess()
         ;
     }
-    
+
     public function batchSaveAction()
     {
         $data = Zend_Json::decode($this->_getParam('data'));
-        
+
         $model = Axis::single('account/customer');
 
         foreach ($data as $_row) {
@@ -275,7 +277,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
 
         return $this->_helper->json->sendSuccess();
     }
-    
+
     protected function _isEmailValid($email, $siteId, $customerId = null)
     {
         $where = Axis::db()->quoteInto('site_id = ?', $siteId);
@@ -295,7 +297,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
         }
         return true;
     }
-    
+
     public function removeAction()
     {
         $data = Zend_Json_Decoder::decode($this->_getParam('data'));
