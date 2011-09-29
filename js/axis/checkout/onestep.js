@@ -74,6 +74,13 @@ var Onestep = (function() {
         });
     };
 
+    function addFormSubmitListener() {
+        var form = $(settings.form);
+        form.find('.btn-submit').click(function() {
+            form.submit();
+        });
+    };
+
     function update(url, sections) {
         setLoadWaiting(true, sections);
         var form = $(settings.form);
@@ -604,6 +611,7 @@ var Onestep = (function() {
             $.extend(settings, options || {});
 
             addFormValidator();
+            addFormSubmitListener();
 
             Address.zones = settings.zones;
             var i = 0, o,
