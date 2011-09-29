@@ -129,7 +129,7 @@ class Axis_Translate extends Zend_Translate
      */
     protected function _getFileName($locale)
     {
-        return Axis::config('system/path')
+        return AXIS_ROOT
             . '/app/locale/'
             . $locale
             . '/' . $this->_module . '.csv';
@@ -145,7 +145,7 @@ class Axis_Translate extends Zend_Translate
      */
     protected function _getSafeFileName()
     {
-        return Axis::config('system/path') . '/app/locale/en_US/Axis_Core.csv';
+        return AXIS_ROOT . '/app/locale/en_US/Axis_Core.csv';
     }
 
     /**
