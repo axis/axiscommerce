@@ -275,7 +275,7 @@
                     };
                 }
 
-                function Stage(){
+                function Stage() {
                     this.container = document.createElement('div');
                     $(this.container).hide()
                         .css({
@@ -286,7 +286,7 @@
                             'height': settings.zoom_stage_height,
                             'overflow': 'hidden'
                         })
-                        .html('<img src="" alt="" style="position: absolute; top: 0; left: 0;">')
+                        .html('<img alt="" style="position: absolute; top: 0; left: 0;">')
                         .addClass('lightzoom-stage');
                     document.body.appendChild(this.container);
 
@@ -304,7 +304,7 @@
 
                     this.activate = function(image){
                         this.image.attr({
-                            'src': $(image).attr('src'),
+                            'src': image.src,
                             'alt': image.title
                         });
                     };
@@ -314,8 +314,8 @@
                     };
 
                     this.hide = function(){
+                        this.image.removeAttr('src');
                         this.image.attr({
-                            'src': '',
                             'alt': ''
                         });
                         $(this.container).hide();
@@ -333,7 +333,7 @@
             function Lightbox(){
                 this.template =
                     '<div class="lightbox-image">'+
-                        '<img src="" alt=""/>'+
+                        '<img alt=""/>'+
                     '</div>'+
                     '<div class="lightbox-panel">'+
                         '<h4></h4>'+
@@ -397,7 +397,7 @@
                 this.set = function(image){
                     var self = this;
                     this.image.fadeOut(settings.lightbox_fade_speed, function(){
-                        self.image.attr('src', '');
+                        self.image.removeAttr('src');
                     });
                     if (image.ready) {
                         this.process(image);
@@ -408,22 +408,22 @@
                 };
 
                 this.process = function(image, scope){
-                    var self = scope || this,
+                    var self         = scope || this,
                         scrollOffset = BrowserWindow.getScrollOffset(),
-                        top = scrollOffset.top + self.viewportSize.height / 2 - image['image'].height / 2 - 100,
-                        left = self.viewportSize.width / 2 - image['image'].width / 2;
+                        top          = scrollOffset.top + self.viewportSize.height / 2 - image['image'].height / 2 - 100,
+                        left         = self.viewportSize.width / 2 - image['image'].width / 2;
 
-                    top     = top < scrollOffset.top ? scrollOffset.top : top;
-                    left    = left < 0 ? 0 : left;
+                    top  = top < scrollOffset.top ? scrollOffset.top : top;
+                    left = left < 0 ? 0 : left;
 
                     self.image.parent().animate({
-                        'width': image['image'].width,
+                        'width' : image['image'].width,
                         'height': image['image'].height
                     }, {
                         queue: false,
                         duration: settings.lightbox_resize_speed,
-                        complete: function(){
-                            self.image.attr('src', image.attr('src'));
+                        complete: function() {
+                            self.image.attr('src', image.src);
                             self.image.attr('alt', image.title);
                             self.image.fadeIn(settings.lightbox_fade_speed);
                             self.updateMask.apply(self);
@@ -604,7 +604,7 @@
             }
 
             function _Image(src, title){
-                this.src = src;
+                this.src   = src;
                 this.title = title;
                 this.ready = false;
                 this.image = new Image();
