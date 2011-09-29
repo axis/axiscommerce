@@ -110,10 +110,16 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
             Axis::translate('account')->__(
                 'Add new address'
         ));
+
+        $customer = Axis::getCustomer();
         $this->view->form = Axis::model('account/form_address');
-        $this->view->form->populate(
-            Axis::model('account/customer_address')->getDefaultValues()
-        );
+        $this->view->form->populate(array_merge(
+            Axis::model('account/customer_address')->getDefaultValues(),
+            array(
+                'firstname' => $customer->firstname,
+                'lastname'  => $customer->lastname
+            )
+        ));
         $this->render('form-address');
     }
 
