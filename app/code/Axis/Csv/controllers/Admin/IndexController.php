@@ -92,26 +92,26 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
         $data['site'] = trim($filters['site'], ',');
 
         $row = Axis::model('csv/profile')->save($data);//, $filters);
-        
-        
+
+
         if ('export' == $row->direction) {
-            $rowFilter = $row->findDependentRowset('Axis_Admin_Model_Csv_Profile_Filter')->current();
+            $rowFilter = $row->findDependentRowset('Axis_Csv_Model_Profile_Filter')->current();
             if (!$rowFilter) {
                 $rowFilter = Axis::single('csv/profile_filter')->createRow();
                 $rowFilter->profile_id = $row->id;
             }
             $rowFilter->setFromArray($filters);
             $rowFilter->language_ids = trim($rowFilter->language_ids, ', ');
-            
+
             $rowFilter->price_from = is_numeric($rowFilter->price_from) ?
                     $rowFilter->price_from : new Zend_Db_Expr('NULL');
-            
+
             $rowFilter->price_to = is_numeric($rowFilter->price_to) ?
                     $rowFilter->price_to : new Zend_Db_Expr('NULL');
-            
+
             $rowFilter->qty_from = is_numeric($rowFilter->qty_from) ?
                     $rowFilter->qty_from : new Zend_Db_Expr('NULL');
-            
+
             $rowFilter->qty_to = is_numeric($rowFilter->qty_to) ?
                     $rowFilter->qty_to : new Zend_Db_Expr('NULL');
             $rowFilter->save();
@@ -129,7 +129,7 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
         $data = Zend_Json::decode($this->_getParam('data'));
 
         Axis::single('csv/profile')->deleteByIds($data);
-            
+
         return $this->_helper->json->sendSuccess();
     }
 
