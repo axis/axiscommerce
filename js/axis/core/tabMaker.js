@@ -100,9 +100,12 @@
                 return 0;
             }
 
-            $('html, body').scrollTop(
-                el.parents('.tab-container').offset().top
-            );
+            var container = el.parents('.tab-container');
+            if (!container.length) {
+                return 0;
+            }
+
+            $('html, body').scrollTop(container.offset().top);
             return $('.content .tab', container).index(el);
         }
     }
