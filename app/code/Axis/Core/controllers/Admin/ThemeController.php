@@ -35,7 +35,7 @@ class Admin_ThemeController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('admin')->__('Templates');
+        $this->view->pageTitle = Axis::translate('core')->__('Themes');
 
         $pages = Axis::model('core/page')->select(array(
                 'id', 'name' => "CONCAT(module_name, '/', controller_name, '/', action_name)"
@@ -52,7 +52,7 @@ class Admin_ThemeController extends Axis_Admin_Controller_Back
         $rowset = Axis::model('core/template')->select()
             ->order('name ASC')
             ->fetchRowset();
-        
+
         foreach ($rowset as $row) {
             $data[] = array(
                 'text'     => $row->name,
@@ -66,7 +66,7 @@ class Admin_ThemeController extends Axis_Admin_Controller_Back
 
         return $this->_helper->json->sendRaw($data);
     }
-    
+
     public function loadAction()
     {
         $themeId = $this->_getParam('templateId');
@@ -83,9 +83,9 @@ class Admin_ThemeController extends Axis_Admin_Controller_Back
     {
         $data  = $this->_getAllParams();
         $model = Axis::single('core/template');
-        if (!empty($data['duplicate']) 
+        if (!empty($data['duplicate'])
             &&  $row = $model->duplicate($data['duplicate'], $data['name'])) {
-            
+
             $row->default_layout = $data['default_layout'];
             $row->save();
 

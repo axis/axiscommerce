@@ -18,12 +18,12 @@
  */
 
 var PropertyGrid = {
-    
+
     /**
      * @property {Axis.grid.GridPanel} el
      */
     el: null,
-    
+
     /**
      * @param {Array} records Ext.data.Record
      */
@@ -32,17 +32,17 @@ var PropertyGrid = {
             if (r.get('input_type') == 0
                 || r.get('input_type') == 2
                 || r.get('input_type') == 3) {
-                
+
                 return;
             }
-            
+
             if (r.get('input_type') == 1 //string
                  || r.get('input_type') == 4 // textarea
                  || r.get('input_type') == 5) { // file
-                
+
                 var itemName = r.get('input_type') == 5 ? 'file' : 'text';
                 itemName += r.get('languagable') ? '-l' : '';
-                
+
                 var propertyDetailsWindow = new Axis.PropertyDetails({
                     item: itemName
                 });
@@ -54,7 +54,7 @@ var PropertyGrid = {
                     var record = PropertyGrid.el.store.getAt(
                         PropertyGrid.el.store.find('option_id', r.get('option_id'))
                     );
-                    
+
                     if (record) {
                         record.set('option_value_id', 0);
                         record.set('value_name', value);
@@ -78,7 +78,7 @@ var PropertyGrid = {
                 var record = PropertyGrid.el.store.getAt(
                     PropertyGrid.el.store.find('option_id', r.get('option_id'))
                 );
-                
+
                 if (record) {
                     if (record.get('option_value_id') == r.get('value_id')) {
                         return;
@@ -98,7 +98,7 @@ var PropertyGrid = {
             }
         });
     },
-    
+
     edit: function(record) {
         if (record.get('option_value_id')) {
             if (!ProductWindow.attributeWindow) {
@@ -118,7 +118,7 @@ var PropertyGrid = {
             itemName += record.get('languagable') ? '-l' : '';
             var propertyDetailsWindow = new Axis.PropertyDetails({
                 item: itemName,
-                value: record.get('languagable') ? 
+                value: record.get('languagable') ?
                     Ext.decode(record.get('value_name')) : record.get('value_name')
             });
             propertyDetailsWindow.on('okpress', function(value) {
@@ -134,27 +134,27 @@ var PropertyGrid = {
                 .show();
         }
     },
-    
+
     clearData: function() {
         PropertyGrid.el.store.loadData([]);
     },
-    
+
     loadData: function(data) {
         PropertyGrid.el.store.loadData(data.properties);
     },
-    
+
     getData: function() {
         var modified = PropertyGrid.el.store.getModifiedRecords();
-        
+
         if (!modified.length) {
             return;
         }
-        
+
         var data = {};
         for (var i = modified.length - 1; i >= 0; i--) {
             data[modified[i]['id']] = modified[i]['data'];
         }
-        
+
         return {
             'property': data
         };
@@ -162,7 +162,7 @@ var PropertyGrid = {
 }
 
 Ext.onReady(function() {
-    
+
     var ds = new Ext.data.Store({
         mode: 'local',
         pruneModifiedRecords: true,
@@ -180,13 +180,13 @@ Ext.onReady(function() {
             ]
         })
     });
-    
+
     var remove = new Axis.grid.CheckColumn({
         dataIndex: 'remove',
         header: 'Delete'.l(),
         width: 60
     });
-    
+
     var cm = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true,
@@ -203,10 +203,11 @@ Ext.onReady(function() {
         }, {
             id: 'value-name',
             dataIndex: 'value_name',
+            renderer: Axis.escape,
             header: 'Value'.l()
         }, remove]
     });
-    
+
     PropertyGrid.el = ProductWindow.propertyGrid = new Axis.grid.GridPanel({
         autoExpandColumn: 'value-name',
         border: false,
@@ -237,8 +238,8 @@ Ext.onReady(function() {
             }
         }]
     });
-    
+
     ProductWindow.addTab(PropertyGrid.el, 70);
     ProductWindow.dataObjects.push(PropertyGrid);
-    
+
 });

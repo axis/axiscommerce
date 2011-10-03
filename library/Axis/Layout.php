@@ -94,21 +94,7 @@ class Axis_Layout extends Zend_Layout
         }
         $before = $after = '';
         foreach ($this->getBlocks($key) as $blockId => $_config) {
-
-            if (is_string($blockId)) { //tabset
-                $blockContent = '';
-                $tabset       = $_config;
-                $_config      = current($tabset);
-                foreach ($tabset as $tabBoxId => $_tabConfig) {
-                    $blockContent .= $this->_getBlockContent($_tabConfig);
-                }
-                if (!empty($blockContent)) {
-                    $blockContent = "<div class='tab-container box tabs-{$_config['tab_container']}'>{$blockContent}</div>";
-                }
-            } else {
-                $blockContent = $this->_getBlockContent($_config);
-            }
-
+            $blockContent = $this->_getBlockContent($_config);
             if ($_config['sort_order'] < 0) {
                 $before .= $blockContent;
             } else {

@@ -74,7 +74,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
         }
         return false;
     }
-    
+
     protected function _initPages()
     {
         $request = $this->getRequest();
@@ -148,7 +148,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
             ->where('ctp.template_id = ?', $themeId)
             ->where('ctp.page_id = ?', $strongPage['id'])
             ->fetchRow();
-        
+
         if ($parentPage) {
             $pages[$parentPage->id] = $parentPage->toArray();
         }
@@ -196,9 +196,6 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 'box_namespace' => ucfirst($namespace),
                 'box_module'    => ucfirst($module),
                 'box_name'      => ucfirst($box),
-                'template'      => $block['template'],
-                'tab_container' => $block['tab_container'],
-                'sort_order'    => $block['sort_order'],
                 'page_id'       => $block['page_id'],
                 'box_show'      => $block['box_show']
             ), Zend_Json::decode($block['config']));
@@ -219,26 +216,7 @@ class Axis_Controller_Plugin_Layout extends Zend_Layout_Controller_Plugin_Layout
                 $assign['static_block'] = $staticBlock;
             }
 
-            $tabContainer = $assign['tab_container'];
-            if (!empty($tabContainer)) {
-                if (isset($assigns[$container][$tabContainer][$blockId])) {
-                    $oldPage = $pages[$assigns[$container]
-                        [$tabContainer][$blockId]['page_id']];
-                    $newPage = $pages[$block['page_id']];
-                    if (!$this->_sortPages($oldPage, $newPage)) {
-                        continue;
-                    }
-                }
-                $assigns[$container][$tabContainer][$blockId] = $assign;
-                if (isset($assigns[$container][$blockId])) {
-                    unset($assigns[$container][$blockId]);
-                }
-            } else {
-                $assigns[$container][$blockId] = $assign;
-                if (isset($assigns[$container][$tabContainer][$blockId])) {
-                    unset($assigns[$container][$tabContainer][$blockId]);
-                }
-            }
+            $assigns[$container][$blockId] = $assign;
         }
 
         $this->getLayout()->setAssigments($assigns);

@@ -1,9 +1,10 @@
 <?php $title = $this->translate()->__($this->box->getData('title')); ?>
-<div class="box tab <?php echo $this->box->getData('class'); ?>">
+<div class="box tab <?php echo $this->box->getData('class'); ?> tabs-<?php echo $this->box->getData('tab_container'); ?>">
     <div class="head">
         <?php // tab- added to prevent autoscrolling to possible existing element with the same id (see product listing templates) ?>
         <a href="#tab-<?php echo $this->box->getData('class'); ?>"
             title="<?php echo $title; ?>"
+            class="title"
         ><?php echo $title; ?></a>
     </div>
     <div class="content">

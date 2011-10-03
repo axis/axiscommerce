@@ -44,7 +44,7 @@ class Axis_Catalog_Model_Product_Option extends Axis_Db_Table
 
     protected $_dependentTables = array(
         'Axis_Catalog_Model_Product_Option_Text',
-        'Axis_Catalog_Model_Product_Option_Value',
+        // 'Axis_Catalog_Model_Product_Option_Value',
         'Axis_Catalog_Model_Product_Attribute'
     );
 
@@ -178,9 +178,9 @@ class Axis_Catalog_Model_Product_Option extends Axis_Db_Table
             'comparable', 'filterable', 'searchable', 'languagable', 'visible'
         );
         foreach ($options as $option) {
-            $row->$option = (int)isset($data[$option]);
+            $row->$option = (int)!empty($data[$option]);
         }
-        
+
         if (empty($row->valueset_id)) {
             $row->valueset_id = new Zend_Db_Expr('NULL');
         }
