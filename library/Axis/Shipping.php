@@ -52,10 +52,8 @@ class Axis_Shipping
         $prefix = 'Shipping';
         $modules = Axis::app()->getModules();
         $methods = array();
-        foreach($modules as $path) {
-            $moduleName = str_replace(
-                Axis::config()->system->path . '/app/code/Axis/', '', $path
-            );
+        foreach($modules as $code => $path) {
+            list($namespace, $moduleName) = explode('_', $code);
             if (substr($moduleName, 0, strlen($prefix)) != $prefix) {
                 continue;
             }
@@ -68,13 +66,11 @@ class Axis_Shipping
                 if ($ext != 'php') {
                     continue;
                 }
-                $methods[] = substr($moduleName, strlen($prefix)) . '_' . $methodName;
+                $methods[$code . '/' . $methodName] = substr($moduleName, strlen($prefix)) . '_' . $methodName;
             }
             closedir($dir);
         }
-        Axis::cache()->save(
-            $methods, 'shipping_methods_list', array('modules')
-        );
+        Axis::cache()->save($methods, 'shipping_methods_list', array('modules'));
         return $methods;
     }
 
@@ -112,8 +108,11 @@ class Axis_Shipping
         if (strstr($methodName, '_')) {
             list($methodName, $methodType) = explode('_', $methodName, 2);
         }
-        $className = 'Axis_Shipping' . $moduleName . '_Model_' . $methodName;
-        self::$_methods[$code] = new $className($methodType);
+
+        $methodNames = self::getMethodNames();
+        $modelAlias  = array_search($moduleName . '_' . $methodName, $methodNames);
+        self::$_methods[$code] = Axis::model($modelAlias, $methodType);
+
         return self::$_methods[$code];
     }
 

@@ -50,8 +50,8 @@ class Axis_Payment
         $prefix = 'Payment';
         $modules = Axis::app()->getModules();
         $methods = array();
-        foreach($modules as $path) {
-            $moduleName = str_replace(Axis::config()->system->path . '/app/code/Axis/', '', $path);
+        foreach($modules as $code => $path) {
+            list($namespace, $moduleName) = explode('_', $code);
             if (substr($moduleName, 0, strlen($prefix)) != $prefix) {
                 continue;
             }
@@ -64,13 +64,12 @@ class Axis_Payment
                 if ($ext != 'php' || $methodName == 'Abstract') {
                     continue;
                 }
-                $methods[] = substr($moduleName, strlen($prefix)) . '_' . $methodName;
+                $methods[$code . '/' . $methodName] = substr($moduleName, strlen($prefix)) . '_' . $methodName;
             }
             closedir($dir);
         }
         Axis::cache()->save($methods, 'payment_methods_list', array('modules'));
         return $methods;
-
     }
 
     /**
@@ -81,11 +80,11 @@ class Axis_Payment
      */
     public static function getMethods()
     {
-        $modules = array();
+        $methods = array();
         foreach (self::getMethodNames() as $name) {
-            $modules[$name] = self::getMethod($name);
+            $methods[$name] = self::getMethod($name);
         }
-        return $modules;
+        return $methods;
     }
 
     /**
@@ -98,10 +97,10 @@ class Axis_Payment
      */
     public static function getMethod($code)
     {
-        list($moduleName, $methodName) = explode('_', $code, 2);
         if (!isset(self::$_methods[$code])) {
-            $className = 'Axis_Payment' . $moduleName . '_Model_' . $methodName;
-            self::$_methods[$code] = new $className();
+            $methodNames = self::getMethodNames();
+            $modelAlias  = array_search($code, $methodNames);
+            self::$_methods[$code] = Axis::model($modelAlias);
         }
         return self::$_methods[$code];
     }
