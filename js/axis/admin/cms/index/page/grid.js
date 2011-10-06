@@ -26,7 +26,7 @@ var PageGrid = {
 
     remove: function() {
         var selectedItems = PageGrid.el.getSelectionModel().getSelections();
-        if (!selectedItems.length || !confirm('Are you sure?')) {
+        if (!selectedItems.length || !confirm('Are you sure?'.l())) {
             return;
         }
 
