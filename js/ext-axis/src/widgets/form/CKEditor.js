@@ -93,7 +93,9 @@ Axis.form.CKEditor = Ext.extend(Ext.form.TextArea, {
 
     setValue: function(value) {
         Axis.form.CKEditor.superclass.setValue.apply(this, [value]);
-        CKEDITOR.instances[this.id].setData(value);
+        if (CKEDITOR.instances[this.id]) {
+            CKEDITOR.instances[this.id].setData(value);
+        }
     },
 
     // getValue: function() {
@@ -111,7 +113,7 @@ Axis.form.CKEditor = Ext.extend(Ext.form.TextArea, {
     getErrors: function(value) {
         var errors = Axis.form.CKEditor.superclass.getErrors.apply(this, arguments);
 
-        if (!CKEDITOR.instances[this.id].container) {
+        if (!CKEDITOR.instances[this.id] || !CKEDITOR.instances[this.id].container) {
             return errors;
         }
 
@@ -126,7 +128,7 @@ Axis.form.CKEditor = Ext.extend(Ext.form.TextArea, {
 
     clearInvalid: function() {
         Axis.form.CKEditor.superclass.clearInvalid.apply(this);
-        if (CKEDITOR.instances[this.id].container) {
+        if (CKEDITOR.instances[this.id] && CKEDITOR.instances[this.id].container) {
             $(CKEDITOR.instances[this.id].container.$).removeClass('x-form-invalid');
         }
     },
