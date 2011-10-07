@@ -11,7 +11,7 @@
 "Module '%s' is required by '%s', but can't be installed","Module '%s' is required by '%s', but can't be installed"
 "Module '%s' was successfully installed","Module '%s' was successfully installed"
 "Module '%s', (version %s %s) is required by '%s', but can't be upgraded","Module '%s', (version %s %s) is required by '%s', but can't be upgraded"
-"Powered by %s v. %s","Powered by %s v. %s"
+"Powered by %s v.%s","Powered by %s v.%s"
 "Report any %s you've found","Report any %s you've found"
 "An error has occured processing your request","An error has occured processing your request"
 "Billing Address","Billing Address"
