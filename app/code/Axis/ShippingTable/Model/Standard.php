@@ -61,7 +61,7 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             ->order('country_id ASC')
             ->order('zone_id ASC')
             ->order('zip ASC')
-            ->order('price DESC')
+            ->order('value DESC')
             ->limit(1);
 
         if (isset($request['zone']['id'])) {
@@ -70,8 +70,7 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             $select->where('zone_id = 0');
         }
 
-        $rows = $select->query()->fetchAll();
-        $row = current($rows);
+        $row = $select->fetchRow();
 
         $this->_types = array(
             array(
