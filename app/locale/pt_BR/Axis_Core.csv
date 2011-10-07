@@ -22,7 +22,7 @@
 "Module '%s' is required by '%s', but can't be installed","Módulo '%s' é necessária por '%s', mas não pode ser instalado"
 "Module '%s' was successfully installed","Módulo '%s' instalado com sucesso"
 "Module '%s', (version %s %s) is required by '%s', but can't be upgraded","Módulo '%s', (versão %s %s) é necessária por %s', mas não pode ser atualizado"
-"Powered by %s v. %s","Produzido por %s v. %s <br/>Traduzido por <a href='http://upwebmasters.com.br/' target='_blank'>Up WebMasters</a>"
+"Powered by %s v.%s","Produzido por %s v.%s <br/>Traduzido por <a href='http://upwebmasters.com.br/' target='_blank'>Up WebMasters</a>"
 "Report any %s you've found","Comunique qualquer %s que você encontrar"
 "An error has occured processing your request","Ocorreu um erro ao processar sua solicitação"
 "Billing Address","Endereço de Cobrança"

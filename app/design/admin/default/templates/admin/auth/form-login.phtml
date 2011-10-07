@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="login-window">
-        <div class="head"><h2><?php echo $this->translate('account')->__('Login') ?></h2><p class="powered"><?php echo $this->translate('core')->__('Powered by %s v. %s', 'Axis', Axis::app()->getVersion()) ?></p></div>
+        <div class="head"><h2><?php echo $this->translate('account')->__('Login') ?></h2><p class="powered"><?php echo $this->translate('core')->__('Powered by %s v.%s', 'Axis', Axis::app()->getVersion()) ?></p></div>
         <div class="content">
             <?php echo $this->message(); ?>
             <form class="form-login axis-form" action="<?php echo $this->href('/auth/login');?>" method="post">
