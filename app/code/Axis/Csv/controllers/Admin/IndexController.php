@@ -79,7 +79,6 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
             array($this, '_' . $data['direction'] . ucfirst($data['type'])),
             $data, $filters
         );
-
         return $this->_helper->json
             ->setMessages($messages)
             ->sendSuccess();
@@ -605,15 +604,8 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
             $data = array_combine($titles, $data);
 
             if (empty($data['sku'])) {
-                $data['sku'] = 'SKU';
+                continue;
             }
-
-            $i = 0;
-            $sku = $data['sku'];
-            while ($mProduct->select()->where('sku = ?', $sku)->fetchRow()) {
-                $sku = $data['sku'] . '-' . ++$i;
-            }
-            $data['sku'] = $sku;
 
             $log['imported']['count']++;
 
@@ -650,10 +642,16 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
                 }
                 $manufacturers[$data['manufacturer']] = $manufacturerId;
             }
-            /**
-             * @var Axis_Catalog_Model_Product_Row
-             */
-            $product = $mProduct->createRow();
+
+            $product = $mProduct->select()
+                ->where('sku = ?', $data['sku'])
+                ->fetchRow();
+
+            if (!$product) {
+                $product = $mProduct->createRow();
+                $product->viewed = 0;
+                $product->tax_class_id = 1;
+            }
 
             if (!empty($data['manufacturer'])
                 && isset($manufacturers[$data['manufacturer']])) {
@@ -664,11 +662,12 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
             $product->setFromArray($data);
 
             // will set correct values for the images later
-            $product->image_base      = null;
-            $product->image_listing   = null;
-            $product->image_thumbnail = null;
-
-            $product->viewed = 0;
+            foreach (array('image_base', 'image_listing', 'image_thumbnail') as $imageType) {
+                if (!isset($data[$imageType])) { // data[imageType] is a string (path to image) not id
+                    continue;
+                }
+                $product->{$imageType} = null;
+            }
 
             $viewed = Zend_Json_Decoder::decode($data['viewed']);
             if (is_array($viewed)) {
@@ -678,7 +677,6 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
             } else {
                 $product->viewed += (int)$viewed;
             }
-            $product->tax_class_id = 1;
 
             $productId = $product->save();
 
@@ -686,28 +684,31 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
             $urlModel = Axis::single('catalog/hurl');
             $data['hurl'] = str_replace(array('\\', '/', ' '), '-', $data['hurl']);
             foreach ($filter_sites as $siteId) {
-                $i = 0;
+                $urlModel->delete("key_type = 'p' AND key_id = {$product->id}");
+                $i   = 0;
                 $url = $data['hurl'];
-                while ($urlModel->hasDuplicate($url)) {
+                while ($urlModel->hasDuplicate($url, $siteId)) {
                     $url = $data['hurl'] . '-' . ++$i;
                 }
                 $urlModel->save(array(
                     'key_word'  => $url,
                     'site_id'   => $siteId,
                     'key_type'  => 'p',
-                    'key_id'    => $productId
+                    'key_id'    => $product->id
                 ));
             }
 
             // create categories if not exist
-            if (!empty($data['path'])) {
+            if (isset($data['path'])) {
                 $paths = explode(',', trim($data['path'], ', '));
                 $modelCategory = Axis::single('catalog/category');
+                $mProductCategory = Axis::single('catalog/product_category');
+                $mProductCategory->delete('product_id = ' . $product->id);
 
                 $catData = array(
-                    'status' => 'enabled',
-                    'modified_on'   => Axis_Date::now()->toSQLString(),
-                    'created_on'    => Axis_Date::now()->toSQLString()
+                    'status'      => 'enabled',
+                    'modified_on' => Axis_Date::now()->toSQLString(),
+                    'created_on'  => Axis_Date::now()->toSQLString()
                 );
 
                 foreach ($paths as $path) {
@@ -717,7 +718,7 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
                         $i = 0;
                         $categoryId = 0;
 
-                        $rootCategory = Axis::single('catalog/category')->getRoot($siteId);
+                        $rootCategory = $modelCategory->getRoot($siteId);
 
                         foreach ($path as $catUrl) {
                             if (!$category = $modelCategory->getByUrl($catUrl, $siteId)) {
@@ -761,19 +762,27 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
                         }
 
                         // product to category linking
-                        Axis::single('catalog/product_category')->insert(array(
-                            'category_id' => $categoryId,
-                            'product_id'  => $productId
-                        ));
+                        $assignment = $mProductCategory->select()
+                            ->where('category_id = ?', $categoryId)
+                            ->where('product_id = ?', $product->id)
+                            ->fetchRow();
+
+                        if (!$assignment) {
+                            $mProductCategory->insert(array(
+                                'category_id' => $categoryId,
+                                'product_id'  => $productId
+                            ));
+                        }
                     }
                 }
             }
 
             // Gallery
-            if (!empty($data['product_gallery'])) {
+            if (isset($data['product_gallery'])) {
                 $imagePathToId = array();
                 $images = explode(',', $data['product_gallery']);
                 $modelImage = Axis::single('catalog/product_image');
+                $modelImage->delete('product_id = ' . $product->id);
                 foreach ($images as $image) {
                     $image = trim($image); // remove line-breaks
                     $imageId = $modelImage->insert(array(
@@ -811,35 +820,24 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
                     $descriptions[$languages[$langCode]][$field] = $value;
                 }
             }
-
-            foreach ($languages as $langId) {
-                if (!isset($descriptions[$langId])) {
-                    continue;
-                }
-                $description = Axis::single('catalog/product_description')->createRow();
-                $description->setFromArray($descriptions[$langId]);
-                $description->product_id = $productId;
-                $description->language_id = $langId;
-                $description->save();
-            }
+            $product->setDescription($descriptions);
 
             // stock
-            $stock = Axis::single('catalog/product_stock')->createRow();
-            $stock->setFromArray(array(
-                'product_id' => $productId,
-                'in_stock' => $data['in_stock']
-            ));
+            $stock = Axis::single('catalog/product_stock')->getRow($product->id);
+            $stock->in_stock = $data['in_stock'];
             $stock->save();
 
             // Attributes
+            $mAttribute = Axis::single('catalog/product_attribute');
 
             // Variations
             if (!empty($data['variations'])) {
                 $variations = Zend_Json_Decoder::decode($data['variations']);
-
+                $mVariation = Axis::single('catalog/product_variation');
+                $mVariation->delete('product_id = ' . $product->id);
                 foreach ($variations as &$variation) {
-                    $pVariation = Axis::single('catalog/product_variation')->createRow();
-                    $pVariation->product_id = $productId;
+                    $pVariation = $mVariation->createRow();
+                    $pVariation->product_id = $product->id;
                     $pVariation->sku = $variation['sku'];
                     list($pVariation->price,
                          $pVariation->price_type) = $this->_valueToModifier($variation['price']);
@@ -862,7 +860,7 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
                             continue;
                         }
 
-                        Axis::single('catalog/product_attribute')->insert(array(
+                        $mAttribute->insert(array(
                             'product_id'      => $productId,
                             'variation_id'    => $variation['id'],
                             'option_id'       => $option->id,
@@ -874,6 +872,7 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
 
             $optionValues = array_slice($data, $optionsIndexStartFrom);
             $i = 0; // used as key for creating new attributes-modifiers
+            $mAttribute->delete('variation_id = 0 AND product_id = ' . $productId);
             while (list($optionName, $optionValue) = each($optionValues)) {
                 if (is_array($optionValue)) {
                     $modifier = $optionValue;
@@ -915,10 +914,9 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
                     $valueId = new Zend_Db_Expr('NULL');
                 }
 
-                $attribute = Axis::single('catalog/product_attribute')->createRow();
-                $attribute->product_id = $productId;
+                $attribute = $mAttribute->createRow();
+                $attribute->product_id = $product->id;
                 $attribute->option_id = $option->id;
-
                 $attribute->option_value_id = $valueId;
                 if ($modifier) {
                     list($attribute->price,
