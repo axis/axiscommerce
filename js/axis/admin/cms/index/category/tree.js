@@ -78,14 +78,14 @@ var CategoryTree = {
         delete baseParams['filter[site][field]'];
         delete baseParams['filter[site][value]'];
 
-        if (category.indexOf('_') === 0) {
+        if (!isNaN(category)) {
+            baseParams['filter[site][field]'] = 'cc.id';
+            baseParams['filter[site][value]'] = category;
+        } else if (category.indexOf('_') === 0) {
             baseParams['filter[site][field]'] = 'cc.site_id';
             baseParams['filter[site][value]'] = node.attributes.site_id;
         } else if (category == 'lost') {
             baseParams['uncategorized'] = 1;
-        } else if (category != 'all') {
-            baseParams['filter[site][field]'] = 'cc.id';
-            baseParams['filter[site][value]'] = category;
         }
 
         PageGrid.el.getStore().reload();
