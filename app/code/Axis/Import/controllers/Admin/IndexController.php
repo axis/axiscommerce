@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Import
- * @subpackage  Axis_Import_Controller
+ * @subpackage  Axis_Import_Admin_Controller
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -28,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Import
- * @subpackage  Axis_Import_Controller
+ * @subpackage  Axis_Import_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Import_Admin_IndexController extends Axis_Admin_Controller_Back
