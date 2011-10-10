@@ -86,6 +86,7 @@ Ext.onReady(function() {
                     name: 'layout',
                     hiddenName: 'layout',
                     store: Page.layoutStore,
+                    initialValue: 'layout_1column',
                     displayField: 'name',
                     valueField: 'id',
                     mode: 'local',
