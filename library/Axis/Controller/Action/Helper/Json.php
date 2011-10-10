@@ -73,7 +73,7 @@ class Axis_Controller_Action_Helper_Json extends Zend_Controller_Action_Helper_J
         }
 
         if ($this->_data) {
-            $data = array_merge($this->_data, $data);
+            $data = array_merge_recursive($this->_data, $data);
         }
 
         $data = $this->encodeJson($data, $keepLayouts);
