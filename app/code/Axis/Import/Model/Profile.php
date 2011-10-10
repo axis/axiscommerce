@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Model
+ * @package     Axis_Import
+ * @subpackage  Axis_Import_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
