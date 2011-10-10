@@ -46,8 +46,7 @@ class Admin_CacheController extends Axis_Admin_Controller_Back
         $data = Axis::single('core/cache')->getList();
         return $this->_helper->json
             ->setData($data)
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function batchSaveAction()
@@ -57,7 +56,7 @@ class Admin_CacheController extends Axis_Admin_Controller_Back
         foreach ($dataset as $_data) {
             $model->save($_data);
         }
-        
+
         Axis::message()->addSuccess(
             Axis::translate('core')->__(
                 'Data was saved successfully'
@@ -67,11 +66,10 @@ class Admin_CacheController extends Axis_Admin_Controller_Back
 
     public function removeAction()
     {
-        $tags = Zend_Json::decode($this->_getParam('data'));
-
         $model = Axis_Core_Model_Cache::getCache();
-        
-        if (null !== $tags) {
+
+        if ($this->_hasParam('data')) {
+            $tags = Zend_Json::decode($this->_getParam('data'));
             $success = $model->clean('matchingAnyTag', $tags);
         } else {
             $success = $model->clean();
@@ -84,7 +82,7 @@ class Admin_CacheController extends Axis_Admin_Controller_Back
                 'Cache was cleared successfully'
             )
         );
-        
+
         return $this->_helper->json->sendSuccess();
     }
 }
