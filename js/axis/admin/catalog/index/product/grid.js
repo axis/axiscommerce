@@ -80,20 +80,28 @@ var ProductGrid = {
         switch (mode) {
             case 'category':
                 url = 'remove-product-from-category';
+                var category = ProductGrid.getCategoryId();
+                if (!category) {
+                    return alert('Select parent category or site, on the left panel'.l());
+                }
                 params = {
                     prodIds: Ext.encode(data),
-                    catId: ProductGrid.getCategoryId()
+                    catId: category
                 };
             break;
             case 'site':
                 url = 'remove-product-from-site';
+                var site = ProductGrid.getSiteId();
+                if (!site) {
+                    return alert('Select parent category or site, on the left panel'.l());
+                }
                 params = {
                     prodIds: Ext.encode(data),
                     siteId: ProductGrid.getSiteId()
                 };
             break;
             case 'db':
-                url = 'remove-product';
+                url = 'remove';
                 params = {
                     data: Ext.encode(data)
                 };
