@@ -233,7 +233,12 @@ Ext.onReady(function() {
                 value = value.split(',');
                 for (var i = 0, n = value.length; i < n; i++) {
                     if (value[i] != '') {
-                        ret.push(dsPages.getById(value[i]).data.name);
+                        var page = dsPages.getById(value[i]);
+                        if (page) {
+                            ret.push(page.get('name'));
+                        } else {
+                            ret.push(value[i]);
+                        }
                     }
                 }
                 ret = ret.join(', ');

@@ -62,10 +62,6 @@ class Axis_Contacts_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('admin/menu')
-            ->add('Customers', null, 60, 'Axis_Account')
-            ->add('Customers->Contact Us', 'contacts_index', 50, 'Axis_Contacts');
-
         Axis::single('admin/acl_resource')
             ->add('admin/contacts', 'Contacts')
             ->add('admin/contacts_index', 'Contact Us')

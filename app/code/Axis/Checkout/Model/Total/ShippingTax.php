@@ -57,6 +57,9 @@ class Axis_Checkout_Model_Total_ShippingTax extends Axis_Checkout_Model_Total_Ab
         }
 
         $address = $checkout->getStorage()->{$taxBasis};
+        if (!$address || !$address->hasCountry()) {
+            return false;
+        }
         $countryId = $address->country->id;
         $zoneId = $address->hasZone() && $address->zone->hasId() ?
             $address->zone->id : null;

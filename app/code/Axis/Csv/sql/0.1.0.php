@@ -66,11 +66,6 @@ class Axis_Csv_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('admin/menu')
-            ->add('Administrate', null, 110, 'Axis_Admin')
-            ->add('Administrate->Import/Export', null, 70)
-            ->add('Administrate->Import/Export->Csv Import/Export', 'csv', 10);
-
         Axis::single('admin/acl_resource')
             ->add('admin/csv', 'Import/Export')
             ->add("admin/csv/delete")
@@ -90,7 +85,6 @@ class Axis_Csv_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('csv_profile_filter')}`;
         ");
 
-        Axis::single('admin/menu')->remove('Administrate->Import/Export->Csv Import/Export');
         Axis::single('admin/acl_resource')
             ->remove('admin/csv');
     }

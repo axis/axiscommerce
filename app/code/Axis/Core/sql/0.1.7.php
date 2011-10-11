@@ -510,17 +510,10 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ;
 
         Axis::single('core/cache')
-            ->add('modules', 0, 864000) //10 days
+            ->add('modules', 1, 864000) //10 days
             ->add('config', 0, 864000)
             ->add('query', 0)
             ->add('Zend_Translate', 1, 864000);
-
-        Axis::single('admin/menu')
-            ->add('Home', 'index', 10, 'Axis_Core')
-            ->add('Design Control', null, 100, 'Axis_Admin')
-            ->add('Design Control->Templates', 'template_index', 10)
-            ->add('Design Control->Email Templates', 'template_mail', 20)
-            ->add('Design Control->Pages', 'pages', 30);
 
         Axis::single('core/page')
             ->add('*/*/*')

@@ -38,17 +38,17 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
      * @var string
      */
     protected $_viewScriptPathSpec = ':module/:controller/:action.:suffix';
-    
+
     /**
      *
-     * @var bool 
+     * @var bool
      */
     protected $_autoAddBasePaths = true;
 
     /**
      *
      * @param bool $auto
-     * @return Axis_Controller_Action_Helper_ViewRenderer 
+     * @return Axis_Controller_Action_Helper_ViewRenderer
      */
     public function autoAddBasePaths($auto = true)
     {
@@ -60,7 +60,7 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
      *
      * @param string $path
      * @param string $prefix
-     * @return Axis_Controller_Action_Helper_ViewRenderer 
+     * @return Axis_Controller_Action_Helper_ViewRenderer
      */
     protected function _autoAddBasePaths($path = null, $prefix = null)
     {
@@ -136,19 +136,19 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $this->_setOptions($options);
 
         $this->_autoAddBasePaths($path, $prefix);
-        
+
         // Register view with action controller (unless already registered)
         if ((null !== $this->_actionController) && (null === $this->_actionController->view)) {
             $this->_actionController->view       = $this->view;
             $this->_actionController->viewSuffix = $this->_viewSuffix;
         }
-        
+
         $this->_initVars();
         $this->_initScriptPaths();
         $this->_initDefaults();
     }
-    
-    protected function _initVars() 
+
+    protected function _initVars()
     {
         $view  = $this->view;
         $request = $this->getRequest();
@@ -161,9 +161,9 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $view->templateName = Axis::single('core/template')->getTemplateNameById($templateId);
         $view->path         = Axis::config('system/path');
         $view->area         = Axis_Area::getArea();
-        
+
         list($view->namespace, $view->moduleName) = explode('_', $request->getModuleName(), 2);
-        
+
 
         $currentUrl = $request->getScheme() . '://'
              . $request->getHttpHost()
@@ -178,7 +178,7 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
             $view->secureUrl : $view->baseUrl;
         $view->catalogUrl   = Axis::config('catalog/main/route');
     }
-    
+
     protected function _initScriptPaths()
     {
         //@TODO every template shoud have own defaults
@@ -187,7 +187,7 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $path  = $view->path;
         $area  = $view->area;
         $theme = $view->templateName;
-        
+
         $view->addFilterPath(
                 $path . '/library/Axis/View/Filter', 'Axis_View_Filter'
             )->addHelperPath(
@@ -232,5 +232,45 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $view->doctype('XHTML1_STRICT');
 
         $view->setEncoding('UTF-8');
+    }
+
+    /**
+     * Render a view script (optionally to a named response segment)
+     * Overriden to add axis_controller_action_render_before event
+     *
+     * Sets the noRender flag to true when called.
+     *
+     * @param  string $script
+     * @param  string $name
+     * @return void
+     */
+    public function renderScript($script, $name = null)
+    {
+        if (null === $name) {
+            $name = $this->getResponseSegment();
+        }
+
+        // before_render event
+        $object = new Axis_Object(array(
+            'request'   => $this->getRequest(),
+            'response'  => $this->getResponse(),
+            'script'    => $script,
+            'name'      => $name
+        ));
+        Axis::dispatch('axis_controller_action_render_before', $object);
+        $prefix = $this->getRequest()->getModuleName()
+            . '_' . $this->getRequest()->getControllerName()
+            . '_' . $this->getRequest()->getActionName();
+        Axis::dispatch(strtolower($prefix) . '_render_before', $object);
+        $script = $object->getScript();
+        $name   = $object->getName();
+        // end of before_render event
+
+        $this->getResponse()->appendBody(
+            $this->view->render($script),
+            $name
+        );
+
+        $this->setNoRender();
     }
 }

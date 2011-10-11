@@ -30,10 +30,6 @@ class Axis_Sitemap_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/menu')
-            ->edit('Sitemap', null, 'sitemap')
-        ;
-
         Axis::single('admin/acl_resource')
             ->rename('admin/sitemap_index/index',  'admin/sitemap/index')
             ->rename('admin/sitemap_index/list',   'admin/sitemap/list')

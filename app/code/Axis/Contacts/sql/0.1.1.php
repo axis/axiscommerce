@@ -30,10 +30,6 @@ class Axis_Contacts_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/menu')
-            ->edit('Contact Us', 'Incoming Box', 'contacts/index')
-        ;
-
         Axis::single('admin/acl_resource')
             ->rename('admin/contacts_index', 'admin/contacts/index')
             ->rename('admin/contacts_index/index',      'admin/contacts/index/index')

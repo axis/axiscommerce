@@ -109,11 +109,10 @@ class Axis_Catalog_Model_Product_Category extends Axis_Db_Table
         return $this->select('*')
             ->joinLeft(
                 'catalog_category_description',
-                'ccd.category_id = cpc.category_id',
+                'ccd.category_id = cpc.category_id AND ccd.language_id = ' . $languageId,
                 '*'
             )
             ->where('cpc.product_id = ?', $productId)
-            ->where('ccd.language_id = ?', $languageId)
             ->fetchAssoc();
     }
 }

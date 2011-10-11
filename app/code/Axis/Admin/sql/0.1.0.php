@@ -32,15 +32,6 @@ class Axis_Admin_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
     {
         $installer = Axis::single('install/installer');
 
-        Axis::single('admin/menu')
-            ->add('Administrate', null, 110, 'Axis_Admin')
-            ->add('Administrate->Configuration', 'configuration', 10)
-            ->add('Administrate->Site', 'site', 20)
-            ->add('Administrate->Admin users', 'users', 30)
-            ->add('Administrate->Roles', 'roles', 40)
-            ->add('Administrate->Cache Management', 'cache', 50)
-            ->add('Administrate->Modules', 'module', 60);
-
         Axis::single('admin/acl_resource')
             ->add('admin', 'All')
             ->add('admin/index', 'Home')

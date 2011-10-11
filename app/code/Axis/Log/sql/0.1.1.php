@@ -85,11 +85,6 @@ class Axis_Log_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->add('log/main/payment', 'Payment log', '/var/logs/payment.log', 'string', 'Path relative to AXIS_ROOT')
             ->add('log/main/shipping', 'Shipping log', '/var/logs/shipping.log', 'string', 'Path relative to AXIS_ROOT');
 
-        Axis::single('admin/menu')
-            ->add('Catalog', null, 20, 'Axis_Catalog')
-            ->add('Catalog->Reports', null, 60, 'Axis_Admin')
-            ->add('Catalog->Reports->Pageviews', 'log', 20, 'Axis_Admin');
-
         Axis::single('admin/acl_resource')
             ->add('admin/log', 'Log Pageviws')
             ->add("admin/log/index")
@@ -112,8 +107,6 @@ class Axis_Log_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')->remove('log/main/enabled');
         Axis::single('core/config_value')->remove('log/main/enabled');
-
-        Axis::single('admin/menu')->remove('Catalog->Reports->Pageviews');
 
         Axis::single('admin/acl_resource')->remove('admin/log');
 

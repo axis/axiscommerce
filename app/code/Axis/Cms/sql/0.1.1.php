@@ -311,12 +311,6 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->add("admin/cms_comment/quick-save")
             ->add("admin/cms_comment/save-comment");
 
-        Axis::single('admin/menu')
-            ->add('CMS', null, 90, 'Axis_Cms')
-            ->add('CMS->Categories/Pages', 'cms_index', 10)
-            ->add('CMS->Static Blocks', 'cms_block', 20)
-            ->add('CMS->Page Comments', 'cms_comment', 30);
-
         Axis::single('core/page')
             ->add('cms/*/*');
     }

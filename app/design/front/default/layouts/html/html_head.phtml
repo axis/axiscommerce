@@ -19,17 +19,17 @@ var Axis = {
 $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->skinUrl('favicon.ico'), 'type' => 'image/x-icon'))
     ->setProxy('axis_core')
     //appendStylesheet(href, media, conditional, extra)
-    ->appendStylesheet('stylesheet.css')
-    ->appendStylesheet('custom.css');
+    ->offsetSetStylesheet(-100, 'stylesheet.css')
+    ->offsetSetStylesheet(-90, 'custom.css');
 
 $this->headLink()
-    ->appendStylesheet('ie.css', 'all', 'IE');
+    ->offsetSetStylesheet(-85, 'ie.css', 'all', 'IE');
     //->appendStylesheet('ielte7.css', 'all', 'lte IE7');
 
 $this->headScript()
     ->setProxy('axis_core')
     //appendStylesheet(src, type, attributes)
-    ->offsetSetFile(-100, 'js/jquery/jquery-1.6.1.min.js')
+    ->offsetSetFile(-100, 'js/jquery/jquery-1.6.4.min.js')
     ->offsetSetFile(-99, 'js/jquery/jquery-validation-1.8.1/jquery.validate.min.js')
     ->appendFile('js/axis/core/script.js')
     ->appendFile('js/axis/catalog/attributes.js')

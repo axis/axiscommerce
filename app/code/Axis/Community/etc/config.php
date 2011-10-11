@@ -24,12 +24,21 @@
  */
 $config = array(
     'Axis_Community' => array(
-        'package' => 'Axis_Catalog',
-        'name' => 'Community',
-        'version' => '0.1.0',
+        'package'  => 'Axis_Community',
+        'name'     => 'Community',
+        'version'  => '0.1.0',
         'required' => 0,
-        'depends' => array(
+        'depends'  => array(
             'Axis_Account' => '0.1.5'
+        ),
+        'events'   => array(
+            'admin_box_navigation_prepare' => array(
+                'prepare_menu' => array(
+                    'type'   => 'model',
+                    'model'  => 'community/observer',
+                    'method' => 'prepareAdminNavigationBox'
+                )
+            )
         )
     )
 );

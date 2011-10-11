@@ -30,18 +30,13 @@ class Axis_Community_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/menu')
-            ->edit('Reviews', null,'community/review')
-            ->edit('Review ratings', null, 'community/rating')
-        ;
-
         Axis::single('admin/acl_resource')
             ->rename('admin/community_rating',          'admin/community/rating')
             ->rename('admin/community_rating/index',    'admin/community/rating/index')
             ->rename('admin/community_rating/get-list', 'admin/community/rating/list')
             ->rename('admin/community_rating/save',     'admin/community/rating/batch-save')
             ->rename('admin/community_rating/delete',   'admin/community/rating/remove')
-            
+
             ->rename('admin/community_review',                   'admin/community/review')
             ->rename('admin/community_review/index',             'admin/community/review/index')
             ->rename('admin/community_review/get-list',          'admin/community/list')

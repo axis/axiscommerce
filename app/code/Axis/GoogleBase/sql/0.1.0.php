@@ -44,10 +44,6 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('gbase/auth/password', 'Password', '', 'handler', 'Password to google account', array('model' => 'Crypt'))
             ->add('gbase/auth/connection', 'Connection type', 'AuthSub', 'select', 'Login type. For ClientLogin fill login and password fields. For AuthSub you will have to enter login and password manually', array('config_options' => 'ClientLogin,AuthSub'));
 
-        Axis::single('admin/menu')
-            ->add('Marketing', null, 40, 'Axis_Admin')
-            ->add('Marketing->Google Base', 'gbase_index', 20, 'Axis_GoogleBase');
-
         Axis::single('admin/acl_resource')
             ->add('admin/gbase', 'Google Base')
             ->add('admin/gbase_index', 'Google Base')
@@ -67,8 +63,6 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')->remove('gbase');
         Axis::single('core/config_value')->remove('gbase');
-
-        Axis::single('admin/menu')->remove('Marketing->Google Base');
 
         Axis::single('admin/acl_resource')
             ->remove('admin/gbase');

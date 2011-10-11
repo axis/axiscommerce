@@ -26,8 +26,8 @@
 $router->addRoute('admin/csv', new Axis_Controller_Router_Route_Back(
     'csv/:action/*',
     array(
-        'module' => 'Axis_Csv',
+        'module'     => 'Axis_Csv',
         'controller' => 'index',
-        'action' => 'index'
+        'action'     => 'index'
     )
 ), 'admin');

@@ -154,14 +154,6 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         Axis::single('account/customer_field')
             ->add(array('nickname' => 'Nickname'), array('community' => 'Community'), array('validator' => 'Alnum', 'axis_validator' => 'Axis_Community_Validate_Nickname'));
 
-        Axis::single('admin/menu')
-            ->add('Catalog', null, 20, 'Axis_Catalog')
-            ->add('Catalog->Community', null, 40, 'Axis_Community')
-            ->add('Catalog->Community->Reviews', 'community_review', 10)
-            ->add('Catalog->Community->Review ratings', 'community_rating', 20);
-            //->add('Catalog->Community->Image', 'community_image', 30)
-            //->add('Catalog->Community->Video', 'community_video', 40);
-
         Axis::single('core/page')
             ->add('community/*/*')
             ->add('community/review/*')
@@ -210,7 +202,6 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('community_review_rating_title')}`;
         ");
 
-        Axis::single('admin/menu')->remove('Catalog->Community');
         Axis::single('core/config_field')->remove('community');
         Axis::single('core/config_value')->remove('community');
         Axis::single('account/customer_field')->remove('nickname');

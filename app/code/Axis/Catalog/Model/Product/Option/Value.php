@@ -36,9 +36,9 @@ class Axis_Catalog_Model_Product_Option_Value extends Axis_Db_Table
     protected $_name = 'catalog_product_option_value';
     protected $_dependentTables = array('Axis_Catalog_Model_Product_Option_Value_Text');
     protected $_referenceMap    = array(
-        'Option' => array(
-            'columns'           => 'option_id',
-            'refTableClass'     => 'Axis_Catalog_Model_Product_Option',
+        'Valueset' => array(
+            'columns'           => 'valueset_id',
+            'refTableClass'     => 'Axis_Catalog_Model_Product_Option_Valueset',
             'refColumns'        => 'id'
         )
     );

@@ -22,7 +22,7 @@
 
 Ext.form.BasicForm.override({
 
-    trackResetOnLoad: true,
+    trackResetOnLoad: false,
 
     invalidTabs: [],
 
@@ -113,15 +113,6 @@ Ext.form.BasicForm.override({
         return field || null;
     },
 
-
-    reset: function() {
-        this.items.each(function(f){
-            f.reset();
-        });
-        this.resetValidationMessages();
-        return this;
-    },
-
     clear: function() {
         clearField = function(f) {
             if ('compositefield' === f.xtype && f.items.each) {
@@ -133,9 +124,6 @@ Ext.form.BasicForm.override({
             } else {
                 f.value = value;
             }
-            if (f.clearInvalid) {
-                f.clearInvalid();
-            }
         };
 
         this.items.each(clearField);
@@ -145,22 +133,23 @@ Ext.form.BasicForm.override({
     },
 
     resetValidationMessages: function() {
-        clearInvalid = function(f) {
-            if ('compositefield' === f.xtype && f.items.each) {
-                f.items.each(clearField);
-            }
-            if (f.clearInvalid) {
-                f.clearInvalid();
-            }
-        };
+        // clearInvalid = function(f) {
+            // if ('compositefield' === f.xtype && f.items.each) {
+                // f.items.each(clearField);
+            // }
+            // if (f.clearInvalid) {
+                // f.clearInvalid();
+            // }
+        // };
 
-        this.items.each(clearInvalid);
+        // this.items.each(clearInvalid);
 
         $('#' + this.id + ' .error').removeClass('error');
     },
 
     setValues: function(values) {
-        //this.resetValidationMessages();
+        this.resetValidationMessages();
+
         if(Ext.isArray(values)){ // array of objects
             for(var i = 0, len = values.length; i < len; i++){
                 var v = values[i];
@@ -176,7 +165,6 @@ Ext.form.BasicForm.override({
             var field, id;
             for(id in values){
                 if(!Ext.isFunction(values[id]) && (field = this.findField(id))){
-//                    console.log(id);
                     // modification start
                     if (field.xtype == 'langset' && (fi = field.getField(id))) {
                         field.setValue(id, values[id]);

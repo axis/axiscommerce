@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Controller
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Admin_Controller
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,8 +27,8 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Controller
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Admin_ConfigValueController extends Axis_Admin_Controller_Back
@@ -169,7 +169,7 @@ class Admin_ConfigValueController extends Axis_Admin_Controller_Back
             } else {
                 $_value = $row->value;
             }
-            
+
             $data[$row->id]['value'] = $_value;
             $data[$row->id]['from'] = $row->site_id ? 'site' : 'global';
         }
@@ -284,7 +284,7 @@ class Admin_ConfigValueController extends Axis_Admin_Controller_Back
         $pathItems = Zend_Json::decode($this->_getParam('pathItems'));
         $where = array($this->db->quoteInto('site_id = ?', $siteId));
         $model = Axis::single('core/config_value');
-        
+
         foreach ($pathItems as $path) {
             $where[1] = $this->db->quoteInto('path = ?', $path);
             $model->delete($where);

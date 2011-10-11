@@ -45,7 +45,7 @@
 
         $this->headScript()
             ->setProxy('axis_core')
-            ->offsetSetFile(-100, 'js/jquery/jquery-1.6.1.min.js')
+            ->offsetSetFile(-100, 'js/jquery/jquery-1.6.4.min.js')
             ->offsetSetFile(-98, 'js/ext-3.3.1/adapter/jquery/ext-jquery-adapter.js')
             ->offsetSetFile(-96, 'js/ext-3.3.1/ext-all-debug.js')
             ->offsetSetFile(-94, 'js/ext-3.3.1/examples/ux/ux-all-debug.js')
@@ -116,7 +116,7 @@
 
         <div class="navigation-container">
             <div class="navigation">
-                <?php echo $this->menu() ?>
+                <?php echo $this->box('admin/navigation')->render(); ?>
             </div>
         </div>
 
@@ -156,7 +156,7 @@
                     ?>
                 </p>
                 <p class="bugs"><?php echo $this->translate('core')->__("Report any %s you've found", "<a href='http://github.com/axis/axiscommerce/issues' onclick='window.open(this.href); return false;' title='" . $this->translate('core')->__('Report') . "'>" . $this->translate('core')->__('Bugs or Issues') . "</a>") ?></p>
-                <p class="powered"><?php echo $this->translate('core')->__("Powered by %s v. %s", "<a href='http://www.axiscommerce.com' onclick='window.open(this.href); return false;' title='Axis'>Axis</a>", Axis::app()->getVersion()) ?></p>
+                <p class="powered"><?php echo $this->translate('core')->__("Powered by %s v.%s", "<a href='http://axiscommerce.com' onclick='window.open(this.href); return false;' title='Axis'>Axis</a>", Axis::app()->getVersion()) ?></p>
             </div>
         </div>
 

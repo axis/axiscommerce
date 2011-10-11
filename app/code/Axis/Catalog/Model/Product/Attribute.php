@@ -41,19 +41,22 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
     );
     protected $_referenceMap = array(
         'Product' => array(
-            'columns'           => 'product_id',
-            'refTableClass'     => 'Axis_Catalog_Model_Product',
-            'refColumns'        => 'id'
+            'columns'       => 'product_id',
+            'refTableClass' => 'Axis_Catalog_Model_Product',
+            'refColumns'    => 'id',
+            'onDelete'      => self::CASCADE
         ),
         'Variation' => array(
-            'columns'           => 'variation_id',
-            'refTableClass'     => 'Axis_Catalog_Model_Product_Variation',
-            'refColumns'        => 'id'
+            'columns'       => 'variation_id',
+            'refTableClass' => 'Axis_Catalog_Model_Product_Variation',
+            'refColumns'    => 'id',
+            'onDelete'      => self::CASCADE
         ),
         'Option' => array(
-            'columns'           => 'option_id',
-            'refTableClass'     => 'Axis_Catalog_Model_Product_Option',
-            'refColumns'        => 'id'
+            'columns'       => 'option_id',
+            'refTableClass' => 'Axis_Catalog_Model_Product_Option',
+            'refColumns'    => 'id',
+            'onDelete'      => self::CASCADE
         )
     );
 

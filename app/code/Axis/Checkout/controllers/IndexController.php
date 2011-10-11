@@ -60,7 +60,7 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
 
         $checkout   = $this->_getCheckout();
         $orderId    = $checkout->getOrderId();
-        $order      = axis::model('sales/order')->find($orderId)->current();
+        $order      = Axis::model('sales/order')->find($orderId)->current();
         if (!$order instanceof Axis_Sales_Model_Order_Row) {
             $this->_redirect('checkout/onestep');
         }

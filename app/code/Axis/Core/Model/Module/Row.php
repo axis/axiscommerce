@@ -300,6 +300,7 @@ class Axis_Core_Model_Module_Row extends Axis_Db_Table_Row
 
         if (!$this->isInstalled()) {
             // save row
+            $this->is_active = 1;
             $this->save();
         }
 

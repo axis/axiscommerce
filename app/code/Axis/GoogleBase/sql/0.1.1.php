@@ -30,11 +30,6 @@ class Axis_GoogleBase_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-
-        Axis::single('admin/menu')
-            ->edit('Google Base', null, 'googlebase')
-        ;
-
         Axis::single('admin/acl_resource')
             ->rename('admin/gbase', 'admin/googlebase')
             ->rename('admin/gbase_index/index', 'admin/googlebase/index')
@@ -45,8 +40,7 @@ class Axis_GoogleBase_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/gbase_index/revoke-token', 'admin/googlebase/revoke-token')
             ->rename('admin/gbase_index/set-status', 'admin/googlebase/set-status')
             ->rename('admin/gbase_index/update', 'admin/googlebase/update')
-            ->remove('admin/gbase_index')
-        ;
+            ->remove('admin/gbase_index');
     }
 
     public function down()

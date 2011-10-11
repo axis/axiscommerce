@@ -95,4 +95,37 @@ class Axis_Sales_Model_Observer
             return false;
         }
     }
+
+    public function prepareAdminNavigationBox(Axis_Admin_Box_Navigation $box)
+    {
+        $box->addItem(array(
+            'sales' => array(
+                'label'         => 'Sales',
+                'order'         => 30,
+                'translator'    => 'Axis_Sales',
+                'uri'           => '#',
+                'pages' => array(
+                    'sales/order' => array(
+                        'label'         => 'Orders',
+                        'order'         => 10,
+                        'module'        => 'Axis_Sales',
+                        'controller'    => 'order',
+                        'route'         => 'admin/sales'
+                    )
+                )
+            ),
+            'locale' => array(
+                'pages' => array(
+                    'sales/order-status' => array(
+                        'label'         => 'Order statuses',
+                        'order'         => 30,
+                        'translator'    => 'Axis_Sales',
+                        'module'        => 'Axis_Sales',
+                        'controller'    => 'order-status',
+                        'route'         => 'admin/sales'
+                    )
+                )
+            )
+        ));
+    }
 }

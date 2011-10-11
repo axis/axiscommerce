@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Controller
+ * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Admin_Controller
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,8 +27,8 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Admin
- * @subpackage  Axis_Admin_Controller
+ * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
@@ -246,9 +246,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
 
         /* get categories with marker 'belongs_to' */
         $categories = Axis::single('catalog/category')->getNestedTreeData();
-        $productCategories = Axis::single('catalog/product_category')
-            ->getCategoriesByProductIds(array($product->id));
-        $data['belongs_to'] = $productCategories[$product->id];
+        $data['belongs_to'] = array_keys($product->getCategories());
         foreach ($categories as &$category) {
             if (in_array($category['id'], $data['belongs_to'])) {
                 $category['belongs_to'] = 1;
@@ -467,6 +465,8 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
 
     public function saveImageAction()
     {
+        $this->_helper->layout->disableLayout();
+
         try {
             $uploader = new Axis_File_Uploader('image');
             $file = $uploader

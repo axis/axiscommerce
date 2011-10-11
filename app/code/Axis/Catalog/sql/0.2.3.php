@@ -456,15 +456,6 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add("admin/catalog_category/move")
             ->add("admin/catalog_category/save");
 
-        Axis::single('admin/menu')
-            ->add('Catalog', null, 20, 'Axis_Catalog')
-            ->add('Catalog->Product Catalog', 'catalog_index', 10)
-            ->add('Catalog->Product Attributes', null, 20)
-            ->add('Catalog->Product Attributes->Attributes', 'catalog_product-attributes', 10)
-            ->add('Catalog->Product Attributes->Value Sets', 'catalog_product-option-valueset', 20)
-            ->add('Catalog->Product Brands', 'catalog_manufacturer', 30)
-            ;
-
         Axis::single('core/page')
             ->add('catalog/*/*')
             ->add('catalog/index/*')

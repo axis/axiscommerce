@@ -27,9 +27,9 @@ var TaxRate = {
     create: function () {
         TaxRate.grid.stopEditing();
         var record = new TaxRate.record({
-            tax_class_id        : '',
-            geozone_id          : '',
-            customer_group_id   : '',
+            tax_class_id        : tax_classes[0] ? tax_classes[0].id : '',
+            geozone_id          : zones[0] ? zones[0].id : '',
+            customer_group_id   : customer_groups[0] ? customer_groups[0].id : '',
             rate                : 0,
             description         : '',
             type                : 'new'
@@ -113,19 +113,19 @@ Ext.onReady(function() {
     ]);
 
     dsGeozone = new Ext.data.JsonStore({
-        id: 'id',
+        idProperty: 'id',
         fields: ['id', 'name'],
         data: zones
     });
 
     dsCustomerGroups = new Ext.data.JsonStore({
-        id: 'id',
+        idProperty: 'id',
         fields: ['id', 'name'],
         data: customer_groups
     });
 
     dsTaxClass = new Ext.data.JsonStore({
-        id: 'id',
+        idProperty: 'id',
         fields: ['id', 'name'],
         data: tax_classes
     });

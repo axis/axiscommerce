@@ -26,8 +26,8 @@
 $router->addRoute('admin/import', new Axis_Controller_Router_Route_Back(
     'import/:action/*',
     array(
-        'module' => 'Axis_Import',
+        'module'     => 'Axis_Import',
         'controller' => 'index',
-        'action' => 'index'
+        'action'     => 'index'
     )
 ), 'admin');
