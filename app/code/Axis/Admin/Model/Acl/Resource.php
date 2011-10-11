@@ -113,6 +113,9 @@ class Axis_Admin_Model_Acl_Resource extends Axis_Db_Table
             ->fetchRow();
         if ($row) {
             $row->resource_id = $newResource;
+            if ($oldResource == $row->title) {
+                $row->title = $newResource;
+            }
             $row->save();
         }
         
