@@ -25,221 +25,184 @@ Ext.onReady(function(){
     var Role = {
 
         id: null,
-
-        load: function(node, e) {
+        load: function(node, e) {            
             if (node.id == '0') {
-                Ext.getCmp('remove-role-button').disable();
                 return;
             }
             Role.id = node.id;
-            Ext.getCmp('save-role-button').enable();
-            Ext.getCmp('remove-role-button').enable();
-            Ext.Ajax.request({
-                method: 'post',
-                url: Axis.getUrl('role/load'),
-                params: {
-                    id: node.id
-                },
-                success: Role.init
-            });
+            console.log('load role' + Role.id);
         },
-
-        template: new Ext.Template.from('parent-role-tpl'),
-
-        init: function(response, options) {
-            Role.resetForm();
-            var obj = Ext.decode(response.responseText);
-            $('#roleId').val(obj.data.id);
-            $('#roleName').val(obj.data.name);
-
-            // enable possible checkboxes
-            for (var i in obj.data.possibleParents) {
-                var role = obj.data.possibleParents[i];
-                Role.template.append('parent-roles', {
-                    id: role['id'],
-                    name: role['role_name']
-                });
-            }
-
-            // load parent allows if parent roles was changed
-            $('#parent-roles input').change(function(){
-                Role.loadParentAllows();
-            });
-
-            // set checked for current parents
-            for (var i = 0, n = obj.data.parents.length;  i < n; i++) {
-                $('#role-' + obj.data.parents[i]).attr('checked', 'checked');
-            }
-
-            // check rules
-            $('#role-rules input').removeAttr('checked');
-
-            // colorize parent rules
-            Role.markParentRules(obj.data.parentAllows);
-
-            for (var i = 0, n = obj.data.rules.length; i < n; i++) {
-                var rule = obj.data.rules[i];
-                var id = rule['resource_id'].replace(/\//g, '-');
-                $('#' + rule['permission'] + '-' + id).attr('checked', 'checked');
-            }
+        add: function() {
+            form.getForm().clear();
+            windowRole.show();
         },
-
-        markParentRules: function(allows) {
-            // clear old
-            $('#role-rules .parentAllowed').removeClass('parentAllowed');
-            // mark new
-            for (var i = 0, n = allows.length; i < n; i++) {
-                var id = allows[i].replace(/\//g, '-');
-                $('#' + id).addClass('parentAllowed')
-                $('#allow-' + id).attr('checked', 'checked');
-            }
+        edit: function() {
+            form.getForm().clear();
+            form.getForm().load({
+                url:   Axis.getUrl('role/load'),
+                params: {id: Role.id},
+                method: 'post'
+            });
+            windowRole.show();
         },
 
         save: function() {
-            if (Role.id == null) {
-                alert('Select role for edit');
-                return;
-            }
-            Ext.Ajax.request({
-                url: Axis.getUrl('role/save'),
-                params : {
-                    roleId: Role.id
-                },
-                form: 'form-role'
-            });
-        },
-
-        add: function() {
-            var name = $('#new-role-name');
-            Ext.Ajax.request({
-                url: Axis.getUrl('role/add'),
-                params: {
-                    'roleName': name.val()
-                },
-                success: function(response) {
-                    data = Ext.decode(response.responseText);
-                    Ext.getCmp('remove-role-button').disable();
-
-                    tree.getRootNode().appendChild(new Ext.tree.TreeNode({
-                        'id': data.id,
-                        text: name.val()
-                    }));
-
-                    Role.template.append('parent-roles', {'id': data.id, 'name': name.val()});
-
-                    name.val('');
-                    //tree.getRootNode().reload();
-                    //Role.loadParent();
+            form.getForm().submit({
+                method: 'post',
+                success: function(form, response) {
+                    rootNode.reload();
+                    windowRole.hide();
                 }
             });
         },
 
         remove: function() {
-            var node = tree.getSelectionModel().getSelectedNode();
-
             if (!node || !confirm('Are you sure?'.l())) {
                 return;
             }
 
             Ext.Ajax.request({
                 url: Axis.getUrl('role/remove'),
-                params: {
-                    'roleId': node.id
-                },
+                params: {'id': Role.id},
+                method: 'post',
                 success: function() {
-                    Ext.getCmp('remove-role-button').disable();
-                    Ext.getCmp('save-role-button').disable();
-                    tree.getRootNode().reload();
-                    Role.resetForm();
-                    Ext.getCmp('save-role-button').disable();
-                }
-            });
-        },
-
-        resetForm: function() {
-            $('#parent-roles').empty();
-            $('#role-rules .parentAllowed').removeClass('parentAllowed');
-        },
-
-        loadParent: function() {
-            Ext.Ajax.request({
-                url: Axis.getUrl('role/list'),
-                success: function(response, options) {
-                    $('#parent-roles').html(response.responseText);
-                    $('#parent-roles input').change(function(){
-                        Role.loadParentAllows();
-                    });
-                }
-            });
-        },
-
-        loadParentAllows: function() {
-            var parents = [];
-            $('#parent-roles input').each(function(){
-                if (this.checked)
-                    parents.push(this.value);
-            });
-
-            Ext.Ajax.request({
-                url: Axis.getUrl('role/list-parent'),
-                params: {
-                    'parents': Ext.encode(parents)
-                },
-                success: function(response, options) {
-                    var allows = Ext.decode(response.responseText);
-                    Role.markParentRules(allows);
+                    rootNode.reload();
                 }
             });
         }
     };
     Axis.Role = Role;
 
-    var treeToolBar = new Ext.Toolbar();
-    treeToolBar.addText('Add'.l());
-    treeToolBar.addField(new Ext.form.TextField({
-        id: 'new-role-name'
-    }));
-    treeToolBar.addButton({
-        icon: Axis.skinUrl + '/images/icons/add.png',
-        cls: 'x-btn-icon',
-        handler : Role.add
-    });
-    treeToolBar.addButton({
-        id: 'remove-role-button',
-        icon: Axis.skinUrl + '/images/icons/delete.png',
-        cls: 'x-btn-icon',
-        handler : Role.remove,
-        tooltip: 'Remove'.l(),
-        disabled: true
-    });
-
-    var tree = new Ext.tree.TreePanel({
-        width: 230,
-        useArrows:true,
-        autoScroll:true,
-        animate: false,
-        collapsible: true,
-        collapseMode: 'mini',
-        header: false,
-        region: 'west',
-        split: true,
-        loader: new Ext.tree.TreeLoader({
-            dataUrl: Axis.getUrl('role/list')
-        }),
-        tbar: treeToolBar
-    });
-
-    // set the root node
     var rootNode = new Ext.tree.AsyncTreeNode({
         text: 'Roles'.l(),
         draggable:false,
         id: '0'
     });
-    tree.setRootNode(rootNode);
+    
+    var tree = new Ext.tree.TreePanel({
+        collapseMode: 'mini',
+        collapsible: true,
+        header: false,
+        split: true,
+        region: 'west',
+        width: 230,
+//        height: 550,
+        useArrows:true,
+        autoScroll:true,
+        root: rootNode,
+        rootVisible: false,
+        animate: false,
+        containerScroll: true,
+        loader: new Ext.tree.TreeLoader({
+            dataUrl: Axis.getUrl('role/list')
+        }),
+        tbar: {
+            enableOverflow: true,
+            items: [{
+                text: 'Add'.l(),
+                icon: Axis.skinUrl + '/images/icons/add.png',
+                handler: Role.add
+            }, {
+                text: 'Edit'.l(),
+                icon: Axis.skinUrl + '/images/icons/page_edit.png',
+                handler: Role.edit
+            }, {
+                text: 'Delete'.l(),
+                icon: Axis.skinUrl + '/images/icons/delete.png',
+                handler: Role.remove
+            }, '->', {
+                icon: Axis.skinUrl + '/images/icons/refresh.png',
+                handler: function(){
+                    tree.getLoader().load(tree.getRootNode(), function(){
+                        tree.getRootNode().expand();
+                    });
+                }
+            }]
+        }
+    });
     tree.on('click', Role.load);
-
     rootNode.expand();
+    
+    var fields = [
+        {name: 'role[id]',         type: 'int',  mapping: 'role.id'},
+        {name: 'role[role_name]',                mapping: 'role.role_name'},
+        {name: 'role[sort_order]', type: 'int',  mapping: 'role.sort_order'}
+    ];
+    
+    var form = new Axis.FormPanel({
+        url: Axis.getUrl('role/save'),
+        defaults: {
+            anchor: '100%'
+        },
+        border: false,
+        bodyStyle: 'padding: 10px 5px 0',
+        defaultType: 'textfield',
+        reader      : new Ext.data.JsonReader({
+            root        : 'data',
+            idProperty  : 'role.id'
+        }, fields),
+        items: [{
+            fieldLabel: 'Name'.l(),
+            name: 'role[role_name]',
+            allowBlank:false
+        },{
+            fieldLabel: 'Sort Order'.l(),
+            name: 'role[sort_order]',
+            allowBlank:false
+        }, {
+            xtype: 'hidden',
+            name: 'role[id]'
+        }]
+    });
 
+    var windowRole = new Axis.Window({
+        width: 250,
+        height: 160,
+        title: 'Role'.l(),
+        buttons: [{
+            text: 'Save'.l(),
+            handler: Role.save
+        }, {
+            text: 'Cancel'.l(),
+            handler: function(){
+                windowRole.hide();
+            }
+        }],
+        items: form
+    });
+    
+    var ds = new Ext.ux.maximgb.treegrid.AdjacencyListStore({
+        autoLoad: true,
+        reader: new Ext.data.JsonReader({
+            idProperty: 'id'
+        }, [
+            {name: 'id'}, // this is not integer
+            {name: 'leaf'},
+            {name: 'text'},
+            {name: 'code'},
+            {name: 'option_code'},
+            {name: 'option_name'},
+            {name: 'value_name'},
+            {name: 'input_type', type: 'int'},
+            {name: 'languagable', type: 'int'},
+            {name: 'option_id', type: 'int'},
+            {name: 'value_id', type: 'int'},
+            {name: 'parent'}
+        ]),
+        paramNames: {
+            active_node: 'node'
+        },
+        leaf_field_name: 'leaf',
+        parent_id_field_name: 'parent',
+        url: Axis.getUrl('catalog/product-option/nlist'),
+        listeners: {
+            load: {
+                scope: this,
+                fn: this.onLoad
+            }
+        }
+    });
+    
     var rolesPanel = new Ext.Panel({
         autoScroll: true,
         maskDisabled: true,
@@ -257,11 +220,14 @@ Ext.onReady(function(){
             disabled: true
         }]
     });
+    
+    
 
     new Axis.Panel({
         items: [
             tree,
-            rolesPanel
+//            rolesPanel,
+//            treeResources
         ]
     });
 

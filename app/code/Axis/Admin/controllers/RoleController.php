@@ -36,7 +36,7 @@ class Axis_Admin_RoleController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Roles');
-        $this->view->resources = Axis::single('admin/acl_resource')->getTree();
+//        $this->view->resources = Axis::single('admin/acl_resource')->getTree();
         $this->render();
     }
  
@@ -55,31 +55,125 @@ class Axis_Admin_RoleController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendRaw($data);
     }
     
+    public function list1Action() 
+    {
+        function scanDirectory($path) {
+            $dir = dir($path);
+            $files = array();
+            while (false !== ($file = $dir->read())) {
+                if ($file != '.' && $file != '..') {
+                    if (!is_link("$path/$file") && is_dir("$path/$file")) {
+                        $files = array_merge($files, scanDirectory("$path/$file"));
+                    } else {
+                        $files[] = "$path/$file";
+                    }
+                }
+            }
+            $dir->close();
+            
+            return $files;
+        }
+        
+        foreach (Axis::app()->getModules() as $moduleName => $path) {
+            if ('Axis_Admin' === $moduleName) {
+                $path = $path . '/controllers';
+            } else  {
+                $path = $path . '/controllers/Admin';
+            }
+            if (!is_dir($path)) {
+                continue;
+            }
+            foreach(scanDirectory($path) as $file) {
+
+                if (strstr($file, "Controller.php" ) == false) {
+                    continue;
+                }
+                include_once $file;
+            }
+        }
+        
+        $camelCaseToDash = new Zend_Filter_Word_CamelCaseToDash();
+        $acl = array();
+        foreach (get_declared_classes() as $class) { 
+            if (!is_subclass_of($class, 'Axis_Admin_Controller_Back')) {
+                continue;
+            }
+            list($module, $controller) = explode('Admin_', $class, 2);
+            
+            $module = rtrim($module, '_');
+            if (empty($module)) {
+                $module = 'Axis_Core';
+            } elseif ('Axis' === $module) {
+                $module = 'Axis_Admin';
+            }
+            $module = strtolower($camelCaseToDash->filter($module));
+            
+            $controller = substr($controller, 0, strpos($controller, "Controller"));
+            $controller = strtolower($camelCaseToDash->filter($controller));
+            foreach(get_class_methods($class) as $action) {
+                if (false == strstr($action, "Action")) {
+                    continue;
+                }
+                $action = substr($action, 0, strpos($action, 'Action'));
+                $action = strtolower($camelCaseToDash->filter($action));
+                $acl[$module][$controller][] = $action;
+            }
+        }
+        
+        $resources = array();
+        $resources[] = 'admin';
+        foreach ($acl as $module => $controllers) {
+            $resources[] = 'admin/' . $module;
+            foreach ($controllers as $controller => $actions) {
+                $resources[] = 'admin/' . $module . '/' . $controller;
+                foreach ($actions as $action) {
+                    $resources[] = 'admin/' . $module . '/' . $controller . '/' . $action;
+                }
+            }
+        }
+        
+//        Zend_Debug::dump($acl);
+        Zend_Debug::dump($resources);
+        
+    }
+    
     public function loadAction()
     {
-        $roleId   = $this->_getParam('id');
-        $model    = Axis::model('admin/acl_role');
-        $modelAcl = Axis::single('admin/acl');
-
-        $row = $model->find($roleId)->current();
-
-        $parents = $model->getParents($roleId);
-        $data = array(
-            'id'              => $row->id,
-            'name'            => $row->role_name,
-            'possibleParents' => (object) $model->getPossibleParents($roleId),
-            'parents'         => $parents,
-            'parentAllows'    => $modelAcl->getParentRolesAllows($parents),
-            'rules'           => $model->getRules($roleId)
-        );
-
+        $id    = $this->_getParam('id');
+        $row   = Axis::model('admin/acl_role')->find($id)->current();
+        $data  = array('role' => $row->toArray());
+        
         return $this->_helper->json
             ->setData($data)
             ->sendSuccess();
+//        $modelAcl = Axis::single('admin/acl');
+//        $parents = $model->getParents($roleId);
+//        $data = array(
+//            'id'              => $row->id,
+//            'name'            => $row->role_name,
+//            'possibleParents' => (object) $model->getPossibleParents($roleId),
+//            'parents'         => $parents,
+//            'parentAllows'    => $modelAcl->getParentRolesAllows($parents),
+//            'rules'           => $model->getRules($roleId)
+//        );
+
     }
     
     public function saveAction()
     {
+        $data = $this->_getParam('role');
+        
+        Axis::model('admin/acl_role')->getRow($data)
+            ->save();
+        
+        Axis::message()->addSuccess(
+            Axis::translate('admin')->__(
+                'Role was saved successfully'
+            )
+        );
+        return $this->_helper->json
+            ->sendSuccess();
+        
         $model       = Axis::model('admin/acl_role');
         $modelParent = Axis::model('admin/acl_role_parent');
         $modelRule   = Axis::model('admin/acl_rule');
@@ -131,27 +225,11 @@ class Axis_Admin_RoleController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
 
-    public function addAction()
-    {
-        $row = Axis::model('admin/acl_role')->createRow();
-        $row->role_name = $this->_getParam('roleName');
-        $row->save();
-
-        Axis::message()->addSuccess(
-            Axis::translate('admin')->__(
-                'Role was added successfully'
-            )
-        );
-        return $this->_helper->json
-            ->setId($row->id)
-            ->sendSuccess();
-    }
-
     public function removeAction()
     {
-        $roleId = $this->_getParam('roleId');
+        $id = $this->_getParam('id');
         Axis::model('admin/acl_role')->delete(
-            $this->db->quoteInto('id = ?', $roleId)
+            $this->db->quoteInto('id = ?', $id)
         );
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
