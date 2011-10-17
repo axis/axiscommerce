@@ -22,6 +22,15 @@
 
 Ext.namespace('Axis', 'Axis.Role');
 Ext.onReady(function(){
+    
+//    var Rules = {
+//        load: function() {
+//            storeRules.load({
+//                'role_id': Role.id
+//            });
+//        }
+//    };
+    
     var Role = {
 
         id: null,
@@ -30,7 +39,48 @@ Ext.onReady(function(){
                 return;
             }
             Role.id = node.id;
+//            Rules.load();
             console.log('load role' + Role.id);
+            
+            storeRules.load({
+                params: {
+                    'roleId': Role.id
+                }, 
+                callback : function(records, options, success) {
+                    if (!success) {
+                        return;
+                    }
+                    var store = Ext.StoreMgr.lookup('store-resource');
+                    var data = [];
+                    store.each(function(resource, i) {
+                        data[i] = resource.data;
+                        data[i]['allow'] = 0;
+                        data[i]['deny'] = 0;
+                        Ext.each(records, function(rule, j) {
+                            if (resource.get('id') == rule.get('resource_id')) {
+                                if (rule.get('permission') == 'allow') {
+                                    data[i]['allow'] = 1;
+                                } else {
+                                    data[i]['deny'] = 1;
+                                } 
+//                                delete(records[j]);
+                            }
+                        });
+                    });
+//                    console.log(data);
+                    store.loadData(data, false);
+//                    console.log(store);
+//                    Ext.each(records, function(record) {
+//                        var resource = record.get('resource_id');
+//                        console.log(resource);
+//                        var row = store.get('id', recource);
+//                        console.log(row);
+////                        record.get('permission');
+//                        
+//                        
+//                    });
+                }
+            });
         },
         add: function() {
             form.getForm().clear();
@@ -39,7 +89,7 @@ Ext.onReady(function(){
         edit: function() {
             form.getForm().clear();
             form.getForm().load({
-                url:   Axis.getUrl('role/load'),
+                url:   Axis.getUrl('acl-role/load'),
                 params: {id: Role.id},
                 method: 'post'
             });
@@ -57,12 +107,12 @@ Ext.onReady(function(){
         },
 
         remove: function() {
-            if (!node || !confirm('Are you sure?'.l())) {
+            if (!confirm('Are you sure?'.l())) {
                 return;
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('role/remove'),
+                url: Axis.getUrl('acl-role/remove'),
                 params: {'id': Role.id},
                 method: 'post',
                 success: function() {
@@ -94,7 +144,7 @@ Ext.onReady(function(){
         animate: false,
         containerScroll: true,
         loader: new Ext.tree.TreeLoader({
-            dataUrl: Axis.getUrl('role/list')
+            dataUrl: Axis.getUrl('acl-role/list')
         }),
         tbar: {
             enableOverflow: true,
@@ -130,7 +180,7 @@ Ext.onReady(function(){
     ];
     
     var form = new Axis.FormPanel({
-        url: Axis.getUrl('role/save'),
+        url: Axis.getUrl('acl-role/save'),
         defaults: {
             anchor: '100%'
         },
@@ -171,22 +221,18 @@ Ext.onReady(function(){
         items: form
     });
     
-    var ds = new Ext.ux.maximgb.treegrid.AdjacencyListStore({
+    var storeResource = new Ext.ux.maximgb.treegrid.AdjacencyListStore({
+        storeId: 'store-resource',
         autoLoad: true,
+        mode: 'local',
         reader: new Ext.data.JsonReader({
             idProperty: 'id'
         }, [
             {name: 'id'}, // this is not integer
+            {name: 'text'}, 
             {name: 'leaf'},
-            {name: 'text'},
-            {name: 'code'},
-            {name: 'option_code'},
-            {name: 'option_name'},
-            {name: 'value_name'},
-            {name: 'input_type', type: 'int'},
-            {name: 'languagable', type: 'int'},
-            {name: 'option_id', type: 'int'},
-            {name: 'value_id', type: 'int'},
+            {name: 'deny'},
+            {name: 'allow'},
             {name: 'parent'}
         ]),
         paramNames: {
@@ -194,40 +240,107 @@ Ext.onReady(function(){
         },
         leaf_field_name: 'leaf',
         parent_id_field_name: 'parent',
-        url: Axis.getUrl('catalog/product-option/nlist'),
-        listeners: {
-            load: {
-                scope: this,
-                fn: this.onLoad
+        url: Axis.getUrl('acl-resource/list'),
+//        listeners: {
+//            load: {
+//                scope: this,
+//                fn: this.onLoad
+//            }
+//        }
+    });
+
+    var denyColumn = new Axis.grid.CheckColumn({
+        dataIndex: 'deny',
+        header: 'Deny'.l(),
+        width: 100,
+        onMouseDown: function(e, t) {
+            var index = this.grid.getView().findRowIndex(t);
+            
+            Axis.grid.CheckColumn.prototype.onMouseDown.call(this, e, t);
+            
+            if(t.className && t.className.indexOf('x-grid3-cc-'+this.id) != -1){
+                var record = this.grid.store.getAt(index);
+                if (record.data[this.dataIndex] == this.fields.enabled) {
+                    record.set('allow', this.fields.disabled);
+                }
+            }
+            
+        }
+    });
+    
+    var allowColumn = new Axis.grid.CheckColumn({
+        dataIndex: 'allow',
+        header: 'Allow'.l(),
+        width: 100,
+        onMouseDown: function(e, t) {
+            var index = this.grid.getView().findRowIndex(t);
+            
+            Axis.grid.CheckColumn.prototype.onMouseDown.call(this, e, t);
+            
+            if(t.className && t.className.indexOf('x-grid3-cc-'+this.id) != -1){
+                var record = this.grid.store.getAt(index);
+                if (record.data[this.dataIndex] == this.fields.enabled) {
+                    record.set('deny', this.fields.disabled);
+                }
             }
         }
     });
     
-    var rolesPanel = new Ext.Panel({
-        autoScroll: true,
-        maskDisabled: true,
-        contentEl: 'form-role',
-        collapsible: true,
-        header: false,
-        region: 'center',
-        split: true,
-        tbar: [{
-            id: 'save-role-button',
-            text: 'Save'.l(),
-            icon: Axis.skinUrl + '/images/icons/accept.png',
-            cls: 'x-btn-text-icon',
-            handler: Role.save,
-            disabled: true
-        }]
+    var cm = new Ext.grid.ColumnModel({
+        columns: [{
+            dataIndex: 'text',
+            header: 'Resource'.l(),
+            id: 'text'
+        }, denyColumn, allowColumn/*, {
+            header: 'Permission',
+            editor: comboboxPermission,
+            dataIndex : 'permission',
+            renderer: function(v) {
+                var r = storePermission.getById(v);
+                if (r) {
+                    return r.get('name');
+                }
+                return v;
+            }
+        }*/]
     });
     
+    var gridResources = new Axis.grid.GridTree({
+        autoExpandColumn: 'text',
+        cm: cm,
+        ds: storeResource,
+        enableDragDrop: false,
+        master_column_id: 'text',
+        massAction: false,
+        plugins: [denyColumn, allowColumn
+//                new Ext.ux.grid.Search({
+//                    mode: 'local',
+////                    align: 'left',
+//                    iconCls: false,
+//                    position: 'top',
+//                    width: 200,
+//                    minLength: 0
+//                })
+        ],
+        tbar: []
+    }); 
     
+    var storeRules = new Ext.data.JsonStore({
+        storeId: 'storeRules',
+        url: Axis.getUrl('acl-rule/list'),
+        root: 'data',
+        id: 'role_id',
+        fields: [
+            {name: 'role_id', type: 'int'}, 
+            {name: 'resource_id'},
+            {name: 'permission'}
+        ]
+    });
 
     new Axis.Panel({
         items: [
-            tree,
-//            rolesPanel,
-//            treeResources
+            tree, 
+            gridResources
         ]
     });
 

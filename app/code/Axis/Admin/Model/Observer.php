@@ -62,7 +62,7 @@ class Axis_Admin_Model_Observer
                         'label'         => 'Roles',
                         'order'         => 40,
                         'module'        => 'Axis_Admin',
-                        'controller'    => 'role',
+                        'controller'    => 'acl-role',
                         'action'        => 'index',
                         'route'         => 'admin'
                     )
