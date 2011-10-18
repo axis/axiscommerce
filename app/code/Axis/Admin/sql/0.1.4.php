@@ -30,6 +30,15 @@ class Axis_Admin_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
+        $installer = Axis::single('install/installer');
+
+        $installer->run("
+
+        DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_resource')}`;
+        
+        -- DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_role_parent')}`;
+
+        ");
         /*
          
         $rowset = Axis::model('admin/acl_rule')->select()
@@ -39,12 +48,12 @@ class Axis_Admin_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             $row->resource_id = str_replace('admin/', 'admin/axis/', $row->resource_id);
             $row->save();
         }
-         
+         *
          */
         // role_name column rename name 
         // resource_id column renamt to resource
         // remove  admin/acl_resource table 
-        // remove role guest support 
+        // remove role guest support from rule table 
         // remove const rules
 //        Axis::single('admin/acl_resource')
 //            

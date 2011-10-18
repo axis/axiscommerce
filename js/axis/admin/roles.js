@@ -69,16 +69,6 @@ Ext.onReady(function(){
                     });
 //                    console.log(data);
                     store.loadData(data, false);
-//                    console.log(store);
-//                    Ext.each(records, function(record) {
-//                        var resource = record.get('resource_id');
-//                        console.log(resource);
-//                        var row = store.get('id', recource);
-//                        console.log(row);
-////                        record.get('permission');
-//                        
-//                        
-//                    });
                 }
             });
         },

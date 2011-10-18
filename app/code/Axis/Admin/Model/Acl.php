@@ -33,17 +33,15 @@
  */
 class Axis_Admin_Model_Acl extends Zend_Acl
 {
-    private $_cachedResources;
 
     public function __construct()
     {
-        foreach ($this->_getResources() as $resource) {
-            $parentId = null;
-            if (false !== ($pos = strrpos($resource['resource_id'], '/'))) {
-                $parentId = substr($resource['resource_id'], 0, $pos);
-            } 
+        $resources = Axis::model('admin/acl_resource')->toFlatTree();
+        foreach ($resources as $resource) {
+            $parent = $resource['parent'] ? $resource['parent'] : null;
+            
             try {
-                $this->add(new Zend_Acl_Resource($resource['resource_id']), $parentId);
+                $this->add(new Zend_Acl_Resource($resource['id']), $parent);
             } catch (Zend_Acl_Exception $e) {
                 Axis::message()->addError($e->getMessage());
             }
@@ -110,44 +108,6 @@ class Axis_Admin_Model_Acl extends Zend_Acl
     }
 
     /**
-     * Retrieve the array of acl resources sorted by resource_id
-     *
-     * @return array
-     */
-    protected function _getResources()
-    {
-        if (null === $this->_cachedResources
-            && !$this->_cachedResources = Axis::cache()->load('axis_acl_resources')) {
-
-            $resources = Axis::single('admin/acl_resource')->select()->fetchAll();
-            // ORDER BY is not working correctly with some mysql installations
-            usort($resources, array($this, '_sortResources'));
-            Axis::cache()->save(
-                $resources, 'axis_acl_resources', array('modules')
-            );
-            $this->_cachedResources = $resources;
-        }
-        return $this->_cachedResources;
-    }
-
-    /**
-     * Sort acl resources by resource_id
-     * On some mysql installations ORDER BY resource_id
-     * returns incorrectly sorted array.
-     *
-     * @return void
-     */
-    protected function _sortResources($a, $b)
-    {
-        $aLevel = count(explode('/', $a['resource_id']));
-        $bLevel = count(explode('/', $b['resource_id']));
-        if ($aLevel === $bLevel) {
-            return 0;
-        }
-        return ($aLevel < $bLevel) ? -1 : 1;
-    }
-
-    /**
      * Return allows array for gived roles as it will be parent roles
      *
      * @param $roles array
@@ -169,9 +129,10 @@ class Axis_Admin_Model_Acl extends Zend_Acl
 
         $allows = array();
 
-        foreach ($this->_getResources() as $resource) {
-            if ($this->isAllowed('tmp', $resource['resource_id'])) {
-                $allows[] = $resource['resource_id'];
+        $resources = Axis::model('admin/acl_resource')->toFlatTree();
+        foreach ($resources as $resource) {
+            if ($this->isAllowed('tmp', $resource['id'])) {
+                $allows[] = $resource['id'];
             }
         }
 

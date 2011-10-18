@@ -36,7 +36,6 @@ class Axis_Admin_AclRoleController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Roles');
-//        $this->view->resources = Axis::single('admin/acl_resource')->getTree();
         $this->render();
     }
  
