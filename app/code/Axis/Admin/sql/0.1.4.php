@@ -53,8 +53,9 @@ class Axis_Admin_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
         // role_name column rename name 
         // resource_id column renamt to resource
         // remove  admin/acl_resource table 
-        // remove role guest support from rule table 
-        // remove const rules
+        // remove role guest support from role table 
+        // remove const rules from rule table
+        // resourcesTree helper remove
 //        Axis::single('admin/acl_resource')
 //            
 //        ;

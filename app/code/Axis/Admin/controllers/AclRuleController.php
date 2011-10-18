@@ -35,7 +35,7 @@ class Axis_Admin_AclRuleController extends Axis_Admin_Controller_Back
 {
     public function listAction()
     {
-        $roleId = $this->_getParam('roleId');
+        $roleId = $this->_getParam('role_id');
         $select = Axis::model('admin/acl_rule')->select('*')
             ->where('role_id = ?', $roleId)
 //            ->calcFoundRows()
@@ -47,84 +47,35 @@ class Axis_Admin_AclRuleController extends Axis_Admin_Controller_Back
             ->sendSuccess()
         ;
     }
-//    
-//    public function saveAction()
-//    {
-//        $data = $this->_getParam('role');
-//        
-//        Axis::model('admin/acl_role')->getRow($data)
-//            ->save();
-//        
-//        Axis::message()->addSuccess(
-//            Axis::translate('admin')->__(
-//                'Role was saved successfully'
-//            )
-//        );
-//        return $this->_helper->json
-//            ->sendSuccess();
-//        
-//        $model       = Axis::model('admin/acl_role');
-//        $modelParent = Axis::model('admin/acl_role_parent');
-//        $modelRule   = Axis::model('admin/acl_rule');
-//
-//        $roleId = $this->_getParam('roleId');
-//        $row    = $model->find($roleId)->current();
-//        $row->role_name = $this->_getParam('roleName');
-//        $row->save();
-//
-//        /* save parent roles */
-//        $parents = $this->_getParam('role', array());
-//        $modelParent->delete(
-//            $this->db->quoteInto('role_id = ?', $row->id)
-//        );
-//        foreach ($parents as $parentId) {
-//            $modelParent->createRow(array(
-//                'role_id'        => $roleId,
-//                'role_parent_id' => $parentId
-//            ))->save();
-//        }
-//
-//        /* save rules */
-//        $rules = $this->_getParam('rule');
-//        $modelRule->delete(
-//            $this->db->quoteInto('role_id = ?', $row->id)
-//        );
-//
-//        $allow = isset($rules['allow']) ? $rules['allow'] : array();
-//        foreach ($allow as $resourceId) {
-//            $modelRule->createRow(array(
-//                'role_id'     => $roleId,
-//                'resource_id' => $resourceId,
-//                'permission'  => 'allow'
-//            ))->save();
-//        }
-//
-//        $deny = isset($rules['deny']) ? $rules['deny'] : array();
-//        foreach ($deny as $resourceId) {
-//            $row = $modelRule->getRow($roleId, $resourceId);
-//            $row->permission = 'deny';
-//            $row->save();
-//        }
-//
-//        Axis::message()->addSuccess(
-//            Axis::translate('admin')->__(
-//                'Role was saved successfully'
-//            )
-//        );
-//        return $this->_helper->json->sendSuccess();
-//    }
-//
-//    public function removeAction()
-//    {
-//        $id = $this->_getParam('id');
-//        Axis::model('admin/acl_role')->delete(
-//            $this->db->quoteInto('id = ?', $id)
-//        );
-//        Axis::message()->addSuccess(
-//            Axis::translate('admin')->__(
-//                'Role was deleted successfully'
-//            )
-//        );
-//        return $this->_helper->json->sendSuccess();
-//    }
+    
+    public function batchSaveAction()
+    {
+        $dataset = Zend_Json::decode($this->_getParam('dataset'));
+        $model = Axis::model('admin/acl_rule');
+        
+        foreach ($dataset as $data) {
+            $row = $model->select()
+                ->where('role_id = ?', $data['role_id'])
+                ->where('resource_id = ?', $data['resource_id'])
+                ->fetchRow()
+            ;
+            if (!$row) {
+                $row = $model->createRow($data);
+            }
+            
+            if (empty($data['permission'])) {
+                $row->delete();
+            } else {
+                $row->permission = $data['permission'];
+                $row->save();
+            }
+        }
+        
+        Axis::message()->addSuccess(
+            Axis::translate('admin')->__(
+                'Rules was saved successfully'
+            )
+        );
+        return $this->_helper->json->sendSuccess();
+    }
 }

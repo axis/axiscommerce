@@ -106,6 +106,7 @@ class Axis_Admin_Model_Acl_Resource // @todo extends Axis_Core_Model_File_Collec
             $resource = 'admin';
         }
         
+        asort($resources);
         Axis::cache()->save(
             $resources, 'axis_acl_resources', array('modules')
         );

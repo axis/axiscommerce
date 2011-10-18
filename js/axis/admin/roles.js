@@ -23,28 +23,12 @@
 Ext.namespace('Axis', 'Axis.Role');
 Ext.onReady(function(){
     
-//    var Rules = {
-//        load: function() {
-//            storeRules.load({
-//                'role_id': Role.id
-//            });
-//        }
-//    };
-    
-    var Role = {
-
-        id: null,
-        load: function(node, e) {            
-            if (node.id == '0') {
-                return;
-            }
-            Role.id = node.id;
-//            Rules.load();
-            console.log('load role' + Role.id);
+    var Rule = {
+        load: function() {
             
             storeRules.load({
                 params: {
-                    'roleId': Role.id
+                    'role_id': Role.id
                 }, 
                 callback : function(records, options, success) {
                     if (!success) {
@@ -56,7 +40,7 @@ Ext.onReady(function(){
                         data[i] = resource.data;
                         data[i]['allow'] = 0;
                         data[i]['deny'] = 0;
-                        Ext.each(records, function(rule, j) {
+                        Ext.each(records, function(rule) {
                             if (resource.get('id') == rule.get('resource_id')) {
                                 if (rule.get('permission') == 'allow') {
                                     data[i]['allow'] = 1;
@@ -67,10 +51,60 @@ Ext.onReady(function(){
                             }
                         });
                     });
-//                    console.log(data);
                     store.loadData(data, false);
                 }
             });
+        }, 
+        save : function (){
+            if (null == Role.id) {
+                alert(Role.id); 
+                return;
+            }
+            var store = Ext.StoreMgr.lookup('store-resource');
+            var modified = store.getModifiedRecords();
+
+            if (!modified.length) {
+                return;
+            }
+
+            var data = {};
+            
+            for (var i = 0; i < modified.length; i++) {
+                var row = modified[i]['data'];
+                var permission = null;
+                if (1 == row['allow']) {
+                    permission = 'allow';
+                }
+                if (1 == row['deny']) {
+                    permission = 'deny';
+                }
+                data[modified[i]['id']] = {
+                    'role_id'     : Role.id,
+                    'resource_id' : row['id'],
+                    'permission'  : permission
+                    
+                };
+            }
+            Ext.Ajax.request({
+                url: Axis.getUrl('acl-rule/batch-save'),
+                params: {
+                    dataset: Ext.encode(data)
+                },
+                success: Rule.load
+            });
+            
+        }  
+    };
+    
+    var Role = {
+
+        id: null,
+        load: function(node, e) {            
+            if (node.id == '0') {
+                return;
+            }
+            Role.id = node.id;
+            Rule.load();
         },
         add: function() {
             form.getForm().clear();
@@ -230,13 +264,7 @@ Ext.onReady(function(){
         },
         leaf_field_name: 'leaf',
         parent_id_field_name: 'parent',
-        url: Axis.getUrl('acl-resource/list'),
-//        listeners: {
-//            load: {
-//                scope: this,
-//                fn: this.onLoad
-//            }
-//        }
+        url: Axis.getUrl('acl-resource/list')
     });
 
     var denyColumn = new Axis.grid.CheckColumn({
@@ -281,18 +309,7 @@ Ext.onReady(function(){
             dataIndex: 'text',
             header: 'Resource'.l(),
             id: 'text'
-        }, denyColumn, allowColumn/*, {
-            header: 'Permission',
-            editor: comboboxPermission,
-            dataIndex : 'permission',
-            renderer: function(v) {
-                var r = storePermission.getById(v);
-                if (r) {
-                    return r.get('name');
-                }
-                return v;
-            }
-        }*/]
+        }, denyColumn, allowColumn]
     });
     
     var gridResources = new Axis.grid.GridTree({
@@ -312,7 +329,18 @@ Ext.onReady(function(){
 //                    minLength: 0
 //                })
         ],
-        tbar: []
+        tbar: [{
+            text: 'Save'.l(),
+            icon: Axis.skinUrl + '/images/icons/save_multiple.png',
+            handler : Rule.save
+        }, '->', {
+            icon: Axis.skinUrl + '/images/icons/refresh.png',
+            cls: 'x-btn-icon',
+            handler: function() {
+                gridResources.getStore().reload();
+            }
+        }
+        ]
     }); 
     
     var storeRules = new Ext.data.JsonStore({

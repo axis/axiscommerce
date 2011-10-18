@@ -41,7 +41,7 @@ class Axis_Admin_Model_Acl extends Zend_Acl
             $parent = $resource['parent'] ? $resource['parent'] : null;
             
             try {
-                $this->add(new Zend_Acl_Resource($resource['id']), $parent);
+                $this->addResource($resource['id'], $parent);
             } catch (Zend_Acl_Exception $e) {
                 Axis::message()->addError($e->getMessage());
             }
