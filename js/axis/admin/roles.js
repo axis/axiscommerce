@@ -51,6 +51,7 @@ Ext.onReady(function(){
                             }
                         });
                     });
+                    store.fireEvent('beforeload', store, {});
                     store.loadData(data, false);
                 }
             });
@@ -92,12 +93,10 @@ Ext.onReady(function(){
                 },
                 success: Rule.load
             });
-            
         }  
     };
     
     var Role = {
-
         id: null,
         load: function(node, e) {            
             if (node.id == '0') {
@@ -145,6 +144,7 @@ Ext.onReady(function(){
             });
         }
     };
+    
     Axis.Role = Role;
 
     var rootNode = new Ext.tree.AsyncTreeNode({
@@ -194,7 +194,9 @@ Ext.onReady(function(){
             }]
         }
     });
+    
     tree.on('click', Role.load);
+    
     rootNode.expand();
     
     var fields = [
@@ -259,12 +261,47 @@ Ext.onReady(function(){
             {name: 'allow'},
             {name: 'parent'}
         ]),
-        paramNames: {
-            active_node: 'node'
-        },
+//        paramNames: {
+//            active_node: 'node'
+//        },
         leaf_field_name: 'leaf',
         parent_id_field_name: 'parent',
-        url: Axis.getUrl('acl-resource/list')
+        url: Axis.getUrl('acl-resource/list'),
+        listeners: {
+            beforeload: {
+                scope: storeResource,
+                fn: function(){
+                    var expanded = [];
+                    this.each(function(r){
+                        if (this.isExpandedNode(r)) {
+                            expanded.push(r.id);
+                        }
+                    }, this);
+                    this.axisExpandedNodes = expanded;
+                }
+            },
+            load: {
+                scope: storeResource,
+                fn: function(){
+                    if (this.axisExpandedNodes.length) {
+                        Ext.each(this.axisExpandedNodes, function(id){
+                            var r = this.getById(id)
+                            if (r) {
+                                this.expandNode(r);
+                            }
+                        }, this);
+                        
+                    } else {
+                        this.each(function(r){
+                            if (this.getNodeDepth(r) > 1) {
+                                return;
+                            }
+                            this.expandNode(r)
+                        }, this);
+                    }
+                }
+            }
+        }
     });
 
     var denyColumn = new Axis.grid.CheckColumn({
@@ -309,10 +346,26 @@ Ext.onReady(function(){
             dataIndex: 'text',
             header: 'Resource'.l(),
             id: 'text'
-        }, denyColumn, allowColumn]
+        }, allowColumn, denyColumn]
+    });
+    
+    var toolbar = new Ext.Toolbar({
+        items:[{
+            text: 'Save'.l(),
+            icon: Axis.skinUrl + '/images/icons/save_multiple.png',
+            handler : Rule.save
+        }, 
+        '->', {
+            icon: Axis.skinUrl + '/images/icons/refresh.png',
+            cls: 'x-btn-icon',
+            handler: function() {
+                gridResources.getStore().reload();
+            }
+        }]
     });
     
     var gridResources = new Axis.grid.GridTree({
+        id: 'gridResources',
         autoExpandColumn: 'text',
         cm: cm,
         ds: storeResource,
@@ -329,18 +382,7 @@ Ext.onReady(function(){
 //                    minLength: 0
 //                })
         ],
-        tbar: [{
-            text: 'Save'.l(),
-            icon: Axis.skinUrl + '/images/icons/save_multiple.png',
-            handler : Rule.save
-        }, '->', {
-            icon: Axis.skinUrl + '/images/icons/refresh.png',
-            cls: 'x-btn-icon',
-            handler: function() {
-                gridResources.getStore().reload();
-            }
-        }
-        ]
+        tbar: toolbar
     }); 
     
     var storeRules = new Ext.data.JsonStore({
@@ -361,5 +403,4 @@ Ext.onReady(function(){
             gridResources
         ]
     });
-
 });
