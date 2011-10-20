@@ -1,21 +1,21 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -24,7 +24,7 @@ Ext.onReady(function () {
 
     var iteratorNewAnswer = 0;
     Poll = function() {
-        
+
         function _getNewAnswerId()
         {
             return  --iteratorNewAnswer; //global var
@@ -43,7 +43,7 @@ Ext.onReady(function () {
             }
             return true;
         }
-        
+
         return {
             //////////////////////////////////
             getResults: function(row) {
@@ -114,9 +114,7 @@ Ext.onReady(function () {
             },
             //////////////////////////////
             editQuestion: function(id) {
-                Ext.getCmp('window-question').setTitle('Edit Question');
                 Ext.getCmp('window-question').show();
-//
                 Ext.getCmp('form-question').getForm().clear();
                 Ext.getCmp('form-question').getForm().load({
                     url: Axis.getUrl('poll/load'),
@@ -124,6 +122,7 @@ Ext.onReady(function () {
                     success: function(form, action) {
                         var response = Ext.decode(action.response.responseText).data[0];
                         _clearAnswers();
+                        Ext.getCmp('window-question').setTitle(response.description[Axis.language]);
                         var answers = response.answer;
                         for (var answerId in answers) {
                             Poll().addAnswerRow(
@@ -167,7 +166,7 @@ Ext.onReady(function () {
                         Ext.getCmp('grid-poll').getStore().reload();
                     }
                 });
-                
+
             },
             removeBatch:function() {
                 var selectedItems = Ext.getCmp('grid-poll')
@@ -189,19 +188,19 @@ Ext.onReady(function () {
             remove: function(text, id) {
                 if (!confirm('Delete question: [ '+ text + ' ]')) {
                     return;
-                }    
+                }
                 Ext.Ajax.request({
                     params : {data :  [id]},
                     url: Axis.getUrl('poll/remove'),
                     callback: function(response, options) {
                         Ext.getCmp('grid-poll').getStore().reload();
                     }
-                }) 
+                })
             },
             clearVoted: function() {
                 var selectedItems = Ext.getCmp('grid-poll')
                         .getSelectionModel().selections.items;
-                        
+
                 if (selectedItems.length < 1) {
                     return;
                 }
@@ -223,7 +222,7 @@ Ext.onReady(function () {
             addQuestion: function() {
                 _clearQuestion();
                 _clearAnswers();
-                Ext.getCmp('window-question').setTitle('Edit Question');
+                Ext.getCmp('window-question').setTitle('New Question'.l());
                 Ext.getCmp('window-question').show();
                 Ext.getCmp('form-question').getForm().clear();
             }

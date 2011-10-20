@@ -55,7 +55,7 @@ Ext.onReady(function () {
                         xtype: 'button',
                         width: 70,
                         bodyStyle:{padding:'10px'},
-                        text: 'Add Answer',
+                        text: 'Add'.l(),
                         name: 'newAnswer[' + languageId + ']',
                         icon: Axis.skinUrl + '/images/icons/add.png',
                         handler: function (){ Poll().addAnswerRow();}
