@@ -88,7 +88,12 @@ Axis.grid.GridTree = Ext.extend(Ext.ux.maximgb.tg.EditorGridPanel, {
         if (doDefault) {
             Axis.grid.GridTree.superclass.onDblClick.call(this, e);
         }
-    }
+    },
+
+    /**
+     * Removed auto expanding of selected nodes
+     */
+    onTreeGridSelectionChange: Ext.emptyFn
 
 });
 
@@ -109,10 +114,8 @@ Ext.grid.GridDragZone.override({
         if (rowIndex !== false) {
             var sm = this.grid.selModel;
             // FIX: Added additional check
-            //   !Ext.fly(target).hasClass("x-grid3-row-checker")
-            //   && !Ext.fly(target).hasClass("ux-maximgb-treegrid-elbow-active")
-            if (!Ext.fly(target).hasClass("x-grid3-row-checker")
-                && !Ext.fly(target).hasClass("ux-maximgb-treegrid-elbow-active")
+            //   && !Ext.fly(target).hasClass("ux-maximgb-tg-elbow-active")
+            if (!Ext.fly(target).hasClass("ux-maximgb-tg-elbow-active")
                 && (!sm.isSelected(rowIndex) || e.hasModifier())) {
 
                 sm.handleMouseDown(this.grid, rowIndex, e);
