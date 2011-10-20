@@ -36,7 +36,7 @@ class Axis_Admin_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_resource')}`;
         
-        -- DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_role_parent')}`;
+        DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_role_parent')}`;
         
         ALTER TABLE `{$installer->getTable('admin_acl_role')}` 
             CHANGE COLUMN `role_name` `name` VARCHAR(128) NOT NULL;
@@ -55,7 +55,6 @@ class Axis_Admin_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
          */
         // remove  admin/acl_resource table 
         // remove role guest support from role table 
-        // remove const rules from rule table
     }
 
     public function down()
