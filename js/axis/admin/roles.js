@@ -201,7 +201,7 @@ Ext.onReady(function(){
     
     var fields = [
         {name: 'role[id]',         type: 'int',  mapping: 'role.id'},
-        {name: 'role[role_name]',                mapping: 'role.role_name'},
+        {name: 'role[name]',                mapping: 'role.name'},
         {name: 'role[sort_order]', type: 'int',  mapping: 'role.sort_order'}
     ];
     
@@ -219,7 +219,7 @@ Ext.onReady(function(){
         }, fields),
         items: [{
             fieldLabel: 'Name'.l(),
-            name: 'role[role_name]',
+            name: 'role[name]',
             allowBlank:false
         },{
             fieldLabel: 'Sort Order'.l(),

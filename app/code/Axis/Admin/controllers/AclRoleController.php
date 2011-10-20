@@ -44,7 +44,7 @@ class Axis_Admin_AclRoleController extends Axis_Admin_Controller_Back
         $data = array();
         foreach (Axis::model('admin/acl_role')->fetchAll() as $row) {
             $data[] = array(
-                'text'     => $row->role_name,
+                'text'     => $row->name,
                 'id'       => $row->id,
                 'leaf'     => false,
                 'children' => array(),
