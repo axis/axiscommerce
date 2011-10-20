@@ -55,10 +55,15 @@
 
         $this->headScript()
             ->setProxy('axis_core')
-            ->offsetSetFile(-70, 'js/ext-ux/maximbg.treegrid/source/NS.js')
-            ->offsetSetFile(-68, 'js/ext-ux/maximbg.treegrid/source/AbstractTreeStore.js')
-            ->offsetSetFile(-66, 'js/ext-ux/maximbg.treegrid/source/AdjacencyListStore.js')
-            ->offsetSetFile(-64, 'js/ext-ux/grid/RowActions.js');
+            ->offsetSetFile(-70, 'js/ext-ux/maximbg.treegrid/TreeGrid.packed.js')
+            // ->offsetSetFile(-70, 'js/ext-ux/maximbg.treegrid/src/NS.js')
+            // ->offsetSetFile(-68, 'js/ext-ux/maximbg.treegrid/src/AbstractTreeStore.js')
+            // ->offsetSetFile(-66, 'js/ext-ux/maximbg.treegrid/src/AdjacencyListStore.js')
+            // ->offsetSetFile(-65, 'js/ext-ux/maximbg.treegrid/src/NestedSetStore.js')
+            // ->offsetSetFile(-64, 'js/ext-ux/maximbg.treegrid/src/GridView.js')
+            // ->offsetSetFile(-63, 'js/ext-ux/maximbg.treegrid/src/EditorGridPanel.js')
+
+            ->offsetSetFile(-60, 'js/ext-ux/grid/RowActions.js');
 
         //$this->headScript()->appendFile('js/ext-axis/ext-axis-all.js');
         $this->headScript()
