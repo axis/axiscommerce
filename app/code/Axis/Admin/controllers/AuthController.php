@@ -60,7 +60,9 @@ class Axis_Admin_AuthController extends Axis_Admin_Controller_Back
         } else {
             Zend_Session::regenerateId();
             Axis::dispatch('admin_user_login_success', array('username' => $username));
-            Axis::session()->roleId = Axis::single('admin/user')->getRole($result->getIdentity());
+            Axis::session()->roleId = Axis::single('admin/user')->select('role_id')
+                ->where('id = ?', $result->getIdentity())
+                ->fetchOne();
             $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
         }
     }
