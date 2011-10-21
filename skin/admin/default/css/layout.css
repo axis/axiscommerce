@@ -56,9 +56,17 @@ ul, ol { list-style-type: none; padding: 0; margin: 0; }
 .two-columns .col-main #inside-box { padding: 10px 10px 10px 20px; margin-left: 168px; }
 .col-left { float: left; width: 178px; padding-top: 20px; padding-bottom: 40px; background: url(../images/line.gif) repeat-y right top; }
 
+.columns-container,
+.header,
+#inside-box,
+.navigation-container,
+.navigation,
+.middle,
+.footer { zoom: 1 }
 .columns-container:after,
 .header:after,
 #inside-box:after,
+.navigation-container:after,
 .navigation:after,
 .middle:after,
-.footer:after { content: '.'; display: block; clear: both; visibility: hidden; zoom: 1; height: 0; }
+.footer:after { content: '.'; display: block; clear: both; visibility: hidden; height: 0; font-size: 0; }
