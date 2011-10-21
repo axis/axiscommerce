@@ -37,7 +37,7 @@ class Axis_Discount_Upgrade_0_0_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/discount_index/create', 'admin/discount/create')
             ->rename('admin/discount_index/save',   'admin/discount/save')
             ->rename('admin/discount_index/delete', 'admin/discount/remove')
-            ->remove('admin/discount_index');
+            ;
     }
 
     public function down()
