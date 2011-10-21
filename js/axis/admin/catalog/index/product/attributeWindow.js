@@ -18,21 +18,21 @@
  */
 
 Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
-    
+
     hideInputable: false,
-    
+
     singleSelect: false,
-    
+
     /**
      * Array of callbacks to filter attribute grid
-     * 
+     *
      * @param {Array} filters
      */
     filters: [],
-    
+
     constructor: function(config) {
         Ext.apply(this, config);
-        
+
         this.events = {
             /**
              * @event cancel
@@ -47,8 +47,8 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
             'okpress': true
         };
         Axis.AttributeWindow.superclass.constructor.call(this);
-        
-        var ds = new Ext.ux.maximgb.treegrid.AdjacencyListStore({
+
+        var ds = new Ext.ux.maximgb.tg.AdjacencyListStore({
             autoLoad: true,
             reader: new Ext.data.JsonReader({
                 idProperty: 'id'
@@ -79,7 +79,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
                 }
             }
         });
-        
+
         var sm = new Ext.grid.CheckboxSelectionModel({
             listeners: {
                 rowselect: {
@@ -92,7 +92,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
                 }
             }
         });
-        
+
         var cm = new Ext.grid.ColumnModel({
             columns: [sm, {
                 dataIndex: 'text',
@@ -100,7 +100,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
                 id: 'text'
             }]
         });
-        
+
         this.attributeGrid = new Axis.grid.GridTree({
             autoExpandColumn: 'text',
             cm: cm,
@@ -121,7 +121,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
             ],
             tbar: []
         });
-        
+
         this.attributeGrid.getTopToolbar().addFill();
         this.attributeGrid.getTopToolbar().add({
             handler: function() {
@@ -131,7 +131,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
             scope: this,
             text: 'Reload'.l()
         });
-        
+
         this.window = new Axis.Window({
             border: false,
             layout: 'border',
@@ -161,29 +161,29 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
             }
         });
     },
-    
+
     destroy: function() {
         if (this.attributeGrid) {
             this.attributeGrid.destroy();
         }
         this.purgeListeners();
     },
-    
+
     /**
      * If true, you'll be able to select only one value per option
      * Used true with product properties
-     * 
+     *
      * @param {Boolean} flag
      */
     setSingleSelect: function(flag) {
         this.singleSelect = flag;
         return this;
     },
-    
+
     /**
      * Add filter function to filters array
      * This function accepts record and must to return boolean
-     * 
+     *
      * @param {Object} filter Callback function
      */
     setFilter: function(filter) {
@@ -191,13 +191,13 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
         this.applyFilter();
         return this;
     },
-    
+
     clearFilter: function() {
         this.filters = [];
         this.applyFilter();
         return this;
     },
-    
+
     applyFilter: function() {
         if (!this.attributeGrid.rendered) {
             return this;
@@ -215,14 +215,14 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
         } else {
             this.attributeGrid.store.clearFilter();
         }
-        
+
         return this;
     },
-    
+
     onLoad: function(store, records, options) {
         this.applyFilter();
     },
-    
+
     onRowSelect: function(sm, index, record) {
         var store = this.attributeGrid.store;
 
@@ -247,18 +247,18 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
             });
         }
     },
-    
+
     onRowDeselect: function(sm, index, record) {
         var ds = this.attributeGrid.store;
         Ext.each(ds.getNodeChildren(record), function(r) {
             sm.deselectRow(ds.indexOf(r));
         }, this);
     },
-    
+
     selectRecord: function(record) {
         var sm = this.attributeGrid.getSelectionModel();
         var ds = this.attributeGrid.store;
-        
+
         if (!this.singleSelect) {
             sm.selectRecords(ds.getNodeChildren(record), true);
         } else {
@@ -266,7 +266,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
                 // deselect children
                 var children = ds.getNodeChildren(record);
                 var hasSelected = false;
-                
+
                 Ext.each(children, function(r) {
                     if (hasSelected) {
                         return false;
@@ -275,7 +275,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
                         hasSelected = true;
                     }
                 }, this);
-                
+
                 // select first record if no records were selected yet
                 if (children.length && !hasSelected) {
                     sm.selectRecords([children[0]], true);
@@ -298,34 +298,34 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
             }
         }
     },
-    
+
     deselectAll: function() {
         if (this.attributeGrid.rendered) {
             this.attributeGrid.getSelectionModel().clearSelections();
         }
         return this;
     },
-    
+
     hide: function() {
         this.deselectAll();
         this.window.hide();
     },
-    
+
     show: function() {
         this.deselectAll();
         this.window.show();
     },
-    
+
     okPress: function() {
         if (false === this.fireEvent('okpress', this.attributeGrid.getSelectionModel().getSelections())) {
             return;
         }
         this.hide();
     },
-    
+
     cancelPress: function() {
         this.fireEvent('cancelpress');
         this.hide();
     }
-    
+
 });
