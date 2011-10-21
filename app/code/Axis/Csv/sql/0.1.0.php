@@ -65,15 +65,6 @@ class Axis_Csv_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
         ");
-
-        Axis::single('admin/acl_resource')
-            ->add('admin/csv', 'Import/Export')
-            ->add("admin/csv/delete")
-            ->add("admin/csv/get-list")
-            ->add("admin/csv/get-supported-types")
-            ->add("admin/csv/index")
-            ->add("admin/csv/run")
-            ->add("admin/csv/save");
     }
 
     public function down()
@@ -84,8 +75,5 @@ class Axis_Csv_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('csv_profile')}`;
             DROP TABLE IF EXISTS `{$installer->getTable('csv_profile_filter')}`;
         ");
-
-        Axis::single('admin/acl_resource')
-            ->remove('admin/csv');
     }
 }

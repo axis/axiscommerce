@@ -30,14 +30,14 @@ class Axis_Sales_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
-            ->rename('admin/sales_order', 'admin/sales/order')
-            ->rename('admin/sales_order/index', 'admin/sales/order/index')
-            ->rename('admin/sales_order/list', 'admin/sales/order/list')
+        Axis::single('admin/acl_rule')
+            ->rename('admin/sales_order',                'admin/sales/order')
+            ->rename('admin/sales_order/index',          'admin/sales/order/index')
+            ->rename('admin/sales_order/list',           'admin/sales/order/list')
             ->rename('admin/sales_order/get-order-info', 'admin/sales/order/load')
-            ->rename('admin/sales_order/set-status', 'admin/sales/order/save')
-            ->rename('admin/sales_order/delete', 'admin/sales/order/remove')
-            ->rename('admin/sales_order/print', 'admin/sales/order/print')
+            ->rename('admin/sales_order/set-status',     'admin/sales/order/save')
+            ->rename('admin/sales_order/delete',         'admin/sales/order/remove')
+            ->rename('admin/sales_order/print',          'admin/sales/order/print')
 //            ->rename('admin/sales_order/get-product-attribute-form')
             ->rename('admin/sales_order/add-product-to-order', 'admin/sales/order/add-product')
 
@@ -49,10 +49,7 @@ class Axis_Sales_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/sales_order-status/batch-save', 'admin/sales/order-status/batch-save')
             ->rename('admin/sales_order-status/delete',     'admin/sales/order-status/remove')
             ->rename('admin/sales_order-status/get-childs', 'admin/sales/order-status/get-childs')
-
-            ->add('admin/sales/payment/list')
-            ->add('admin/sales/shipping/list')
-            ->remove('admin/sales_')
+            
         ;
     }
 

@@ -171,23 +171,6 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('community/video/detail')
             ->add('community/video/product')
             ->add('community/video/customer');*/
-
-        Axis::single('admin/acl_resource')
-            ->add('admin/community', 'Community')
-            ->add('admin/community_rating', 'Community review ratings')
-            ->add("admin/community_rating/delete")
-            ->add("admin/community_rating/get-list")
-            ->add("admin/community_rating/index")
-            ->add("admin/community_rating/save")
-            ->add('admin/community_review', 'Community review')
-            ->add("admin/community_review/delete")
-            ->add("admin/community_review/get-customer-list")
-            ->add("admin/community_review/get-list")
-            ->add("admin/community_review/get-product-list")
-            ->add("admin/community_review/index")
-            ->add("admin/community_review/save");
-            //->add('admin/community_image', 'Community image')
-            //->add('admin/community_video', 'Community video');
     }
 
     public function down()
@@ -205,7 +188,6 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')->remove('community');
         Axis::single('core/config_value')->remove('community');
         Axis::single('account/customer_field')->remove('nickname');
-        Axis::single('admin/acl_resource')->remove('admin/community');
         //Axis::single('core/template_box')->remove('Axis_Community_ReviewProduct');
     }
 }

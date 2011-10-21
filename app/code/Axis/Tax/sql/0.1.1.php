@@ -30,19 +30,18 @@ class Axis_Tax_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
+        Axis::single('admin/acl_rule')
             ->rename('admin/tax_class',        'admin/tax/class')
             ->rename('admin/tax_class/index',  'admin/tax/class/index')
             ->rename('admin/tax_class/list',   'admin/tax/class/list')
             ->rename('admin/tax_class/save',   'admin/tax/class/save')
             ->rename('admin/tax_class/delete', 'admin/tax/class/remove')
-            ->remove('admin/tax_class')
+            
             ->rename('admin/tax_rate',         'admin/tax/rate')
             ->rename('admin/tax_rate/index',   'admin/tax/rate/index')
             ->rename('admin/tax_rate/list',    'admin/tax/rate/list')
             ->rename('admin/tax_rate/save',    'admin/tax/rate/save')
             ->rename('admin/tax_rate/delete',  'admin/tax/rate/remove')
-            ->remove('admin/tax_rate')
         ;
     }
 

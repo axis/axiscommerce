@@ -44,17 +44,6 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('gbase/auth/password', 'Password', '', 'handler', 'Password to google account', array('model' => 'Crypt'))
             ->add('gbase/auth/connection', 'Connection type', 'AuthSub', 'select', 'Login type. For ClientLogin fill login and password fields. For AuthSub you will have to enter login and password manually', array('config_options' => 'ClientLogin,AuthSub'));
 
-        Axis::single('admin/acl_resource')
-            ->add('admin/gbase', 'Google Base')
-            ->add('admin/gbase_index', 'Google Base')
-            ->add("admin/gbase_index/delete")
-            ->add("admin/gbase_index/export")
-            ->add("admin/gbase_index/export-branch")
-            ->add("admin/gbase_index/get-gbase-data")
-            ->add("admin/gbase_index/index")
-            ->add("admin/gbase_index/revoke-token")
-            ->add("admin/gbase_index/set-status")
-            ->add("admin/gbase_index/update");
     }
 
     public function down()
@@ -64,7 +53,5 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')->remove('gbase');
         Axis::single('core/config_value')->remove('gbase');
 
-        Axis::single('admin/acl_resource')
-            ->remove('admin/gbase');
     }
 }

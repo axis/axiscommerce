@@ -192,14 +192,6 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 
         /* Admin tables */
 
-        -- DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_resource')}`;
-        CREATE TABLE IF NOT EXISTS `{$installer->getTable('admin_acl_resource')}` (
-          `id` mediumint(8) unsigned NOT NULL auto_increment,
-          `resource_id` varchar(64) NOT NULL,
-          `title` varchar(64) NOT NULL default '',
-          PRIMARY KEY  (`id`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
-
         -- DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_role')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('admin_acl_role')}` (
           `id` mediumint(8) unsigned NOT NULL auto_increment,
@@ -210,17 +202,6 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 
         INSERT INTO `{$installer->getTable('admin_acl_role')}` (`id`, `sort_order`, `role_name`) VALUES
             (1, 0, 'Administrator');
-
-        -- DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_role_parent')}`;
-        CREATE TABLE IF NOT EXISTS `{$installer->getTable('admin_acl_role_parent')}` (
-          `role_id` mediumint(8) unsigned NOT NULL,
-          `role_parent_id` mediumint(8) unsigned NOT NULL,
-          PRIMARY KEY  (`role_id`),
-          KEY `fk_role_id` (`role_id`),
-          KEY `fk_role_parent_id` (`role_parent_id`),
-          CONSTRAINT `fk_role_id` FOREIGN KEY (`role_id`) REFERENCES `{$installer->getTable('admin_acl_role')}` (`id`) ON DELETE CASCADE,
-          CONSTRAINT `fk_role_parent_id` FOREIGN KEY (`role_parent_id`) REFERENCES `{$installer->getTable('admin_acl_role')}` (`id`) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('admin_acl_rule')}`;
         CREATE TABLE IF NOT EXISTS `{$installer->getTable('admin_acl_rule')}` (

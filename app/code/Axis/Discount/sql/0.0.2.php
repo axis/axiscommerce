@@ -30,7 +30,7 @@ class Axis_Discount_Upgrade_0_0_2 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
+        Axis::single('admin/acl_rule')
             ->rename('admin/discount_index',        'admin/discount')
             ->rename('admin/discount_index/index',  'admin/discount/index')
             ->rename('admin/discount_index/edit',   'admin/discount/edit')
@@ -42,7 +42,5 @@ class Axis_Discount_Upgrade_0_0_2 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        Axis::single('admin/acl_resource')
-            ->remove('admin/discount');
     }
 }

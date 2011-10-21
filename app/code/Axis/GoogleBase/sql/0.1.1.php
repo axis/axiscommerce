@@ -30,24 +30,21 @@ class Axis_GoogleBase_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
-            ->rename('admin/gbase', 'admin/googlebase')
-            ->rename('admin/gbase_index/index', 'admin/googlebase/index')
+        Axis::single('admin/acl_rule')
+            ->rename('admin/gbase',                      'admin/googlebase')
+            ->rename('admin/gbase_index/index',          'admin/googlebase/index')
             ->rename('admin/gbase_index/get-gbase-data', 'admin/googlebase/load')
-            ->rename('admin/gbase_index/delete', 'admin/googlebase/remove')
-            ->rename('admin/gbase_index/export', 'admin/googlebase/export')
-            ->rename('admin/gbase_index/export-branch', 'admin/googlebase/export-branch')
-            ->rename('admin/gbase_index/revoke-token', 'admin/googlebase/revoke-token')
-            ->rename('admin/gbase_index/set-status', 'admin/googlebase/set-status')
-            ->rename('admin/gbase_index/update', 'admin/googlebase/update')
-            ->remove('admin/gbase_index');
+            ->rename('admin/gbase_index/delete',         'admin/googlebase/remove')
+            ->rename('admin/gbase_index/export',         'admin/googlebase/export')
+            ->rename('admin/gbase_index/export-branch',  'admin/googlebase/export-branch')
+            ->rename('admin/gbase_index/revoke-token',   'admin/googlebase/revoke-token')
+            ->rename('admin/gbase_index/set-status',     'admin/googlebase/set-status')
+            ->rename('admin/gbase_index/update',         'admin/googlebase/update')
+            ;
     }
 
     public function down()
     {
 
-        Axis::single('admin/acl_resource')
-            ->remove('admin/googlebase')
-        ;
     }
 }

@@ -30,32 +30,29 @@ class Axis_Location_Upgrade_0_1_5 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
-            ->rename('admin/location_country', 'admin/location/country')
-            ->rename('admin/location_country/index', 'admin/location/country/index')
-            ->rename('admin/location_country/list', 'admin/location/country/list')
-            ->rename('admin/location_country/save', 'admin/location/country/batch-save')
+        Axis::single('admin/acl_rule')
+            ->rename('admin/location_country',        'admin/location/country')
+            ->rename('admin/location_country/index',  'admin/location/country/index')
+            ->rename('admin/location_country/list',   'admin/location/country/list')
+            ->rename('admin/location_country/save',   'admin/location/country/batch-save')
             ->rename('admin/location_country/delete', 'admin/location/country/remove')
 
-            ->rename('admin/location_zone', 'admin/location/zone')
-            ->rename('admin/location_zone/index', 'admin/location/zone/index')
-            ->rename('admin/location_zone/list', 'admin/location/zone/list')
-            ->rename('admin/location_zone/save', 'admin/location/zone/batch-save')
+            ->rename('admin/location_zone',        'admin/location/zone')
+            ->rename('admin/location_zone/index',  'admin/location/zone/index')
+            ->rename('admin/location_zone/list',   'admin/location/zone/list')
+            ->rename('admin/location_zone/save',   'admin/location/zone/batch-save')
             ->rename('admin/location_zone/delete', 'admin/location/zone/remove')
 
-            ->rename('admin/location_geozone', 'Geozones')
-            ->rename('admin/location_geozone/index', 'admin/location/geozone/index')
-            ->rename('admin/location_geozone/list', 'admin/location/geozone/list')
-            ->rename('admin/location_geozone/save', 'admin/location/geozone/batch-save')
+            ->rename('admin/location_geozone',        'admin/location/geozone')
+            ->rename('admin/location_geozone/index',  'admin/location/geozone/index')
+            ->rename('admin/location_geozone/list',   'admin/location/geozone/list')
+            ->rename('admin/location_geozone/save',   'admin/location/geozone/batch-save')
             ->rename('admin/location_geozone/delete', 'admin/location/geozone/remove')
 
-            ->rename('admin/location_geozone/list-assigns', 'admin/location/geozone-zone/list')
-            ->rename('admin/location_geozone/get-assign', 'admin/location/geozone-zone/load')
-            ->rename('admin/location_geozone/save-assign', 'admin/location/geozone-zone/save')
+            ->rename('admin/location_geozone/list-assigns',   'admin/location/geozone-zone/list')
+            ->rename('admin/location_geozone/get-assign',     'admin/location/geozone-zone/load')
+            ->rename('admin/location_geozone/save-assign',    'admin/location/geozone-zone/save')
             ->rename('admin/location_geozone/delete-assigns', 'admin/location/geozone-zone/remove')
-
-            ->remove('admin/location_')
-
         ;
 
     }
