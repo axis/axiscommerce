@@ -58,7 +58,7 @@ Ext.onReady(function() {
     var spacerPanel = new Ext.Panel({
         border: false,
         bodyStyle: {
-            height: '7px',
+            height: '7px'
         }
     });
 

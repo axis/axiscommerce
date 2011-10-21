@@ -176,7 +176,8 @@ Ext.onReady(function(){
         width: 100,
         store: new Ext.data.ArrayStore({
             fields: ['id', 'value'],
-            data : [['day', 'Day'.l()], ['week', 'Week'.l()],
+            data : [
+                ['day', 'Day'.l()], ['week', 'Week'.l()],
                 ['month', 'Month'.l()], ['year', 'Year'.l()]
             ]
         }),

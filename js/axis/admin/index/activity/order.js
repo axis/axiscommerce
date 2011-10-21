@@ -72,7 +72,7 @@ Ext.onReady(function() {
                     Axis.escape(value + ' ' + record.get('billing_lastname')),
                     Axis.getUrl('sales/order/index/orderId/' + record.get('id'))
                 );
-            },
+            }
         }, {
             header: "Order Total".l(),
             dataIndex: 'order_total_base',
