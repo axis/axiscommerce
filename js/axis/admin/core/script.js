@@ -28,7 +28,7 @@ if (typeof Ext != 'object') {
    );
 }
 
-if (typeof Range.prototype.createContextualFragment == "undefined") { // FIX IE9
+if (typeof Range != "undefined" && typeof Range.prototype.createContextualFragment == "undefined") { // FIX IE9
     Range.prototype.createContextualFragment = function(html) {
         var doc = this.startContainer.ownerDocument;
         var container = doc.createElement("div");

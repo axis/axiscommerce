@@ -151,7 +151,7 @@ $this->setTabs(array(
     </div>
     <div id="tab-categories-block" class="form-wrapper">
     <?php foreach ($this->categoryTrees as $siteId => $items) {
-        echo '<div class="toggle-header green-header">' . $this->sites[$siteId] . '</div>';
+        echo '<div class="toggle-header green-header">' . empty($this->sites[$siteId]) ? 'Unknown site' : $this->sites[$siteId] . '</div>';
         echo '<div class="categories">';
         foreach ($items as $item) {
             echo '<div class="tree-cat" style="margin-left: '. ($item['lvl'] * 17) .'px">'

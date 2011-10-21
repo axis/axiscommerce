@@ -78,7 +78,7 @@ Ext.onReady(function() {
             renderer: function(value) {
                 return Ext.util.Format.date(value) + ' ' + Ext.util.Format.date(value, 'H:i:s');
             },
-            dataIndex: 'created_at',
+            dataIndex: 'created_at'
         }]
     });
 
