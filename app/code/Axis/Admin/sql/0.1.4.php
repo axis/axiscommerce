@@ -42,17 +42,22 @@ class Axis_Admin_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             CHANGE COLUMN `role_name` `name` VARCHAR(128) NOT NULL;
 
         ");
-        /*
-         
-        $rowset = Axis::model('admin/acl_rule')->select()
-            ->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            $row->resource_id = str_replace('admin/', 'admin/axis/', $row->resource_id);
-            $row->save();
-        }
-         *
-         */
+        Axis::single('admin/acl_rule')
+            ->rename('admin/role',             'admin/axis/admin/acl-role')
+            ->rename('admin/role/index',       'admin/axis/admin/acl-role/index')
+            ->rename('admin/role/list',        'admin/axis/admin/acl-role/list')
+            ->rename('admin/role/load',        'admin/axis/admin/acl-role/role')
+            ->rename('admin/role/add',         'admin/axis/admin/acl-role/save')
+            ->rename('admin/role/save',        'admin/axis/admin/acl-rule/batch-save')
+            ->rename('admin/role/remove',      'admin/axis/admin/acl-role/remove')
+            ->rename('admin/role/list-parent', 'admin/axis/admin/acl-resource/list')
+            
+            ->rename('admin/user',             'admin/axis/admin/user')
+            ->rename('admin/user/index',       'admin/axis/admin/user/index')
+            ->rename('admin/user/list',        'admin/axis/admin/user/list')
+            ->rename('admin/user/batch-save',  'admin/axis/admin/user/batch-save')
+            ->rename('admin/user/remove',      'admin/axis/admin/user/remove')
+        ;
     }
 
     public function down()
