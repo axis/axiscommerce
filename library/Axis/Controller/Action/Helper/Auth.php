@@ -127,12 +127,12 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
         $inflector = new Zend_Filter_Inflector();
         $resource = $inflector->addRules(array(
                  ':module'     => array('Word_CamelCaseToDash', new Zend_Filter_Word_UnderscoreToSeparator('/'), 'StringToLower'),
-                 ':controller' => array(/*'Word_CamelCaseToDash', new Zend_Filter_Word_UnderscoreToSeparator('/'), 'StringToLower', new Zend_Filter_PregReplace('/\./', '-')*/),
-                 ':action'     => array(/*'Word_CamelCaseToDash', new Zend_Filter_PregReplace('#[^a-z0-9' . preg_quote('/', '#') . ']+#i', '-'), 'StringToLower'*/),
+                 ':controller' => array('Word_CamelCaseToDash', 'StringToLower', new Zend_Filter_PregReplace('/admin_/', '')/*, new Zend_Filter_PregReplace('/\./', '-')*/),
+                 ':action'     => array('Word_CamelCaseToDash', /* new Zend_Filter_PregReplace('#[^a-z0-9' . preg_quote('/', '#') . ']+#i', '-'), */'StringToLower'),
             ))
             ->setTarget('admin/:module/:controller/:action')
             ->filter($request->getParams());
-        
+
         if ($acl->isAllowed($role, $resource)) {
             return;
         }
