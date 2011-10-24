@@ -21,17 +21,18 @@
             </h5>
             <ol class="shipping-types">
             <?php foreach ($method as $type) : ?>
+                <?php $typeId = $this->escape($type['id']); ?>
                 <li class="shipping-type">
                     <h5 class="shipping-method-type-title">
-                        <input type="radio" name="shipping[method]" value="<?php echo $type['id'];?>"
+                        <input type="radio" name="shipping[method]" value="<?php echo $typeId ?>"
                             <?php echo $type['id'] == $this->checkout['shipping_methods']['currentMethodCode'] ? 'checked="checked"' : ''; ?>
-                            id="shipping_method-<?php echo $type['id'];?>"
+                            id="shipping_method-<?php echo $typeId ?>"
                             class="shipping-method-radio"
-                        /><label for="shipping_method-<?php echo $type['id'];?>"><?php
+                        /><label for="shipping_method-<?php echo $typeId ?>"><?php
                             echo $this->currency($type['price']) . ' ' . $type['title'];
                         ?></label>
                     </h5>
-                    <?php echo $this->shippingForm($type['id'], 'form')?>
+                    <?php echo $this->shippingForm($typeId, 'form')?>
                 </li>
             <?php endforeach; ?>
             </ol>
