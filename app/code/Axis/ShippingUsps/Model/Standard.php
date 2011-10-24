@@ -302,7 +302,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
            return $methods;
         }
         foreach ($xml->Package->Service as $service) {
-            if (in_array((string)$postage->SvcDescription, $allMethods)
+            if (in_array((string)$service->SvcDescription, $allMethods)
                 && !in_array((string)$service->SvcDescription, $allowedMethods)) {
 
                 continue;
