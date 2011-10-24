@@ -19,7 +19,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-Ext.chart.Chart.CHART_URL = Axis.secureUrl + '/js/ext-3.3.1/resources/charts.swf';
+Ext.chart.Chart.CHART_URL = Axis.secureUrl + '/js/ext-3.4.0/resources/charts.swf';
 
 Ext.onReady(function () {
 
