@@ -121,7 +121,8 @@ class Axis_Account_Model_Observer
                         'module'        => 'Axis_Account',
                         'controller'    => 'customer',
                         'action'        => 'index',
-                        'route'         => 'admin/account'
+                        'route'         => 'admin/axis/account',
+                        'resource'      => 'admin/axis/account/customer/index'
                     ),
                     'customer/group' => array(
                         'label'         => 'Customer Groups',
@@ -129,7 +130,8 @@ class Axis_Account_Model_Observer
                         'module'        => 'Axis_Account',
                         'controller'    => 'group',
                         'action'        => 'index',
-                        'route'         => 'admin/account'
+                        'route'         => 'admin/axis/account',
+                        'resource'      => 'admin/axis/account/group/index'
                     ),
                     'customer/wishlist' => array(
                         'label'         => 'Wishlist',
@@ -137,7 +139,8 @@ class Axis_Account_Model_Observer
                         'module'        => 'Axis_Account',
                         'controller'    => 'wishlist',
                         'action'        => 'index',
-                        'route'         => 'admin/account'
+                        'route'         => 'admin/axis/account',
+                        'resource'      => 'admin/axis/account/wishlist/index'
                     ),
                     'customer/field' => array(
                         'label'         => 'Customer Info Fields',
@@ -145,7 +148,8 @@ class Axis_Account_Model_Observer
                         'module'        => 'Axis_Account',
                         'controller'    => 'field',
                         'action'        => 'index',
-                        'route'         => 'admin/account'
+                        'route'         => 'admin/axis/account',
+                        'resource'      => 'admin/axis/account/field/index'
                     )
                 )
             )

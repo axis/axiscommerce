@@ -37,7 +37,7 @@ class Axis_Admin_UserController extends Axis_Admin_Controller_Back
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Administrators');
         $this->view->roles = Axis::single('admin/acl_role')
-            ->select(array('id', 'role_name'))
+            ->select(array('id', 'name'))
             ->fetchPairs();
         $this->render();
     }

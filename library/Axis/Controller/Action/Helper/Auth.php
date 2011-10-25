@@ -36,23 +36,27 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
     public function preDispatch()
     {
         $request = $this->getRequest();
-        if (Axis_Area::isBackend()) {
-            $this->_backAuth($request);
-        } elseif(Axis_Area::isFrontend()) {
-            $this->_frontAuth($request);
-        }
-    }
+        
+        if(Axis_Area::isFrontend()) {
+            if (!Axis::getCustomerId()
+                    && $this->getActionController() instanceof Axis_Account_Controller_Abstract) {
 
-    protected function _backAuth($request)
-    {
+                $request->setModuleName('Axis_Account')
+                    ->setControllerName('auth')
+                    ->setActionName('index')
+                    ->setDispatched(false);
+            }
+            return;
+        }
+        
+        if (!Axis_Area::isBackend()) {
+            return;
+        }
+
         $auth = Zend_Auth::getInstance();
         $auth->setStorage(new Zend_Auth_Storage_Session('admin'));
 
-        $actionName     = $request->getActionName();
-        $controllerName = $request->getControllerName();
-        $moduleName     = $request->getModuleName();
-
-        if (in_array($controllerName, array('auth', 'forgot'))
+        if (in_array($request->getControllerName(), array('auth', 'forgot'))
             && 'Axis_Admin' === $request->getModuleName()
         ) {
             return;
@@ -85,50 +89,68 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
                 ->setDispatched(false);
             return;
         }
-
-        //ACL
-        $modelAcl    = Axis::single('admin/acl');
-        $roleId = Axis::session()->roleId;
-        if (!empty($roleId)) {
-            $modelAcl->loadRules($roleId);
-        }
-        $viewRenderrer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
-        $inflector = $viewRenderrer->getInflector();
-        $params = array(
-            'module'     => $request->getModuleName(),
-            'controller' => $controllerName,
-            'action'     => $actionName
-        );
-        $inflector->setTarget('admin/:module/:controller/:action');
-        $resource = $inflector->filter($params);
-
-        if (false === $modelAcl->check($roleId, $resource)) {
-            if ($request->isXmlHttpRequest()) {
-                Axis::message()->addError(
-                    Axis::translate('admin')->__(
-                        'You have no permission for this operation'
-                    )
-                );
-                $jsonHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('json');
-                $jsonHelper->sendFailure();
-                return;
+        
+        $acl = new Zend_Acl();
+        // add resources
+        $resources = Axis::model('admin/acl_resource')->toFlatTree();
+        foreach ($resources as $resource) {
+            $parent = $resource['parent'] ? $resource['parent'] : null;
+            
+            try {
+                $acl->addResource($resource['id'], $parent);
+            } catch (Zend_Acl_Exception $e) {
+                Axis::message()->addError($e->getMessage());
             }
-            $request->setModuleName('Axis_Admin')
-                ->setControllerName('error')
-                ->setActionName('access-denied')
-                ->setDispatched(false);
         }
-    }
-
-    protected function _frontAuth($request)
-    {
-        if (!Axis::getCustomerId()
-                && $this->getActionController() instanceof Axis_Account_Controller_Abstract) {
-
-            $request->setModuleName('Axis_Account')
-                ->setControllerName('auth')
-                ->setActionName('index')
-                ->setDispatched(false);
+         
+        //add role(s)
+        $role = (string) $user->role_id;
+        $acl->addRole($role);
+        
+        //add permission
+        $rowset = Axis::single('admin/acl_rule')
+            ->select('*')
+            ->where('role_id = ?', $role)
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $action = 'deny';
+            if ('allow' === $row->permission) {
+                $action = 'allow';
+            } 
+            $acl->$action($row->role_id, $row->resource_id);
         }
+        
+        //get current resource by request
+        $request = $this->getRequest();
+        $inflector = new Zend_Filter_Inflector();
+        $resource = $inflector->addRules(array(
+                 ':module'     => array('Word_CamelCaseToDash', new Zend_Filter_Word_UnderscoreToSeparator('/'), 'StringToLower'),
+                 ':controller' => array('Word_CamelCaseToDash', 'StringToLower', new Zend_Filter_PregReplace('/admin_/', '')/*, new Zend_Filter_PregReplace('/\./', '-')*/),
+                 ':action'     => array('Word_CamelCaseToDash', /* new Zend_Filter_PregReplace('#[^a-z0-9' . preg_quote('/', '#') . ']+#i', '-'), */'StringToLower'),
+            ))
+            ->setTarget('admin/:module/:controller/:action')
+            ->filter($request->getParams());
+
+        if ($acl->isAllowed($role, $resource)) {
+            
+            Zend_View_Helper_Navigation_HelperAbstract::setDefaultAcl($acl);
+            Zend_View_Helper_Navigation_HelperAbstract::setDefaultRole($role);
+            return;
+        }
+        if ($request->isXmlHttpRequest()) {
+            Axis::message()->addError(
+                Axis::translate('admin')->__(
+                    'You have no permission for this operation'
+                )
+            );
+            $jsonHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('json');
+            $jsonHelper->sendFailure();
+            return;
+        }
+        
+        $request->setModuleName('Axis_Admin')
+            ->setControllerName('error')
+            ->setActionName('access-denied')
+            ->setDispatched(false);
     }
 }

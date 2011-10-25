@@ -30,20 +30,18 @@ class Axis_Contacts_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
-            ->rename('admin/contacts_index', 'admin/contacts/index')
+        Axis::single('admin/acl_rule')
+            ->rename('admin/contacts_index',            'admin/contacts/index')
             ->rename('admin/contacts_index/index',      'admin/contacts/index/index')
             ->rename('admin/contacts_index/list',       'admin/contacts/index/list')
             ->rename('admin/contacts_index/set-status', 'admin/contacts/index/save')
             ->rename('admin/contacts_index/delete',     'admin/contacts/index/remove')
             ->rename('admin/contacts_index/send',       'admin/contacts/index/send')
-            ->add('admin/contacts/department')
+            
             ->rename('admin/contacts_index/get-departments',   'admin/contacts/department/list')
             ->rename('admin/contacts_index/get-department',    'admin/contacts/department/load')
             ->rename('admin/contacts_index/save-department',   'admin/contacts/department/save')
             ->rename('admin/contacts_index/delete-department', 'admin/contacts/department/remove')
-            ->remove('admin/contacts_index')
-            ->remove('admin/customer_email')
         ;
 
     }

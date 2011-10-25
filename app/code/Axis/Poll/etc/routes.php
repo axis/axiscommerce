@@ -31,11 +31,11 @@ $router->addRoute('poll', new Axis_Controller_Router_Route_Front(
         'action'     => 'index'
     )
 ));
-$router->addRoute('admin/poll', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/poll', new Axis_Controller_Router_Route_Back(
     'poll/:action/*',
     array(
         'module'     => 'Axis_Poll',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');

@@ -67,14 +67,6 @@ class Axis_Tag_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->add('tag/main/customer_status', 'Tag/General/Default customer tag status', 1, 'select', 'Default tag status added by registered customer', array('config_options' => '{"1":"approved","2":"pending","3":"disapproved"}'))
             ->add('tag/main/guest_status', 'Default guest tag status', 2, 'select', 'Default tag status added by guest', array('config_options' => '{"1":"approved","2":"pending","3":"disapproved"}'));
 
-        Axis::single('admin/acl_resource')
-            ->add('admin/tag', 'Tags All')
-            ->add('admin/tag_index', 'Tags')
-            ->add("admin/tag_index/delete")
-            ->add("admin/tag_index/index")
-            ->add("admin/tag_index/list")
-            ->add("admin/tag_index/save");
-
         Axis::single('core/page')
             ->add('tag/*/*')
             ->add('tag/index/*')
@@ -92,8 +84,6 @@ class Axis_Tag_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')->remove('tag');
         Axis::single('core/config_value')->remove('tag');
-
-        Axis::single('admin/acl_resource')->remove('admin/tag');
 
         Axis::single('core/page')
             ->remove('tag/*/*')

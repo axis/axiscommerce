@@ -30,24 +30,7 @@ class Axis_Location_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
-            ->remove('admin/location_zone')
 
-            ->add('admin/location_zone', 'States / Provinces')
-            ->add("admin/location_zone/delete")
-            ->add("admin/location_zone/index")
-            ->add("admin/location_zone/list")
-            ->add("admin/location_zone/save")
-
-            ->add('admin/location_geozone', 'Geozones')
-            ->add("admin/location_geozone/delete-assigns")
-            ->add("admin/location_geozone/delete")
-            ->add("admin/location_geozone/get-assign")
-            ->add("admin/location_geozone/index")
-            ->add("admin/location_geozone/list-assigns")
-            ->add("admin/location_geozone/list")
-            ->add("admin/location_geozone/save-assign")
-            ->add("admin/location_geozone/save");
     }
 
     public function down()

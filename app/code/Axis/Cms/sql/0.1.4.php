@@ -30,41 +30,32 @@ class Axis_Cms_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::model('admin/acl_resource')
-//            ->add('admin/cms', 'CMS')
-            ->add('admin/cms/page', 'Pages')
+        Axis::model('admin/acl_rule')
             ->rename('admin/cms_index/index',           'admin/cms/page/index')
             ->rename('admin/cms_index/get-pages',       'admin/cms/page/list')
             ->rename('admin/cms_index/get-page-data',   'admin/cms/page/load')
             ->rename('admin/cms_index/save-page',       'admin/cms/page/save')
             ->rename('admin/cms_index/quick-save-page', 'admin/cms/page/batch-save')
             ->rename('admin/cms_index/delete-page',     'admin/cms/page/remove')
-            ->add('admin/cms/category', 'Categories')
             ->rename('admin/cms_index/get-site-tree',   'admin/cms/category/list')
             ->rename('admin/cms_index/get-category',    'admin/cms/category/load')
             ->rename('admin/cms_index/save-category',   'admin/cms/category/save')
             ->rename('admin/cms_index/delete-category', 'admin/cms/category/remove')
             ->rename('admin/cms_index/move-category',   'admin/cms/category/move')
-            ->remove('admin/cms_index')
 
-            ->add('admin/cms/block', 'Static Blocks')
             ->rename('admin/cms_block/index',            'admin/cms/block/index')
             ->rename('admin/cms_block/get-blocks',       'admin/cms/block/list')
             ->rename('admin/cms_block/get-block-data',   'admin/cms/block/load')
             ->rename('admin/cms_block/save-block',       'admin/cms/block/save')
             ->rename('admin/cms_block/quick-save-block', 'admin/cms/block/batch-save')
             ->rename('admin/cms_block/delete-block',     'admin/cms/block/remove')
-            ->remove('admin/cms_block')
 
-            ->add('admin/cms/comment', 'Page Comments')
             ->rename('admin/cms_comment/index',          'admin/cms/comment/index')
             ->rename('admin/cms_comment/get-comments',   'admin/cms/comment/list')
             ->rename('admin/cms_comment/save-comment',   'admin/cms/comment/save')
             ->rename('admin/cms_comment/quick-save',     'admin/cms/comment/batch-save')
             ->rename('admin/cms_comment/delete-comment', 'admin/cms/comment/remove')
             ->rename('admin/cms_comment/get-page-tree',  'admin/cms/comment/get-page-tree')
-
-            ->remove('admin/cms_comment')
         ;
     }
 

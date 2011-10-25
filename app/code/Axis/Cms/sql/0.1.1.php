@@ -279,38 +279,6 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ));
         }
 
-        Axis::single('admin/acl_resource')
-            ->add('admin/cms', 'CMS')
-            ->add('admin/cms_index', 'Categories/Pages')
-            ->add("admin/cms_index/copy-page")
-            ->add("admin/cms_index/delete-category")
-            ->add("admin/cms_index/delete-page")
-            ->add("admin/cms_index/get-category")
-            ->add("admin/cms_index/get-page-data")
-            ->add("admin/cms_index/get-pages")
-            ->add("admin/cms_index/get-site-tree")
-            ->add("admin/cms_index/index")
-            ->add("admin/cms_index/move-category")
-            ->add("admin/cms_index/quick-save-page")
-            ->add("admin/cms_index/save-category")
-            ->add("admin/cms_index/save-page")
-
-            ->add('admin/cms_block', 'Static Blocks')
-            ->add("admin/cms_block/delete-block")
-            ->add("admin/cms_block/get-block-data")
-            ->add("admin/cms_block/get-blocks")
-            ->add("admin/cms_block/index")
-            ->add("admin/cms_block/quick-save-block")
-            ->add("admin/cms_block/save-block")
-
-            ->add('admin/cms_comment', 'Page Comments')
-            ->add("admin/cms_comment/delete-comment")
-            ->add("admin/cms_comment/get-comments")
-            ->add("admin/cms_comment/get-page-tree")
-            ->add("admin/cms_comment/index")
-            ->add("admin/cms_comment/quick-save")
-            ->add("admin/cms_comment/save-comment");
-
         Axis::single('core/page')
             ->add('cms/*/*');
     }

@@ -33,15 +33,7 @@
  */
 class Axis_Admin_Model_User extends Axis_Db_Table 
 {
-    /**
-     * The default table name 
-     */
     protected $_name = 'admin_user';
-    
-    public function getRole($id)
-    {
-        return $this->select('role_id')->where('id = ?', $id)->fetchOne();
-    }
       
     public function getCount()
     {

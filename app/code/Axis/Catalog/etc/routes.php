@@ -40,11 +40,11 @@ $router->addRoute('product_compare', new Axis_Controller_Router_Route_Front(
     )
 ));
 
-$router->addRoute('admin/catalog', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/catalog', new Axis_Controller_Router_Route_Back(
     'catalog/:controller/:action/*',
     array(
         'module'     => 'Axis_Catalog',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');
