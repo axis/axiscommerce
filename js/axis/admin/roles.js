@@ -247,7 +247,7 @@ Ext.onReady(function(){
         items: form
     });
     
-    var storeResource = new Ext.ux.maximgb.treegrid.AdjacencyListStore({
+    var storeResource = new Ext.ux.maximgb.tg.AdjacencyListStore({
         storeId: 'store-resource',
         autoLoad: true,
         mode: 'local',
