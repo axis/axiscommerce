@@ -70,6 +70,7 @@ define("DOMPDF_FONT_DIR", DOMPDF_DIR . "/lib/fonts/");
  * This directory must be writeable by the webserver process.
  * It is used to download remote images.
  */
+
 define("DOMPDF_TEMP_DIR", sys_get_temp_dir());
 
 /**
@@ -94,10 +95,8 @@ define("DOMPDF_CHROOT", realpath(DOMPDF_DIR));
  *
  * @link http://ttf2pt1.sourceforge.net/
  */
-if (!defined("TTF2AFM")) {
-  define("TTF2AFM", DOMPDF_LIB_DIR ."/ttf2ufm/ttf2ufm-src/ttf2pt1");
-  //define("TTF2AFM", "/usr/bin/ttf2pt1");
-}
+
+define("TTF2AFM", DOMPDF_LIB_DIR ."/ttf2ufm/ttf2ufm-src/ttf2pt1");
 
 /**
  * The PDF rendering backend to use
@@ -127,6 +126,7 @@ if (!defined("TTF2AFM")) {
  * @link http://www.ros.co.nz/pdf
  * @link http://www.php.net/image
  */
+
 define("DOMPDF_PDF_BACKEND", "CPDF");
 
 /**
