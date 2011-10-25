@@ -50,19 +50,6 @@ class Axis_Import_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
         ");
-
-        Axis::single('admin/acl_resource')
-            ->remove('admin/import')
-            ->add('admin/import', 'Import')
-            ->add('admin/import_index', 'OsCommerce')
-            ->add("admin/import_index/connect")
-            ->add("admin/import_index/delete")
-            ->add("admin/import_index/disconnect")
-            ->add("admin/import_index/get-list")
-            ->add("admin/import_index/get-supported-types")
-            ->add("admin/import_index/import")
-            ->add("admin/import_index/index")
-            ->add("admin/import_index/save");
     }
 
     public function down()
@@ -72,8 +59,5 @@ class Axis_Import_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         $installer->run("
             DROP TABLE IF EXISTS `{$installer->getTable('import_profile')}`;
         ");
-
-        Axis::single('admin/acl_resource')
-            ->add('admin/import');
     }
 }

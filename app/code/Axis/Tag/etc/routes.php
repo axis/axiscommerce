@@ -50,11 +50,11 @@ $router->addRoute('tag_account', new Axis_Controller_Router_Route_Front(
     'account' // run before 'account' route
 );
 
-$router->addRoute('admin/tag', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/tag', new Axis_Controller_Router_Route_Back(
     'tag/:action/*',
     array(
         'module'     => 'Axis_Tag',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');

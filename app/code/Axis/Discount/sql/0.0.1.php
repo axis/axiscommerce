@@ -59,14 +59,6 @@ class Axis_Discount_Upgrade_0_0_1 extends Axis_Core_Model_Migration_Abstract
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
         ");
-
-        Axis::single('admin/acl_resource')
-            ->add('admin/discount_index', 'Discounts')
-            ->add("admin/discount_index/create")
-            ->add("admin/discount_index/delete")
-            ->add("admin/discount_index/edit")
-            ->add("admin/discount_index/index")
-            ->add("admin/discount_index/save");
     }
 
     public function down()

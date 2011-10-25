@@ -46,6 +46,7 @@ class Axis_Admin_Box_Navigation extends Axis_Admin_Box_Abstract
     public function render()
     {
         if (!$navigationHtml = Axis::cache()->load($this->getCacheKey())) {
+            $this->_items = array(); // forward fix
             Axis::dispatch('admin_box_navigation_prepare', $this);
             $this->menu     = new Zend_Navigation($this->_items);
             $navigationHtml = parent::render();

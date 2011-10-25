@@ -240,23 +240,6 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('sales/order/order_number_pattern', 'Pattern for Custom Order Number', '100000000', 'Please notice: Changing code pattern for existing orders in database can cause problems.')
             ->add('sales/order/email', 'Order notifications reciever', 'email1', 'select', 'All notifications about new orders will be sended to this email', array('model' => 'MailBoxes'));
 
-        Axis::single('admin/acl_resource')
-            ->add('admin/sales', 'Sales')
-            ->add('admin/sales_order', 'Orders')
-            ->add("admin/sales_order/delete")
-            ->add("admin/sales_order/get-order-info")
-            ->add("admin/sales_order/index")
-            ->add("admin/sales_order/list")
-            ->add("admin/sales_order/print")
-            ->add("admin/sales_order/set-status")
-            ->add('admin/sales_order-status', 'Orders Statusses')
-            ->add("admin/sales_order-status/batch-save")
-            ->add("admin/sales_order-status/delete")
-            ->add("admin/sales_order-status/get-childs")
-            ->add("admin/sales_order-status/get-info")
-            ->add("admin/sales_order-status/index")
-            ->add("admin/sales_order-status/list")
-            ->add("admin/sales_order-status/save");
     }
 
     public function down()

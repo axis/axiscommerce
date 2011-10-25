@@ -31,103 +31,140 @@
  * @subpackage  Axis_Admin_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Admin_Model_Acl_Resource extends Axis_Db_Table
+class Axis_Admin_Model_Acl_Resource // @todo extends Axis_Core_Model_File_Collection
 {
-    protected $_name = 'admin_acl_resource';
+    /**
+     *
+     * @var array 
+     */
+    private $_resources;
+
+    public function __construct()
+    {
+        if ($this->_resources = Axis::cache()->load('axis_acl_resources')) {
+            return;
+        }
+        
+        foreach (Axis::app()->getModules() as $moduleName => $path) {
+            if ('Axis_Admin' === $moduleName) {
+                $path = $path . '/controllers';
+            } else  {
+                $path = $path . '/controllers/Admin';
+            }
+            if (!is_dir($path)) {
+                continue;
+            }
+            foreach($this->_scanDirectory($path) as $file) {
+
+                if (strstr($file, "Controller.php" ) == false) {
+                    continue;
+                }
+                include_once $file;
+            }
+        }
+               
+        $resource = 'admin';
+        $resources = array($resource);
+        $camelCaseToDash = new Zend_Filter_Word_CamelCaseToDash();
+        foreach (get_declared_classes() as $class) { 
+            if (!is_subclass_of($class, 'Axis_Admin_Controller_Back')) {
+                continue;
+            }
+            list($module, $controller) = explode('Admin_', $class, 2);
+            
+            $module = rtrim($module, '_');
+            if (empty($module)) {
+                $module = 'Axis_Core';
+            } elseif ('Axis' === $module) {
+                $module = 'Axis_Admin';
+            }
+            $module = strtolower($camelCaseToDash->filter($module));
+            list($namespace, $module) = explode('_', $module, 2);
+            
+            $resource .= '/' . $namespace;
+            $resources[$resource] = $resource;
+            
+            $resource .= '/' . $module;
+            $resources[$resource] = $resource;
+            
+            $controller = substr($controller, 0, strpos($controller, "Controller"));
+            $controller = strtolower($camelCaseToDash->filter($controller));
+            
+            $resource .= '/' . $controller;
+            $resources[$resource] = $resource;
+            
+            foreach(get_class_methods($class) as $action) {
+                if (false == strstr($action, "Action")) {
+                    continue;
+                }
+                $action = substr($action, 0, strpos($action, 'Action'));
+                $action = strtolower($camelCaseToDash->filter($action));
+//                $resources[$namespace][$module][$controller][] = $action;
+                
+                $resources[$resource . '/' . $action] = $resource . '/' . $action;
+            }
+            $resource = 'admin';
+        }
+        
+        asort($resources);
+        Axis::cache()->save(
+            $resources, 'axis_acl_resources', array('modules')
+        );
+        $this->_resources = $resources;
+    }
+    
+    protected function _scanDirectory($path) {
+        $dir = dir($path);
+        $files = array();
+        while (false !== ($file = $dir->read())) {
+            if ($file != '.' && $file != '..') {
+                if (!is_link("$path/$file") && is_dir("$path/$file")) {
+                    $files = array_merge($files, $this->_scanDirectory("$path/$file"));
+                } else {
+                    $files[] = "$path/$file";
+                }
+            }
+        }
+        $dir->close();
+
+        return $files;
+    }
     
     /**
-     * Get resource tree
+     * @todo abstract toFlatTree 
      *
-     * @return  array
+     * @return type 
      */
-    public function getTree()
+    public function toFlatTree() 
     {
-        $tree = array();
-        foreach ($this->fetchAll(null, 'resource_id') as $resource) {
-            /*if (($pos = strrpos($resource->resource_id, '_')) !== false) {
-                $parentId = substr($resource->resource_id, 0, $pos);
-            } else*/if(($pos = strrpos($resource->resource_id, '/')) !== false){
-                $parentId = substr($resource->resource_id, 0, $pos);
+        $data = array();
+        foreach ($this->_resources as $resource) {
+            
+            if (false !== ($pos = strrpos($resource, '/'))) {
+                $text   = substr($resource, $pos + 1);
+                $parent = substr($resource, 0, $pos);
+                
             } else {
-                $parentId = '';
+                $text   = $resource; 
+                $parent = false;
             }
-            $tree[$parentId][$resource->resource_id] = $resource->title;
+            
+            $data[$resource] = array(
+                'id'     => $resource,
+                'text'   => $text,
+                'parent' => $parent,
+                'leaf'   => true
+            );
+            if (isset($data[$parent])) {
+                $data[$parent]['leaf'] = false;
+            }
         }
-        return $tree;
+            
+        return $data;
     }
     
-    /**
-     * Add resource
-     *
-     * @param string $resource
-     * @param string $title[optional]
-     * @return Axis_Admin_Model_Acl_Resource Provides fluent interface
-     */
-    public function add($resource, $title = null) 
-    {
-        if (null === $title) {
-            $title = $resource;
-        }
-        //$resource = str_replace('_', '/', $resource);
-        
-        if ($this->select('id')->where('resource_id = ?', $resource)->fetchOne()) {
-            //Axis::message()->addWarning(
-            //  Axis::translate('admin')->__(
-            //      "Resource %s already exist", $resource
-            //  )
-            //);
-            return $this;
-        }
-        $row = $this->createRow(array(
-            'resource_id' => $resource, 
-            'title' => $title
-        ));
-        $row->save();
-        
-        return $this;
-    }
-
-    /**
-     *
-     * @param  string $resource
-     * @return Axis_Admin_Model_Acl_Resource Provides fluent interface
-     */
-    public function remove($resource)
-    {
-        $this->delete("resource_id LIKE '{$resource}%'");
-        return $this;
-    }
-
-    /**
-     * Rename acl resource
-     *
-     * @param string $oldResource
-     * @param string $newResource
-     * @return Axis_Admin_Model_Acl_Resource
-     */
-    public function rename($oldResource, $newResource)
-    {
-
-        $row = $this->select()
-            ->where('resource_id = ?', $oldResource)
-            ->fetchRow();
-        if ($row) {
-            $row->resource_id = $newResource;
-            if ($oldResource == $row->title) {
-                $row->title = $newResource;
-            }
-            $row->save();
-        }
-        
-        $rowset = Axis::single('admin/acl_rule')->select()
-            ->where('resource_id = ?', $oldResource)
-            ->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            $row->resource_id = $newResource;
-            $row->save();
-        }
-        
-        return $this;
-    }
+//    public function fetchAll() 
+//    {
+//        return $this->_resources;
+//    }
 }

@@ -136,7 +136,8 @@ class Axis_Log_Model_Observer
                                 'label'         => 'Pageviews',
                                 'order'         => 20,
                                 'module'        => 'Axis_Log',
-                                'route'         => 'admin/log'
+                                'route'         => 'admin/axis/log',
+                                'resource'      => 'admin/axis/log'
                             )
                         )
                     )

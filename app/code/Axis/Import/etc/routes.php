@@ -23,11 +23,11 @@
  * @license     GNU Public License V3.0
  */
 
-$router->addRoute('admin/import', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/import', new Axis_Controller_Router_Route_Back(
     'import/:action/*',
     array(
         'module'     => 'Axis_Import',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');

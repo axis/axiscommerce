@@ -63,12 +63,6 @@ class Axis_Search_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('admin/acl_resource')
-            ->add('admin/search', 'Search Reports')
-            ->add("admin/search/delete")
-            ->add("admin/search/index")
-            ->add("admin/search/list");
-
         Axis::single('core/page')
             ->add('search/*/*')
             ->add('search/index/*')

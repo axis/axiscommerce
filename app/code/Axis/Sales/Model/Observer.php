@@ -110,7 +110,8 @@ class Axis_Sales_Model_Observer
                         'order'         => 10,
                         'module'        => 'Axis_Sales',
                         'controller'    => 'order',
-                        'route'         => 'admin/sales'
+                        'route'         => 'admin/axis/sales',
+                        'resource'      => 'admin/axis/sales/order'
                     )
                 )
             ),
@@ -122,7 +123,8 @@ class Axis_Sales_Model_Observer
                         'translator'    => 'Axis_Sales',
                         'module'        => 'Axis_Sales',
                         'controller'    => 'order-status',
-                        'route'         => 'admin/sales'
+                        'route'         => 'admin/axis/sales',
+                        'resource'      => 'admin/axis/sales/order-status'
                     )
                 )
             )

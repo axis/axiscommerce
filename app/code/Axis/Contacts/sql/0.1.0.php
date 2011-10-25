@@ -62,19 +62,6 @@ class Axis_Contacts_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('admin/acl_resource')
-            ->add('admin/contacts', 'Contacts')
-            ->add('admin/contacts_index', 'Contact Us')
-            ->add("admin/contacts_index/delete")
-            ->add("admin/contacts_index/delete-department")
-            ->add("admin/contacts_index/get-department")
-            ->add("admin/contacts_index/get-departments")
-            ->add("admin/contacts_index/index")
-            ->add("admin/contacts_index/list")
-            ->add("admin/contacts_index/save-department")
-            ->add("admin/contacts_index/send")
-            ->add("admin/contacts_index/set-status");
-
         Axis::single('core/page')
             ->add('contacts/*/*');
     }

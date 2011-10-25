@@ -77,17 +77,6 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('sitemap/cms/frequency', 'Frequency', 'daily', 'select', 'Frequency', array('config_options' => 'always,hourly,daily,weekly,monthly,yearly,never'))
             ->add('sitemap/cms/showPages', 'Show pages', '1', 'bool', 'Show pages on sitemap page');
 
-
-        Axis::single('admin/acl_resource')
-            ->add('admin/sitemap', 'Sitemap All')
-            ->add('admin/sitemap_index', 'Sitemap')
-            ->add("admin/sitemap_index/index")
-            ->add("admin/sitemap_index/list")
-            ->add("admin/sitemap_index/ping")
-            ->add("admin/sitemap_index/quick-save")
-            ->add("admin/sitemap_index/remove")
-            ->add("admin/sitemap_index/save");
-
         Axis::single('core/page')
             ->add('sitemap/*/*')
             ->add('sitemap/index/*')
@@ -108,8 +97,6 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')->remove('sitemap');
         Axis::single('core/config_value')->remove('sitemap');
-
-        Axis::single('admin/acl_resource')->remove('admin/sitemap');
 
         Axis::single('core/page')->remove('sitemap/*/*')
             ->remove('sitemap/index/*')

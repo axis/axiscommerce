@@ -40,11 +40,11 @@ $router->addRoute('community_review_product', new Axis_Controller_Router_Route_F
     )
 ));
 
-$router->addRoute('admin/community', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/community', new Axis_Controller_Router_Route_Back(
     'community/:controller/:action/*',
     array(
         'module'     => 'Axis_Community',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');

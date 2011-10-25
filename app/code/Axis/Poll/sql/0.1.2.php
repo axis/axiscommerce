@@ -30,7 +30,7 @@ class Axis_Poll_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
+        Axis::single('admin/acl_rule')
             ->rename('admin/poll_index/index',        'admin/poll/index')
             ->rename('admin/poll_index/list',         'admin/poll/list')
             ->rename('admin/poll_index/get-question', 'admin/poll/load')
@@ -38,7 +38,6 @@ class Axis_Poll_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/poll_index/quick-save',   'admin/poll/batch-save')
             ->rename('admin/poll_index/delete',       'admin/poll/remove')
             ->rename('admin/poll_index/clear',        'admin/poll/clear')
-            ->remove('admin/poll_index')
             ;
 
     }

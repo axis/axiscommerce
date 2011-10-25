@@ -41,11 +41,11 @@ $router->addRoute('search_result', new Axis_Controller_Router_Route_Front(
     )
 ));
 
-$router->addRoute('admin/search', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/search', new Axis_Controller_Router_Route_Back(
     'search/:action/*',
     array(
         'module'     => 'Axis_Search',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');

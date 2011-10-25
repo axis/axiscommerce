@@ -19,8 +19,8 @@ var totalsConfig = {
     shippingTax : <?php echo (true === Axis::config('orderTotal/shipping_tax/enabled')) ? 'true' : 'false'?>
 
 };
-const CUSTOMER_GROUP_GUEST_ID = <?php echo Axis_Account_Model_Customer_Group::GROUP_GUEST_ID?>;
-const CUSTOMER_GROUP_GENERAL_ID = <?php echo Axis::config('account/main/defaultCustomerGroup')?>;
+var CUSTOMER_GROUP_GUEST_ID = <?php echo Axis_Account_Model_Customer_Group::GROUP_GUEST_ID?>;
+var CUSTOMER_GROUP_GENERAL_ID = <?php echo Axis::config('account/main/defaultCustomerGroup')?>;
 
 Ext.onReady(function() {
     <?php if ($this->orderId) : ?>

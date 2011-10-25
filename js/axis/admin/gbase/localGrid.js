@@ -170,7 +170,7 @@ function ajaxExportItems(params, clearSession){
     }
 
     Ext.Ajax.request({
-        url: Axis.getUrl('googlebase/export'),
+        url: Axis.getUrl('google-base/export'),
         params: Ext.apply(params, {
             clearSession: clearSession
         }),

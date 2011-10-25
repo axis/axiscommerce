@@ -25,7 +25,7 @@
         {{headScript}}
         <script type="text/javascript">
         Ext.namespace('Axis');
-        Ext.BLANK_IMAGE_URL = Axis.secureUrl + '/js/ext-3.3.1/resources/images/default/s.gif';
+        Ext.BLANK_IMAGE_URL = Axis.secureUrl + '/js/ext-3.4.0/resources/images/default/s.gif';
         </script>
 
         <?php
@@ -35,9 +35,9 @@
             ->offsetSetStylesheet(-98, 'navigation.css')
             ->offsetSetStylesheet(-96, 'elements.css')
             ->offsetSetStylesheet(-94, 'tabs.css')
-            ->offsetSetStylesheet(-92, 'js/ext-3.3.1/resources/css/ext-all.css')
-            ->offsetSetStylesheet(-90, 'js/ext-3.3.1/resources/css/xtheme-gray.css')
-            ->offsetSetStylesheet(-88, 'js/ext-3.3.1/examples/ux/css/ux-all.css')
+            ->offsetSetStylesheet(-92, 'js/ext-3.4.0/resources/css/ext-all.css')
+            ->offsetSetStylesheet(-90, 'js/ext-3.4.0/resources/css/xtheme-gray.css')
+            ->offsetSetStylesheet(-88, 'js/ext-3.4.0/examples/ux/css/ux-all.css')
             ->offsetSetStylesheet(-86, 'js/ext-ux/grid/RowActions.css')
             ->offsetSetStylesheet(-84, 'js/ext-ux/maximbg.treegrid/css/TreeGrid.css')
             ->offsetSetStylesheet(-82, 'js/ext-axis/resources/css/ext-axis-all.css')
@@ -46,19 +46,24 @@
         $this->headScript()
             ->setProxy('axis_core')
             ->offsetSetFile(-100, 'js/jquery/jquery-1.6.4.min.js')
-            ->offsetSetFile(-98, 'js/ext-3.3.1/adapter/jquery/ext-jquery-adapter.js')
-            ->offsetSetFile(-96, 'js/ext-3.3.1/ext-all-debug.js')
-            ->offsetSetFile(-94, 'js/ext-3.3.1/examples/ux/ux-all-debug.js')
+            ->offsetSetFile(-98, 'js/ext-3.4.0/adapter/jquery/ext-jquery-adapter.js')
+            ->offsetSetFile(-96, 'js/ext-3.4.0/ext-all-debug.js')
+            ->offsetSetFile(-94, 'js/ext-3.4.0/examples/ux/ux-all-debug.js')
             ->offsetSetFile(-92, 'js/axis/admin/core/script.js')
             ->offsetSetFile(-90, 'js/axis/admin/core/ajax.js')
             ->offsetSetFile(-78, 'js/axis/admin/core/translate.js');
 
         $this->headScript()
             ->setProxy('axis_core')
-            ->offsetSetFile(-70, 'js/ext-ux/maximbg.treegrid/source/NS.js')
-            ->offsetSetFile(-68, 'js/ext-ux/maximbg.treegrid/source/AbstractTreeStore.js')
-            ->offsetSetFile(-66, 'js/ext-ux/maximbg.treegrid/source/AdjacencyListStore.js')
-            ->offsetSetFile(-64, 'js/ext-ux/grid/RowActions.js');
+            ->offsetSetFile(-70, 'js/ext-ux/maximbg.treegrid/TreeGrid.packed.js')
+            // ->offsetSetFile(-70, 'js/ext-ux/maximbg.treegrid/src/NS.js')
+            // ->offsetSetFile(-68, 'js/ext-ux/maximbg.treegrid/src/AbstractTreeStore.js')
+            // ->offsetSetFile(-66, 'js/ext-ux/maximbg.treegrid/src/AdjacencyListStore.js')
+            // ->offsetSetFile(-65, 'js/ext-ux/maximbg.treegrid/src/NestedSetStore.js')
+            // ->offsetSetFile(-64, 'js/ext-ux/maximbg.treegrid/src/GridView.js')
+            // ->offsetSetFile(-63, 'js/ext-ux/maximbg.treegrid/src/EditorGridPanel.js')
+
+            ->offsetSetFile(-60, 'js/ext-ux/grid/RowActions.js');
 
         //$this->headScript()->appendFile('js/ext-axis/ext-axis-all.js');
         $this->headScript()
@@ -90,14 +95,14 @@
         $this->headScript()->offsetSetFile(-75, 'js/axis/admin/translation/'. $locale .'/core.js');
 
         if ('uk_UA' === $locale) {
-            $this->headScript()->appendFile('js/ext-3.3.1/src/locale/ext-lang-ukr.js');
-        } elseif (file_exists('js/ext-3.3.1/src/locale/ext-lang-' . $locale . '.js')) {
+            $this->headScript()->appendFile('js/ext-3.4.0/src/locale/ext-lang-ukr.js');
+        } elseif (file_exists('js/ext-3.4.0/src/locale/ext-lang-' . $locale . '.js')) {
             $this->headScript()->appendFile(
-                'js/ext-3.3.1/src/locale/ext-lang-' . $locale . '.js'
+                'js/ext-3.4.0/src/locale/ext-lang-' . $locale . '.js'
             );
-        } elseif (file_exists('js/ext-3.3.1/src/locale/ext-lang-' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
+        } elseif (file_exists('js/ext-3.4.0/src/locale/ext-lang-' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
             $this->headScript()->appendFile(
-                'js/ext-3.3.1/src/locale/ext-lang-' . Axis_Locale::getLocale()->getLanguage() . '.js'
+                'js/ext-3.4.0/src/locale/ext-lang-' . Axis_Locale::getLocale()->getLanguage() . '.js'
             );
         }
         ?>

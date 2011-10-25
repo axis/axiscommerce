@@ -32,16 +32,15 @@ class Axis_Import_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
     {
         Axis::single('core/module')->delete("code = 'Axis_Oscommerce'");
 
-        Axis::single('admin/acl_resource')
-            ->rename('admin/import_index/index', 'admin/import/index')
-            ->rename('admin/import_index/get-list', 'admin/import/list')
-            ->rename('admin/import_index/save', 'admin/import/save')
-            ->rename('admin/import_index/delete', 'admin/import/remove')
-            ->rename('admin/import_index/connect', 'admin/import/connect')
-            ->rename('admin/import_index/disconnect', 'admin/import/disconnect')
+        Axis::single('admin/acl_rule')
+            ->rename('admin/import_index/index',               'admin/import/index')
+            ->rename('admin/import_index/get-list',            'admin/import/list')
+            ->rename('admin/import_index/save',                'admin/import/save')
+            ->rename('admin/import_index/delete',              'admin/import/remove')
+            ->rename('admin/import_index/connect',             'admin/import/connect')
+            ->rename('admin/import_index/disconnect',          'admin/import/disconnect')
             ->rename('admin/import_index/get-supported-types', 'admin/import/list-type')
-            ->rename('admin/import_index/import', 'admin/import/import')
-            ->remove('admin/import_index')
+            ->rename('admin/import_index/import',              'admin/import/import')
             ;
     }
 
@@ -52,8 +51,5 @@ class Axis_Import_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 //        $installer->run('
 //            DROP TABLE IF EXISTS `{$installer->getTable('import_profile')}`;
 //        ');
-
-        Axis::single('admin/acl_resource')
-            ->rename('admin/import');
     }
 }

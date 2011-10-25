@@ -280,10 +280,10 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $front->registerPlugin(
             new Axis_Controller_Plugin_ErrorHandler_Override(), 10
         );
-        
+
         $authActionHelper = new Axis_Controller_Action_Helper_Auth();
         Zend_Controller_Action_HelperBroker::addHelper($authActionHelper);
-
+        
         return $front; // this is *VERY* important
     }
     
