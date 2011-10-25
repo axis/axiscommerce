@@ -1,7 +1,11 @@
+<?php
+$alt = $this->escape(Axis::config('design/header/logoAlt'));
+$src = $this->escape(Axis::config('design/header/logoSrc'));
+?>
 <div id="logo">
     <a href="<?php echo $this->href('/') ?>"
-        title="Axiscommerce"
-    ><?php echo $this->image('logo.gif', 'alt="Axiscommerce"');?></a>
+        title="<?php echo $alt ?>"
+    ><?php echo $this->image($src, 'alt="' . $alt . '"');?></a>
 </div>
 
 <?php echo $this->layout()->header ?>

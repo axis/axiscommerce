@@ -265,3 +265,6 @@
 "Missing captcha fields","Відсутні поля капчі"
 "Failed to validate captcha","Збій при перевірці капчі"
 "Captcha value is wrong: %value%","Невірне значення капчі: %value%"
+"Header","Header"
+"Logo Image Src","Назва файла логотипа"
+"Logo Image Alt","Альтернативний текст логотипа"
