@@ -1,10 +1,11 @@
 <?php
-
 require_once("../dompdf_config.inc.php");
 if ( isset( $_POST["html"] ) ) {
 
   if ( get_magic_quotes_gpc() )
     $_POST["html"] = stripslashes($_POST["html"]);
+  
+  $old_limit = ini_set("memory_limit", "16M");
   
   $dompdf = new DOMPDF();
   $dompdf->load_html($_POST["html"]);
@@ -35,24 +36,14 @@ package.)</p>
 
 <ul class="samples">
 <?php
-$test_files = glob("test/*.{html,php}", GLOB_BRACE);
-//if dompdf.php runs in virtual server root, dirname does not return empty folder but '/' or '\' (windows).
-//This leads to a duplicate separator in unix etc. and an error in Windows. Therefore strip off.
-//echo '<li>['.$_SERVER["PHP_SELF"].']</li>';
-$dompdf = dirname(dirname($_SERVER["PHP_SELF"]));
-//echo '<li>['.$dompdf.']</li>';
-if ( $dompdf == '/' || $dompdf == '\\') {
-  $dompdf = '';
-}
-//echo '<li>['.$dompdf.']</li>';
-$dompdf .= "/dompdf.php?base_path=" . rawurlencode("www/test/");
-//echo '<li>['.$dompdf.']</li>';
+$test_files = glob(dirname(__FILE__) . "/test/*.{html,php}", GLOB_BRACE);
+$dompdf = dirname(dirname($_SERVER["PHP_SELF"])) . "/dompdf.php?base_path=" . rawurlencode("www/test/");
 foreach ( $test_files as $file ) {
   $file = basename($file);
   $arrow = "images/arrow_0" . rand(1, 6) . ".gif";  
   echo "<li style=\"list-style-image: url('$arrow');\">\n";
   echo $file;
-  echo " [<a class=\"button\" target=\"blank\" href=\"test/$file\">HTML</a>] [<a class=\"button\" href=\"$dompdf&input_file=" . rawurlencode("$file") .  "\">PDF</a>]\n";
+  echo " [<a class=\"button\" target=\"blank\" href=\"test/$file\">HTML</a>] [<a class=\"button\" href=\"$dompdf&input_file=" . rawurlencode($file) .  "\">PDF</a>]\n";
   echo "</li>\n";
 }
 ?>
