@@ -265,3 +265,6 @@
 "Missing captcha fields","Missing captcha fields"
 "Failed to validate captcha","Failed to validate captcha"
 "Captcha value is wrong: %value%","Captcha value is wrong: %value%"
+"Header","Header"
+"Logo Image Src","Logo Image Src"
+"Logo Image Alt","Logo Image Alt"
