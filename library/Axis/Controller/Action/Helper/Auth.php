@@ -120,7 +120,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
             $acl->$action($row->role_id, $row->resource_id);
         }
         
-        Zend_Registry::set('acl', $acl);
+//        Zend_Registry::set('acl', $acl);
         
         //get current resource by request
         $request = $this->getRequest();
@@ -134,6 +134,9 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
             ->filter($request->getParams());
 
         if ($acl->isAllowed($role, $resource)) {
+            
+            Zend_View_Helper_Navigation_HelperAbstract::setDefaultAcl($acl);
+            Zend_View_Helper_Navigation_HelperAbstract::setDefaultRole($role);
             return;
         }
         if ($request->isXmlHttpRequest()) {
