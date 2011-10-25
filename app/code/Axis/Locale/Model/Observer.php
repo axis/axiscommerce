@@ -47,7 +47,7 @@ class Axis_Locale_Model_Observer
                         'module'        => 'Axis_Locale',
                         'controller'    => 'currency',
                         'action'        => 'index',
-                        'route'         => 'admin/locale'
+                        'route'         => 'admin/axis/locale'
                     ),
                     'locale/language' => array(
                         'label'         => 'Languages',
@@ -55,7 +55,7 @@ class Axis_Locale_Model_Observer
                         'module'        => 'Axis_Locale',
                         'controller'    => 'language',
                         'action'        => 'index',
-                        'route'         => 'admin/locale'
+                        'route'         => 'admin/axis/locale'
                     )
                 )
             )

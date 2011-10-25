@@ -50,7 +50,7 @@ class Axis_Csv_Model_Observer
                                 'module'        => 'Axis_Csv',
                                 'controller'    => 'index',
                                 'action'        => 'index',
-                                'route'         => 'admin/csv'
+                                'route'         => 'admin/axis/csv'
                             )
                         )
                     )

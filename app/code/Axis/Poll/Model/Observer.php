@@ -42,7 +42,7 @@ class Axis_Poll_Model_Observer
                         'order'         => 40,
                         'translator'    => 'Axis_Poll',
                         'module'        => 'Axis_Poll',
-                        'route'         => 'admin/poll',
+                        'route'         => 'admin/axis/poll',
                         'resource'      => 'admin/axis/poll'
                     )
                 )

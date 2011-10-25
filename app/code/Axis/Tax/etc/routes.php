@@ -23,11 +23,11 @@
  * @license     GNU Public License V3.0
  */
 
-$router->addRoute('admin/tax', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/tax', new Axis_Controller_Router_Route_Back(
     'tax/:controller/:action/*',
     array(
         'module'     => 'Axis_Tax',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');

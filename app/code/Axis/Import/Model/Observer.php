@@ -46,7 +46,7 @@ class Axis_Import_Model_Observer
                                 'module'        => 'Axis_Import',
                                 'controller'    => 'index',
                                 'action'        => 'index',
-                                'route'         => 'admin/import'
+                                'route'         => 'admin/axis/import'
                             )
                         )
                     )

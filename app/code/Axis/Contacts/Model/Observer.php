@@ -45,7 +45,7 @@ class Axis_Contacts_Model_Observer
                         'module'        => 'Axis_Contacts',
                         'controller'    => 'index',
                         'action'        => 'index',
-                        'route'         => 'admin/contacts'
+                        'route'         => 'admin/axis/contacts'
                     )
                 )
             )

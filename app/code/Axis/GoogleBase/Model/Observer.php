@@ -45,7 +45,7 @@ class Axis_GoogleBase_Model_Observer
                         'module'        => 'Axis_GoogleBase',
                         'controller'    => 'index',
                         'action'        => 'index',
-                        'route'         => 'admin/googlebase'
+                        'route'         => 'admin/axis/googlebase'
                     )
                 )
             )

@@ -50,7 +50,7 @@ class Axis_Community_Model_Observer
                                 'module'        => 'Axis_Community',
                                 'controller'    => 'review',
                                 'action'        => 'index',
-                                'route'         => 'admin/community'
+                                'route'         => 'admin/axis/community'
                             ),
                             'community/rating' => array(
                                 'label'         => 'Review ratings',
@@ -58,7 +58,7 @@ class Axis_Community_Model_Observer
                                 'module'        => 'Axis_Community',
                                 'controller'    => 'rating',
                                 'action'        => 'index',
-                                'route'         => 'admin/community'
+                                'route'         => 'admin/axis/community'
                             )
 //                            'community/image' => array(
 //                                'label'         => 'Image',
@@ -66,7 +66,7 @@ class Axis_Community_Model_Observer
 //                                'module'        => 'Axis_Community',
 //                                'controller'    => 'image',
 //                                'action'        => 'index',
-//                                'route'         => 'admin/community'
+//                                'route'         => 'admin/axis/community'
 //                            ),
 //                            'community/video' => array(
 //                                'label'         => 'Video',
@@ -74,7 +74,7 @@ class Axis_Community_Model_Observer
 //                                'module'        => 'Axis_Community',
 //                                'controller'    => 'video',
 //                                'action'        => 'index',
-//                                'route'         => 'admin/community'
+//                                'route'         => 'admin/axis/community'
 //                            )
                         )
                     )

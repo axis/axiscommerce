@@ -47,7 +47,7 @@ class Axis_Core_Model_Observer
                         'module'        => 'Axis_Core',
                         'controller'    => 'theme',
                         'action'        => 'index',
-                        'route'         => 'admin/core'
+                        'route'         => 'admin/axis/core'
                     ),
                     'core/mail' => array(
                         'label'         => 'Email Templates',
@@ -55,7 +55,7 @@ class Axis_Core_Model_Observer
                         'module'        => 'Axis_Core',
                         'controller'    => 'mail',
                         'action'        => 'index',
-                        'route'         => 'admin/core'
+                        'route'         => 'admin/axis/core'
                     ),
                     'core/page' => array(
                         'label'         => 'Pages',
@@ -63,7 +63,7 @@ class Axis_Core_Model_Observer
                         'module'        => 'Axis_Core',
                         'controller'    => 'page',
                         'action'        => 'index',
-                        'route'         => 'admin/core'
+                        'route'         => 'admin/axis/core'
                     )
                 )
             ),
@@ -75,7 +75,7 @@ class Axis_Core_Model_Observer
                         'module'        => 'Axis_Core',
                         'controller'    => 'config-value',
                         'action'        => 'index',
-                        'route'         => 'admin/core'
+                        'route'         => 'admin/axis/core'
                     ),
                     'core/site' => array(
                         'label'         => 'Site',
@@ -83,7 +83,7 @@ class Axis_Core_Model_Observer
                         'module'        => 'Axis_Core',
                         'controller'    => 'site',
                         'action'        => 'index',
-                        'route'         => 'admin/core'
+                        'route'         => 'admin/axis/core'
                     ),
                     'core/cache' => array(
                         'label'         => 'Cache Management',
@@ -91,7 +91,7 @@ class Axis_Core_Model_Observer
                         'module'        => 'Axis_Core',
                         'controller'    => 'cache',
                         'action'        => 'index',
-                        'route'         => 'admin/core'
+                        'route'         => 'admin/axis/core'
                     ),
                     'core/module' => array(
                         'label'         => 'Modules',
@@ -99,7 +99,7 @@ class Axis_Core_Model_Observer
                         'module'        => 'Axis_Core',
                         'controller'    => 'module',
                         'action'        => 'index',
-                        'route'         => 'admin/core'
+                        'route'         => 'admin/axis/core'
                     )
                 )
             )

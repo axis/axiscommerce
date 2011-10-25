@@ -183,7 +183,7 @@ class Axis_Search_Model_Observer
                                 'order'         => 10,
                                 'translator'    => 'Axis_Search',
                                 'module'        => 'Axis_Search',
-                                'route'         => 'admin/search'
+                                'route'         => 'admin/axis/search'
                             )
                         )
                     )

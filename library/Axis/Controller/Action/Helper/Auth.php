@@ -120,8 +120,6 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
             $acl->$action($row->role_id, $row->resource_id);
         }
         
-//        Zend_Registry::set('acl', $acl);
-        
         //get current resource by request
         $request = $this->getRequest();
         $inflector = new Zend_Filter_Inflector();

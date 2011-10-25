@@ -48,7 +48,7 @@ class Axis_Cms_Model_Observer
                         'module'        => 'Axis_Cms',
                         'controller'    => 'page',
                         'action'        => 'index',
-                        'route'         => 'admin/cms'
+                        'route'         => 'admin/axis/cms'
                     ),
                     'cms/block' => array(
                         'label'         => 'Static Blocks',
@@ -56,7 +56,7 @@ class Axis_Cms_Model_Observer
                         'module'        => 'Axis_Cms',
                         'controller'    => 'block',
                         'action'        => 'index',
-                        'route'         => 'admin/cms'
+                        'route'         => 'admin/axis/cms'
                     ),
                     'cms/comment' => array(
                         'label'         => 'Page Comments',
@@ -64,7 +64,7 @@ class Axis_Cms_Model_Observer
                         'module'        => 'Axis_Cms',
                         'controller'    => 'comment',
                         'action'        => 'index',
-                        'route'         => 'admin/cms'
+                        'route'         => 'admin/axis/cms'
                     )
                 )
             )

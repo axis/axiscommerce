@@ -42,7 +42,7 @@ class Axis_Sitemap_Model_Observer
                         'order'         => 50,
                         'translator'    => 'Axis_Sitemap',
                         'module'        => 'Axis_Sitemap',
-                        'route'         => 'admin/sitemap'
+                        'route'         => 'admin/axis/sitemap'
                     )
                 )
             )

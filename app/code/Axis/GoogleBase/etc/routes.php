@@ -23,11 +23,11 @@
  * @license     GNU Public License V3.0
  */
 
-$router->addRoute('admin/googlebase', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/googlebase', new Axis_Controller_Router_Route_Back(
     'googlebase/:action/*',
     array(
         'module'     => 'Axis_GoogleBase',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');
