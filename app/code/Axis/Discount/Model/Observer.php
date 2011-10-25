@@ -49,7 +49,8 @@ class Axis_Discount_Model_Observer
                         'module'        => 'Axis_Discount',
                         'controller'    => 'index',
                         'action'        => 'index',
-                        'route'         => 'admin/axis/discount'
+                        'route'         => 'admin/axis/discount',
+                        'resource'      => 'admin/axis/discount/index/index'
                     )
                 )
             )

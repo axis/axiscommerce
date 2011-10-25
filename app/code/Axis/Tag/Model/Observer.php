@@ -53,7 +53,8 @@ class Axis_Tag_Model_Observer
                         'order'         => 50,
                         'translator'    => 'Axis_Tag',
                         'module'        => 'Axis_Tag',
-                        'route'         => 'admin/axis/tag'
+                        'route'         => 'admin/axis/tag',
+                        'resource'      => 'admin/axis/tag'
                     )
                 )
             )

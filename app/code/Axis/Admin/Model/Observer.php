@@ -42,7 +42,8 @@ class Axis_Admin_Model_Observer
                 'module'        => 'Axis_Admin',
                 'controller'    => 'index',
                 'action'        => 'index',
-                'route'         => 'admin/axis/admin'
+                'route'         => 'admin/axis/admin',
+                'resource'      => 'admin/axis/admin/index/index'
             ),
             'admin' => array(
                 'label'         => 'Administrate',
@@ -56,7 +57,8 @@ class Axis_Admin_Model_Observer
                         'module'        => 'Axis_Admin',
                         'controller'    => 'user',
                         'action'        => 'index',
-                        'route'         => 'admin/axis/admin'
+                        'route'         => 'admin/axis/admin',
+                        'resource'      => 'admin/axis/admin/user/index'
                     ),
                     'role' => array(
                         'label'         => 'Roles',
@@ -64,7 +66,8 @@ class Axis_Admin_Model_Observer
                         'module'        => 'Axis_Admin',
                         'controller'    => 'acl-role',
                         'action'        => 'index',
-                        'route'         => 'admin/axis/admin'
+                        'route'         => 'admin/axis/admin',
+                        'resource'      => 'admin/axis/admin/acl-role/index'
                     )
                 )
             )

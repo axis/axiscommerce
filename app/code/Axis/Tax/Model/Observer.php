@@ -43,7 +43,8 @@ class Axis_Tax_Model_Observer
                         'translator'    => 'Axis_Tax',
                         'module'        => 'Axis_Tax',
                         'controller'    => 'class',
-                        'route'         => 'admin/axis/tax'
+                        'route'         => 'admin/axis/tax',
+                        'resource'      => 'admin/axis/tax/class/index'
                     ),
                     'tax/rate' => array(
                         'label'         => 'Tax Rates',
@@ -51,7 +52,8 @@ class Axis_Tax_Model_Observer
                         'translator'    => 'Axis_Tax',
                         'module'        => 'Axis_Tax',
                         'controller'    => 'rate',
-                        'route'         => 'admin/axis/tax'
+                        'route'         => 'admin/axis/tax',
+                        'resource'      => 'admin/axis/tax/rate/index'
                     )
                 )
             )

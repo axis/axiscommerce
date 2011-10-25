@@ -39,14 +39,15 @@ class Axis_Import_Model_Observer
             'admin' => array(
                 'pages' => array(
                     'import/export' => array(
-                        'pages'         => array(
+                        'pages' => array(
                             'import' => array(
                                 'label'         => 'OsCommerce',
                                 'order'         => 20,
                                 'module'        => 'Axis_Import',
                                 'controller'    => 'index',
                                 'action'        => 'index',
-                                'route'         => 'admin/axis/import'
+                                'route'         => 'admin/axis/import',
+                                'resource'      => 'admin/axis/import/index/index'
                             )
                         )
                     )

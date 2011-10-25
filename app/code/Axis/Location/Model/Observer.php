@@ -47,7 +47,8 @@ class Axis_Location_Model_Observer
                         'module'        => 'Axis_Location',
                         'controller'    => 'country',
                         'action'        => 'index',
-                        'route'         => 'admin/axis/location'
+                        'route'         => 'admin/axis/location',
+                        'resource'      => 'admin/axis/location/country/index'
                     ),
                     'location/zone' => array(
                         'label'         => 'States / Provinces',
@@ -55,7 +56,8 @@ class Axis_Location_Model_Observer
                         'module'        => 'Axis_Location',
                         'controller'    => 'zone',
                         'action'        => 'index',
-                        'route'         => 'admin/axis/location'
+                        'route'         => 'admin/axis/location',
+                        'resource'      => 'admin/axis/location/zone/index'
                     ),
                     'location/geozone' => array(
                         'label'         => 'Geozones',
@@ -63,7 +65,8 @@ class Axis_Location_Model_Observer
                         'module'        => 'Axis_Location',
                         'controller'    => 'geozone',
                         'action'        => 'index',
-                        'route'         => 'admin/axis/location'
+                        'route'         => 'admin/axis/location',
+                        'resource'      => 'admin/axis/location/geozone/index'
                     )
                 )
             )
