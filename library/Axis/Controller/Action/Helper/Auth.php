@@ -94,7 +94,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
         // add resources
         $resources = Axis::model('admin/acl_resource')->toFlatTree();
         foreach ($resources as $resource) {
-            $parent = $resource['parent'] ? $resource['parent'] : null;
+            $parent = $resource['parent'];
 
             try {
                 $acl->addResource($resource['id'], $parent);
