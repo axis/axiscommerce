@@ -26,6 +26,8 @@
  */
 Axis.grid.GridTree = Ext.extend(Ext.ux.maximgb.tg.EditorGridPanel, {
 
+    autoExpandMax: 1600,
+
     collapsible: true,
 
     ddGroup: 'grid-tree-dd-group',
@@ -44,6 +46,8 @@ Axis.grid.GridTree = Ext.extend(Ext.ux.maximgb.tg.EditorGridPanel, {
 
     stripeRows: true,
 
+    trackMouseOver: true,
+
     viewConfig: {
         emptyText: 'No records found'.l()
     },
@@ -61,6 +65,8 @@ Axis.grid.GridTree = Ext.extend(Ext.ux.maximgb.tg.EditorGridPanel, {
         if (this.massAction && !this.sm) {
             this.sm = new Ext.grid.CheckboxSelectionModel();
             this.cm.columns.splice(0, 0, this.sm);
+        } else if (!this.sm) {
+            this.sm = new Ext.grid.RowSelectionModel();
         }
         this.plugins.push(new Axis.dd.GridRow());
         Axis.grid.GridTree.superclass.initComponent.call(this);

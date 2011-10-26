@@ -77,7 +77,6 @@ Ext.onReady(function(){
 
     var storeCustomers = new Ext.data.Store({
         storeId: 'storeCustomers',
-//        autoLoad: true,
         reader: new Ext.data.JsonReader({
             idProperty: 'id',
             root: 'data',
@@ -92,35 +91,44 @@ Ext.onReady(function(){
             {name: 'created_at', type: 'date', dateFormat: 'Y-m-d'},
             {name: 'is_active',  type: 'int'}
         ])),
-//        remoteSort: true,
-        proxy: new Ext.data.HttpProxy({
-            method: 'POST',
-            url: Axis.getUrl('account/customer/list')
-        })
-        ,listeners: {
+        url: Axis.getUrl('account/customer/list'),
+        data: {
+            data : [{
+                id: -1,
+                email: 'Guest'.l(),
+                firstname: '',
+                lastname: '',
+                group_id: CUSTOMER_GROUP_GUEST_ID,
+                site_id: 1
+            }, {
+                id: -2,
+                email: 'New Customer'.l(),
+                firstname: '',
+                lastname: '',
+                group_id: CUSTOMER_GROUP_GENERAL_ID,
+                site_id: 1
+            }]
+        },
+        listeners: {
             load: function(store, records, options) {
-                var form = Order.form.getForm();
-                pageSize = form.findField('order[customer_id]').pageSize;
-//                store.insert(pageSize,
-                store.add(new store.recordType({
-                    id: -1,
-                    email: 'Guest'.l(),
-                    firstname: '',
-                    lastname: '',
-                    group_id: CUSTOMER_GROUP_GUEST_ID,
-                    site_id: 1
-
-                }));
-//                store.insert(pageSize++,
-                store.add(new store.recordType({
-                    id: -2,
-                    email: 'Add new Customer',
-                    firstname: '',
-                    lastname: '',
-                    group_id: CUSTOMER_GROUP_GENERAL_ID,
-                    site_id: 1
-
-                }));
+                store.insert(0, [
+                    new store.recordType({
+                        id: -1,
+                        email: 'Guest'.l(),
+                        firstname: '',
+                        lastname: '',
+                        group_id: CUSTOMER_GROUP_GUEST_ID,
+                        site_id: 1
+                    }),
+                    new store.recordType({
+                        id: -2,
+                        email: 'New Customer'.l(),
+                        firstname: '',
+                        lastname: '',
+                        group_id: CUSTOMER_GROUP_GENERAL_ID,
+                        site_id: 1
+                    })
+                ]);
             }
         }
     });
@@ -144,24 +152,20 @@ Ext.onReady(function(){
         displayField: 'email',
         valueField: 'id',
         typeAhead: true,
-//        mode: 'local',
-
         tpl: resultTpl,
         itemSelector: 'div.x-combo-list-item',
         loadingText: 'Loading...'.l(),
-        pageSize: 3,
+        pageSize: 15,
         listWidth: 300,
-
         store: storeCustomers,
         plugins: inlineField,
         anchor: '-10',
-//        lazyRender: true,
         listeners: {
             beforeselect: function(combo, record, index) {
                 var form = Order.form.getForm();
                 var readOnly = record.get('id') == -2 ? false : true;
                 var field = form.findField('customer[firstname]');
-                
+
                 field.setValue(record.get('firstname'));
                 field.readOnly = readOnly;
 
@@ -210,7 +214,7 @@ Ext.onReady(function(){
             }));
             this.setValue(data.order.customer_id);
         } else {
-            this.setValue('Guest'.l());
+            this.setValue(-1);
         }
     };
 
@@ -225,12 +229,10 @@ Ext.onReady(function(){
                 fieldLabel: 'Firstname'.l(),
                 xtype: 'textfield',
                 name: 'customer[firstname]'
-//                ,readOnly: true
             }, {
                 fieldLabel: 'Lastname'.l(),
                 xtype: 'textfield',
                 name: 'customer[lastname]'
-//                ,readOnly: true
             }, {
                 fieldLabel: 'Email'.l(),
                 xtype: 'textfield',
@@ -244,5 +246,5 @@ Ext.onReady(function(){
             }
         ]
     };
-    
+
 }, this);

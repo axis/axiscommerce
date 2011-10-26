@@ -65,6 +65,8 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
 
     protected $_defaultGatewayUrl = 'http://production.shippingapis.com/ShippingAPI.dll';
 
+    protected $_testMode = false;
+
 
     // @see testing example http://www.varnagiris.net/2006/05/04/php-usps-rates-calculator/
     // @see http://kb.veracart.com/questions/127/USPS-Error-message:-%22%2880040b1a%29-Authorization-failure.-You-are-not-authorized-to-connect-to-this-server%22
@@ -155,10 +157,31 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
 
     protected function _getXmlQuotes()
     {
-        // for test RateV3 hange on RateV2
-        // and url http://testing.shippingapis.com/ShippingAPITest.dll
         $r = $this->_request;
-        if ($r->getDestCountryId() == 'US' || $r->getDestCountryId() == 'PR') {
+
+        if ($this->_testMode) {
+            $xml = new SimpleXMLElement('<?xml version = "1.0" encoding = "UTF-8"?><RateV2Request/>');
+
+            $xml->addAttribute('USERID', $r->getUserId());
+
+            $package = $xml->addChild('Package');
+
+            $package->addAttribute('ID', 0);
+            $package->addChild('Service', 'All');
+            // or
+            // $package->addChild('Service', 'Priority');
+            $package->addChild('ZipOrigination', '10022');
+            $package->addChild('ZipDestination', '20008');
+            $package->addChild('Pounds', '10');
+            $package->addChild('Ounces', '5');
+            $package->addChild('Container', 'Flat Rate Box');
+            $package->addChild('Size', 'Large');
+            // or
+            // $package->addChild('Size', 'Regular');
+            $package->addChild('Machinable', 'True'); // or comment this line for the second example
+
+            $api = 'RateV2';
+        } elseif ($r->getDestCountryId() == 'US' || $r->getDestCountryId() == 'PR') {
             $xml = new SimpleXMLElement('<?xml version = "1.0" encoding = "UTF-8"?><RateV3Request/>');
 
             $xml->addAttribute('USERID', $r->getUserId());
@@ -202,11 +225,11 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         $request = $xml->asXML();
         try {
             $url = $this->_config->gateway;
-            if (!$url) {
+            if (empty($url)) {
                 $url = $this->_defaultGatewayUrl;
             }
             $httpClient = new Zend_Http_Client();
-            $httpClient->setUri($url);
+            $httpClient->setUri($this->_testMode ? 'http://testing.shippingapis.com/ShippingAPITest.dll' : $url);
             $httpClient->setHeaders(array(
             //'Host'       => $usps_server,
             'User-Agent' => 'Axis',
