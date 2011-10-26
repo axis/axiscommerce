@@ -26,6 +26,8 @@
  */
 Axis.grid.GridTree = Ext.extend(Ext.ux.maximgb.tg.EditorGridPanel, {
 
+    autoExpandMax: 1600,
+
     collapsible: true,
 
     ddGroup: 'grid-tree-dd-group',
@@ -43,6 +45,8 @@ Axis.grid.GridTree = Ext.extend(Ext.ux.maximgb.tg.EditorGridPanel, {
     split: true,
 
     stripeRows: true,
+
+    trackMouseOver: true,
 
     viewConfig: {
         emptyText: 'No records found'.l()
