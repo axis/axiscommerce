@@ -165,71 +165,77 @@ class Axis_Catalog_Admin_ProductOptionController extends Axis_Admin_Controller_B
            ->setData(array('form' => $formHtml, 'variations' => $variations))
            ->sendSuccess();
     }
-
+    
     public function nlistAction()
     {
-        $id = $this->_getParam('node', 0); // option_id
-        $data = array();
-
-        $modelProductOption = Axis::single('catalog/product_option');
+        $data  = array();
+        
         $leafOptions = array(
             Axis_Catalog_Model_Product_Option::TYPE_STRING,
             Axis_Catalog_Model_Product_Option::TYPE_TEXTAREA,
             Axis_Catalog_Model_Product_Option::TYPE_FILE
         );
-        if (!$id) {
-            // return options list
-            $options = $modelProductOption
-                ->select('*')
-                ->calcFoundRows()
-                ->addNameAndDescription(Axis_Locale::getLanguageId())
-                ->fetchAll();
+        $languageId = Axis_Locale::getLanguageId();
+        
+        $rowset = Axis::single('catalog/product_option')
+            ->select('*')
+            ->addNameAndDescription($languageId)
+            ->fetchRowset();
 
-            foreach ($options as $item) {
-                $data[] = array(
-                   'text'        => $item['name'],
-                   'code'        => $item['code'],
-                   'option_name' => $item['name'],
-                   'id'          => $item['id'],
-                   'option_id'   => $item['id'],
-                   'parent'      => null,
-                   'leaf'        => in_array($item['input_type'], $leafOptions) ? true : false,
-                   'input_type'  => $item['input_type'],
-                   'languagable' => $item['languagable']
-                );
-            }
-        } else {
-            /**
-             * @var Axis_Catalog_Model_Product_Option_Row
-             */
-            $option = $modelProductOption->find($id)->current();
-
-            $languageId = Axis_Locale::getLanguageId();
-            $optionText = $option->findDependentRowset(
-                'Axis_Catalog_Model_Product_Option_Text',
-                'Option',
-                $modelProductOption->select()
-                ->where('language_id = ?', $languageId)
-            )->current();
-
-            $values = $option->getValuesArrayByLanguage($languageId);
-
-            foreach ($values as $value) {
-                $data[] = array(
-                    'text'        => $value['name'],
-                    'option_name' => $optionText ? $optionText->name : $option->code,
-                    'option_code' => $option->code,
-                    'value_name'  => $value['name'],
-                    'id'          => $id . '_' . $value['id'], // prevent conflicting with parent ids
-                    'option_id'   => $id,
-                    'parent'      => $id,
-                    'value_id'    => $value['id'],
-                    'input_type'  => -1,
-                    'leaf'        => true
-                );
-            }
+        foreach ($rowset as $row) {
+            $data[] = array(
+                'id'          => $row->id,
+                'text'        => $row->name,
+                'parent'      => null,
+                'leaf'        => in_array($row->input_type, $leafOptions) ? true : false,
+                
+                'option_id'   => $row->id,
+                'option_name' => $row->name,
+                'input_type'  => $row->input_type,
+                
+                'code'        => $row->code,
+                'languagable' => $row->languagable
+            );
         }
-
-        $this->_helper->json->sendRaw($data);
+        
+        $dataset = Axis::model('catalog/product_option_value')
+            ->select(array('value_id' => 'id'))
+            ->join('catalog_product_option_value_text', 
+                'cpov.id = cpovt.option_value_id',
+                array('value_name' => 'name')
+            )
+            ->join('catalog_product_option', 
+                'cpo.valueset_id = cpov.valueset_id',
+                array('option_code' => 'code')
+            )
+            ->join('catalog_product_option_text', 
+                'cpo.id = cpot.option_id',
+                array('option_id', 'option_name' => 'name') 
+            )
+            ->where('cpovt.language_id = ?', $languageId)
+            ->fetchAll()
+            ;
+        
+        foreach ($dataset as $_data) {
+            $data[] = array(
+                'id'          => $_data['option_id'] . '_' . $_data['value_id'],
+                'text'        => $_data['value_name'],
+                'parent'      => $_data['option_id'],
+                'leaf'        => true,
+                
+                'option_id'   => $_data['option_id'],
+                'option_name' => $_data['option_name'],
+                'input_type'  => -1,
+                
+                
+                'option_code' => $_data['option_code'],
+                'value_name'  => $_data['value_name'],
+                'value_id'    => $_data['value_id']
+                
+            );
+        }
+        
+        
+        return $this->_helper->json->sendRaw($data);
     }
 }

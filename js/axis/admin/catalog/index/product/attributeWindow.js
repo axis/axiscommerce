@@ -50,6 +50,7 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
 
         var ds = new Ext.ux.maximgb.tg.AdjacencyListStore({
             autoLoad: true,
+            mode: 'local',
             reader: new Ext.data.JsonReader({
                 idProperty: 'id'
             }, [
@@ -66,9 +67,6 @@ Axis.AttributeWindow = Ext.extend(Ext.util.Observable, {
                 {name: 'value_id', type: 'int'},
                 {name: 'parent'}
             ]),
-            paramNames: {
-                active_node: 'node'
-            },
             leaf_field_name: 'leaf',
             parent_id_field_name: 'parent',
             url: Axis.getUrl('catalog/product-option/nlist'),
