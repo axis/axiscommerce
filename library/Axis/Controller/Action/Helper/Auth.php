@@ -36,7 +36,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
     public function preDispatch()
     {
         $request = $this->getRequest();
-        
+
         if(Axis_Area::isFrontend()) {
             if (!Axis::getCustomerId()
                     && $this->getActionController() instanceof Axis_Account_Controller_Abstract) {
@@ -48,7 +48,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
             }
             return;
         }
-        
+
         if (!Axis_Area::isBackend()) {
             return;
         }
@@ -57,8 +57,8 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
         $auth->setStorage(new Zend_Auth_Storage_Session('admin'));
 
         if (in_array($request->getControllerName(), array('auth', 'forgot'))
-            && 'Axis_Admin' === $request->getModuleName()
-        ) {
+            && 'Axis_Admin' === $request->getModuleName()) {
+
             return;
         }
 
@@ -89,37 +89,54 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
                 ->setDispatched(false);
             return;
         }
-        
+
         $acl = new Zend_Acl();
         // add resources
         $resources = Axis::model('admin/acl_resource')->toFlatTree();
         foreach ($resources as $resource) {
             $parent = $resource['parent'] ? $resource['parent'] : null;
-            
+
             try {
                 $acl->addResource($resource['id'], $parent);
             } catch (Zend_Acl_Exception $e) {
                 Axis::message()->addError($e->getMessage());
             }
         }
-         
+
         //add role(s)
         $role = (string) $user->role_id;
         $acl->addRole($role);
-        
+
         //add permission
         $rowset = Axis::single('admin/acl_rule')
             ->select('*')
             ->where('role_id = ?', $role)
             ->fetchRowset();
         foreach ($rowset as $row) {
+            if (!$acl->has($row->resource_id)) {
+                // $row->delete(); // remove invalid rule
+                continue;
+            }
             $action = 'deny';
             if ('allow' === $row->permission) {
                 $action = 'allow';
-            } 
-            $acl->$action($row->role_id, $row->resource_id);
+            }
+            try {
+                $acl->$action($row->role_id, $row->resource_id);
+            } catch (Zend_Acl_Exception $e) {
+                Axis::message()->addError($e->getMessage());
+            }
         }
-        
+
+        Zend_View_Helper_Navigation_HelperAbstract::setDefaultAcl($acl);
+        Zend_View_Helper_Navigation_HelperAbstract::setDefaultRole($role);
+
+        if (in_array($request->getControllerName(), array('error'))
+            && 'Axis_Admin' === $request->getModuleName()) {
+
+            return;
+        }
+
         //get current resource by request
         $request = $this->getRequest();
         $inflector = new Zend_Filter_Inflector();
@@ -131,10 +148,9 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
             ->setTarget('admin/:module/:controller/:action')
             ->filter($request->getParams());
 
-        if ($acl->isAllowed($role, $resource)) {
-            
-            Zend_View_Helper_Navigation_HelperAbstract::setDefaultAcl($acl);
-            Zend_View_Helper_Navigation_HelperAbstract::setDefaultRole($role);
+        if (!$acl->has($resource)/*not found error*/
+            || $acl->isAllowed($role, $resource)) {
+
             return;
         }
         if ($request->isXmlHttpRequest()) {
@@ -147,7 +163,7 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
             $jsonHelper->sendFailure();
             return;
         }
-        
+
         $request->setModuleName('Axis_Admin')
             ->setControllerName('error')
             ->setActionName('access-denied')
