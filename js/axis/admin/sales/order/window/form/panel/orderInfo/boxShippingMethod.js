@@ -58,7 +58,7 @@ Ext.onReady(function(){
                 payment_method_code : form.findField('order[payment_method_code]').getValue()
 
             });
-            
+
             var oldValue = form.findField('order[shipping_method_code]').getValue();
             Ext.StoreMgr.lookup('storeShippingMethod').load({
                 params: params,
@@ -102,10 +102,9 @@ Ext.onReady(function(){
         store: storeShippingMethod,
         lazyRender: true,
         listeners: {
-            change: function(element, newValue, oldValue) {
+            beforeselect: function(element, record, index) {
                 Ext.StoreMgr.lookup('storePaymentMethod').reloadList();
                 var store = element.getStore();
-                var record = store.getAt(store.find('code', newValue));
                 var form = Order.form.getForm();
                 var config = totalsConfig;
                 if (true === config.shipping) {
@@ -134,10 +133,10 @@ Ext.onReady(function(){
                 return;
             }
     });
-    
+
     Order.form.boxShippingMethod = {
         id: 'box-shipping-method',
-        title: 'Shipping method'.l(),      
+        title: 'Shipping method'.l(),
         items: [cmpShippingCode, {
                 xtype: 'hidden',
                 name: 'order[shipping_method]'

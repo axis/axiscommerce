@@ -67,9 +67,6 @@ class Axis_Catalog_Upgrade_0_2_5 extends Axis_Core_Model_Migration_Abstract
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
         ");
-
-        Axis::single('admin/acl_resource')
-            ->add("admin/catalog_index/update-price-index");
     }
 
     public function down()
@@ -82,7 +79,5 @@ class Axis_Catalog_Upgrade_0_2_5 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('admin/acl_resource')
-            ->remove("admin/catalog_index/update-price-index");
     }
 }

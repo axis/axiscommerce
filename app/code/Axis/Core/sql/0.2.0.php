@@ -30,25 +30,12 @@ class Axis_Core_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')
-            ->rename('admin/template_layout', 'admin/template_page')
+        Axis::single('admin/acl_rule')
+            ->rename('admin/template_layout',        'admin/template_page')
             ->rename('admin/template_layout/delete', 'admin/template_page/delete')
-            ->rename('admin/template_layout/list', 'admin/template_page/list')
-            ->rename('admin/template_layout/save', 'admin/template_page/save')
-            ->add('admin/template_layout')
-            ->add('admin/template_layout/list')
+            ->rename('admin/template_layout/list',   'admin/template_page/list')
+            ->rename('admin/template_layout/save',   'admin/template_page/save')
             ;
-        
-        $select = Axis::single('admin/acl_rule')->select()
-            ->where("resource_id LIKE ?", 'admin/template_layout%');
-        $rowset = Axis::single('admin/acl_rule')->fetchAll($select);
-        foreach ($rowset as $row) {
-            $resourceId = str_replace(
-                'admin/template_layout', 'admin/template_page', $row->resource_id
-            );
-            $row->resource_id = $resourceId;
-            $row->save();
-        }
     }
 
     public function down()

@@ -30,9 +30,7 @@ class Axis_Account_Upgrade_0_2_6 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::model('admin/acl_resource')
-            ->remove('admin/account/field/list-type')
-            ->remove('admin/account/field/list-validator')
+        Axis::model('admin/acl_rule')
             ->rename('admin/account/value-set/save', 'admin/account/value-set/batch-save')
             ->rename('admin/account/value-set-value/save', 'admin/account/value-set-value/batch-save');
     }

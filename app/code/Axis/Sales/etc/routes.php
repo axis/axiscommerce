@@ -23,11 +23,11 @@
  * @license     GNU Public License V3.0
  */
 
-$router->addRoute('admin/sales', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/sales', new Axis_Controller_Router_Route_Back(
     'sales/:controller/:action/*',
     array(
         'module'     => 'Axis_Sales',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');

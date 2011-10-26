@@ -58,11 +58,11 @@ $router->addRoute('cms', new Axis_Controller_Router_Route_Front(
     )
 ));
 
-$router->addRoute('admin/cms', new Axis_Controller_Router_Route_Back(
+$router->addRoute('admin/axis/cms', new Axis_Controller_Router_Route_Back(
     'cms/:controller/:action/*',
     array(
         'module'     => 'Axis_Cms',
         'controller' => 'index',
         'action'     => 'index'
     )
-), 'admin');
+), 'admin/axis/admin');

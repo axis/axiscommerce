@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_ShippingUsps
  * @subpackage  Axis_ShippingUsps_Model
@@ -27,7 +27,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_ShippingUsps
  * @subpackage  Axis_ShippingUsps_Model
@@ -41,29 +41,31 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
      * @var string
      */
     protected $_code = 'Usps_Standard';
-    
+
     /**
      * Shipping module display name
      *
      * @var string
      */
     protected $_title = 'USPS';
-    
+
     /**
      * Shipping module display description
      *
      * @var string
      */
     protected $_description;
-    
+
     /**
      * Shipping module icon filename/path
      *
      * @var string
      */
     protected $_icon = 'shipping_usps.gif';
-    
+
     protected $_defaultGatewayUrl = 'http://production.shippingapis.com/ShippingAPI.dll';
+
+    protected $_testMode = false;
 
 
     // @see testing example http://www.varnagiris.net/2006/05/04/php-usps-rates-calculator/
@@ -82,7 +84,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         $this->_setRequest($request);
         return $this->_getQuotes($request);
     }
-    
+
     protected function _setRequest($request)
     {
         $this->_request = new Axis_Object();
@@ -142,7 +144,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
 
         return $this->_request;
     }
-    
+
     /**
      * Get actual quote from USPS
      *
@@ -155,16 +157,37 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
 
     protected function _getXmlQuotes()
     {
-        // for test RateV3 hange on RateV2
-        // and url http://testing.shippingapis.com/ShippingAPITest.dll
         $r = $this->_request;
-        if ($r->getDestCountryId() == 'US' || $r->getDestCountryId() == 'PR') {
+
+        if ($this->_testMode) {
+            $xml = new SimpleXMLElement('<?xml version = "1.0" encoding = "UTF-8"?><RateV2Request/>');
+
+            $xml->addAttribute('USERID', $r->getUserId());
+
+            $package = $xml->addChild('Package');
+
+            $package->addAttribute('ID', 0);
+            $package->addChild('Service', 'All');
+            // or
+            // $package->addChild('Service', 'Priority');
+            $package->addChild('ZipOrigination', '10022');
+            $package->addChild('ZipDestination', '20008');
+            $package->addChild('Pounds', '10');
+            $package->addChild('Ounces', '5');
+            $package->addChild('Container', 'Flat Rate Box');
+            $package->addChild('Size', 'Large');
+            // or
+            // $package->addChild('Size', 'Regular');
+            $package->addChild('Machinable', 'True'); // or comment this line for the second example
+
+            $api = 'RateV2';
+        } elseif ($r->getDestCountryId() == 'US' || $r->getDestCountryId() == 'PR') {
             $xml = new SimpleXMLElement('<?xml version = "1.0" encoding = "UTF-8"?><RateV3Request/>');
 
             $xml->addAttribute('USERID', $r->getUserId());
 
             $package = $xml->addChild('Package');
-            
+
             $package->addAttribute('ID', 0);
             $package->addChild('Service', $r->getService());
 
@@ -202,11 +225,11 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         $request = $xml->asXML();
         try {
             $url = $this->_config->gateway;
-            if (!$url) {
+            if (empty($url)) {
                 $url = $this->_defaultGatewayUrl;
             }
             $httpClient = new Zend_Http_Client();
-            $httpClient->setUri($url);
+            $httpClient->setUri($this->_testMode ? 'http://testing.shippingapis.com/ShippingAPITest.dll' : $url);
             $httpClient->setHeaders(array(
             //'Host'       => $usps_server,
             'User-Agent' => 'Axis',
@@ -257,14 +280,18 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
 
             $this->log((string)$xml->Package->Error->Description);
             return $methods;
-        } 
+        }
 
         if (!is_object($xml->Package)) {
             $this->log('I can not get access to a resource "Package"');
             return $methods;
         }
-       
+
         $allowedMethods = $this->_config->allowedMethods->toArray();
+        $allMethods = Axis::model('core/config_field')->select('config_options')
+            ->where('path = "shipping/Usps_Standard/allowedMethods"')
+            ->fetchOne();
+        $allMethods = explode(',', $allMethods);
 
         if ($this->_request->getDestCountryId() == 'US'
             || $this->_request->getDestCountryId() == 'PR') {
@@ -274,7 +301,9 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
                return $methods;
             }
             foreach ($xml->Package->Postage as $postage) {
-                if (!in_array((string)$postage->MailService, $allowedMethods)) {
+                if (in_array((string)$postage->MailService, $allMethods)
+                    && !in_array((string)$postage->MailService, $allowedMethods)) {
+
                     continue;
                 }
                 $cost = Axis::single('locale/currency')->from(
@@ -288,7 +317,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
 
             }
             return $methods;
-            
+
         }
 
         if(is_object($xml->Package->Service)) {
@@ -296,8 +325,9 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
            return $methods;
         }
         foreach ($xml->Package->Service as $service) {
+            if (in_array((string)$service->SvcDescription, $allMethods)
+                && !in_array((string)$service->SvcDescription, $allowedMethods)) {
 
-            if (!in_array((string)$service->SvcDescription, $allowedMethods)) {
                 continue;
             }
             $cost = Axis::single('locale/currency')->from((float)$postage->Rate, 'USD');
@@ -308,8 +338,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
             );
 
         }
-        
+
         return $methods;
     }
-
 }

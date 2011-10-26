@@ -30,19 +30,9 @@ class Axis_Search_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('admin/acl_resource')->rename(
-            'admin/catalog_index/update-search-index', 
-            'admin/search/update-index'
+        Axis::single('admin/acl_rule')->rename(
+            'admin/catalog_index/update-search-index', 'admin/search/update-index'
         );
-        
-        $rowset = Axis::single('admin/acl_rule')->select()
-            ->where('resource_id = ?', 'admin/catalog_index/update-search-index')
-            ->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            $row->resource_id = 'admin/search/update-index';
-            $row->save();
-        }
     }
 
     public function down()

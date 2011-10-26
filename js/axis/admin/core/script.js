@@ -24,11 +24,11 @@ if (typeof Ext != 'object') {
     alert(
         'ExtJs library not found at AXIS_ROOT/js folder'
         + "\n"
-        + 'Download and unpack it under the js folder (AXIS_ROOT/js/ext-3.3.1)'
+        + 'Download and unpack it under the js folder (AXIS_ROOT/js/ext-3.4.0)'
    );
 }
 
-if (typeof Range.prototype.createContextualFragment == "undefined") { // FIX IE9
+if (typeof Range != "undefined" && typeof Range.prototype.createContextualFragment == "undefined") { // FIX IE9
     Range.prototype.createContextualFragment = function(html) {
         var doc = this.startContainer.ownerDocument;
         var container = doc.createElement("div");

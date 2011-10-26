@@ -44,20 +44,17 @@ class Axis_Sales_Admin_OrderStatusController extends Axis_Admin_Controller_Back
         $_rowset = Axis::single('sales/order_status')->getList();
         $data = array();
         foreach ($_rowset as $_row) {
-            $data[$_row['id']] = array(
-                'id'     => $_row['id'],
-                'name'   => $_row['name'],
-                'system' => $_row['system'],
-                'status_name_' . $_row['language_id'] => $_row['status_name']
-            );
+            if (empty($data[$_row['id']])) {
+                $data[$_row['id']] = $_row;
+            }
+            $data[$_row['id']]['status_name_' . $_row['language_id']] = $_row['status_name'];
         }
 
         return $this->_helper->json
             ->setData(array_values($data))
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
-    
+
     public function loadAction()
     {
         $statusId = $this->_getParam('statusId', false);
@@ -133,7 +130,7 @@ class Axis_Sales_Admin_OrderStatusController extends Axis_Admin_Controller_Back
         }
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function batchSaveAction()
     {
         $_rowset = Zend_Json::decode($this->_getParam('data'));
@@ -208,7 +205,7 @@ class Axis_Sales_Admin_OrderStatusController extends Axis_Admin_Controller_Back
         $parentId = $this->_getParam('parentId', null);
 
         $model = Axis::single('sales/order_status');
-        
+
         if (null === $parentId && $this->_hasParam('statusId')) {
             $statusId = (int) $this->_getParam('statusId');
             if (!$model->getSystem($statusId)) {
@@ -223,13 +220,10 @@ class Axis_Sales_Admin_OrderStatusController extends Axis_Admin_Controller_Back
         $_rowset = $model->getList($parentId);
         $_data = array();
         foreach ($_rowset as $_row) {
-            
-            $_data[$_row['id']] = array(
-                'id'     => $_row['id'],
-                'name'   => $_row['name'],
-                'system' => $_row['system'],
-                'status_name_' . $_row['language_id'] => $_row['status_name']
-            );
+            if (empty($_data[$_row['id']])) {
+                $_data[$_row['id']] = $_row;
+            }
+            $_data[$_row['id']]['status_name_' . $_row['language_id']] = $_row['status_name'];
         }
 
         $data = array();

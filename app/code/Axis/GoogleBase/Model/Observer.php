@@ -38,14 +38,15 @@ class Axis_GoogleBase_Model_Observer
         $box->addItem(array(
             'marketing' => array(
                 'pages' => array(
-                    'googlebase' => array(
+                    'google-base' => array(
                         'label'         => 'Google Base',
                         'order'         => 20,
                         'translator'    => 'Axis_GoogleBase',
                         'module'        => 'Axis_GoogleBase',
                         'controller'    => 'index',
                         'action'        => 'index',
-                        'route'         => 'admin/googlebase'
+                        'route'         => 'admin/axis/google-base',
+                        'resource'      => 'admin/axis/google-base/index/index'
                     )
                 )
             )
