@@ -65,6 +65,8 @@ Axis.grid.GridTree = Ext.extend(Ext.ux.maximgb.tg.EditorGridPanel, {
         if (this.massAction && !this.sm) {
             this.sm = new Ext.grid.CheckboxSelectionModel();
             this.cm.columns.splice(0, 0, this.sm);
+        } else if (!this.sm) {
+            this.sm = new Ext.grid.RowSelectionModel();
         }
         this.plugins.push(new Axis.dd.GridRow());
         Axis.grid.GridTree.superclass.initComponent.call(this);
