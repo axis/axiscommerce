@@ -304,7 +304,7 @@ Ext.onReady(function(){
 
     var denyColumn = new Axis.grid.CheckColumn({
         dataIndex: 'deny',
-        header: 'Deny'.l(),
+        header: 'Disallowed'.l(),
         width: 100,
         onMouseDown: function(e, t) {
             var index = this.grid.getView().findRowIndex(t);
@@ -323,7 +323,7 @@ Ext.onReady(function(){
 
     var allowColumn = new Axis.grid.CheckColumn({
         dataIndex: 'allow',
-        header: 'Allow'.l(),
+        header: 'Allowed'.l(),
         width: 100,
         onMouseDown: function(e, t) {
             var index = this.grid.getView().findRowIndex(t);
