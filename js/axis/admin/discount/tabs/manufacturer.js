@@ -20,8 +20,13 @@
  * @license     GNU Public License V3.0
  */
 
-//Ext.onReady(function() {
+      
+var discountWindowFormManufacturerTab = {
+    el: null,
+    onLoad: discountWindowFormSiteTab.onLoad 
+}
 
+Ext.onReady(function() {
     var fields = [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},
@@ -80,11 +85,10 @@
         }, checkColumn]
     });
     
-    var grid = new Axis.grid.GridPanel({
+    discountWindowFormManufacturerTab.el = new Axis.grid.GridPanel({
         title: 'Manufacrurer'.l(),
         autoExpandColumn: 'name',
         cm: cm,
-        id: 'grid1',
         store: ds,
         plugins: [new Axis.grid.Filter(), checkColumn],
         bbar: new Axis.PagingToolbar({
@@ -93,9 +97,4 @@
         }),
         massAction: false
     });
-      
-    discountWindowFormManufacturerTab = {
-        el: grid,
-        onLoad: discountWindowFormSiteTab.onLoad 
-    }
-//});
+});

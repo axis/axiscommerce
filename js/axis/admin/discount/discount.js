@@ -212,10 +212,11 @@ Ext.onReady(function () {
                 discountWindowFormSiteTab.onLoad(data.eav.site);
                 discountWindowFormGroupTab.onLoad(data.eav.group);
                 discountWindowFormManufacturerTab.onLoad(data.eav.manufacture);
+                discountWindowFormCategoriesTab.onLoad(data.eav.category);
                 discountWindowFormProductTab.onLoad(data.eav.productId);
                 discountWindowFormPriceTab.onLoad(data.eav.price);
                 discountWindowFormDateTab.onLoad(data.eav.date);
-//                discountWindowFormCategoriesTab.onLoad(data.eav.category);
+                discountWindowFormOptionTab.onLoad(data.eav);
                 
             },
             failure: function() {

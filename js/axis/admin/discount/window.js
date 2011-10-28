@@ -83,11 +83,11 @@ Ext.onReady(function() {
                 discountWindowFormSiteTab.el,
                 discountWindowFormGroupTab.el,
                 discountWindowFormManufacturerTab.el, 
-//                discountWindowFormCategoriesTab.el,
+                discountWindowFormCategoriesTab.el,
                 discountWindowFormProductTab.el,
                 discountWindowFormPriceTab.el,
-                discountWindowFormDateTab.el
-//                discountWindowFormConditionTab.el
+                discountWindowFormDateTab.el,
+                discountWindowFormOptionTab.el
             ]
         }]
     });

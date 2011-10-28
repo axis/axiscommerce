@@ -20,7 +20,13 @@
  * @license     GNU Public License V3.0
  */
 
-//Ext.onReady(function() {
+      
+var discountWindowFormProductTab = {
+    el: null,
+    onLoad: discountWindowFormSiteTab.onLoad 
+}
+    
+Ext.onReady(function() {
 
     var fields = [
         {name: 'id', type: 'int'},
@@ -77,7 +83,7 @@
         }, checkColumn]
     });
     
-    var grid = new Axis.grid.GridPanel({
+    discountWindowFormProductTab.el = new Axis.grid.GridPanel({
         title: 'Products'.l(),
         autoExpandColumn: 'sku',
         cm: cm,
@@ -90,9 +96,4 @@
         }),
         massAction: false
     });
-      
-    discountWindowFormProductTab = {
-        el: grid,
-        onLoad: discountWindowFormSiteTab.onLoad 
-    }
-//});
+});

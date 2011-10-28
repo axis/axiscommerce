@@ -20,70 +20,86 @@
  * @license     GNU Public License V3.0
  */
 
-//Ext.onReady(function() {
-
-//    var fields = [
-//        {name: 'id',          type: 'int',    mapping: 'id'},
-//        {name: 'name',        type: 'string', mapping: 'name'},
-//        {name: 'description', type: 'string', mapping: 'description'}
-//    ];
-//
-//    var record = Ext.data.Record.create(fields);
-//
-//    var ds = new Ext.data.Store({
-//        url: Axis.getUrl('account/group/list'),
-//        baseParams: {
-//            limit: 25
-//        },
-//        reader : new Ext.data.JsonReader({
-//            root : 'data',
-//            id   : 'id'}, 
-//            record
-//        ),
-//        remoteSort: true,
-//        pruneModifiedRecords: true,
-//        sortInfo: {
-//            field: 'id',
-//            direction: 'DESC'
-//        }
-//    });
-//    
-//    var checkColumn = new Axis.grid.CheckColumn({
-//        dataIndex: 'check',
-//        header: 'Belongs to'.l(),
-//        width: 100,
-//        filterable : false
-//    });
-//    
-//    var cm = new Ext.grid.ColumnModel({
-//        defaults: {
-//            sortable: true
-//        },
-//        columns: [{
-//            header: 'Name'.l(),
-//            dataIndex: 'name',
-//            id: 'name',
-//            filter: {
-//                operator: 'LIKE'
-//            }
-//        }, checkColumn]
-//    });
-//    
-//    var grid = new Axis.grid.GridPanel({
-//        title: 'Group'.l(),
-//        autoExpandColumn: 'name',
-//        cm: cm,
-//        store: ds,
-//        plugins: [new Axis.grid.Filter(), checkColumn],
-//        bbar: new Axis.PagingToolbar({
-//            pageSize: 25,
-//            store: ds
-//        }),
-//        massAction: false
-//    });
-      
-    discountWindowFormOptionTab = {
-        el: grid,
-        onLoad: function(data){}
+var discountWindowFormOptionTab = {
+    el: null,
+    onLoad: function(data){
+        var store = this.el.store;
+            
+        Ext.each(data.optionId, function(optionId) {
+            var valueIds;
+            if (!(valueIds = data['option[' + optionId + ']'])) {
+                return;
+            }
+            Ext.each(valueIds, function(valueId) {
+                
+                var r;
+                if (!(r = store.getById(optionId + '_' + valueId))) {
+                    return;
+                }
+                
+                r.set('checked', 1);
+                r.commit();
+        
+                while ((r = store.getNodeParent(r))) {
+                    store.expandNode(r);
+                }                
+                
+            });
+        });
     }
-//});
+}
+
+Ext.onReady(function() {
+    
+    var ds = new Ext.ux.maximgb.tg.AdjacencyListStore({
+        autoLoad: true,
+        mode: 'local',
+        reader: new Ext.data.JsonReader({
+            idProperty: 'id'
+        }, [
+            {name: 'id'}, // this is not integer
+            {name: 'leaf'},
+            {name: 'text'},
+            {name: 'code'},
+            {name: 'option_code'},
+            {name: 'option_name'},
+            {name: 'value_name'},
+            {name: 'input_type',  type: 'int'},
+            {name: 'languagable', type: 'int'},
+            {name: 'option_id',   type: 'int'},
+            {name: 'value_id',    type: 'int'},
+            {name: 'parent'},
+            {name: 'checked'}
+        ]),
+        leaf_field_name: 'leaf',
+        parent_id_field_name: 'parent',
+        url: Axis.getUrl('catalog/product-option/nlist')
+    });
+
+    var columnChecked = new Axis.grid.CheckColumn({
+        dataIndex: 'checked',
+        header: 'Checked'.l(),
+        width: 100
+    });
+
+    var cm = new Ext.grid.ColumnModel({
+        columns: [{
+            dataIndex: 'text',
+            header: 'Name'.l(),
+            id: 'text'
+        }, columnChecked]
+    });
+
+    discountWindowFormOptionTab.el = new Axis.grid.GridTree({
+        title: 'Option'.l(),
+        deferRowRender: false,
+        autoExpandColumn: 'text',
+        ds: ds,
+        cm: cm,
+        enableDragDrop: false,
+        master_column_id: 'text',
+        massAction: false,
+        region: 'center',
+        plugins: [columnChecked]
+    });
+});

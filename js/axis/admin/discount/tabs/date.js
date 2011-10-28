@@ -20,13 +20,43 @@
  * @license     GNU Public License V3.0
  */
 
-//Ext.onReady(function() {
+var discountWindowFormDateTab = {
+    record: null,
+    el: null,
+    onLoad: function(data) {
+        this.el.getStore().removeAll();
+        Ext.each(data.equals, function(value) {
+            this.add('equals', value);
+        }, this);
+        Ext.each(data.greate, function(value) {
+            this.add('greate', value);
+        }, this);
+        Ext.each(data.less, function(value) {
+            this.add('less', value);
+        }, this);
+    },
+    add: function(condition, value) {
+        condition = condition || 'equals';
+        value = value || 0;
+
+        var grid = this.el;
+        grid.stopEditing();
+        var row = new this.record({
+           'condition' : condition,
+           'value'     : value
+        });
+        grid.getStore().insert(0, row);
+        grid.startEditing(0, 1);
+    }  
+}
+
+Ext.onReady(function() {
     var fields = [
         {name: 'condition', type: 'string'},
         {name: 'value',     type: 'string'}
     ];
 
-    var record = Ext.data.Record.create(fields);
+    discountWindowFormDateTab.record = Ext.data.Record.create(fields);
 
     var ds = new Ext.data.Store();
     
@@ -64,8 +94,8 @@
         }]
     });
     
-    var grid = new Axis.grid.EditorGridPanel({
-        title: 'Data'.l(),
+    discountWindowFormDateTab.el = new Axis.grid.EditorGridPanel({
+        title: 'Date'.l(),
         cm: cm,
         store: ds,
         tbar: [{
@@ -78,32 +108,4 @@
         massAction: false
     });
     
-    discountWindowFormDateTab = {
-        el: grid,
-        onLoad: function(data) {
-            this.el.getStore().removeAll();
-            Ext.each(data.equals, function(value) {
-                this.add('equals', value);
-            }, this);
-            Ext.each(data.greate, function(value) {
-                this.add('greate', value);
-            }, this);
-            Ext.each(data.less, function(value) {
-                this.add('less', value);
-            }, this);
-        },
-        add: function(condition, value) {
-            condition = condition || 'equals';
-            value = value || 0;
-            
-            var grid = this.el;
-            grid.stopEditing();
-            var row = new record({
-               'condition' : condition,
-               'value'     : value
-            });
-            grid.getStore().insert(0, row);
-            grid.startEditing(0, 1);
-        }  
-    }
-//});
+});

@@ -135,7 +135,6 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
             ->find($this->_getParam('id', 0))
             ->current();
 
-//        $discount = $discount->getCustomInfo();
         $data = array('discount' => $discount->toArray());
         
         $data['eav'] = $discount->getRules();

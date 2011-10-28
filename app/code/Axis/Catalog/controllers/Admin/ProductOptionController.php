@@ -209,11 +209,13 @@ class Axis_Catalog_Admin_ProductOptionController extends Axis_Admin_Controller_B
                 array('option_code' => 'code')
             )
             ->join('catalog_product_option_text', 
-                'cpo.id = cpot.option_id',
+                'cpo.id = cpot.option_id AND cpot.language_id = :languageId',
                 array('option_id', 'option_name' => 'name') 
             )
-            ->where('cpovt.language_id = ?', $languageId)
-            ->fetchAll()
+            ->where('cpovt.language_id = :languageId')
+            ->fetchAll(array(
+                'languageId' => $languageId
+            ))
             ;
         
         foreach ($dataset as $_data) {

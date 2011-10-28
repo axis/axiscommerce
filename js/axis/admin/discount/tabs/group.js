@@ -20,7 +20,12 @@
  * @license     GNU Public License V3.0
  */
 
-//Ext.onReady(function() {
+var discountWindowFormGroupTab = {
+    el: null,
+    onLoad: discountWindowFormSiteTab.onLoad
+}
+
+Ext.onReady(function() {
 
     var fields = [
         {name: 'id',          type: 'int',    mapping: 'id'},
@@ -69,7 +74,7 @@
         }, checkColumn]
     });
     
-    var grid = new Axis.grid.GridPanel({
+    discountWindowFormGroupTab.el = new Axis.grid.GridPanel({
         title: 'Group'.l(),
         autoExpandColumn: 'name',
         cm: cm,
@@ -81,9 +86,4 @@
         }),
         massAction: false
     });
-      
-    discountWindowFormGroupTab = {
-        el: grid,
-        onLoad: discountWindowFormSiteTab.onLoad
-    }
-//});
+}); 

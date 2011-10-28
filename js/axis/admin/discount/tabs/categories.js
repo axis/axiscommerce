@@ -19,8 +19,28 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
+var discountWindowFormCategoriesTab = {
+    el: null,
+    onLoad: function(data) {
 
-//Ext.onReady(function() {
+        for (var i = 0, limit = data.length; i < limit; i++) {
+            var r;
+            if (!(r = this.el.store.getById(data[i]))) {
+
+                continue;
+            }
+
+            r.set('belongs_to', 1);
+            r.commit();
+
+            while ((r = this.el.store.getNodeParent(r))) {
+                this.el.store.expandNode(r);
+            }
+        }
+    } 
+}
+
+Ext.onReady(function() {
     var ds = new Axis.data.NestedSetStore({
         url: Axis.getUrl('catalog/category/list'),
         autoLoad: true,
@@ -69,7 +89,7 @@
         }, checkColumn]
     });
     
-    var grid = new Axis.grid.GridTree({
+    discountWindowFormCategoriesTab.el = new Axis.grid.GridTree({
         autoExpandColumn: 'name',
         border: false,
         cm: cm,
@@ -91,26 +111,7 @@
         id: 'grid-window-category-list',
         massAction: false,
         master_column_id: 'name',
-        plugins: [checkColumn]
+        plugins: [checkColumn],
+        deferRowRender: false
     });
-    
-    discountWindowFormCategoriesTab = {
-        el: grid,
-        onLoad: function(data) {
-            
-            for (var i = 0, limit = data.length; i < limit; i++) {
-                if (!(r = this.el.store.getById(data[i]))) {
-
-                    continue;
-                }
-//                console.log(r);
-//                r.data.belongs_to = 1;
-                r.set('belongs_to', 1);
-//                r.markDirty(false);
-                while ((r = this.el.store.getNodeParent(r))) {
-                    this.el.store.expandNode(r);
-                }
-            }
-        } 
-    }
-//});
+});    

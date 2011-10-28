@@ -20,7 +20,39 @@
  * @license     GNU Public License V3.0
  */
 
-//Ext.onReady(function() {
+var discountWindowFormSiteTab = {
+    el: null,
+    onLoad: function(data) {
+        var store = this.el.store;
+
+        store.on('load', function(s, records) {
+            Ext.each(records, function(record){
+                Ext.each(data, function(id) {
+                    if (record.get('id') == id) {
+                        record.set('check', 1);
+                    }
+                });
+
+            });
+        });
+
+        var params = {
+            'filter[id][field]' : 'id'
+        };
+        Ext.each(data, function(value, index) {
+            params['filter[id][value][' + index + ']']  = value;
+        });
+
+        store.load({
+            params : params,
+            callback: function() {
+                delete this.lastOptions.params; //it is amazing fucking shit 
+            }
+        });
+    }  
+}
+
+Ext.onReady(function() {
 
     var fields = ['id', 'name'];
 
@@ -65,7 +97,7 @@
         }, checkColumn]
     });
     
-    var grid = new Axis.grid.GridPanel({
+    discountWindowFormSiteTab.el = new Axis.grid.GridPanel({
         title: 'Site'.l(),
         autoExpandColumn: 'name',
         cm: cm,
@@ -77,36 +109,4 @@
         }),
         massAction: false
     });
-      
-    discountWindowFormSiteTab = {
-        el: grid,
-        onLoad: function(data) {
-            var store = this.el.store;
-            
-            store.on('load', function(s, records) {
-                Ext.each(records, function(record){
-                    Ext.each(data, function(id) {
-                        if (record.get('id') == id) {
-                            record.set('check', 1);
-                        }
-                    });
-                    
-                });
-            });
-            
-            var params = {
-                'filter[id][field]' : 'id'
-            };
-            Ext.each(data, function(value, index) {
-                params['filter[id][value][' + index + ']']  = value;
-            });
-            
-            store.load({
-                params : params,
-                callback: function() {
-                    delete this.lastOptions.params; //it is amazing fucking shit 
-                }
-            });
-        }  
-    }
-//});
+});
