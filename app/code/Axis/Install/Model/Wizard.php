@@ -155,6 +155,10 @@ class Axis_Install_Model_Wizard
                 'mcrypt' => array(
                     'title' => 'MCrypt',
                     'expected' => 'Loaded'
+                ),
+                'xmlreader' => array(
+                    'title' => 'xmlReader',
+                    'expected' => 'Loaded'
                 )
             ),
             'File Permissions' => array(
