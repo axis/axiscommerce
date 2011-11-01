@@ -20,9 +20,31 @@
  * @license     GNU Public License V3.0
  */
 
-var discountWindowFormGroupTab = {
+var groupTab = {
     el: null,
-    onLoad: discountWindowFormSiteTab.onLoad
+    checked:[],
+    onLoad: function(data) {
+        var store = this.el.store;
+        if (typeof data == 'undefined') {
+            this.checked = [];
+            store.load();
+            return;
+        }
+        this.checked = data;
+        var params = {
+            'filter[id][field]' : 'id'
+        };
+        Ext.each(data, function(value, index) {
+            params['filter[id][value][' + index + ']']  = value;
+        });
+        
+        store.load({
+            params : params,
+            callback: function() {
+                delete this.lastOptions.params; //it is amazing fucking shit 
+            }
+        });
+    }
 }
 
 Ext.onReady(function() {
@@ -53,6 +75,17 @@ Ext.onReady(function() {
         }
     });
     
+    ds.on('load', function(s, records) {
+        Ext.each(records, function(record){
+            Ext.each(groupTab.checked, function(id) {
+                if (record.get('id') == id) {
+                    record.set('check', 1);
+                }
+            });
+
+        });
+    });
+    
     var checkColumn = new Axis.grid.CheckColumn({
         dataIndex: 'check',
         header: 'Belongs to'.l(),
@@ -74,7 +107,7 @@ Ext.onReady(function() {
         }, checkColumn]
     });
     
-    discountWindowFormGroupTab.el = new Axis.grid.GridPanel({
+    groupTab.el = new Axis.grid.GridPanel({
         title: 'Group'.l(),
         autoExpandColumn: 'name',
         cm: cm,

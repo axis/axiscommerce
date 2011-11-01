@@ -20,11 +20,21 @@
  * @license     GNU Public License V3.0
  */
 
-var discountWindowFormOptionTab = {
+var optionTab = {
     el: null,
     onLoad: function(data){
         var store = this.el.store;
-            
+        
+        store.each(function(r) {
+            r.set('checked', 0);
+            r.commit();
+        });
+        store.collapseAll();
+        
+        if (typeof data.optionId == 'undefined') {
+            return;
+        }
+        
         Ext.each(data.optionId, function(optionId) {
             var valueIds;
             if (!(valueIds = data['option[' + optionId + ']'])) {
@@ -90,7 +100,7 @@ Ext.onReady(function() {
         }, columnChecked]
     });
 
-    discountWindowFormOptionTab.el = new Axis.grid.GridTree({
+    optionTab.el = new Axis.grid.GridTree({
         title: 'Option'.l(),
         deferRowRender: false,
         autoExpandColumn: 'text',

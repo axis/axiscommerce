@@ -209,14 +209,14 @@ Ext.onReady(function () {
                 discountWindow.el.setTitle(data.discount.name);
                 discountWindow.show();
                 
-                discountWindowFormSiteTab.onLoad(data.eav.site);
-                discountWindowFormGroupTab.onLoad(data.eav.group);
-                discountWindowFormManufacturerTab.onLoad(data.eav.manufacture);
-                discountWindowFormCategoriesTab.onLoad(data.eav.category);
-                discountWindowFormProductTab.onLoad(data.eav.productId);
-                discountWindowFormPriceTab.onLoad(data.eav.price);
-                discountWindowFormDateTab.onLoad(data.eav.date);
-                discountWindowFormOptionTab.onLoad(data.eav);
+                siteTab.onLoad(data.eav.site);
+                groupTab.onLoad(data.eav.group);
+                manufacturerTab.onLoad(data.eav.manufacture);
+                categoriesTab.onLoad(data.eav.category);
+                productTab.onLoad(data.eav.productId);
+//                priceTab.onLoad(data.eav.price);
+//                dateTab.onLoad(data.eav.date);
+                optionTab.onLoad(data.eav);
                 
             },
             failure: function() {

@@ -20,11 +20,16 @@
  * @license     GNU Public License V3.0
  */
 
-var discountWindowFormDateTab = {
+var dateTab = {
     record: null,
     el: null,
     onLoad: function(data) {
-        this.el.getStore().removeAll();
+
+        this.el.store.removeAll();
+
+        if (typeof data == 'undefined') {
+            return;
+        }
         Ext.each(data.equals, function(value) {
             this.add('equals', value);
         }, this);
@@ -56,7 +61,7 @@ Ext.onReady(function() {
         {name: 'value',     type: 'string'}
     ];
 
-    discountWindowFormDateTab.record = Ext.data.Record.create(fields);
+    dateTab.record = Ext.data.Record.create(fields);
 
     var ds = new Ext.data.Store();
     
@@ -68,6 +73,7 @@ Ext.onReady(function() {
             header: 'Condition'.l(),
             dataIndex: 'condition',
             id: 'condition',
+            width: 100,
             editor: new Ext.form.ComboBox({
                 triggerAction: 'all',
                 displayField: 'value',
@@ -94,7 +100,8 @@ Ext.onReady(function() {
         }]
     });
     
-    discountWindowFormDateTab.el = new Axis.grid.EditorGridPanel({
+    dateTab.el = new Axis.grid.EditorGridPanel({
+        autoExpandColumn: 'value',
         title: 'Date'.l(),
         cm: cm,
         store: ds,
@@ -102,7 +109,7 @@ Ext.onReady(function() {
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
             handler : function() {
-                discountWindowFormDateTab.add('equals', 0);
+                dateTab.add('equals', 0);
             }
         }],
         massAction: false

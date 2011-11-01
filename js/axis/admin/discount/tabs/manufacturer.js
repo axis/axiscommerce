@@ -20,18 +20,41 @@
  * @license     GNU Public License V3.0
  */
 
-      
-var discountWindowFormManufacturerTab = {
+var manufacturerTab = {
     el: null,
-    onLoad: discountWindowFormSiteTab.onLoad 
+    checked:[],
+    onLoad: function(data) {
+        var store = this.el.store;
+        if (typeof data == 'undefined') {
+            this.checked = [];
+            store.load();
+            return;
+        }
+        
+        this.checked = data;
+        
+        var params = {
+            'filter[id][field]' : 'id'
+        };
+        Ext.each(data, function(value, index) {
+            params['filter[id][value][' + index + ']']  = value;
+        });
+        
+        store.load({
+            params : params,
+            callback: function() {
+                delete this.lastOptions.params; //it is amazing fucking shit 
+            }
+        });
+    }
 }
 
 Ext.onReady(function() {
     var fields = [
-        {name: 'id', type: 'int'},
-        {name: 'name', type: 'string'},
+        {name: 'id',       type: 'int'},
+        {name: 'name',     type: 'string'},
         {name: 'key_word', type: 'string', mapping: 'url'},
-        {name: 'image', type: 'string'}
+        {name: 'image',    type: 'string'}
     ];
 
     for (var id in Axis.locales) {
@@ -64,6 +87,16 @@ Ext.onReady(function() {
         }
     });
     
+    ds.on('load', function(s, records) {
+        Ext.each(records, function(record){
+            Ext.each(manufacturerTab.checked, function(id) {
+                if (record.get('id') == id) {
+                    record.set('check', 1);
+                }
+            });
+        });
+    });
+    
     var checkColumn = new Axis.grid.CheckColumn({
         dataIndex: 'check',
         header: 'Belongs to'.l(),
@@ -85,7 +118,7 @@ Ext.onReady(function() {
         }, checkColumn]
     });
     
-    discountWindowFormManufacturerTab.el = new Axis.grid.GridPanel({
+    manufacturerTab.el = new Axis.grid.GridPanel({
         title: 'Manufacrurer'.l(),
         autoExpandColumn: 'name',
         cm: cm,

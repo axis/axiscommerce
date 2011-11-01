@@ -20,29 +20,25 @@
  * @license     GNU Public License V3.0
  */
 
-var discountWindowFormSiteTab = {
+var siteTab = {
     el: null,
+    checked: [],
     onLoad: function(data) {
         var store = this.el.store;
-
-        store.on('load', function(s, records) {
-            Ext.each(records, function(record){
-                Ext.each(data, function(id) {
-                    if (record.get('id') == id) {
-                        record.set('check', 1);
-                    }
-                });
-
-            });
-        });
-
+        if (typeof data == 'undefined') {
+            this.checked = [];
+            store.load();
+            return;
+        }
+        this.checked = data;
+        
         var params = {
             'filter[id][field]' : 'id'
         };
         Ext.each(data, function(value, index) {
             params['filter[id][value][' + index + ']']  = value;
         });
-
+        
         store.load({
             params : params,
             callback: function() {
@@ -75,6 +71,17 @@ Ext.onReady(function() {
             direction: 'DESC'
         }
     });
+    
+    ds.on('load', function(s, records) {
+        Ext.each(records, function(record){
+            Ext.each(siteTab.checked, function(id) {
+                if (record.get('id') == id) {
+                    record.set('check', 1);
+                }
+            });
+
+        });
+    });
 
     var checkColumn = new Axis.grid.CheckColumn({
         dataIndex: 'check',
@@ -97,7 +104,7 @@ Ext.onReady(function() {
         }, checkColumn]
     });
     
-    discountWindowFormSiteTab.el = new Axis.grid.GridPanel({
+    siteTab.el = new Axis.grid.GridPanel({
         title: 'Site'.l(),
         autoExpandColumn: 'name',
         cm: cm,

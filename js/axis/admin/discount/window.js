@@ -79,15 +79,15 @@ Ext.onReady(function() {
             plain: true,
             xtype: 'tabpanel',
             items: [
-                discountWindowFormGeneralTab.el,
-                discountWindowFormSiteTab.el,
-                discountWindowFormGroupTab.el,
-                discountWindowFormManufacturerTab.el, 
-                discountWindowFormCategoriesTab.el,
-                discountWindowFormProductTab.el,
-                discountWindowFormPriceTab.el,
-                discountWindowFormDateTab.el,
-                discountWindowFormOptionTab.el
+                generalTab.el,
+                siteTab.el,
+                groupTab.el,
+                manufacturerTab.el, 
+                categoriesTab.el,
+                productTab.el,
+//                priceTab.el,
+//                dateTab.el,
+                optionTab.el
             ]
         }]
     });

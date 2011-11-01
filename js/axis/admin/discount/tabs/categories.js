@@ -19,22 +19,34 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-var discountWindowFormCategoriesTab = {
+var categoriesTab = {
     el: null,
+    checked: [],
     onLoad: function(data) {
-
+        
+        var store = this.el.store;
+        store.each(function(r) {
+            r.set('checked', 0);
+            r.commit();
+        });
+        store.collapseAll();
+        
+        if (typeof data == 'undefined') {
+            return;
+        }
+        
         for (var i = 0, limit = data.length; i < limit; i++) {
             var r;
-            if (!(r = this.el.store.getById(data[i]))) {
+            if (!(r = store.getById(data[i]))) {
 
                 continue;
             }
 
-            r.set('belongs_to', 1);
+            r.set('checked', 1);
             r.commit();
 
-            while ((r = this.el.store.getNodeParent(r))) {
-                this.el.store.expandNode(r);
+            while ((r = store.getNodeParent(r))) {
+                store.expandNode(r);
             }
         }
     } 
@@ -57,15 +69,15 @@ Ext.onReady(function() {
                 {name: 'status'},
                 {name: 'disable_remove'},
                 {name: 'disable_edit'},
-                {name: 'belongs_to', type: 'int'}
+                {name: 'checked', type: 'int'}
             ]
         }),
         rootFieldName: 'site_id'
     });
     
     var checkColumn = new Axis.grid.CheckColumn({
-        dataIndex: 'belongs_to',
-        header: 'Belongs to'.l(),
+        dataIndex: 'checked',
+        header: 'Checked'.l(),
         width: 100
     });
     
@@ -89,7 +101,7 @@ Ext.onReady(function() {
         }, checkColumn]
     });
     
-    discountWindowFormCategoriesTab.el = new Axis.grid.GridTree({
+    categoriesTab.el = new Axis.grid.GridTree({
         autoExpandColumn: 'name',
         border: false,
         cm: cm,
@@ -102,7 +114,7 @@ Ext.onReady(function() {
         viewConfig: {
             emptyText: 'No records found'.l(),
             getRowClass: function(record, rowIndex, rowParams, ds) {
-                if (record.get('belongs_to')) {
+                if (record.get('checked')) {
                     return 'x-grid3-row-active';
                 }
             }

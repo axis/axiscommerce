@@ -19,7 +19,7 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-discountWindowFormGeneralTab = {
+generalTab = {
     el: {//first tab
         title: 'General'.l(),  
         bodyStyle: 'padding: 10px',
@@ -158,6 +158,30 @@ discountWindowFormGeneralTab = {
                     fieldLabel : 'To Date'.l(),
                     name       : 'discount[to_date]',
                     xtype      : 'datefield',
+                    anchor     : '100%'
+                }]
+            }]
+        }, {
+            layout: 'column',
+            border: false,
+            defaults: {
+                layout      : 'form',
+                columnWidth : .5,
+                border      : false
+            },
+            items: [{
+                items: [{
+                    fieldLabel : 'From Price'.l(),
+                    xtype      : 'textfield',
+                    name       : 'discount[from_price]',
+                    anchor     : '-10'
+                }]
+            }, {
+                labelWidth: 110,
+                items: [{
+                    fieldLabel : 'To Price'.l(),
+                    xtype      : 'textfield',
+                    name       : 'discount[to_price]',
                     anchor     : '100%'
                 }]
             }]

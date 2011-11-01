@@ -21,9 +21,33 @@
  */
 
       
-var discountWindowFormProductTab = {
+var productTab = {
     el: null,
-    onLoad: discountWindowFormSiteTab.onLoad 
+    checked:[],
+    onLoad: function(data) {
+        var store = this.el.store;
+        if (typeof data == 'undefined') {
+            this.checked = [];
+            store.load();
+            return;
+        }
+        
+        this.checked = data;
+        
+        var params = {
+            'filter[id][field]' : 'id'
+        };
+        Ext.each(data, function(value, index) {
+            params['filter[id][value][' + index + ']']  = value;
+        });
+        
+        store.load({
+            params : params,
+            callback: function() {
+                delete this.lastOptions.params; //it is amazing fucking shit 
+            }
+        });
+    }
 }
     
 Ext.onReady(function() {
@@ -58,6 +82,16 @@ Ext.onReady(function() {
         }
     });
     
+    ds.on('load', function(s, records) {
+        Ext.each(records, function(record){
+            Ext.each(productTab.checked, function(id) {
+                if (record.get('id') == id) {
+                    record.set('check', 1);
+                }
+            });
+        });
+    });
+    
     var checkColumn = new Axis.grid.CheckColumn({
         dataIndex: 'check',
         header: 'Belongs to'.l(),
@@ -83,7 +117,7 @@ Ext.onReady(function() {
         }, checkColumn]
     });
     
-    discountWindowFormProductTab.el = new Axis.grid.GridPanel({
+    productTab.el = new Axis.grid.GridPanel({
         title: 'Products'.l(),
         autoExpandColumn: 'sku',
         cm: cm,

@@ -19,11 +19,15 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-var discountWindowFormPriceTab = {
+var priceTab = {
     record: null,
     el: null,
     onLoad: function(data) {
-        this.el.getStore().removeAll(); 
+        
+        this.el.store.removeAll(); 
+        if (typeof data == 'undefined') {
+            return;
+        }
         Ext.each(data.equals, function(value) {
             this.add('equals', value);
         }, this);
@@ -55,7 +59,7 @@ Ext.onReady(function() {
         {name: 'value',     type: 'string'}
     ];
 
-    discountWindowFormPriceTab.record = Ext.data.Record.create(fields);
+    priceTab.record = Ext.data.Record.create(fields);
 
     var ds = new Ext.data.Store();
     
@@ -67,6 +71,7 @@ Ext.onReady(function() {
             header: 'Condition'.l(),
             dataIndex: 'condition',
             id: 'condition',
+            width: 100,
             editor: new Ext.form.ComboBox({
                 triggerAction: 'all',
                 displayField: 'value',
@@ -93,15 +98,16 @@ Ext.onReady(function() {
         }]
     });
     
-    discountWindowFormPriceTab.el = new Axis.grid.EditorGridPanel({
+    priceTab.el = new Axis.grid.EditorGridPanel({
         title: 'Price'.l(),
         cm: cm,
         store: ds,
+        autoExpandColumn: 'value',
         tbar: [{
             text: 'Add'.l(),
             icon: Axis.skinUrl + '/images/icons/add.png',
             handler : function() {
-                discountWindowFormPriceTab.add('equals', 0);
+                priceTab.add('equals', 0);
             }
         }],
         massAction: false
