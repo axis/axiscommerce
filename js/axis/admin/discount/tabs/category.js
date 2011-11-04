@@ -19,19 +19,32 @@
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
-var categoriesTab = {
+var categoryTab = {
     el: null,
     checked: [],
-    onLoad: function(data) {
-        
+    getSelected: function(){
+        var data = [];
+        this.el.store.each(function(r){
+            if (1 == r.get('check')) {
+                data.push(r.get('id'));
+            }
+        });
+        return data;
+    },
+    clear: function(){
         var store = this.el.store;
         store.each(function(r) {
-            r.set('checked', 0);
+            r.set('check', 0);
             r.commit();
         });
         store.collapseAll();
+    },
+    setData: function(data) {
         
-        if (typeof data == 'undefined') {
+        var store = this.el.store;
+        this.clear();
+        
+        if ('undefined' == typeof data) {
             return;
         }
         
@@ -42,7 +55,7 @@ var categoriesTab = {
                 continue;
             }
 
-            r.set('checked', 1);
+            r.set('check', 1);
             r.commit();
 
             while ((r = store.getNodeParent(r))) {
@@ -69,14 +82,14 @@ Ext.onReady(function() {
                 {name: 'status'},
                 {name: 'disable_remove'},
                 {name: 'disable_edit'},
-                {name: 'checked', type: 'int'}
+                {name: 'check', type: 'int'}
             ]
         }),
         rootFieldName: 'site_id'
     });
     
     var checkColumn = new Axis.grid.CheckColumn({
-        dataIndex: 'checked',
+        dataIndex: 'check',
         header: 'Checked'.l(),
         width: 100
     });
@@ -101,7 +114,7 @@ Ext.onReady(function() {
         }, checkColumn]
     });
     
-    categoriesTab.el = new Axis.grid.GridTree({
+    categoryTab.el = new Axis.grid.GridTree({
         autoExpandColumn: 'name',
         border: false,
         cm: cm,

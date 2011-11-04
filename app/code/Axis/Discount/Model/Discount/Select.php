@@ -34,26 +34,45 @@
 class Axis_Discount_Model_Discount_Select extends Axis_Db_Table_Select
 {
     /**
-     * Only special discounts will be returned with this type of filter
+     *
+     * @param bool $status
+     * @return Axis_Discount_Model_Discount_Select 
      */
-    public function addFilterBySpecial()
+    public function addIsActiveFilter($status = true) 
     {
-        $specialSelect = Axis::model('discount/eav')->select('discount_id')
-            ->where('de.entity = ?', 'special')
-            ->where('de.value = ?', 1);
-
-        return $this->where("d.id = ANY ?", $specialSelect);
+        return $this->where('d.is_active = ?', (int) $status);
     }
 
     /**
-     * Only non-special discounts will be returned with this type of filter
+     *
+     * @param Axis_Date $date
+     * @return Axis_Discount_Model_Discount_Select 
      */
-    public function addFilterByNonSpecial()
+    public function addDateFilter($date = null) 
     {
-        $specialSelect = Axis::model('discount/eav')->select('discount_id')
+        if (null === $date) {
+            $date = Axis_Date::now();
+        }
+        $date = $date->toPhpString("Y-m-d");
+
+        return $this
+            ->where('d.from_date <= ? OR d.from_date IS NULL', $date)
+            ->where('? <= d.to_date OR d.to_date IS NULL', $date);
+    }
+    
+   /**
+    *
+    * @param bool $status
+    * @return Axis_Discount_Model_Discount_Select 
+    */
+    public function addSpecialFilter($status = true)
+    {
+        $select = Axis::model('discount/eav')->select('discount_id')
             ->where('de.entity = ?', 'special')
             ->where('de.value = ?', 1);
-
-        return $this->where("d.id <> ALL ?", $specialSelect);
+        if ($status) {
+            return $this->where('d.id = ANY ?', $select);
+        }
+        return $this->where('d.id <> ALL ?', $select);
     }
 }

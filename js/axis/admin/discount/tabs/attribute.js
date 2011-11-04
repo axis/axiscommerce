@@ -20,18 +20,29 @@
  * @license     GNU Public License V3.0
  */
 
-var optionTab = {
+var attributeTab = {
     el: null,
-    onLoad: function(data){
+    getSelected: function(){
+        var data = [];
+        this.el.store.each(function(r){
+            if (1 == r.get('check')) {
+                data.push(r.get('id'));
+            }
+        });
+        return data;
+    },
+    clear: function(){
         var store = this.el.store;
-        
         store.each(function(r) {
-            r.set('checked', 0);
+            r.set('check', 0);
             r.commit();
         });
         store.collapseAll();
-        
-        if (typeof data.optionId == 'undefined') {
+    },
+    setData: function(data){
+        var store = this.el.store;
+        this.clear();
+        if ('undefined' == typeof data.optionId) {
             return;
         }
         
@@ -47,7 +58,7 @@ var optionTab = {
                     return;
                 }
                 
-                r.set('checked', 1);
+                r.set('check', 1);
                 r.commit();
         
                 while ((r = store.getNodeParent(r))) {
@@ -79,7 +90,7 @@ Ext.onReady(function() {
             {name: 'option_id',   type: 'int'},
             {name: 'value_id',    type: 'int'},
             {name: 'parent'},
-            {name: 'checked'}
+            {name: 'check'}
         ]),
         leaf_field_name: 'leaf',
         parent_id_field_name: 'parent',
@@ -87,7 +98,7 @@ Ext.onReady(function() {
     });
 
     var columnChecked = new Axis.grid.CheckColumn({
-        dataIndex: 'checked',
+        dataIndex: 'check',
         header: 'Checked'.l(),
         width: 100
     });
@@ -100,7 +111,7 @@ Ext.onReady(function() {
         }, columnChecked]
     });
 
-    optionTab.el = new Axis.grid.GridTree({
+    attributeTab.el = new Axis.grid.GridTree({
         title: 'Option'.l(),
         deferRowRender: false,
         autoExpandColumn: 'text',

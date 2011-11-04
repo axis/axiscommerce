@@ -34,66 +34,6 @@
 class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
 {
     /**
-     * Get info about discount + discount rules (condition)
-     *
-     * @return array
-     */
-    public function getCustomInfo()
-    {
-        $dataset = $this->toArray();
-        $rules = $this->getRules();
-
-        if (isset($rules['conditions'])) {
-            $dataset['conditions'] = $rules['conditions'];
-        }
-        if (isset($rules['category'])) {
-            $dataset['category'] = $rules['category'];
-        }
-        if (isset($rules['productId'])) {
-            $dataset['productId'] = $rules['productId'];
-        }
-
-        if (isset($rules['manufacture'])) {
-            $dataset['manufacture'] = array_intersect(
-                $rules['manufacture'],
-                array_keys(Axis_Collect_Manufacturer::collect())
-            );
-        }
-        if (isset($rules['site'])) {
-            $dataset['site_ids'] = array_intersect(
-                $rules['site'],
-                array_keys(Axis_Collect_Site::collect())
-            );
-        }
-        if (isset($rules['group'])) {
-            $dataset['customer_group_ids'] = array_intersect(
-                $rules['group'],
-                array_keys(Axis_Collect_CustomerGroup::collect())
-            );
-        }
-
-        if (isset($rules['special'])) {
-            $dataset['special'] = current($rules['special']);
-        }
-        if (isset($rules['optionId'])) {
-            foreach ($rules['optionId'] as $optionId) {
-                if (!isset($rules['option[' . $optionId . ']'])) {
-                    continue;
-                }
-                foreach ($rules['option[' . $optionId . ']'] as $optionValueId) {
-                    $dataset['attributes'][] = array(
-                        'optionId' => $optionId,
-                        'optionValueId' => $optionValueId
-                    );
-                }
-            }
-
-        }
-
-        return $dataset;
-    }
-
-    /**
      * Retrieve the list of product ids
      * which prices are depends on current discount
      *
@@ -101,17 +41,15 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
      */
     public function getApplicableProducts()
     {
-        $model = Axis::model('discount/eav');
-        $conditions = $model->select('*')
+        $conditions = Axis::model('discount/eav')->select('*')
             ->where('discount_id = ?', $this->id)
             ->fetchAll();
 
-        $mProduct = Axis::model('catalog/product');
-        $select = $mProduct->select('*')
+        $select = Axis::model('catalog/product')->select('*')
             ->distinct();
 
         if (!count($conditions)) {
-            return $select->fetchCol();
+            return $select->fetchAssoc();
         }
 
         $filters = array();
@@ -130,6 +68,7 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
             );
         }
 
+        // @todo cases productId,    
         foreach ($filters as $key => $values) {
             switch ($key) {
                 case 'manufacture':
@@ -167,18 +106,12 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
                         continue;
                     }
                     $mapping = array(
-                        'equals' => '=',
                         'greate' => '>=',
                         'less'   => '<=',
-                        'date'   => 'created_on',
                         'price'  => 'price'
                     );
                     list($attribute, $comparator) = explode('_', $key);
                     foreach ($values as $value) {
-                        if ('date' === $attribute) {
-                            $date = new Axis_Date($value);
-                            $value = $date->toString('yyyy-MM-dd', 'iso');
-                        }
                         $select->where(
                             "cp.{$mapping[$attribute]} {$mapping[$comparator]} ?",
                             $value
@@ -191,150 +124,21 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
 
         return $select->fetchAssoc();
     }
-    
-    
+       
     /**
-     *
-     * @param mixed $sites
-     * @return Axis_Discount_Model_Discount_Row 
+     * 
+     * @return Axis_Discount_Model_Rule
      */
-    public function setSites($sites) 
-    {
-        $model = Axis::single('discount/eav');
-        
-        if (!is_array($sites)) {
-            $sites = array($sites);
-        }
-        foreach ($sites as $siteId) {
-            $model->insert(array(
-                'discount_id' => $this->id,
-                'entity'      => 'site',
-                'value'       => $siteId
-            ));
-        }
-        return $this;
-    }
-    
-    /**
-     *
-     * @param mixed $groups
-     * @return Axis_Discount_Model_Discount_Row 
-     */
-    public function setCustomerGroups($groups) 
-    {
-        $model = Axis::single('discount/eav');
-        if (!is_array($groups)) {
-            $groups = array($groups);
-        }
-        foreach ($groups as $groupId) {
-            $model->insert(array(
-                'discount_id' => $this->id,
-                'entity'      => 'group',
-                'value'       => $groupId
-            ));
-        }
-        return $this;
-    }    
-    
-    /**
-     *
-     * @param array $special
-     * @return Axis_Discount_Model_Discount_Row 
-     */
-    public function setSpecial($special = true) 
-    {
-        $model = Axis::single('discount/eav');
-        if ($special) {
-            $model->insert(array(
-                'discount_id' => $this->id,
-                'entity'      => 'special',
-                'value'       => 1
-            ));
-        }
-        return $this;
-    }
-    
-    /**
-     *
-     * @param array $conditions
-     * @return Axis_Discount_Model_Discount_Row 
-     */
-    public function setConditions(array $conditions) 
-    {
-        $model = Axis::single('discount/eav');
-        foreach ($conditions as $type => $subs) {
-            
-            switch ($type) {
-                case 'category':
-                case 'manufacture':
-                case 'productId':
-                    foreach ($subs as $condition) {
-                        $model->insert(array(
-                            'discount_id' => $this->id,
-                            'entity'      => $type,
-                            'value'       => $condition
-                        ));
-                    }
-
-                    break;
-                    
-                case 'attribute':
-                    foreach ($subs['optionId'] as $id => $optionId) {
-                        $model->insert(array(
-                            'discount_id' => $this->id,
-                            'entity'      => 'optionId',
-                            'value'       => $optionId
-                        ));
-                        $model->insert(array(
-                            'discount_id' => $this->id,
-                            'entity'      => 'option[' . $optionId . ']',
-                            'value'       => $subs['optionValueId'][$id]
-                        ));
-                    }
-
-                    break;
-
-                default:
-                    for ($i = 0; $i < count($subs['e-type']); $i++) {
-                        $model->insert(array(
-                            'discount_id' => $this->id,
-                            'entity'      => $type . '_' . $subs['e-type'][$i],
-                            'value'       => $subs['value'][$i]
-                        ));
-                    }
-                    break;
-            }
-        }
-        return $this;
-    } 
-    
-     /**
-     *
-     * @return array
-     */
-    public function getRules()
+    public function getRule()
     {
         $rowset = Axis::model('discount/eav')->select()
             ->where('discount_id = ?', $this->id)
-            ->fetchAll()
+            ->fetchRowset()
             ;
-        
+            
         $dataset = array();
-        foreach ($rowset as $row) {
-            if (strstr($row['entity'], '_')) {
-                list($entity, $etype) = explode('_', $row['entity'], 2);
-                $value = $row['value'];
-                if (substr($entity, 0, strlen('date')) === 'date') {
-                    $value = Axis_Date::timestamp($row['value'])
-                        ->toPhpString("Y-m-d");
-                }
-//                $dataset['conditions'][$entity]['e-type'][] = $etype;
-//                $dataset['conditions'][$entity]['value'][] = $value;
-                
-                $dataset[$entity][$etype][] = $value;
-            } else {
-                $dataset[$row['entity']][] = intval($row['value']);
-            }
+        foreach ($rowset as $row) {          
+            $dataset[$row->entity][] = $row->value;
         }
         return $dataset;
     }

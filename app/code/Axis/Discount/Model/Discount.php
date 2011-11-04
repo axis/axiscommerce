@@ -42,29 +42,6 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
     protected $_selectClass = 'Axis_Discount_Model_Discount_Select';
 
     /**
-     * @static
-     * @return const array
-     */
-    public static function getPriceConditionTypes()
-    {
-        return array(
-            'equals'    => 'Equals',
-            'greate'    => 'Greater then',
-            'less'      => 'Less then'
-        );
-    }
-
-    /**
-     *
-     * @static
-     * @return const array
-     */
-    public static function getDateConditionTypes()
-    {
-        return self::getPriceConditionTypes();
-    }
-
-    /**
      *  Add/update discount
      *
      * @param array $data
@@ -103,22 +80,6 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             'discount' => $row
         ));
         return $row;
-    }
-
-    /**
-     *  put discount prices to gived productArray
-     */
-    public function fillDiscount(&$products)
-    {
-        $discounts = $this->_getDiscountRulesByProductIds(array_keys($products));
-        foreach ($discounts as $productId => $discount) {
-            if (!isset($discount[0])) {
-                continue;
-            }
-            $products[$productId]['price_discount'] = $this->applyDiscountRule(
-                $products[$productId]['price'], $discount[0]
-            );
-        }
     }
 
     /**
@@ -169,12 +130,10 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         }
 
         $rangeSuffixes = array(
-            '_equals'   => '!=',
             '_greate'   => '>',
             '_less'     => '<'
         );
         $rangeFiltersMapping = array(
-            'date'  => 'created_on',
             'price' => 'price'
         );
         foreach ($rangeSuffixes as $suffix => $rule) {
@@ -185,13 +144,8 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                     continue;
                 }
                 $filterValue = $filter[$filterKey];
-                if ('date' === $discountKey) {
-                    $filterValue = strtotime($filterValue);
-                }
                 foreach ($discount[$discountKey . $suffix] as $discountValue) {
-                    if ('!=' === $rule && $discountValue != $filterValue) {
-                        return false;
-                    } elseif ('>' === $rule && $discountValue > $filterValue) {
+                    if ('>' === $rule && $discountValue > $filterValue) {
                         return false;
                     } elseif ('<' === $rule && $discountValue < $filterValue) {
                         return false;
@@ -312,13 +266,11 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             ->order('d.priority DESC');
 
         if ($onlyActive) {
-            $select->where('d.is_active = 1');
+            $select->addIsActiveFilter();
         }
 
         if ($dateFiltered) {
-            $now = Axis_Date::now()->toPhpString("Y-m-d");
-            $select->where('d.from_date <= ? OR d.from_date IS NULL', $now)
-                ->where('d.to_date >= ? OR d.to_date IS NULL', $now);
+            $select->addDateFilter();
         }
 
         $discounts = array();

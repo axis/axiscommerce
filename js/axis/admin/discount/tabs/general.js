@@ -173,7 +173,7 @@ generalTab = {
                 items: [{
                     fieldLabel : 'From Price'.l(),
                     xtype      : 'textfield',
-                    name       : 'discount[from_price]',
+                    name       : 'rule[price_greate]',
                     anchor     : '-10'
                 }]
             }, {
@@ -181,7 +181,7 @@ generalTab = {
                 items: [{
                     fieldLabel : 'To Price'.l(),
                     xtype      : 'textfield',
-                    name       : 'discount[to_price]',
+                    name       : 'rule[price_less]',
                     anchor     : '100%'
                 }]
             }]

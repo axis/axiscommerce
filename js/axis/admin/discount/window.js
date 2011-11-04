@@ -26,16 +26,80 @@ var discountWindow = {
 
     form: null,
 
-    show: function() {
-        discountWindow.el.show();
+    create: function(data) {
+        this.form.getForm().clear();
+        siteTab.clear();
+        groupTab.clear();
+        manufacturerTab.clear();
+        categoryTab.clear();
+        productTab.clear();
+        attributeTab.clear();
+        
+        this.el.setTitle('New'.l());
+        this.el.show();
+
+
     },
     hide: function() {
-        discountWindow.el.hide();
+        this.el.hide();
+    },
+    load: function(id) {
+        var self = this;
+        
+        this.form.getForm().load({
+            url     : Axis.getUrl('discount/load'),
+            params  : {id : id},  
+            method  : 'get',
+            success : function(form, action) {
+                var data = Ext.decode(action.response.responseText).data;
+                self.el.setTitle(data.discount.name);
+                self.el.show();
+
+                siteTab.setData(data.rule.site);
+                groupTab.setData(data.rule.group);
+                manufacturerTab.setData(data.rule.manufacture);
+                categoryTab.setData(data.rule.category);
+                productTab.setData(data.rule.product);
+                attributeTab.setData(data.rule);
+            },
+            failure: function() {
+                console.log(arguments);
+            }
+        });
+        
+        
+    },
+    remove: function(data, callback) {
+        if (!confirm('Are you sure?'.l())) {
+            return;
+        }
+        Ext.Ajax.request({
+            url: Axis.getUrl('discount/remove'),
+            params: {data: Ext.encode(data)},
+            callback: callback
+        });
     },
     save: function() {
-
+        var rule = {
+        
+            site        : siteTab.getSelected(),
+            group       : groupTab.getSelected(),
+            manufacture : manufacturerTab.getSelected(),
+            category    : categoryTab.getSelected(),
+            productId   : productTab.getSelected(),
+            attribute   : attributeTab.getSelected()
+        };
+        this.form.getForm().submit({
+            url     : Axis.getUrl('discount/save'),
+            params  : {rule:rule},  
+            method  : 'post',
+            success : function() {
+//                console.log(arguments);
+            }
+        });
     }
 };
+
 Ext.onReady(function() {
     var fields = [
         {name: 'discount[id]',          mapping: 'discount.id',          type: 'int'},
@@ -48,13 +112,23 @@ Ext.onReady(function() {
         {name: 'discount[amount]',      mapping: 'discount.amount'},
         {name: 'discount[priority]',    mapping: 'discount.priority'},
         {name: 'discount[is_combined]', mapping: 'discount.is_combined', type: 'int'},
-        {name: 'eav[site]',             mapping: 'eav.site'},
-        {name: 'eav[group]',            mapping: 'eav.group'},
-        {name: 'eav[manufacturer]',     mapping: 'eav.manufacturer'},
-        {name: 'eav[category]',         mapping: 'eav.category'},
-        {name: 'eav[productId]',        mapping: 'eav.productId'},
-        {name: 'eav[price]',            mapping: 'eav.price'}
-//        {name: 'eav[date]',             mapping: 'eav.date'}
+        {name: 'rule[site]',            mapping: 'rule.site'},
+        {name: 'rule[group]',           mapping: 'rule.group'},
+        {name: 'rule[manufacturer]',    mapping: 'rule.manufacturer'},
+        {name: 'rule[category]',        mapping: 'rule.category'},
+        {name: 'rule[productId]',       mapping: 'rule.productId'},
+        {name: 'rule[price_greate]',    mapping: 'rule.price_greate', convert:function(v, record){
+                if (v.length) {
+                    return v[0];
+                }
+                return v;
+        }},
+        {name: 'rule[price_less]',      mapping: 'rule.price_less', convert:function(v, record){
+                if (v.length) {
+                    return v[0];
+                }
+                return v;
+        }}
     ];
     
     discountWindow.form = new Axis.FormPanel({
@@ -83,11 +157,9 @@ Ext.onReady(function() {
                 siteTab.el,
                 groupTab.el,
                 manufacturerTab.el, 
-                categoriesTab.el,
+                categoryTab.el,
                 productTab.el,
-//                priceTab.el,
-//                dateTab.el,
-                optionTab.el
+                attributeTab.el
             ]
         }]
     });
@@ -111,7 +183,7 @@ Ext.onReady(function() {
         }, {
             icon    : Axis.skinUrl + '/images/icons/cancel.png',
             text    : 'Cancel'.l(),
-            handler : discountWindow.hide
+            handler : function() {discountWindow.hide();}
         }]
     });
 });

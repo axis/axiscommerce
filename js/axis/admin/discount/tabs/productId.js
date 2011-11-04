@@ -24,11 +24,22 @@
 var productTab = {
     el: null,
     checked:[],
-    onLoad: function(data) {
-        var store = this.el.store;
-        if (typeof data == 'undefined') {
-            this.checked = [];
-            store.load();
+    getSelected: function(){
+        var data = [];
+        this.el.store.each(function(r){
+            if (1 == r.get('check')) {
+                data.push(r.get('id'));
+            }
+        });
+        return data;
+    },
+    clear: function(){
+        this.checked = [];
+        this.el.store.load();
+    },
+    setData: function(data) {
+        if ('undefined' == typeof data) {
+            this.clear();
             return;
         }
         
@@ -41,7 +52,7 @@ var productTab = {
             params['filter[id][value][' + index + ']']  = value;
         });
         
-        store.load({
+        this.el.store.load({
             params : params,
             callback: function() {
                 delete this.lastOptions.params; //it is amazing fucking shit 
@@ -94,7 +105,7 @@ Ext.onReady(function() {
     
     var checkColumn = new Axis.grid.CheckColumn({
         dataIndex: 'check',
-        header: 'Belongs to'.l(),
+        header: 'Checked'.l(),
         width: 100,
         filterable : false
     });
