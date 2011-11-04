@@ -80,21 +80,28 @@ var discountWindow = {
         });
     },
     save: function() {
-        var rule = {
         
-            site        : siteTab.getSelected(),
-            group       : groupTab.getSelected(),
-            manufacture : manufacturerTab.getSelected(),
-            category    : categoryTab.getSelected(),
-            productId   : productTab.getSelected(),
-            attribute   : attributeTab.getSelected()
+        var form = this.form.getForm();
+        
+        var params = {
+            price_greate : [form.findField('rule[price_greate]').getValue()],
+            price_less   : [form.findField('rule[price_less]').getValue()],
+            site         : siteTab.getSelected(),
+            group        : groupTab.getSelected(),
+            manufacture  : manufacturerTab.getSelected(),
+            category     : categoryTab.getSelected(),
+            productId    : productTab.getSelected()
         };
-        this.form.getForm().submit({
+        params = attributeTab.getSelected(params);
+        var params = {
+            rule: Ext.encode(params)
+        };
+        form.submit({
             url     : Axis.getUrl('discount/save'),
-            params  : {rule:rule},  
+            params  : params,  
             method  : 'post',
             success : function() {
-//                console.log(arguments);
+                discountWindow.el.hide();
             }
         });
     }
@@ -172,13 +179,7 @@ Ext.onReady(function() {
             icon    : Axis.skinUrl + '/images/icons/database_save.png',
             text    : 'Save'.l(),
             handler : function() {
-                discountWindow.save(true);
-            }
-        }, {
-            icon    : Axis.skinUrl + '/images/icons/database_save.png',
-            text    : 'Save & Continue Edit'.l(),
-            handler : function() {
-                discountWindow.save(false);
+                discountWindow.save();
             }
         }, {
             icon    : Axis.skinUrl + '/images/icons/cancel.png',

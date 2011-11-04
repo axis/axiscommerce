@@ -90,26 +90,32 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
     
     public function saveAction()
     {
-        $data = $this->_getAllParams();
-        Axis_FirePhp::log($data);
+        $_row = $this->_getParam('discount', array());
+ 
+        $row = Axis::single('discount/discount')->save($_row);
         
-//        $_row       = $this->_getParam('discount', array());
-////        $conditions = $this->_getParam('condition', array());
-//        
-//        $row = Axis::single('discount/discount')->save($_row);
-////        
-////        $model = Axis::model('discount/eav');
-////        $model->delete('discount_id = ' . $row->id);
-////        
-//       
-//        Axis::message()->addSuccess(
-//            Axis::translate('discount')->__(
-//                "Discount '%s' successefull saved", $row->name
-//            )
-//        );
+        $model = Axis::model('discount/eav');
+        $model->delete('discount_id = ' . $row->id);
+        
+        $dataset = Zend_Json::decode($this->_getParam('rule'));
+        foreach ($dataset as $entity => $values) {
+            foreach ($values as $value) {
+                $model->createRow(array(
+                    'discount_id' => $row->id,
+                    'entity'      => $entity,
+                    'value'       => $value
+                    
+                ))->save();
+            }
+        }
+        
+        Axis::message()->addSuccess(
+            Axis::translate('discount')->__(
+                "Discount '%s' successefull saved", $row->name
+            )
+        );
 
         return $this->_helper->json
-//            ->setId($row->id)
             ->sendSuccess()
         ;
     }
@@ -120,10 +126,13 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
         $model = Axis::model('discount/discount');
         //@todo move event dispatch to delete 
         $discounts = $model->find($ids);
+        $modelEav  = Axis::model('discount/eav');
+        
         foreach ($discounts as $discount) {
             $discountData = $discount->toArray();
             $discountData['products'] = $discount->getApplicableProducts();
-
+            
+            $modelEav->delete('discount_id = ' . $discount->id);
             $discount->delete();
 
             Axis::dispatch('discount_delete_after', array(

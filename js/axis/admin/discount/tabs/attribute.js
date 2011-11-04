@@ -22,12 +22,32 @@
 
 var attributeTab = {
     el: null,
-    getSelected: function(){
-        var data = [];
+    getSelected: function(data){
+        data.optionId = [];
+        
         this.el.store.each(function(r){
-            if (1 == r.get('check')) {
-                data.push(r.get('id'));
+            if (1 !== r.get('check')) {
+                return;
             }
+            if (null == r.get('parent')) {
+                return;
+            }
+            var optionId = r.get('option_id')
+                
+            var key = '', ret = true;
+            for (key in data.optionId) {
+                if (data.optionId[key] == optionId) {                
+                    ret = false;
+                }
+            }
+            if (ret) {
+                data.optionId.push(optionId);
+            }
+
+            if ('undefined' == typeof data['option[' + optionId + ']']) {
+                data['option[' + optionId + ']'] = [];
+            }
+            data['option[' + optionId + ']'].push(r.get('value_id'));
         });
         return data;
     },
