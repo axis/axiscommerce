@@ -68,9 +68,11 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
             );
         }
 
-        // @todo cases productId,    
         foreach ($filters as $key => $values) {
             switch ($key) {
+                case 'productId':
+                    $select->where('cp.id IN (?)', $values);
+                    break;
                 case 'manufacture':
                     $select->where('cp.manufacturer_id IN (?)', $values);
                     break;
@@ -98,27 +100,14 @@ class Axis_Discount_Model_Discount_Row extends Axis_Db_Table_Row
                     }
                     $select->where(implode(' OR ', $where));
                     break;
-                default:
-                    // price and date filters
-                    if (0 === strpos($key, 'option')
-                        || false === strpos($key, '_')) {
-
-                        continue;
-                    }
-                    $mapping = array(
-                        'greate' => '>=',
-                        'less'   => '<=',
-                        'price'  => 'price'
-                    );
-                    list($attribute, $comparator) = explode('_', $key);
-                    foreach ($values as $value) {
-                        $select->where(
-                            "cp.{$mapping[$attribute]} {$mapping[$comparator]} ?",
-                            $value
-                        );
-                    }
+                case 'price_greate':
+                    $select->where('cp.price >= ?', max($values));
                     break;
-
+                case 'price_less':
+                    $select->where('cp.price <= ?', min($values));
+                    break;
+                default:
+                    break;
             }
         }
 
