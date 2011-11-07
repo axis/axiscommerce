@@ -84,14 +84,22 @@ var discountWindow = {
         var form = this.form.getForm();
         
         var params = {
-            price_greate : [form.findField('rule[price_greate]').getValue()],
-            price_less   : [form.findField('rule[price_less]').getValue()],
             site         : siteTab.getSelected(),
             group        : groupTab.getSelected(),
             manufacture  : manufacturerTab.getSelected(),
             category     : categoryTab.getSelected(),
             productId    : productTab.getSelected()
         };
+        var price = form.findField('rule[price_greate]').getValue();
+        if ('' != price) {
+            params.price_greate = [price];
+        }
+        
+        price = form.findField('rule[price_less]').getValue();
+        if ('' != price) {
+            params.price_less = [price];
+        }
+        
         params = attributeTab.getSelected(params);
         var params = {
             rule: Ext.encode(params)
@@ -101,6 +109,7 @@ var discountWindow = {
             params  : params,  
             method  : 'post',
             success : function() {
+                Ext.getCmp('gridDiscount').getStore().reload();
                 discountWindow.el.hide();
             }
         });
