@@ -35,20 +35,19 @@ class Axis_View_Helper_Hurl
 {
     public function __construct()
     {
-        $this->_hurl = Axis_HumanUri::getInstance();
-        $this->_enabledSsl = Axis::config('core/frontend/ssl');
-    }
+        $this->_hurl        = Axis_HumanUri::getInstance();
+        $this->_enabledSsl  = Axis::config('core/frontend/ssl');
+        $this->_languageUrl = Axis_Locale::getLanguageUrl();
+   }
 
     public function hurl(array $options = array(), $ssl = false, $reset = false)
     {
         $baseUrl = ($ssl && $this->_enabledSsl) ?
             $this->view->secureUrl : $this->view->baseUrl;
-        
+
         $locale = isset($options['locale']) ?
-            $options['locale'] : Axis_Locale::getLanguageUrl();
-        if (!empty ($locale)) {
-            $locale = '/' . $locale;
-        }
+            '/' . $options['locale'] : $this->_languageUrl;
+
         return $baseUrl
             . $locale . '/'
             . Axis::config('catalog/main/route')

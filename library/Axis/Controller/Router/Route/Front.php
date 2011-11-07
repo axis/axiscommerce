@@ -90,13 +90,23 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
      */
     public function match($path, $partial = false)
     {
-        $path = trim($path, $this->_urlDelimiter);
+        $path      = trim($path, $this->_urlDelimiter);
         $pathParts = explode($this->_urlDelimiter, $path, 2);
 
-        if(in_array($pathParts[0], self::$_locales)) {
+        if (!empty($pathParts[0])) {
+            foreach (self::$_locales as $locale) {
+                // @todo language url should be setted up by admin for every language
+                // for now we allow duplicate pages: site.com/uk and site.com/uk_UA - both functional. Bad for seo.
+                if (strpos($locale, $pathParts[0]) === 0) {
+                    self::$_hasLocaleInUrl = true;
+                    break;
+                }
+            }
+        }
+
+        if (self::$_hasLocaleInUrl) {
             $path = (sizeof($pathParts) > 1) ? $pathParts[1] : '';
             $currentLocale = $pathParts[0];
-            self::$_hasLocaleInUrl = true;
         } else {
             if(isset($this->_defaults['locale'])) {
                 $currentLocale = $this->_defaults['locale'];
@@ -109,7 +119,7 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
 
         $params = parent::match($path, $partial);
 
-        if($params) {
+        if ($params) {
             Axis_Area::frontend();
             $params = array_merge($params, array('locale' => $currentLocale));
         }

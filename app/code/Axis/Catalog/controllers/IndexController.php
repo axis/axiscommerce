@@ -99,13 +99,25 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
      */
     public function viewAction()
     {
+        if (count($this->hurl->getSeoParams())
+            && !$this->hurl->hasParam('cat')
+            && !$this->hurl->hasParam('manufacturer')
+            && !$this->hurl->hasParam('product')) {
+
+            return $this->_forward('not-found', 'Error', 'Axis_Core');
+        }
+        $this->view->headLink()->headLink(array(
+            'rel'  => 'canonical',
+            'href' => $this->view->hurl($this->hurl->getParams())
+        ), 'PREPEND');
+
         if ($this->hurl->hasParam('product') || $this->getRequest()->getParam('product')) {
             $this->_request->setActionName('product');
             return $this->productAction();
         }
 
         $this->view->pageTitle = Axis::translate('catalog')->__('Catalog');
-        
+
         /**
          * @var Axis_Catalog_Model_Product_Select
          */
@@ -265,11 +277,12 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         } else {
             $pathItems = $product->getParentItems();
         }
+        $lastItem = null;
         foreach ($pathItems as $_category) {
             if ($_category['status'] != 'enabled') {
                 return $this->_forward('not-found', 'Error', 'Axis_Core');
             }
-            
+
             $_uri = $this->view->hurl(array(
                 'cat' => array(
                     'value' => $_category['id'],
@@ -298,6 +311,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         }
 
         $data = $product->toArray();
+        $data['category'] = $lastItem;
         $data['images'] = Axis::single('catalog/product_image')
             ->cache($productId)
             ->getList($productId);
@@ -347,7 +361,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             ->setTitle($metaTitle, 'product', $productId)
             ->setDescription($metaDescription)
             ->setKeywords($data['description']['meta_keyword']);
-        
+
         $_uri = $this->view->hurl(array(
             'product' => array(
                 'value' => $data['id'],
@@ -358,7 +372,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
             'label' => $data['description']['name'],
             'uri'   => $_uri
         ));
-        
+
         Axis::dispatch('catalog_product_view', array(
             'product' => $product
         ));
