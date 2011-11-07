@@ -126,13 +126,11 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
         $model = Axis::model('discount/discount');
         //@todo move event dispatch to delete 
         $discounts = $model->find($ids);
-        $modelEav  = Axis::model('discount/eav');
         
         foreach ($discounts as $discount) {
             $discountData = $discount->toArray();
             $discountData['products'] = $discount->getApplicableProducts();
             
-            $modelEav->delete('discount_id = ' . $discount->id);//@todo move to observer
             $discount->delete();
 
             Axis::dispatch('discount_delete_after', array(
