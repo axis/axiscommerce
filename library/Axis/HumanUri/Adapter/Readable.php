@@ -33,6 +33,8 @@
  */
 class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
 {
+    protected $_seoParams = array();
+
     protected function _init()
     {
         $simpleKeys = $this->getSimpleKeys();
@@ -40,11 +42,11 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
         $seoParams = array();
         $attributeParams = array();
         foreach ($this->getKeywords() as $keyword) {
-
             if (false === strpos($keyword, '=')) {
                 $seoParams[] = $keyword;
                 continue;
             }
+
             list($key, $value) = explode('=', $keyword, 2);
             if (in_array($key, $simpleKeys)) {
                 $this->setParam($key, $value);
@@ -74,6 +76,7 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
             return array();
         }
 
+        $this->_seoParams = $keywords;
         $rowset = Axis::single('catalog/hurl')
             ->select()
             ->where('key_word IN (?)', $keywords)
@@ -113,6 +116,19 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
                     break;
             }
         }
+    }
+
+    /**
+     * Returns array of NOT VALIDATED seo param strings:
+     *  category
+     *  manufacturer
+     *  product
+     *
+     * @return array
+     */
+    public function getSeoParams()
+    {
+        return $this->_seoParams;
     }
 
     public function getKeywords()
