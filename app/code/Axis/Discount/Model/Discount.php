@@ -83,18 +83,6 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
     }
 
     /**
-     * @param int $productId
-     * @return array
-     */
-    public function getRulesByProductId($productId)
-    {
-        $rules = $this->_getDiscountRulesByProductIds(array(
-            $productId
-        ));
-        return isset($rules[$productId]) ? $rules[$productId] : array();
-    }
-
-    /**
      * Filtred
      * @param array $discount
      * @param array $filter
@@ -103,8 +91,8 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
     private function _setFilter(array $discount, array $filter)
     {
         $filterMapping = array(
-            'site'          => 'siteId',
-            'manufacture'   => 'manufacturerId',
+            'site'          => 'site',
+            'manufacture'   => 'manufacturer',
             'productId'     => 'productId'
         );
         foreach ($filterMapping as $discountKey => $filterKey) {
@@ -116,9 +104,9 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             }
         }
         if (isset($discount['group'])
-            && isset($filter['customerGroupId'])
+            && isset($filter['group'])
             && !in_array(Axis_Account_Model_Customer_Group::GROUP_ALL_ID, $discount['group'])
-            && !in_array($filter['customerGroupId'], $discount['group'])) {
+            && !in_array($filter['group'], $discount['group'])) {
 
             return false;
         }
@@ -187,7 +175,18 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         return count($result) ? $result : false;
     }
 
-
+    /**
+     * @param int $productId
+     * @return array
+     */
+    public function getRulesByProductId($productId)
+    {
+        $rules = $this->_getDiscountRulesByProductIds(array(
+            $productId
+        ));
+        return isset($rules[$productId]) ? $rules[$productId] : array();
+    }
+    
     /**
      * @param int $productId
      * @param int $variationId
@@ -258,7 +257,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
     public function getAllRules($onlyActive = true, $dateFiltered = true)
     {
         $select = $this->select('*')
-            ->joinInner(
+            ->joinLeft(
                 'discount_eav',
                 'de.discount_id = d.id',
                 '*'
@@ -284,7 +283,9 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                     $discounts[$row['id']][$key] = $row[$key];
                 }
             }
-            $discounts[$row['id']][$row['entity']][] = $row['value'];
+            if (!empty($row['entity'])) {
+                $discounts[$row['id']][$row['entity']][] = $row['value'];
+            }
         }
         return $discounts;
     }
@@ -337,11 +338,11 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 ? $attributesRowset[$product->id][0] : array();
 
             $filter = array(
-                'manufacturerId'    => $product->manufacturer_id,
+                'manufacturer'    => $product->manufacturer_id,
                 'category'          => isset($categoriesRowset[$product->id]) ?
                     $categoriesRowset[$product->id] : null,
                 'productId'         => $product->id,
-                'created_on'        => $product->created_on,
+//                'created_on'        => $product->created_on,
                 'price'             => (float) $product->price
             );
 
@@ -385,6 +386,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
 
         //filtred
         $discountRules = array();
+        $siteId  = Axis::getSiteId();
         $customerGroupId = Axis::single('account/customer')->getGroupId();
 
         foreach ($productsRowset as $product) {
@@ -393,15 +395,13 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 ? $attributesRowset[$product->id][0] : array();
 
             $filter = array(
-                'siteId'            => Axis::getSiteId(),
-                'customerGroupId'   => $customerGroupId,
-                'manufacturerId'    => $product->manufacturer_id,
-                'category'          => isset($categoriesRowset[$product->id]) ?
+                'site'         => $siteId,
+                'group'        => $customerGroupId,
+                'manufacturer' => $product->manufacturer_id,
+                'category'     => isset($categoriesRowset[$product->id]) ?
                     $categoriesRowset[$product->id] : null,
-                'productId'         => $product->id,
-                'created_on'        => $product->created_on,
-                'price'             => floatval($product->price)//,
-                //'attribute' => $productAttributes
+                'productId'    => $product->id,
+                'price'        => floatval($product->price)
             );
 //            $filter = array_merge($externalFilter, $filter);
 
@@ -550,7 +550,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             ->find($productId, Axis_Locale::getLanguageId())->current()->name;
         $discountName = 'Special price ' . $productName;
 
-        $discountId = $this->insert(array(
+        $row = $this->createRow(array(
             'name'          => $discountName,
             'description'   => '',
             'from_date'     => $fromDate,
@@ -561,17 +561,18 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             'priority'      => 255, //tinyint unsigned max is 255
             'is_combined'   => 0
         ));
-        Axis::single('discount/eav')->insert(array(
-            'discount_id'   => $discountId,
+        $row->save();
+        Axis::single('discount/eav')->createRow(array(
+            'discount_id'   => $row->id,
             'entity'        => 'productId',
             'value'         => $productId
-        ));
-        Axis::single('discount/eav')->insert(array(
-            'discount_id'   => $discountId,
+        ))->save();
+        Axis::single('discount/eav')->createRow(array(
+            'discount_id'   => $row->id,
             'entity'        => 'special',
             'value'         => true
-        ));
-        return $discountId;
+        ))->save();
+        return $row;
     }
 
     /**
@@ -602,11 +603,11 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             return array();
         }
 
-        $discount = $this->find($discountId)->current();
+        $row = $this->find($discountId)->current();
         return array(
-            'price'         => $discount->amount, //always "to"
-            'from_date_exp' => $discount->from_date,
-            'to_date_exp'   => $discount->to_date
+            'price'         => $row->amount, //always "to"
+            'from_date_exp' => $row->from_date,
+            'to_date_exp'   => $row->to_date
         );
     }
 
