@@ -127,11 +127,12 @@ class Axis_Locale
      */
     private static function _getLocaleFromLanguageCode($code)
     {
-        $localeList = self::getLocaleList(true);
-
-        foreach ($localeList as $locale) {
-            if (strstr($locale, $code)) {
-                return $locale;
+        if (!empty($code)) {
+            $localeList = self::getLocaleList(true);
+            foreach ($localeList as $locale) {
+                if (strpos($locale, $code) === 0) {
+                    return $locale;
+                }
             }
         }
 
