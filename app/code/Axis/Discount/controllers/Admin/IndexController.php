@@ -116,6 +116,7 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
         );
 
         return $this->_helper->json
+            ->setId($row->id)
             ->sendSuccess()
         ;
     }

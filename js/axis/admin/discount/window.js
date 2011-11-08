@@ -79,8 +79,7 @@ var discountWindow = {
             callback: callback
         });
     },
-    save: function() {
-        
+    save: function(close) {
         var form = this.form.getForm();
         
         var params = {
@@ -108,9 +107,14 @@ var discountWindow = {
             url     : Axis.getUrl('discount/save'),
             params  : params,  
             method  : 'post',
-            success : function() {
+            success : function(form, action) {
                 Ext.getCmp('gridDiscount').getStore().reload();
-                discountWindow.el.hide();
+                if (close) {
+                    discountWindow.el.hide();
+                } else {
+                    var id = Ext.decode(action.response.responseText).id;
+                    discountWindow.load(id);
+                }
             }
         });
     }
@@ -188,8 +192,15 @@ Ext.onReady(function() {
             icon    : Axis.skinUrl + '/images/icons/database_save.png',
             text    : 'Save'.l(),
             handler : function() {
-                discountWindow.save();
+                discountWindow.save(true);
             }
+            
+        }, {
+            icon    : Axis.skinUrl + '/images/icons/database_save.png',
+            text    : 'Save & Continue Edit'.l(),
+            handler : function() {
+                discountWindow.save(false);
+             }
         }, {
             icon    : Axis.skinUrl + '/images/icons/cancel.png',
             text    : 'Cancel'.l(),
