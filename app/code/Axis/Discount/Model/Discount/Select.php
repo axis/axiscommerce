@@ -75,4 +75,35 @@ class Axis_Discount_Model_Discount_Select extends Axis_Db_Table_Select
         }
         return $this->where('d.id <> ALL ?', $select);
     }
+    
+   /**
+    *
+    * @param array|int $product
+    * @return Axis_Discount_Model_Discount_Select 
+    */
+    public function addProductFilter($product = array())
+    {
+        if (!is_array($product)) {
+            $product = array($product);
+        }
+               
+        $model = Axis::model('discount/eav');
+        
+        $select1 = $model->select('discount_id')
+            ->distinct()
+            ->where('de.entity = ?', 'productId')
+            ->where('de.value IN (?)', $product)
+            ;
+        
+        $select = $model->select('discount_id')
+            ->distinct()
+            ->where('de.entity = ?', 'productId')
+            ->where('de.value NOT IN (?)', $product)
+            ->where('de.discount_id != ALL ?', $select1)
+            ;
+        
+        $this->where('d.id != ALL ?', $select);
+        return $this;
+        
+    }
 }
