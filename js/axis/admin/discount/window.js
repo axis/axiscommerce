@@ -59,7 +59,7 @@ var discountWindow = {
                 groupTab.setData(data.rule.group);
                 manufacturerTab.setData(data.rule.manufacture);
                 categoryTab.setData(data.rule.category);
-                productTab.setData(data.rule.product);
+                productTab.setData(data.rule.productId);
                 attributeTab.setData(data.rule);
             },
             failure: function() {
