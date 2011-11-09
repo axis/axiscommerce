@@ -246,13 +246,17 @@ class Axis_Locale
      * Retrieve part of url, responsible for locale
      *
      * @static
+     * @param string $locale Locale ISO code
      * @return string Part of url ('/uk')
      */
-    public static function getLanguageUrl()
+    public static function getLanguageUrl($locale = null)
     {
-
-        $language = self::getLocale()->getLanguage();
-        $locale = self::getLocale()->toString();
+        if (null !== $locale) {
+            list($language) = explode('_', $locale);
+        } else {
+            $language = self::getLocale()->getLanguage();
+            $locale   = self::getLocale()->toString();
+        }
 
         if ($locale == self::getDefaultLocale()) {
             return '';

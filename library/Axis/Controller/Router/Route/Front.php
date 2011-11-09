@@ -93,11 +93,11 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
         $path      = trim($path, $this->_urlDelimiter);
         $pathParts = explode($this->_urlDelimiter, $path, 2);
 
-        if (!empty($pathParts[0])) {
+        if (!empty($pathParts[0]) && strlen($pathParts[0]) > 1) {
             foreach (self::$_locales as $locale) {
-                // @todo language url should be setted up by admin for every language
-                // for now we allow duplicate pages: site.com/uk and site.com/uk_UA - both functional. Bad for seo.
-                if (strpos($locale, $pathParts[0]) === 0) {
+                // preventing duplicate urls:
+                // site.com/uk and site.com/uk_UA - only one will work after next check
+                if (trim(Axis_Locale::getLanguageUrl($locale), '/') == $pathParts[0]) {
                     self::$_hasLocaleInUrl = true;
                     break;
                 }
@@ -107,12 +107,10 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
         if (self::$_hasLocaleInUrl) {
             $path = (sizeof($pathParts) > 1) ? $pathParts[1] : '';
             $currentLocale = $pathParts[0];
+        } elseif(isset($this->_defaults['locale'])) {
+            $currentLocale = $this->_defaults['locale'];
         } else {
-            if(isset($this->_defaults['locale'])) {
-                $currentLocale = $this->_defaults['locale'];
-            } else {
-                $currentLocale = self::$_defaultLocale;
-            }
+            $currentLocale = self::$_defaultLocale;
         }
 
         self::$_currentLocale = $currentLocale;
@@ -154,20 +152,35 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
      */
     public function assemble($data = array(), $reset = false, $encode = false, $partial = false)
     {
-        if(!isset($data['locale'])) {
-            return parent::assemble($data, $reset, $encode, $partial);
+        $locale = null;
+        if (!empty($data['locale'])) { // This locale is always valid. It's a developer filtered input
+            $locale = $data['locale'];
+        } else {
+            $locale = trim(Axis_Locale::getLanguageUrl(), '/ ');
         }
-        $locale = $data['locale'];
         unset($data['locale']);
-        $assemble = parent::assemble($data, $reset, $encode);
-        if(in_array($locale, self::$_locales)) {
-            if(isset($this->_defaults['locale'])) {
+
+        $assemble = parent::assemble($data, $reset, $encode, $partial);
+        if (empty($locale)) {
+            return $assemble;
+        }
+
+        $isValidLocale = false;
+        foreach (self::$_locales as $_locale) {
+            if (strpos($_locale, $locale) === 0) {
+                $isValidLocale = true;
+                break;
+            }
+        }
+
+        if ($isValidLocale) {
+            if (isset($this->_defaults['locale'])) {
                 $defaultLocale = $this->_defaults['locale'];
             } else {
                 $defaultLocale = self::$_defaultLocale;
             }
 
-            if($locale != $defaultLocale) {
+            if ($locale != $defaultLocale) {
                 $assemble = implode($this->_urlDelimiter, array($locale, $assemble));
             }
         }

@@ -46,11 +46,6 @@ class Axis_View_Helper_Url extends Zend_View_Helper_Url
     public function url(
         array $urlOptions = array(), $name = null, $reset = false, $encode = true)
     {
-        $locale = trim(Axis_Locale::getLanguageUrl(), '/ ');
-
-        if (!empty($locale)) {
-            $urlOptions = array_merge(array('locale' => $locale), $urlOptions);
-        }
         $urlOptions = array_merge($_GET, $urlOptions);
         return parent::url($urlOptions, $name, $reset, $encode);
     }
