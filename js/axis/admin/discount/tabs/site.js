@@ -99,7 +99,7 @@ Ext.onReady(function() {
         autoExpandColumn: 'name',
         cm: cm,
         store: ds,
-        plugins: [new Axis.grid.Filter(), checkColumn],
+        plugins: [checkColumn],
         massAction: false
     });
 });
