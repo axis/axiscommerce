@@ -1437,6 +1437,10 @@ a.review-stars { outline: none; }
     right: 5px;
 }
 
+/* Search index page */
+.search-index-index .col-main .box-search .head { display: none; }
+.search-index-index .col-main .box-search .input-text { width: 220px; }
+
 /* search highlights */
 .highlight { font-weight:bold; }
 .highlight1 { background-color:#C3D9FF; color:black; }

@@ -24,7 +24,7 @@
  */
 
 $router->addRoute('search', new Axis_Controller_Router_Route_Front(
-    'search/:controller/:action/*',
+    'search',
     array(
         'module'     => 'Axis_Search',
         'controller' => 'index',
