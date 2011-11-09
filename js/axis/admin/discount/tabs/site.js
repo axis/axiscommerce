@@ -22,7 +22,6 @@
 
 var siteTab = {
     el: null,
-    checked: [],
     getSelected: function(){
         var data = [];
         this.el.store.each(function(r){
@@ -33,27 +32,23 @@ var siteTab = {
         return data;
     },
     clear: function(){
-        this.checked = [];
-        this.el.store.load();
+        this.el.store.each(function(record){
+            record.set('check', 0);
+            record.commit();
+        });
     },
     setData: function(data) {
         if ('undefined' == typeof data) {
             this.clear();
             return;
         }
-        this.checked = data;
+        var store = this.el.store;
         
-        var params = {
-            'filter[id][field]' : 'id'
-        };
-        Ext.each(data, function(value, index) {
-            params['filter[id][value][' + index + ']']  = value;
-        });
-        
-        this.el.store.load({
-            params : params,
-            callback: function() {
-                delete this.lastOptions.params; //it is amazing fucking shit 
+        Ext.each(data, function(id) {
+            var record = store.getById(id);
+            if (record) {
+                record.set('check', 1);
+                record.commit();
             }
         });
     }  
@@ -67,31 +62,20 @@ Ext.onReady(function() {
 
     var ds = new Ext.data.Store({
         url    :  Axis.getUrl('core/site/list'),
-        baseParams: {
-            limit: 25
-        },
         reader : new Ext.data.JsonReader({
-            root : 'data',
-            id   : 'id'}, 
+                root : 'data',
+                id   : 'id'
+            }, 
             record
         ),
         remoteSort: true,
+        autoLoad: true,
+        mode: 'local',
         pruneModifiedRecords: true,
         sortInfo: {
             field: 'id',
             direction: 'DESC'
         }
-    });
-    
-    ds.on('load', function(s, records) {
-        Ext.each(records, function(record){
-            Ext.each(siteTab.checked, function(id) {
-                if (record.get('id') == id) {
-                    record.set('check', 1);
-                }
-            });
-
-        });
     });
 
     var checkColumn = new Axis.grid.CheckColumn({
@@ -102,16 +86,11 @@ Ext.onReady(function() {
     });
     
     var cm = new Ext.grid.ColumnModel({
-        defaults: {
-            sortable: true
-        },
         columns: [{
             header: 'Name'.l(),
             dataIndex: 'name',
             id: 'name',
-            filter: {
-                operator: 'LIKE'
-            }
+            filterable : false
         }, checkColumn]
     });
     
@@ -121,10 +100,6 @@ Ext.onReady(function() {
         cm: cm,
         store: ds,
         plugins: [new Axis.grid.Filter(), checkColumn],
-        bbar: new Axis.PagingToolbar({
-            pageSize: 25,
-            store: ds
-        }),
         massAction: false
     });
 });
