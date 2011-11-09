@@ -34,18 +34,6 @@
 class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
 {
     /**
-     * Initialize
-     * @see app/code/Axis/Account/Controller/Axis_Account_Controller_Abstract#init()
-     */
-    public function init()
-    {
-        parent::init();
-        if (!Axis::single('core/module')->getByCode('Axis_Tag')->isInstalled()) {
-            $this->_redirect('/account');
-        }
-    }
-
-    /**
      * Render all account tags
      * @return void
      */
