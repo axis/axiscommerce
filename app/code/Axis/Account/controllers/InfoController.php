@@ -33,16 +33,6 @@
  */
 class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
 {
-    public function init()
-    {
-        parent::init();
-        $this->_helper->breadcrumbs(array(
-            'label'      => Axis::translate('account')->__('Information'),
-            'controller' => 'info',
-            'route'      => 'account'
-        ));
-    }
-
     public function indexAction()
     {
         $this->_helper->layout->disableLayout();
@@ -64,7 +54,7 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
             if ($form->isValid($data)) {
 
                 $model = Axis::single('account/customer');
-                
+
                 $row = $model->find(Axis::getCustomerId())->current();
                 if (empty($data['password'])) {
                     unset($data['password']);
@@ -91,9 +81,9 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
 
             foreach ($extraInfo as $row) {
                 $value  = empty($row->data) ? $row->customer_valueset_value_id : $row->data;
-                
+
                 $isMulti = isset($data['field_' . $row->customer_field_id]);
-                
+
                 if ($isMulti && is_array($data['field_' . $row->customer_field_id])) {
                     $data['field_' . $row->customer_field_id][] = $value;
                 } elseif ($isMulti) {
@@ -101,7 +91,7 @@ class Axis_Account_InfoController extends Axis_Account_Controller_Abstract
                         $data['field_' . $row->customer_field_id],
                         $value
                     );
-                    
+
                 } else {
                     $data['field_' . $row->customer_field_id] = $value;
                 }

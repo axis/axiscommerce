@@ -851,6 +851,24 @@
         <priority>100</priority>
     </layout>
     <layout multiple="1">
+        <layout>layout_2columns-right</layout>
+        <page>
+            <module>search</module>
+            <controller>*</controller>
+            <action>*</action>
+        </page>
+        <priority>100</priority>
+    </layout>
+    <layout multiple="1">
+        <layout>layout_1column</layout>
+        <page>
+            <module>tag</module>
+            <controller>index</controller>
+            <action>index</action>
+        </page>
+        <priority>100</priority>
+    </layout>
+    <layout multiple="1">
         <layout></layout>
         <page>
             <module>tag</module>
