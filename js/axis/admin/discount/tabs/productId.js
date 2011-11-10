@@ -107,7 +107,31 @@ Ext.onReady(function() {
         dataIndex: 'check',
         header: 'Checked'.l(),
         width: 100,
-        filterable : false
+        filter: {
+            editable: false,
+            resetValue: 'reset',
+            value: 1,
+            name: 'id',
+            operator: 'IN',
+            store: new Ext.data.ArrayStore({
+                data: [[0, 'Not Checked'.l()], [1, 'Checked'.l()]],
+                fields: ['id', 'name']
+            }),
+            getValue: function() {
+                var value = this.__proto__.getValue.call(this);
+                
+                if (0 === value.length || this.resetValue === value) {
+                    return this.resetValue;
+                }
+                
+                this.operator = 'IN';
+                if (0 == value) {
+                    this.operator = 'NOT IN';
+                }
+                
+                return productTab.checked;
+            }
+        }
     });
     
     var cm = new Ext.grid.ColumnModel({

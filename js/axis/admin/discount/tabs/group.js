@@ -46,7 +46,7 @@ var groupTab = {
         
         Ext.each(data, function(id) {
             var record = store.getById(id);
-            if (record) {
+            if ('undefined' !== typeof record) {
                 record.set('check', 1);
                 record.commit();
             }
@@ -107,6 +107,7 @@ Ext.onReady(function() {
         cm: cm,
         store: ds,
         plugins: [checkColumn],
-        massAction: false
+        massAction: false,
+        deferRowRender: false
     });
 }); 
