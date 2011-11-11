@@ -104,7 +104,6 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
                     'discount_id' => $row->id,
                     'entity'      => $entity,
                     'value'       => $value
-                    
                 ))->save();
             }
         }

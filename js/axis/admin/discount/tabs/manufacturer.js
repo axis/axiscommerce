@@ -24,10 +24,20 @@ var manufacturerTab = {
     el: null,
     checked:[],
     getSelected: function(){
-        var data = [];
-        this.el.store.each(function(r){
-            if (1 == r.get('check')) {
-                data.push(r.get('id'));
+        var store    = this.el.store,
+            modified = store.getModifiedRecords(),
+            data     = this.checked;
+        
+        Ext.each(modified, function (r) {
+            var value = r.get('id') + '';
+            var indexOf = data.indexOf(value);
+            
+            if (-1 == indexOf && 1 == r.get('check')) {
+                data.remove(value);
+                data.push(value);
+            }
+            if (-1 != indexOf && 0 == r.get('check')) {
+                data.remove(value);
             }
         });
         return data;
@@ -37,26 +47,13 @@ var manufacturerTab = {
         this.el.store.load();
     },
     setData: function(data) {
+        Ext.getCmp('manufacture-filter').setValue(1);
         if ('undefined' == typeof data) {
-            this.clear();
-            return;
+            data = [];
         }
-        
         this.checked = data;
         
-        var params = {
-            'filter[id][field]' : 'id'
-        };
-        Ext.each(data, function(value, index) {
-            params['filter[id][value][' + index + ']']  = value;
-        });
-        
-        this.el.store.load({
-            params : params,
-            callback: function() {
-                delete this.lastOptions.params; //it is amazing fucking shit 
-            }
-        });
+        this.el.store.load();
     }
 }
 
@@ -115,7 +112,7 @@ Ext.onReady(function() {
         filter: {
             editable: false,
             resetValue: 'reset',
-            value: 1,
+            id: 'manufacture-filter',
             name: 'id',
             store: new Ext.data.ArrayStore({
                 data: [[0, 'Not Checked'.l()], [1, 'Checked'.l()]],
@@ -132,7 +129,9 @@ Ext.onReady(function() {
                 if (0 == value) {
                     this.operator = 'NOT IN';
                 }
-
+                if (0 == manufacturerTab.checked.length) {
+                    return [-1];
+                }
                 return manufacturerTab.checked;
             }
         }
@@ -153,7 +152,7 @@ Ext.onReady(function() {
     });
     
     manufacturerTab.el = new Axis.grid.GridPanel({
-        title: 'Manufacrurer'.l(),
+        title: 'Manufacturer'.l(),
         autoExpandColumn: 'name',
         cm: cm,
         store: ds,
@@ -162,6 +161,7 @@ Ext.onReady(function() {
             pageSize: 25,
             store: ds
         }),
-        massAction: false
+        massAction: false,
+        deferRowRender: false
     });
 });

@@ -25,10 +25,20 @@ var productTab = {
     el: null,
     checked:[],
     getSelected: function(){
-        var data = [];
-        this.el.store.each(function(r){
-            if (1 == r.get('check')) {
-                data.push(r.get('id'));
+        var store    = this.el.store,
+            modified = store.getModifiedRecords(),
+            data     = this.checked;
+        
+        Ext.each(modified, function (r) {
+            var value = r.get('id') + '';
+            var indexOf = data.indexOf(value);
+            
+            if (-1 == indexOf && 1 == r.get('check')) {
+                data.remove(value);
+                data.push(value);
+            }
+            if (-1 != indexOf && 0 == r.get('check')) {
+                data.remove(value);
             }
         });
         return data;
@@ -38,26 +48,13 @@ var productTab = {
         this.el.store.load();
     },
     setData: function(data) {
+        Ext.getCmp('product-filter').setValue(1);
         if ('undefined' == typeof data) {
-            this.clear();
-            return;
+            data = [];
         }
-        
         this.checked = data;
         
-        var params = {
-            'filter[id][field]' : 'id'
-        };
-        Ext.each(data, function(value, index) {
-            params['filter[id][value][' + index + ']']  = value;
-        });
-        
-        this.el.store.load({
-            params : params,
-            callback: function() {
-                delete this.lastOptions.params; //it is amazing fucking shit 
-            }
-        });
+        this.el.store.load();
     }
 }
     
@@ -110,7 +107,7 @@ Ext.onReady(function() {
         filter: {
             editable: false,
             resetValue: 'reset',
-            value: 1,
+            id: 'product-filter',
             name: 'id',
             operator: 'IN',
             store: new Ext.data.ArrayStore({
