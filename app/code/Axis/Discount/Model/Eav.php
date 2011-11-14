@@ -36,54 +36,5 @@ class Axis_Discount_Model_Eav extends Axis_Db_Table
     protected $_name = 'discount_eav';
 
     protected $_primary = array('discount_id', 'entity', 'value');
-
-    public function insert(array $data)
-    {
-        if (substr($data['entity'], 0, strlen('date')) === 'date') {
-            $data['value'] = strtotime($data['value']);
-        }
-        return parent::insert($data);
-    }
-
-    /**
-     *
-     * @param int $discountId
-     * @return array
-     */
-    public function getRulesByDiscountId($discountId)
-    {
-        $rowset = $this->select()
-            ->where('discount_id = ?', $discountId)
-            ->fetchAll()
-            ;
-        
-        $result = array();
-        foreach ($rowset as $row) {
-            if (strstr($row['entity'], '_')) {
-                list($entity, $etype) = explode('_', $row['entity'], 2);
-                $result['conditions'][$entity]['e-type'][] = $etype;
-                $value =  $row['value'];
-                if (substr($entity, 0, strlen('date')) === 'date') {
-                    $value = Axis_Date::timestamp($row['value'])
-                        ->toPhpString("Y-m-d");
-                }
-                $result['conditions'][$entity]['value'][] = $value;
-            } else {
-                $result[$row['entity']][] = intval($row['value']);
-            }
-        }
-        return $result;
-    }
-
-    public function getDiscountIdBySpecialAndProductId($productId)
-    {
-        return $this->select('discount_id')
-            ->join('discount_eav', 'de.discount_id = de2.discount_id')
-            ->where("de.entity = 'productId'")
-            ->where('de.value = ?', $productId)
-            ->where("de2.entity ='special'")
-            ->where('de2.value = 1')
-            ->fetchOne()
-            ;
-    }
+    
 }

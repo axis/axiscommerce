@@ -517,5 +517,6 @@ Locale.module("core", {
     "Are you sure want to delete old search indexes and create new for all products and cms pages?\nThis can take a while.": "Are you sure want to delete old search indexes and create new for all products and cms pages?\nThis can take a while.",
     "New Question": "New Question",
     "New Customer": "New Customer",
-    "Resource": "Resource"
+    "Resource": "Resource",
+    'Price to' : 'Price to'
 });

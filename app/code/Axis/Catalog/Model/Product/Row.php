@@ -191,8 +191,13 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
      */
     public function setSpecial($data)
     {
-        $existSpecialDiscountId = Axis::model('discount/eav')
-            ->getDiscountIdBySpecialAndProductId($this->id);
+        $existSpecialDiscountId = Axis::model('discount/eav')->select('discount_id')
+            ->join('discount_eav', 'de.discount_id = de2.discount_id')
+            ->where("de.entity = 'productId'")
+            ->where('de.value = ?', $this->id)
+            ->where("de2.entity ='special'")
+            ->where('de2.value = 1')
+            ->fetchOne();
 
         $mDiscount = Axis::model('discount/discount');
         if ($existSpecialDiscountId) {

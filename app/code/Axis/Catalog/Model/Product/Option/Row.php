@@ -35,27 +35,6 @@ class Axis_Catalog_Model_Product_Option_Row extends Axis_Db_Table_Row
 {
     /**
      *
-     * @param int $languageId
-     * @return array 
-     */
-    public function getValuesArrayByLanguage($languageId)
-    {
-        if (!$this->valueset_id) {
-            return array();
-        }
-        return Axis::model('catalog/product_option_value')->select('*')
-            ->join('catalog_product_option_value_text', 
-                'cpov.id = cpovt.option_value_id',
-                'name'
-            )
-            ->where('cpov.valueset_id = ?', $this->valueset_id)
-            ->where('cpovt.language_id = ?', $languageId)
-            ->fetchAll()
-            ;
-    }
-    
-    /**
-     *
      * @return bool 
      */
     public function isInputable()

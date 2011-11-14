@@ -202,7 +202,7 @@ Ext.onReady(function(){
 
     var fields = [
         {name: 'role[id]',         type: 'int',  mapping: 'role.id'},
-        {name: 'role[name]',                mapping: 'role.name'},
+        {name: 'role[name]',                     mapping: 'role.name'},
         {name: 'role[sort_order]', type: 'int',  mapping: 'role.sort_order'}
     ];
 
