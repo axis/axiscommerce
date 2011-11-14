@@ -102,7 +102,6 @@ Ext.onReady(function() {
     
     var checkColumn = new Axis.grid.CheckColumn({
         dataIndex: 'check',
-        header: 'Checked'.l(),
         width: 100,
         filter: {
             editable: false,
@@ -111,7 +110,7 @@ Ext.onReady(function() {
             name: 'id',
             operator: 'IN',
             store: new Ext.data.ArrayStore({
-                data: [[0, 'Not Checked'.l()], [1, 'Checked'.l()]],
+                data: [[0, 'No'.l()], [1, 'Yes'.l()]],
                 fields: ['id', 'name']
             }),
             getValue: function() {
@@ -125,7 +124,9 @@ Ext.onReady(function() {
                 if (0 == value) {
                     this.operator = 'NOT IN';
                 }
-                
+                if (0 == productTab.checked.length) {
+                    return [-1];
+                }
                 return productTab.checked;
             }
         }
@@ -140,7 +141,7 @@ Ext.onReady(function() {
             dataIndex: 'id',
             width: 90
         }, {
-            header: 'Sku'.l(),
+            header: 'SKU'.l(),
             dataIndex: 'sku',
             id: 'sku',
             filter: {
@@ -160,6 +161,7 @@ Ext.onReady(function() {
             pageSize: 25,
             store: ds
         }),
-        massAction: false
+        massAction: false,
+        deferRowRender: false
     });
 });

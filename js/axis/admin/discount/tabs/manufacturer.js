@@ -107,7 +107,6 @@ Ext.onReady(function() {
 
     var checkColumn = new Axis.grid.CheckColumn({
         dataIndex: 'check',
-        header: 'Checked'.l(),
         width: 100,
         filter: {
             editable: false,
@@ -115,7 +114,7 @@ Ext.onReady(function() {
             id: 'manufacture-filter',
             name: 'id',
             store: new Ext.data.ArrayStore({
-                data: [[0, 'Not Checked'.l()], [1, 'Checked'.l()]],
+                data: [[0, 'No'.l()], [1, 'Yes'.l()]],
                 fields: ['id', 'name']
             }),
             getValue: function() {

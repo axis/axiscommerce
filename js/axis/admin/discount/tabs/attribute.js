@@ -119,7 +119,6 @@ Ext.onReady(function() {
 
     var columnChecked = new Axis.grid.CheckColumn({
         dataIndex: 'check',
-        header: 'Checked'.l(),
         width: 100
     });
 

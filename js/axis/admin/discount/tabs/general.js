@@ -82,7 +82,7 @@ generalTab = {
                 }]
             }, {
                 items: [{
-                    fieldLabel : 'Amount'.l(),
+                    fieldLabel : 'Value'.l(),
                     xtype      : 'textfield',
                     name       : 'discount[amount]',
                     allowBlank : false,
@@ -121,7 +121,7 @@ generalTab = {
                 items: [{
     //                    allowBlank  : false,
                     columns      : [100, 100],
-                    fieldLabel   : 'Is Combined'.l(),
+                    fieldLabel   : 'Combined'.l(),
                     name         : 'discount[is_combined]',
                     xtype        : 'radiogroup',
                     initialValue : 0,
@@ -147,7 +147,7 @@ generalTab = {
             },
             items: [{
                 items: [{
-                    fieldLabel : 'From Date'.l(),
+                    fieldLabel : 'Start Date'.l(),
                     name       : 'discount[from_date]',
                     xtype      : 'datefield',
                     anchor     : '-10'
@@ -155,7 +155,7 @@ generalTab = {
             }, {
                 labelWidth: 110,
                 items: [{
-                    fieldLabel : 'To Date'.l(),
+                    fieldLabel : 'End Date'.l(),
                     name       : 'discount[to_date]',
                     xtype      : 'datefield',
                     anchor     : '100%'
@@ -171,7 +171,7 @@ generalTab = {
             },
             items: [{
                 items: [{
-                    fieldLabel  : 'From Price'.l(),
+                    fieldLabel  : 'Price from'.l(),
                     xtype       : 'textfield',
                     name        : 'rule[price_greate]',
                     submitValue : false,
@@ -180,7 +180,7 @@ generalTab = {
             }, {
                 labelWidth: 110,
                 items: [{
-                    fieldLabel  : 'To Price'.l(),
+                    fieldLabel  : 'Price to'.l(),
                     xtype       : 'textfield',
                     name        : 'rule[price_less]',
                     submitValue : false,
