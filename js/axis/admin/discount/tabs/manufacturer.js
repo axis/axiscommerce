@@ -43,8 +43,7 @@ var manufacturerTab = {
         return data;
     },
     clear: function(){
-        this.checked = [];
-        this.el.store.load();
+        this.setData([]);
     },
     setData: function(data) {
         Ext.getCmp('manufacture-filter').setValue(1);
@@ -53,7 +52,10 @@ var manufacturerTab = {
         }
         this.checked = data;
         
-        this.el.store.load();
+        this.delayedLoader.state = '';
+        if (this.el.findParentByType('tabpanel').getActiveTab() == this.el) {
+            this.delayedLoader.load();
+        }
     }
 }
 
@@ -162,5 +164,10 @@ Ext.onReady(function() {
         }),
         massAction: false,
         deferRowRender: false
+    });
+    
+    manufacturerTab.delayedLoader = new Axis.DelayedLoader({
+        el: manufacturerTab.el,
+        ds: ds
     });
 });

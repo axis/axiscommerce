@@ -44,8 +44,7 @@ var productTab = {
         return data;
     },
     clear: function(){
-        this.checked = [];
-        this.el.store.load();
+        this.setData([]);
     },
     setData: function(data) {
         Ext.getCmp('product-filter').setValue(1);
@@ -54,7 +53,10 @@ var productTab = {
         }
         this.checked = data;
         
-        this.el.store.load();
+        this.delayedLoader.state = '';
+        if (this.el.findParentByType('tabpanel').getActiveTab() == this.el) {
+            this.delayedLoader.load();
+        }
     }
 }
     
@@ -163,5 +165,10 @@ Ext.onReady(function() {
         }),
         massAction: false,
         deferRowRender: false
+    });
+    
+    productTab.delayedLoader = new Axis.DelayedLoader({
+        el: productTab.el,
+        ds: ds
     });
 });
