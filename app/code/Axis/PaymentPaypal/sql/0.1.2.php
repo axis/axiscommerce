@@ -30,7 +30,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         Axis::single('core/config_field')
             ->add('payment/Paypal_Express/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'));

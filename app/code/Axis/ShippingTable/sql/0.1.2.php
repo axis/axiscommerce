@@ -30,7 +30,7 @@ class Axis_ShippingTable_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -67,7 +67,7 @@ class Axis_ShippingTable_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
             DROP TABLE IF EXISTS `{$installer->getTable('shippingtable_rate')}`;

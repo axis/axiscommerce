@@ -30,7 +30,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         Axis::single('core/config_field')
             ->add('gbase', 'Google Base', null, null, array('translation_module' => 'Axis_GoogleBase'))
@@ -48,7 +48,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         Axis::single('core/config_field')->remove('gbase');
         Axis::single('core/config_value')->remove('gbase');

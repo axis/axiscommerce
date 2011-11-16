@@ -37,7 +37,17 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
      * @var Axis_Install_Model_Installer
      */
     protected $_installer;
+    
+    /**
+     *
+     * @var string 
+     */
     protected $_info = '';
+    
+    /**
+     *
+     * @var string 
+     */
     protected $_version;
 
     public function  __construct()
@@ -78,6 +88,7 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
      */
     public function up() 
     {
+        
     }
     
     /**
@@ -86,5 +97,6 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
      */
     public function down() 
     {
+        
     }
 }

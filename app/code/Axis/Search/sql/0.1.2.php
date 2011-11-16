@@ -30,7 +30,7 @@ class Axis_Search_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         if (@preg_match('/\pL/u', 'a') != 1) {
             Axis::message()->addNotice("Axis_Search module :PCRE unicode support is turned off.\n");

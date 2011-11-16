@@ -30,7 +30,7 @@ class Axis_ShippingFedex_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstrac
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         Axis::single('core/config_field')
             ->add('shipping/Fedex_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))

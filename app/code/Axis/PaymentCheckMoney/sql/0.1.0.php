@@ -30,7 +30,7 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         Axis::single('core/config_field')
             ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
@@ -49,7 +49,7 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         Axis::single('core/config_value')->remove('payment/CheckMoney_Standard');
         Axis::single('core/config_field')->remove('payment/CheckMoney_Standard');

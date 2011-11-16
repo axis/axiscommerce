@@ -30,7 +30,7 @@ class Axis_Sales_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -44,7 +44,7 @@ class Axis_Sales_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 

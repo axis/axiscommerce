@@ -30,7 +30,7 @@ class Axis_ShippingPerWeightUnit_Upgrade_0_1_1 extends Axis_Core_Model_Migration
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         Axis::single('core/config_field')
             ->add('shipping/PerWeightUnit_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))

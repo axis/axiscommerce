@@ -30,7 +30,7 @@ class Axis_Cms_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $mBlock = Axis::model('cms/block');
         $blockRows = $mBlock->fetchAll();
