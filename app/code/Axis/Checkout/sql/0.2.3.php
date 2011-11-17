@@ -38,9 +38,4 @@ class Axis_Checkout_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             'title' => 'Shipping'
         ), "path = 'orderTotal/shipping'");
     }
-
-    public function down()
-    {
-
-    }
 }

@@ -282,9 +282,4 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/page')
             ->add('cms/*/*');
     }
-
-    public function down()
-    {
-
-    }
 }

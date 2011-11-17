@@ -69,9 +69,4 @@ class Axis_Search_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->add('search/index/index')
             ->add('search/index/result');
     }
-
-    public function down()
-    {
-
-    }
 }

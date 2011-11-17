@@ -37,9 +37,4 @@ class Axis_Core_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/template_layout/save',   'admin/template_page/save')
             ;
     }
-
-    public function down()
-    {
-        
-    }
 }

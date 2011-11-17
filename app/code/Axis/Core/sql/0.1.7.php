@@ -355,9 +355,4 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/error/*')
             ->add('core/error/not-found');
     }
-
-    public function down()
-    {
-
-    }
 }

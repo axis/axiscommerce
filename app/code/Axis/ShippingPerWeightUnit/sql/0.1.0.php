@@ -30,8 +30,6 @@ class Axis_ShippingPerWeightUnit_Upgrade_0_1_0 extends Axis_Core_Model_Migration
 
     public function up()
     {
-        $installer = $this->getInstaller();
-
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/PerWeightUnit_Standard', 'Shipping Methods/Per Weight Unit', null, null, array('translation_module' => 'Axis_ShippingPerWeightUnit'))
@@ -47,8 +45,6 @@ class Axis_ShippingPerWeightUnit_Upgrade_0_1_0 extends Axis_Core_Model_Migration
 
     public function down()
     {
-        $installer = $this->getInstaller();
-
         Axis::single('core/config_value')->remove('shipping/PerWeightUnit_Standard');
         Axis::single('core/config_field')->remove('shipping/PerWeightUnit_Standard');
     }

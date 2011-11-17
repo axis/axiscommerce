@@ -73,8 +73,6 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
 
     public function down()
     {
-        $installer = $this->getInstaller();
-
         Axis::single('core/config_value')->remove('payment/AuthorizenetAim_Standard');
         Axis::single('core/config_field')->remove('payment/AuthorizenetAim_Standard');
     }

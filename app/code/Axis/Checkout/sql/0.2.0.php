@@ -41,9 +41,4 @@ class Axis_Checkout_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
             ->add('checkout/default_values/shipping_method', 'Shipping Method', 'Flat_Standard_standard', 'string')
             ->add('checkout/default_values/payment_method', 'Payment Method', 'CashOnDelivery_Standard', 'select', array('model' => 'Payment'));
     }
-
-    public function down()
-    {
-
-    }
 }

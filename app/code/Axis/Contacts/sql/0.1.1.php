@@ -45,8 +45,4 @@ class Axis_Contacts_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         ;
 
     }
-
-    public function down()
-    {
-    }
 }

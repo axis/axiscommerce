@@ -40,9 +40,4 @@ class Axis_Account_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->add('account/address_form/postcode_value', 'Postcode Default Value', 90064)
             ->add('account/address_form/country_id_value', 'Country Default Value', 223, 'select', array('model' => 'Country'));
     }
-
-    public function down()
-    {
-
-    }
 }

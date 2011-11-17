@@ -81,11 +81,5 @@ class Axis_Catalog_Upgrade_0_2_7 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/catalog_category/delete',    'admin/catalog/category/remove')
             ->rename('admin/catalog_category/move',      'admin/catalog/category/move')
         ;
-
-    }
-
-    public function down()
-    {
-
     }
 }

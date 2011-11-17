@@ -44,9 +44,4 @@ class Axis_Tax_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/tax_rate/delete',  'admin/tax/rate/remove')
         ;
     }
-
-    public function down()
-    {
-
-    }
 }

@@ -41,8 +41,4 @@ class Axis_Discount_Upgrade_0_0_3 extends Axis_Core_Model_Migration_Abstract
             $row->save();
         }
     }
-
-    public function down()
-    {
-    }
 }

@@ -72,9 +72,4 @@ class Axis_Locale_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->add('locale/main/currency', 'Default display currency', 'USD', 'handler', 'Default currency', array('model' => 'BaseCurrency'))
             ;
     }
-
-    public function down()
-    {
-
-    }
 }

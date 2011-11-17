@@ -57,9 +57,4 @@ class Axis_Core_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
             ALTER TABLE `{$installer->getTable('core_template')}` DROP COLUMN `is_active`;
         ");
     }
-
-    public function down()
-    {
-        
-    }
 }

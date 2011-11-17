@@ -53,8 +53,4 @@ class Axis_Log_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             
         Axis::single('core/template_box')->remove('Axis_Log_Visitor');
     }
-
-    public function down()
-    {
-    }
 }

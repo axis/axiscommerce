@@ -34,9 +34,4 @@ class Axis_Core_Upgrade_0_2_7 extends Axis_Core_Model_Migration_Abstract
             ->add('design/header/logoSrc', 'Design/Header/Logo Image Src', 'logo.gif')
             ->add('design/header/logoAlt', 'Logo Image Alt', 'Axiscommerce');
     }
-
-    public function down()
-    {
-
-    }
 }

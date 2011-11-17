@@ -65,9 +65,4 @@ class Axis_Contacts_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/page')
             ->add('contacts/*/*');
     }
-
-    public function down()
-    {
-
-    }
 }

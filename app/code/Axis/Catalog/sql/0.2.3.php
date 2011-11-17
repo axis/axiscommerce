@@ -407,9 +407,4 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('catalog/product-compare/*')
             ->add('catalog/product-compare/index');
     }
-
-    public function down()
-    {
-
-    }
 }

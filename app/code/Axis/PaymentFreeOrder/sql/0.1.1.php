@@ -30,14 +30,8 @@ class Axis_PaymentFreeOrder_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abst
 
     public function up()
     {
-        $installer = $this->getInstaller();
-
         Axis::single('core/config_field')
             ->add('payment/FreeOrder_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
             ->add('payment/FreeOrder_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'));
-    }
-
-    public function down()
-    {
     }
 }

@@ -34,6 +34,7 @@
 abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Migration_Interface
 {
     /**
+     * 
      * @var Axis_Install_Model_Installer
      */
     protected $_installer;

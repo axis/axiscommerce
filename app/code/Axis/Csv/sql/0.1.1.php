@@ -36,8 +36,4 @@ class Axis_Csv_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/csv/get-supported-types', 'admin/csv/list-type')
         ;
     }
-
-    public function down()
-    {
-    }
 }

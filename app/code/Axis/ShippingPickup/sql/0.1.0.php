@@ -30,8 +30,6 @@ class Axis_ShippingPickup_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstra
 
     public function up()
     {
-        $installer = $this->getInstaller();
-
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Pickup_Standard', 'Shipping Methods/Pickup Standard', null, null, array('translation_module' => 'Axis_ShippingPickup'))
@@ -47,8 +45,6 @@ class Axis_ShippingPickup_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstra
 
     public function down()
     {
-        $installer = $this->getInstaller();
-
         Axis::single('core/config_value')->remove('shipping/Pickup_Standard');
         Axis::single('core/config_field')->remove('shipping/Pickup_Standard');
     }

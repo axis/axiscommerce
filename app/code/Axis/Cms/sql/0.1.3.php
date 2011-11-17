@@ -37,9 +37,4 @@ class Axis_Cms_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             $row->save();
         }
     }
-
-    public function down()
-    {
-
-    }
 }

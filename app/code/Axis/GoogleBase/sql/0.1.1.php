@@ -42,9 +42,4 @@ class Axis_GoogleBase_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/gbase_index/update',         'admin/googlebase/update')
             ;
     }
-
-    public function down()
-    {
-
-    }
 }

@@ -58,9 +58,4 @@ class Axis_Cms_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/cms_comment/get-page-tree',  'admin/cms/comment/get-page-tree')
         ;
     }
-
-    public function down()
-    {
-
-    }
 }

@@ -46,8 +46,4 @@ class Axis_Community_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/community_review/get-customer-list', 'admin/community/review/get-customer-list')
         ;
     }
-
-    public function down()
-    {
-    }
 }

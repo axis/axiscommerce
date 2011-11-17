@@ -30,8 +30,6 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = $this->getInstaller();
-
         Axis::single('core/config_field')
             ->add('gbase', 'Google Base', null, null, array('translation_module' => 'Axis_GoogleBase'))
             ->add('gbase/main/payment', 'Google Base/General/Payment', 'Discover,American Express,Visa,MasterCard,Check', 'multiple', 'Let your customers buy with all major credit cards', array('config_options' => 'Discover,American Express,Visa,MasterCard,Wire transfer,Check,Cash'))
@@ -48,10 +46,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        $installer = $this->getInstaller();
-
         Axis::single('core/config_field')->remove('gbase');
         Axis::single('core/config_value')->remove('gbase');
-
     }
 }

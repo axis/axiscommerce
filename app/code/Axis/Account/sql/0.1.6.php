@@ -227,9 +227,4 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             ->add('account', 'Account', null, null, array('translation_module' => 'Axis_Account'))
             ->add('account/main/defaultCustomerGroup', 'Account/General/Default Customer Group', 1, 'select', "Default Customer Group (default:'General')", array('model' => 'CustomerGroup'));
     }
-
-    public function down()
-    {
-
-    }
 }

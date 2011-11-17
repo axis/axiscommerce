@@ -28,13 +28,4 @@ class Axis_Location_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
     protected $_version = '0.1.3';
     protected $_info = 'Zones renamed to States / Provinces, Zones Definitions to Geozones';
 
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-
-    }
 }

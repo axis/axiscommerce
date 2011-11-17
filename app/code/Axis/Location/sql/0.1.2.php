@@ -550,9 +550,4 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->add('locale', 'Locale', null, null, array('translation_module' => 'Axis_Locale'))
             ->add('locale/main/addressFormat', 'Locale/General/Default Address Format', 1, 'select', 'Default address format', array('model' => 'AddressFormat'));
     }
-
-    public function down()
-    {
-
-    }
 }

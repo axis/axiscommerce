@@ -41,8 +41,4 @@ class Axis_Sitemap_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/sitemap_file/ping',   'admin/sitemap/file/list')
             ;
     }
-
-    public function down()
-    {
-    }
 }

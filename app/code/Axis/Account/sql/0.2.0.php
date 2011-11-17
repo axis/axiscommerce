@@ -55,9 +55,4 @@ class Axis_Account_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
             ->add('account/address_form/country_id_status', 'Account/Address Form/Country Status', 'required', 'select', array('model' => 'AddressFieldStatus'))
             ->add('account/address_form/country_id_sort_order', 'Account/Address Form/Company Sort Order', 80);
     }
-
-    public function down()
-    {
-        //
-    }
 }

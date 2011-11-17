@@ -241,9 +241,4 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('sales/order/email', 'Order notifications reciever', 'email1', 'select', 'All notifications about new orders will be sended to this email', array('model' => 'MailBoxes'));
 
     }
-
-    public function down()
-    {
-
-    }
 }

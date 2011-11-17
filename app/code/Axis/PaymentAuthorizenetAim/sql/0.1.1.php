@@ -36,8 +36,4 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_1 extends Axis_Core_Model_Migratio
             ->add('payment/AuthorizenetAim_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
             ->add('payment/AuthorizenetAim_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'));
     }
-
-    public function down()
-    {
-    }
 }

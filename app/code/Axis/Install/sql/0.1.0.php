@@ -27,14 +27,5 @@ class Axis_Install_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.0';
     protected $_info = 'install';
-
-    public function up()
-    {
-        $installer = $this->getInstaller();
-    }
-
-    public function down()
-    {
-
-    }
+    
 }

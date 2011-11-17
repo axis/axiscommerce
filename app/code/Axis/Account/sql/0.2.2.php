@@ -72,9 +72,4 @@ class Axis_Account_Upgrade_0_2_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/customer_custom-fields/delete-fields',                'admin/account/field/remove')
         ;
     }
-
-    public function down()
-    {
-
-    }
 }
