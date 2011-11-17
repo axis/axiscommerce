@@ -47,9 +47,4 @@ class Axis_Admin_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/users/delete',   'admin/user/remove')
         ;
     }
-
-    public function down()
-    {
-
-    }
 }

@@ -31,32 +31,73 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-abstract class Axis_Core_Model_Migration_Abstract
+abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Migration_Interface
 {
     /**
+     * 
      * @var Axis_Install_Model_Installer
      */
     protected $_installer;
+    
+    /**
+     *
+     * @var string 
+     */
     protected $_info = '';
+    
+    /**
+     *
+     * @var string 
+     */
     protected $_version;
 
     public function  __construct()
     {
         $this->_installer = Axis::single('install/installer');
     }
-
+    
+    /**
+     *
+     * @return string 
+     */
     public function getVersion()
     {
         return $this->_version;
     }
 
+    /**
+     *
+     * @return string 
+     */
     public function getInfo()
     {
         return $this->_info;
     }
+    
+    /**
+     *
+     * @return Axis_Install_Model_Installer 
+     */
+    public function getInstaller()
+    {
+        return $this->_installer;
+    }
 
-    abstract public function up();
-
-    abstract public function down();
-
+    /**
+     *
+     * @return void 
+     */
+    public function up() 
+    {
+        
+    }
+    
+    /**
+     *
+     * @return void 
+     */
+    public function down() 
+    {
+        
+    }
 }

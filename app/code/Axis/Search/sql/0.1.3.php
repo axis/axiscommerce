@@ -34,9 +34,4 @@ class Axis_Search_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             'admin/catalog_index/update-search-index', 'admin/search/update-index'
         );
     }
-
-    public function down()
-    {
-
-    }
 }

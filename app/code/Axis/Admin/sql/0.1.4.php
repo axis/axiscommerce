@@ -30,7 +30,7 @@ class Axis_Admin_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -58,10 +58,5 @@ class Axis_Admin_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/user/batch-save',  'admin/axis/admin/user/batch-save')
             ->rename('admin/user/remove',      'admin/axis/admin/user/remove')
         ;
-    }
-
-    public function down()
-    {
-
     }
 }

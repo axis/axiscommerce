@@ -36,9 +36,4 @@ class Axis_Checkout_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
             ->add('checkout/onestep_ajax/shipping_method', 'Reload when Shipping Method was Changed', 1, 'bool', "You can disable this option if all of your shipping methods have equal pricing, and if you don't have dependency between available payment methods and shipping method")
             ->add('checkout/onestep_ajax/payment_method', 'Reload when Payment Method was Changed', 1, 'bool', "You can disable this option if you don't have dependency between available shipping methods and payment method");
     }
-
-    public function down()
-    {
-
-    }
 }

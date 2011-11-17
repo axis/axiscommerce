@@ -27,14 +27,4 @@ class Axis_Admin_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.2';
     protected $_info = 'Index for acl resource_id was added';
-
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-
-    }
 }

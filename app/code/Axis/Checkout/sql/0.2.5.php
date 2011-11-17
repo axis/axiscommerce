@@ -35,9 +35,4 @@ class Axis_Checkout_Upgrade_0_2_5 extends Axis_Core_Model_Migration_Abstract
             ->remove('checkout/default_values/zone_id')
             ->remove('checkout/default_values/postcode');
     }
-
-    public function down()
-    {
-
-    }
 }

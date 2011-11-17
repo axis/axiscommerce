@@ -41,9 +41,4 @@ class Axis_Locale_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             $row->save();
         }
     }
-
-    public function down()
-    {
-
-    }
 }

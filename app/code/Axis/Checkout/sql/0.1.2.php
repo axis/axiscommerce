@@ -30,7 +30,7 @@ class Axis_Checkout_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -97,10 +97,5 @@ class Axis_Checkout_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->add('orderTotal/tax/sortOrder', 'Sort Order', '30')
             ->add('orderTotal/shipping_tax/enabled', 'Order Total Modules/ShippingTax/Enabled', 1, 'bool')
             ->add('orderTotal/shipping_tax/sortOrder', 'Sort Order', '40');
-    }
-
-    public function down()
-    {
-
     }
 }

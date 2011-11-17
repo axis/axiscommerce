@@ -38,8 +38,4 @@ class Axis_Tag_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
         ;
 
     }
-
-    public function down()
-    {
-    }
 }

@@ -30,7 +30,7 @@ class Axis_Log_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
             
@@ -52,9 +52,5 @@ class Axis_Log_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
         ");
             
         Axis::single('core/template_box')->remove('Axis_Log_Visitor');
-    }
-
-    public function down()
-    {
     }
 }

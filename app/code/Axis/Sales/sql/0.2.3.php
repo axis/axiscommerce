@@ -30,7 +30,7 @@ class Axis_Sales_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -41,10 +41,5 @@ class Axis_Sales_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             MODIFY COLUMN `shipping_method_code` VARCHAR(255) NOT NULL default '';
 
         ");
-    }
-
-    public function down()
-    {
-
     }
 }

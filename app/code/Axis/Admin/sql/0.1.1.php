@@ -34,9 +34,4 @@ class Axis_Admin_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             'admin/template_index/get-info', 'admin/template_index/load'
         );
     }
-
-    public function down()
-    {
-
-    }
 }

@@ -52,9 +52,4 @@ class Axis_Sales_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
             
         ;
     }
-
-    public function down()
-    {
-
-    }
 }

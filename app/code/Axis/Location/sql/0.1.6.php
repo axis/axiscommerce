@@ -41,9 +41,4 @@ class Axis_Location_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             $row->save();
         }
     }
-
-    public function down()
-    {
-
-    }
 }

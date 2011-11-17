@@ -30,8 +30,6 @@ class Axis_PaymentCashOnDelivery_Upgrade_0_1_0 extends Axis_Core_Model_Migration
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_field')
             ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('payment/CashOnDelivery_Standard', 'Payment Methods/Cash On Delivery', null, null, array('translation_module' => 'Axis_PaymentCashOnDelivery'))
@@ -48,8 +46,6 @@ class Axis_PaymentCashOnDelivery_Upgrade_0_1_0 extends Axis_Core_Model_Migration
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_value')->remove('payment/CashOnDelivery_Standard');
         Axis::single('core/config_field')->remove('payment/CashOnDelivery_Standard');
     }

@@ -18,14 +18,44 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Admin
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-class Axis_Admin_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
+/**
+ *
+ * @category    Axis
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
+ * @author      Axis Core Team <core@axiscommerce.com>
+ */
+interface Axis_Core_Model_Migration_Interface 
 {
-    protected $_version = '0.1.0';
-    protected $_info = 'install';
+    /**
+     *
+     * @return string 
+     */
+    public function getVersion();
+    
+    /**
+     *
+     * @return string 
+     */
+    public function getInfo();
+    
+//    public function getInstaller();
 
+    /**
+     *
+     * @return void 
+     */
+    public function up();
+    
+    /**
+     *
+     * @return void 
+     */
+    public function down();
 }

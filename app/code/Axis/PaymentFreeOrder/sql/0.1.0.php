@@ -30,8 +30,6 @@ class Axis_PaymentFreeOrder_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abst
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_field')
             ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('payment/FreeOrder_Standard', 'Payment Methods/Free Order', null, null, array('translation_module' => 'Axis_PaymentFreeOrder'))
@@ -45,8 +43,6 @@ class Axis_PaymentFreeOrder_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abst
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_value')->remove('payment/FreeOrder_Standard');
         Axis::single('core/config_field')->remove('payment/FreeOrder_Standard');
     }

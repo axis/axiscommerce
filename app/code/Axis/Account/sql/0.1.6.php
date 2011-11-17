@@ -30,7 +30,7 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -226,10 +226,5 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')
             ->add('account', 'Account', null, null, array('translation_module' => 'Axis_Account'))
             ->add('account/main/defaultCustomerGroup', 'Account/General/Default Customer Group', 1, 'select', "Default Customer Group (default:'General')", array('model' => 'CustomerGroup'));
-    }
-
-    public function down()
-    {
-
     }
 }

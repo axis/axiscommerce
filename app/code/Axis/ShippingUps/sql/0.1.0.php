@@ -30,8 +30,6 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Ups_Standard', 'Shipping Methods/Ups Standard', null, null, array('translation_module' => 'Axis_ShippingUps'))
@@ -69,8 +67,6 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_value')->remove('shipping/Ups_Standard');
         Axis::single('core/config_field')->remove('shipping/Ups_Standard');
     }

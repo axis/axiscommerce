@@ -104,9 +104,4 @@ class Axis_Core_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 
             ;
     }
-
-    public function down()
-    {
-
-    }
 }
