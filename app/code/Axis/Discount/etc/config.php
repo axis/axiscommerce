@@ -36,14 +36,7 @@ $config = array(
                     'model'  => 'discount/observer',
                     'method' => 'prepareAdminNavigationBox'
                 )
-            ),
-            'discount_delete_after' => array(
-                'remove_eav' => array(
-                    'type' => 'model',
-                    'model' => 'discount/observer',
-                    'method' => 'removeEavOnDiscountDelete'
-                )
-            ),
+            )
         )
     )
 );

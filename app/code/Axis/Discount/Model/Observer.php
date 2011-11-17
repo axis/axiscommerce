@@ -56,9 +56,4 @@ class Axis_Discount_Model_Observer
             )
         ));
     }
-    
-    public function removeEavOnDiscountDelete($data)
-    {
-        Axis::siingle('discount/eav')->delete('discount_id = ' . $data['id']);
-    }
 }
