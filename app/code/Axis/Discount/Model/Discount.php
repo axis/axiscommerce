@@ -84,11 +84,11 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
 
     /**
      * Filtred
-     * @param array $discount
+     * @param array $rule
      * @param array $filter
      * @return bool
      */
-    private function _setFilter(array $discount, array $filter)
+    private function _setFilter(array $rule, array $filter)
     {
         $filterMapping = array(
             'site'          => 'site',
@@ -96,23 +96,23 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             'productId'     => 'productId'
         );
         foreach ($filterMapping as $discountKey => $filterKey) {
-            if (!isset($discount[$discountKey]) || !isset($filter[$filterKey])) {
+            if (!isset($rule[$discountKey]) || !isset($filter[$filterKey])) {
                 continue;
             }
-            if (!in_array($filter[$filterKey], $discount[$discountKey])) {
+            if (!in_array($filter[$filterKey], $rule[$discountKey])) {
                 return false;
             }
         }
-        if (isset($discount['group'])
+        if (isset($rule['group'])
             && isset($filter['group'])
-            && !in_array(Axis_Account_Model_Customer_Group::GROUP_ALL_ID, $discount['group'])
-            && !in_array($filter['group'], $discount['group'])) {
+            && !in_array(Axis_Account_Model_Customer_Group::GROUP_ALL_ID, $rule['group'])
+            && !in_array($filter['group'], $rule['group'])) {
 
             return false;
         }
-        if (isset($discount['category'])
+        if (isset($rule['category'])
             && isset($filter['category'])
-            && !count(array_intersect($filter['category'], $discount['category']))) {
+            && !count(array_intersect($filter['category'], $rule['category']))) {
 
             return false;
         }
@@ -124,18 +124,18 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         $rangeFiltersMapping = array(
             'price' => 'price'
         );
-        foreach ($rangeSuffixes as $suffix => $rule) {
+        foreach ($rangeSuffixes as $suffix => $condition) {
             foreach ($rangeFiltersMapping as $discountKey => $filterKey) {
-                if (!isset($discount[$discountKey . $suffix])
+                if (!isset($rule[$discountKey . $suffix])
                     || !isset($filter[$filterKey])) {
 
                     continue;
                 }
                 $filterValue = $filter[$filterKey];
-                foreach ($discount[$discountKey . $suffix] as $discountValue) {
-                    if ('>' === $rule && $discountValue > $filterValue) {
+                foreach ($rule[$discountKey . $suffix] as $discountValue) {
+                    if ('>' === $condition && $discountValue > $filterValue) {
                         return false;
-                    } elseif ('<' === $rule && $discountValue < $filterValue) {
+                    } elseif ('<' === $condition && $discountValue < $filterValue) {
                         return false;
                     }
                 }
@@ -145,20 +145,20 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         return true;
     }
 
-    protected function _getAppliedAttributes($discount, $attributes)
+    protected function _getAppliedAttributes($rule, $attributes)
     {
         $result = array();
-        if (!isset($discount['optionId'])) {
+        if (!isset($rule['optionId'])) {
             return true;
         }
-        foreach ($discount['optionId'] as $optionId) {
+        foreach ($rule['optionId'] as $optionId) {
             /*if ($result) {
                 continue;
             }*/
-            if (!isset($discount['option[' . $optionId . ']'])) {
+            if (!isset($rule['option[' . $optionId . ']'])) {
                 continue;
             }
-            foreach ($discount['option[' . $optionId . ']'] as $optionValueId) {
+            foreach ($rule['option[' . $optionId . ']'] as $optionValueId) {
                 foreach ($attributes as $attributeId => $attribute) {
                     if ($attribute['optionId'] == $optionId
                         && $attribute['optionValueId'] == $optionValueId) {
@@ -171,7 +171,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 }
             }
         }
-
+               
         return count($result) ? $result : false;
     }
 
@@ -181,9 +181,8 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
      */
     public function getRulesByProductId($productId)
     {
-        $rules = $this->_getDiscountRulesByProductIds(array(
-            $productId
-        ));
+        $rules = $this->_getDiscountRulesByProductId($productId);
+        
         return isset($rules[$productId]) ? $rules[$productId] : array();
     }
     
@@ -194,7 +193,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
      */
     public function getRuleByProductId($productId, $variationId = 0)
     {
-        $rules = $this->_getDiscountRulesByProductIds(array($productId));
+        $rules = $this->_getDiscountRulesByProductId($productId);
 
         return isset($rules[$productId][$variationId]) ?
             $rules[$productId][$variationId] : array();
@@ -359,136 +358,93 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
 
         return $result;
     }
-
+    
     /**
      * @link http://drupal.org/node/468516#comment-1627620
-     * @param array $productIds (productId => price) "if price null than use $row->price"
-     * @return array
+     * @param int $productId
+     * @return array 
      */
-    protected function _getDiscountRulesByProductIds(
-        array $productIds/*, array $externalFilter = array()*/)
+    protected function _getDiscountRulesByProductId($productId) 
     {
-        if (!sizeof($productIds)) {
-            return array();
-        }
-        $discounts = $this->getAllRules();
-
-        $productsRowset = Axis::single('catalog/product')->find($productIds);
-
-        $attributesRowset = Axis::single('catalog/product_attribute')
-            ->getAtrributesByProductIds($productIds);
-
-        $categoriesRowset = Axis::single('catalog/product_category')
-            ->getCategoriesByProductIds($productIds);
-
-        $variationRowset = Axis::single('catalog/product_variation')
-            ->getVariationsByProductIds($productIds);
-
-        //filtred
-        $discountRules = array();
-        $siteId  = Axis::getSiteId();
-        $customerGroupId = Axis::single('account/customer')->getGroupId();
-
-        foreach ($productsRowset as $product) {
-
-            $productAttributes = isset($attributesRowset[$product->id][0])
-                ? $attributesRowset[$product->id][0] : array();
-
-            $filter = array(
-                'site'         => $siteId,
-                'group'        => $customerGroupId,
-                'manufacturer' => $product->manufacturer_id,
-                'category'     => isset($categoriesRowset[$product->id]) ?
-                    $categoriesRowset[$product->id] : null,
-                'productId'    => $product->id,
-                'price'        => floatval($product->price)
+        $rules = $this->getAllRules();
+        
+        $product = Axis::single('catalog/product')->find($productId)->current();
+        
+        $attributes = array();
+        $rowset = Axis::single('catalog/product_attribute')->select()
+            ->where('product_id = ?', $productId)
+            ->fetchRowset()
+            ;
+        foreach ($rowset as $row) {
+            $attributes[$row->variation_id][$row->id] = array(
+                'optionId'       => $row->option_id,
+                'optionValueId'  => $row->option_value_id
             );
-//            $filter = array_merge($externalFilter, $filter);
-
-            foreach ($discounts as $discountId => $discount) {
-
-                if (!$this->_setFilter($discount, $filter)) {
-                    continue;
-                }
-                if (!$filtredAttributes = $this->_getAppliedAttributes(
-                        $discount, $productAttributes)) {
-
-                    continue;
-                }
-                // 0 says that this bas variation
-                $discountRules[$product->id][0][$discountId] = array(
-                    'name'          => $discount['name'],
-                    'type'          => $discount['type'],
-                    'amount'        => $discount['amount'],
-                    'priority'      => $discount['priority'],
-                    'is_combined'   => $discount['is_combined']
-                );
-                if ($filtredAttributes && is_array($filtredAttributes)) {
-                    $discountRules[$product->id][0][$discountId]['attribute']
-                        = $filtredAttributes;
-                }
-            }
-
-            if (!isset($variationRowset[$product->id])
-                || !count($variationRowset[$product->id])) {
-
-                continue;
-            }
-            $variations = $variationRowset[$product->id];
-
-            foreach ($variations as $variation) {
-                $filter['price'] = $this->_price(
-                    $product->price,
-                    $variation['price'],
-                    $variation['price_type']
-                );
-
-                $baseVariation = isset($attributesRowset[$product->id][0]) ?
-                    $attributesRowset[$product->id][0] : array();
-
-                if (isset($attributesRowset[$product->id][$variation['id']])) {
-                    $productAttributes =
-                        $baseVariation +
-                        $attributesRowset[$product->id][$variation['id']]
-                    ;
-                }
-                //$filter['attribute'] = $productAttributes;
-
-                foreach ($discounts as $discountId => $discount) {
-
-                    if (!$this->_setFilter($discount, $filter)) {
-                        continue;
-                    }
-                    if (!$filtredAttributes = $this->_getAppliedAttributes(
-                            $discount, $productAttributes)) {
-
-                        continue;
-                    }
-
-                    $discountRules[$product->id][$variation['id']][$discountId] = array(
-                        'name'          => $discount['name'],
-                        'type'          => $discount['type'],
-                        'amount'        => $discount['amount'],
-                        'priority'      => $discount['priority'],
-                        'is_combined'   => $discount['is_combined']
-                    );
-                    if ($filtredAttributes && is_array($filtredAttributes)) {
-
-                        $discountRules[$product->id][$variation['id']][$discountId]['attribute']
-                            = $filtredAttributes;
-                    }
-                }
-            }
-
         }
+        
+        $categories = Axis::single('catalog/product_category')->select('category_id')
+            ->where('product_id = ?', $productId)
+            ->fetchCol()
+            ;
+        
+        $variations = Axis::single('catalog/product_variation')->select()
+            ->where('product_id = ? OR product_id IS NULL', $productId)
+            ->order('id')
+            ->fetchAssoc()
+            ;
+            
+        $filter = array(
+            'site'         => Axis::getSiteId(),
+            'group'        => Axis::single('account/customer')->getGroupId(),
+            'manufacturer' => $product->manufacturer_id,
+            'category'     => $categories,
+            'productId'    => $product->id
+        );
+        
+        $data = array();
+        $baseVariationAttributes = isset($attributes[0]) ? $attributes[0] : array();
+        foreach ($variations as $variation) {
+            
+            $filter['price'] = $this->_price(
+                $product->price,
+                $variation['price'],
+                $variation['price_type']
+            );
+            
+            $variationAttributes = isset($attributes[$variation['id']]) ? 
+                $attributes[$variation['id']] : array();
+            
+            $variationAttributes = $baseVariationAttributes + $variationAttributes;
+            
+            foreach ($rules as $ruleId => $rule) {
+                
+                if (!$this->_setFilter($rule, $filter)) {
+                    continue;
+                }
+                
+                if (!$appliedAttributes = $this->_getAppliedAttributes(
+                        $rule, $variationAttributes)) {
 
-        $discountRules = $this->_sortRulesArrayByPriority($discountRules);
+                    continue;
+                }
+                
+                $rawRule = array(
+                    'name'        => $rule['name'],
+                    'type'        => $rule['type'],
+                    'amount'      => $rule['amount'],
+                    'priority'    => $rule['priority'],
+                    'is_combined' => $rule['is_combined']
+                );
+                
+                if ($appliedAttributes && is_array($appliedAttributes)) {
 
-        return $discountRules;
-    }
-
-    protected function _sortRulesArrayByPriority($rules)
-    {
+                    $rawRule['attribute'] = $appliedAttributes;
+                }
+                
+                $data[$product->id][$variation['id']][$ruleId] = $rawRule;
+            }
+        }
+        
         // Sort discount rules by priority
         if (!function_exists('_sortDiscount')) {
             function _sortDiscount($a, $b)
@@ -500,29 +456,29 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             }
         }
 
-        foreach ($rules as &$ruleset) {
+        foreach ($data as &$ruleset) {
             foreach ($ruleset as &$rule) {
                 uasort($rule, '_sortDiscount');
             }
         }
-
-       return $rules;
+        
+        return $data;
     }
 
-    private function _price($price, $change, $type)
+    private function _price($price, $amount, $type)
     {
         $price = floatval($price);
-        $change = floatval($change);
-        if ($change == 0) {
+        $amount = floatval($amount);
+        if ($amount == 0) {
             return $price;
         }
         switch ($type) {
             case 'to':
-                return $change;
+                return $amount;
             case 'by':
-                return $price - $change;
+                return $price - $amount;
             case 'percent':
-                return $price - ($price * $change / 100);
+                return $price - ($price * $amount / 100);
             default:
                 return $price;
         }
