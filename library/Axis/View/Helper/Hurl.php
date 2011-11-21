@@ -46,7 +46,7 @@ class Axis_View_Helper_Hurl
             $this->view->secureUrl : $this->view->baseUrl;
 
         $locale = isset($options['locale']) ?
-            '/' . $options['locale'] : $this->_languageUrl;
+            $options['locale'] : $this->_languageUrl;
 
         return $baseUrl
             . $locale . '/'

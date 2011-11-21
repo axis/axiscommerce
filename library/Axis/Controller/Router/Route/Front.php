@@ -154,7 +154,7 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
     {
         $locale = null;
         if (!empty($data['locale'])) { // This locale is always valid. It's a developer filtered input
-            $locale = $data['locale'];
+            $locale = trim($data['locale'], '/ ');
         } else {
             $locale = trim(Axis_Locale::getLanguageUrl(), '/ ');
         }

@@ -44,17 +44,14 @@ class Axis_Sitemap_Admin_FileController extends Axis_Admin_Controller_Back
 
         $siteId = $this->_getParam('site_id');
 
-        $menu = new Zend_Navigation();
-        $gmDate = gmdate('Y-m-d');
-        $oldLocale = Axis_Locale::getLocale();
+        $menu    = new Zend_Navigation();
+        $gmDate  = gmdate('Y-m-d');
         $locales = Axis::single('locale/language')
                 ->select(array('id', 'locale'))
                 ->fetchPairs();
         foreach ($locales as $languageId => &$_locale) {
-            Axis_Locale::setLocale($_locale);
-            $_locale = Axis_Locale::getLanguageUrl();
+            $_locale = Axis_Locale::getLanguageUrl($_locale);
         }
-        Axis_Locale::setLocale($oldLocale);
 
         $categories = Axis::single('catalog/category')->select('*')
             ->addName()
