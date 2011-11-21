@@ -5,8 +5,17 @@ SetEnv APPLICATION_ENV development
 ## Enable rewrites
     RewriteEngine on
 #    RewriteBase /axis/
-    RewriteRule ^min\.php min.php [L]
-    RewriteRule !\.(js|ico|swf|gif|jpg|png|css|xml|txt)$ index.php [L]
+
+    ## See http://framework.zend.com/manual/en/zend.controller.router.html#zend.controller.router.introduction
+    RewriteCond %{REQUEST_FILENAME} -s [OR]
+    RewriteCond %{REQUEST_FILENAME} -l [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^.*$ - [NC,L]
+
+    ### don't serve files from the next folders
+    RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
+
+    RewriteRule ^.*$ index.php [NC,L]
 
 </IfModule>
 
