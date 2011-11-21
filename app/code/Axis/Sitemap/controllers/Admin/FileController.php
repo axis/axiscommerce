@@ -35,6 +35,8 @@ class Axis_Sitemap_Admin_FileController extends Axis_Admin_Controller_Back
 {
     public function createAction()
     {
+        $this->_helper->layout->disableLayout();
+
         $filename = $this->_getParam('filename');
         $alpha = new Zend_Filter_Alnum();
         $filename = $alpha->filter($filename);
@@ -60,12 +62,11 @@ class Axis_Sitemap_Admin_FileController extends Axis_Admin_Controller_Back
             ->order('cc.lft')
             ->addSiteFilter($siteId)
             ->addDisabledFilter()
-            ->fetchAll()
-            ;
-        $config = Axis::config()->sitemap;
+            ->fetchAll();
 
-        $changefreq = $config->categories->frequency ;
-        $priority   = $config->categories->priority ;
+        $config = Axis::config()->sitemap;
+        $changefreq = $config->categories->frequency;
+        $priority   = $config->categories->priority;
 
         $_container = $menu;
         $lvl = 0;
@@ -118,8 +119,7 @@ class Axis_Sitemap_Admin_FileController extends Axis_Admin_Controller_Back
             ->addDateAvailableFilter()
             ->addSiteFilter($siteId)
             ->columns(array('category_id' => 'cc.id'))
-            ->fetchAll()
-            ;
+            ->fetchAll();
 
         $changefreq = $config->products->frequency;
         $priority   = $config->products->priority;
@@ -205,8 +205,7 @@ class Axis_Sitemap_Admin_FileController extends Axis_Admin_Controller_Back
                     array('link', 'title', 'language_id'))
                 ->where('cp.is_active = 1')
                 ->where('cpca.cms_category_id IN (?)', array_keys($categories))
-                ->fetchAll()
-                ;
+                ->fetchAll();
 
             foreach($pages as $_page) {
                 $title = empty($_page['title']) ? $_page['link'] : $_page['title'];
@@ -233,6 +232,7 @@ class Axis_Sitemap_Admin_FileController extends Axis_Admin_Controller_Back
             }
         }
         $content = $this->view->navigation()->sitemap($menu)
+            ->setFormatOutput(true)
             ->setUseSitemapValidators(false)
             ->render();
 
