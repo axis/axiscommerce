@@ -1,18 +1,17 @@
 <?php echo $this->title($this->pageTitle) ?>
 
 <?php if (!empty($this->category['description'])) : ?>
-<div class="category-description"><?php echo $this->category['description'] ?></div>
+    <div class="category-description"><?php echo $this->category['description'] ?></div>
 <?php endif; ?>
 
 <?php if (!empty($this->category['image_base'])) : ?>
-<div class="category-image"><?php
-echo $this->imager('category' . $this->category['image_base'], array(
-    'width'  => 550,
-    'height' => 200,
-    'alt' => $this->escape($this->category['image_base_title']),
-    'seo' => $this->category['image_base_title']
-));
-?></div>
+    <div class="category-image"><?php
+    echo $this->imager('category' . $this->category['image_base'], array(
+        'width'  => 550,
+        'height' => 200,
+        'alt'    => $this->escape($this->category['image_base_title'])
+    ));
+    ?></div>
 <?php endif; ?>
 
 <?php if (!count($this->products)): ?>
