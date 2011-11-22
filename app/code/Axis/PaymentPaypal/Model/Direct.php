@@ -52,8 +52,9 @@ class Axis_PaymentPaypal_Model_Direct extends Axis_PaymentPaypal_Model_Abstract
 
     public function postProcess(Axis_Sales_Model_Order_Row $order)
     {
-        $cc = $this->getCreditCard();
-        Axis::single('sales/order_creditcard')->save($cc, $order);
+        $this->saveCreditCard($order);
+
+        $cc      = $this->getCreditCard();
         $options = $this->getLineItemDetails();
         $billing = $order->getBilling();
 
