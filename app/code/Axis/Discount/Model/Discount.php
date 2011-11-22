@@ -42,47 +42,6 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
     protected $_selectClass = 'Axis_Discount_Model_Discount_Select';
 
     /**
-     *  Add/update discount
-     *
-     * @param array $data
-     * @return Axis_Db_Table_Row
-     */
-    public function save(array $data)
-    {
-        $row = false;
-        if (isset($data['id'])) {
-            $row = $this->find($data['id'])->current();
-        }
-        
-        if (!$row) {
-            $oldData = null;
-            $row = $this->createRow();
-        } else {
-            $oldData = $row->toArray();
-            $oldData['products'] = $row->getApplicableProducts();
-        }
-        $row->setFromArray($data);
-        
-        if (empty($row->from_date)) {
-            $row->from_date = new Zend_Db_Expr('NULL');
-        }
-        if (empty($row->to_date)) {
-            $row->to_date = new Zend_Db_Expr('NULL');
-        }
-        if (empty($row->priority)) {
-            $row->priority = 125;
-        }
-        
-        $row->save();
-        
-        Axis::dispatch('discount_save_after', array(
-            'old_data' => $oldData,
-            'discount' => $row
-        ));
-        return $row;
-    }
-
-    /**
      * Filtred
      * @param array $rule
      * @param array $filter
