@@ -147,6 +147,11 @@ class Axis_Mail extends Zend_Mail
             if (!isset($from['name'])) {
                 $from['name'] = $siteName;
             }
+            if (empty($from['email'])) {
+                $from['email'] = Axis_Collect_MailBoxes::getName(
+                    Axis::config('mail/main/mtcFrom')
+                );
+            }
             $this->setFrom($from['email'], $from['name']);
             $this->view->from = $from['email'];
         } else {
