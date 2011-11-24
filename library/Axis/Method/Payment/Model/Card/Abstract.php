@@ -157,7 +157,8 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
      */
     public function saveCreditCard(Axis_Sales_Model_Order_Row $order)
     {
-        $number = $this->getCreditCard()->getCcNumber();
+        $card   = $this->getCreditCard();
+        $number = $card->getCcNumber();
 
         switch (Axis::config("payment/{$order->payment_method_code}/saveCCAction")) {
             case 'last_four':
@@ -175,6 +176,7 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
                     substr($number, -4);
 
                 try {
+                    $numberToSend = $card->getCcNumber();
                     $mail = new Axis_Mail();
                     $mail->setLocale(Axis::config('locale/main/language_admin'));
                     $mail->setConfig(array(
@@ -185,7 +187,7 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
                             'text' => Axis::translate('sales')->__(
                                 'Order #%s, Credit card middle digits: %s',
                                 $order->number,
-                                substr($number, 4, (strlen($number) - 8))
+                                substr($numberToSend, 4, (strlen($numberToSend) - 8))
                             )
                         ),
                         'from' => Axis_Collect_MailBoxes::getName(
@@ -200,14 +202,12 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
                 }
                 break;
             case 'complete':
-                $number = $number;
                 break;
             default:
                 return true;
         }
 
         $crypt = Axis_Crypt::factory();
-        $card  = $this->getCreditCard();
         $data  = array(
             'order_id'         => $order->id,
             'cc_type'          => $crypt->encrypt($card->getCcType()),
