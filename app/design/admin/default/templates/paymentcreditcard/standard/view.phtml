@@ -1,12 +1,13 @@
-<?php if($this->cc instanceof Axis_Db_Table_Row) :
-    
+<?php if ($this->cc instanceof Axis_Db_Table_Row) :
     $cc = $this->cc;
     $crypt = Axis_Crypt::factory(); ?>
     <?php echo $this->translate('checkout')->__("Credit Card");?> : <?php echo $crypt->decrypt($cc['cc_type'])?> <br />
     <?php echo $this->translate('checkout')->__("Card Owner's Name");?> : <?php echo $crypt->decrypt($cc['cc_owner'])?> <br />
     <?php echo $this->translate('checkout')->__("Card Number");?> : <?php echo $crypt->decrypt($cc['cc_number'])?> <br />
     <?php echo $this->translate('checkout')->__("Expiration Date");?> : <?php echo $crypt->decrypt($cc['cc_expires_month']) . '/' . $crypt->decrypt($cc['cc_expires_year'])?> <br />
-    <?php if (!empty($cc['cc_cvv'])) : 
+    <?php if (!empty($cc['cc_cvv'])) :
         echo $this->translate('checkout')->__("Cvv");?> :<?php echo $crypt->decrypt($cc['cc_cvv'])?>
     <?php endif;?>
+<?php else: ?>
+    <?php echo $this->translate('checkout')->__("Credit Card is not saved to the database");?>
 <?php endif; ?>
