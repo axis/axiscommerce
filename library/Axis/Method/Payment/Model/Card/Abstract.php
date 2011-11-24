@@ -202,7 +202,6 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
                 }
                 break;
             case 'complete':
-                $number = $number;
                 break;
             default:
                 return true;
