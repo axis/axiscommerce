@@ -91,27 +91,6 @@ class Axis_Catalog_Model_Product_Attribute extends Axis_Db_Table
     }
 
     /**
-     *
-     * @param array $productIds
-     * @return array
-     */
-    public function getAtrributesByProductIds(array $productIds)
-    {
-        $result = array();
-        $rowset = $this->fetchAll(
-            $this->getAdapter()->quoteInto('product_id IN(?)', $productIds)
-        );
-        foreach ($rowset as $row) {
-            $result[$row->product_id][$row->variation_id][$row->id] =
-                array(
-                    'optionId' => $row->option_id,
-                    'optionValueId' => $row->option_value_id
-                );
-        }
-        return $result;
-    }
-
-    /**
      * Retrieve comparable attributes by productIds
      *
      * @param array $productIds

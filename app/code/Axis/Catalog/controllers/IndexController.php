@@ -342,7 +342,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
 
         $data['discount_rules'] = Axis::single('discount/discount')
             ->cache($productId)
-            ->getRulesByProductId($productId);
+            ->getRulesByProduct($productId);
 
         $data['price']['format'] = Axis::single('locale/currency')->getFormat();
 
