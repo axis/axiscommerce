@@ -141,7 +141,7 @@ Ext.onReady(function() {
                 }
 
                 Ext.Ajax.request({
-                    url: Axis.getUrl('search/delete'),
+                    url: Axis.getUrl('search/remove'),
                     params: {data: Ext.encode(data)},
                     callback: function() {
                         storeSearch.reload();
