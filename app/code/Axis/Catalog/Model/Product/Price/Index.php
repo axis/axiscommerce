@@ -98,10 +98,7 @@ class Axis_Catalog_Model_Product_Price_Index extends Axis_Db_Table
             ->getSitesByProductIds($ids);
 
         $mDiscount = Axis::model('discount/discount');
-        $discounts = $mDiscount->getApplicableDiscounts(
-            $ids,
-            $mDiscount->getAllRules(true, false)
-        );
+        $discounts = $mDiscount->getApplicableDiscounts($ids);
 
         $customerGroups = array_filter( // remove 'All groups' group
             array_keys(Axis_Collect_CustomerGroup::collect())
@@ -204,10 +201,7 @@ class Axis_Catalog_Model_Product_Price_Index extends Axis_Db_Table
             ->getSitesByProductIds($productIds);
 
         $mDiscount = Axis::model('discount/discount');
-        $discounts = $mDiscount->getApplicableDiscounts(
-            $productIds,
-            $mDiscount->getAllRules(true, false)
-        );
+        $discounts = $mDiscount->getApplicableDiscounts($productIds);
 
         foreach ($products as $product) {
             if (!isset($productToSites[$product['id']])) {

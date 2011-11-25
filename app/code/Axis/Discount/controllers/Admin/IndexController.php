@@ -92,7 +92,34 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
     {
         $_row = $this->_getParam('discount', array());
  
-        $row = Axis::single('discount/discount')->save($_row);
+//        $row = Axis::single('discount/discount')->save($_row);
+        
+        $model = Axis::single('discount/discount');
+        $row = false;
+        if (isset($_row['id'])) {
+            $row = $model->find($_row['id'])->current();
+        }
+        
+        if (!$row) {
+            $oldData = null;
+            $row = $model->createRow();
+        } else {
+            $oldData = $row->toArray();
+            $oldData['products'] = $row->getApplicableProducts();
+        }
+        
+        $row->setFromArray($_row);
+        
+        if (empty($row->from_date)) {
+            $row->from_date = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->to_date)) {
+            $row->to_date = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->priority)) {
+            $row->priority = 125;
+        }
+        $row->save();
         
         $model = Axis::model('discount/eav');
         $model->delete('discount_id = ' . $row->id);
@@ -107,6 +134,11 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
                 ))->save();
             }
         }
+        
+        Axis::dispatch('discount_save_after', array(
+            'old_data' => $oldData,
+            'discount' => $row
+        ));
         
         Axis::message()->addSuccess(
             Axis::translate('discount')->__(
