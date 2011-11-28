@@ -548,6 +548,15 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
         }
         return $count;
     }
+    
+    /**
+     *
+     * @return bool 
+     */
+    public function isEmpty() 
+    {
+        return (0 === $this->getCount());
+    }
 
     /**
      * Return customer id

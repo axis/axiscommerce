@@ -38,6 +38,8 @@ class Axis_PaymentPaypal_Box_ExpressButton extends Axis_Core_Box_Abstract
 
     protected function _beforeRender()
     {
-        return Axis::single('PaymentPaypal/Express')->isEnabled();
+        return Axis::single('PaymentPaypal/Express')->isEnabled()
+            && !Axis::single('checkout/cart')->isEmpty()
+        ;
     }
 }
