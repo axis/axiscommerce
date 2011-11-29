@@ -85,7 +85,7 @@ class Admin_ConfigFieldController extends Axis_Admin_Controller_Back
     public function listTypeAction()
     {
         $data = array();
-        foreach (Axis_Collect_Configuration_Field::collect() as $id => $type) {
+        foreach (Axis_Core_Model_Config_Field_Type::collect() as $id => $type) {
             $data[] = array('id' => $type, 'type' => $type);
         }
         array_unshift($data, array('id' => '', 'type' => null));

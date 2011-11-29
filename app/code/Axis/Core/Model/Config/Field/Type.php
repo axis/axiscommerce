@@ -29,7 +29,7 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_Configuration_Field implements Axis_Collect_Interface
+class Axis_Core_Model_Config_Field_Type implements Axis_Collect_Interface
 {
     /**
      * @static
