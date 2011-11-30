@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Template extends Axis_Db_Table
+class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Interface
 {
     const DEFAULT_TEMPLATE = 'default';
 
@@ -49,7 +49,6 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             ->where('value = ?', $templateId)
             ->fetchOne()
             ;
-        return false;
     }
 
     /**
@@ -406,4 +405,29 @@ class Axis_Core_Model_Template extends Axis_Db_Table
 
         return $template;
     }
+    
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function collect()
+    {
+        return Axis::single('core/template')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+    }
+
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getName($id)
+    {
+        return Axis::single('core/template')->getNameById($id);
+    }
+    
+    
 }

@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,25 +27,30 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_MailEvent implements Axis_Collect_Interface
+class Axis_Core_Model_CreditCard_Type implements Axis_Collect_Interface
 {
     /**
-     *
+     * @static
      * @var const array
      */
-    static protected $_events = array(
+    static protected $_cards = array(
+//        'ALL'              => Zend_Validate_CreditCard::ALL,
+        'AMERICAN_EXPRESS' => Zend_Validate_CreditCard::AMERICAN_EXPRESS,
+        'UNIONPAY'         => Zend_Validate_CreditCard::UNIONPAY,
+        'DINERS_CLUB'      => Zend_Validate_CreditCard::DINERS_CLUB,
+        'DINERS_CLUB_US'   => Zend_Validate_CreditCard::DINERS_CLUB_US,
+        'DISCOVER'         => Zend_Validate_CreditCard::DISCOVER,
+        'JCB'              => Zend_Validate_CreditCard::JCB,
+        'LASER'            => Zend_Validate_CreditCard::LASER,
+        'MAESTRO'          => Zend_Validate_CreditCard::MAESTRO,
+        'MASTERCARD'       => Zend_Validate_CreditCard::MASTERCARD,
+        'SOLO'             => Zend_Validate_CreditCard::SOLO,
+        'VISA'             => Zend_Validate_CreditCard::VISA,
 
-        'contact_us'            => 'Contact Us',//
-        'default'               => 'Default', //
-        'forgot_password'       => 'Forgot password', //
-        'account_new-owner'     => 'New account store owner notice',
-        'account_new-customer'  => 'New account congratulation',
-        'order_new-owner'       => 'Order create store owner notice',
-        'order_new-customer'    => 'Order create congratulation',
-        'change_order_status-customer' => 'Order status change'
     );
 
     /**
@@ -54,7 +60,7 @@ class Axis_Collect_MailEvent implements Axis_Collect_Interface
      */
     public static function collect()
     {
-        return self::$_events;
+        return self::$_cards;
     }
 
     /**
@@ -65,18 +71,17 @@ class Axis_Collect_MailEvent implements Axis_Collect_Interface
      */
     public static function getName($id)
     {
-        if (!$id)
+        if (!$id) {
             return '';
+        }
         if (strstr($id, ",")) {
             $ret = array();
             foreach(explode(",", $id) as $key) {
-                if (array_key_exists($key, self::$_events))
-                    $ret[$key] = self::$_events[$key];
+                if (array_key_exists($key, self::$_cards))
+                    $ret[$key] = self::$_cards[$key];
             }
-
             return implode(", ", $ret);
         }
-
-        return isset(self::$_events[$id]) ? self::$_events[$id] : '';
+        return self::$_cards[$id];
     }
 }

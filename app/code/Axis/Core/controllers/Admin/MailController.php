@@ -65,7 +65,7 @@ class Admin_MailController extends Axis_Admin_Controller_Back
 
     public function listEventAction()
     {
-        $events = Axis_Collect_MailEvent::collect();
+        $events = Axis_Core_Model_Mail_Event::collect();
         
         $data = array();
         $i = 0;
@@ -81,7 +81,7 @@ class Admin_MailController extends Axis_Admin_Controller_Back
     
     public function listTemplateAction()
     {
-        $templates = Axis_Collect_MailTemplate::collect();
+        $templates = Axis_Core_Model_Mail_Template::collect();
         
         $data = array();
         $i = 0;
@@ -97,7 +97,7 @@ class Admin_MailController extends Axis_Admin_Controller_Back
     
     public function listMailAction()
     {
-        $templates = Axis_Collect_MailBoxes::collect();
+        $templates = Axis_Core_Model_Mail_Boxes::collect();
         
         $data = array();
         $i = 0;

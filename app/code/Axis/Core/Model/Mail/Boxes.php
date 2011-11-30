@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,18 +27,12 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_MailTemplate implements Axis_Collect_Interface
+class Axis_Core_Model_Mail_Boxes implements Axis_Collect_Interface
 {
-    /**
-     *
-     * @static
-     * @var array
-     */
-    private static $_templates;
-
     /**
      *
      * @static
@@ -45,37 +40,38 @@ class Axis_Collect_MailTemplate implements Axis_Collect_Interface
      */
     public static function collect()
     {
-        if (null === self::$_templates) {
-            $path = Axis::config()->system->path . '/app/design/mail';
-            $templates = array();
-            if (!file_exists($path))
-                return false;
-            $dh = opendir($path);
+        $rows = Axis::single('core/config_value')
+            ->select(array('path', 'value'))
+                ->where('path LIKE "mail/mailboxes/%"')
+                ->fetchPairs();
 
-            while (($file = readdir($dh))) {
-
-                if (!is_dir($path . '/' . $file) &&
-                    substr($file, -11) == '_html.phtml' &&
-                    is_file($path . '/' . substr($file, 0, -11) . '_txt.phtml')
-                   )
-                $templates[substr($file, 0, -11)] = substr($file, 0, -11);
-            }
-
-            closedir($dh);
-            self::$_templates = $templates;
+        $result = array();
+        foreach ($rows as $rowId => $rowValue) {
+            $result[substr($rowId, 15)] = $rowValue;
         }
-        return self::$_templates;
+        return $result;
     }
 
     /**
      *
      * @static
-     * @param string $id
+     * @param int $id
      * @return string
      */
     public static function getName($id)
     {
-        $templates = $this->collect();
-        return $templates[$id];
+        return Axis::single('core/config_value')
+            ->select('value')
+            ->where('path LIKE "mail/mailboxes/%"')
+            ->where('SUBSTR(path,16) = ?', $id)
+            ->fetchOne()
+            ;
     }
+
+    /*
+    public static function isReturned()
+    {
+        return true;
+    }
+    */
 }

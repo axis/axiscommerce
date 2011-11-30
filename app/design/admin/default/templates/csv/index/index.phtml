@@ -11,6 +11,6 @@ $this->setButtons(array(
         'class' => 'alt-button'
     )
 ));
-echo $this->formSelect('sites', null, null, Axis_Collect_Site::collect());
+echo $this->formSelect('sites', null, null, Axis_Core_Model_Site::collect());
 echo $this->formSelect('language', null, null, Axis_Collect_Language::collect());
 ?>

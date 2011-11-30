@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,10 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_Layout implements Axis_Collect_Interface
+class Axis_Core_Model_Template_Layout implements Axis_Collect_Interface
 {
     /**
      *
@@ -46,7 +48,7 @@ class Axis_Collect_Layout implements Axis_Collect_Interface
     public static function collect()
     {
         if (null === self::$_collection) {
-            $themes = Axis_Collect_Theme::collect();
+            $themes = Axis_Core_Model_Theme::collect();
             $layouts = array();
             $designPath = Axis::config('system/path') . '/app/design/front';
             foreach ($themes as $theme) {

@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,11 +27,24 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_MailBoxes implements Axis_Collect_Interface
+class Axis_Core_Model_CreditCard_SaveNumberType implements Axis_Collect_Interface
 {
+    /**
+     *
+     * @var const array
+     */
+    static protected $_actions = array(
+        'dont_save'         => 'Don\'t save',
+        'last_four'         => 'Last 4 digits',
+        'first_last_four'   => 'First and last 4 digits',
+        'partial_email'     => 'First and last 4 digits to database, rest send by email',
+        'complete'          => 'Save complete number',
+    );
+
     /**
      *
      * @static
@@ -38,38 +52,20 @@ class Axis_Collect_MailBoxes implements Axis_Collect_Interface
      */
     public static function collect()
     {
-        $rows = Axis::single('core/config_value')
-            ->select(array('path', 'value'))
-                ->where('path LIKE "mail/mailboxes/%"')
-                ->fetchPairs();
-
-        $result = array();
-        foreach ($rows as $rowId => $rowValue) {
-            $result[substr($rowId, 15)] = $rowValue;
-        }
-        return $result;
+        return self::$_actions;
     }
 
     /**
      *
      * @static
-     * @param int $id
-     * @return string
+     * @param string $id
+     * @return mixed string|void
      */
     public static function getName($id)
     {
-        return Axis::single('core/config_value')
-            ->select('value')
-            ->where('path LIKE "mail/mailboxes/%"')
-            ->where('SUBSTR(path,16) = ?', $id)
-            ->fetchOne()
-            ;
+        if (!$id || !isset(self::$_actions[$id])) {
+            return '';
+        }
+        return self::$_actions[$id];
     }
-
-    /*
-    public static function isReturned()
-    {
-        return true;
-    }
-    */
 }

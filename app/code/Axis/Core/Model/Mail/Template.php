@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,12 +27,18 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_Site implements Axis_Collect_Interface
+class Axis_Core_Model_Mail_Template implements Axis_Collect_Interface
 {
-    protected static $_collection = null;
+    /**
+     *
+     * @static
+     * @var array
+     */
+    private static $_templates;
 
     /**
      *
@@ -40,23 +47,37 @@ class Axis_Collect_Site implements Axis_Collect_Interface
      */
     public static function collect()
     {
-        if (null === self::$_collection) {
-            self::$_collection = Axis::single('core/site')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
+        if (null === self::$_templates) {
+            $path = Axis::config()->system->path . '/app/design/mail';
+            $templates = array();
+            if (!file_exists($path))
+                return false;
+            $dh = opendir($path);
+
+            while (($file = readdir($dh))) {
+
+                if (!is_dir($path . '/' . $file) &&
+                    substr($file, -11) == '_html.phtml' &&
+                    is_file($path . '/' . substr($file, 0, -11) . '_txt.phtml')
+                   )
+                $templates[substr($file, 0, -11)] = substr($file, 0, -11);
+            }
+
+            closedir($dh);
+            self::$_templates = $templates;
         }
-        return self::$_collection;
+        return self::$_templates;
     }
 
     /**
      *
      * @static
-     * @param int $id
+     * @param string $id
      * @return string
      */
     public static function getName($id)
     {
-        if (!$id) return '';
-        return Axis::single('core/site')->getNameById($id);
+        $templates = $this->collect();
+        return $templates[$id];
     }
 }

@@ -31,10 +31,12 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Site extends Axis_Db_Table
+class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Collect_Interface
 {
     protected $_name = 'core_site';
 
+    protected static $_collection = null;
+    
     /**
      * @return array
      */
@@ -114,7 +116,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table
         $company = Axis::config('core/company', $siteId)->toArray();
         //@todo Use Axis_Object
         return array(
-            'email'     => Axis_Collect_MailBoxes::getName($company['administratorEmail']),
+            'email'     => Axis_Core_Model_Mail_Boxes::getName($company['administratorEmail']),
             'city'      => $company['city'],
             'country'   => Axis_Collect_Country::getName($company['country']),
             'fax'       => $company['fax'],
@@ -124,13 +126,13 @@ class Axis_Core_Model_Site extends Axis_Db_Table
             'site'      => $company['site'],
             'zone'      => Axis_Collect_Zone::getName($company['zone']),
             'street_address' => $company['street'],
-            'customer_relation_email' => Axis_Collect_MailBoxes::getName(
+            'customer_relation_email' => Axis_Core_Model_Mail_Boxes::getName(
                 $company['customerRelationEmail']
             ),
-            'sales_email' => Axis_Collect_MailBoxes::getName(
+            'sales_email' => Axis_Core_Model_Mail_Boxes::getName(
                 $company['salesDepartmentEmail']
             ),
-            'support_email' => Axis_Collect_MailBoxes::getName(
+            'support_email' => Axis_Core_Model_Mail_Boxes::getName(
                 $company['supportEmail']
             )
         );
@@ -146,5 +148,32 @@ class Axis_Core_Model_Site extends Axis_Db_Table
         $row = $this->getRow($data);
         $row->save();
         return $row;
+    }
+    
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function collect()
+    {
+        if (null === self::$_collection) {
+            self::$_collection = Axis::single('core/site')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+        }
+        return self::$_collection;
+    }
+
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getName($id)
+    {
+        if (!$id) return '';
+        return Axis::single('core/site')->getNameById($id);
     }
 }

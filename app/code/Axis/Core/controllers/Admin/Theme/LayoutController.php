@@ -46,10 +46,10 @@ class Admin_Theme_LayoutController extends Axis_Admin_Controller_Back
                 'default'
             ));
         } else {
-            $themes = Axis_Collect_Theme::collect();
+            $themes = Axis_Core_Model_Template::collect();
         }
 
-//        $layouts = Axis_Collect_Layout::collect();
+//        $layouts = Axis_Core_Model_Template_Layout::collect();
 
         $layouts = array();
         $designPath = Axis::config('system/path') . '/app/design/front';

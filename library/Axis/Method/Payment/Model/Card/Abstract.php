@@ -138,7 +138,7 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
     public function getCCTypes()
     {
         $usedTypes = $this->_config->creditCard->toArray();
-        $allTypes = Axis_Collect_CreditCard::collect();
+        $allTypes = Axis_Core_Model_Config_CreditCard_Type::collect();
         $ret = array();
         foreach ($allTypes as $typeKey => $typeName) {
             if (in_array($typeKey, $usedTypes)) {
@@ -190,10 +190,10 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
                                 substr($numberToSend, 4, (strlen($numberToSend) - 8))
                             )
                         ),
-                        'from' => Axis_Collect_MailBoxes::getName(
+                        'from' => Axis_Core_Model_Mail_Boxes::getName(
                             Axis::config('core/company/salesDepartmentEmail')
                         ),
-                        'to' => Axis_Collect_MailBoxes::getName(
+                        'to' => Axis_Core_Model_Mail_Boxes::getName(
                             Axis::config('sales/order/email')
                         )
                     ));

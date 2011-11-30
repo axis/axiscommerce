@@ -49,7 +49,7 @@ class Axis_Sales_Model_Observer
                 'data'    => array(
                     'order' => $order
                 ),
-                'to' => Axis_Collect_MailBoxes::getName(
+                'to' => Axis_Core_Model_Mail_Boxes::getName(
                     Axis::config('sales/order/email')
                 )
             ));

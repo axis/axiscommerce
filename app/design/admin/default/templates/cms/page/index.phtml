@@ -23,7 +23,7 @@ $this->headScript()
     var layoutMenu = [
     <?php
         $menu = "";
-        foreach (Axis_Collect_Layout::collect() as $name => $value) {
+        foreach (Axis_Core_Model_Template_Layout::collect() as $name => $value) {
             $value = addslashes($value);
             $menu .= "{
                 text: '$value',

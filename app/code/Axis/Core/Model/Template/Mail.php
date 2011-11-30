@@ -66,7 +66,7 @@ class Axis_Core_Model_Template_Mail extends Axis_Db_Table
         }
         
         $info = $info->toArray();
-        $templates = Axis_Collect_MailTemplate::collect();
+        $templates = Axis_Core_Model_Mail_Template::collect();
         
         $file = Axis::config()->system->path . '/app/design/mail/' 
               . $templates[$info['template']] . '_'

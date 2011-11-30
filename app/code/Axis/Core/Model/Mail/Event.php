@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,21 +27,26 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_CreditCard_SaveNumberAction implements Axis_Collect_Interface
+class Axis_Core_Model_Mail_Event implements Axis_Collect_Interface
 {
     /**
      *
      * @var const array
      */
-    static protected $_actions = array(
-        'dont_save'         => 'Don\'t save',
-        'last_four'         => 'Last 4 digits',
-        'first_last_four'   => 'First and last 4 digits',
-        'partial_email'     => 'First and last 4 digits to database, rest send by email',
-        'complete'          => 'Save complete number',
+    static protected $_events = array(
+
+        'contact_us'            => 'Contact Us',//
+        'default'               => 'Default', //
+        'forgot_password'       => 'Forgot password', //
+        'account_new-owner'     => 'New account store owner notice',
+        'account_new-customer'  => 'New account congratulation',
+        'order_new-owner'       => 'Order create store owner notice',
+        'order_new-customer'    => 'Order create congratulation',
+        'change_order_status-customer' => 'Order status change'
     );
 
     /**
@@ -50,20 +56,29 @@ class Axis_Collect_CreditCard_SaveNumberAction implements Axis_Collect_Interface
      */
     public static function collect()
     {
-        return self::$_actions;
+        return self::$_events;
     }
 
     /**
      *
      * @static
      * @param string $id
-     * @return mixed string|void
+     * @return string
      */
     public static function getName($id)
     {
-        if (!$id || !isset(self::$_actions[$id])) {
+        if (!$id)
             return '';
+        if (strstr($id, ",")) {
+            $ret = array();
+            foreach(explode(",", $id) as $key) {
+                if (array_key_exists($key, self::$_events))
+                    $ret[$key] = self::$_events[$key];
+            }
+
+            return implode(", ", $ret);
         }
-        return self::$_actions[$id];
+
+        return isset(self::$_events[$id]) ? self::$_events[$id] : '';
     }
 }

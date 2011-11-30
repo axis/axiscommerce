@@ -4,7 +4,7 @@
 var sites = [
     <?php
     $str = '';
-    foreach (Axis_Collect_Site::collect() as $id => $name) {
+    foreach (Axis_Core_Model_Site::collect() as $id => $name) {
         $name = addslashes($name);
         $str .= "[$id, '$name'],\n";
     }
