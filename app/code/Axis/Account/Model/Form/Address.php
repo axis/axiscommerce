@@ -138,7 +138,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
             $configOptions
         );
 
-        $countries = Axis_Collect_Country::collect();
+        $countries = Axis_Location_Model_Country::collect();
         if (isset($countries['0'])
             && 'ALL WORLD COUNTRY' === $countries['0']) {
 
@@ -155,7 +155,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
 
-        $zones = Axis_Collect_Zone::collect();
+        $zones = Axis_Location_Model_Zone::collect();
         $this->_zones = $zones;
         foreach ($this->_fields as $name => $values) {
             $status = $this->_fieldConfig[$name . '_status'];

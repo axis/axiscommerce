@@ -428,6 +428,4 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Int
     {
         return Axis::single('core/template')->getNameById($id);
     }
-    
-    
 }

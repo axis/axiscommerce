@@ -118,13 +118,13 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Collect_Interfa
         return array(
             'email'     => Axis_Core_Model_Mail_Boxes::getName($company['administratorEmail']),
             'city'      => $company['city'],
-            'country'   => Axis_Collect_Country::getName($company['country']),
+            'country'   => Axis_Location_Model_Country::getName($company['country']),
             'fax'       => $company['fax'],
             'name'      => $company['name'],
             'phone'     => $company['phone'],
             'postcode'  => $company['zip'],
             'site'      => $company['site'],
-            'zone'      => Axis_Collect_Zone::getName($company['zone']),
+            'zone'      => Axis_Location_Model_Zone::getName($company['zone']),
             'street_address' => $company['street'],
             'customer_relation_email' => Axis_Core_Model_Mail_Boxes::getName(
                 $company['customerRelationEmail']

@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Location
+ * @subpackage  Axis_Location_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,19 +27,25 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Location
+ * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_AddressFormat implements Axis_Collect_Interface
+class Axis_Location_Model_ZoneByCountry implements Axis_Collect_Interface
 {
     /**
+     *
      * @static
+     * @param int $countryId [optional]
      * @return array
      */
-    public static function collect()
+    public static function collect($countryId = null)
     {
-        return Axis::single('location/address_format')
+        if (!$countryId) return array();
+
+        return Axis::single('location/zone')
                 ->select(array('id', 'name'))
+                ->where('country_id = ?', $countryId)
                 ->fetchPairs();
     }
 
@@ -51,6 +58,6 @@ class Axis_Collect_AddressFormat implements Axis_Collect_Interface
     public static function getName($id)
     {
         if (!$id) return '';
-        return Axis::single('location/address_format')->getNameById($id);
+        return Axis::single('location/zone')->getNameById($id);
     }
 }

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Zone extends Axis_Db_Table
+class Axis_Location_Model_Zone extends Axis_Db_Table implements Axis_Collect_Interface
 {
     protected $_name = 'location_zone';
 
@@ -50,4 +50,31 @@ class Axis_Location_Model_Zone extends Axis_Db_Table
         $row->save();
         return $row;
     }   
+    
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function collect()
+    {
+       $rows = Axis::single('location/zone')->fetchAll()->toArray();
+       $zones = array();
+       foreach ($rows as $row) {
+            $zones[$row['country_id']][$row['id']] = $row['name'];
+        }
+       return $zones;
+    }
+
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return mixed string|void
+     */
+    public static function getName($id)
+    {
+        if (!$id) return '';
+        return Axis::single('location/zone')->getNameById($id);
+    }
 } 

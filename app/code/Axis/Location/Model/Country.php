@@ -31,10 +31,11 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Country extends Axis_Db_Table
+class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Collect_Interface
 {
     protected $_name = 'location_country';
 
+    protected static $_collection = null;
     /**
      *
      * @param array $data
@@ -63,5 +64,41 @@ class Axis_Location_Model_Country extends Axis_Db_Table
         $row->save();
         
         return $row;
+    }
+    
+    /**
+     * @static
+     * @return array
+     */
+    public static function collect()
+    {
+        if (null === self::$_collection) {
+            self::$_collection = Axis::single('location/country')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+        }
+        return self::$_collection;
+    }
+
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getName($id)
+    {
+        self::collect();
+        if (strstr($id, ",")) {
+            $result = array();
+            foreach(explode(",", $id) as $key) {
+                if (array_key_exists($key, self::$_collection)) {
+                    $result[$key] = isset(self::$_collection[$key]) ?
+                        self::$_collection[$key] : 'Null';
+                }
+            }
+            return implode(", ", $result);
+        }
+        return isset(self::$_collection[$id]) ? self::$_collection[$id] : 'Null';
     }
 }

@@ -19,42 +19,32 @@
  *
  * @category    Axis
  * @package     Axis_Location
- * @subpackage  Axis_Location_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Location
- * @subpackage  Axis_Location_Model
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Location_Model_Address_Format extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Location_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_name = 'location_address_format';
-    
-    /**
-     * @static
-     * @return array
-     */
-    public static function collect()
-    {
-        return Axis::single('location/address_format')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
+    protected $_version = '0.1.7';
+    protected $_info = '';
 
-    /**
-     *
-     * @static
-     * @param int $id
-     * @return string
-     */
-    public static function getName($id)
+    public function up()
     {
-        if (!$id) return '';
-        return Axis::single('location/address_format')->getNameById($id);
+        $models = array(
+            'AddressFormat' => 'Axis_Location_Model_Address_Format',
+            'Country'       => 'Axis_Location_Model_Country',
+            'Geozone'       => 'Axis_Location_Model_Geozone',
+            'Zone'          => 'Axis_Location_Model_Zone',
+            'ZoneByCountry' => 'Axis_Location_Model_ZoneByCountry',
+            
+        );
+        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            if (isset($models[$row->model])) {
+                $row->model = $models[$row->model];
+                $row->save();
+            }
+        }
     }
 }
