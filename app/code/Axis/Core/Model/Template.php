@@ -108,7 +108,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Int
                     ->join('cms_block_content', 'cb.id = cbc.block_id', '*')
                     ->where('cb.name = ?', $name)
                     ->fetchAll();
-                $languageIds = array_keys(Axis_Collect_Language::collect());
+                $languageIds = array_keys(Axis_Locale_Model_Language::collect());
 //                $cmsBlocks = array();
                 foreach ($rowset as $row) {
 
@@ -309,7 +309,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Int
         }
         //import cms blocks
         $modelBlock = Axis::model('cms/block');
-        $languageIds  = array_keys(Axis_Collect_Language::collect());
+        $languageIds  = array_keys(Axis_Locale_Model_Language::collect());
         $modelContent = Axis::model('cms/block_content');
         foreach ($cmsBlocks as $cmsBlock) {
             $cmsBlockId = $modelBlock->getIdByName($cmsBlock['name']);

@@ -41,7 +41,7 @@ class Axis_Catalog_Model_Product_Manufacturer_Row extends Axis_Db_Table_Row
     public function setDescriptions(array $dataset) 
     {
         $model = Axis::model('catalog/product_manufacturer_description');
-        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
+        foreach (array_keys(Axis_Locale_Model_Language::collect()) as $languageId) {
             if (!isset($dataset[$languageId])) {
                 continue;
             }

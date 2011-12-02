@@ -29,7 +29,7 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_ZendCurrency implements Axis_Collect_Interface
+class Axis_Locale_Model_ZendCurrency implements Axis_Collect_Interface
 {
     /**
      * @static

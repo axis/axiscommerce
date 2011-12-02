@@ -65,7 +65,7 @@ class Axis_Cms_Admin_BlockController extends Axis_Admin_Controller_Back
             ->select(array('language_id', '*'))
             ->where('block_id = ? ', $row->id)
             ->fetchAssoc();
-        foreach (Axis_Collect_Language::collect() as $languageId => $values) {
+        foreach (Axis_Locale_Model_Language::collect() as $languageId => $values) {
             $data['content']['lang_' . $languageId] = array();
             if (!isset($content[$languageId])) {
                 continue;
@@ -84,7 +84,7 @@ class Axis_Cms_Admin_BlockController extends Axis_Admin_Controller_Back
         $row  = Axis::model('cms/block')->save($_row);
         
         //save cms block content
-        $languageIds  = array_keys(Axis_Collect_Language::collect());
+        $languageIds  = array_keys(Axis_Locale_Model_Language::collect());
         $modelContent = Axis::model('cms/block_content');
         foreach ($languageIds as $languageId) {
             if (!isset($_row['content'][$languageId])) {

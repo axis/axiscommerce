@@ -78,7 +78,7 @@ class Axis_Sales_Admin_OrderStatusController extends Axis_Admin_Controller_Back
                 ->where('status_id = ?', $statusId)
                 ->fetchAssoc();
 
-        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
+        foreach (array_keys(Axis_Locale_Model_Language::collect()) as $languageId) {
             $_t['status_name[' . $languageId . ']'] = isset($statusText[$languageId]) ?
                 $statusText[$languageId]['status_name'] : '';
         }
@@ -101,7 +101,7 @@ class Axis_Sales_Admin_OrderStatusController extends Axis_Admin_Controller_Back
 
         $model       = Axis::model('sales/order_status');
         $modelLabel  = Axis::model('sales/order_status_text');
-        $languageIds = array_keys(Axis_Collect_Language::collect());
+        $languageIds = array_keys(Axis_Locale_Model_Language::collect());
 
         $row = $model->getRow($_row);
         $row->system = (int)$row->system;
@@ -141,7 +141,7 @@ class Axis_Sales_Admin_OrderStatusController extends Axis_Admin_Controller_Back
 
         $model       = Axis::model('sales/order_status');
         $modelLabel  = Axis::model('sales/order_status_text');
-        $languageIds = array_keys(Axis_Collect_Language::collect());
+        $languageIds = array_keys(Axis_Locale_Model_Language::collect());
 
         foreach ($_rowset as $_row) {
             $row = $model->getRow($_row);

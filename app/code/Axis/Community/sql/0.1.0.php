@@ -116,7 +116,7 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             'Quality',
             'Value'
         );
-        $languages = Axis_Collect_Language::collect();
+        $languages = Axis_Locale_Model_Language::collect();
         $mRatingTitle = Axis::model('community/review_rating_title');
         foreach (Axis::model('community/review_rating')->fetchAll() as $rating) {
             foreach ($languages as $langId => $langName) {

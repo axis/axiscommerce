@@ -12,5 +12,5 @@ $this->setButtons(array(
     )
 ));
 echo $this->formSelect('sites', null, null, Axis_Core_Model_Site::collect());
-echo $this->formSelect('language', null, null, Axis_Collect_Language::collect());
+echo $this->formSelect('language', null, null, Axis_Locale_Model_Language::collect());
 ?>

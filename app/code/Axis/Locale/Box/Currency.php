@@ -38,7 +38,7 @@ class Axis_Locale_Box_Currency extends Axis_Core_Box_Abstract
     
     public function init()
     {
-        $currencies = Axis_Collect_Currency::collect();
+        $currencies = Axis_Locale_Model_Currency::collect();
         if (count($currencies) <= 1) {
             return false;
         }

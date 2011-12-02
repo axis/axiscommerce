@@ -29,7 +29,7 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_ZendLocale implements Axis_Collect_Interface
+class Axis_Locale_Model_ZendLocale implements Axis_Collect_Interface
 {
     /**
      * @static
@@ -54,16 +54,16 @@ class Axis_Collect_ZendLocale implements Axis_Collect_Interface
         }
 
         foreach ($locales as $code => $isActive) {
-            if (strstr($code, '_')) {
-                $data = explode('_', $code);
-                if (!isset($languages[$data[0]])
-                    || !isset($countries[$data[1]])) {
-
-                    continue;
-                }
-                $options[$code] = ucfirst($languages[$data[0]]) . ' ('
-                    . $countries[$data[1]] . ')';
+            if (!strstr($code, '_')) {
+                continue;
             }
+            list($languageCode, $countryCode) = explode('_', $code);
+            if (!isset($languages[$languageCode]) || !isset($countries[$countryCode])) {
+
+                continue;
+            }
+            $options[$code] = ucfirst($languages[$languageCode]) . ' ('
+                . $countries[$countryCode] . ')';
         }
         return $options;
     }
@@ -79,9 +79,9 @@ class Axis_Collect_ZendLocale implements Axis_Collect_Interface
         if (empty($id)) {
             return;
         }
-        $data = explode('_', $id);
-        $locale = Axis_Locale::getLocale();
-        $language  = $locale->getTranslation($data[0], 'language', $locale);
+        $data     = explode('_', $id);
+        $locale   = Axis_Locale::getLocale();
+        $language = $locale->getTranslation($data[0], 'language', $locale);
         $country  = $locale->getTranslation($data[1], 'country', $locale);
 
         return ucfirst($language) . ' (' . $country . ')';
