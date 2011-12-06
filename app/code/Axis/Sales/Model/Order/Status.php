@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_Status extends Axis_Db_Table
+class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Collect_Interface
 {
     protected $_name = "sales_order_status";
     protected $_rowClass = 'Axis_Sales_Model_Order_Status_Row';
@@ -124,5 +124,28 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
         ));
 
         return $this;
+    }
+    
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function collect()
+    {
+        return Axis::single('sales/order_status')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+    }
+
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getName($id)
+    {
+        return Axis::single('sales/order_status')->getNameById($id);
     }
 }

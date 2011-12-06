@@ -18,7 +18,7 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Sales
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,10 +26,10 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Sales
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_OrderStatus implements Axis_Collect_Interface
+class Axis_Sales_Model_Shipping implements Axis_Sales_Interface
 {
     /**
      *
@@ -38,19 +38,38 @@ class Axis_Collect_OrderStatus implements Axis_Collect_Interface
      */
     public static function collect()
     {
-        return Axis::single('sales/order_status')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
+        $ret = array();
+        foreach (Axis_Shipping::getMethods() as $methodCode => $method) {
+            $ret[$methodCode] = $method->getTitle();
+        }
+        return $ret;
     }
 
     /**
      *
      * @static
-     * @param int $id
+     * @param string $id
      * @return string
      */
     public static function getName($id)
     {
-        return Axis::single('sales/order_status')->getNameById($id);
+        if (!$id) {
+            return '';
+        }
+        $collects = self::collect();
+        if (strstr($id, ",")) {
+            $ret = array();
+
+            foreach(explode(",", $id) as $key) {
+                if (array_key_exists($key, $collects))
+                    $ret[$key] = $collects[$key];
+            }
+            if (count($ret) == count($collects)) {
+                return 'All';
+            }
+            return implode(", ", $ret);
+        }
+
+        return $collects[$id];
     }
 }

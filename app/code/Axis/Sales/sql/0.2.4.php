@@ -18,27 +18,26 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Core
+ * @package     Axis_Sales
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
+class Axis_Sales_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_version = '0.2.8';
+    protected $_version = '0.2.4';
     protected $_info = '';
 
     public function up()
     {
         $models = array(
-            'Configuration_Field'         => 'Axis_Core_Model_Config_Field_Type',
-            'Template'                    => 'Axis_Core_Model_Template',
-            'Theme'                       => 'Axis_Core_Model_Theme',
-            'Layout'                      => 'Axis_Core_Model_Template_Layout',
-            'Site'                        => 'Axis_Core_Model_Site',
-            'MailBoxes'                   => 'Axis_Core_Model_Mail_Boxes',
-            'MailEvent'                   => 'Axis_Core_Model_Mail_Event',
-            'MailTemplate'                => 'Axis_Core_Model_Mail_Template',
+            'OrderStatus'                 => 'Axis_Sales_Model_Order_Status',
+            'OrderStatusText'             => 'Axis_Sales_Model_Order_Status_Text',
+            'CreditCard'                  => 'Axis_Sales_Model_Order_CreditCard_Type',
+            'CreditCard_SaveNumberAction' => 'Axis_Sales_Model_Order_CreditCard_SaveNumberType',
+            'Payment'                     => 'Axis_Sales_Model_Payment',
+            'Shipping'                    => 'Axis_Sales_Model_Shipping',
+            
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         
@@ -48,6 +47,5 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
                 $row->save();
             }
         }
-        
     }
 }
