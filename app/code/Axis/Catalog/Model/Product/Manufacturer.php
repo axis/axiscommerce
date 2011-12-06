@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
+class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements Axis_Collect_Interface
 {
     protected $_name = 'catalog_product_manufacturer';
 
@@ -144,5 +144,28 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
             Axis::db()->quoteInto("key_type = 'm' AND key_id IN (?)", $ids)
         );
         return $success;
+    }
+    
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function collect()
+    {
+        return Axis::single('catalog/product_manufacturer')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+    }
+
+    /**
+     *
+     * @static
+     * @param string $id
+     * @return string
+     */
+    public static function getName($id)
+    {
+        return Axis::single('catalog/prooduct_manufacturer')->getNameById($id);
     }
 }

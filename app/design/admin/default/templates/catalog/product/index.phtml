@@ -64,7 +64,7 @@ $this->setButtons(array(
 var manufacturers = [
 <?php
 $json = "{'id': null, 'name': 'None'.l()},\n";
-foreach (Axis_Collect_Manufacturer::collect() as $id => $name) :
+foreach (Axis_Catalog_Model_Product_Manufacturer::collect() as $id => $name) :
     $name = addslashes($name);
     $json .= "{'id': $id, 'name': '$name'},\n";
 endforeach;

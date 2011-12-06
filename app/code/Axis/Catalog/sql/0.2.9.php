@@ -18,39 +18,28 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Catalog
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Collect
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Collect_Manufacturer implements Axis_Collect_Interface
+class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
 {
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function collect()
-    {
-        return Axis::single('catalog/product_manufacturer')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
+    protected $_version = '0.2.9';
+    protected $_info = '';
 
-    /**
-     *
-     * @static
-     * @param string $id
-     * @return string
-     */
-    public static function getName($id)
+    public function up()
     {
-        return Axis::single('catalog/prooduct_manufacturer')->getNameById($id);
+        $models = array(
+            'Manufacturer' => 'Axis_Catalog_Model_Product_Manufacturer'
+        );
+        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            if (isset($models[$row->model])) {
+                $row->model = $models[$row->model];
+                $row->save();
+            }
+        }
     }
 }
