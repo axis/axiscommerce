@@ -18,42 +18,25 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Account
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Collect
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Collect_CustomerGroup implements Axis_Collect_Interface
+class Axis_Account_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
 {
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function collect()
-    {
-        return Axis::single('account/customer_group')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
+    protected $_version = '0.2.8';
+    protected $_info = '';
 
-    /**
-     *
-     * @static
-     * @param int $id
-     * @return string
-     */
-    public static function getName($id)
+    public function up()
     {
-        if (!$id) {
-            return '';
+        $rowset = Axis::single('core/config_field')->select()
+            ->where('model = ?', 'CustomerGroup')
+            ->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            $row->model = 'Axis_Account_Model_Customer_Group';
+            $row->save();
         }
-        return Axis::single('account/customer_group')->getNameById($id);
     }
 }

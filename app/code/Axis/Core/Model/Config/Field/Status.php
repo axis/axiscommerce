@@ -18,7 +18,7 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,10 +26,10 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Core
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_AddressFieldStatus implements Axis_Collect_Interface
+class Axis_Core_Model_Config_Field_Status implements Axis_Collect_Interface
 {
     /**
      * @static

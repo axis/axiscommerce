@@ -101,7 +101,7 @@ class Axis_Catalog_Model_Product_Price_Index extends Axis_Db_Table
         $discounts = $mDiscount->getApplicableDiscounts($ids);
 
         $customerGroups = array_filter( // remove 'All groups' group
-            array_keys(Axis_Collect_CustomerGroup::collect())
+            array_keys(Axis_Account_Model_Customer_Group::collect())
         );
 
         foreach ($products as $product) {

@@ -30,7 +30,7 @@ if (in_array('Axis_Community', array_keys(Axis::app()->getModules()))) {
 var customerGroups = [
     <?php
     $str = '';
-    foreach (Axis_Collect_CustomerGroup::collect() as $id => $name) {
+    foreach (Axis_Account_Model_Customer_Group::collect() as $id => $name) {
         if (!$id) { // skip 'All' group
             continue;
         }

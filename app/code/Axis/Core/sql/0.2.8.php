@@ -31,14 +31,15 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $models = array(
-            'Configuration_Field'         => 'Axis_Core_Model_Config_Field_Type',
-            'Template'                    => 'Axis_Core_Model_Template',
-            'Theme'                       => 'Axis_Core_Model_Theme',
-            'Layout'                      => 'Axis_Core_Model_Template_Layout',
-            'Site'                        => 'Axis_Core_Model_Site',
-            'MailBoxes'                   => 'Axis_Core_Model_Mail_Boxes',
-            'MailEvent'                   => 'Axis_Core_Model_Mail_Event',
-            'MailTemplate'                => 'Axis_Core_Model_Mail_Template',
+            'Configuration_Field' => 'Axis_Core_Model_Config_Field_Type',
+            'Template'            => 'Axis_Core_Model_Template',
+            'Theme'               => 'Axis_Core_Model_Theme',
+            'Layout'              => 'Axis_Core_Model_Template_Layout',
+            'Site'                => 'Axis_Core_Model_Site',
+            'MailBoxes'           => 'Axis_Core_Model_Mail_Boxes',
+            'MailEvent'           => 'Axis_Core_Model_Mail_Event',
+            'MailTemplate'        => 'Axis_Core_Model_Mail_Template',
+            'AddressFieldStatus'  => 'Axis_Core_Model_Config_Field_Status'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         

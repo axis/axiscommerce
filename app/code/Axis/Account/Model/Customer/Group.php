@@ -31,7 +31,7 @@
  * @subpackage  Axis_Account_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_Model_Customer_Group extends Axis_Db_Table
+class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Collect_Interface
 {
     const GROUP_ALL_ID = 0;
     const GROUP_GUEST_ID = 5;
@@ -72,5 +72,31 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table
             'group'     => $row
         ));
         return $row;
+    }
+    
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function collect()
+    {
+        return Axis::single('account/customer_group')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+    }
+
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getName($id)
+    {
+        if (!$id) {
+            return '';
+        }
+        return Axis::single('account/customer_group')->getNameById($id);
     }
 }
