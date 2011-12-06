@@ -31,7 +31,7 @@
  * @subpackage  Axis_Tax_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Tax_Model_Class extends Axis_Db_Table
+class Axis_Tax_Model_Class extends Axis_Db_Table implements Axis_Collect_Interface
 {
     protected $_name = 'tax_class';
 
@@ -49,5 +49,29 @@ class Axis_Tax_Model_Class extends Axis_Db_Table
         }
         $row->save();
         return $row;
+    }
+    
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function collect()
+    {
+        return Axis::single('tax/class')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+    }
+
+    /**
+     *
+     * @static
+     * @param string $id
+     * @return string
+     */
+    public static function getName($id)
+    {
+        if (!$id) return '';
+        return Axis::single('tax/class')->getNameById($id);
     }
 }

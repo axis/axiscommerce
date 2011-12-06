@@ -36,7 +36,7 @@ class Axis_Sales_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             'CreditCard'                  => 'Axis_Sales_Model_Order_CreditCard_Type',
             'CreditCard_SaveNumberAction' => 'Axis_Sales_Model_Order_CreditCard_SaveNumberType',
             'Payment'                     => 'Axis_Sales_Model_Payment',
-            'Shipping'                    => 'Axis_Sales_Model_Shipping',
+            'Shipping'                    => 'Axis_Sales_Model_Shipping'
             
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();

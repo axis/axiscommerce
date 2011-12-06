@@ -18,7 +18,7 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Tax
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,10 +26,10 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Tax
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Collect_TaxBasis implements Axis_Collect_Interface
+class Axis_Tax_Model_Basis implements Axis_Collect_Interface
 {
     const SHIPPING = 'delivery';
     const BILLING  = 'billing';

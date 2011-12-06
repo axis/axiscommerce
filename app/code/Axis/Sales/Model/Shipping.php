@@ -29,7 +29,7 @@
  * @package     Axis_Sales
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Shipping implements Axis_Sales_Interface
+class Axis_Sales_Model_Shipping implements Axis_Collect_Interface
 {
     /**
      *

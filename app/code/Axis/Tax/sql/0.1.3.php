@@ -18,40 +18,30 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Tax
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Collect
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Collect_TaxClass implements Axis_Collect_Interface
+class Axis_Tax_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 {
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function collect()
-    {
-        return Axis::single('tax/class')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
+    protected $_version = '0.1.3';
+    protected $_info = '';
 
-    /**
-     *
-     * @static
-     * @param string $id
-     * @return string
-     */
-    public static function getName($id)
+    public function up()
     {
-        if (!$id) return '';
-        return Axis::single('tax/class')->getNameById($id);
+        $models = array(
+            'TaxBasis' => 'Axis_Tax_Model_Basis',
+            'TaxClass' => 'Axis_Tax_Model_Class'
+            
+        );
+        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            if (isset($models[$row->model])) {
+                $row->model = $models[$row->model];
+                $row->save();
+            }
+        }
     }
 }

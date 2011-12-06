@@ -75,7 +75,7 @@ echo substr($json, 0, -2);
 var taxClasses = [
 <?php
 $json = "{'id': null, 'name': 'None'.l()},\n";
-foreach (Axis_Collect_TaxClass::collect() as $id => $name) :
+foreach (Axis_Tax_Model_Class::collect() as $id => $name) :
     $name = addslashes($name);
     $json .= "{'id': $id, 'name': '$name'},\n";
 endforeach;
