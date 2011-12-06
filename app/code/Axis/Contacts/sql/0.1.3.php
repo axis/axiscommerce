@@ -18,39 +18,25 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Contacts
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Collect
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Collect_Department implements Axis_Collect_Interface
+class Axis_Contacts_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 {
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function collect()
-    {
-        return Axis::single('contacts/department')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
+    protected $_version = '0.1.3';
+    protected $_info = '';
 
-    /**
-     *
-     * @static
-     * @param int $id
-     * @return string
-     */
-    public static function getName($id)
+    public function up()
     {
-        return Axis::single('contacts/department')->getNameById($id);
+        $rowset = Axis::single('core/config_field')->select()
+            ->where('model = ?', 'Department')
+            ->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            $row->model = 'Axis_Contacts_Model_Department';
+            $row->save();
+        }
     }
 }

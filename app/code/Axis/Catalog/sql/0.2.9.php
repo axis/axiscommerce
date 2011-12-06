@@ -29,17 +29,14 @@ class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
     protected $_info = '';
 
     public function up()
-    {
-        $models = array(
-            'Manufacturer' => 'Axis_Catalog_Model_Product_Manufacturer'
-        );
-        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
+    {       
+        $rowset = Axis::single('core/config_field')->select()
+            ->where('model = ?', 'Manufacturer')
+            ->fetchRowset();
         
         foreach ($rowset as $row) {
-            if (isset($models[$row->model])) {
-                $row->model = $models[$row->model];
-                $row->save();
-            }
+            $row->model = 'Axis_Catalog_Model_Product_Manufacturer';
+            $row->save();
         }
     }
 }

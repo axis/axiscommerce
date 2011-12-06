@@ -69,7 +69,7 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
             'class'    => 'input-text required'
         ));
 
-        $departments = Axis_Collect_Department::collect();
+        $departments = Axis_Contacts_Model_Department::collect();
         if (count($departments)) {
             $this->addElement('select', 'department_id', array(
                'label' => 'Department'

@@ -14,7 +14,7 @@ var sites = [
 var departaments = [
     <?php
     $str = '';
-    foreach (Axis_Collect_Department::collect() as $id => $name) {
+    foreach (Axis_Contacts_Model_Department::collect() as $id => $name) {
         $name = addslashes($name);
         $str .= "[$id, '$name'],\n";
     }
