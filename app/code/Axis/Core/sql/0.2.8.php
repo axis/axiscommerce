@@ -49,6 +49,27 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
                 $row->save();
             }
         }
+               
+        Axis::model('admin/acl_rule')
+            ->rename('admin/axis/core/config-field',      'admin/axis/core/config_field')
+            ->rename('admin/axis/core/config-field/list', 'admin/axis/core/config_field/list')
+
+            ->rename('admin/axis/core/config-value',             'admin/axis/core/config_value')
+            ->rename('admin/axis/core/config-value/index',       'admin/axis/core/config_value/index')
+            ->rename('admin/axis/core/config-value/list',        'admin/axis/core/config_value/list')
+            ->rename('admin/axis/core/config-value/load',        'admin/axis/core/config_value/load')
+            ->rename('admin/axis/core/config-value/save',        'admin/axis/core/config_value/save')
+            ->rename('admin/axis/core/config-value/copy-global', 'admin/axis/core/config_value/copy-global')
+            ->rename('admin/axis/core/config-value/use-global',  'admin/axis/core/config_value/use-global')
+        ;
         
+        $rowset = Axis::model('admin/acl_rule')->select()
+            ->where('resource_id LIKE ? ', "admin/axis/core/config-field%")
+            ->fetchRowset()
+            ;
+        
+        foreach ($rowset as $row) {
+            $row->delete();
+        }
     }
 }

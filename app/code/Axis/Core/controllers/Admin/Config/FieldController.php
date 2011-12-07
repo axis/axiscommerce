@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Admin_ConfigFieldController extends Axis_Admin_Controller_Back
+class Admin_Config_FieldController extends Axis_Admin_Controller_Back
 {
     public function listAction()
     {
@@ -63,49 +63,4 @@ class Admin_ConfigFieldController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendRaw($data);
     }
     
-    public function saveAction()
-    {
-        $data = $this->_getAllParams();
-        if (empty($data['path'])) {
-            Axis::message()->addError(
-                Axis::translate('core')->__(
-                    'Incorrect field path'
-            ));
-            return $this->_helper->json->sendFailure();
-        }
-        Axis::model('core/config_field')->save($data);
-        
-        Axis::message()->addSuccess(
-            Axis::translate('core')->__(
-                'Data was saved successfully'
-        ));
-        return $this->_helper->json->sendSuccess();
-    }
-
-    public function listTypeAction()
-    {
-        $data = array();
-        foreach (Axis_Core_Model_Config_Field_Type::collect() as $id => $type) {
-            $data[] = array('id' => $type, 'type' => $type);
-        }
-        array_unshift($data, array('id' => '', 'type' => null));
-        return $this->_helper->json
-            ->setData($data)
-            ->sendSuccess()
-        ;
-    }
-
-    public function listModelAction()
-    {
-        $data = array();
-        foreach (Axis_Collect_Collect::collect() as $id => $type) {
-            $data[] = array('id' => strtolower($id), 'name' => $type);
-        }
-        sort($data);
-        array_unshift($data, array('id' => '', 'name' => null));
-        return $this->_helper->json
-            ->setData($data)
-            ->sendSuccess()
-        ;
-    }
 }

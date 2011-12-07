@@ -31,11 +31,11 @@
  * @subpackage  Axis_Core_Admin_Controller
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Admin_ConfigValueController extends Axis_Admin_Controller_Back
+class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 {
     private function _optionsToArray($option)
     {
-        if (($data = json_decode($option, true))&& $data != $option) {
+        if (($data = json_decode($option, true)) && $data != $option) {
             return $data;
         }
 
@@ -49,16 +49,14 @@ class Admin_ConfigValueController extends Axis_Admin_Controller_Back
         return $confData;
     }
 
-    private function _collect($collectName, $assigned = '', $notUseFullClassName = true)
+    private function _collect($collectName, $param = '')
     {
-        if ($notUseFullClassName)
-             $collectName = 'Axis_Collect_' . $collectName;
-        if (!empty($assigned)) {
-            list($sec, $subsec, $key) = explode('/', $assigned);
-            if (isset(Axis::config()->$sec->$subsec->$key)) {
-                $parameter = Axis::config()->$sec->$subsec->$key;
-                $values = call_user_func(array($collectName, 'collect'), $parameter);
-            }
+        if (!empty($param)) {
+            $param = Axis::config($param);
+        }
+        
+        if (!empty($param)) {
+            $values = call_user_func(array($collectName, 'collect'), $param);
         } else {
             $values = call_user_func(array($collectName, 'collect'));
         }
@@ -76,7 +74,7 @@ class Admin_ConfigValueController extends Axis_Admin_Controller_Back
     private function _getName($collectName, $id)
     {
         return call_user_func(
-            array('Axis_Collect_' . $collectName, 'getName'), $id
+            array($collectName, 'getName'), $id
         );
     }
 

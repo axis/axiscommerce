@@ -40,36 +40,6 @@ Ext.onReady(function() {
             return data;
         },
 
-        addField: function() {
-            addFieldWindow.show();
-            var node = tree.getSelectionModel().getSelectedNode();
-            if (node && typeof node.id === 'string') {
-                formNewField.getForm().clear();
-                formNewField.getForm().setValues({
-                   'path': node.id + '/new_branch'
-                })
-            }
-        },
-
-        saveField : function() {
-            Ext.getCmp('form_new_field').getForm().submit({
-                url: Axis.getUrl('core/config-field/save'),
-                success: function() {
-                    var path = Ext.getCmp('form_new_field').getForm().findField('path').getValue();
-                    Ext.getCmp('add_new_field').hide();
-                    tree.getLoader().load(tree.root, function(){
-                        tree.expandPath('/' + tree.root.id + '/' + path, '', function(){
-                            if (!tree.getNodeById(path)) {
-                                path = path.substr(0, path.lastIndexOf('/'));
-                            }
-                            tree.getNodeById(path).select();
-                        });
-                        grid.getStore().reload();
-                    });
-                }
-            })
-        },
-
         edit: function(row) {
             if (!row.id) {
                 return;
@@ -180,114 +150,6 @@ Ext.onReady(function() {
         })
     };
 
-    var fieldType = new Ext.form.ComboBox({
-       id: 'field_type',
-       name: 'config_type',
-       hiddenName: 'config_type',
-       fieldLabel: 'Type'.l(),
-       store: new Ext.data.JsonStore({
-              url: Axis.getUrl('core/config-field/list-type'),
-           fields: ['id', 'type'],
-           id: 'id',
-           root: 'data',
-           autoLoad: true
-       }),
-       editable: false,
-       value: 'string',
-       displayField: 'type',
-       valueField: 'id',
-       triggerAction: 'all',
-       mode: 'local'
-    });
-
-    var fieldModel = new Ext.form.ComboBox({
-       id: 'field_model',
-       name: 'model',
-       fieldLabel: 'Model'.l(),
-       hiddenName: 'model',
-       store: new Ext.data.JsonStore({
-           url: Axis.getUrl('core/config-field/list-model'),
-           fields: ['id', 'name'],
-           id: 'id',
-           root: 'data',
-           autoLoad: true
-       }),
-       editable: false,
-       //value: 'None',
-       displayField: 'name',
-       valueField: 'name',
-       triggerAction: 'all',
-       mode: 'local'
-    });
-
-    var formNewField = new Ext.form.FormPanel({
-        border: false,
-        labelAlign: 'left',
-        id: 'form_new_field',
-        defaults: {
-            anchor: '100%'
-        },
-        items: [{
-            xtype: 'textfield',
-            name: 'path',
-            fieldLabel: 'Path'.l(),
-            maxLenth: 225,
-            allowBlank: false
-        },{
-            xtype: 'textfield',
-            fieldLabel: 'Title'.l(),
-            name: 'title',
-            maxLenth: 45,
-            allowBlank: false
-        }, fieldType, fieldModel, {
-            xtype: 'textfield',
-            fieldLabel: 'Assigned config field path example main/store/country'.l(),
-            name: 'model_assigned_with',
-            maxLenth: 45,
-            allowBlank: true
-        },{
-            xtype: 'textfield',
-            fieldLabel: "Option example: 1,34,'option3'".l(),
-            name: 'config_options',
-            maxLenth: 45,
-            allowBlank: true
-        },{
-            xtype: 'textfield',
-            fieldLabel: 'Order'.l(),
-            name: 'sort_order',
-            maxLenth: 45,
-            allowBlank: true
-        },{
-            xtype: 'textarea',
-            fieldLabel: 'Description'.l(),
-            name: 'description',
-            maxLenth: 45,
-            allowBlank: true
-        }]
-    });
-
-    var addFieldWindow =  new Ext.Window({
-        title: 'Field'.l(),
-        items: formNewField,
-        closeAction: 'hide',
-        resizable: true,
-        maximizable: true,
-        id: 'add_new_field',
-        constrainHeader: true,
-        autoScroll: true,
-        bodyStyle: 'background: white; padding: 10px;',
-        width: 450,
-        height: 400,
-        minWidth: 260,
-        buttons: [{
-            text: 'Save'.l(),
-            handler: Config.saveField
-        }, {
-            text: 'Close'.l(),
-            handler: function() { Ext.getCmp('add_new_field').hide()}
-        }]
-    });
-
     Ext.get('site_id').on('change', function(evt, elem, o) {
         Config.siteId = elem.value;
 
@@ -316,13 +178,6 @@ Ext.onReady(function() {
     treeToolBar.addText('Site: ');
     treeToolBar.addElement('site_id');
     treeToolBar.addFill();
-    treeToolBar.addButton({
-        cls: 'x-btn-icon',
-        icon: Axis.skinUrl + '/images/icons/add.png',
-        handler: function() {
-            Config.addField();
-        }
-    });
 
     treeToolBar.addButton({
         cls: 'x-btn-icon',
