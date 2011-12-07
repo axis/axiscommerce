@@ -46,7 +46,7 @@ Ext.onReady(function() {
             }
 
             Ext.Ajax.request({
-                url: Axis.getUrl('core/config-value/load'),
+                url: Axis.getUrl('core/config_value/load'),
                 params: {
                     path: row.id,
                     siteId: Config.siteId
@@ -101,7 +101,7 @@ Ext.onReady(function() {
             }
             var items = Config.getSelectedIds();
             Ext.Ajax.request({
-                url: Axis.getUrl('core/config-value/use-global'),
+                url: Axis.getUrl('core/config_value/use-global'),
                 params: {
                     pathItems: Ext.encode(items),
                     siteId: Config.siteId
@@ -118,7 +118,7 @@ Ext.onReady(function() {
             }
             var items = Config.getSelectedIds();
             Ext.Ajax.request({
-                url: Axis.getUrl('core/config-value/copy-global'),
+                url: Axis.getUrl('core/config_value/copy-global'),
                 params: {
                     pathItems: Ext.encode(items),
                     siteId: Config.siteId
@@ -200,7 +200,7 @@ Ext.onReady(function() {
         animate: false,
         containerScroll: true,
         loader: new Ext.tree.TreeLoader({
-            dataUrl: Axis.getUrl('core/config-field/list')
+            dataUrl: Axis.getUrl('core/config_field/list')
         }),
         tbar: treeToolBar
     });
@@ -222,7 +222,7 @@ Ext.onReady(function() {
         baseParams: {
             limit: 25
         },
-        url: Axis.getUrl('core/config-value/list'),
+        url: Axis.getUrl('core/config_value/list'),
         reader: new Ext.data.JsonReader({
             id: 'path',
             root: 'data',

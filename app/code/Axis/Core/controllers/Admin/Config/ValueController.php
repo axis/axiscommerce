@@ -95,39 +95,37 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
-        $model = Axis::model('core/config_field');
+        $filters = $this->_getParam('filter', array());
+        $limit   = $this->_getParam('limit', 25);
+        $start   = $this->_getParam('start', 0);
+        $order   = $this->_getParam('sort', 'path') . ' '
+                 . $this->_getParam('dir', 'ASC');
+        
+        $model  = Axis::model('core/config_field');
         $select = $model->select('id')
             ->calcFoundRows()
-            ->addFilters($this->_getParam('filter', array()))
+            ->addFilters($filters)
             ->where('lvl = 3')
-            ->limit(
-                $this->_getParam('limit', 25),
-                $this->_getParam('start', 0)
-            )
-            ->order(array(
-                $this->_getParam('sort', 'path')
-                . ' '
-                . $this->_getParam('dir', 'ASC')
-            ));
+            ->limit($limit, $start)
+            ->order($order);
 
         $ids    = $select->fetchCol();
         $count  = $select->foundRows();
-        $_data   = array();
+        $_data  = array();
 
         if (count($ids)) {
             $select = $model->select('*')
-                ->calcFoundRows()
+//                ->calcFoundRows()
                 ->addValue()
                 ->where('ccf.id IN (?)', $ids)
                 ->order(array(
-                    $this->_getParam('sort', 'path')
-                    . ' '
-                    . $this->_getParam('dir', 'ASC'),
+                    $order,
                     'site_id DESC'
                 ));
 
             if ($this->_hasParam('site_id')) {
-                $select->where('ccv.site_id IN (?)', array(0, $this->_getParam('site_id')));
+                $siteId = $this->_getParam('site_id');
+                $select->where('ccv.site_id IN (?)', array(0, $siteId));
             }
 
             $_data = $select->fetchAll();
@@ -151,7 +149,10 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 Axis::translate($row->getTranslationModule())->__($row->title);
 
             if (null != $row->config_options) {
-                $data[$row->id]['config_options'] = $this->_optionsToArray($row->config_options);
+                $data[$row->id]['config_options'] = $this->_optionsToArray(
+                    $row->config_options
+                );
+                Axis_FirePhp::log($data[$row->id]['config_options']);
             }
 
             if ('bool' == $row->config_type) {
@@ -253,7 +254,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             ->fetchRow();
         /*
          * if such row not founded then create new record
-         * It possible when we redeclare global config-value for site
+         * It possible when we redeclare global config_value for site
          */
         if (!$row) {
             $row = $model->createRow(array(
