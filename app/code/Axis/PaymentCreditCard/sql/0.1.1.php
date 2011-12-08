@@ -35,16 +35,16 @@ class Axis_PaymentCreditCard_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abs
             ->add('payment/CreditCard_Standard', 'Payment Methods/Save Credit Card', null, null, array('translation_module' => 'Axis_PaymentCreditCard'))
             ->add('payment/CreditCard_Standard/title', 'Payment Methods/Save Credit Card/Title', 'Save Credit Card', 'string', 'Title')
             ->add('payment/CreditCard_Standard/enabled', 'Enabled', 0, 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('payment/CreditCard_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('payment/CreditCard_Standard/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'))
             ->add('payment/CreditCard_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('config_options' => '{"1":"pending"}', 'translation_module' => 'Axis_Admin'))
             ->add('payment/CreditCard_Standard/enabledCvv', 'Accept verification code', '1', 'bool', '', array('translation_module' => 'Axis_Admin'))
             ->add('payment/CreditCard_Standard/saveCvv', 'Save verification code', '0', 'bool', 'Do you want to save cvv code?', array('translation_module' => 'Axis_Admin'))
             ->add('payment/CreditCard_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
             ->add('payment/CreditCard_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/CreditCard_Standard/creditCard', 'Accepted Credit Cards', 'VISA', 'multiple', 'Credits cards allowed to use with this payment method', array('model' => 'CreditCard', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/CreditCard_Standard/saveCCAction', 'Save credit card number action', 'last_four', 'select', 'How would you like to save credit card number', array('model' => 'CreditCard_SaveNumberAction', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/CreditCard_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Shipping', 'translation_module' => 'Axis_Admin'));
+            ->add('payment/CreditCard_Standard/creditCard', 'Accepted Credit Cards', 'VISA', 'multiple', 'Credits cards allowed to use with this payment method', array('model' => 'Axis_Sales_Model_Order_CreditCard_Type', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/saveCCAction', 'Save credit card number action', 'last_four', 'select', 'How would you like to save credit card number', array('model' => 'Axis_Sales_Model_Order_CreditCard_SaveNumberType', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Sales_Model_Shipping', 'translation_module' => 'Axis_Admin'));
     }
 
     public function down()

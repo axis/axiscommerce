@@ -74,8 +74,8 @@ class Axis_Tax_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')
             ->add('tax', 'Tax', null, null, array('translation_module' => 'Axis_Tax'))
-            ->add('tax/main/taxBasis', 'Tax/General/TaxBasis', 'delivery', 'select', 'Address that will be used for tax calculation', array('model' => 'TaxBasis'))
-            ->add('tax/shipping/taxBasis', 'Tax/Shipping Tax/Shipping TaxBasis', 'delivery', 'select', 'Address that will be used for shipping tax calculation', array('model' => 'TaxBasis'))
-            ->add('tax/shipping/taxClass', 'Shipping TaxClass', '1', 'select', 'Tax class that will be used for shipping tax calculation', array('model' => 'TaxClass'));
+            ->add('tax/main/taxBasis', 'Tax/General/TaxBasis', 'delivery', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis'))
+            ->add('tax/shipping/taxBasis', 'Tax/Shipping Tax/Shipping TaxBasis', 'delivery', 'select', 'Address that will be used for shipping tax calculation', array('model' => 'Axis_Tax_Model_Basis'))
+            ->add('tax/shipping/taxClass', 'Shipping TaxClass', '1', 'select', 'Tax class that will be used for shipping tax calculation', array('model' => 'Axis_Tax_Model_Class'));
     }
 }

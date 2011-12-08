@@ -34,13 +34,13 @@ class Axis_ShippingFree_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Free_Standard', 'Shipping Methods/Free Shipping Standard', null, null, array('translation_module' => 'Axis_ShippingFree'))
             ->add('shipping/Free_Standard/enabled', 'Shipping Methods/Free Shipping Standard/Enabled', 0, 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Free_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Free_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'TaxBasis', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Free_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'TaxClass', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Free_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Free_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Free_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Free_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
             ->add('shipping/Free_Standard/handling', 'Handling Fee', '0')
             ->add('shipping/Free_Standard/cost', 'Free Shipping Cost', '0')
-            ->add('shipping/Free_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Payment', 'translation_module' => 'Axis_Admin'));
+            ->add('shipping/Free_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Sales_Model_Payment', 'translation_module' => 'Axis_Admin'));
     }
 
     public function down()

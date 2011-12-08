@@ -39,8 +39,8 @@ class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')->remove('locale/main/language');
 
         Axis::single('core/config_field')
-            ->add('locale/main/language_admin', 'Locale/General/Default backend language', $languageId, 'select', 'Default backend language', array('model' => 'Language'))
-            ->add('locale/main/language_front', 'Locale/General/Default frontend language', $languageId, 'select', 'Default frontend language', array('model' => 'Language'));
+            ->add('locale/main/language_admin', 'Locale/General/Default backend language', $languageId, 'select', 'Default backend language', array('model' => 'Axis_Locale_Model_Language'))
+            ->add('locale/main/language_front', 'Locale/General/Default frontend language', $languageId, 'select', 'Default frontend language', array('model' => 'Axis_Locale_Model_Language'));
     }
 
     public function down()
@@ -52,6 +52,6 @@ class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             ->remove('locale/main/language_front');
 
         Axis::single('core/config_field')
-            ->add('locale/main/language', 'Locale/General/Default language', $languageId, 'select', 'Default language', array('model' => 'Language'));
+            ->add('locale/main/language', 'Locale/General/Default language', $languageId, 'select', 'Default language', array('model' => 'Axis_Locale_Model_Language'));
     }
 }

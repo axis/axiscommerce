@@ -49,21 +49,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         return $confData;
     }
 
-    private function _collect($collectName, $param = '')
-    {
-        if (!empty($param)) {
-            $param = Axis::config($param);
-        }
-        
-        if (!empty($param)) {
-            $values = call_user_func(array($collectName, 'getConfigOptionsArray'), $param);
-        } else {
-            $values = call_user_func(array($collectName, 'getConfigOptionsArray'));
-        }
-
-        return $values;
-    }
-
     private function _getHtml($handlerName, $param)
     {
         return call_user_func(
@@ -203,8 +188,21 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 
         if (!empty($row->model)) {
             if ($row->config_type != 'handler') {
-                $row->config_options =
-                    $this->_collect($row->model, $row->model_assigned_with);
+                
+                if (!empty($row->model_assigned_with)) {
+                    $param = Axis::config($row->model_assigned_with);
+                }
+
+                if (empty($param)) {
+                    $row->config_options = call_user_func(
+                        array($model, 'getConfigOptionsArray')
+                    );
+                } else {
+                    $row->config_options = call_user_func(
+                        array($model, 'getConfigOptionsArray'), $param
+                    );
+                }
+                
             } else {
                 $row->config_options = $this->_getHtml(
                     $row->model,
