@@ -179,7 +179,7 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
             $group = array($group => $group);
         }
 
-        $languageIds = array_keys(Axis_Locale_Model_Language::collect());
+        $languageIds = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
 
         $modelFieldGroup = Axis::single('account/customer_FieldGroup');
         /* create field group */

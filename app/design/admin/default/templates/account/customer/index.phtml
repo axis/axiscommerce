@@ -30,7 +30,7 @@ if (in_array('Axis_Community', array_keys(Axis::app()->getModules()))) {
 var customerGroups = [
     <?php
     $str = '';
-    foreach (Axis_Account_Model_Customer_Group::collect() as $id => $name) {
+    foreach (Axis_Account_Model_Customer_Group::getConfigOptionsArray() as $id => $name) {
         if (!$id) { // skip 'All' group
             continue;
         }
@@ -44,7 +44,7 @@ var customerGroups = [
 var sites = [
     <?php
     $str = '';
-    foreach (Axis_Core_Model_Site::collect() as $id => $name) {
+    foreach (Axis_Core_Model_Site::getConfigOptionsArray() as $id => $name) {
         $name = addslashes($name);
         $str .= "[$id, '$name'],\n";
     }

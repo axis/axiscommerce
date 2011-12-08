@@ -152,10 +152,12 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         );
 
         $order = $order->toArray();
-        $order['status_name'] =
-            Axis_Sales_Model_Order_Status_Text::getName($order['order_status_id']);
-        $order['site_name'] =
-            Axis_Core_Model_Site::getName($order['site_id']);
+        $order['status_name'] = Axis_Sales_Model_Order_Status_Text::getConfigOptionName(
+            $order['order_status_id']
+        );
+        $order['site_name'] = Axis_Core_Model_Site::getConfigOptionName(
+            $order['site_id']
+        );
         // convert price with rates that was available
         // during order was created (not current rates)
         $order['order_total'] = $order['order_total'] * $order['currency_rate'];

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Contacts_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Contacts_Model_Department extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Contacts_Model_Department extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = 'contacts_department';
     protected $_primary = 'id';
@@ -41,7 +41,7 @@ class Axis_Contacts_Model_Department extends Axis_Db_Table implements Axis_Colle
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('contacts/department')
                 ->select(array('id', 'name'))
@@ -54,7 +54,7 @@ class Axis_Contacts_Model_Department extends Axis_Db_Table implements Axis_Colle
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return Axis::single('contacts/department')->getNameById($id);
     }

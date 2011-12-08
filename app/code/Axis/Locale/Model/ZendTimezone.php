@@ -29,14 +29,14 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_ZendTimezone implements Axis_Collect_Interface
+class Axis_Locale_Model_ZendTimezone implements Axis_Config_Option_Interface
 {
     /**
      *
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         $options= array();
         $locale = Axis_Locale::getLocale();
@@ -60,7 +60,7 @@ class Axis_Locale_Model_ZendTimezone implements Axis_Collect_Interface
      * @param string $id
      * @return mixed string|void
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (empty($id)) {
             return;

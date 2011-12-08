@@ -48,7 +48,7 @@ class Axis_Account_Admin_ValueSetValueController extends Axis_Admin_Controller_B
         $dataset     = Zend_Json::decode($this->_getParam('data'));
         $model       = Axis::model('account/customer_valueSet_value');
         $modelLabel  = Axis::model('account/customer_valueSet_value_label');
-        $languageIds = array_keys(Axis_Locale_Model_Language::collect());
+        $languageIds = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
         foreach ($dataset as $data) {
             $row = $model->getRow($data);
             $row->save();

@@ -56,9 +56,9 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         }
         
         if (!empty($param)) {
-            $values = call_user_func(array($collectName, 'collect'), $param);
+            $values = call_user_func(array($collectName, 'getConfigOptionsArray'), $param);
         } else {
-            $values = call_user_func(array($collectName, 'collect'));
+            $values = call_user_func(array($collectName, 'getConfigOptionsArray'));
         }
 
         return $values;
@@ -74,7 +74,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
     private function _getName($collectName, $id)
     {
         return call_user_func(
-            array($collectName, 'getName'), $id
+            array($collectName, 'getConfigOptionName'), $id
         );
     }
 
@@ -89,7 +89,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Configuration');
-        $this->view->sites = Axis_Core_Model_Site::collect();
+        $this->view->sites = Axis_Core_Model_Site::getConfigOptionsArray();
         $this->render();
     }
 

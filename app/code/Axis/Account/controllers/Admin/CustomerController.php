@@ -144,8 +144,8 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
         $orders = Axis::single('sales/order')->fetchAll(
             $this->db->quoteInto('customer_id = ?', $customer->id)
         );
-        $orderStatus     = Axis_Sales_Model_Order_Status::collect();
-        $orderStatusText = Axis_Sales_Model_Order_Status_Text::collect();
+        $orderStatus     = Axis_Sales_Model_Order_Status::getConfigOptionsArray();
+        $orderStatusText = Axis_Sales_Model_Order_Status_Text::getConfigOptionsArray();
 
         $data['order'] = array();
         $i = 0;

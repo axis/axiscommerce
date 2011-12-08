@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_CreditCard_SaveNumberType implements Axis_Collect_Interface
+class Axis_Sales_Model_Order_CreditCard_SaveNumberType implements Axis_Config_Option_Interface
 {
     /**
      *
@@ -50,7 +50,7 @@ class Axis_Sales_Model_Order_CreditCard_SaveNumberType implements Axis_Collect_I
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return self::$_actions;
     }
@@ -61,7 +61,7 @@ class Axis_Sales_Model_Order_CreditCard_SaveNumberType implements Axis_Collect_I
      * @param string $id
      * @return mixed string|void
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (!$id || !isset(self::$_actions[$id])) {
             return '';

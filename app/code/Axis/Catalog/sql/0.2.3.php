@@ -342,7 +342,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        $languages = Axis_Locale_Model_Language::collect();
+        $languages = Axis_Locale_Model_Language::getConfigOptionsArray();
         $mCategoryDescription = Axis::model('catalog/category_description');
         foreach ($languages as $langId => $langName) {
             $mCategoryDescription->createRow(array(

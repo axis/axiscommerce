@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = "sales_order_status";
     protected $_rowClass = 'Axis_Sales_Model_Order_Status_Row';
@@ -106,7 +106,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Collec
 
         //add labels
         $modelLabel  = Axis::model('sales/order_status_text');
-        $languageIds = array_keys(Axis_Locale_Model_Language::collect());
+        $languageIds = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
         foreach ($languageIds as $languageId) {
             if (!isset($translates[$languageId])) {
                 continue;
@@ -131,7 +131,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Collec
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('sales/order_status')
                 ->select(array('id', 'name'))
@@ -144,7 +144,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Collec
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return Axis::single('sales/order_status')->getNameById($id);
     }

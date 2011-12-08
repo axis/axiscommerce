@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Config_Field_Type implements Axis_Collect_Interface
+class Axis_Core_Model_Config_Field_Type implements Axis_Config_Option_Interface
 {
     /**
      * @static
@@ -51,7 +51,7 @@ class Axis_Core_Model_Config_Field_Type implements Axis_Collect_Interface
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return self::$_types;
     }
@@ -62,7 +62,7 @@ class Axis_Core_Model_Config_Field_Type implements Axis_Collect_Interface
      * @param string $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return self::$_types[$id];
     }

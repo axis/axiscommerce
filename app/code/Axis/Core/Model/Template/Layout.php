@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Template_Layout implements Axis_Collect_Interface
+class Axis_Core_Model_Template_Layout implements Axis_Config_Option_Interface
 {
     /**
      *
@@ -45,10 +45,10 @@ class Axis_Core_Model_Template_Layout implements Axis_Collect_Interface
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         if (null === self::$_collection) {
-            $themes = Axis_Core_Model_Theme::collect();
+            $themes = Axis_Core_Model_Theme::getConfigOptionsArray();
             $layouts = array();
             $designPath = Axis::config('system/path') . '/app/design/front';
             foreach ($themes as $theme) {
@@ -91,10 +91,10 @@ class Axis_Core_Model_Template_Layout implements Axis_Collect_Interface
      * @param string $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (null === self::$_collection) {
-            self::$_collection = self::collect();
+            self::$_collection = self::getConfigOptionsArray();
         }
         return isset(self::$_collection[$id]) ? self::$_collection[$id] : false;
     }

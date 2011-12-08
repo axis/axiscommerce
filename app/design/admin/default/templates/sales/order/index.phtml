@@ -1,6 +1,6 @@
 <script type="text/javascript">
 
-var sites = <?php echo Zend_Json::encode(Axis_Core_Model_Site::collect())?>;
+var sites = <?php echo Zend_Json::encode(Axis_Core_Model_Site::getConfigOptionsArray())?>;
 var orderStatuses = <?php echo Zend_Json::encode($this->orderStatuses)?>;
 
 var statusOrder = new Array();

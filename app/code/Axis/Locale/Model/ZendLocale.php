@@ -29,18 +29,18 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_ZendLocale implements Axis_Collect_Interface
+class Axis_Locale_Model_ZendLocale implements Axis_Config_Option_Interface
 {
     /**
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
-        $options    = array();
-        $locale = Axis_Locale::getLocale();
+        $options = array();
+        $locale  = Axis_Locale::getLocale();
 
-        $locales = $locale->getLocaleList();
+        $locales    = $locale->getLocaleList();
         $languages  = $locale->getTranslationList('language', $locale);
         $countries  = $locale->getTranslationList('territory', $locale, 2);
 
@@ -74,7 +74,7 @@ class Axis_Locale_Model_ZendLocale implements Axis_Collect_Interface
      * @param int $id
      * @return mixed string|void
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (empty($id)) {
             return;

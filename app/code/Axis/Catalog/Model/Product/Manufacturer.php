@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = 'catalog_product_manufacturer';
 
@@ -95,7 +95,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements A
 //        $url = preg_replace('/[^a-zA-Z0-9]/', '-', $url);
         if (Axis::single('catalog/hurl')->hasDuplicate(
                 $url,
-                array_keys(Axis_Core_Model_Site::collect()),
+                array_keys(Axis_Core_Model_Site::getConfigOptionsArray()),
                 (int)$row->id
             )) {
 
@@ -111,7 +111,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements A
         //after save
         //add relation site
         $model = Axis::model('catalog/hurl');
-        foreach (Axis_Core_Model_Site::collect() as $siteId => $siteName) {
+        foreach (Axis_Core_Model_Site::getConfigOptionsArray() as $siteId => $siteName) {
             $model->save(array(
                 'site_id'  => $siteId,
                 'key_id'   => $row->id,
@@ -151,7 +151,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements A
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('catalog/product_manufacturer')
                 ->select(array('id', 'name'))
@@ -164,7 +164,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements A
      * @param string $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return Axis::single('catalog/prooduct_manufacturer')->getNameById($id);
     }

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = 'core_site';
 
@@ -116,23 +116,23 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Collect_Interfa
         $company = Axis::config('core/company', $siteId)->toArray();
         //@todo Use Axis_Object
         return array(
-            'email'     => Axis_Core_Model_Mail_Boxes::getName($company['administratorEmail']),
+            'email'     => Axis_Core_Model_Mail_Boxes::getConfigOptionName($company['administratorEmail']),
             'city'      => $company['city'],
-            'country'   => Axis_Location_Model_Country::getName($company['country']),
+            'country'   => Axis_Location_Model_Country::getConfigOptionName($company['country']),
             'fax'       => $company['fax'],
             'name'      => $company['name'],
             'phone'     => $company['phone'],
             'postcode'  => $company['zip'],
             'site'      => $company['site'],
-            'zone'      => Axis_Location_Model_Zone::getName($company['zone']),
+            'zone'      => Axis_Location_Model_Zone::getConfigOptionName($company['zone']),
             'street_address' => $company['street'],
-            'customer_relation_email' => Axis_Core_Model_Mail_Boxes::getName(
+            'customer_relation_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
                 $company['customerRelationEmail']
             ),
-            'sales_email' => Axis_Core_Model_Mail_Boxes::getName(
+            'sales_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
                 $company['salesDepartmentEmail']
             ),
-            'support_email' => Axis_Core_Model_Mail_Boxes::getName(
+            'support_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
                 $company['supportEmail']
             )
         );
@@ -155,7 +155,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Collect_Interfa
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         if (null === self::$_collection) {
             self::$_collection = Axis::single('core/site')
@@ -171,7 +171,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Collect_Interfa
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (!$id) return '';
         return Axis::single('core/site')->getNameById($id);

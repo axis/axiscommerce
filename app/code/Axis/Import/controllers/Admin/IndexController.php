@@ -41,7 +41,7 @@ class Axis_Import_Admin_IndexController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__("Import");
-        $this->view->languages = Axis_Locale_Model_Language::collect();
+        $this->view->languages = Axis_Locale_Model_Language::getConfigOptionsArray();
         $this->render();
     }
 

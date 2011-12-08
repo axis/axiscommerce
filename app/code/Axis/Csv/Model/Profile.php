@@ -131,7 +131,7 @@ class Axis_Csv_Model_Profile extends Axis_Db_Table
                     ->where('cps.in_stock = ?', intval($filters['stock']));
             }
             if (isset($filters['site']) && $filters['site'] != 'all' && trim($filters['site'], ' ,') != '') {
-                $site_count = count(Axis_Core_Model_Site::collect());
+                $site_count = count(Axis_Core_Model_Site::getConfigOptionsArray());
                 $filter_sites = explode(',', trim($filters['site'], ' ,'));
                 $filters_site_count = count($filter_sites);
                 if ($site_count != $filters_site_count) {

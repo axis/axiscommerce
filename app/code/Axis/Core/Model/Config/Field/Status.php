@@ -29,13 +29,13 @@
  * @package     Axis_Core
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Config_Field_Status implements Axis_Collect_Interface
+class Axis_Core_Model_Config_Field_Status implements Axis_Config_Option_Interface
 {
     /**
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         $translate = Axis::translate('Axis_Core');
         return array(
@@ -51,9 +51,9 @@ class Axis_Core_Model_Config_Field_Status implements Axis_Collect_Interface
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
-        $values = self::collect();
+        $values = self::getConfigOptionsArray();
         if (isset($values[$id])) {
             return $values[$id];
         }

@@ -64,7 +64,7 @@ class Axis_Config_Handler_BaseCurrency implements  Axis_Config_Handler_Interface
     public static function getHtml($value, Zend_View_Interface $view = null)
     {
         return $view->formSelect('confValue',
-            $value, null, Axis_Locale_Model_Currency::collect()
+            $value, null, Axis_Locale_Model_Currency::getConfigOptionsArray()
         );
     }
 

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Geozone extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Location_Model_Geozone extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = 'location_geozone';
 
@@ -84,7 +84,7 @@ class Axis_Location_Model_Geozone extends Axis_Db_Table implements Axis_Collect_
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('location/geozone')
             ->select(array('id', 'name'))
@@ -97,7 +97,7 @@ class Axis_Location_Model_Geozone extends Axis_Db_Table implements Axis_Collect_
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (!$id) return '';
         return Axis::single('location/geozone')->getNameById($id);

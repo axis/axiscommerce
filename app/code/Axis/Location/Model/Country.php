@@ -31,7 +31,7 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = 'location_country';
 
@@ -70,7 +70,7 @@ class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Collect_
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         if (null === self::$_collection) {
             self::$_collection = Axis::single('location/country')
@@ -86,9 +86,9 @@ class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Collect_
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
-        self::collect();
+        self::getConfigOptionsArray();
         if (strstr($id, ",")) {
             $result = array();
             foreach(explode(",", $id) as $key) {

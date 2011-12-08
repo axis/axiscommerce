@@ -31,14 +31,14 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Mail_Boxes implements Axis_Collect_Interface
+class Axis_Core_Model_Mail_Boxes implements Axis_Config_Option_Interface
 {
     /**
      *
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         $rows = Axis::single('core/config_value')
             ->select(array('path', 'value'))
@@ -58,7 +58,7 @@ class Axis_Core_Model_Mail_Boxes implements Axis_Collect_Interface
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return Axis::single('core/config_value')
             ->select('value')

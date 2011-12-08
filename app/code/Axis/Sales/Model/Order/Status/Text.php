@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_Status_Text extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Sales_Model_Order_Status_Text extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = "sales_order_status_text";
     protected $_primary = array('status_id', 'language_id');
@@ -45,7 +45,7 @@ class Axis_Sales_Model_Order_Status_Text extends Axis_Db_Table implements Axis_C
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('sales/order_status_text')
                 ->select(array('status_id', 'status_name'))
@@ -59,7 +59,7 @@ class Axis_Sales_Model_Order_Status_Text extends Axis_Db_Table implements Axis_C
      * @param string $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return Axis::single('sales/order_status_text')
             ->select('status_name')

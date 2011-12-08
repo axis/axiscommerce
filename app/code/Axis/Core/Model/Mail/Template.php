@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Mail_Template implements Axis_Collect_Interface
+class Axis_Core_Model_Mail_Template implements Axis_Config_Option_Interface
 {
     /**
      *
@@ -45,7 +45,7 @@ class Axis_Core_Model_Mail_Template implements Axis_Collect_Interface
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         if (null === self::$_templates) {
             $path = Axis::config()->system->path . '/app/design/mail';
@@ -75,7 +75,7 @@ class Axis_Core_Model_Mail_Template implements Axis_Collect_Interface
      * @param string $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         $templates = $this->collect();
         return $templates[$id];

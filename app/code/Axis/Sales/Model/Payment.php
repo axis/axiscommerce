@@ -29,14 +29,14 @@
  * @package     Axis_Sales
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Payment implements Axis_Collect_Interface
+class Axis_Sales_Model_Payment implements Axis_Config_Option_Interface
 {
     /**
      *
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         $ret = array();
         foreach (Axis_Payment::getMethods() as $methodCode => $method) {
@@ -51,12 +51,12 @@ class Axis_Sales_Model_Payment implements Axis_Collect_Interface
      * @param string $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (!$id) {
             return '';
         }
-        $collects = self::collect();
+        $collects = self::getConfigOptionsArray();
         if (strstr($id, ",")) {
             $ret = array();
 

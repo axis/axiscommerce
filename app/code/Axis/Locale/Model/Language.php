@@ -31,7 +31,7 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Language extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Locale_Model_Language extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = 'locale_language';
     protected $_rowClass = 'Axis_Db_Table_Row';
@@ -70,7 +70,7 @@ class Axis_Locale_Model_Language extends Axis_Db_Table implements Axis_Collect_I
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         if (null === self::$_collection) {
             self::$_collection = Axis::single('locale/language')
@@ -86,7 +86,7 @@ class Axis_Locale_Model_Language extends Axis_Db_Table implements Axis_Collect_I
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return Axis::single('locale/language')->getLanguageById($id);
     }

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     const DEFAULT_TEMPLATE = 'default';
 
@@ -108,7 +108,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Int
                     ->join('cms_block_content', 'cb.id = cbc.block_id', '*')
                     ->where('cb.name = ?', $name)
                     ->fetchAll();
-                $languageIds = array_keys(Axis_Locale_Model_Language::collect());
+                $languageIds = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
 //                $cmsBlocks = array();
                 foreach ($rowset as $row) {
 
@@ -309,7 +309,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Int
         }
         //import cms blocks
         $modelBlock = Axis::model('cms/block');
-        $languageIds  = array_keys(Axis_Locale_Model_Language::collect());
+        $languageIds  = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
         $modelContent = Axis::model('cms/block_content');
         foreach ($cmsBlocks as $cmsBlock) {
             $cmsBlockId = $modelBlock->getIdByName($cmsBlock['name']);
@@ -411,7 +411,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Int
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('core/template')
                 ->select(array('id', 'name'))
@@ -424,7 +424,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Collect_Int
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return Axis::single('core/template')->getNameById($id);
     }

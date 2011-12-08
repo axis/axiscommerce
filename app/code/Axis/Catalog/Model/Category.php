@@ -288,7 +288,7 @@ class Axis_Catalog_Model_Category extends Axis_Db_Table
     public function addNewRootCategory(Axis_Db_Table_Row $site) 
     {
         $modelDescription = Axis::model('catalog/category_description');
-        $languageIds      = array_keys(Axis_Locale_Model_Language::collect());
+        $languageIds      = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
         $timestamp        = Axis_Date::now()->toSQLString();
         $row = $this->createRow(array(
             'site_id'     => $site->id,

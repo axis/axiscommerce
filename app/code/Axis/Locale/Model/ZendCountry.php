@@ -18,7 +18,7 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Locale
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -29,14 +29,14 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_ZendCountry implements Axis_Collect_Interface
+class Axis_Locale_Model_ZendCountry implements Axis_Config_Option_Interface
 {
     /**
      *
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         $options    = array();
         $locale = Axis_Locale::getLocale();
@@ -56,7 +56,7 @@ class Axis_Locale_Model_ZendCountry implements Axis_Collect_Interface
      * @param string $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (empty($id)) {
             return;

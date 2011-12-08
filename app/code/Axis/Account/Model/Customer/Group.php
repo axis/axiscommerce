@@ -31,7 +31,7 @@
  * @subpackage  Axis_Account_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     const GROUP_ALL_ID = 0;
     const GROUP_GUEST_ID = 5;
@@ -79,7 +79,7 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Co
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('account/customer_group')
                 ->select(array('id', 'name'))
@@ -92,7 +92,7 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Co
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (!$id) {
             return '';

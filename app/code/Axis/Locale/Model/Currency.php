@@ -31,7 +31,7 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = 'locale_currency';
 
@@ -358,7 +358,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Collect_I
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('locale/currency')
                 ->select(array('code', 'title'))
@@ -371,7 +371,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Collect_I
      * @param string  $code
      * @return string
      */
-    public static function getName($code)
+    public static function getConfigOptionName($code)
     {
         if (!$code) return '';
         return Axis::single('locale/currency')->getTitleByCode($code);

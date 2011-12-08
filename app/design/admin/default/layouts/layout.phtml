@@ -16,7 +16,7 @@
             skinUrl     : '<?php echo $this->skinUrl() ?>',
             locale      : '<?php echo Axis_Locale::getLocale()->toString() ?>',
             language    : '<?php echo Axis_Locale::getLanguageId() ?>',
-            languages   : <?php echo Zend_Json_Encoder::encode(Axis_Locale_Model_Language::collect()) ?>,
+            languages   : <?php echo Zend_Json_Encoder::encode(Axis_Locale_Model_Language::getConfigOptionsArray()) ?>,
             locales     : <?php echo Zend_Json_Encoder::encode(
                 Axis::single('locale/language')->select()->fetchAssoc()
             ) ?>

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_ZoneByCountry implements Axis_Collect_Interface
+class Axis_Location_Model_ZoneByCountry implements Axis_Config_Option_Interface
 {
     /**
      *
@@ -39,7 +39,7 @@ class Axis_Location_Model_ZoneByCountry implements Axis_Collect_Interface
      * @param int $countryId [optional]
      * @return array
      */
-    public static function collect($countryId = null)
+    public static function getConfigOptionsArray()
     {
         if (!$countryId) return array();
 
@@ -55,7 +55,7 @@ class Axis_Location_Model_ZoneByCountry implements Axis_Collect_Interface
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (!$id) return '';
         return Axis::single('location/zone')->getNameById($id);

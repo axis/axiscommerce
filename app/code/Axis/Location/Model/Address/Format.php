@@ -31,7 +31,7 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Address_Format extends Axis_Db_Table implements Axis_Collect_Interface
+class Axis_Location_Model_Address_Format extends Axis_Db_Table implements Axis_Config_Option_Interface
 {
     protected $_name = 'location_address_format';
     
@@ -39,7 +39,7 @@ class Axis_Location_Model_Address_Format extends Axis_Db_Table implements Axis_C
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         return Axis::single('location/address_format')
                 ->select(array('id', 'name'))
@@ -52,7 +52,7 @@ class Axis_Location_Model_Address_Format extends Axis_Db_Table implements Axis_C
      * @param int $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         if (!$id) return '';
         return Axis::single('location/address_format')->getNameById($id);

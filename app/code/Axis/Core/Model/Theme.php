@@ -31,14 +31,14 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Theme  implements Axis_Collect_Interface
+class Axis_Core_Model_Theme  implements Axis_Config_Option_Interface
 {
     /**
      *
      * @static
      * @return array
      */
-    public static function collect()
+    public static function getConfigOptionsArray()
     {
         $path = Axis::config('system/path') . '/app/design/front';
         $dh = opendir($path);
@@ -58,7 +58,7 @@ class Axis_Core_Model_Theme  implements Axis_Collect_Interface
      * @param string $id
      * @return string
      */
-    public static function getName($id)
+    public static function getConfigOptionName($id)
     {
         return $id;
     }
