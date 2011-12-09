@@ -49,7 +49,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
                 $row->save();
             }
         }
-               
+                      
         Axis::model('admin/acl_rule')
             ->rename('admin/axis/core/config-field',      'admin/axis/core/config_field')
             ->rename('admin/axis/core/config-field/list', 'admin/axis/core/config_field/list')
