@@ -49,28 +49,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         return $confData;
     }
 
-    private function _getHtml($handlerName, $param)
-    {
-        return call_user_func(
-            array('Axis_Config_Handler_' . $handlerName, 'getHtml'), $param, $this->view
-        );
-    }
-
-    private function _getName($collectName, $id)
-    {
-        return call_user_func(
-            array($collectName, 'getConfigOptionName'), $id
-        );
-    }
-
-    private function _getSaveValue(
-        $handlerName, $params = array(), $additional = array())
-    {
-        return call_user_func(
-            array('Axis_Config_Handler_' . $handlerName, 'getSaveValue'), $params
-        );
-    }
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Configuration');
@@ -137,7 +115,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 $data[$row->id]['config_options'] = $this->_optionsToArray(
                     $row->config_options
                 );
-                Axis_FirePhp::log($data[$row->id]['config_options']);
             }
 
             if ('bool' == $row->config_type) {
@@ -145,7 +122,11 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
                 $_value = '****************';
             } elseif ('handler' !== $row->config_type && !empty($row->model)) {
-                $_value = $this->_getName($row->model, $row->value);
+                
+                $_value = call_user_func(
+                    array($row->model, 'getConfigOptionName'), $row->value
+                );
+                
             } else if (in_array($row->config_type, array('select', 'multiple'))
                 && isset($data[$row->id]['config_options'][$row->value])) {
 
@@ -195,18 +176,19 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 
                 if (empty($param)) {
                     $row->config_options = call_user_func(
-                        array($model, 'getConfigOptionsArray')
+                        array($row->model, 'getConfigOptionsArray')
                     );
                 } else {
                     $row->config_options = call_user_func(
-                        array($model, 'getConfigOptionsArray'), $param
+                        array($row->model, 'getConfigOptionsArray'), $param
                     );
                 }
                 
             } else {
-                $row->config_options = $this->_getHtml(
-                    $row->model,
-                    Axis::single('core/config_value')->getValue($path, $siteId)
+                $row->config_options = call_user_func(
+                    array('Axis_Config_Handler_' . $row->model, 'getHtml'), 
+                    $this->view->confValue, 
+                    $this->view
                 );
             }
 
@@ -241,7 +223,11 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 $value = array($value, 'siteId' => $siteId);
             }
 
-            $value = $this->_getSaveValue($rowField->model, $value, array());
+            $value = //$this->_getSaveValue($rowField->model, $value);
+            
+            call_user_func(
+                array('Axis_Config_Handler_' . $rowField->model, 'getSaveValue'), $value
+            );
         } elseif (is_array($value)) {
             $value = implode(Axis_Config::MULTI_SEPARATOR, $value);
         }

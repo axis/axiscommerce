@@ -39,7 +39,7 @@ class Axis_Location_Model_ZoneByCountry implements Axis_Config_Option_Interface
      * @param int $countryId [optional]
      * @return array
      */
-    public static function getConfigOptionsArray()
+    public static function getConfigOptionsArray($countryId = null)
     {
         if (!$countryId) return array();
 
