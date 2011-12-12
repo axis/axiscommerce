@@ -78,14 +78,20 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             Axis_Message::getInstance()->addError($message);
             return false;
         }
-        $options['PAYMENTACTION'] = 'Authorization';
-        if ($this->_config->transactionMode == 'Order') {
-            $options['PAYMENTACTION'] = 'Order';
-        }
-        if ($this->_config->transactionMode == 'Sale') {
-            $options['PAYMENTACTION'] = 'Sale';
-        }
+        switch ($this->_config->paymentAction) {
+            case Axis_PaymentPaypal_Model_Express_PaymentAction::ORDER:
 
+                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Express_PaymentAction::ORDER;
+                break;
+            case Axis_PaymentPaypal_Model_Express_PaymentAction::SALE:
+
+                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Express_PaymentAction::SALE;
+                break;
+            default:
+                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Express_PaymentAction::AUTHORIZATION;
+                break;
+        }
+        
         $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
         $returnUrl = $view->href('/paymentpaypal/express/details', true);
         $cancelUrl = $view->href('/paymentpaypal/express/cancel', true);
