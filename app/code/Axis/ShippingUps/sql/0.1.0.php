@@ -31,19 +31,19 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         Axis::single('core/config_field')
-            ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/Ups_Standard', 'Shipping Methods/Ups Standard', null, null, array('translation_module' => 'Axis_ShippingUps'))
-            ->add('shipping/Ups_Standard/enabled', 'Shipping Methods/Ups Standard/Enabled', '0', 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Ups_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Ups_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Ups_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping',                        'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
+            ->add('shipping/Ups_Standard',           'Shipping Methods/Ups Standard', null, null, array('translation_module' => 'Axis_ShippingUps'))
+            ->add('shipping/Ups_Standard/enabled',   'Shipping Methods/Ups Standard/Enabled', '0', 'bool', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Ups_Standard/geozone',   'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Ups_Standard/taxBasis',  'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Ups_Standard/taxClass',  'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Ups_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Ups_Standard/pickup', 'UPS Pickup Method', 'CC', 'select', 'How do you give packages to UPS? CC - Customer Counter, RDP - Daily Pickup, OTP - One Time Pickup, LC - Letter Center, OCA - On Call Air', array('config_options' => 'CC,RDP,OTP,LC,OCA'))
-            ->add('shipping/Ups_Standard/package', 'UPS Packaging?', 'CP', 'select', 'CP - Your Packaging, ULE - UPS Letter, UT - UPS Tube, UBE - UPS Express Box', array('config_options' => 'CP,ULE,UT,UBE'))
-            ->add('shipping/Ups_Standard/res', 'Residential Delivery?', 'RES', 'select', 'Quote for Residential (RES) or Commercial Delivery (COM)', array('config_options' => 'RES,COM'))
-            ->add('shipping/Ups_Standard/handling', 'Handling Fee', '0', 'string', '')
-            ->add('shipping/Ups_Standard/title', 'Title', 'Ups')
-            ->add('shipping/Ups_Standard/types', 'Allowed Shipping Methods',
+            ->add('shipping/Ups_Standard/pickup',    'UPS Pickup Method', Axis_ShippingUps_Model_Standard_Pickup::CC, 'select', 'How do you give packages to UPS?', array('model' => 'Axis_ShippingUps_Model_Standard_Pickup'))
+            ->add('shipping/Ups_Standard/package',   'UPS Packaging?',  Axis_ShippingUps_Model_Standard_Package::CP, 'select', 'CP - Your Packaging, ULE - UPS Letter, UT - UPS Tube, UBE - UPS Express Box', array('model' => 'Axis_ShippingUps_Model_Standard_Package'))
+            ->add('shipping/Ups_Standard/res',       'Residential Delivery?', Axis_ShippingUps_Model_Standard_DestinationType::RES, 'select', 'Quote for Residential (RES) or Commercial Delivery (COM)', array('model' => 'Axis_ShippingUps_Model_Standard_DestinationType'))
+            ->add('shipping/Ups_Standard/handling',  'Handling Fee', '0', 'string', '')
+            ->add('shipping/Ups_Standard/title',     'Title', 'Ups')
+            ->add('shipping/Ups_Standard/types',     'Allowed Shipping Methods',
                 '1DM,1DML,1DA,1DAL,1DAPI,1DP,1DPL,2DM,2DML,2DA,2DAL,3DS,GND,GNDCOM,GNDRES,STD,XPR,WXS,XPRL,XDM,XDML,XPD',
                 'multiple', 'Select the UPS services to be offered. : <br />Nxt AM, Nxt AM Ltr, Nxt, Nxt Ltr, Nxt PR, Nxt Save, Nxt Save Ltr, 2nd AM, 2nd AM Ltr, 2nd, 2nd Ltr, 3 Day Select, Ground, Canada,World Xp, World Xp Ltr, World Xp Plus, World Xp Plus Ltr, World Expedite, WorldWideSaver.',
                 array('config_options' => '1DM,1DML,1DA,1DAL,1DAPI,1DP,1DPL,2DM,2DML,2DA,2DAL,3DS,GND,GNDCOM,GNDRES,STD,XPR,WXS,XPRL,XDM,XDML,XPD')

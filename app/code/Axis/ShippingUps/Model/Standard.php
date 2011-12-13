@@ -61,18 +61,18 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
      */
 
     private $_codes = array(
-       '01' => '1DA',
-       '02' => '2DA',
-       '03' => 'GND',
-       '07' => 'XPR',
-       '08' => 'XPD',
-       '11' => 'STD',
-       '12' => '3DS',
-       '13' => '1DP',
-       '14' => '1DM',
-       '54' => 'XDM',
-       '59' => '2DM',
-       '65' => 'WXS',
+       '01' => '1DA', //UPS Next Day Air®
+       '02' => '2DA', //UPS Second Day Air®
+       '03' => 'GND', //UPS Ground
+       '07' => 'XPR', //UPS Worldwide ExpressSM
+       '08' => 'XPD', //UPS Worldwide ExpeditedSM
+       '11' => 'STD', //UPS Standard
+       '12' => '3DS', //UPS Three-Day Select®
+       '13' => '1DP', //UPS Next Day Air Saver®
+       '14' => '1DM', //UPS Next Day Air® Early A.M. SM
+       '54' => 'XDM', //UPS Worldwide Express PlusSM
+       '59' => '2DM', //UPS Second Day Air A.M.®
+       '65' => 'WXS', //UPS Saver
 
        '1DM'    => '14',
        '1DML'   => '14',
@@ -99,24 +99,6 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
     );
 
-    private $_pikup = array (
-        'RDP' => array('label' => 'Regular Daily Pickup', 'code' => '01'),
-        'OCA' => array('label' => 'On Call Air',          'code' => '07'),
-        'OTP' => array('label' => 'One Time Pickup',      'code' => '06'),
-        'LC'  => array('label' => 'Letter Center',        'code' => '19'),
-        'CC'  => array('label' => 'Customer Counter',     'code' => '03')
-    );
-
-    private $_package = array(
-        'CP'   => array('label' => 'Customer Packaging',    'code' => '00'),
-        'ULE'  => array('label' => 'UPS Letter Envelope',   'code' => '01'),
-        'UT'   => array('label' => 'UPS Tube',              'code' => '03'),
-        'UEB'  => array('label' => 'UPS Express Box',       'code' => '21'),
-        'UW25' => array('label' => 'UPS Worldwide 25 kilo', 'code' => '24'),
-        'UW10' => array('label' => 'UPS Worldwide 10 kilo', 'code' => '25'),
-    );
-
-
     //http://www.google.com.ua/url?sa=t&source=web&ct=res&cd=1&url=http%3A%2F%2Faricmackey.com%2Fwp-content%2Fuploads%2F2008%2F04%2Fups-servicecodes.pdf&ei=ilFwSrCgApPmnAOSnuG4Bw&usg=AFQjCNEsnvbbKqFJpNC11Usd9T7sceF1Cg&sig2=C4YzeB2s4p-xbSENCFTtRw
 
     /**
@@ -142,7 +124,14 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $r = new Axis_Object();
         // Set UPS Product Code
         // Set UPS Action method
-        $r->productCode = 'GND' . $this->_config->res;
+        switch ($this->_config->res) {
+            case Axis_ShippingUps_Model_Standard_DestinationType::RES: 
+                $r->productCode = 'GNDRES';
+                break;
+            case Axis_ShippingUps_Model_Standard_DestinationType::COM: 
+                $r->productCode = 'GNDCOM';
+                break;
+        }
         $r->actionCode = '4';
          /* 3 - Single Quote (Rate)
             4 - All Available Quotes (Shop)*/
@@ -183,11 +172,11 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
 
         // Set UPS rate-quote method
-        $r->rateCode = $this->_config->pickup;
-        $r->rateLabel =  $this->_pikup[$r->rateCode]['label'];
+        $r->pickupCode = $this->_config->pickup;
+        $r->pickupLabel =  Axis_ShippingUps_Model_Standard_Pickup::getConfigOptionName($r->pickupCode);
 
         // Set UPS Container type
-        $r->containerCode = $this->_package[$this->_config->package]['code'];
+        $r->containerCode = $this->_config->package;
 
         // Set UPS package weight
         $r->packageWeight = $request['weight'] < 0.1 ? 0.1 : $request['weight'];
@@ -199,11 +188,11 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         //Set UPS address-quote method (residential vs commercial)
         switch ($this->_config->res) {
-            case 'RES': // Residential Address
-                $r->resComCode = '1';
+            case Axis_ShippingUps_Model_Standard_DestinationType::RES: // Residential Address
+                $r->residentialCode = '1';
                 break;
-            case 'COM': // Commercial Address
-                $r->resComCode = '0';
+            case Axis_ShippingUps_Model_Standard_DestinationType::COM: // Commercial Address
+                $r->residentialCode = '0';
                 break;
         }
         $this->_request = $r;
@@ -250,13 +239,13 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         $pickupType = $xml->addChild('PickupType');
 
-        $pickupType->addChild('Code', $this->_pikup[$this->_request->rateCode]['code']);
+        $pickupType->addChild('Code', $this->_request->pickupCode);
         /*
         '01' (daily pickup), '03' (customer counter), '06' (one time pickup),
         '07' (oncall air), '11' (suggested retail rates),
         '19' (letter center), or '20' (air service center)
         */
-        $pickupType->addChild('Description', $this->_request->rateLabel);
+        $pickupType->addChild('Description', $this->_request->pickupLabel);
         //$customerClassification = $xml->addChild('CustomerClassification');
         //$customerClassification->addChild('Code',);
         /*string '01' (wholesale), '03' (occasional), or '04' (retail);
@@ -285,10 +274,10 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $address = $shipment->addChild('ShipTo')->addChild('Address');
         $address->addChild('PostalCode', $this->_request->destPostalCode);
         $address->addChild('CountryCode', $this->_request->destCountryCode);
-        $address->addChild('ResidentialAddress', $this->_request->resComCode);
+        $address->addChild('ResidentialAddress', $this->_request->residentialCode);
         $address->addChild('StateProvinceCode', $this->_request->destZone);
-        if ($this->_request->resComCode === '01') {
-            $address->addChild('ResidentialAddressIndicator', $this->_request->resComCode);
+        if ('1' === $this->_request->residentialCode) {
+            $address->addChild('ResidentialAddressIndicator', $this->_request->residentialCode);
         }
 
         $address = $shipment->addChild('ShipFrom')->addChild('Address');
@@ -403,18 +392,18 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         $request = join('&', array(
             'accept_UPS_license_agreement=yes',
-            '10_action=' . $this->_request->actionCode,
-            '13_product=' . $this->_request->productCode,
+            '10_action='      . $this->_request->actionCode,
+            '13_product='     . $this->_request->productCode,
             '14_origCountry=' . $this->_request->originCountryCode,
-            '15_origPostal=' . $this->_request->originPostalCode,
-            'origCity='      . $this->_request->originCity,
-            '19_destPostal=' . $this->_request->destPostalCode,
+            '15_origPostal='  . $this->_request->originPostalCode,
+            'origCity='       . $this->_request->originCity,
+            '19_destPostal='  . $this->_request->destPostalCode,
             '22_destCountry=' . $this->_request->destCountryCode,
-            '23_weight=' . $this->_request->packageWeight,
-            '47_rate_chart=' . $this->_request->rateLabel,
-            '48_container=' . $this->_request->containerCode,
-            '49_residential=' . $this->_request->resComCode,
-            'weight_std='. $this->_request->weightUnit
+            '23_weight='      . $this->_request->packageWeight,
+            '47_rate_chart='  . $this->_request->pickupLabel,
+            '48_container='   . $this->_request->containerCode,
+            '49_residential=' . $this->_request->residentialCode,
+            'weight_std='     . $this->_request->weightUnit
         ));
         $httpClient = new Zend_Http_Client();
         $httpClient->setHeaders(array(
