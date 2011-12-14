@@ -78,7 +78,9 @@ class Axis_ShippingUps_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
         $paths = array(
             'shipping/Ups_Standard/pickup'  => 'Axis_ShippingUps_Model_Standard_Pickup',
             'shipping/Ups_Standard/package' => 'Axis_ShippingUps_Model_Standard_Package',
-            'shipping/Ups_Standard/res'     => 'Axis_ShippingUps_Model_Standard_DestinationType'
+            'shipping/Ups_Standard/res'     => 'Axis_ShippingUps_Model_Standard_DestinationType',
+            'shipping/Ups_Standard/measure' => 'Axis_ShippingUps_Model_Standard_Measure',
+            'shipping/Ups_Standard/type'    => 'Axis_ShippingUps_Model_Standard_RequestType'
             
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();

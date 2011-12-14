@@ -50,18 +50,18 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
             )
             ->add('shipping/Ups_Standard/boxWeightDisplay', 'Shipping/Default/boxWeightDisplay', '1', 'string', 'Variants: 0, 1 or 2 ')
-            ->add('shipping/Ups_Standard/type', 'UPS Type', 'CGI', 'select', 'CGI or XML', array('config_options' => 'CGI,XML'))
-            ->add('shipping/Ups_Standard/measure', 'UPS Weight Unit', 'LBS', 'select', 'LBS or KGS', array('config_options' => 'LBS,KGS'))
+            ->add('shipping/Ups_Standard/type',     'UPS Type', Axis_ShippingUps_Model_Standard_RequestType::CGI, 'select', 'CGI or XML', array('model' => 'Axis_ShippingUps_Model_Standard_RequestType'))
+            ->add('shipping/Ups_Standard/measure',  'UPS Weight Unit', Axis_ShippingUps_Model_Standard_Measure::LBS, 'select', 'LBS or KGS', array('model' => 'Axis_ShippingUps_Model_Standard_Measure'))
             ->add('shipping/Ups_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Sales_Model_Payment', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Ups_Standard/gateway', 'Gateway Url', 'http://www.ups.com/using/services/rave/qcostcgi.cgi')
+            ->add('shipping/Ups_Standard/gateway',  'Gateway Url', 'http://www.ups.com/using/services/rave/qcostcgi.cgi')
 
-            ->add('shipping/Ups_Standard/xmlUserId', 'XML Account User Id', '', 'handler', '', array('model' => 'Crypt'))
-            ->add('shipping/Ups_Standard/xmlPassword', 'XML Account Password', '', 'handler', '', array('model' => 'Crypt'))
+            ->add('shipping/Ups_Standard/xmlUserId',              'XML Account User Id', '', 'handler', '', array('model' => 'Crypt'))
+            ->add('shipping/Ups_Standard/xmlPassword',            'XML Account Password', '', 'handler', '', array('model' => 'Crypt'))
             ->add('shipping/Ups_Standard/xmlAccessLicenseNumber', 'XML Access License Number', '', 'handler', '', array('model' => 'Crypt'))
-            ->add('shipping/Ups_Standard/xmlGateway', 'Gateway XML URL', 'https://onlinetools.ups.com/ups.app/xml/Rate')
-            ->add('shipping/Ups_Standard/xmlOrigin', 'Origin of the shipment', 'Shipments Originating in United States', 'select', '', array('config_options' => 'United States Domestic Shipments,Shipments Originating in United States,Shipments Originating in Canada,Shipments Originating in the European Union,Polish Domestic Shipments,Puerto Rico Origin,Shipments Originating in Mexico,Shipments Originating in Other Countries'))
-            ->add('shipping/Ups_Standard/negotiatedActive', 'Enable Negotiated Rates', '0', 'bool')
-            ->add('shipping/Ups_Standard/shipperNumber', 'Shipper Number', '', 'handler', '', array('model' => 'Crypt'))
+            ->add('shipping/Ups_Standard/xmlGateway',             'Gateway XML URL', 'https://onlinetools.ups.com/ups.app/xml/Rate')
+            ->add('shipping/Ups_Standard/xmlOrigin',              'Origin of the shipment', 'Shipments Originating in United States', 'select', '', array('config_options' => 'United States Domestic Shipments,Shipments Originating in United States,Shipments Originating in Canada,Shipments Originating in the European Union,Polish Domestic Shipments,Puerto Rico Origin,Shipments Originating in Mexico,Shipments Originating in Other Countries'))
+            ->add('shipping/Ups_Standard/negotiatedActive',       'Enable Negotiated Rates', '0', 'bool')
+            ->add('shipping/Ups_Standard/shipperNumber',          'Shipper Number', '', 'handler', '', array('model' => 'Crypt'))
             ;
     }
 

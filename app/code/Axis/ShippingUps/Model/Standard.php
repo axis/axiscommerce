@@ -202,6 +202,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
     protected function _getQuotes()
     {
+        $this->_getCgiQuotes();
         if ($this->_config->type === 'XML') {
             return $this->_getXmlQuotes();
         }
@@ -296,6 +297,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         }
 
         $xmlRequest = $this->_xmlAccessRequest . $xml->asXML();
+        Axis_FirePhp::log($xmlRequest);
         try {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $this->_config->xmlGateway);
@@ -386,10 +388,6 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
      */
     protected function _getCgiQuotes()
     {
-        if (!isset($this->_request->actionCode)) {
-            $this->_request->actionCode = '4';
-        }
-
         $request = join('&', array(
             'accept_UPS_license_agreement=yes',
             '10_action='      . $this->_request->actionCode,
@@ -417,6 +415,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         if (!empty($this->_config->gateway)) {
             $uri = $this->_config->gateway;
         }
+        Axis_FirePhp::log($request);
         $httpClient->setUri($uri . '?'. $request);
         $httpClient->setConfig(array('maxredirects' => 0, 'timeout' => 30));
 
