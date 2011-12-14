@@ -43,10 +43,8 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Ups_Standard/res',       'Residential Delivery?', Axis_ShippingUps_Model_Standard_DestinationType::RES, 'select', 'Quote for Residential (RES) or Commercial Delivery (COM)', array('model' => 'Axis_ShippingUps_Model_Standard_DestinationType'))
             ->add('shipping/Ups_Standard/handling',  'Handling Fee', '0', 'string', '')
             ->add('shipping/Ups_Standard/title',     'Title', 'Ups')
-            ->add('shipping/Ups_Standard/types',     'Allowed Shipping Methods',
-                '1DM,1DML,1DA,1DAL,1DAPI,1DP,1DPL,2DM,2DML,2DA,2DAL,3DS,GND,GNDCOM,GNDRES,STD,XPR,WXS,XPRL,XDM,XDML,XPD',
-                'multiple', 'Select the UPS services to be offered. : <br />Nxt AM, Nxt AM Ltr, Nxt, Nxt Ltr, Nxt PR, Nxt Save, Nxt Save Ltr, 2nd AM, 2nd AM Ltr, 2nd, 2nd Ltr, 3 Day Select, Ground, Canada,World Xp, World Xp Ltr, World Xp Plus, World Xp Plus Ltr, World Expedite, WorldWideSaver.',
-                array('config_options' => '1DM,1DML,1DA,1DAL,1DAPI,1DP,1DPL,2DM,2DML,2DA,2DAL,3DS,GND,GNDCOM,GNDRES,STD,XPR,WXS,XPRL,XDM,XDML,XPD')
+            ->add('shipping/Ups_Standard/types',     'Allowed Shipping Methods', Axis_ShippingUps_Model_Standard_Service::getDeafultValue(), 'multiple', 'Select the UPS services to be offered. : <br />Nxt AM, Nxt AM Ltr, Nxt, Nxt Ltr, Nxt PR, Nxt Save, Nxt Save Ltr, 2nd AM, 2nd AM Ltr, 2nd, 2nd Ltr, 3 Day Select, Ground, Canada,World Xp, World Xp Ltr, World Xp Plus, World Xp Plus Ltr, World Expedite, WorldWideSaver.',
+                array('model' => 'Axis_ShippingUps_Model_Standard_Service')
 
             )
             ->add('shipping/Ups_Standard/boxWeightDisplay', 'Shipping/Default/boxWeightDisplay', '1', 'string', 'Variants: 0, 1 or 2 ')
@@ -59,7 +57,7 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Ups_Standard/xmlPassword',            'XML Account Password', '', 'handler', '', array('model' => 'Crypt'))
             ->add('shipping/Ups_Standard/xmlAccessLicenseNumber', 'XML Access License Number', '', 'handler', '', array('model' => 'Crypt'))
             ->add('shipping/Ups_Standard/xmlGateway',             'Gateway XML URL', 'https://onlinetools.ups.com/ups.app/xml/Rate')
-            ->add('shipping/Ups_Standard/xmlOrigin',              'Origin of the shipment', 'Shipments Originating in United States', 'select', '', array('config_options' => 'United States Domestic Shipments,Shipments Originating in United States,Shipments Originating in Canada,Shipments Originating in the European Union,Polish Domestic Shipments,Puerto Rico Origin,Shipments Originating in Mexico,Shipments Originating in Other Countries'))
+            ->add('shipping/Ups_Standard/xmlOrigin',              'Origin of the shipment', Axis_ShippingUps_Model_Standard_Origin::getDeafultValue(), 'select', '', array('model' => 'Axis_ShippingUps_Model_Standard_Origin'))
             ->add('shipping/Ups_Standard/negotiatedActive',       'Enable Negotiated Rates', '0', 'bool')
             ->add('shipping/Ups_Standard/shipperNumber',          'Shipper Number', '', 'handler', '', array('model' => 'Crypt'))
             ;

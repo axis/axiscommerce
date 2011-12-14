@@ -55,12 +55,12 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
      */
     protected $_defaultGatewayUrl = 'http://www.ups.com/using/services/rave/qcostcgi.cgi';
 
+     //@todo collection serrvices value|code|label 01|1da|UPS Next Day Air®
     /**
      * Subcodes
      * @var array
      */
-
-    private $_codes = array(
+    private $_valueToCode = array(
        '01' => '1DA', //UPS Next Day Air®
        '02' => '2DA', //UPS Second Day Air®
        '03' => 'GND', //UPS Ground
@@ -73,7 +73,13 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
        '54' => 'XDM', //UPS Worldwide Express PlusSM
        '59' => '2DM', //UPS Second Day Air A.M.®
        '65' => 'WXS', //UPS Saver
-
+    );
+    
+    /**
+     * Subcodes
+     * @var array
+     */
+    private $_codeToValue = array(
        '1DM'    => '14',
        '1DML'   => '14',
        '1DA'    => '01',
@@ -135,7 +141,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $r->actionCode = '4';
          /* 3 - Single Quote (Rate)
             4 - All Available Quotes (Shop)*/
-        if ($request['country']['iso_code_2'] === 'CA') {
+        if ('CA' === $request['country']['iso_code_2']) {
             $r->productCode = 'STD';
             $r->actionCode = '3';
         }
@@ -202,8 +208,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
     protected function _getQuotes()
     {
-        $this->_getCgiQuotes();
-        if ($this->_config->type === 'XML') {
+        if (Axis_ShippingUps_Model_Standard_RequestType::XML === $this->_config->type) {
             return $this->_getXmlQuotes();
         }
         return $this->_getCgiQuotes();
@@ -233,7 +238,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $request->addChild('RequestAction', 'Rate');
 
         $option = 'Rate';
-        if ($this->_request->actionCode == '4')  {
+        if ('4' == $this->_request->actionCode)  {
             $option = 'Shop';
         }
         $request->addChild('RequestOption', $option);
@@ -256,12 +261,12 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         */
         $shipment = $xml->addChild('Shipment');
         $service = $shipment->addChild('Service');
+        
+        $service->addChild('Code', $this->_request->productCode);
         $code = $this->_request->productCode ?
-            $this->_codes[$this->_request->productCode] : '';
-        $service->addChild('Code', $code);
-        $service->addChild('Description', $this->_getShipmentDescription(
-             $this->_request->productCode
-        ));
+            $this->_codeToValue[$this->_request->productCode] : '';
+        $service->addChild('Description', Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionName($code));
+        
         $shipper = $shipment->addChild('Shipper');
         if ($this->_config->negotiatedActive && $this->_config->shipperNumber) {
             $shipper->addChild('<ShipperNumber>', $this->_config->shipperNumber);
@@ -297,7 +302,6 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         }
 
         $xmlRequest = $this->_xmlAccessRequest . $xml->asXML();
-        Axis_FirePhp::log($xmlRequest);
         try {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $this->_config->xmlGateway);
@@ -357,27 +361,31 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             $this->_config->shipperNumber && !empty($negotiatedArr);
 
         foreach ($xml->RatedShipment as $shipElement) {
-            $code = $this->_codes[(string)$shipElement->Service->Code];
+            $code = $this->_valueToCode[(string)$shipElement->Service->Code];
 
-            #$shipment = $this->getShipmentByCode($code);
             if (!in_array($code, $allowedMethods)) {
                 continue;
             }
 
             if ($negotiatedActive) {
-                $cost = (float)$shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->MonetaryValue;
-                $currency = (string)$shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->CurrencyCode;
+                $cost     = (float) $shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->MonetaryValue;
+                $currency = (string) $shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->CurrencyCode;
             } else {
-                $cost = (float)$shipElement->TotalCharges->MonetaryValue;
-                $currency = (string)$shipElement->TotalCharges->CurrencyCode;
+                $cost     = (float) $shipElement->TotalCharges->MonetaryValue;
+                $currency = (string) $shipElement->TotalCharges->CurrencyCode;
             }
             $cost = Axis::single('locale/currency')->from($cost, $currency);
             $methods[] = array(
-                'id' => $this->_code . '_' . $code,
-                'title' => $this->getTranslator()->__($this->_getShipmentDescription((string)$shipElement->Service->Code)),
+                'id'    => $this->_code . '_' . $code,
+                'title' => $this->getTranslator()->__(
+                    Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionName(
+                        (string)$shipElement->Service->Code
+                    )
+                ),
                 'price' => $cost + $this->_config->handling
             );
         }
+        Axis_FirePhp::log($methods);
         return $methods;
     }
 
@@ -415,7 +423,6 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         if (!empty($this->_config->gateway)) {
             $uri = $this->_config->gateway;
         }
-        Axis_FirePhp::log($request);
         $httpClient->setUri($uri . '?'. $request);
         $httpClient->setConfig(array('maxredirects' => 0, 'timeout' => 30));
 
@@ -455,140 +462,43 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         //                break;
         //        }
 
-        $allowed_methods = $this->_config->types->toArray();
-        $std_rcd = false;
+        $allowedMethods = $this->_config->types->toArray();
 
         for ($i = 0; $i < sizeof($rows); $i++) {
-            $type = null;
+            $code = null;
             $row = explode('%', $rows[$i]);
             $errcode = substr($row[0], -1);
             switch ($errcode) {
                 case 3:
                 case 4:
-                    $type = $row[1];
+                    $code = $row[1];
                     $cost = $row[10];
                     break;
                 case 5:
                     $this->log($row[1]);
                     break;
                 case 6:
-                    $type = $row[3];
+                    $code = $row[3];
                     $cost = $row[10];
                     break;
             }
 
-            if (!in_array($type, $allowed_methods)) {
+            if (!in_array($code, $allowedMethods)) {
                 continue;
             }
             $cost = Axis::single('locale/currency')->from($cost, 'USD');
             $methods[] = array(
-                'id' => $this->_code . '_' . $type,
+                'id' => $this->_code . '_' . $code,
                 'title' => $this->getTranslator()->__(
-                    $this->_getShipmentDescription($this->_codes[$type])
-                    ) /*. ' ' . $show_box_weight*/,
+                    Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionName(
+                        $this->_codeToValue[$code]
+                    )
+                ) /*. ' ' . $show_box_weight*/,
                 'price' => $cost + $this->_config->handling
                 // @todo)* $this->_request->numberBoxes
             );
 
         }
         return $methods;
-    }
-
-
-    protected function _getShipmentDescription($code)
-    {
-        $origin = $this->_config->xmlOrigin;
-
-        $originShipment = array(
-            // United States Domestic Shipments
-            'United States Domestic Shipments' => array(
-                '01' => 'UPS Next Day Air',
-                '02' => 'UPS Second Day Air',
-                '03' => 'UPS Ground',
-                '07' => 'UPS Worldwide Express',
-                '08' => 'UPS Worldwide Expedited',
-                '11' => 'UPS Standard',
-                '12' => 'UPS Three-Day Select',
-                '13' => 'UPS Next Day Air Saver',
-                '14' => 'UPS Next Day Air Early A.M.',
-                '54' => 'UPS Worldwide Express Plus',
-                '59' => 'UPS Second Day Air A.M.',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in United States
-            'Shipments Originating in United States' => array(
-                '01' => 'UPS Next Day Air',
-                '02' => 'UPS Second Day Air',
-                '03' => 'UPS Ground',
-                '07' => 'UPS Worldwide Express',
-                '08' => 'UPS Worldwide Expedited',
-                '11' => 'UPS Standard',
-                '12' => 'UPS Three-Day Select',
-                '14' => 'UPS Next Day Air Early A.M.',
-                '54' => 'UPS Worldwide Express Plus',
-                '59' => 'UPS Second Day Air A.M.',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in Canada
-            'Shipments Originating in Canada' => array(
-                '01' => 'UPS Express',
-                '02' => 'UPS Expedited',
-                '07' => 'UPS Worldwide Express',
-                '08' => 'UPS Worldwide Expedited',
-                '11' => 'UPS Standard',
-                '12' => 'UPS Three-Day Select',
-                '14' => 'UPS Express Early A.M.',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in the European Union
-            'Shipments Originating in the European Union' => array(
-                '07' => 'UPS Express',
-                '08' => 'UPS Expedited',
-                '11' => 'UPS Standard',
-                '54' => 'UPS Worldwide Express PlusSM',
-                '65' => 'UPS Saver',
-            ),
-            // Polish Domestic Shipments
-            'Polish Domestic Shipments' => array(
-                '07' => 'UPS Express',
-                '08' => 'UPS Expedited',
-                '11' => 'UPS Standard',
-                '54' => 'UPS Worldwide Express Plus',
-                '65' => 'UPS Saver',
-                '82' => 'UPS Today Standard',
-                '83' => 'UPS Today Dedicated Courrier',
-                '84' => 'UPS Today Intercity',
-                '85' => 'UPS Today Express',
-                '86' => 'UPS Today Express Saver',
-            ),
-            // Puerto Rico Origin
-            'Puerto Rico Origin' => array(
-                '01' => 'UPS Next Day Air',
-                '02' => 'UPS Second Day Air',
-                '03' => 'UPS Ground',
-                '07' => 'UPS Worldwide Express',
-                '08' => 'UPS Worldwide Expedited',
-                '14' => 'UPS Next Day Air Early A.M.',
-                '54' => 'UPS Worldwide Express Plus',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in Mexico
-            'Shipments Originating in Mexico' => array(
-                '07' => 'UPS Express',
-                '08' => 'UPS Expedited',
-                '54' => 'UPS Express Plus',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in Other Countries
-            'Shipments Originating in Other Countries' => array(
-                '07' => 'UPS Express',
-                '08' => 'UPS Worldwide Expedited',
-                '11' => 'UPS Standard',
-                '54' => 'UPS Worldwide Express Plus',
-                '65' => 'UPS Saver')
-        );
-
-        return isset($originShipment[$origin][$code]) ?
-            $originShipment[$origin][$code] : '';
     }
 }

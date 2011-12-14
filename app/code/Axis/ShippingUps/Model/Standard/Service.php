@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUps_Model_Standard_Method implements Axis_Config_Option_Interface
+class Axis_ShippingUps_Model_Standard_Service implements Axis_Config_Option_Interface
 {
     /**
      *
@@ -42,29 +42,29 @@ class Axis_ShippingUps_Model_Standard_Method implements Axis_Config_Option_Inter
     public static function getConfigOptionsArray()
     {
         return array(
-                '1DM'    => 'Next Day Air Early AM',
-                '1DML'   => 'Next Day Air Early AM Letter',
-                '1DA'    => 'Next Day Air',
-                '1DAL'   => 'Next Day Air Letter',
-                '1DAPI'  => 'Next Day Air Intra (Puerto Rico)',
-                '1DP'    => 'Next Day Air Saver',
-                '1DPL'   => 'Next Day Air Saver Letter',
-                '2DM'    => '2nd Day Air AM',
-                '2DML'   => '2nd Day Air AM Letter',
-                '2DA'    => '2nd Day Air',
-                '2DAL'   => '2nd Day Air Letter',
-                '3DS'    => '3 Day Select',
-                'GND'    => 'Ground',
-                'GNDCOM' => 'Ground Commercial',
-                'GNDRES' => 'Ground Residential',
-                'STD'    => 'Canada Standard',
-                'XPR'    => 'Worldwide Express',
-                'WXS'    => 'Worldwide Express Saver',
-                'XPRL'   => 'Worldwide Express Letter',
-                'XDM'    => 'Worldwide Express Plus',
-                'XDML'   => 'Worldwide Express Plus Letter',
-                'XPD'    => 'Worldwide Expedited'
-            );
+            '1DM'    => 'Next Day Air Early AM',
+            '1DML'   => 'Next Day Air Early AM Letter',
+            '1DA'    => 'Next Day Air',
+            '1DAL'   => 'Next Day Air Letter',
+            '1DAPI'  => 'Next Day Air Intra (Puerto Rico)',
+            '1DP'    => 'Next Day Air Saver',
+            '1DPL'   => 'Next Day Air Saver Letter',
+            '2DM'    => '2nd Day Air AM',
+            '2DML'   => '2nd Day Air AM Letter',
+            '2DA'    => '2nd Day Air',
+            '2DAL'   => '2nd Day Air Letter',
+            '3DS'    => '3 Day Select',
+            'GND'    => 'Ground',
+            'GNDCOM' => 'Ground Commercial',
+            'GNDRES' => 'Ground Residential',
+            'STD'    => 'Canada Standard',
+            'XPR'    => 'Worldwide Express',
+            'WXS'    => 'Worldwide Express Saver',
+            'XPRL'   => 'Worldwide Express Letter',
+            'XDM'    => 'Worldwide Express Plus',
+            'XDML'   => 'Worldwide Express Plus Letter',
+            'XPD'    => 'Worldwide Expedited'
+        );
     }
 
     /**
@@ -77,5 +77,15 @@ class Axis_ShippingUps_Model_Standard_Method implements Axis_Config_Option_Inter
     {
         $options = self::getConfigOptionsArray();
         return isset($options[$id]) ? $options[$id] : '';
+    }
+    
+    /**
+     *
+     * @static
+     * @return const array
+     */
+    public static function getDeafultValue()
+    {
+        return implode(',', array_keys(self::getConfigOptionsArray()));
     }
 }

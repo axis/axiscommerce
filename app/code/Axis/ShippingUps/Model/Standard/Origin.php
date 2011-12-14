@@ -32,19 +32,9 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUps_Model_Standard_OriginShipment implements Axis_Config_Option_Interface
+class Axis_ShippingUps_Model_Standard_Origin implements Axis_Config_Option_Interface
 {
-    /**
-     *
-     * @static
-     * @return const array
-     */
-    public static function getConfigOptionsArray()
-    {
-        $origin = Axis::config('shipping/Ups_Standard/xmlOrigin');
-        
-        $originShipment = array(
-            // United States Domestic Shipments
+    protected static $_origins = array(
             'United States Domestic Shipments' => array(
                 '01' => 'UPS Next Day Air',
                 '02' => 'UPS Second Day Air',
@@ -57,9 +47,8 @@ class Axis_ShippingUps_Model_Standard_OriginShipment implements Axis_Config_Opti
                 '14' => 'UPS Next Day Air Early A.M.',
                 '54' => 'UPS Worldwide Express Plus',
                 '59' => 'UPS Second Day Air A.M.',
-                '65' => 'UPS Saver',
+                '65' => 'UPS Saver'
             ),
-            // Shipments Originating in United States
             'Shipments Originating in United States' => array(
                 '01' => 'UPS Next Day Air',
                 '02' => 'UPS Second Day Air',
@@ -71,9 +60,8 @@ class Axis_ShippingUps_Model_Standard_OriginShipment implements Axis_Config_Opti
                 '14' => 'UPS Next Day Air Early A.M.',
                 '54' => 'UPS Worldwide Express Plus',
                 '59' => 'UPS Second Day Air A.M.',
-                '65' => 'UPS Saver',
+                '65' => 'UPS Worldwide Saver'
             ),
-            // Shipments Originating in Canada
             'Shipments Originating in Canada' => array(
                 '01' => 'UPS Express',
                 '02' => 'UPS Expedited',
@@ -82,17 +70,15 @@ class Axis_ShippingUps_Model_Standard_OriginShipment implements Axis_Config_Opti
                 '11' => 'UPS Standard',
                 '12' => 'UPS Three-Day Select',
                 '14' => 'UPS Express Early A.M.',
-                '65' => 'UPS Saver',
+                '65' => 'UPS Saver'
             ),
-            // Shipments Originating in the European Union
             'Shipments Originating in the European Union' => array(
                 '07' => 'UPS Express',
                 '08' => 'UPS Expedited',
                 '11' => 'UPS Standard',
                 '54' => 'UPS Worldwide Express PlusSM',
-                '65' => 'UPS Saver',
+                '65' => 'UPS Saver'
             ),
-            // Polish Domestic Shipments
             'Polish Domestic Shipments' => array(
                 '07' => 'UPS Express',
                 '08' => 'UPS Expedited',
@@ -103,9 +89,8 @@ class Axis_ShippingUps_Model_Standard_OriginShipment implements Axis_Config_Opti
                 '83' => 'UPS Today Dedicated Courrier',
                 '84' => 'UPS Today Intercity',
                 '85' => 'UPS Today Express',
-                '86' => 'UPS Today Express Saver',
+                '86' => 'UPS Today Express Saver'
             ),
-            // Puerto Rico Origin
             'Puerto Rico Origin' => array(
                 '01' => 'UPS Next Day Air',
                 '02' => 'UPS Second Day Air',
@@ -116,25 +101,30 @@ class Axis_ShippingUps_Model_Standard_OriginShipment implements Axis_Config_Opti
                 '54' => 'UPS Worldwide Express Plus',
                 '65' => 'UPS Saver',
             ),
-            // Shipments Originating in Mexico
             'Shipments Originating in Mexico' => array(
                 '07' => 'UPS Express',
                 '08' => 'UPS Expedited',
                 '54' => 'UPS Express Plus',
-                '65' => 'UPS Saver',
+                '65' => 'UPS Saver'
             ),
-            // Shipments Originating in Other Countries
             'Shipments Originating in Other Countries' => array(
                 '07' => 'UPS Express',
                 '08' => 'UPS Worldwide Expedited',
                 '11' => 'UPS Standard',
                 '54' => 'UPS Worldwide Express Plus',
-                '65' => 'UPS Saver')
+                '65' => 'UPS Saver'
+            )
         );
-        
-        
-        isset($originShipment[$origin]) ?
-            $originShipment[$origin] : array();
+
+
+    /**
+     *
+     * @static
+     * @return const array
+     */
+    public static function getConfigOptionsArray()
+    {
+        return array_keys(self::$_origins);
     }
 
     /**
@@ -147,5 +137,15 @@ class Axis_ShippingUps_Model_Standard_OriginShipment implements Axis_Config_Opti
     {
         $shipments = self::getConfigOptionsArray();
         return isset($shipments[$code]) ? $shipments[$code] : '';
+    }
+    
+    /**
+     *
+     * @static
+     * @return const array
+     */
+    public static function getDeafultValue()
+    {
+        return current(self::getConfigOptionsArray());
     }
 }

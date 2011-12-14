@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Config
+ * @package     Axis_ShippingUps
+ * @subpackage  Axis_ShippingUps_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,25 +27,35 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Config
+ * @package     Axis_ShippingUps
+ * @subpackage  Axis_ShippingUps_Model
  * @author      Axis Core Team <core@axiscommerce.com>
+ * @abstract
  */
-interface Axis_Config_Option_Interface
+class Axis_ShippingUps_Model_Standard_OriginServiceLabel extends Axis_ShippingUps_Model_Standard_Origin
 {
     /**
      *
      * @static
-     * @return array
+     * @return const array
      */
-    public static function getConfigOptionsArray();
+    public static function getConfigOptionsArray()
+    {
+        $origin = Axis::config('shipping/Ups_Standard/xmlOrigin');
+        
+        return isset(self::$_origins[$origin]) ?
+            self::$_origins[$origin] : array();
+    }
 
     /**
      *
      * @static
-     * @param int $id
+     * @param string $code
      * @return string
      */
-    public static function getConfigOptionName($id);
-    
-    //@todo getDeafultValue
+    public static function getConfigOptionName($code)
+    {
+        $shipments = self::getConfigOptionsArray();
+        return isset($shipments[$code]) ? $shipments[$code] : '';
+    }
 }
