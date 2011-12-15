@@ -67,7 +67,6 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
 
     protected $_testMode = false;
 
-
     // @see testing example http://www.varnagiris.net/2006/05/04/php-usps-rates-calculator/
     // @see http://kb.veracart.com/questions/127/USPS-Error-message:-%22%2880040b1a%29-Authorization-failure.-You-are-not-authorized-to-connect-to-this-server%22
     // @see http://www.usps.com/webtools/htm/Rate-Calculators-v2-1.htm#_Toc196127989
@@ -90,7 +89,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         $this->_request = new Axis_Object();
         $services = $this->_config->service->toArray();
         $services = (!count($services) || count($services) > 6)
-            ? implode(',', $services) : 'ALL';
+            ? implode(',', $services) : Axis_ShippingUsps_Model_Standard_Service::ALL;
 
         $this->_request->setService($services);// test ALL
 
@@ -174,8 +173,8 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
             $package->addChild('ZipDestination', '20008');
             $package->addChild('Pounds', '10');
             $package->addChild('Ounces', '5');
-            $package->addChild('Container', 'Flat Rate Box');
-            $package->addChild('Size', 'Large');
+            $package->addChild('Container', 'FLAT RATE BOX');
+            $package->addChild('Size', 'LARGE');
             // or
             // $package->addChild('Size', 'Regular');
             $package->addChild('Machinable', 'True'); // or comment this line for the second example
@@ -288,10 +287,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         }
 
         $allowedMethods = $this->_config->allowedMethods->toArray();
-        $allMethods = Axis::model('core/config_field')->select('config_options')
-            ->where('path = "shipping/Usps_Standard/allowedMethods"')
-            ->fetchOne();
-        $allMethods = explode(',', $allMethods);
+        $allMethods = Axis_ShippingUsps_Model_Standard_ServiceLabel::getConfigOptionsArray();
 
         if ($this->_request->getDestCountryId() == 'US'
             || $this->_request->getDestCountryId() == 'PR') {

@@ -385,7 +385,6 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
                 'price' => $cost + $this->_config->handling
             );
         }
-        Axis_FirePhp::log($methods);
         return $methods;
     }
 
