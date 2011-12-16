@@ -43,19 +43,10 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('shipping/Fedex_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Sales_Model_Payment', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Fedex_Standard/title', 'Title', 'Fedex Express')
             ->add('shipping/Fedex_Standard/account', 'Account Id', '', 'handler', '', array('model' => 'Crypt'))
-            ->add('shipping/Fedex_Standard/package', 'Package', 'YOURPACKAGING', 'select',
-                'FEDEXENVELOPE - FedEx Envelope, FEDEXPAK  - FedEx Pak, FEDEXBOX - FedEx Box, FEDEXTUBE - FedEx Tube, FEDEX10KGBOX - FedEx 10kg Box, FEDEX25KGBOX - FedEx 25kg Box, YOURPACKAGING - Your Packaging',
-                array('config_options' => 'FEDEXENVELOPE,FEDEXPAK,FEDEXBOX,FEDEXTUBE,FEDEX10KGBOX,FEDEX25KGBOX,YOURPACKAGING')
-            )
-            ->add('shipping/Fedex_Standard/dropoff', 'Dropoff', 'REGULARPICKUP', 'select',
-                'REGULARPICKUP - Regular Pickup, REQUESTCOURIER - Request Courier, DROPBOX - Drop Box, BUSINESSSERVICECENTER - Business Service Center, STATION - Station',
-                array('config_options' => 'REGULARPICKUP,REQUESTCOURIER,DROPBOX,BUSINESSSERVICECENTER,STATION')
-            )
-            ->add('shipping/Fedex_Standard/allowedTypes', 'Allowed methods', 'REGULARPICKUP', 'multiple',
-                'PRIORITYOVERNIGHT - Priority Overnight, STANDARDOVERNIGHT - Standard Overnight, FIRSTOVERNIGHT - First Overnight, FEDEX2DAY - 2Day,FEDEXEXPRESSSAVER - Express Saver,INTERNATIONALPRIORITY - International Priority,INTERNATIONALECONOMY - International Economy,INTERNATIONALFIRST - International First,FEDEX1DAYFREIGHT - 1 Day Freight, FEDEX2DAYFREIGHT - 2 Day Freight, FEDEX3DAYFREIGHT - 3 Day Freight, FEDEXGROUND - Ground, GROUNDHOMEDELIVERY - Home Delivery, INTERNATIONALPRIORITY FREIGHT - Intl Priority Freight, INTERNATIONALECONOMY FREIGHT - Intl Economy Freight, EUROPEFIRSTINTERNATIONALPRIORITY - Europe First Priority',
-                array('config_options' => 'PRIORITYOVERNIGHT,STANDARDOVERNIGHT,FIRSTOVERNIGHT,FEDEX2DAY,FEDEXEXPRESSSAVER,INTERNATIONALPRIORITY,INTERNATIONALECONOMY,INTERNATIONALFIRST,FEDEX1DAYFREIGHT, FEDEX2DAYFREIGHT,FEDEX3DAYFREIGHT,FEDEXGROUND,GROUNDHOMEDELIVERY,INTERNATIONALPRIORITY FREIGHT, INTERNATIONALECONOMY FREIGHT,EUROPEFIRSTINTERNATIONALPRIORITY')
-            )
-            ->add('shipping/Fedex_Standard/measure', 'UPS Weight Unit', 'LBS', 'select', 'LBS or KGS', array('config_options' => 'LBS,KGS'))
+            ->add('shipping/Fedex_Standard/package', 'Package', Axis_ShippingFedex_Model_Standard_Package::YOUR_PACKAGING, 'select', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Package'))
+            ->add('shipping/Fedex_Standard/dropoff', 'Dropoff', Axis_ShippingFedex_Model_Standard_Pickup::REGULAR_PICKUP, 'select', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Pickup'))
+            ->add('shipping/Fedex_Standard/allowedTypes', 'Allowed methods', Axis_ShippingFedex_Model_Standard_Service::FEDEX_GROUND, 'multiple', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Service'))
+            ->add('shipping/Fedex_Standard/measure', 'UPS Weight Unit', Axis_ShippingFedex_Model_Standard_Measure::LBS, 'select', 'LBS or KGS', array('model' => 'Axis_ShippingFedex_Model_Standard_Measure'))
             ->add('shipping/Fedex_Standard/residenceDelivery', 'Residential Delivery', '0', 'bool')
             ->add('shipping/Fedex_Standard/gateway', 'Fedex Gateway Url', 'https://gateway.fedex.com/GatewayDC')
             ->add('shipping/Fedex_Standard/handling', 'Handling Fee', '0', 'string', '')

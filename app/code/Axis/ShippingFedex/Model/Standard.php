@@ -45,28 +45,6 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
     protected $_defaultGatewayUrl = 'https://gateway.fedex.com/GatewayDC';
     //protected $_gatewayUrl = 'https://gateway.fedex.com/web-services';
 
-    /**
-     * @var array
-     */
-    private $_codes = array(
-        'PRIORITYOVERNIGHT'                => 'Priority Overnight',
-        'STANDARDOVERNIGHT'                => 'Standard Overnight',
-        'FIRSTOVERNIGHT'                   => 'First Overnight',
-        'FEDEX2DAY'                        => '2Day',
-        'FEDEXEXPRESSSAVER'                => 'Express Saver',
-        'INTERNATIONALPRIORITY'            => 'International Priority',
-        'INTERNATIONALECONOMY'             => 'International Economy',
-        'INTERNATIONALFIRST'               => 'International First',
-        'FEDEX1DAYFREIGHT'                 => '1 Day Freight',
-        'FEDEX2DAYFREIGHT'                 => '2 Day Freight',
-        'FEDEX3DAYFREIGHT'                 => '3 Day Freight',
-        'FEDEXGROUND'                      => 'Ground',
-        'GROUNDHOMEDELIVERY'               => 'Home Delivery',
-        'INTERNATIONALPRIORITY FREIGHT'    => 'Intl Priority Freight',
-        'INTERNATIONALECONOMY FREIGHT'     => 'Intl Economy Freight',
-        'EUROPEFIRSTINTERNATIONALPRIORITY' => 'Europe First Priority'
-    );
-
     public function getAllowedTypes($request)
     {
         $this->_setRequest($request);
@@ -361,6 +339,7 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
 
         $xml->addChild('PackageCount', '1');
         $request = $xml->asXML();
+        Axis_FirePhp::log($request);
         try {
             $url = $this->_config->gateway;
             if (!$url) {
@@ -423,7 +402,11 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             );
             $methods[] = array(
                 'id' => $this->_code . '_' . (string)$entry->Service,
-                'title' => $this->getTranslator()->__($this->_codes[(string)$entry->Service]),
+                'title' => $this->getTranslator()->__(
+                    Axis_ShippingFedex_Model_Standard_Service::getConfigOptionName(
+                        (string)$entry->Service
+                    )
+                ),
                 'price' => $cost + $this->_config->handling
             );
         }
