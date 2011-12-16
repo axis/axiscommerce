@@ -40,13 +40,13 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
     public function getAllowedTypes($request)
     {
         switch ($this->_config->type) {
-            case 'Per Weight':
+            case Axis_ShippingTable_Model_Standard_Service::PER_WEIGHT:
                 $value = $request['weight'];
                 break;
-            case 'Per Item':
+            case Axis_ShippingTable_Model_Standard_Service::PER_ITEM:
                 $value = $request['qty'];
                 break;
-            case 'Per Price':
+            case Axis_ShippingTable_Model_Standard_Service::PER_PRICE:
             default:
                 $value = $request['price'];
                 break;
@@ -71,13 +71,13 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         }
 
         $row = $select->fetchRow();
-
+        
+        $handling = is_numeric($this->_config->handling) ?$this->_config->handling : 0;
         $this->_types = array(
             array(
                 'id'    => $this->_code,
                 'title' => $this->getTitle(),
-                'price' => $row['price'] + (is_numeric($this->_config->handling) ?
-                    $this->_config->handling : 0)
+                'price' => $row['price'] + $handling
             )
         );
 
