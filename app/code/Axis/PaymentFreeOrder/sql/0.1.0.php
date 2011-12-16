@@ -37,7 +37,7 @@ class Axis_PaymentFreeOrder_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abst
             ->add('payment/FreeOrder_Standard/title', 'Title', 'Free Order', 'string', 'Title')
             ->add('payment/FreeOrder_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('payment/FreeOrder_Standard/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('payment/FreeOrder_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('config_options' => '{"1":"pending","2":"processing"}', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/FreeOrder_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('model' => 'Axis_Sales_Model_Order_Status', 'translation_module' => 'Axis_Admin'))
             ->add('payment/FreeOrder_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Sales_Model_Shipping', 'translation_module' => 'Axis_Admin'));
     }
 

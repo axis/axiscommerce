@@ -176,7 +176,7 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
          *  - KGS
          *  LBS is required for a U.S. FedEx Express rate quote.orig
          */
-        $xml->addChild('Weight', $r->weight);
+        $xml->addChild('Weight', number_format($r->weight, 3));
 //      $xml->addChild('ListRate', 'true');
         /**
          *  Optional.

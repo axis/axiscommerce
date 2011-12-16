@@ -18,38 +18,20 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Sales
+ * @package     Axis_PaymentCheckMoney
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-class Axis_Sales_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
+class Axis_PaymentCheckMoney_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_version = '0.2.4';
+    protected $_version = '0.1.1';
     protected $_info = '';
 
     public function up()
     {
-        $models = array(
-            'OrderStatus'                 => 'Axis_Sales_Model_Order_Status',
-            'OrderStatusText'             => 'Axis_Sales_Model_Order_Status_Text',
-            'CreditCard'                  => 'Axis_Sales_Model_Order_CreditCard_Type',
-            'CreditCard_SaveNumberAction' => 'Axis_Sales_Model_Order_CreditCard_SaveNumberType',
-            'Payment'                     => 'Axis_Sales_Model_Payment',
-            'Shipping'                    => 'Axis_Sales_Model_Shipping'
-            
-        );
-        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            if (isset($models[$row->model])) {
-                $row->model = $models[$row->model];
-                $row->save();
-            }
-        }
-        
         $row = Axis::single('core/config_field')->select()
-            ->where('path = ?', 'sales/order/defaultStatusId')
+            ->where('path = ?', 'payment/CheckMoney_Standard/orderStatusId')
             ->fetchRow();
         $row->config_options = null;
         $row->model = 'Axis_Sales_Model_Order_Status';
