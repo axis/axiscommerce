@@ -39,7 +39,7 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Flat_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Flat_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
             ->add('shipping/Flat_Standard/multiPrice', 'Multi Price', '25', 'handler', '', array('model' => 'ShippingFlatRateMultiPrice'))
-            ->add('shipping/Flat_Standard/type', 'Type', 'Per Order', 'select', 'The shipping cost is based on:', array('config_options' => 'Per Order,Per Item'))
+            ->add('shipping/Flat_Standard/type', 'Type', Axis_ShippingFlat_Model_Standard_Service::PER_ORDER, 'select', 'The shipping cost is based on:', array('model' => 'Axis_ShippingFlat_Model_Standard_Service'))
             ->add('shipping/Flat_Standard/formDesc', 'Checkout Description', 'Flat Rate')
             ->add('shipping/Flat_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Sales_Model_Payment', 'translation_module' => 'Axis_Admin'));
     }

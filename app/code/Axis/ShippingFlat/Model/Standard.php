@@ -57,12 +57,12 @@ class Axis_ShippingFlat_Model_Standard extends Axis_Method_Shipping_Model_Abstra
             }
 
             $price = $item['price'];
-            if ($this->_config->type === 'Per Item') {
+            if (Axis_ShippingFlat_Model_Standard_Service::PER_ITEM === $this->_config->type) {
                 $price = $request['qty'] * $price;
             }
 
             $this->_types[] = array(
-                'id' => $this->_code . '_' . $id,
+                'id'    => $this->_code . '_' . $id,
                 'title' => $this->getTranslator()->__($item['title']),
                 'price' => $price
             );
