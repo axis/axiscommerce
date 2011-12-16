@@ -339,7 +339,6 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
 
         $xml->addChild('PackageCount', '1');
         $request = $xml->asXML();
-        Axis_FirePhp::log($request);
         try {
             $url = $this->_config->gateway;
             if (!$url) {

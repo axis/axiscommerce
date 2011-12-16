@@ -40,7 +40,7 @@ class Axis_ShippingFedex_Model_Standard_Service implements Axis_Config_Option_In
     const FEDEX_2_DAY                         = 'FEDEX2DAY';
     const FEDEX_3_DAY_FREIGHT                 = 'FEDEX3DAYFREIGHT';
     const FEDEX_EXPRESS_SAVER                 = 'FEDEXEXPRESSSAVER';
-    const FEDEX_GROUND                        = 'FEDEX_GROUND';
+    const FEDEX_GROUND                        = 'FEDEXGROUND';
     const FIRST_OVERNIGHT                     = 'FIRSTOVERNIGHT';
     const GROUND_HOME_DELIVERY                = 'GROUNDHOMEDELIVERY';
     const INTERNATIONAL_ECONOMY               = 'INTERNATIONALECONOMY';
