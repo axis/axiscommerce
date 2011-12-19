@@ -58,15 +58,15 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
 
         $modelCustomer = Axis::model('tag/customer');
         $modelProduct  = Axis::model('tag/product');
+        
         $defaultStatus = $modelCustomer->getDefaultStatus();
-
         $customerId    = Axis::getCustomerId();
         $siteId        = Axis::getSiteId();
 
         $_row = array(
             'customer_id' => $customerId,
             'site_id'     => $siteId,
-            'status'      => $modelCustomer->getDefaultStatus()
+            'status'      => $defaultStatus
         );
 
         foreach ($tags as $tag) {

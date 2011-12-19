@@ -18,28 +18,29 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Tag
+ * @package     Axis_Community
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-class Axis_Tag_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
+class Axis_Community_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_version = '0.1.6';
+    protected $_version = '0.1.3';
 
     public function up()
     {
         $paths = array(
-            'tag/main/customer_status',
-            'tag/main/guest_status'
+            'community/review/customer_status',
+            'community/review/guest_status'
         );
+        
         $rowset = Axis::single('core/config_field')->select()
             ->where('path IN (?)', $paths)
             ->fetchRowset();
         
         foreach ($rowset as $row) {
             $row->config_options = null; 
-            $row->model = 'Axis_Tag_Model_Status';
+            $row->model = 'Axis_Community_Model_Review_Status';
             $row->save();
         }
     }

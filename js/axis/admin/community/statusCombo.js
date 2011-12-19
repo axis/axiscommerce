@@ -24,6 +24,7 @@ Ext.onReady(function(){
         {name: 'value', type: 'string', mapping: 1}
     ]);
     
+    //@todo Axis_Community_Model_Review_Status
     var status_store = new Ext.data.SimpleStore({
         data: [['pending', 'Pending'.l()],['approved', 'Approved'.l()],['disapproved', 'Disapproved'.l()]],
         fields: ['id', 'name']

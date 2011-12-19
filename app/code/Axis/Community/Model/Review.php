@@ -428,9 +428,9 @@ class Axis_Community_Model_Review extends Axis_Db_Table
     public function getDefaultStatus()
     {
         if (Axis::getCustomerId()) {
-            return Axis::config()->community->review->customer_status;
+            return Axis::config('community/review/customer_status');
         }
-        return Axis::config()->community->review->guest_status;
+        return Axis::config('community/review/guest_status');
     }
 
     /**
@@ -439,7 +439,7 @@ class Axis_Community_Model_Review extends Axis_Db_Table
      */
     public function canAdd()
     {
-        if (!Axis::config()->community->review->guest_permission
+        if (!Axis::config('community/review/guest_permission')
             && !Axis::getCustomerId()) {
 
             return false;
