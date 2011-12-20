@@ -304,7 +304,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 
             ->add('mail', 'Mail', null, null, array('translation_module' => 'Axis_Core'))
             ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email2', 'select', array('model' => 'Axis_Core_Model_Mail_Boxes'))
-            ->add('mail/main/transport', 'Mail transport', 'sendmail', 'select', 'Mail Transport (smtp or sendmail)', array('config_options' => 'smtp,sendmail'))
+            ->add('mail/main/transport', 'Mail transport', Axis_Core_Model_Mail_Transport::SENDMAIL, 'select', 'Mail Transport (smtp or sendmail)', array('model' => 'Axis_Core_Model_Mail_Transport'))
             ->add('mail/smtp/host', 'Mail/Smtp/Host', 'host.smtp.com')
             ->add('mail/smtp/user', 'User', 'test+axiscommerce.com', 'handler', '', array('model' => 'Crypt'))
             ->add('mail/smtp/password', 'Password', 'test', 'handler', '', array('model' => 'Crypt'))
