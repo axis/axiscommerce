@@ -337,7 +337,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('design/htmlHead/titleSuffix', 'Title Suffix')
             ->add('design/htmlHead/titleDivider', 'Title Divider', ' - ')
             ->add('design/htmlHead/titlePattern', 'Title Pattern', 'Page Title,Site Name', 'multiple', 'Check values, which you want to see on page title', array('config_options' => 'Page Title,Parent Page Titles,Site Name'))
-            ->add('design/htmlHead/defaultRobots', 'Default Robots', 'INDEX FOLLOW', 'select', array('config_options' => 'INDEX FOLLOW,INDEX NOFOLLOW,NOINDEX FOLLOW,NOINDEX NOFOLLOW'))
+            ->add('design/htmlHead/defaultRobots', 'Default Robots', Axis_Core_Model_Template_Robots::getDeafultValue(), 'select', array('model' => 'Axis_Core_Model_Template_Robots'))
             ->add('design/htmlHead/homeDescription', 'Homepage description', '', 'text', 'Homepage description')
             ->add('design/htmlHead/homeKeywords', 'Homepage keywords', 'Axis, store', 'text')
             ->add('design/htmlHead/homeTitle', 'Homepage title', 'Homepage title', 'string', 'Homepage title')

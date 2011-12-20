@@ -49,6 +49,21 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
                 $row->save();
             }
         }
+        
+        $paths = array(
+            'design/htmlHead/defaultRobots' => 'Axis_Core_Model_Template_Robots',
+//            '' => '',
+//            '' => ''
+        );
+        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            if (isset($paths[$row->path])) {
+                $row->config_options = null; 
+                $row->model = $paths[$row->path];
+                $row->save();
+            }
+        }
                       
         Axis::model('admin/acl_rule')
             ->rename('admin/axis/core/config-field',      'admin/axis/core/config_field')
