@@ -31,15 +31,16 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Template_Robots implements Axis_Config_Option_Interface
+class Axis_Core_Model_Template_TitlePattern implements Axis_Config_Option_Interface
 {
-    //@todo delimeter ','
-    const FOLLOW   = 'FOLLOW';  
-    const NOFOLLOW = 'NOFOLLOW'; 
-    const INDEX    = 'INDEX'; 
-    const NOINDEX  = 'NOINDEX'; 
     // @todo PROFIT:
-    // 0 - nofollow noindex, 1 - follow noindex, 2 - nofollow index, 3 - follow index
+    // refac const type multiselect like rwx
+    // PAGE_TITLE - 1, PARENT_PAGE_TITLE- 2 , SITE_NAME - 4 
+    // 0 - NONE, 1 - PAGE_TITLE, ..., 5 - PAGE_TITLE + SITE_NAME, ...
+    const PAGE_TITLE        = 'Page Title'; 
+    const PARENT_PAGE_TITLE = 'Parent Page Titles';
+    const SITE_NAME         = 'Site Name';
+    
     /**
      *
      * @static
@@ -48,10 +49,9 @@ class Axis_Core_Model_Template_Robots implements Axis_Config_Option_Interface
     public static function getConfigOptionsArray()
     {
         return array(
-            self::INDEX . ' ' . self::FOLLOW     => self::INDEX . ',' . self::FOLLOW,
-            self::INDEX . ' ' . self::NOFOLLOW   => self::INDEX . ',' . self::NOFOLLOW,
-            self::NOINDEX . ' ' . self::FOLLOW   => self::NOINDEX . ',' . self::FOLLOW,
-            self::NOINDEX .  ' ' .self::NOFOLLOW => self::NOINDEX . ',' . self::NOFOLLOW
+            self::PAGE_TITLE        => 'Page Title',
+            self::PARENT_PAGE_TITLE => 'Parent Page Titles',
+            self::SITE_NAME         => 'Site Name'
         );
     }
 
@@ -75,6 +75,6 @@ class Axis_Core_Model_Template_Robots implements Axis_Config_Option_Interface
      */
     public static function getDeafultValue()
     {
-        return self::INDEX . ' ' . self::FOLLOW;
+        return self::PAGE_TITLE . ',' . self::SITE_NAME;
     }
 }
