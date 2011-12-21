@@ -373,7 +373,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('catalog/lightzoom/zoomStageOffsetX', 'Zoomer offset-x', 10)
             ->add('catalog/lightzoom/zoomStageOffsetY', 'Zoomer offset-y', 0)
             ->add('catalog/lightzoom/zoomLensOpacity', 'Lens opacity', 0.7)
-            ->add('catalog/lightzoom/zoomCursor', 'Lens cursor', 'crosshair', 'select', '', array('config_options' => 'none,default,crosshair,pointer'))
+            ->add('catalog/lightzoom/zoomCursor', 'Lens cursor', Axis_Catalog_Model_Lightzoom_Cursor::getDeafultValue(), 'select', '', array('model' => 'Axis_Catalog_Model_Lightzoom_Cursor'))
             ->add('catalog/lightzoom/zoomOnTrigger', 'Zoom on trigger', 'mouseenter', 'select', 'Select none, if you wish to disable this event', array('config_options' => 'none,click,mouseenter'))
             ->add('catalog/lightzoom/zoomOffTrigger', 'Zoom off trigger', 'mouseleave', 'select', 'Select none, if you wish to disable this event', array('config_options' => 'none,click,mouseleave'))
             ->add('catalog/lightzoom/lightboxTrigger', 'Lightbox trigger', 'click', 'select', 'Select none, if you wish to disable this event', array('config_options' => 'none,click,dblclick'))
