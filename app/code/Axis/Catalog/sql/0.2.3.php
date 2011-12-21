@@ -395,7 +395,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('image/product/heightThumbnail', 'Thumbnail image height', 40)
             ->add('image/watermark/enabled', 'Images/Watermark/Enabled', 0, 'bool')
             ->add('image/watermark/image', 'Image path', 'catalog/watermark.png', 'string', 'Path relative to the skin images folder: catalog/watermark.png')
-            ->add('image/watermark/position', 'Watermark Position', 'bottom_right', 'select', array('config_options' => 'stretch,top_left,top_center,top_right,middle_left,middle_center,middle_right,bottom_left,bottom_center,bottom_right'))
+            ->add('image/watermark/position', 'Watermark Position', Axis_Catalog_Model_Watermark_Position::getDeafultValue(), 'select', array('model' => 'Axis_Catalog_Model_Watermark_Position'))
             ->add('image/watermark/opacity', 'Opacity', 50, 'string', 'Values [0 - 100]')
             ->add('image/watermark/repeat', 'Repeat', 0, 'bool');
 

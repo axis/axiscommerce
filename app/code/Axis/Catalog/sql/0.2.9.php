@@ -38,5 +38,19 @@ class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
             $row->model = 'Axis_Catalog_Model_Product_Manufacturer';
             $row->save();
         }
+        
+        $paths = array(
+            'image/watermark/position' => 'Axis_Catalog_Model_Watermark_Position',
+           
+        );
+        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            if (isset($paths[$row->path])) {
+                $row->config_options = null; 
+                $row->model = $paths[$row->path];
+                $row->save();
+            }
+        }
     }
 }
