@@ -358,7 +358,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
             ->add('catalog/main/route', 'Catalog/General/Catalog route', 'store', 'string', 'Catalog url (example.com/<b>route</b>/product)')
 
-            ->add('catalog/listing/type', 'Catalog/Product Listing/Type', 'grid', 'select', 'Default listing type', array('config_options' => 'grid,list'))
+            ->add('catalog/listing/type', 'Catalog/Product Listing/Type', Axis_Catalog_Model_Product_Listing_Type::getDeafultValue(), 'select', 'Default listing type', array('model' => 'Axis_Catalog_Model_Product_Listing_Type'))
             ->add('catalog/listing/perPage', 'Show per page', '6,9,18,32')
             ->add('catalog/listing/perPageDefault', 'Default product count per page', 9)
             ->add('catalog/listing/sortBy', 'Sort By', 'Name,Price')
