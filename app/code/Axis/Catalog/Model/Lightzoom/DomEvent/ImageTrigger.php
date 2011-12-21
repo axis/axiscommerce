@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Lightzoom_DomEvent_ImageTrigger extends Axis_Catalog_Model_Lightzoom_DomEvent_Abstarct
+class Axis_Catalog_Model_Lightzoom_DomEvent_ImageTrigger extends Axis_Catalog_Model_Lightzoom_DomEvent_Abstract
 {   
     /**
      *
@@ -41,10 +41,10 @@ class Axis_Catalog_Model_Lightzoom_DomEvent_ImageTrigger extends Axis_Catalog_Mo
     public static function getConfigOptionsArray()
     {
         return array(
-            self::NONE, 
-            self::CLICK, 
-            self::DBLCLICK,
-            self::MOUSEENTER
+            self::NONE       => ucfirst(self::NONE), 
+            self::CLICK      => ucfirst(self::CLICK), 
+            self::DBLCLICK   => ucfirst(self::DBLCLICK), 
+            self::MOUSEENTER => ucfirst(self::MOUSEENTER)
         );
     }
     

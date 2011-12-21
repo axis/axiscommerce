@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-abstract class Axis_Catalog_Model_Lightzoom_DomEvent_Abstarct implements Axis_Config_Option_Interface
+abstract class Axis_Catalog_Model_Lightzoom_DomEvent_Abstract implements Axis_Config_Option_Interface
 {   
     const NONE       = 'none';
     const CLICK      = 'click';
@@ -47,11 +47,11 @@ abstract class Axis_Catalog_Model_Lightzoom_DomEvent_Abstarct implements Axis_Co
     public static function getConfigOptionsArray()
     {
         return array(
-            self::NONE, 
-            self::CLICK, 
-            self::DBLCLICK, 
-            self::MOUSEENTER, 
-            self::MOUSELEAVE
+            self::NONE       => ucfirst(self::NONE), 
+            self::CLICK      => ucfirst(self::CLICK), 
+            self::DBLCLICK   => ucfirst(self::DBLCLICK), 
+            self::MOUSEENTER => ucfirst(self::MOUSEENTER), 
+            self::MOUSELEAVE => ucfirst(self::MOUSELEAVE)
         );
     }
     
