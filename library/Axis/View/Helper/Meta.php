@@ -82,15 +82,15 @@ class Axis_View_Helper_Meta
 //        }
         $titleArray = array();
         foreach ($this->_config->titlePattern as $titlePart) {
-            switch (strtolower($titlePart)) {
-                case 'page title':
+            switch ($titlePart) {
+                case Axis_Core_Model_Template_TitlePattern::PAGE_TITLE:
                     if (null !== $title) {
                         $titleArray[] = $title;
                     } else {
                         $titleArray[] = $this->_config->defaultTitle;
                     }
                 break;
-                case 'parent page titles':
+                case Axis_Core_Model_Template_TitlePattern::PARENT_PAGE_TITLE:
                     if (null === $mode || !in_array($mode, $this->_modes)) {
                         break;
                     }
@@ -132,7 +132,7 @@ class Axis_View_Helper_Meta
                     }
 
                 break;
-                case 'site name':
+                case Axis_Core_Model_Template_TitlePattern::SITE_NAME:
                     $row = Axis::getSite();
                     if ($row) {
                         $titleArray[] = $row->name;

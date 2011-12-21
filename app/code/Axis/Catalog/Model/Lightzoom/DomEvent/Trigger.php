@@ -18,19 +18,42 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Checkout
+ * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
-class Axis_Checkout_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
-{
-    protected $_version = '0.2.4';
-    protected $_info = 'Redirect options on addtocart added';
-
-    public function up()
+/**
+ *
+ * @category    Axis
+ * @package     Axis_Catalog
+ * @subpackage  Axis_Catalog_Model
+ * @author      Axis Core Team <core@axiscommerce.com>
+ */
+class Axis_Catalog_Model_Lightzoom_DomEvent_Trigger extends Axis_Catalog_Model_Lightzoom_DomEvent_Abstract
+{   
+    /**
+     *
+     * @static
+     * @return array
+     */
+    public static function getConfigOptionsArray()
     {
-        Axis::single('core/config_field')
-            ->add('checkout/cart/redirect', 'Checkout/Shopping Cart/Redirect Location', Axis_Checkout_Model_Cart_Redirect::getDeafultValue(), 'select', 'Customer will be redirected to selected page after adding item to cart', array('model' => 'Axis_Checkout_Model_Cart_Redirect'));
+        return array(
+            self::NONE       => ucfirst(self::NONE), 
+            self::CLICK      => ucfirst(self::CLICK), 
+            self::DBLCLICK   => ucfirst(self::DBLCLICK)
+        );
+    }
+    
+    /**
+     *
+     * @static
+     * @return const array
+     */
+    public static function getDeafultValue()
+    {
+        return self::CLICK;
     }
 }
