@@ -53,7 +53,8 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
         $paths = array(
             'design/htmlHead/defaultRobots' => 'Axis_Core_Model_Template_Robots',
             'design/htmlHead/titlePattern'  => 'Axis_Core_Model_Template_TitlePattern',
-            'mail/main/transport'           => 'Axis_Core_Model_Mail_Transport'
+            'mail/main/transport'           => 'Axis_Core_Model_Mail_Transport',
+            'mail/smtp/secure'              => 'Axis_Core_Model_Mail_Secure'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         

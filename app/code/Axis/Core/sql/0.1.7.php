@@ -310,7 +310,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('mail/smtp/password', 'Password', 'test', 'handler', '', array('model' => 'Crypt'))
             ->add('mail/smtp/port', 'Port', '465')
             ->add('mail/smtp/auth', 'Use Auth', '1', 'bool')
-            ->add('mail/smtp/secure', 'Secure', 'ssl', 'select', array('config_options' => 'none,tls,ssl'))
+            ->add('mail/smtp/secure', 'Secure', Axis_Core_Model_Mail_Secure::SSL, 'select', array('model' => 'Axis_Core_Model_Mail_Secure'))
             ->add('mail/mailboxes/email1', 'Mail/Mailboxes/Email', 'test@axiscommerce.com')
             ->add('mail/mailboxes/email2', 'Email', 'test@axiscommerce.com')
             ->add('mail/mailboxes/email3', 'Email', 'test@axiscommerce.com')
