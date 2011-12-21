@@ -369,7 +369,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
             ->add('catalog/lightzoom/zoomStageWidth', 'Catalog/Lightzoom/Zoomer width', 250)
             ->add('catalog/lightzoom/zoomStageHeight', 'Zoomer height', 250)
-            ->add('catalog/lightzoom/zoomStagePosition', 'Zoomer position', 'right', 'select', '', array('config_options' => 'left,right'))
+            ->add('catalog/lightzoom/zoomStagePosition', 'Zoomer position', Axis_Catalog_Model_Lightzoom_StagePosition::getDeafultValue(), 'select', '', array('model' => 'Axis_Catalog_Model_Lightzoom_StagePosition'))
             ->add('catalog/lightzoom/zoomStageOffsetX', 'Zoomer offset-x', 10)
             ->add('catalog/lightzoom/zoomStageOffsetY', 'Zoomer offset-y', 0)
             ->add('catalog/lightzoom/zoomLensOpacity', 'Lens opacity', 0.7)

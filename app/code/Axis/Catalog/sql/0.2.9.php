@@ -40,7 +40,8 @@ class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
         }
         
         $paths = array(
-            'image/watermark/position' => 'Axis_Catalog_Model_Watermark_Position',
+            'image/watermark/position'            => 'Axis_Catalog_Model_Watermark_Position',
+            'catalog/lightzoom/zoomStagePosition' => 'Axis_Catalog_Model_Lightzoom_StagePosition'
            
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
