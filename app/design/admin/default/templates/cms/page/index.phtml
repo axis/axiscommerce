@@ -20,10 +20,11 @@ $this->headScript()
 
 <script type="text/javascript">
     //batch menu
+    //@todo extjs model
     var layoutMenu = [
     <?php
         $menu = "";
-        foreach (Axis_Core_Model_Template_Layout::getConfigOptionsArray() as $name => $value) {
+        foreach ($this->layouts as $name => $value) {
             $value = addslashes($value);
             $menu .= "{
                 text: '$value',

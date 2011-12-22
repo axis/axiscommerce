@@ -36,6 +36,8 @@ class Axis_Locale_Admin_CurrencyController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('locale')->__('Currency List');
+        $this->view->currencyDisplays = Axis_Locale_Model_Currency_Display::getConfigOptionsArray();
+        $this->view->currencyPositions = Axis_Locale_Model_Currency_Position::getConfigOptionsArray();
         $this->render();
     }
     

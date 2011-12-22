@@ -36,6 +36,7 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('cms')->__('Categories/Pages');
+        $this->view->layouts = Axis_Core_Model_Template_Layout::getConfigOptionsArray();
         $this->render();
     }
     

@@ -64,7 +64,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
         $currency = $this->getCurrency();
 
         $position = $row['position'];
-        if ($position == 8) { // Standard
+        if ($position == Axis_Locale_Model_Currency_Position::STANDARD) { // Standard
            $position = $currency->toCurrency(1);
            $position = strpos($position, $currency->getSymbol());
            if ($position) {
@@ -72,7 +72,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
            } else {
                $position = 'Left';
            }
-        } elseif ($position == 16) {
+        } elseif ($position == Axis_Locale_Model_Currency_Position::RIGHT) {
             $position = 'Right';
         } else {
             $position = 'Left';
@@ -149,33 +149,6 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
     }
 
     /**
-     * @static
-     * @return const array
-     */
-    public static function getPositionOptions()
-    {
-        return array(
-            '8'     => Axis::translate('locale')->__('Standard'),
-            '16'    => Axis::translate('locale')->__('Right'),
-            '32'    => Axis::translate('locale')->__('Left')
-        );
-    }
-
-    /**
-     * @static
-     * @return const array
-     */
-    public static function getDisplayOptions()
-    {
-        return array(
-            '1' => Axis::translate('locale')->__('No Symbol'),
-            '2' => Axis::translate('locale')->__('Use Symbol'),
-            '3' => Axis::translate('locale')->__('Use Shortname'),
-            '4' => Axis::translate('locale')->__('Use Name')
-        );
-    }
-
-    /**
      *
      * @return string
      */
@@ -238,8 +211,8 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
     {
         return array(
             'currency'  => 'USD',
-            'position'  => 8,
-            'display'   => 1,
+            'position'  => Axis_Locale_Model_Currency_Position::STANDARD,
+            'display'   => Axis_Locale_Model_Currency_Display::NO_SYMBOL,
             'format'    => 'en_US',
             'precision' => 1
         );

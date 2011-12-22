@@ -1,6 +1,6 @@
 <?php $this->headScript()->appendFile('/js/axis/admin/contacts/contact-us.js'); ?>
 
-<script type"text/javascript">
+<script type="text/javascript">
 var sites = [
     <?php
     $str = '';
@@ -11,10 +11,11 @@ var sites = [
     echo substr($str, 0, -2);
     ?>
 ];
+//@todo extjs model /department/list 
 var departaments = [
     <?php
     $str = '';
-    foreach (Axis_Contacts_Model_Department::getConfigOptionsArray() as $id => $name) {
+    foreach ($this->departments as $id => $name) {
         $name = addslashes($name);
         $str .= "[$id, '$name'],\n";
     }

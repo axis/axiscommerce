@@ -66,6 +66,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
                     $modelCustomerValueSetValue->getValues($fd['customer_valueset_id']);
             }
         }
+        $this->view->groups = Axis_Account_Model_Customer_Group::getConfigOptionsArray();
         $this->render();
     }
 

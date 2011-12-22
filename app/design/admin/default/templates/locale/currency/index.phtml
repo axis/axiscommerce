@@ -1,6 +1,6 @@
 <?php 
-echo $this->formSelect('currency-display', null, null, Axis_Locale_Model_Currency::getDisplayOptions());
-echo $this->formSelect('currency-position', null, null, Axis_Locale_Model_Currency::getPositionOptions());
+echo $this->formSelect('currency-display', null, null, $this->currencyDisplays);
+echo $this->formSelect('currency-position', null, null, $this->currencyPositions);
 echo $this->formSelect('currency', null, null, Axis_Locale_Model_ZendCurrency::getConfigOptionsArray());
 echo $this->formSelect('locale', null, null, Axis_Locale_Model_ZendLocale::getConfigOptionsArray());
 echo $this->formSelect('format', null, null, Axis_Locale_Model_ZendLocale::getConfigOptionsArray());
@@ -8,12 +8,12 @@ echo $this->formSelect('format', null, null, Axis_Locale_Model_ZendLocale::getCo
 
 <script type="text/javascript">
 function renderDisplay(value){
-    var values = Ext.decode('<?php echo Zend_Json::encode(Axis_Locale_Model_Currency::getDisplayOptions());?>');
+    var values = Ext.decode('<?php echo Zend_Json::encode($this->currencyDisplays);?>');
     return values[value] ? values[value] : 'Default';  
 };
     
 function renderPosition(value){
-    var values = Ext.decode('<?php echo Zend_Json::encode(Axis_Locale_Model_Currency::getPositionOptions());?>');
+    var values = Ext.decode('<?php echo Zend_Json::encode($this->currencyPositions);?>');
     return values[value] ? values[value] : 'Default';  
 };
 
