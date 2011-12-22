@@ -277,7 +277,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         $displayMode = Axis::config('checkout/address_form/custom_fields_display_mode');
         foreach ($rows as $row) {
             if (!$row['required'] 
-                && Axis_Checkout_Model_Form_Addess_CustomFieldsDisplayMode::REQUIRED == $displayMode) {
+                && Axis_Checkout_Model_Form_Address_CustomFieldsDisplayMode::REQUIRED == $displayMode) {
                 continue;
             }
 

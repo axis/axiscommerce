@@ -34,9 +34,10 @@ class Axis_PaymentPaypal_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', 'payment/Paypal_Express/transactionMode')
             ->fetchRow();
-        $row->path = 'payment/Paypal_Express/paymentAction';
-        $row->save();
-        
+        if ($row) {
+            $row->path = 'payment/Paypal_Express/paymentAction';
+            $row->save();
+        }
         $rowset = Axis::single('core/config_value')->select()
             ->where('path = ?', 'payment/Paypal_Express/transactionMode')
             ->fetchRowset();
@@ -44,25 +45,21 @@ class Axis_PaymentPaypal_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
             $row->path = 'payment/Paypal_Express/paymentAction';
             $row->save();
         }
-        //remove 'payment/Paypal_Standard/type'
+        //remove old
+        $paths = array(
+            'payment/Paypal_Standard/type',
+            'payment/Paypal_Standard/isDebugMode',
+            'payment/Paypal_Direct/debugging'
+            
+        );
         Axis::single('core/config_field')->select()
-            ->where('path = ?', 'payment/Paypal_Standard/type')
-            ->fetchRow()
-            ->delete()
-            ;
-        //payment/Paypal_Standard/isDebugMode
-        Axis::single('core/config_field')->select()
-            ->where('path = ?', 'payment/Paypal_Standard/isDebugMode')
-            ->fetchRow()
-            ->delete()
+            ->where('path IN (?)', $paths)
+            ->fetchRowset()
             ;
         
-        //remove 'payment/Paypal_Direct/debugging'
-        Axis::single('core/config_field')->select()
-            ->where('path = ?', 'payment/Paypal_Direct/debugging')
-            ->fetchRow()
-            ->delete()
-            ;
+        foreach ($rowset as $row) {
+            $row->delete();
+        }
 
         $paths = array(
             'payment/Paypal_Standard/transactionType' => 'Axis_PaymentPaypal_Model_Standard_TransactionType',

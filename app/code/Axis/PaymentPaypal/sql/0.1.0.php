@@ -53,7 +53,6 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Standard/email', 'Paypal business email', 'REQUIRED', 'handler', '', array('model' => 'Crypt'))
             ->add('payment/Paypal_Standard/logo', 'Paypal Logo Image URL', 'logo.gif', 'string', 'Maximum image size is 750x90px')
             ->add('payment/Paypal_Standard/sandboxMode', 'Sandbox Mode', 1, 'bool')
-            ->add('payment/Paypal_Standard/isDebugMode', 'Debug Mode', 1, 'bool')
             ->add('payment/Paypal_Standard/enabled', 'Enabled', 0 , 'bool', array('translation_module' => 'Axis_Core'))
             ->add('payment/Paypal_Standard/paymentAction', 'Payment Action', 'Sale', 'select', 'Payment Action: Default: Sale (Sale, Authorization)', array('model' => 'Axis_PaymentPaypal_Model_Api_PaymentAction'))
             ->add('payment/Paypal_Standard/transactionType', 'Transaction Type', 'Aggregate Cart', 'select', 'Transaction Type', array('model' => 'Axis_PaymentPaypal_Model_Standard_TransactionType'))

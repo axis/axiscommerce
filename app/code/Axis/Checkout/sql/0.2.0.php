@@ -32,7 +32,7 @@ class Axis_Checkout_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
     {
         Axis::single('core/config_field')
             ->add('checkout', 'Checkout', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('checkout/address_form/custom_fields_display_mode', 'Checkout/Address Form/Display Mode for Custom Fields', Axis_Checkout_Model_Form_Addess_CustomFieldsDisplayMode::getDeafultValue(), 'select', array('model' => 'Axis_Checkout_Model_Form_Addess_CustomFieldsDisplayMode'))
+            ->add('checkout/address_form/custom_fields_display_mode', 'Checkout/Address Form/Display Mode for Custom Fields', Axis_Checkout_Model_Form_Address_CustomFieldsDisplayMode::getDeafultValue(), 'select', array('model' => 'Axis_Checkout_Model_Form_Address_CustomFieldsDisplayMode'))
             ->add('checkout/address_form/shipping_address_enabled', 'Display Shipping Address', 1, 'bool')
             ->add('checkout/default_values', 'Checkout/Default Values', null, null, array('translation_module' => 'Axis_Checkout'))
             ->add('checkout/default_values/country_id', 'Checkout/Default Values/Country', 223, 'select', array('model' => 'Axis_Location_Model_Country', 'translation_module' => 'Axis_Account'))
