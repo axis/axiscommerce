@@ -40,7 +40,7 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('shipping/Fedex_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Fedex_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Fedex_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Fedex_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Sales_Model_Payment', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Fedex_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Payment', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Fedex_Standard/title', 'Title', 'Fedex Express')
             ->add('shipping/Fedex_Standard/account', 'Account Id', '', 'handler', '', array('model' => 'Crypt'))
             ->add('shipping/Fedex_Standard/package', 'Package', Axis_ShippingFedex_Model_Standard_Package::YOUR_PACKAGING, 'select', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Package'))

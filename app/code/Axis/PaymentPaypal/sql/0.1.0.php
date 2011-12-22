@@ -62,7 +62,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Standard/url', 'Paypal url', 'https://www.sandbox.paypal.com/cgi-bin/webscr')
             ->add('payment/Paypal_Standard/debugUrl', 'Paypal debug url', 'https://www.sandbox.paypal.com/cgi-bin/webscr')
             ->add('payment/Paypal_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('model' => 'Axis_Sales_Model_Order_Status', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/Paypal_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Sales_Model_Shipping', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/Paypal_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Shipping', 'translation_module' => 'Axis_Admin'))
 
             ->add('payment/Paypal_Direct', 'Payment Methods/Paypal Direct', null, null, array('translation_module' => 'Axis_PaymentPaypal'))
             ->add('payment/Paypal_Direct/title', 'Payment Methods/Paypal Direct/Title', 'PayPal Direct', 'string', 'Title')
@@ -78,7 +78,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Direct/paymentAction', 'Payment Action', 'Sale', 'select', 'How do you want to obtain payment?', array('model' => 'Axis_PaymentPaypal_Model_Api_PaymentAction'))
             ->add('payment/Paypal_Direct/currency', 'Transaction Currency',  'USD', 'select', 'Which currency should the order be sent to PayPal?   If an unsupported currency is sent to PayPal, it will be auto-converted to USD (or GBP if using UK account)', array('model' => 'Axis_Locale_Model_Currency'))
             ->add('payment/Paypal_Direct/mode', 'PayPal Api Mode',  'nvp', 'select', 'Which PayPal API system should be used for processing?', array('model' => 'Axis_PaymentPaypal_Model_Api_Type'))
-            ->add('payment/Paypal_Direct/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Sales_Model_Shipping', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/Paypal_Direct/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Shipping', 'translation_module' => 'Axis_Admin'))
 
             ->add('payment/Paypal_Express', 'Payment Methods/Paypal Express', null, null, array('translation_module' => 'Axis_PaymentPaypal'))
             ->add('payment/Paypal_Express/title', 'Payment Methods/Paypal Express/Title', 'PayPal Express', 'string', 'Title')
@@ -87,7 +87,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Express/mode', 'PayPal Api Mode', 'nvp', 'select', 'set mode Paypal Express Checkout payments (nvp, payflow)', array('model' => 'Axis_PaymentPaypal_Model_Api_Type'))
             ->add('payment/Paypal_Express/orderStatusId', 'Order Status on payment complete', '2', 'select', 'Set the status of orders made with this payment module to this value', array('model' => 'Axis_Sales_Model_Order_Status', 'translation_module' => 'Axis_Admin'))
             ->add('payment/Paypal_Express/paymentAction', 'Payment Action', 'Sale', 'select', 'How do you want to obtain payment? Default: Sale (Sale, Order, Authorization)', array('model' => 'Axis_PaymentPaypal_Model_Express_PaymentAction'))
-            ->add('payment/Paypal_Express/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Sales_Model_Shipping', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/Paypal_Express/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Shipping', 'translation_module' => 'Axis_Admin'))
 
             ->add('payment/payflow', 'Payment Methods/PayPal Payflow Api', null, null, array('translation_module' => 'Axis_PaymentPaypal'))
             ->add('payment/payflow/pfuser', 'Payment Methods/PayPal Payflow Api/PAYFLOW: User', '', 'handler', 'If you set up one or more additional users on the account, this value is the ID of the user authorized to process transactions. Otherwise it should be the same value as VENDOR. This value is case-sensitive.', array('model' => 'Crypt'))

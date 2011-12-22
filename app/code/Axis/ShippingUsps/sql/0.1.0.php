@@ -39,7 +39,7 @@ class Axis_ShippingUsps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Usps_Standard/geozone',   'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Usps_Standard/handling',  'Handling price', '5')
             ->add('shipping/Usps_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Usps_Standard/payments',  'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Sales_Model_Payment', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Usps_Standard/payments',  'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Payment', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Usps_Standard/title',     'Title', 'United States Postal Service')
 
             ->add('shipping/Usps_Standard/gateway',        'Gateway Url', 'http://production.shippingapis.com/ShippingAPI.dll')

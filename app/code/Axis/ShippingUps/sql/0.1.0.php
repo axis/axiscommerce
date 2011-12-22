@@ -50,7 +50,7 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Ups_Standard/boxWeightDisplay', 'Shipping/Default/boxWeightDisplay', '1', 'string', 'Variants: 0, 1 or 2 ')
             ->add('shipping/Ups_Standard/type',     'UPS Type', Axis_ShippingUps_Model_Standard_RequestType::CGI, 'select', 'CGI or XML', array('model' => 'Axis_ShippingUps_Model_Standard_RequestType'))
             ->add('shipping/Ups_Standard/measure',  'UPS Weight Unit', Axis_ShippingUps_Model_Standard_Measure::LBS, 'select', 'LBS or KGS', array('model' => 'Axis_ShippingUps_Model_Standard_Measure'))
-            ->add('shipping/Ups_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Sales_Model_Payment', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Ups_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Payment', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Ups_Standard/gateway',  'Gateway Url', 'http://www.ups.com/using/services/rave/qcostcgi.cgi')
 
             ->add('shipping/Ups_Standard/xmlUserId',              'XML Account User Id', '', 'handler', '', array('model' => 'Crypt'))

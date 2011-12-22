@@ -41,15 +41,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             'MailTemplate'        => 'Axis_Core_Model_Mail_Template',
             'AddressFieldStatus'  => 'Axis_Core_Model_Config_Field_Status'
         );
-        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            if (isset($models[$row->model])) {
-                $row->model = $models[$row->model];
-                $row->save();
-            }
-        }
-        
+
         $paths = array(
             'design/htmlHead/defaultRobots' => 'Axis_Core_Model_Template_Robots',
             'design/htmlHead/titlePattern'  => 'Axis_Core_Model_Template_TitlePattern',
@@ -59,6 +51,12 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         
         foreach ($rowset as $row) {
+            
+            if (isset($models[$row->model])) {
+                $row->model = $models[$row->model];
+                $row->save();
+            }
+            
             if (isset($paths[$row->path])) {
                 $row->config_options = null; 
                 $row->model = $paths[$row->path];

@@ -40,7 +40,7 @@ class Axis_ShippingFree_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Free_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
             ->add('shipping/Free_Standard/handling', 'Handling Fee', '0')
             ->add('shipping/Free_Standard/cost', 'Free Shipping Cost', '0')
-            ->add('shipping/Free_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Sales_Model_Payment', 'translation_module' => 'Axis_Admin'));
+            ->add('shipping/Free_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Payment', 'translation_module' => 'Axis_Admin'));
     }
 
     public function down()

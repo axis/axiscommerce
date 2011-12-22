@@ -56,7 +56,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
             ->add('payment/AuthorizenetAim_Standard', 'Payment Methods/Authorize.Net Aim', null, null, array('translation_module' => 'Axis_PaymentAuthorizenetAim'))
             ->add('payment/AuthorizenetAim_Standard/enabled', 'Payment Methods/Authorize.Net Aim/Enabled', 0, 'bool', array('translation_module' => 'Axis_Core'))
             ->add('payment/AuthorizenetAim_Standard/title', 'Title', 'Authorize.Net')
-            ->add('payment/AuthorizenetAim_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Sales_Model_Shipping', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/AuthorizenetAim_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Shipping', 'translation_module' => 'Axis_Admin'))
             ->add('payment/AuthorizenetAim_Standard/creditCard', 'Accepted Credit Cards', 'VISA', 'multiple', 'Credits cards allowed to use with this payment method', array('model' => 'Axis_Sales_Model_Order_CreditCard_Type', 'translation_module' => 'Axis_Admin'))
             ->add('payment/AuthorizenetAim_Standard/geozone', 'Allowed Payment Zone', 1, 'select', 'Payment method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('payment/AuthorizenetAim_Standard/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'))
