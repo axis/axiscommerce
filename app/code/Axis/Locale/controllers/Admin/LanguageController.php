@@ -36,6 +36,7 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('locale')->__('Languages');
+        $this->view->zendLocales = Axis_Locale_Model_ZendLocale::getConfigOptionsArray();
         $this->render();
     }
 

@@ -1,9 +1,9 @@
 <?php 
 echo $this->formSelect('currency-display', null, null, $this->currencyDisplays);
 echo $this->formSelect('currency-position', null, null, $this->currencyPositions);
-echo $this->formSelect('currency', null, null, Axis_Locale_Model_ZendCurrency::getConfigOptionsArray());
-echo $this->formSelect('locale', null, null, Axis_Locale_Model_ZendLocale::getConfigOptionsArray());
-echo $this->formSelect('format', null, null, Axis_Locale_Model_ZendLocale::getConfigOptionsArray());
+echo $this->formSelect('currency', null, null, $this->zendCurrencies);
+echo $this->formSelect('locale', null, null, $this->zendLocales);
+echo $this->formSelect('format', null, null, $this->zendLocales);
 ?>
 
 <script type="text/javascript">
@@ -18,7 +18,7 @@ function renderPosition(value){
 };
 
 function renderLocale(value){
-    var values = Ext.decode('<?php echo Zend_Json::encode(Axis_Locale_Model_ZendLocale::getConfigOptionsArray());?>');
+    var values = Ext.decode('<?php echo Zend_Json::encode($this->zendLocales);?>');
     return values[value] ? values[value] : value;  
 };
 </script>
