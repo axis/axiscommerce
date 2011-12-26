@@ -9,7 +9,7 @@ var orderStatusChild;
 var fieldTitle = [
 <?php
 $js = "";
-foreach (Axis_Locale_Model_Language::getConfigOptionsArray() as $langId => $language) {
+foreach ($this->languages as $langId => $language) {
     $language = addslashes($language);
     $js .= "{name: 'status_name[" . $langId . "]',";
     $js .= "fieldLabel: '" . $language . "',";

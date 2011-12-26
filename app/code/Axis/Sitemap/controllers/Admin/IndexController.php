@@ -38,7 +38,6 @@ class Axis_Sitemap_Admin_IndexController extends Axis_Admin_Controller_Back
         $this->view->pageTitle = Axis::translate('sitemap')->__('Sitemap');
         $this->view->sitesList = Axis::single('core/site')->fetchAll()
             ->toArray();
-        $this->view->sites = Axis_Core_Model_Site::getConfigOptionsArray();
         $this->view->crawlers = array_values(
             Axis::model('sitemap/crawler')->toArray()
         );

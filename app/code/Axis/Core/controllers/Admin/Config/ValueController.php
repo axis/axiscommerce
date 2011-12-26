@@ -52,7 +52,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Configuration');
-        $this->view->sites = Axis_Core_Model_Site::getConfigOptionsArray();
         $this->render();
     }
 

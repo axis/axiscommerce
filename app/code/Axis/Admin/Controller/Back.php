@@ -38,7 +38,11 @@ abstract class Axis_Admin_Controller_Back extends Axis_Controller_Action
     {
         parent::init();
 
-        $this->view->adminUrl = '/' . trim(
+        $this->view->languages = Axis_Locale_Model_Language::getConfigOptionsArray();
+        $this->view->sites     = Axis_Core_Model_Site::getConfigOptionsArray();
+        $this->view->locales   = Axis::single('locale/language')->select()->fetchAssoc();
+        
+        $this->view->adminUrl  = '/' . trim(
             Axis::config('core/backend/route'), '/ '
         );
     }
