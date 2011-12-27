@@ -78,7 +78,7 @@ class Axis_Catalog_Model_Watermark_Position implements Axis_Config_Option_Interf
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::BOTTOM . '_' . self::RIGHT;
     }

@@ -68,7 +68,7 @@ class Axis_Checkout_Model_Cart_Redirect implements Axis_Config_Option_Interface
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::CHECKOUT_ONESTEP;
     }

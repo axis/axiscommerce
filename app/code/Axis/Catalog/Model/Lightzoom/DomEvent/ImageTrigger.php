@@ -53,7 +53,7 @@ class Axis_Catalog_Model_Lightzoom_DomEvent_ImageTrigger extends Axis_Catalog_Mo
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::CLICK;
     }

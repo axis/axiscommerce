@@ -52,7 +52,7 @@ class Axis_Catalog_Model_Lightzoom_DomEvent_OffTrigger extends Axis_Catalog_Mode
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::MOUSELEAVE;
     }

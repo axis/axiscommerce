@@ -66,7 +66,7 @@ class Axis_Catalog_Model_Lightzoom_StagePosition implements Axis_Config_Option_I
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::RIGHT;
     }

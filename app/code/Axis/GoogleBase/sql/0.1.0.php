@@ -32,7 +32,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
     {
         Axis::single('core/config_field')
             ->add('gbase', 'Google Base', null, null, array('translation_module' => 'Axis_GoogleBase'))
-            ->add('gbase/main/payment', 'Google Base/General/Payment', Axis_GoogleBase_Model_Payment::getDeafultValue(), 'multiple', 'Let your customers buy with all major credit cards', array('model' => 'Axis_GoogleBase_Model_Payment'))
+            ->add('gbase/main/payment', 'Google Base/General/Payment', Axis_GoogleBase_Model_Payment::getConfigOptionDeafultValue(), 'multiple', 'Let your customers buy with all major credit cards', array('model' => 'Axis_GoogleBase_Model_Payment'))
             ->add('gbase/main/notes', 'Payment notes', 'Google Checkout', 'string')
             ->add('gbase/main/application', 'Application', 'StoreArchitect-Axis-' . Axis::app()->getVersion(), 'string', 'Name of the application that last modified this item.\r\nAll applications should set this attribute whenever they insert or update an item. Recommended format : Organization-ApplicationName-Version')
             ->add('gbase/main/dryRun', 'dryRun', '0', 'bool', "Set 'Yes' for testing, 'No' for production")

@@ -66,7 +66,7 @@ class Axis_Checkout_Model_Form_Address_CustomFieldsDisplayMode implements Axis_C
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::ALL;
     }

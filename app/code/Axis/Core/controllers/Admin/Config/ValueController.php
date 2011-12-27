@@ -216,7 +216,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $path   = $this->_getParam('path');
         $siteId = $this->_getParam('siteId');
         $value  = $this->_getParam('confValue');
-        $model  = Axis::model('core/config_value');
 
         $rowField = Axis::single('core/config_field')->select()
             ->where('path = ?', $path)
@@ -237,7 +236,10 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         } elseif (is_array($value)) {
             $value = implode(Axis_Config::MULTI_SEPARATOR, $value);
         }
+        
+        Axis_FirePhp::log($value);
 
+        $model = Axis::model('core/config_value');
         $row = $model->select()
             ->where('path = ?', $path)
             ->where('site_id = ?', $siteId)

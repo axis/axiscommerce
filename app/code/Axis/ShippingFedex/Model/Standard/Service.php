@@ -104,7 +104,7 @@ class Axis_ShippingFedex_Model_Standard_Service implements Axis_Config_Option_In
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::ALL;
     }

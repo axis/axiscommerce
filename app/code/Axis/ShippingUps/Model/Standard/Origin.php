@@ -144,7 +144,7 @@ class Axis_ShippingUps_Model_Standard_Origin implements Axis_Config_Option_Inter
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return current(self::getConfigOptionsArray());
     }

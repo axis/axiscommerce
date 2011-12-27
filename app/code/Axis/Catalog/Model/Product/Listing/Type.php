@@ -66,7 +66,7 @@ class Axis_Catalog_Model_Product_Listing_Type implements Axis_Config_Option_Inte
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::GRID;
     }

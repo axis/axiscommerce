@@ -46,5 +46,8 @@ interface Axis_Config_Option_Interface
      */
     public static function getConfigOptionName($id);
     
-    //@todo getDeafultValue
+    //@todo getConfigOptionDeafultValue
+    
+    //@todo getConfigOption
+    
 }

@@ -103,7 +103,7 @@ class Axis_ShippingUsps_Model_Standard_ServiceLabel extends Axis_ShippingUsps_Mo
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return implode(',', array_keys(self::getConfigOptionsArray()));
     }

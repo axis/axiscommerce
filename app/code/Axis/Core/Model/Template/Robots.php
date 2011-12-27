@@ -73,7 +73,7 @@ class Axis_Core_Model_Template_Robots implements Axis_Config_Option_Interface
      * @static
      * @return const array
      */
-    public static function getDeafultValue()
+    public static function getConfigOptionDeafultValue()
     {
         return self::INDEX . ' ' . self::FOLLOW;
     }
