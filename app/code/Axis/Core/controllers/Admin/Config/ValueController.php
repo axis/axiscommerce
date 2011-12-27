@@ -110,12 +110,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             $data[$row->id]['title'] =
                 Axis::translate($row->getTranslationModule())->__($row->title);
 
-            if (null != $row->config_options) {
-                $data[$row->id]['config_options'] = $this->_optionsToArray(
-                    $row->config_options
-                );
-            }
-
             if ('bool' == $row->config_type) {
                 $_value = $row->value ? 'Yes' : 'No' ;
             } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
@@ -160,9 +154,18 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $row->description = $translator->__($row->description);
         $row->title = $translator->__($row->title);
 
-        $this->view->confValue = Axis::single('core/config_value')
-            ->getValue($path, $siteId);
-
+        $confValue = null;
+        $rowValue = Axis::single('core/config_value')->select()
+            ->where('path = ?', $path)
+            ->where('site_id IN(?)', array(0, $siteId))
+            ->order('site_id DESC')
+            ->fetchRow();
+        if ($rowValue) {
+            $confValue = $rowValue->value;
+        }
+        $this->view->confValue = $confValue;
+        
+        
         $this->view->siteId = $siteId;
         $this->view->configPath = $path;
 
@@ -200,7 +203,11 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             $this->view->confValue = $this->_optionsToArray($this->view->confValue);
         }
         $this->view->confField = $row->toArray();
-
+        
+        Axis_FirePhp::log($this->view->confField);
+        Axis_FirePhp::log($this->view->confValue);
+        Axis_FirePhp::log(Axis::config($path));
+        
         $this->render();
     }
 

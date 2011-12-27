@@ -53,6 +53,8 @@ interface Axis_Config_Handler_Interface
 
     /**
      * Get config
+     * 
+     * from db format to current value 
      *
      * @static
      * @param  string $value

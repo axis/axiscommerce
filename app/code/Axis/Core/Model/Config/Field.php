@@ -42,40 +42,6 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
     protected $_selectClass = 'Axis_Core_Model_Config_Field_Select';
 
     /**
-     *
-     * @param string $key
-     * @param int $siteId[optional]
-     * @return array
-     */
-    public function getFieldsByKey($key, $siteId = 1)
-    {
-        $hasCache =  (bool) Zend_Registry::isRegistered('cache') ?
-            Axis::cache() instanceof Zend_Cache_Core : false;
-
-        if (!$hasCache
-            || !$fields = Axis::cache()->load("config_{$key}_site_{$siteId}")) {
-
-            $fields = $this->select(array('path', 'config_type', 'model'))
-                ->joinInner(
-                    'core_config_value',
-                    'ccv.config_field_id = ccf.id',
-                    'value'
-                )
-                ->where('ccf.path LIKE ?', $key . '/%')
-                ->where('ccv.site_id IN(?)', array(0, $siteId))
-                ->fetchAssoc()
-                ;
-
-            if ($hasCache) {
-                Axis::cache()->save(
-                    $fields, "config_{$key}_site_{$siteId}", array('config')
-                );
-            }
-        }
-        return $fields;
-    }
-
-    /**
      * Insert or update config field
      *
      * @param array $data
