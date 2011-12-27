@@ -31,7 +31,7 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Currency_Display implements Axis_Config_Option_Interface
+class Axis_Locale_Model_Currency_Display implements Axis_Config_Option_Array_Interface
 {
     const NO_SYMBOL     = 1;
     const USE_SYMBOL    = 2;

@@ -29,7 +29,7 @@
  * @package     Axis_Tax
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Tax_Model_Basis implements Axis_Config_Option_Interface
+class Axis_Tax_Model_Basis implements Axis_Config_Option_Array_Interface
 {
     const SHIPPING = 'delivery';
     const BILLING  = 'billing';

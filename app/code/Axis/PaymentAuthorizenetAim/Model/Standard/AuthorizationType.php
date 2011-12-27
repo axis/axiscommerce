@@ -31,7 +31,7 @@
  * @subpackage  Axis_PaymentAuthorizenetAim_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_PaymentAuthorizenetAim_Model_Standard_AuthorizationType implements Axis_Config_Option_Interface
+class Axis_PaymentAuthorizenetAim_Model_Standard_AuthorizationType implements Axis_Config_Option_Array_Interface
 {
     const AUTHORIZE = 'authorize';
     const CAPTURE   = 'capture';

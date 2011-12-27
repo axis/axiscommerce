@@ -29,7 +29,7 @@
  * @package     Axis_Core
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Config_Field_Status implements Axis_Config_Option_Interface
+class Axis_Core_Model_Config_Field_Status implements Axis_Config_Option_Array_Interface
 {
     /**
      * @static

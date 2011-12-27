@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingFlat_Model_Standard_Service implements Axis_Config_Option_Interface
+class Axis_ShippingFlat_Model_Standard_Service implements Axis_Config_Option_Array_Interface
 {   
     const PER_ORDER = 'Per Order';
     const PER_ITEM  = 'Per Item';

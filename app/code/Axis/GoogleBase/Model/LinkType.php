@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_GoogleBase_Model_LinkType implements Axis_Config_Option_Interface
+class Axis_GoogleBase_Model_LinkType implements Axis_Config_Option_Array_Interface
 {   
     const GOOGLE_BASE = 'GoogleBase';
     const WEBSITE     = 'Website';

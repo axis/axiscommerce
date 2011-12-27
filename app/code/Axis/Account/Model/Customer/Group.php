@@ -31,7 +31,7 @@
  * @subpackage  Axis_Account_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Config_Option_Interface
+class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
 {
     const GROUP_ALL_ID = 0;
     const GROUP_GUEST_ID = 5;

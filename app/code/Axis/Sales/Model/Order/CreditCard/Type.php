@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_CreditCard_Type implements Axis_Config_Option_Interface
+class Axis_Sales_Model_Order_CreditCard_Type implements Axis_Config_Option_Array_Interface
 {
     /**
      * @static

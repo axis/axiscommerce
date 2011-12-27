@@ -31,7 +31,7 @@
  * @subpackage  Axis_Contacts_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Contacts_Model_Department extends Axis_Db_Table implements Axis_Config_Option_Interface
+class Axis_Contacts_Model_Department extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
 {
     protected $_name = 'contacts_department';
     protected $_primary = 'id';

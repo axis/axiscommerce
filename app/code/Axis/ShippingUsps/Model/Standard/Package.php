@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUsps_Model_Standard_Package implements Axis_Config_Option_Interface
+class Axis_ShippingUsps_Model_Standard_Package implements Axis_Config_Option_Array_Interface
 {
     const VARIABLE           = 'VARIABLE';
     const FLAT_RATE_BOX      = 'FLAT RATE BOX';

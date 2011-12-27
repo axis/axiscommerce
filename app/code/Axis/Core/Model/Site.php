@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_Interface
+class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
 {
     protected $_name = 'core_site';
 

@@ -29,7 +29,7 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_ZendTimezone implements Axis_Config_Option_Interface
+class Axis_Locale_Model_ZendTimezone implements Axis_Config_Option_Array_Interface
 {
     /**
      *

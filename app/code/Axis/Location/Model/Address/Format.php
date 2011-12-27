@@ -31,7 +31,7 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Address_Format extends Axis_Db_Table implements Axis_Config_Option_Interface
+class Axis_Location_Model_Address_Format extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
 {
     protected $_name = 'location_address_format';
     

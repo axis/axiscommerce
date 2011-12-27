@@ -18,8 +18,7 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Model
+ * @package     Axis_Config
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,46 +26,16 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Model
+ * @package     Axis_Config
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Lightzoom_Cursor implements Axis_Config_Option_Array_Interface
-{   
-    const NONE      = 'none';
-    const DEF       = 'default';
-    const CROSSHAIR = 'crosshair';
-    const POINTER   = 'pointer';
-
+interface Axis_Config_Option_Array_Interface extends Axis_Config_Option_Interface
+{
     /**
      *
      * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
-    {
-        return array(self::NONE, self::DEF, self::CROSSHAIR, self::POINTER);
-    }
-    
-    /**
-     *
-     * @static
-     * @param string $id
-     * @return string
-     */
-    public static function getConfigOptionName($id)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$id]) ? $options[$id] : '';
-    }
-    
-    /**
-     *
-     * @static
-     * @return const array
-     */
-    public static function getConfigOptionDeafultValue()
-    {
-        return self::CROSSHAIR;
-    }
+    public static function getConfigOptionsArray();
+
 }

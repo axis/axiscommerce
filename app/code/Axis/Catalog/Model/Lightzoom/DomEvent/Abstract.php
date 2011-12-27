@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-abstract class Axis_Catalog_Model_Lightzoom_DomEvent_Abstract implements Axis_Config_Option_Interface
+abstract class Axis_Catalog_Model_Lightzoom_DomEvent_Abstract implements Axis_Config_Option_Array_Interface
 {   
     const NONE       = 'none';
     const CLICK      = 'click';

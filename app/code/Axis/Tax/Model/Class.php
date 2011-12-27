@@ -31,7 +31,7 @@
  * @subpackage  Axis_Tax_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Tax_Model_Class extends Axis_Db_Table implements Axis_Config_Option_Interface
+class Axis_Tax_Model_Class extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
 {
     protected $_name = 'tax_class';
 

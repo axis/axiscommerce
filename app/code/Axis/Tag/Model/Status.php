@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_Tag_Model_Status implements Axis_Config_Option_Interface
+class Axis_Tag_Model_Status implements Axis_Config_Option_Array_Interface
 {   
     const APPROVED    = '1';
     const PENDING     = '2';

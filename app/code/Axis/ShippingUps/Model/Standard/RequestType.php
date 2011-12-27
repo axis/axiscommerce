@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUps_Model_Standard_RequestType implements Axis_Config_Option_Interface
+class Axis_ShippingUps_Model_Standard_RequestType implements Axis_Config_Option_Array_Interface
 {
     const CGI = 'CGI';
     const XML = 'XML';

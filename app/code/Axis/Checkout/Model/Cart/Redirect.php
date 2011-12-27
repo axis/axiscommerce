@@ -31,7 +31,7 @@
  * @subpackage  Axis_Checkout_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Checkout_Model_Cart_Redirect implements Axis_Config_Option_Interface
+class Axis_Checkout_Model_Cart_Redirect implements Axis_Config_Option_Array_Interface
 {   
     const REFERER          = 'referer';
     const CHECKOUT_CART    = 'checkout/cart';

@@ -31,7 +31,7 @@
  * @subpackage  Axis_PaymentPaypal_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_PaymentPaypal_Model_Standard_TransactionType implements Axis_Config_Option_Interface
+class Axis_PaymentPaypal_Model_Standard_TransactionType implements Axis_Config_Option_Array_Interface
 {
     const AGGREGATE  = 'Aggregate Cart';
     const INDIVIDUAL = 'Individual Item';

@@ -34,13 +34,6 @@ interface Axis_Config_Option_Interface
     /**
      *
      * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray();
-
-    /**
-     *
-     * @static
      * @param int $id
      * @return string
      */
@@ -48,6 +41,7 @@ interface Axis_Config_Option_Interface
     
     //@todo getConfigOptionDeafultValue
     
-    //@todo getConfigOption
+    //@todo prepareConfigOptionValue exapmle: encrypt
     
+    //@todo getConfigOptionValue  example: decrypt
 }

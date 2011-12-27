@@ -31,7 +31,7 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Currency_Position implements Axis_Config_Option_Interface
+class Axis_Locale_Model_Currency_Position implements Axis_Config_Option_Array_Interface
 {
     const STANDARD = 8;
     const RIGHT    = 16;

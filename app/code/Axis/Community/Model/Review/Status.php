@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_Community_Model_Review_Status implements Axis_Config_Option_Interface
+class Axis_Community_Model_Review_Status implements Axis_Config_Option_Array_Interface
 {   
     //@todo int value
     const APPROVED    = 'approved';

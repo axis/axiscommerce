@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingTable_Model_Standard_Service implements Axis_Config_Option_Interface
+class Axis_ShippingTable_Model_Standard_Service implements Axis_Config_Option_Array_Interface
 {   
     const PER_WEIGHT = 'Per Weight';
     const PER_ITEM   = 'Per Item';

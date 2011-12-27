@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingFedex_Model_Standard_Package implements Axis_Config_Option_Interface
+class Axis_ShippingFedex_Model_Standard_Package implements Axis_Config_Option_Array_Interface
 {
     const FEDEX_ENVELOPE = 'FEDEXENVELOPE';
     const FEDEX_PAK      = 'FEDEXPAK';

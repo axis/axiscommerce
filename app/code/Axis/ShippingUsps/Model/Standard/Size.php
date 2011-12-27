@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUsps_Model_Standard_Size implements Axis_Config_Option_Interface
+class Axis_ShippingUsps_Model_Standard_Size implements Axis_Config_Option_Array_Interface
 {
     const REGULAR  = 'REGULAR';
     const LARGE    = 'LARGE';

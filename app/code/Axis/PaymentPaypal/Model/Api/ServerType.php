@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_PaymentPaypal_Model_Api_ServerType implements Axis_Config_Option_Interface
+class Axis_PaymentPaypal_Model_Api_ServerType implements Axis_Config_Option_Array_Interface
 {
     const LIVE    = 'live';
     const SANDBOX = 'sandbox';

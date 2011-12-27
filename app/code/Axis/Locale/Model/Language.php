@@ -31,7 +31,7 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Language extends Axis_Db_Table implements Axis_Config_Option_Interface
+class Axis_Locale_Model_Language extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
 {
     protected $_name = 'locale_language';
     protected $_rowClass = 'Axis_Db_Table_Row';

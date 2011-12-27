@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements Axis_Config_Option_Interface
+class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
 {
     protected $_name = 'catalog_product_manufacturer';
 

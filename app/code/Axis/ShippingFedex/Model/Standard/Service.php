@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingFedex_Model_Standard_Service implements Axis_Config_Option_Interface
+class Axis_ShippingFedex_Model_Standard_Service implements Axis_Config_Option_Array_Interface
 {
     const EUROPE_FIRST_INTERNATIONAL_PRIORITY = 'EUROPEFIRSTINTERNATIONALPRIORITY';
     const FEDEX_1_DAY_FREIGHT                 = 'FEDEX1DAYFREIGHT';

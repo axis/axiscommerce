@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Lightzoom_StagePosition implements Axis_Config_Option_Interface
+class Axis_Catalog_Model_Lightzoom_StagePosition implements Axis_Config_Option_Array_Interface
 {   
     const LEFT  = 'left';
     const RIGHT = 'right';
