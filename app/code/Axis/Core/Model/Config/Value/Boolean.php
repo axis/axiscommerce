@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Config
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,17 +27,34 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Config
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-//@todo axis_collection implements Axis_Config_Option_Array_Interface
-interface Axis_Config_Option_Array_Interface extends Axis_Config_Option_Interface
+class Axis_Core_Model_Config_Value_Boolean implements Axis_Config_Option_Array_Interface
 {
     /**
      *
      * @static
      * @return array
      */
-    public static function getConfigOptionsArray();
+    public static function getConfigOptionsArray()
+    {
+        return array(
+            1 => Axis::translate('admin')->__('Yes'), 
+            0 => Axis::translate('admin')->__('No')
+        );
+    }
 
+    /**
+     *
+     * @static
+     * @param string $id
+     * @return string
+     */
+    public static function getConfigOptionName($id)
+    {
+        $options = self::getConfigOptionsArray();
+        return isset($options[$id]) ? $options[$id] : '';
+    }
 }

@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Config
+ * @package     Axis_View
+ * @subpackage  Axis_View_Helper_Admin
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,17 +27,21 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Config
+ * @package     Axis_View
+ * @subpackage  Axis_View_Helper_Admin
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-//@todo axis_collection implements Axis_Config_Option_Array_Interface
-interface Axis_Config_Option_Array_Interface extends Axis_Config_Option_Interface
+class Axis_View_Helper_Bool
 {
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray();
+    public function bool($name, $value)
+    {
+        return $this->view->formRadio($name, $value, null, 
+            Axis_Core_Model_Config_Value_Boolean::getConfigOptionsArray()
+        );
+    }
 
+    public function setView($view)
+    {
+        $this->view = $view;
+    }
 }

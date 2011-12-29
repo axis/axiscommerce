@@ -111,7 +111,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 Axis::translate($row->getTranslationModule())->__($row->title);
 
             if ('bool' == $row->config_type) {
-                $_value = $row->value ? 'Yes' : 'No' ;
+                $_value = Axis_Core_Model_Config_Value_Boolean::getConfigOptionName($row->value);
             } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
                 $_value = '****************';
             } elseif ('handler' !== $row->config_type && !empty($row->model)) {
