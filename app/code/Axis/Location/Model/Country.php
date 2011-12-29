@@ -79,7 +79,7 @@ class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Config_O
         }
         return self::$_collection;
     }
-
+    
     /**
      *
      * @static
@@ -89,16 +89,17 @@ class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Config_O
     public static function getConfigOptionName($id)
     {
         self::getConfigOptionsArray();
-        if (strstr($id, ",")) {
-            $result = array();
-            foreach(explode(",", $id) as $key) {
-                if (array_key_exists($key, self::$_collection)) {
-                    $result[$key] = isset(self::$_collection[$key]) ?
-                        self::$_collection[$key] : 'Null';
-                }
+        $return = array();
+
+        foreach(explode(Axis_Config::MULTI_SEPARATOR, $id) as $key) {
+            if (array_key_exists($key, self::$_collection)) {
+                $return[$key] = isset(self::$_collection[$key]) ?
+                        self::$_collection[$key] : '';
             }
-            return implode(", ", $result);
         }
-        return isset(self::$_collection[$id]) ? self::$_collection[$id] : 'Null';
+        if (count($return) === count($options)) {
+            return 'All';
+        }
+        return implode(", ", $return);
     }
 }

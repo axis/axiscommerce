@@ -53,23 +53,17 @@ class Axis_Checkout_Model_Payment implements Axis_Config_Option_Array_Interface
      */
     public static function getConfigOptionName($id)
     {
-        if (!$id) {
-            return '';
-        }
-        $collects = self::getConfigOptionsArray();
-        if (strstr($id, ",")) {
-            $ret = array();
+        $options = self::getConfigOptionsArray();
+        $return = array();
 
-            foreach(explode(",", $id) as $key) {
-                if (array_key_exists($key, $collects))
-                    $ret[$key] = $collects[$key];
+        foreach(explode(Axis_Config::MULTI_SEPARATOR, $id) as $key) {
+            if (array_key_exists($key, $options)) {
+                $return[$key] = $options[$key];
             }
-            if (count($ret) == count($collects)) {
-                return 'All';
-            }
-            return implode(", ", $ret);
         }
-
-        return $collects[$id];
+        if (count($return) === count($options)) {
+            return 'All';
+        }
+        return implode(", ", $return);
     }
 }

@@ -34,7 +34,7 @@
 class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
-    {        
+    {   
 //        $routeAdmin = new Axis_Controller_Router_Route_Admin(
 //            'admin/:controller/:action/*',
 //            array(

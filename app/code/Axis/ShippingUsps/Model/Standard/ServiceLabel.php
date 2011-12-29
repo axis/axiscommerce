@@ -95,7 +95,17 @@ class Axis_ShippingUsps_Model_Standard_ServiceLabel extends Axis_ShippingUsps_Mo
     public static function getConfigOptionName($id)
     {
         $options = self::getConfigOptionsArray();
-        return isset($options[$id]) ? $options[$id] : '';
+        $return = array();
+
+        foreach(explode(Axis_Config::MULTI_SEPARATOR, $id) as $key) {
+            if (array_key_exists($key, $options)) {
+                $return[$key] = $options[$key];
+            }
+        }
+        if (count($return) === count($options)) {
+            return 'All';
+        }
+        return implode(", ", $return);
     }
 
     /**

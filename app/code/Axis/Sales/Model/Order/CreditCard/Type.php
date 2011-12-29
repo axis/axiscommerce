@@ -71,17 +71,17 @@ class Axis_Sales_Model_Order_CreditCard_Type implements Axis_Config_Option_Array
      */
     public static function getConfigOptionName($id)
     {
-        if (!$id) {
-            return '';
-        }
-        if (strstr($id, ",")) {
-            $ret = array();
-            foreach(explode(",", $id) as $key) {
-                if (array_key_exists($key, self::$_cards))
-                    $ret[$key] = self::$_cards[$key];
+        $options = self::getConfigOptionsArray();
+        $return = array();
+
+        foreach(explode(Axis_Config::MULTI_SEPARATOR, $id) as $key) {
+            if (array_key_exists($key, $options)) {
+                $return[$key] = $options[$key];
             }
-            return implode(", ", $ret);
         }
-        return self::$_cards[$id];
+        if (count($return) === count($options)) {
+            return 'All';
+        }
+        return implode(", ", $return);
     }
 }
