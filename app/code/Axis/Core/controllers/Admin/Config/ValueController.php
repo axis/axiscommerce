@@ -33,22 +33,6 @@
  */
 class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 {
-    private function _optionsToArray($option)
-    {
-        if (($data = json_decode($option, true)) && $data != $option) {
-            return $data;
-        }
-
-        $data = explode(Axis_Config::MULTI_SEPARATOR, $option);
-
-        $confData = array();
-        foreach ($data as $value) {
-            $value = trim($value);
-            $confData[$value] = $value;
-        }
-        return $confData;
-    }
-
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('admin')->__('Configuration');
@@ -120,10 +104,10 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                     array($row->model, 'getConfigOptionName'), $row->value
                 );
                 
-            } else if (in_array($row->config_type, array('select', 'multiple'))
+            /*} else if (in_array($row->config_type, array('select', 'multiple'))
                 && isset($data[$row->id]['config_options'][$row->value])) {
 
-                $_value = $data[$row->id]['config_options'][$row->value];
+                $_value = $data[$row->id]['config_options'][$row->value];*/
             } else {
                 $_value = $row->value;
             }
@@ -144,70 +128,37 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
         $siteId = $this->_getParam('siteId');
         $path = $this->_getParam('path');
+        
+        $this->view->siteId = $siteId;
+        $this->view->configPath = $path;
 
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', $path)
             ->fetchRow();
 
         $translator = Axis::translate($row->getTranslationModule());
-//        $this->view->confField = $row->toArray();
         $row->description = $translator->__($row->description);
         $row->title = $translator->__($row->title);
-
-        $confValue = null;
-        $rowValue = Axis::single('core/config_value')->select()
-            ->where('path = ?', $path)
-            ->where('site_id IN(?)', array(0, $siteId))
-            ->order('site_id DESC')
-            ->fetchRow();
-        if ($rowValue) {
-            $confValue = $rowValue->value;
+       
+        $value = Axis::config($path);
+        if ($value instanceof Axis_Config) {
+            $value = $value->toArray();
         }
-        $this->view->confValue = $confValue;
-        
-        
-        $this->view->siteId = $siteId;
-        $this->view->configPath = $path;
+        $this->view->value = $value;
 
         if (!empty($row->model)) {
-            if ($row->config_type != 'handler') {
-                
-                if (!empty($row->model_assigned_with)) {
-                    $param = Axis::config($row->model_assigned_with);
-                }
-
-                if (empty($param)) {
-                    $row->config_options = call_user_func(
-                        array($row->model, 'getConfigOptionsArray')
-                    );
-                } else {
-                    $row->config_options = call_user_func(
-                        array($row->model, 'getConfigOptionsArray'), $param
-                    );
-                }
-                
-            } else {
-                $row->config_options = call_user_func(
+            
+            if ('handler' === $row->config_type) {
+                $this->view->handlerHtml = call_user_func(
                     array('Axis_Config_Handler_' . $row->model, 'getHtml'), 
-                    $this->view->confValue, 
+                    $value, 
                     $this->view
                 );
-            }
-
-            $this->view->confValue = $this->_optionsToArray($this->view->confValue);
-        } elseif ($row->config_type == 'select'
-            || $row->config_type == 'multiple') {
-
-            $row->config_options = $this->_optionsToArray($row->config_options);
-
-            $this->view->confValue = $this->_optionsToArray($this->view->confValue);
-        }
-        $this->view->confField = $row->toArray();
-        
-        Axis_FirePhp::log($this->view->confField);
-        Axis_FirePhp::log($this->view->confValue);
-        Axis_FirePhp::log(Axis::config($path));
-        
+            } else {
+                $this->view->options = $row->getConfigOptions();
+            } 
+        } 
+        $this->view->row = $row;       
         $this->render();
     }
 

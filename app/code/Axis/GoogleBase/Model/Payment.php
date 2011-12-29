@@ -80,6 +80,9 @@ class Axis_GoogleBase_Model_Payment implements Axis_Config_Option_Array_Interfac
      */
     public static function getConfigOptionDeafultValue()
     {
-        return implode(',', array_keys(self::getConfigOptionsArray()));
+        return implode(
+            Axis_Config::MULTI_SEPARATOR, 
+            array_keys(self::getConfigOptionsArray())
+        );
     }
 }

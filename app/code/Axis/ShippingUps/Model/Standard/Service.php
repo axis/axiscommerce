@@ -86,6 +86,9 @@ class Axis_ShippingUps_Model_Standard_Service implements Axis_Config_Option_Arra
      */
     public static function getConfigOptionDeafultValue()
     {
-        return implode(',', array_keys(self::getConfigOptionsArray()));
+        return implode(
+            Axis_Config::MULTI_SEPARATOR, 
+            array_keys(self::getConfigOptionsArray())
+        );
     }
 }

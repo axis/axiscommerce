@@ -106,6 +106,9 @@ class Axis_ShippingFedex_Model_Standard_Service implements Axis_Config_Option_Ar
      */
     public static function getConfigOptionDeafultValue()
     {
-        return self::ALL;
+        return implode(
+            Axis_Config::MULTI_SEPARATOR, 
+            array_keys(self::getConfigOptionsArray())
+        );
     }
 }

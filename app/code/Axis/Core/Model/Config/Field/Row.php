@@ -70,4 +70,24 @@ class Axis_Core_Model_Config_Field_Row extends Axis_Db_Table_Row
         
         return $this->translation_module;
     }
+    
+    /**
+     *
+     * @return mixed null|array 
+     */
+    public function getConfigOptions() 
+    {
+         if (empty($this->model)) {
+             return;
+         }
+         
+         if (!empty($this->model_assigned_with)) {
+            $param = Axis::config($this->model_assigned_with);
+            return call_user_func(
+                array($this->model, 'getConfigOptionsArray'), $param
+            );
+         }
+        
+        return call_user_func(array($this->model, 'getConfigOptionsArray'));
+    }
 }

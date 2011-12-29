@@ -56,20 +56,20 @@ class Axis_Checkout_Model_Shipping implements Axis_Config_Option_Array_Interface
         if (!$id) {
             return '';
         }
-        $collects = self::getConfigOptionsArray();
-        if (strstr($id, ",")) {
-            $ret = array();
+        $options = self::getConfigOptionsArray();
+        if (strstr($id, Axis_Config::MULTI_SEPARATOR)) {
+            $return = array();
 
-            foreach(explode(",", $id) as $key) {
-                if (array_key_exists($key, $collects))
-                    $ret[$key] = $collects[$key];
+            foreach(explode(Axis_Config::MULTI_SEPARATOR, $id) as $key) {
+                if (array_key_exists($key, $options))
+                    $return[$key] = $options[$key];
             }
-            if (count($ret) == count($collects)) {
+            if (count($return) == count($options)) {
                 return 'All';
             }
-            return implode(", ", $ret);
+            return implode(", ", $return);
         }
 
-        return $collects[$id];
+        return isset($options[$id]) ? $options[$id] : '';
     }
 }
