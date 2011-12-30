@@ -33,11 +33,9 @@
  */
 class Axis_View_Helper_Bool
 {
-    public function bool($name, $value)
+    public function bool($name, $value, $options)
     {
-        return $this->view->formRadio($name, $value, null, 
-            Axis_Core_Model_Config_Value_Boolean::getConfigOptionsArray()
-        );
+        return $this->view->formRadio($name, $value, null, $options);
     }
 
     public function setView($view)

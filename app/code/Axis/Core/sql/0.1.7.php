@@ -276,9 +276,9 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/store/owner', 'Store owner', 'Owner')
 
             ->add('core/backend/route', 'Core/Backend/Route', 'admin', 'string', 'Admin url (example.com/<b>adminRoute</b>)')
-            ->add('core/backend/ssl', 'Ssl Enabled', 0, 'bool')
+            ->add('core/backend/ssl', 'Ssl Enabled', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
 
-            ->add('core/frontend/ssl', 'Core/Frontend/Ssl Enabled', 0, 'bool')
+            ->add('core/frontend/ssl', 'Core/Frontend/Ssl Enabled', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
 
             ->add('core/company/name', 'Core/Company/Name', 'Axiscommerce', 'string', 'Company name')
             ->add('core/company/site', 'Website', 'www.example.com', 'string', 'Company website')
@@ -295,12 +295,12 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/company/supportEmail', 'Support email', 'email5', 'select', array('model' => 'Axis_Core_Model_Mail_Boxes'))
 
             ->add('core/cache/default_lifetime', 'core/Cache/Default Lifetime', '86400')
-            ->add('core/translation/autodetect', 'core/Translation/Autodetect new words',  '0', 'bool', 'Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)')
+            ->add('core/translation/autodetect', 'core/Translation/Autodetect new words',  '0', 'bool', 'Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
 
-            ->add('core/minify/js_front', 'Core/Minify/Enable javascript merging the frontend', '0', 'bool')
-            ->add('core/minify/js_admin', 'Core/Minify/Enable javascript merging on the backend', '0', 'bool')
-            ->add('core/minify/css_front', 'Enable css merging on the frontend', '0', 'bool')
-            ->add('core/minify/css_admin', 'Enable css merging on the backend', '0', 'bool')
+            ->add('core/minify/js_front', 'Core/Minify/Enable javascript merging the frontend', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('core/minify/js_admin', 'Core/Minify/Enable javascript merging on the backend', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('core/minify/css_front', 'Enable css merging on the frontend', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('core/minify/css_admin', 'Enable css merging on the backend', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
 
             ->add('mail', 'Mail', null, null, array('translation_module' => 'Axis_Core'))
             ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email2', 'select', array('model' => 'Axis_Core_Model_Mail_Boxes'))
@@ -309,7 +309,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('mail/smtp/user', 'User', 'test+axiscommerce.com', 'handler', '', array('model' => 'Crypt'))
             ->add('mail/smtp/password', 'Password', 'test', 'handler', '', array('model' => 'Crypt'))
             ->add('mail/smtp/port', 'Port', '465')
-            ->add('mail/smtp/auth', 'Use Auth', '1', 'bool')
+            ->add('mail/smtp/auth', 'Use Auth', '1', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
             ->add('mail/smtp/secure', 'Secure', Axis_Core_Model_Mail_Secure::SSL, 'select', array('model' => 'Axis_Core_Model_Mail_Secure'))
             ->add('mail/mailboxes/email1', 'Mail/Mailboxes/Email', 'test@axiscommerce.com')
             ->add('mail/mailboxes/email2', 'Email', 'test@axiscommerce.com')

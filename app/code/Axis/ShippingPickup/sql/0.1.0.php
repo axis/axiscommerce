@@ -33,7 +33,7 @@ class Axis_ShippingPickup_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstra
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Pickup_Standard', 'Shipping Methods/Pickup Standard', null, null, array('translation_module' => 'Axis_ShippingPickup'))
-            ->add('shipping/Pickup_Standard/enabled', 'Shipping Methods/Pickup Standard/Enabled', '0', 'bool', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Pickup_Standard/enabled', 'Shipping Methods/Pickup Standard/Enabled', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean', 'translation_module' => 'Axis_Core'))
             ->add('shipping/Pickup_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Pickup_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Pickup_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))

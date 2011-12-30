@@ -31,8 +31,8 @@ class Axis_Core_Upgrade_0_1_8 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         Axis::single('core/config_field')
-            ->add('core/session/remoteAddressValidation', 'Core/Session/Remote Address (IP) Validation', 0, 'bool')
-            ->add('core/session/httpUserAgentValidation', 'Core/Session/User Agent (Browser) Validation', 0, 'bool');
+            ->add('core/session/remoteAddressValidation', 'Core/Session/Remote Address (IP) Validation', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('core/session/httpUserAgentValidation', 'Core/Session/User Agent (Browser) Validation', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'));
     }
 
     public function down()

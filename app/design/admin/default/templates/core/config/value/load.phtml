@@ -14,7 +14,7 @@
     <dd><?php
     switch ($this->row->config_type) {
         case 'bool':
-            echo $this->bool('confValue', $this->value);
+            echo $this->bool('confValue', $this->value, $this->options);
             break;
         case 'select':
             echo $this->select('confValue', $this->value, $this->options);
