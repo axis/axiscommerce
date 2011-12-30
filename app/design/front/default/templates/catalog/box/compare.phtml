@@ -10,8 +10,8 @@
     <li>
         <h4 class="product-name"><a href="<?php echo $url;?>"
             title="<?php echo $this->escape($product['name']) ?>"
-            ><?php echo $this->escape($product['name']);?></a></h4> 
-        <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/remove/product/') . $prodId ?>"
+            ><?php echo $this->escape($product['name']);?></a></h4>
+        <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/remove/product/' . $prodId) ?>"
             class="compare-remove" title="<?php echo $this->translate('catalog')->__('Remove item') ;?>"
             ><?php echo $this->image('bullet-delete.gif', 'alt="'.$this->translate('catalog')->__('Remove item').'"');?></a>
     </li>

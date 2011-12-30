@@ -57,7 +57,12 @@ class Axis_View_Helper_Href
         $locale = isset($options['locale']) ?
             $options['locale'] : Axis_Locale::getLanguageUrl();
 
-        return $baseUrl . $locale . '/' . ltrim($href, '/');
+        $href = trim($href, '/');
+        if (!empty($href)) {
+            $href = '/' . $href;
+        }
+
+        return $baseUrl . $locale . $href;
     }
 
     public function setView($view)

@@ -36,6 +36,7 @@ class ErrorController extends Axis_Core_Controller_Front
     public function errorAction()
     {
         //error_log('errorAction');
+        $this->setCanonicalUrl(false);
         $this->getResponse()->clearBody();
         $errors = $this->_getParam('error_handler');
         $exception = $errors->exception;
@@ -56,7 +57,7 @@ class ErrorController extends Axis_Core_Controller_Front
         }
 
         switch ($errors->type) {
-            //case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ROUTE: zf 1.10
+            case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ROUTE:
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:
                 // 404 error -- controller or action not found
@@ -103,6 +104,7 @@ class ErrorController extends Axis_Core_Controller_Front
             'controller' => 'error',
             'route'      => 'core'
         ));
+        $this->setCanonicalUrl(false);
         $this->render('core/error/404', null, true);
     }
 }

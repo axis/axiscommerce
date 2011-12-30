@@ -182,6 +182,6 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
             }
         }
 
-        return str_replace(array(' ', '"'), array('+', '%22'), $url);
+        return str_replace(array(' ', '"'), array('+', '%22'), rtrim($url, '/'));
     }
 }

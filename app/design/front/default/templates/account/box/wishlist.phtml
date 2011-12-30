@@ -43,7 +43,7 @@ foreach ($this->box->getData('wishlist') as $wl):
         <td class="date"><?php echo $wl['created_on']; ?></td>
         <td class="links">
             <ul class="no-bullet no-indent">
-                <li><a href="<?php echo $this->href('/checkout/cart/add/productId/' . $wl['product_id'], true); ?>/clean-wishlist/1"
+                <li><a href="<?php echo $this->href('/checkout/cart/add/productId/' . $wl['product_id'] . '/clean-wishlist/1', true); ?>"
                     title="<?php echo $this->translate('account')->__('Move To Cart')?>"
                     ><?php echo $this->translate('account')->__('Move To Cart')?></a>
                 </li>

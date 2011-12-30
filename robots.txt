@@ -1,14 +1,14 @@
 User-Agent: *
-Disallow: 
+Disallow:
 Disallow: /checkout
 Disallow: /poll
 Disallow: /account
 Disallow: /contacts
 Disallow: /product-compare
-Disallow: /mode=
-Disallow: /dir=
-Disallow: /limit=
-Disallow: /price=
-Disallow: /order=
+Disallow: /*mode=
+Disallow: /*dir=
+Disallow: /*limit=
+Disallow: /*price=
+Disallow: /*order=
 Disallow: /locale/currency
 Disallow: /search

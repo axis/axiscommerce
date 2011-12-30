@@ -38,8 +38,10 @@ class IndexController extends Axis_Core_Controller_Front
         $this->view->meta()
             ->setTitle(Axis::config()->design->htmlHead->homeTitle)
             ->setDescription(Axis::config()->design->htmlHead->homeDescription)
-            ->setKeywords(Axis::config()->design->htmlHead->homeKeywords)
-        ;
+            ->setKeywords(Axis::config()->design->htmlHead->homeKeywords);
+
+        $this->setCanonicalUrl($this->view->url(array(), 'core', true));
+
         $this->render();
     }
 }

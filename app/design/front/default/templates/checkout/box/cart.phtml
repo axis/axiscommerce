@@ -6,7 +6,7 @@
             <a href="<?php echo $this->href('/checkout/cart/remove/scItemId/' . $product['id'], true) ?>"
                 class="product-remove" title="<?php echo $this->translate('checkout')->__('Remove item') ;?>"
                 ><?php echo $this->image('bullet-delete.gif', 'alt="'.$this->translate('checkout')->__('Remove item').'"');?></a>
-            <a href="<?php echo $this->href('/' . $this->catalogUrl . '/' . $product['key_word']) ?>"
+            <a href="<?php echo $this->href($this->catalogUrl . '/' . $product['key_word']) ?>"
                 class="product-name"><?php echo $product['name'];?></a>
             <p class="product-price"><?php echo $this->currency($product['final_price'] * $product['quantity']);?></p>
 
