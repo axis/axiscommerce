@@ -109,6 +109,12 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
         $paging['page']  = $page = (int) $this->_getParam('page', 1);
         $paging['count'] = count($result);
 
+        $this->setCanonicalUrl($this->view->url(array(
+            'q'     => $queryStr,
+            'page'  => $page,
+            'limit' => $limit
+        )), 'search_result', true);
+
         // Axis::session('catalog')->limit = $limit;
         if ('all' === $limit) {
             $paging['limit'] = $paging['count'];
