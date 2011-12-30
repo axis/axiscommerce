@@ -97,7 +97,7 @@ class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Config_O
                         self::$_collection[$key] : '';
             }
         }
-        if (count($return) === count($options)) {
+        if (count($return) === count(self::$_collection)) {
             return 'All';
         }
         return implode(", ", $return);
