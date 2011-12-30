@@ -2,10 +2,10 @@
     $_box = $this->box;
     $productId = $_box->product_id;
 //    $reviewCount = $_box->review_count[$productId];
-    if (isset($_box->review_count[$productId]) 
+    if (isset($_box->review_count[$productId])
         && $reviewCount = $_box->review_count[$productId]) : ?>
     <p class="review-view">
-        <a href="<?php echo $this->href('review/product/') . $_box->product_url ?>"
+        <a href="<?php echo $this->href('review/product/' . $_box->product_url) ?>"
             title="<?php echo $this->translate('community')->__("View all user reviews (%d)", $reviewCount)?>">
             <?php echo $this->translate('community')->__("View all user reviews (%d)", $reviewCount)?>
         </a></p>
@@ -18,7 +18,7 @@
     <?php endif; ?>
 <?php else: ?>
     <p class="review-add">
-        <a href="<?php echo $this->href('review/add/product/') . $productId ?>"
+        <a href="<?php echo $this->href('review/add/product/' . $productId) ?>"
             rel="nofollow">
             <?php echo $this->translate('community')->__('Be the first to review this product') ?>
         </a></p>

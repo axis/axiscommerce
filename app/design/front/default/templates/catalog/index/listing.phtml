@@ -92,7 +92,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                         class="add-to-wishlist"><span><span>
                         <?php echo $this->translate('catalog')->__('Add to Wishlist')?></span></span></a>
                     <br/>
-                    <a href="<?php echo $this->href('/' . $this->catalogUrl . '/product-compare/add/product/') . $prodId ?>"
+                    <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/' . $prodId) ?>"
                         rel="nofollow"
                         title="<?php echo $this->translate('catalog')->__('Add to Compare') ?>"
                         class="add-to-compare"><span><span>
@@ -164,7 +164,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                             class="add-to-wishlist"><span><span>
                             <?php echo $this->translate('catalog')->__('Add to Wishlist')?></span></span></a>
                         <br/>
-                        <a href="<?php echo $this->href('/' . $this->catalogUrl . '/product-compare/add/product/') . $prodId ?>"
+                        <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/' . $prodId) ?>"
                             rel="nofollow"
                             title="<?php echo $this->translate('catalog')->__('Add to Compare') ?>"
                             class="add-to-compare"><span><span>

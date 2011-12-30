@@ -23,7 +23,7 @@
     </tfoot>
     <tbody>
     <?php foreach ($this->wishlist as &$wl):
-        $productUrl = $this->href('/' . $this->catalogUrl . '/' . $wl['product']['key_word']);
+        $productUrl = $this->href($this->catalogUrl . '/' . $wl['product']['key_word']);
     ?>
     <tr>
         <td class="product-image">
@@ -60,7 +60,7 @@
         <td class="date"><?php echo $wl['created_on']; ?></td>
         <td class="links">
             <ul>
-                <li><a href="<?php echo $this->href('/checkout/cart/add/productId/' . $wl['product_id'], true); ?>/clean-wishlist/1"
+                <li><a href="<?php echo $this->href('/checkout/cart/add/productId/' . $wl['product_id'] . '/clean-wishlist/1', true); ?>"
                     title="<?php echo $this->translate('account')->__('Move To Cart')?>"
                     ><?php echo $this->translate('account')->__('Move To Cart')?></a>
                 </li>
