@@ -36,10 +36,10 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
     /**
      *
      * @static
-     * @param void
+     * @param mixed
      * @return array
      */
-    public static function getSaveValue($params)
+    public static function prepareConfigOptionValue($params)
     {
         if (is_array($params)) {
             $temp = array();

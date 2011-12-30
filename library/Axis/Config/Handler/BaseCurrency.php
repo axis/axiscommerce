@@ -39,7 +39,7 @@ class Axis_Config_Handler_BaseCurrency implements  Axis_Config_Handler_Interface
      * @param string $value
      * @return string
      */
-    public static function getSaveValue($value)
+    public static function prepareConfigOptionValue($value)
     {
         $row = Axis::single('locale/currency')->select()
             ->where('code = ?' , $value)

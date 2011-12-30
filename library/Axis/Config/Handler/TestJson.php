@@ -42,11 +42,11 @@ class Axis_Config_Handler_TestJson implements  Axis_Config_Handler_Interface
     public static function _getOptions()
     {
         return array(
-            'id' => array('name'=> 'id', 'type' => '', 'id' => 'id'),
-            'is_used' => array('name'=> 'used', 'type' => 'bool', 'id' => 'used'),
-            'cost' => array('name'=> 'cost', 'type' => 'text', 'id' => 'cost'),
-            'qty' => array('name'=> 'qty', 'type' => 'select', 'id' => 'qty', 'config_options' => array(1 => 'ses', 2 => 'sos')),
-            'card' => array('name'=> 'card', 'type' => 'multiple', 'id' => 'card', 'config_options' => array('visa' => 'Visa'  , 'amex' => 'Amex'))
+            'id'      => array('name'=> 'id',   'type' => '',         'id' => 'id'),
+            'is_used' => array('name'=> 'used', 'type' => 'bool',     'id' => 'used'),
+            'cost'    => array('name'=> 'cost', 'type' => 'text',     'id' => 'cost'),
+            'qty'     => array('name'=> 'qty',  'type' => 'select',   'id' => 'qty',  'config_options' => array(1 => 'ses', 2 => 'sos')),
+            'card'    => array('name'=> 'card', 'type' => 'multiple', 'id' => 'card', 'config_options' => array('visa' => 'Visa'  , 'amex' => 'Amex'))
         );
     }
 
@@ -56,7 +56,7 @@ class Axis_Config_Handler_TestJson implements  Axis_Config_Handler_Interface
      * @param array $params
      * @return string
      */
-    public static function getSaveValue($params)
+    public static function prepareConfigOptionValue($params)
     {
         return json_encode($params);
     }

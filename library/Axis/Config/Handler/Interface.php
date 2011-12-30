@@ -31,18 +31,18 @@
  * @subpackage  Axis_Config_Handler
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-interface Axis_Config_Handler_Interface
+interface Axis_Config_Handler_Interface //extends Axis_Config_Option_Interface
 {
     /**
-     * Add params
      *
      * @static
      * @param  array $params
      * @return string
      */
-    public static function getSaveValue($params);
+    public static function prepareConfigOptionValue($params);
 
     /**
+     * @todo move to spec helpers
      * Get html
      *
      * @static
