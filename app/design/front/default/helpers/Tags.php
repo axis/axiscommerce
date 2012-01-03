@@ -76,11 +76,11 @@ class Axis_View_Helper_Tags
                     . $tag['class']  . ' nowrap">';
                 $content .= '<a  style="font-size:'
                          . $this->view->escape($tag['font-size']) . '%" href="'
-                         . $this->view->href('tag/index/show-products/');
+                         . $this->view->href('tag/index/show-products');
                 if ($this->_usageTagAsId) {
-                    $content .= 'tag/' . $this->view->escape($tag['name']);
+                    $content .= '/tag/' . $this->view->escape($tag['name']);
                 } else {
-                    $content .= 'tagId/' . $this->view->escape($tag['id']);
+                    $content .= '/tagId/' . $this->view->escape($tag['id']);
                 }
                 $content .= '">'. $this->view->escape($tag['name']);
                 if ($this->_disableWeight) {
