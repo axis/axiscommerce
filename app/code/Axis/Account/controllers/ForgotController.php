@@ -89,7 +89,7 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
                         'Message was sended to you. Check your mailbox'
                     ));
                 }
-            } catch (Zend_Mail_Transport_Exception $e) {
+            } catch (Zend_Mail_Exception $e) {
                 Axis::message()->addError(
                     Axis::translate('core')->__('Mail sending was failed.')
                 );

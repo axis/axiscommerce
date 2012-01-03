@@ -141,7 +141,7 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
                 );
             }
             $this->_helper->json->sendSuccess();
-        } catch (Zend_Mail_Transport_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
             Axis::message()->addError(
                 Axis::translate('core')->__('Mail sending was failed.')
                 . ' ' . $e->getMessage()
