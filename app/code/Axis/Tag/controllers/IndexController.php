@@ -33,7 +33,6 @@
  */
 class Axis_Tag_IndexController extends Axis_Core_Controller_Front
 {
-
     public function init()
     {
         parent::init();
@@ -63,6 +62,9 @@ class Axis_Tag_IndexController extends Axis_Core_Controller_Front
             foreach (Axis::single('tag/customer')->findByTag($tagName) as $tag) {
                 $tagIds[] = $tag['id'];
             }
+            $this->setCanonicalUrl(
+                $this->view->url(array('tag' => $tagName), 'tag_products')
+            );
             $this->view->showRemove = false;
         } else {
             $tagId = $integer->filter($this->_getParam('tagId', 0));
