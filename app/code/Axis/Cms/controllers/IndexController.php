@@ -35,6 +35,7 @@ class Axis_Cms_IndexController extends Axis_Cms_Controller_Abstract
 {
     public function indexAction()
     {
+        $this->setCanonicalUrl($this->view->url(array(), 'cms', true));
         $this->setTitle(Axis::translate('cms')->__('Pages'), null, false);
 
         $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))
