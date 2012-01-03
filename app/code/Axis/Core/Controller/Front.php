@@ -94,14 +94,16 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
     {
         $httpReferer = $this->getRequest()->getServer('HTTP_REFERER');
         if (($httpReferer && $url == $httpReferer) || !$addLanguage) {
-
             parent::_redirect($url, $options);
             return;
         }
-        parent::_redirect(
-            rtrim(Axis_Locale::getLanguageUrl(), '/') . '/' . ltrim($url, '/'),
-            $options
-        );
+
+        if ($url && $url !== '/') {
+            $url = '/' . trim($url, '/');
+        } else {
+            $url = '';
+        }
+        parent::_redirect(Axis_Locale::getLanguageUrl() . $url, $options);
     }
 
     /**
