@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
-{  
+{
     public function viewPageAction()
     {
         $link = $this->_getParam('page');
@@ -53,7 +53,7 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
             ->getParentCategory($pageId, true);
 
         foreach ($categories as $_category) {
-            $label = empty($_category['title']) ? 
+            $label = empty($_category['title']) ?
                     $_category['link'] : $_category['title'];
             $this->_helper->breadcrumbs(array(
                 'label'  => $label,
@@ -79,6 +79,9 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
         }
         $this->view->page = $page;
 
+        $this->setCanonicalUrl(
+            $this->view->url(array('page' => $link), 'cms_page', true)
+        );
         $this->setTitle($rowContent->title);
         $metaTitle = empty($rowContent->meta_title) ?
                 $rowContent->title : $rowContent->meta_title;
@@ -109,7 +112,7 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
 
         $categories = $modelCategory->getParentCategory($categoryId);
         foreach ($categories as $_category) {
-            $label = empty($_category['title']) ? 
+            $label = empty($_category['title']) ?
                     $_category['link'] : $_category['title'];
             $this->_helper->breadcrumbs(array(
                 'label'  => $label,
@@ -126,6 +129,9 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
             ->setTitle($metaTitle, 'cms_category', $categoryId)
             ->setDescription($metaDescription)
             ->setKeywords($rowContent->meta_keyword);
+        $this->setCanonicalUrl(
+            $this->view->url(array('cat' => $link), 'cms_category', true)
+        );
 
         $this->view->category = array(
             'description' => $rowContent->description,
