@@ -83,7 +83,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                             )
                         ));
                         $mail->send();
-                    } catch (Zend_Mail_Transport_Exception $e) {
+                    } catch (Zend_Mail_Exception $e) {
                     }
                 }
 

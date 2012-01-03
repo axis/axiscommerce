@@ -86,7 +86,7 @@ class Axis_Admin_ForgotController extends Axis_Admin_Controller_Back
                         Axis::translate('admin')->__('See your mailbox to proceed')
                     );
                 }
-            } catch (Zend_Mail_Transport_Exception $e) {
+            } catch (Zend_Mail_Exception $e) {
                 Axis::message()->addError(
                     Axis::translate('core')->__('Mail sending was failed.')
                 );

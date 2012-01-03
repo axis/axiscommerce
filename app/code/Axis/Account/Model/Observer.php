@@ -67,7 +67,7 @@ class Axis_Account_Model_Observer
 //                    Axis::translate('core')->__('Mail was sended successfully')
 //                );
 //            }
-        } catch (Zend_Mail_Transport_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
             Axis::message()->addError(
                 Axis::translate('core')->__('Mail sending was failed.')
             );
@@ -87,7 +87,7 @@ class Axis_Account_Model_Observer
                 )
             ));
             $mailNotice->send();
-        } catch (Zend_Mail_Transport_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
         }
     }
 

@@ -29,10 +29,7 @@ var Block = {
 
     load: function(id) {
         BlockWindow.form.getForm().load({
-            url: Axis.getUrl('cms/block/load/'),
-            params: {
-              id: id  
-            },
+            url: Axis.getUrl('cms/block/load/id/' + id),
             method: 'post',
             success: function(form, action) {
                 BlockWindow.el.show();
@@ -56,7 +53,7 @@ var BlockGrid = {
             data[i] = selectedItems[i].id;
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('cms/block/delete'),
+            url: Axis.getUrl('cms/block/remove'),
             params: {
                 data: Ext.encode(data)
             },
