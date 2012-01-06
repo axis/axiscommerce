@@ -93,7 +93,7 @@ Ext.onReady(function() {
 
                 if (values.length > 1) {
                     meta.attr += 'ext:qtip="' + values.join('<br/>') + '"';
-                    suffix     = ' (+' + (values.length - 1) + ')'
+                    suffix     = ' (+' + (values.length - 1) + ')';
                 }
                 return values[0] + suffix;
             },
@@ -137,7 +137,7 @@ Ext.onReady(function() {
         })
     });
 
-    new Axis.Panel({
+    var panel = new Axis.Panel({
         items: [
             grid
         ]
