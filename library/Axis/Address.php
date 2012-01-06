@@ -65,9 +65,9 @@ class Axis_Address extends Axis_Object
      */
     public function setData($name, $value)
     {
-        if (!in_array($name, $this->_fields)) {
-            return $this;
-        }
+//        if (!in_array($name, $this->_fields)) {
+//            return $this;
+//        }
         if (in_array($name, array('country', 'zone'))) {
             if (is_array($value)) {
                 $value = new Axis_Object($value);
@@ -89,9 +89,9 @@ class Axis_Address extends Axis_Object
     public function setFromArray(array $data)
     {
         foreach ($data as $name => $value) {
-            if (!in_array($name, $this->_fields)) {
-                continue;
-            }
+//            if (!in_array($name, $this->_fields)) {
+//                continue;
+//            }
             if (in_array($name, array('country', 'zone'))) {
                 if (is_array($value)) {
                     $value = new Axis_Object($value);
