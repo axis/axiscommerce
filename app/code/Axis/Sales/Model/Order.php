@@ -143,9 +143,7 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         $orderRow->setStatus('pending');
 
         // Clear cart after checkout
-        if ('development' != Axis::app()->getEnvironment()) {
-            $checkout->getCart()->clear();
-        }
+        $checkout->getCart()->clear();
 
         return $orderRow;
     }
