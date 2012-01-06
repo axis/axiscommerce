@@ -22,6 +22,8 @@
 
 Ext.onReady(function() {
 
+    Ext.QuickTips.init();
+
     var ds = new Ext.data.GroupingStore({
         autoLoad: true,
         baseParams: {
@@ -33,6 +35,7 @@ Ext.onReady(function() {
             }, [
                 {name: 'url'},
                 {name: 'hit', type: 'int'},
+                {name: 'referrer'},
                 {name: 'date', type: 'date', dateFormat: 'Y-m-d'}
             ]
         ),
@@ -44,14 +47,56 @@ Ext.onReady(function() {
         url: Axis.getUrl('log/list')
     });
 
+    var referrer = new Ext.grid.RowExpander({
+        listeners: {
+            beforeexpand: function(expander, record, body, rowIndex) {
+                if (!this.tpl) {
+                    this.tpl = new Ext.Template();
+                }
+
+                var html = '<ul style="padding: 5px 0 5px 50px;">';
+                Ext.each(record.get('referrer').split(' '), function(url) {
+                    html += String.format(
+                        '<li><a href="{0}" title="{0}" onclick="window.open(this.href); return false;">{0}</a><li>',
+                        url
+                    );
+                }, this);
+                html += '</ul>';
+
+                this.tpl.set(html);
+            }
+        }
+    });
+
     var cm = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
         },
-        columns: [{
+        columns: [referrer, {
             dataIndex: 'url',
             header: 'Url'.l(),
             id: 'url',
+            filter: {
+                operator: 'LIKE'
+            }
+        }, {
+            dataIndex: 'referrer',
+            header: 'Referrer'.l(),
+            id: 'referrer',
+            width: 300,
+            renderer: function(value, meta, record) {
+                // trim the value
+                value = value.replace(/^\s*/, '').replace(/\s*$/, '');
+
+                var values = value.split(' '),
+                    suffix = '';
+
+                if (values.length > 1) {
+                    meta.attr += 'ext:qtip="' + values.join('<br/>') + '"';
+                    suffix     = ' (+' + (values.length - 1) + ')'
+                }
+                return values[0] + suffix;
+            },
             filter: {
                 operator: 'LIKE'
             }
@@ -76,7 +121,10 @@ Ext.onReady(function() {
         ds: ds,
         cm: cm,
         id: 'grid-log',
-        plugins: [new Axis.grid.Filter()],
+        plugins: [
+            referrer,
+            new Axis.grid.Filter()
+        ],
         tbar: ['->', {
             text: 'Reload'.l(),
             handler: function() {
