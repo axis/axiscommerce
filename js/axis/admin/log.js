@@ -86,7 +86,9 @@ Ext.onReady(function() {
             width: 300,
             renderer: function(value, meta, record) {
                 // trim the value
-                value = value.replace(/^\s*/, '').replace(/\s*$/, '');
+                value = value.replace(/^\s*/, '')
+                    .replace(/\s*$/, '')
+                    .replace(/\s+/, ' ');
 
                 var values = value.split(' '),
                     suffix = '';
