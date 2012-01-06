@@ -50,6 +50,13 @@ $config = array(
                     'model'  => 'account/observer',
                     'method' => 'prepareAdminNavigationBox'
                 )
+            ),
+            'checkout_place_order_after' => array(
+                'create_account' => array(
+                    'type'   => 'model',
+                    'model'  => 'account/observer',
+                    'method' => 'saveCustomerAfterPlaceOrder'
+                )
             )
         )
     )
