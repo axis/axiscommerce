@@ -135,6 +135,13 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
     {
         $path = urldecode($this->getRequest()->getPathInfo());
         $keywords = explode('/', trim($path, '/'));
+
+        $route = Zend_Controller_Front::getInstance()
+            ->getRouter()
+            ->getCurrentRoute();
+        if ($route->hasLocaleInUrl()) {
+            array_shift($keywords); //remove locale from array
+        }
         array_shift($keywords); //remove root catalog from array
         return $keywords;
     }
