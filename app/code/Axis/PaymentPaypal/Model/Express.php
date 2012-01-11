@@ -211,14 +211,19 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             $response['SHIPTOSTREET2'] = '';
         }
 
-        // accomodate PayPal bug which incorrectly treats 'Yukon Territory'
-        // as YK instead of ISO standard of YT.
-        if ($response['SHIPTOSTATE'] == 'YK') {
-            $response['SHIPTOSTATE'] = 'YT';
-        }
-        // same with Newfoundland
-        if ($response['SHIPTOSTATE'] == 'NF') {
-            $response['SHIPTOSTATE'] = 'NL';
+        if (!isset($response['SHIPTOSTATE'])) {
+            $response['SHIPTOSTATE'] = isset($response['SHIPTOCITY']) ?
+                $response['SHIPTOCITY'] : '';
+        } else {
+            // accomodate PayPal bug which incorrectly treats 'Yukon Territory'
+            // as YK instead of ISO standard of YT.
+            if ($response['SHIPTOSTATE'] == 'YK') {
+                $response['SHIPTOSTATE'] = 'YT';
+            }
+            // same with Newfoundland
+            if ($response['SHIPTOSTATE'] == 'NF') {
+                $response['SHIPTOSTATE'] = 'NL';
+            }
         }
 
         return $response;
