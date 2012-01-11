@@ -36,14 +36,14 @@ class Axis_Community_Model_Common
     public function getNickname()
     {
         if (!$customer = Axis::getCustomer()) {
-            return 'Guest';
+            return Axis::translate('community')->__('Guest');
         }
         $nickname = $customer->getExtraField('nickname');
         if (!$nickname) {
             $nickname = $customer->firstname;
         }
         if (!$nickname) {
-            $nickname = 'Community member';
+            $nickname = Axis::translate('community')->__('Community member');
         }
         return $nickname;
     }
