@@ -32,6 +32,21 @@ var CategoryWindow = {
     },
 
     save: function(closeWindow) {
+        var form = CategoryWindow.form.getForm(),
+            url  = form.findField('key_word');
+
+        if ('' === url.getValue()) {
+            var name = form.findField('name').getValue();
+            for (var i in name) {
+                name = name[i];
+                break;
+            }
+            name = Ext.util.Format.trim(name)
+            name = name.toLowerCase();
+            name = name.replace(/\s+/g, '-');
+            url.setValue(name);
+        }
+
         CategoryWindow.form.getForm().submit({
             url: Axis.getUrl('catalog/category/save'),
             method: 'post',
@@ -130,7 +145,6 @@ Ext.onReady(function() {
                         }]
                     }, {
                         items: [{
-                            allowBlank: false,
                             anchor: '100%',
                             fieldLabel: 'SEO url'.l(),
                             name: 'key_word',
