@@ -65,7 +65,11 @@ class Axis_Checkout_Model_Total
             if (!$method->isEnabled()) {
                 continue;
             }
-            $method->collect($this);
+            try {
+                $method->collect($this);
+            } catch (Exception $e) {
+                continue;
+            }
         }
         $this->_recollect = false;
         uasort($this->_collects, array($this, '_sortCollects'));
