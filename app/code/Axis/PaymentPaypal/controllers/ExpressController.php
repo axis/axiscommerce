@@ -237,7 +237,7 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
         {
             Axis::message()->addError(
                 Axis::translate('checkout')->__(
-                    'Selected shipping method in not allowed'
+                    'Selected shipping method is not allowed'
                 )
             );
             $this->_redirect('/paymentpaypal/express/shipping-method');

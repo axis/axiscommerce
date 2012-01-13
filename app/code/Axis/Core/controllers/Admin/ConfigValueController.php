@@ -230,7 +230,7 @@ class Admin_ConfigValueController extends Axis_Admin_Controller_Back
     {
         $path   = $this->_getParam('path');
         $siteId = $this->_getParam('siteId');
-        $value  = $this->_getParam('confValue');
+        $value  = $this->_getParam('confValue', '');
         $model  = Axis::model('core/config_value');
 
         $rowField = Axis::single('core/config_field')->select()
