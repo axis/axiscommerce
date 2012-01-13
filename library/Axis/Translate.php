@@ -162,7 +162,7 @@ class Axis_Translate extends Zend_Translate
             && Axis::config('core/translation/autodetect')
             && !$this->getAdapter()->isTranslated($text)) {
 
-            $this->writeTranslationToFile($text);
+            $this->writeTranslationToFile($text, $this->_module);
         }
 
         $translated = $this->getAdapter()->translate($text);
