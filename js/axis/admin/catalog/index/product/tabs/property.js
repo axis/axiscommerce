@@ -44,7 +44,8 @@ var PropertyGrid = {
                 itemName += r.get('languagable') ? '-l' : '';
 
                 var propertyDetailsWindow = new Axis.PropertyDetails({
-                    item: itemName
+                    item: itemName,
+                    id  : r.get('code') + r.get('id')
                 });
                 propertyDetailsWindow.on('okpress', function(value) {
                     if (typeof value === 'object') {
@@ -117,7 +118,8 @@ var PropertyGrid = {
             var itemName = record.get('input_type') == 5 ? 'file' : 'text';
             itemName += record.get('languagable') ? '-l' : '';
             var propertyDetailsWindow = new Axis.PropertyDetails({
-                item: itemName,
+                item : itemName,
+                id   : record.get('code') + record.get('id'),
                 value: record.get('languagable') ?
                     Ext.decode(record.get('value_name')) : record.get('value_name')
             });
