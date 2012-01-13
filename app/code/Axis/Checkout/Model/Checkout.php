@@ -465,7 +465,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
 
             throw new Axis_Exception(
                 Axis::translate('checkout')->__(
-                    'Selected shipping method in not allowed'
+                    'Selected shipping method is not allowed'
                 )
             );
         }
@@ -508,7 +508,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
 
             throw new Axis_Exception(
                 Axis::translate('checkout')->__(
-                    'Selected payment method in not allowed'
+                    'Selected payment method is not allowed'
                 )
             );
         }
