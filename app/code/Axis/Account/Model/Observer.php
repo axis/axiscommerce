@@ -191,7 +191,7 @@ class Axis_Account_Model_Observer
             if (empty($billing['id'])) {
                 $customer->setAddress($billing);
             }
-            if (empty($delivery['id']) && !$billing['use_for_delivery']) {
+            if (empty($delivery['id']) && empty($billing['use_for_delivery'])) {
                 $customer->setAddress($delivery);
             }
         }
