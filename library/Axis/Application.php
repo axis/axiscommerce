@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -150,6 +150,6 @@ class Axis_Application extends Zend_Application
      */
     public function getVersion()
     {
-        return '0.8.5.1 dev';
+        return '0.8.6';
     }
 }

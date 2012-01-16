@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Locale
  * @subpackage  Axis_Locale_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
