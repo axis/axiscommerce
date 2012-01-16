@@ -1,0 +1,5 @@
+"Per Weight Unit Flat Rate","Rată pe unitate de greutate"
+"Handling Fee","Preț manipulare"
+"Shipping Cost per Unit","Cost livrare pe unitate"
+"Per Weight Unit","Pe unitatea de greutate"
+"NOTE: When using this Shipping Module be sure to check the Tare settings in the Shipping/Packaging and set the Largest Weight high enough to handle the price, such as 5000.00 and the adjust the settings on Small and Large packages which will add to the price as well.The shipping cost will be used to determin shipping charges based on: Product Quantity * Units (products_weight) * Cost per Unit - in an order that uses this shipping method.","NOTĂ! Când folosiți acest mod de livrare trebuie sa vă asigurați ca ați setat setările corecte în Livrare/Împachetare și să setați cea mai mare greutate suficient de mare pentru a acoperi prețul. Costul livrării va fi folosit pentru a determina taxele de transport bazate pe: Cantiatea produselor * Greutatea produselor * Costul pe unitate - într-o comandă care folosește acest mod de livrare"
