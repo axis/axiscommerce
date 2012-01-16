@@ -1,12 +1,12 @@
 <?php echo $this->title($this->pageTitle) ?>
 <div class="category-content box">
-<p class="description"><?php echo $this->category['description']; ?></p>
+<div class="description"><?php echo $this->category['description']; ?></div>
 <?php if (sizeof($this->category['childs'])) { ?>
 <ul class="no-bullet">
     <?php foreach ($this->category['childs'] as $cat) { ?>
     <li>
         <a href="<?php echo $this->url(array(
-            'cat' => $cat['link']), 
+            'cat' => $cat['link']),
             'cms_category', true
         ); ?>"
             class="icon-folder">
@@ -21,7 +21,7 @@
     <?php foreach ($this->category['pages'] as $page) { ?>
     <li class="page">
         <a href="<?php echo $this->url(array(
-            'page' => $page['link']), 
+            'page' => $page['link']),
             'cms_page', true
         ); ?>"
             class="icon-page">
