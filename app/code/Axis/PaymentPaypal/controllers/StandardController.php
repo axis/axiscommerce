@@ -41,7 +41,7 @@ class Axis_PaymentPaypal_StandardController extends Axis_Core_Controller_Front_S
         if (!$payment) {
             $this->_redirect('checkout/cart');
         }
-        $this->view->action = $payment->config()->url;
+        $this->view->action = $payment->getPaypalUrl();
         $this->view->fields = $payment->getStorage()->formFields;
 
         if (!is_array($this->view->fields)) {
