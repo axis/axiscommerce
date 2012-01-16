@@ -36,6 +36,9 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
     protected $_code = 'Paypal_Standard';
     protected $_title = 'PayPal Standard';
 
+    protected $_sandboxUrl = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+    protected $_liveUrl    = 'https://www.paypal.com/cgi-bin/webscr';
+
     public function postProcess(Axis_Sales_Model_Order_Row $order)
     {
         $view = Axis::app()->getBootstrap()->getResource('layout')->getView();
@@ -172,7 +175,7 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
 
         $httpClient = new Zend_Http_Client();
 
-        $uri = $this->_config->url . '?' . $request;
+        $uri = $this->getPaypalUrl() . '?' . $request;
 
         $httpClient->setUri($uri);
         $response = $httpClient->request('POST')->getBody();
@@ -225,5 +228,13 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
         }
 
         $order->setStatus('processing', $message, true);
+    }
+
+    public function getPaypalUrl()
+    {
+        if ($this->_config->sandboxMode) {
+            return $this->_sandboxUrl;
+        }
+        return $this->_liveUrl;
     }
 }
