@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -316,9 +316,9 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
     {
         $this->_helper->layout->disableLayout();
 
-        $checkout   = $this->_getCheckout();
-        $billing    = $this->_getParam('billing_address');
-        $delivery   = $this->_getParam('delivery_address');
+        $checkout = $this->_getCheckout();
+        $billing  = $this->_getParam('billing_address');
+        $delivery = $this->_getParam('delivery_address');
         try {
             $checkout->setBillingAddress($billing);
             if (!$billing['use_for_delivery']) {
@@ -327,48 +327,19 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
             $checkout->setShippingMethod($this->_getParam('shipping'));
             $checkout->setPaymentMethod($this->_getParam('payment'));
 
-            $storage    = $checkout->getStorage();
+            $storage = $checkout->getStorage();
             $storage->customer_comment = $this->_getParam('comment');
 
-            // place order
-            $preProcess = (array)$checkout->payment()->preProcess();
-            $order      = Axis::single('sales/order')->createFromCheckout();
-            $checkout->setOrderId($order->id);
-            $postProcess = (array)$checkout->payment()->postProcess($order);
+            $result = (array)$checkout->payment()->preProcess();
 
-            // register customer if required
-            $event = false;
-            if (!empty($billing['register']) && !Axis::getCustomerId()) {
-                $modelCustomer  = Axis::model('account/customer');
-                $userData = $billing;
-                $userData['site_id']    = Axis::getSiteId();
-                $userData['is_active']  = 1;
-                list($customer, $password) = $modelCustomer->create($userData);
-                $event = true;
-                $customer->setDetails($userData);
+            if (empty($result['redirect'])) {
+                $order = Axis::single('sales/order')->createFromCheckout();
+                $checkout->setOrderId($order->id);
+                $postProcess = (array)$checkout->payment()->postProcess($order);
+                $result = array_merge($result, $postProcess);
 
-                $order->customer_id = $customer->id;
-                $order->save();
-                $modelCustomer->login($userData['email'], $password);
+                Axis::dispatch('checkout_place_order_after', $order);
             }
-
-            // save address if needed
-            if ($customer = Axis::getCustomer()) {
-                if (empty($billing['id'])) {
-                    $customer->setAddress($billing);
-                }
-                if (empty($delivery['id']) && !$billing['use_for_delivery']) {
-                    $customer->setAddress($delivery);
-                }
-            }
-            if ($event) {
-                Axis::dispatch('account_customer_register_success', array(
-                    'customer' => $customer,
-                    'password' => $password
-                ));
-            }
-
-            $result = array_merge($preProcess, $postProcess);
         } catch (Exception $e) {
             Axis::dispatch('sales_order_create_failed', array('exception' => $e));
             $message = $e->getMessage();

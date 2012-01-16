@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -39,24 +39,36 @@ class Axis_Catalog_Box_RecentlyViewed extends Axis_Catalog_Box_Product_Listing
     protected function _beforeRender()
     {
         $visitor = Axis::model('log/visitor')->getVisitor();
-        $select = Axis::model('log/event')->select('object_id')
-            ->distinct()
-            ->limit($this->getProductsCount())
-            ->order('le.id DESC')
-            ;
+        // select all viewed products by current visitor
+        $selectInner = Axis::model('log/event')
+            ->select(array('id', 'object_id'))
+            ->order('le.id DESC');
+
         $customerId = $visitor->customer_id;
         if ($customerId && $customerId === Axis::getCustomerId()) {
-            $select->join('log_visitor', 'le.visitor_id = lv.id')
-                ->where('lv.customer_id = ?', $customerId);    
+            $selectInner->join('log_visitor', 'le.visitor_id = lv.id')
+                ->where('lv.customer_id = ?', $customerId);
         } else {
-            $select->where('visitor_id = ?', $visitor->id);
+            $selectInner->where('visitor_id = ?', $visitor->id);
         }
-        $productIds = $select->fetchCol();
-        
-        if (empty ($productIds)) {
+
+        // filter unique product_ids from correctly ordered query
+        // using adapter for specific from statement
+        // this subquery is used to get the correct order for products
+        // bigfix for not displayed product if the user viewed it some time ago and now opened it again
+        // with single query this product will not outputted first in a row
+        $adapter = Axis::model('log/event')->getAdapter();
+        $select = $adapter->select()
+            ->from(array('le' => $selectInner), 'object_id')
+            ->group('le.object_id')
+            ->order('le.id DESC')
+            ->limit($this->getProductsCount());
+
+        $productIds = $adapter->fetchCol($select);
+        if (empty($productIds)) {
             return false;
         }
-        
+
         $products = Axis::model('catalog/product')->select('*')
             ->addFilterByAvailability()
             ->addCommonFields()
@@ -64,9 +76,8 @@ class Axis_Catalog_Box_RecentlyViewed extends Axis_Catalog_Box_Product_Listing
             ->joinCategory()
             ->where('cc.site_id = ?', Axis::getSiteId())
             ->where('cp.id IN (?)', $productIds)
-            ->fetchProducts($productIds)
-            ;
-        
+            ->fetchProducts($productIds);
+
         if (empty($products)) {
             return false;
         }

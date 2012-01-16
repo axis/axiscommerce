@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -40,10 +40,5 @@ class Axis_Locale_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             );
             $row->save();
         }
-    }
-
-    public function down()
-    {
-
     }
 }

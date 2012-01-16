@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Tax
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,10 +43,5 @@ class Axis_Tax_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/tax_rate/save',    'admin/tax/rate/save')
             ->rename('admin/tax_rate/delete',  'admin/tax/rate/remove')
         ;
-    }
-
-    public function down()
-    {
-
     }
 }

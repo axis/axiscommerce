@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Translate
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -162,7 +162,7 @@ class Axis_Translate extends Zend_Translate
             && Axis::config('core/translation/autodetect')
             && !$this->getAdapter()->isTranslated($text)) {
 
-            $this->writeTranslationToFile($text);
+            $this->writeTranslationToFile($text, $this->_module);
         }
 
         $translated = $this->getAdapter()->translate($text);

@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Search
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,10 +33,5 @@ class Axis_Search_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
         Axis::single('admin/acl_rule')->rename(
             'admin/search/update-index', 'admin/axis/search/index/update-index'
         );
-    }
-
-    public function down()
-    {
-
     }
 }

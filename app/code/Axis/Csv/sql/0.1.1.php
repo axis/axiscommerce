@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Csv
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,9 +35,5 @@ class Axis_Csv_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/csv/delete',              'admin/csv/remove')
             ->rename('admin/csv/get-supported-types', 'admin/csv/list-type')
         ;
-    }
-
-    public function down()
-    {
     }
 }

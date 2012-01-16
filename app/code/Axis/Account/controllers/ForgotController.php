@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -89,7 +89,7 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
                         'Message was sended to you. Check your mailbox'
                     ));
                 }
-            } catch (Zend_Mail_Transport_Exception $e) {
+            } catch (Zend_Mail_Exception $e) {
                 Axis::message()->addError(
                     Axis::translate('core')->__('Mail sending was failed.')
                 );

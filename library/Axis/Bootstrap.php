@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -223,10 +223,11 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'username'       => $config->db->username,
             'password'       => $config->db->password,
             'dbname'         => $config->db->dbname,
-            'driver_options' => array(
-                //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
-                1002 => 'SET NAMES UTF8'
-            )
+            'charset'        => 'UTF8'
+//            'driver_options' => array(
+//                //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
+//                1002 => 'SET NAMES UTF8'
+//            )
         ));
 
         //Set default adapter for childrens Zend_Db_Table_Abstract
@@ -283,19 +284,19 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $authActionHelper = new Axis_Controller_Action_Helper_Auth();
         Zend_Controller_Action_HelperBroker::addHelper($authActionHelper);
-        
+
         return $front; // this is *VERY* important
     }
-    
+
     protected function _initRouter()
     {
         $this->bootstrap('FrontController');
         $router = new Axis_Controller_Router_Rewrite();
-        
+
         // pre router config
         $defaultLocale = Axis_Locale::getDefaultLocale();
-        $locales = Axis_Locale::getLocaleList();
-        
+        $locales = Axis_Locale::getLocaleList(true);
+
         Axis_Controller_Router_Route_Front::setDefaultLocale($defaultLocale);
         Axis_Controller_Router_Route_Front::setLocales($locales);
 
@@ -312,13 +313,13 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
         $front = $this->getResource('FrontController');
         $front->setRouter($router);
-        
+
         $sslRedirectorActionHelper = new Axis_Controller_Action_Helper_SecureRedirector();
         Zend_Controller_Action_HelperBroker::addHelper($sslRedirectorActionHelper);
-        
+
         return $router;
     }
-    
+
     protected function _initLocale()
     {
         $this->bootstrap('FrontController');
@@ -340,28 +341,28 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             ->setView($view)
             ->autoAddBasePaths(false);
         Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
-                
+
         $jsonActionHelper = new Axis_Controller_Action_Helper_Json();
         Zend_Controller_Action_HelperBroker::addHelper($jsonActionHelper);
-        
+
         $breadcrumbsActionHelper = new Axis_Controller_Action_Helper_Breadcrumbs();
         Zend_Controller_Action_HelperBroker::addHelper($breadcrumbsActionHelper);
 
         return $view;
     }
-    
+
     protected function _initLayout()
     {
         $this->bootstrap('View');
         $layout = Axis_Layout::startMvc();
-        
+
         $view = $this->getResource('View');
-        $layout->setView($view);        
-        
+        $layout->setView($view);
+
         $front = $this->getResource('FrontController');
         $front->unregisterPlugin('Zend_Layout_Controller_Plugin_Layout');
         $front->registerPlugin(new Axis_Controller_Plugin_Layout($layout), 99);
-        
+
         $layoutActionHelper = new Axis_Controller_Action_Helper_Layout($layout);
         Zend_Controller_Action_HelperBroker::addHelper($layoutActionHelper);
 

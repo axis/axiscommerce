@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Image
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -204,10 +204,39 @@ class Axis_Image
         }
 
         if ($position == 'stretch') {
-            //@todo stretch, opacity and repeat;
+            $dstX = $dstY = 0;
+            $newWidth       = $this->_imageSrcWidth;
+            $newHeight      = $this->_imageSrcHeight;
+            $imageRatio     = $this->_imageSrcHeight / $this->_imageSrcWidth;
+            $watermarkRatio = $watermarkSrcHeight / $watermarkSrcWidth;
+
+            if ($imageRatio > $watermarkRatio) {
+                $newHeight = round($this->_imageSrcWidth * ($watermarkSrcHeight / $watermarkSrcWidth));
+                $dstY      = ($this->_imageSrcHeight - $newHeight) / 2;
+            } elseif ($imageRatio < $watermarkRatio) {
+                $newWidth = round($this->_imageSrcHeight * ($watermarkSrcWidth / $watermarkSrcHeight));
+                $dstX     = ($this->_imageSrcWidth - $newWidth) / 2;
+            }
+
+            imagecopyresampled(
+                $this->_imageResource,
+                $watermark,
+                $dstX, $dstY, 0, 0,
+                $newWidth,
+                $newHeight,
+                $watermarkSrcWidth,
+                $watermarkSrcHeight
+            );
+        } else {
+            imagecopy(
+                $this->_imageResource,
+                $watermark,
+                $positionX, $positionY, 0, 0,
+                $watermarkSrcWidth,
+                $watermarkSrcHeight
+            );
         }
 
-        imagecopy($this->_imageResource, $watermark, $positionX, $positionY, 0, 0, $watermarkSrcWidth, $watermarkSrcHeight);
         imagedestroy($watermark);
     }
 

@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Account
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -39,10 +39,5 @@ class Axis_Account_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
             ->add('account/address_form/zone_id_value', 'State(Region) Default Value', 12, 'string', 'You can get the id of desired region at [admin]/location/zone')
             ->add('account/address_form/postcode_value', 'Postcode Default Value', 90064)
             ->add('account/address_form/country_id_value', 'Country Default Value', 223, 'select', array('model' => 'Country'));
-    }
-
-    public function down()
-    {
-
     }
 }

@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Community
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -45,9 +45,5 @@ class Axis_Community_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/community_review/get-product-list',  'admin/community/review/get-product-list')
             ->rename('admin/community_review/get-customer-list', 'admin/community/review/get-customer-list')
         ;
-    }
-
-    public function down()
-    {
     }
 }

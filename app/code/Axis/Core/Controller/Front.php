@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -41,6 +41,8 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
             'label' => Axis::translate('core')->__('Home'),
             'route' => 'core'
         ));
+        // fix to remove duplicate favicon, canonical when forwarding request
+        $this->view->headLink()->getContainer()->exchangeArray(array());
     }
 
     /**
@@ -74,6 +76,11 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
         }
     }
 
+    public function setCanonicalUrl($url)
+    {
+        $this->view->canonicalUrl = $url;
+    }
+
     /**
      * Redirect to another URL
      *
@@ -87,14 +94,16 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
     {
         $httpReferer = $this->getRequest()->getServer('HTTP_REFERER');
         if (($httpReferer && $url == $httpReferer) || !$addLanguage) {
-
             parent::_redirect($url, $options);
             return;
         }
-        parent::_redirect(
-            rtrim(Axis_Locale::getLanguageUrl(), '/') . '/' . ltrim($url, '/'),
-            $options
-        );
+
+        if ($url && $url !== '/') {
+            $url = '/' . trim($url, '/');
+        } else {
+            $url = '';
+        }
+        parent::_redirect(Axis_Locale::getLanguageUrl() . $url, $options);
     }
 
     /**
@@ -115,5 +124,44 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
         $observer = new Axis_Object();
         $observer->controller = $this;
         Axis::dispatch('controller_action_postdispatch', $observer);
+
+        if (null === $this->view->canonicalUrl) {
+            $frontController = Zend_Controller_Front::getInstance();
+            $router          = $frontController->getRouter();
+            $params          = $frontController->getRequest()->getParams();
+            $route           = $router->getCurrentRoute();
+            $defaults        = $route->getDefaults();
+            $canonicalParams = array();
+
+            foreach ($route->getVariables() as $variable) {
+                if (empty($params[$variable])) {
+                    continue;
+                }
+
+                if (!empty($defaults[$variable])
+                    && $params[$variable] === $defaults[$variable]) {
+
+                    continue;
+                }
+
+                $canonicalParams[$variable] = $params[$variable];
+            }
+
+            foreach ($route->getWildcardData() as $name => $value) {
+                $canonicalParams[$name] = $value;
+            }
+
+            $this->view->canonicalUrl = $this->view->url(
+                $canonicalParams,
+                $router->getCurrentRouteName(),
+                true
+            );
+        }
+        if (false !== $this->view->canonicalUrl) {
+            $this->view->headLink(array(
+                'rel'  => 'canonical',
+                'href' => $this->view->canonicalUrl
+            ), 'PREPEND');
+        }
     }
 }

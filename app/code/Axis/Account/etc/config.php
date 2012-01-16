@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Account
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -49,6 +49,13 @@ $config = array(
                     'type'   => 'model',
                     'model'  => 'account/observer',
                     'method' => 'prepareAdminNavigationBox'
+                )
+            ),
+            'checkout_place_order_after' => array(
+                'create_account' => array(
+                    'type'   => 'model',
+                    'model'  => 'account/observer',
+                    'method' => 'saveCustomerAfterPlaceOrder'
                 )
             )
         )

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Community
  * @subpackage  Axis_Community_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,14 +36,14 @@ class Axis_Community_Model_Common
     public function getNickname()
     {
         if (!$customer = Axis::getCustomer()) {
-            return 'Guest';
+            return Axis::translate('community')->__('Guest');
         }
         $nickname = $customer->getExtraField('nickname');
         if (!$nickname) {
             $nickname = $customer->firstname;
         }
         if (!$nickname) {
-            $nickname = 'Community member';
+            $nickname = Axis::translate('community')->__('Community member');
         }
         return $nickname;
     }

@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Mail
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -146,6 +146,11 @@ class Axis_Mail extends Zend_Mail
         if (is_array($from)) {
             if (!isset($from['name'])) {
                 $from['name'] = $siteName;
+            }
+            if (empty($from['email'])) {
+                $from['email'] = Axis_Collect_MailBoxes::getName(
+                    Axis::config('mail/main/mtcFrom')
+                );
             }
             $this->setFrom($from['email'], $from['name']);
             $this->view->from = $from['email'];

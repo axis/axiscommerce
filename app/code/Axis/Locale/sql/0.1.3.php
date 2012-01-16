@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,7 +30,7 @@ class Axis_Locale_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -71,10 +71,5 @@ class Axis_Locale_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->add('locale/main/baseCurrency', 'Base currency', 'USD', 'select', 'Currency will be used for all online payment transactions', array('model' => 'Currency'))
             ->add('locale/main/currency', 'Default display currency', 'USD', 'handler', 'Default currency', array('model' => 'BaseCurrency'))
             ;
-    }
-
-    public function down()
-    {
-
     }
 }

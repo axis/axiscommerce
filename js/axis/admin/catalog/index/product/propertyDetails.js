@@ -18,10 +18,10 @@
  */
 
 Axis.PropertyDetails = Ext.extend(Ext.util.Observable, {
-    
+
     constructor: function(config) {
         Ext.apply(this, config);
-        
+
         this.events = {
             /**
              * @event cancel
@@ -36,36 +36,33 @@ Axis.PropertyDetails = Ext.extend(Ext.util.Observable, {
             'okpress': true
         };
         Axis.PropertyDetails.superclass.constructor.call(this);
-        
+
         var item;
         if (this.item == 'text') {
             item = {
                 anchor: '100% -10',
-                id: 'text',
                 xtype: 'textarea'
             }
         } else if (this.item == 'text-l') {
             item = {
                 anchor: '100% -10',
                 defaultType: 'textarea',
-                id: 'text-l',
                 xtype: 'langset'
             }
         } else if (this.item == 'file') {
             item = {
                 anchor: '100%',
-                id: 'file',
                 xtype: 'fileuploadfield'
             }
         } else {
             item = {
                 anchor: '-20',
                 defaultType: 'fileuploadfield',
-                id: 'file-l',
                 xtype: 'langset'
             }
         }
-        
+        item.id = this.id + this.item;
+
         this.formPanel = new Axis.FormPanel({
             border: true,
             bodyStyle: 'padding: 10px 10px 0 10px',
@@ -77,7 +74,7 @@ Axis.PropertyDetails = Ext.extend(Ext.util.Observable, {
             },
             items: [item]
         });
-        
+
         this.window = new Axis.Window({
             border: false,
             closable: false,
@@ -106,7 +103,7 @@ Axis.PropertyDetails = Ext.extend(Ext.util.Observable, {
             }
         });
     },
-    
+
     destroy: function() {
         if (this.formPanel) {
             this.formPanel.destroy();
@@ -116,32 +113,36 @@ Axis.PropertyDetails = Ext.extend(Ext.util.Observable, {
         }
         this.purgeListeners();
     },
-    
+
     setTitle: function(title) {
         this.window.setTitle(title);
         return this;
     },
-    
+
     focus: function() {
         this.formPanel.items.items[0].focus();
     },
-    
+
     hide: function() {
         this.window.hide();
     },
-    
+
     show: function(activeItem) {
         this.window.show();
         this.focus();
     },
-    
+
     okPress: function() {
-        if (false === this.fireEvent('okpress', this.formPanel.getForm().findField(this.item).getValue())) {
+        var value = this.formPanel.getForm()
+            .findField(this.id + this.item)
+            .getValue();
+
+        if (false === this.fireEvent('okpress', value)) {
             return;
         }
         this.destroy();
     },
-    
+
     cancelPress: function() {
         this.fireEvent('cancelpress');
         this.destroy();

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_PaymentPaypal
  * @subpackage  Axis_PaymentPaypal_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -237,7 +237,7 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
         {
             Axis::message()->addError(
                 Axis::translate('checkout')->__(
-                    'Selected shipping method in not allowed'
+                    'Selected shipping method is not allowed'
                 )
             );
             $this->_redirect('/paymentpaypal/express/shipping-method');
@@ -290,45 +290,40 @@ class Axis_PaymentPaypal_ExpressController extends Axis_Checkout_Controller_Chec
     public function processAction()
     {
         $checkout = $this->_getCheckout();
+        $payment  = $this->_getPayment();
         $response = $this->_getPayment()->runDoExpressCheckoutPayment();
 
-        // onestep|wizard checkout
-        $orderId = $checkout->getOrderId();
-        if ($orderId
-            && $order = Axis::model('sales/order')->find($orderId)->current()) {
+        if (!$response) {
+            return $this->_redirect('checkout/cart');
+        }
 
-            // delivery address can be changed on paypal side
-            // @TODO can it? afaik it could be changed only with express button pressed in shopping cart
-//            $order->setFromArray($checkout->getDelivery()->toArray());
-//            $order->save();
-
-            if (!$response) {
-                $order->setStatus('failed');
-                return $this->_redirect('checkout/cart');
+        if (!$payment->getStorage()->markflow) { // express checkout button in shopping cart
+            if (empty($payment->getStorage()->payer['payer_email'])) {
+                $delivery = $checkout->getDelivery();
+                $payment->getStorage()->payer['payer_email'] =
+                    $delivery->firstname . ' ' . $delivery->lastname;
+                $email = null;
+            } else {
+                $email = $payment->getStorage()->payer['payer_email'];
             }
 
-            return $this->_redirect('checkout/index/success');
+            $checkout->setBilling(array(
+                'firstname' => 'Paypal Account: ',
+                'lastname'  => $payment->getStorage()->payer['payer_email'],
+                'email'     => $email
+            ));
+            $checkout->getStorage()->customer_comment = $this->_getParam('comment');
         }
 
-        // express checkout button in shopping cart
-        if (!$response) {
-            return $this->_redirect('paymentpaypal/express/cancel');
-        }
-        if (empty($this->_getPayment()->getStorage()->payer['payer_email'])) {
-            $delivery = $checkout->getDelivery();
-            $this->_getPayment()->getStorage()->payer['payer_email'] =
-                $delivery->firstname . ' ' . $delivery->lastname;
-        }
-
-        $checkout->setBilling(array(
-            'firstname' => 'Paypal Account: ',
-            'lastname'  => $this->_getPayment()->getStorage()->payer['payer_email']
-        ));
-
-        $checkout->getStorage()->customer_comment = $this->_getParam('comment');
         $order = Axis::single('sales/order')->createFromCheckout();
         $checkout->setOrderId($order->id);
+        $result = (array)$payment->postProcess($order);
 
+        Axis::dispatch('checkout_place_order_after', $order);
+
+        if (!empty($result['redirect'])) {
+            return $this->_redirect($result['redirect']);
+        }
         $this->_redirect('checkout/index/success');
     }
 

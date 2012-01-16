@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Discount
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -38,9 +38,5 @@ class Axis_Discount_Upgrade_0_0_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/discount_index/save',   'admin/discount/save')
             ->rename('admin/discount_index/delete', 'admin/discount/remove')
             ;
-    }
-
-    public function down()
-    {
     }
 }

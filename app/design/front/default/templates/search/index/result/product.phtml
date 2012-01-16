@@ -1,7 +1,5 @@
 <li class="product-item">
-    <?php $productUrl = $this->href(
-        '/' . $this->catalogUrl . '/' . $this->product['url']
-    );?>
+    <?php $productUrl = $this->href($this->catalogUrl . '/' . $this->product['url']);?>
     <div class="product-media">
         <a href="<?php echo $productUrl;?>"
             title="<?php echo $this->product['image_title'] ?>"

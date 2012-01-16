@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -127,11 +127,12 @@ class Axis_Locale
      */
     private static function _getLocaleFromLanguageCode($code)
     {
-        $localeList = self::getLocaleList(true);
-
-        foreach ($localeList as $locale) {
-            if (strstr($locale, $code)) {
-                return $locale;
+        if (!empty($code)) {
+            $localeList = self::getLocaleList(true);
+            foreach ($localeList as $locale) {
+                if (strpos($locale, $code) === 0) {
+                    return $locale;
+                }
             }
         }
 
@@ -245,13 +246,17 @@ class Axis_Locale
      * Retrieve part of url, responsible for locale
      *
      * @static
+     * @param string $locale Locale ISO code
      * @return string Part of url ('/uk')
      */
-    public static function getLanguageUrl()
+    public static function getLanguageUrl($locale = null)
     {
-
-        $language = self::getLocale()->getLanguage();
-        $locale = self::getLocale()->toString();
+        if (null !== $locale) {
+            list($language) = explode('_', $locale);
+        } else {
+            $language = self::getLocale()->getLanguage();
+            $locale   = self::getLocale()->toString();
+        }
 
         if ($locale == self::getDefaultLocale()) {
             return '';

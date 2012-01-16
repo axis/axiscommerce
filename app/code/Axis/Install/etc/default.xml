@@ -851,6 +851,24 @@
         <priority>100</priority>
     </layout>
     <layout multiple="1">
+        <layout>layout_2columns-right</layout>
+        <page>
+            <module>search</module>
+            <controller>*</controller>
+            <action>*</action>
+        </page>
+        <priority>100</priority>
+    </layout>
+    <layout multiple="1">
+        <layout>layout_1column</layout>
+        <page>
+            <module>tag</module>
+            <controller>index</controller>
+            <action>index</action>
+        </page>
+        <priority>100</priority>
+    </layout>
+    <layout multiple="1">
         <layout></layout>
         <page>
             <module>tag</module>
@@ -872,7 +890,7 @@
         <li><a href="{{helper_href(/)}}">Help desk</a></li>
         <li><a href="{{helper_href(/page/shipping)}}">Shipping</a></li>
         <li><a href="{{helper_href(/page/privacy)}}">Privacy</a></li>
-        <li><a href="{{helper_href(/sitemap/index)}}">Sitemap</a></li>
+        <li><a href="{{helper_href(/sitemap)}}">Sitemap</a></li>
     </ul>]]></content>
         </content>
         <name>header_links</name>

@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -47,10 +47,5 @@ class Axis_Core_Upgrade_0_2_2 extends Axis_Core_Model_Migration_Abstract
             $row->config = trim($config, ',');
             $row->save();
         }
-    }
-
-    public function down()
-    {
-        
     }
 }

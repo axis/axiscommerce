@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Search
  * @subpackage  Axis_Search_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,19 +35,29 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {
-        // render only layout blocks
+        $this->setTitle(Axis::translate('search')->__('Search'));
+        $this->render();
     }
 
     public function resultAction()
     {
-        $paging = array();
-        $queryStr = (string) $this->_getParam('q');
+        $this->_helper->breadcrumbs(array(
+            'label' => Axis::translate('search')->__('Search'),
+            'route' => 'search'
+        ));
+
+        if (!$this->_hasParam('q')) {
+            return $this->_forward('not-found', 'Error', 'Axis_Core');
+        }
+
+        $paging   = array();
+        $queryStr = trim($this->_getParam('q', ''));
         $this->setTitle(
             Axis::translate('search')->__(
-                "Search results for '%s'", trim($queryStr)
+                "Search results for '%s'", $queryStr
         ));
-        $this->view->query = $queryStr = trim($queryStr);
-        $paging['page']  = $page  = (int) $this->_getParam('page', 1);
+        $this->view->query = $queryStr;
+        $paging['page'] = $page = (int) $this->_getParam('page', 1);
 
         if (empty($queryStr)) {
             $this->render();
@@ -68,7 +78,7 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
 
         Axis::single('search/log')->logging(array(
             'num_results' => count($result),
-            'query' => $queryStr,
+            'query'       => $queryStr,
         ));
         if (!count($result)) { // if nothing found
             $this->view->results = array();
@@ -86,7 +96,7 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
         }
 
         if ($this->_hasParam('limit')
-            && !in_array($this->_getParam('limit'), $perPageArray)) {
+            && in_array($this->_getParam('limit'), $perPageArray)) {
 
             $limit = (int) $this->_getParam('limit');
         } elseif (Axis::session('catalog')->limit) {
@@ -98,6 +108,12 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
         $paging['limit'] = $limit;
         $paging['page']  = $page = (int) $this->_getParam('page', 1);
         $paging['count'] = count($result);
+
+        $this->setCanonicalUrl($this->view->url(array(
+            'q'     => $queryStr,
+            'page'  => $page,
+            'limit' => $limit
+        )), 'search_result', true);
 
         // Axis::session('catalog')->limit = $limit;
         if ('all' === $limit) {
@@ -118,8 +134,8 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
             $found['url'] = urlencode($found['url']);
         }
         Axis::dispatch('search_use', array(
-            'query' => $queryStr,
-            'result' => $founded,
+            'query'       => $queryStr,
+            'result'      => $founded,
             'customer_id' => Axis::getCustomerId()
         ));
         $this->view->results = $founded;

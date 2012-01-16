@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Checkout
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -32,10 +32,5 @@ class Axis_Checkout_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
     {
         Axis::single('core/config_field')
             ->add('checkout/cart/redirect', 'Checkout/Shopping Cart/Redirect Location', 'checkout/onestep', 'select', 'Customer will be redirected to selected page after adding item to cart', array('config_options' => '{"referer":"referer","checkout/cart":"checkout/cart","checkout/onestep":"checkout/onestep"}'));
-    }
-
-    public function down()
-    {
-
     }
 }

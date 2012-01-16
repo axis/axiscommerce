@@ -516,5 +516,7 @@ Locale.module("core", {
     "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.": "Place the generated file under the AXIS_ROOT folder.<br/> Press Ok to generate the file.",
     "Are you sure want to delete old search indexes and create new for all products and cms pages?\nThis can take a while.": "Are you sure want to delete old search indexes and create new for all products and cms pages?\nThis can take a while.",
     "New Question": "New Question",
-    "New Customer": "New Customer"
+    "New Customer": "New Customer",
+    "Resource": "Resource",
+    'Price to' : 'Price to'
 });

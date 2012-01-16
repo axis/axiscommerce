@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -38,8 +38,10 @@ class IndexController extends Axis_Core_Controller_Front
         $this->view->meta()
             ->setTitle(Axis::config()->design->htmlHead->homeTitle)
             ->setDescription(Axis::config()->design->htmlHead->homeDescription)
-            ->setKeywords(Axis::config()->design->htmlHead->homeKeywords)
-        ;
+            ->setKeywords(Axis::config()->design->htmlHead->homeKeywords);
+
+        $this->setCanonicalUrl($this->view->url(array(), 'core', true));
+
         $this->render();
     }
 }

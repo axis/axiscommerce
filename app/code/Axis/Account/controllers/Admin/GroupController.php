@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,13 +43,15 @@ class Axis_Account_Admin_GroupController extends Axis_Admin_Controller_Back
     
     public function listAction()
     {
-        $alpha = new Axis_Filter_DbField();
-        $sort  = $alpha->filter($this->_getParam('sort', 'id'));
-        $dir   = $alpha->filter($this->_getParam('dir', 'DESC'));
+        $alpha  = new Axis_Filter_DbField();
+        $sort   = $alpha->filter($this->_getParam('sort', 'id'));
+        $dir    = $alpha->filter($this->_getParam('dir', 'DESC'));
+        $filter = $this->_getParam('filter', array());
         
         $dataset = Axis::single('account/customer_group')->select()
             ->order($sort . ' ' . $dir)
             ->where('id <> ?', Axis_Account_Model_Customer_Group::GROUP_ALL_ID)
+            ->addFilters($filter)
             ->fetchAll()
             ;
         

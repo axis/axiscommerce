@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Discount
  * @subpackage  Axis_Discount_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,24 +43,23 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
 
     public function listAction()
     {
+        $filter = $this->_getParam('filter', array());
+        $limit  = $this->_getParam('limit', 25); 
+        $start  = $this->_getParam('start', 0);
+        $order  = $this->_getParam('sort', 'id') . ' '
+                . $this->_getParam('dir', 'DESC');
+        
         $select = Axis::model('discount/discount')->select('*')
             ->calcFoundRows()
-            ->addFilters($this->_getParam('filter', array()))
-            ->limit(
-                $this->_getParam('limit', 25),
-                $this->_getParam('start', 0)
-            )
-            ->order(
-                $this->_getParam('sort', 'id')
-                . ' '
-                . $this->_getParam('dir', 'DESC')
-            );
+            ->addFilters($filter)
+            ->limit($limit, $start)
+            ->order($order);
 
         $displayMode = $this->_getParam('displayMode', 'without-special');
         if ('only-special' == $displayMode) {
-            $select->addFilterBySpecial();
+            $select->addSpecialFilter();
         } else if ('without-special' == $displayMode) {
-            $select->addFilterByNonSpecial();
+            $select->addSpecialFilter(false);
         }
 
         return $this->_helper->json
@@ -69,102 +68,78 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
             ->sendSuccess()
         ;
     }
-
-    private function _initForm()
-    {
-        $this->view->sites = Axis_Collect_Site::collect();
-        $this->view->customerGroups = Axis_Collect_CustomerGroup::collect();
-        $this->view->manufactures = Axis_Collect_Manufacturer::collect();
-        $languageId = Axis_Locale::getLanguageId();
-
-        $this->view->categoryTrees = Axis::single('catalog/category')->select('*')
-            ->addName($languageId)
-            ->addKeyWord()
-            ->order('cc.lft')
-            ->fetchAllAndSortByColumn('site_id');
-        
-        
-        $select = Axis::model('catalog/product_option_value')->select('*')
-            ->joinLeft('catalog_product_option_value_text',
-                'cpov.id = cpovt.option_value_id',
-                'name')
-            ->where('cpovt.language_id = ?', $languageId)
-            ;
-        $valuesetValues = array();
-        foreach ($select->fetchAll() as $_row) {
-            $valuesetValues[$_row['valueset_id']][$_row['id']] = $_row['name'];
-        }
-        $select = Axis::single('catalog/product_option')
-                ->select('*')
-                ->addNameAndDescription($languageId)
-                ;
-        $attributes = array();
-        foreach ($select->fetchAll() as $_option) {
-            if (isset($valuesetValues[$_option['valueset_id']])) {
-                $attributes[$_option['id']] = array(
-                    'name'   => $_option['name'],
-                    'option' => $valuesetValues[$_option['valueset_id']]
-                );
-            }
-        }
-        
-        $this->view->attributes = $attributes;
-    }
-
+  
     public function loadAction()
     {
-        $this->view->pageTitle = Axis::translate('discount')->__(
-            'Edit Discount'
-        );
-        $this->_initForm();
-
+        $discountId = $this->_getParam('id');
+        
         $discount = Axis::single('discount/discount')
-            ->find($this->_getParam('id', 0))
+            ->find($discountId)
             ->current();
 
-        if (!$discount instanceof Axis_Db_Table_Row) {
-            $this->_redirect('/discount/create');
-        }
-        $this->view->discount = $discount->getCustomInfo();
-        $this->render('form-discount');
-    }
-
-    public function createAction()
-    {
-        $this->view->pageTitle = Axis::translate('discount')->__(
-            'Add New Discount'
+        $data = array(
+            'discount' => $discount->toArray(),
+            'rule'     => $discount->getRule()
         );
-        $this->_initForm();
-        $this->render('form-discount');
+        
+        return $this->_helper->json
+            ->setData($data)
+            ->sendSuccess()
+        ;
     }
-
+    
     public function saveAction()
     {
-        $_row       = $this->_getParam('discount', array());
-        $conditions = $this->_getParam('condition', array());
+        $_row = $this->_getParam('discount', array());
+ 
+//        $row = Axis::single('discount/discount')->save($_row);
         
-        $row = Axis::single('discount/discount')->save($_row);
+        $model = Axis::single('discount/discount');
+        $row = false;
+        if (isset($_row['id'])) {
+            $row = $model->find($_row['id'])->current();
+        }
+        
+        if (!$row) {
+            $oldData = null;
+            $row = $model->createRow();
+        } else {
+            $oldData = $row->toArray();
+            $oldData['products'] = $row->getApplicableProducts();
+        }
+        
+        $row->setFromArray($_row);
+        
+        if (empty($row->from_date)) {
+            $row->from_date = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->to_date)) {
+            $row->to_date = new Zend_Db_Expr('NULL');
+        }
+        if (empty($row->priority)) {
+            $row->priority = 125;
+        }
+        $row->save();
         
         $model = Axis::model('discount/eav');
         $model->delete('discount_id = ' . $row->id);
         
-        $sites = array();
-        if (!empty($_row['site_ids'])) {
-            $sites = $_row['site_ids'];
+        $dataset = Zend_Json::decode($this->_getParam('rule'));
+        foreach ($dataset as $entity => $values) {
+            foreach ($values as $value) {
+                $model->createRow(array(
+                    'discount_id' => $row->id,
+                    'entity'      => $entity,
+                    'value'       => $value
+                ))->save();
+            }
         }
-        $groups = array();
-        if (!empty($_row['customer_group_ids'])) {
-            $groups = $_row['customer_group_ids'];
-        }
-        $special = false;
-        if (!empty($_row['special'])) {
-            $special = (bool) $_row['special'];
-        }
-        $row->setSites($sites)
-            ->setCustomerGroups($groups)
-            ->setSpecial($special)
-            ->setConditions($conditions)
-            ;
+        
+        Axis::dispatch('discount_save_after', array(
+            'old_data' => $oldData,
+            'discount' => $row
+        ));
+        
         Axis::message()->addSuccess(
             Axis::translate('discount')->__(
                 "Discount '%s' successefull saved", $row->name
@@ -181,12 +156,13 @@ class Axis_Discount_Admin_IndexController extends Axis_Admin_Controller_Back
     {
         $ids = Zend_Json::decode($this->_getParam('data'));
         $model = Axis::model('discount/discount');
-
+        //@todo move event dispatch to delete 
         $discounts = $model->find($ids);
+        
         foreach ($discounts as $discount) {
             $discountData = $discount->toArray();
             $discountData['products'] = $discount->getApplicableProducts();
-
+            
             $discount->delete();
 
             Axis::dispatch('discount_delete_after', array(

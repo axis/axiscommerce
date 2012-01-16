@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Tag
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,8 +31,8 @@ $router->addRoute('tag', new Axis_Controller_Router_Route_Front(
         'action'     => 'index'
     )
 ));
-$router->addRoute('tag_show-products', new Axis_Controller_Router_Route_Front(
-    'tag/show-products/:tag',
+$router->addRoute('tag_products', new Axis_Controller_Router_Route_Front(
+    'tag/products/:tag',
     array(
         'module'     => 'Axis_Tag',
         'controller' => 'index',

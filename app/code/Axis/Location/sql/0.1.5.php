@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Location
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -54,11 +54,5 @@ class Axis_Location_Upgrade_0_1_5 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/location_geozone/save-assign',    'admin/location/geozone-zone/save')
             ->rename('admin/location_geozone/delete-assigns', 'admin/location/geozone-zone/remove')
         ;
-
-    }
-
-    public function down()
-    {
-
     }
 }

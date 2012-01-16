@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -191,8 +191,13 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
      */
     public function setSpecial($data)
     {
-        $existSpecialDiscountId = Axis::model('discount/eav')
-            ->getDiscountIdBySpecialAndProductId($this->id);
+        $existSpecialDiscountId = Axis::model('discount/eav')->select('discount_id')
+            ->join('discount_eav', 'de.discount_id = de2.discount_id')
+            ->where("de.entity = 'productId'")
+            ->where('de.value = ?', $this->id)
+            ->where("de2.entity ='special'")
+            ->where('de2.value = 1')
+            ->fetchOne();
 
         $mDiscount = Axis::model('discount/discount');
         if ($existSpecialDiscountId) {
@@ -730,7 +735,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
         $price = $this->price;
         if (!count($attributeIds)) {
             $discountRule = Axis::single('discount/discount')
-                ->getRuleByProductId($this->id);
+                ->getRulesByProduct($this->id, 0);
             $price = Axis::single('discount/discount')->applyDiscountRule(
                 $price, $discountRule
             );
@@ -772,7 +777,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
             );
         }
         // set discount
-        $discountRule = Axis::single('discount/discount')->getRuleByProductId(
+        $discountRule = Axis::single('discount/discount')->getRulesByProduct(
             $this->id, $variationId
         );
         $price = Axis::single('discount/discount')->applyDiscountRule(

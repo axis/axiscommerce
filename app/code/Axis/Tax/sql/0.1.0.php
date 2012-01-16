@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Tax
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,7 +30,7 @@ class Axis_Tax_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -77,10 +77,5 @@ class Axis_Tax_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('tax/main/taxBasis', 'Tax/General/TaxBasis', 'delivery', 'select', 'Address that will be used for tax calculation', array('model' => 'TaxBasis'))
             ->add('tax/shipping/taxBasis', 'Tax/Shipping Tax/Shipping TaxBasis', 'delivery', 'select', 'Address that will be used for shipping tax calculation', array('model' => 'TaxBasis'))
             ->add('tax/shipping/taxClass', 'Shipping TaxClass', '1', 'select', 'Tax class that will be used for shipping tax calculation', array('model' => 'TaxClass'));
-    }
-
-    public function down()
-    {
-
     }
 }

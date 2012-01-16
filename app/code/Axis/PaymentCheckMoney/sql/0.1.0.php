@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_PaymentCheckMoney
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,8 +30,6 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_field')
             ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('payment/CheckMoney_Standard', 'Payment Methods/Check & Money Order', null, null, array('translation_module' => 'Axis_PaymentCheckMoney'))
@@ -49,8 +47,6 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_value')->remove('payment/CheckMoney_Standard');
         Axis::single('core/config_field')->remove('payment/CheckMoney_Standard');
     }

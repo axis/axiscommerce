@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Install
  * @subpackage  Axis_Install_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -116,9 +116,9 @@ class Axis_Install_Model_Wizard
             'Server Capabilities' => array(
                 'php_version' => array(
                     'title'   => 'PHP Version',
-                    'expected' => '>= 5.2',
+                    'expected' => '>= 5.2.4',
                     'value'   => phpversion(),
-                    'success' => phpversion() >= 5.2 ? true : false
+                    'success' => version_compare(phpversion(), '5.2.4', '>=')
                 )
             ),
             'PHP Settings' => array(
@@ -154,6 +154,10 @@ class Axis_Install_Model_Wizard
                 ),
                 'mcrypt' => array(
                     'title' => 'MCrypt',
+                    'expected' => 'Loaded'
+                ),
+                'xmlreader' => array(
+                    'title' => 'xmlReader',
                     'expected' => 'Loaded'
                 )
             ),

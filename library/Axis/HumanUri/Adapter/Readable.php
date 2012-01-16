@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_HumanUri
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,6 +33,8 @@
  */
 class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
 {
+    protected $_seoParams = array();
+
     protected function _init()
     {
         $simpleKeys = $this->getSimpleKeys();
@@ -40,11 +42,11 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
         $seoParams = array();
         $attributeParams = array();
         foreach ($this->getKeywords() as $keyword) {
-
             if (false === strpos($keyword, '=')) {
                 $seoParams[] = $keyword;
                 continue;
             }
+
             list($key, $value) = explode('=', $keyword, 2);
             if (in_array($key, $simpleKeys)) {
                 $this->setParam($key, $value);
@@ -74,6 +76,7 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
             return array();
         }
 
+        $this->_seoParams = $keywords;
         $rowset = Axis::single('catalog/hurl')
             ->select()
             ->where('key_word IN (?)', $keywords)
@@ -115,10 +118,30 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
         }
     }
 
+    /**
+     * Returns array of NOT VALIDATED seo param strings:
+     *  category
+     *  manufacturer
+     *  product
+     *
+     * @return array
+     */
+    public function getSeoParams()
+    {
+        return $this->_seoParams;
+    }
+
     public function getKeywords()
     {
         $path = urldecode($this->getRequest()->getPathInfo());
         $keywords = explode('/', trim($path, '/'));
+
+        $route = Zend_Controller_Front::getInstance()
+            ->getRouter()
+            ->getCurrentRoute();
+        if ($route->hasLocaleInUrl()) {
+            array_shift($keywords); //remove locale from array
+        }
         array_shift($keywords); //remove root catalog from array
         return $keywords;
     }
@@ -166,6 +189,6 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
             }
         }
 
-        return str_replace(array(' ', '"'), array('+', '%22'), $url);
+        return str_replace(array(' ', '"'), array('+', '%22'), rtrim($url, '/'));
     }
 }

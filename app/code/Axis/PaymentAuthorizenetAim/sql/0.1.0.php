@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_PaymentAuthorizenetAim
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,7 +30,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -73,8 +73,6 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_value')->remove('payment/AuthorizenetAim_Standard');
         Axis::single('core/config_field')->remove('payment/AuthorizenetAim_Standard');
     }

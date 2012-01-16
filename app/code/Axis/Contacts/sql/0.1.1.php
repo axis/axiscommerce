@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Contacts
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -44,9 +44,5 @@ class Axis_Contacts_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/contacts_index/delete-department', 'admin/contacts/department/remove')
         ;
 
-    }
-
-    public function down()
-    {
     }
 }

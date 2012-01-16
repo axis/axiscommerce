@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_ShippingFlat
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,8 +30,6 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Flat_Standard', 'Shipping Methods/Flat Rate Standard', null, null, array('translation_module' => 'Axis_ShippingFlat'))
@@ -48,8 +46,6 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        $installer = Axis::single('install/installer');
-
         Axis::single('core/config_value')->remove('shipping/Flat_Standard');
         Axis::single('core/config_field')->remove('shipping/Flat_Standard');
     }

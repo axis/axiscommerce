@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_PaymentPaypal
  * @subpackage  Axis_PaymentPaypal_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -41,7 +41,7 @@ class Axis_PaymentPaypal_StandardController extends Axis_Core_Controller_Front_S
         if (!$payment) {
             $this->_redirect('checkout/cart');
         }
-        $this->view->action = $payment->config()->url;
+        $this->view->action = $payment->getPaypalUrl();
         $this->view->fields = $payment->getStorage()->formFields;
 
         if (!is_array($this->view->fields)) {

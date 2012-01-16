@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_ShippingPickup
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,14 +30,10 @@ class Axis_ShippingPickup_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstra
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         Axis::single('core/config_field')
             ->add('shipping/Pickup_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Pickup_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'));
-    }
-
-    public function down()
-    {
     }
 }

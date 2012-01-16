@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Tag
  * @subpackage  Axis_Tag_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -34,29 +34,13 @@
 class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
 {
     /**
-     * Initialize
-     * @see app/code/Axis/Account/Controller/Axis_Account_Controller_Abstract#init()
-     */
-    public function init()
-    {
-        parent::init();
-        if (!Axis::single('core/module')->getByCode('Axis_Tag')->isInstalled()) {
-            $this->_redirect('/account');
-        }
-        $this->_helper->breadcrumbs(array(
-            'label' => Axis::translate('account')->__('Tags'),
-            'route' => 'tag_account'
-        ));
-    }
-
-    /**
      * Render all account tags
      * @return void
      */
     public function indexAction()
     {
         $this->setTitle(Axis::translate('account')->__('My Tags'));
-        
+
         $this->view->tags = Axis::single('tag/customer')->getMyWithWeight();
         $this->view->tags()->enableWeight();
         $this->render();
@@ -68,36 +52,36 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
      */
     public function addAction()
     {
-        
+
         $tags = array_filter(explode(',', $this->_getParam('tags')));
         $productId = $this->_getParam('productId');
-        
-        $modelCustomer = Axis::model('tag/customer'); 
+
+        $modelCustomer = Axis::model('tag/customer');
         $modelProduct  = Axis::model('tag/product');
         $defaultStatus = $modelCustomer->getDefaultStatus();
-        
+
         $customerId    = Axis::getCustomerId();
         $siteId        = Axis::getSiteId();
-        
+
         $_row = array(
             'customer_id' => $customerId,
             'site_id'     => $siteId,
             'status'      => $modelCustomer->getDefaultStatus()
         );
-        
+
         foreach ($tags as $tag) {
-            
+
             $row = $modelCustomer->select()
                 ->where('name = ?', $tag)
                 ->where('customer_id = ?', $customerId)
                 ->where('site_id = ?', $siteId)
                 ->fetchRow();
-            
+
             if (!$row) {
                 $_row['name'] = $tag;
                 $row = $modelCustomer->createRow($_row);
                 $row->save();
-                
+
                 Axis::message()->addSuccess(
                     Axis::translate('tag')->__(
                         "Tag '%s' was successfully added to product", $tag
@@ -109,21 +93,21 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
                         "Your tag '%s' is already added to this product", $tag
                     )
                 );
-            }    
-            
+            }
+
             // add to product relation
             $isExist = (bool) $modelProduct->select('id')
                 ->where('customer_tag_id = ?', $row->id)
                 ->where('product_id = ?', $productId)
                 ->fetchOne();
-            
+
             if (!$isExist) {
                 $modelProduct->createRow(array(
                     'customer_tag_id' => $row->id,
                     'product_id'      => $productId
                 ))->save();
             }
-            
+
             Axis::dispatch('tag_product_add_success', array(
                 'tag'        => $tag,
                 'product_id' => $productId
@@ -144,10 +128,10 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
         $tagId = $integer->filter($this->_getParam('tagId'));
 
         $row = Axis::single('tag/customer')->find($tagId)->current();
-        
-        if ($row->customer_id === Axis::getCustomerId() && 
-            $row->site_id === Axis::getSiteId()) {   
-            
+
+        if ($row->customer_id === Axis::getCustomerId() &&
+            $row->site_id === Axis::getSiteId()) {
+
             $row->delete();
         }
         $this->_redirect('/account/tag');
@@ -163,7 +147,7 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
 
         $integer = new Zend_Filter_Int();
         $id = $integer->filter($this->_getParam('itemId'));
-        
+
         $row = $model->find($id)->current();
         if (!$row) {
             return $this->_redirect('account/tag');
@@ -176,7 +160,7 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
             return $this->_redirect('account/tag');
         }
         $row->delete();
-        
+
         if (!$model->weightTag($rowCustomer->id)) {
             $rowCustomer->delete();
             return $this->_redirect('account/tag');

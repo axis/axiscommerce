@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -67,7 +67,7 @@ class Axis_Account_Model_Observer
 //                    Axis::translate('core')->__('Mail was sended successfully')
 //                );
 //            }
-        } catch (Zend_Mail_Transport_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
             Axis::message()->addError(
                 Axis::translate('core')->__('Mail sending was failed.')
             );
@@ -87,7 +87,7 @@ class Axis_Account_Model_Observer
                 )
             ));
             $mailNotice->send();
-        } catch (Zend_Mail_Transport_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
         }
     }
 
@@ -154,5 +154,53 @@ class Axis_Account_Model_Observer
                 )
             )
         ));
+    }
+
+    /**
+     * Register new customer, fill the customer_id in order
+     * and save the customer addresses
+     *
+     * @param Axis_Sales_Model_Order_Row $order
+     * @return void
+     */
+    public function saveCustomerAfterPlaceOrder(Axis_Sales_Model_Order_Row $order)
+    {
+        $checkout = Axis::single('checkout/checkout');
+        $billing  = $checkout->getBilling()->toFlatArray();
+        $delivery = $checkout->getDelivery()->toFlatArray();
+
+        $newCustomer = false;
+        if (!empty($billing['register']) && !Axis::getCustomerId()) {
+            $modelCustomer = Axis::model('account/customer');
+            $userData = $billing;
+            $userData['site_id'] = Axis::getSiteId();
+            $userData['is_active'] = 1;
+            unset($userData['id']);
+
+            list($customer, $password) = $modelCustomer->create($userData);
+            $customer->setDetails($userData);
+            $modelCustomer->login($userData['email'], $password);
+            $newCustomer = true;
+
+            $order->customer_id = $customer->id;
+            $order->save();
+        }
+
+        // save address if needed
+        if ($customer = Axis::getCustomer()) {
+            if (empty($billing['id'])) {
+                $customer->setAddress($billing);
+            }
+            if (empty($delivery['id']) && empty($billing['use_for_delivery'])) {
+                $customer->setAddress($delivery);
+            }
+        }
+
+        if ($newCustomer) {
+            Axis::dispatch('account_customer_register_success', array(
+                'customer' => $customer,
+                'password' => $password
+            ));
+        }
     }
 }

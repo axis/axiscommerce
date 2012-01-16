@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Sales
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,7 +30,7 @@ class Axis_Sales_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -39,10 +39,5 @@ class Axis_Sales_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
             MODIFY COLUMN `billing_phone` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL;
 
         ");
-    }
-
-    public function down()
-    {
-
     }
 }

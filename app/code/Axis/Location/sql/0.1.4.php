@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Location
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -30,7 +30,7 @@ class Axis_Location_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        $installer = Axis::single('install/installer');
+        $installer = $this->getInstaller();
 
         $installer->run("
 
@@ -39,10 +39,5 @@ class Axis_Location_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             MODIFY COLUMN `priority` TINYINT UNSIGNED NOT NULL;
 
         ");
-    }
-
-    public function down()
-    {
-
     }
 }

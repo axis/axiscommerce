@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Checkout
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -40,10 +40,5 @@ class Axis_Checkout_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
             ->add('checkout/default_values/postcode', 'Postcode', 90064, 'string', array('translation_module' => 'Axis_Account'))
             ->add('checkout/default_values/shipping_method', 'Shipping Method', 'Flat_Standard_standard', 'string')
             ->add('checkout/default_values/payment_method', 'Payment Method', 'CashOnDelivery_Standard', 'select', array('model' => 'Payment'));
-    }
-
-    public function down()
-    {
-
     }
 }

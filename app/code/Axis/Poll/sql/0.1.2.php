@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Poll
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -39,11 +39,5 @@ class Axis_Poll_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/poll_index/delete',       'admin/poll/remove')
             ->rename('admin/poll_index/clear',        'admin/poll/clear')
             ;
-
-    }
-
-    public function down()
-    {
-
     }
 }

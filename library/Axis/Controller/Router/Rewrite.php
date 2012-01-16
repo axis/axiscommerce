@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Controller
  * @subpackage  Axis_Controller_Router
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @copyright   Dmitry Merva  http://myengine.com.ua  d.merva@gmail.com
  * @license     GNU Public License V3.0
  */

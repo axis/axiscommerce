@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Admin
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -46,10 +46,5 @@ class Axis_Admin_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/users/save',     'admin/user/batch-save')
             ->rename('admin/users/delete',   'admin/user/remove')
         ;
-    }
-
-    public function down()
-    {
-
     }
 }

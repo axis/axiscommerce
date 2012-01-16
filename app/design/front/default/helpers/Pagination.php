@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper_Front
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -63,7 +63,7 @@ class Axis_View_Helper_Pagination
             $this->_output .= '<span class="previous">&#8592;</span>';
         } else {
             $this->_output .= '<a href="'
-            . $this->view->{$url}(array('page' => $pagination['page'] - 1))
+            . $this->view->{$url}(array('page' => $pagination['page'] - 1, 'includeGetParams' => true))
             . '" class="previous">&#8592;</a>';
         }
         $this->_output .= '</li>';
@@ -106,7 +106,7 @@ class Axis_View_Helper_Pagination
                 $this->_output .= '<span class="current">'. $i . '</span>';
             } else {
                 $this->_output .= '<a href="'
-                    . $this->view->{$url}(array('page' => $i))
+                    . $this->view->{$url}(array('page' => $i, 'includeGetParams' => true))
                     . '">' . $i . '</a>';
             }
             $this->_output .= '</li>';
@@ -117,7 +117,7 @@ class Axis_View_Helper_Pagination
             $this->_output .= '<span class="next">&#8594;</span>';
         } else {
             $this->_output .= '<a href="'
-            . $this->view->{$url}(array('page' => $pagination['page'] + 1))
+            . $this->view->{$url}(array('page' => $pagination['page'] + 1, 'includeGetParams' => true))
             . '" class="next">&#8594;</a>';
         }
         $this->_output .= '</li></ol>';

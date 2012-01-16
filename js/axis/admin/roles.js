@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -202,7 +202,7 @@ Ext.onReady(function(){
 
     var fields = [
         {name: 'role[id]',         type: 'int',  mapping: 'role.id'},
-        {name: 'role[name]',                mapping: 'role.name'},
+        {name: 'role[name]',                     mapping: 'role.name'},
         {name: 'role[sort_order]', type: 'int',  mapping: 'role.sort_order'}
     ];
 
@@ -304,7 +304,7 @@ Ext.onReady(function(){
 
     var denyColumn = new Axis.grid.CheckColumn({
         dataIndex: 'deny',
-        header: 'Deny'.l(),
+        header: 'Disallowed'.l(),
         width: 100,
         onMouseDown: function(e, t) {
             var index = this.grid.getView().findRowIndex(t);
@@ -323,7 +323,7 @@ Ext.onReady(function(){
 
     var allowColumn = new Axis.grid.CheckColumn({
         dataIndex: 'allow',
-        header: 'Allow'.l(),
+        header: 'Allowed'.l(),
         width: 100,
         onMouseDown: function(e, t) {
             var index = this.grid.getView().findRowIndex(t);

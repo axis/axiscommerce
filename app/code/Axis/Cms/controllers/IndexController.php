@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,6 +35,7 @@ class Axis_Cms_IndexController extends Axis_Cms_Controller_Abstract
 {
     public function indexAction()
     {
+        $this->setCanonicalUrl($this->view->url(array(), 'cms', true));
         $this->setTitle(Axis::translate('cms')->__('Pages'), null, false);
 
         $categories = Axis::single('cms/category')->select(array('id', 'parent_id'))

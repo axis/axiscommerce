@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_GoogleBase
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -41,10 +41,5 @@ class Axis_GoogleBase_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/gbase_index/set-status',     'admin/googlebase/set-status')
             ->rename('admin/gbase_index/update',         'admin/googlebase/update')
             ;
-    }
-
-    public function down()
-    {
-
     }
 }

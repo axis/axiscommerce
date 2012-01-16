@@ -17,6 +17,32 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+var Seo = {
+
+    clearData: Ext.emptyFn,
+
+    loadData: Ext.emptyFn,
+
+    getData: function() {
+        var form = ProductWindow.form.getForm(),
+            url  = form.findField('key_word');
+
+        if ('' === url.getValue()) {
+            var name = form.findField('description[name]').getValue();
+            for (var i in name) {
+                name = name[i];
+                break;
+            }
+            name = Ext.util.Format.trim(name)
+            name = name.toLowerCase();
+            name = name.replace(/\s+/g, '-');
+            url.setValue(name);
+        }
+
+        return [];
+    }
+};
+
 Ext.onReady(function() {
 
     ProductWindow.formFields.push(
@@ -88,4 +114,5 @@ Ext.onReady(function() {
         }]
     }, 20);
 
+    ProductWindow.dataObjects.push(Seo);
 });

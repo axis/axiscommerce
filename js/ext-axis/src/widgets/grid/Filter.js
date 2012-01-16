@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -355,14 +355,21 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
 
         this.filters.each(function(cnt) {
             cnt.items.each(function(field) {
+                var value  = field.getValue(),
+                    suffix = '';
+
                 if (!field.rendered
-                    || 0 === field.getValue().length
-                    || field.resetValue === field.getValue()) {
+                    || 0 === value.length
+                    || field.resetValue === value) {
 
                     return true;
                 }
+
+                if (value.length && typeof value === 'object') {
+                    suffix = '[]';
+                }
                 params['filter[' + length + '][field]'] = field.getName();
-                params['filter[' + length + '][value]'] = field.getValue();
+                params['filter[' + length + '][value]' + suffix] = value;
                 if (field.operator) {
                     params['filter[' + length + '][operator]'] = field.operator;
                 } else if ('textfield' == field.xtype) {

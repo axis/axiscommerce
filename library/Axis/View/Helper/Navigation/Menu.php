@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -142,7 +142,9 @@ class Axis_View_Helper_Navigation_Menu extends Zend_View_Helper_Navigation_Menu
         $html = $indent . '<ul' . $ulClass . '>' . self::EOL;
 
         foreach ($active['page'] as $subPage) {
-            if (!$this->accept($subPage)) {
+            if (!$this->accept($subPage)
+                || (Axis_Area::isBackend() && !$this->isVisibleAtBackend($page))) {
+
                 continue;
             }
             $liClass = 'level0';// . ($active['depth'] + 1);
@@ -204,7 +206,8 @@ class Axis_View_Helper_Navigation_Menu extends Zend_View_Helper_Navigation_Menu
         foreach ($iterator as $page) {
             $depth = $iterator->getDepth();
             $isActive = $page->isActive(true);
-            if ($depth < $minDepth || !$this->accept($page)) {
+            if ($depth < $minDepth || !$this->accept($page)
+                || (Axis_Area::isBackend() && !$this->isVisibleAtBackend($page))) {
                 // page is below minDepth or not accepted by acl/visibilty
                 continue;
             } else if ($onlyActive && !$isActive) {
@@ -329,5 +332,36 @@ class Axis_View_Helper_Navigation_Menu extends Zend_View_Helper_Navigation_Menu
             }
             return $html;
         }
+    }
+
+    /**
+     * The page will be invisible if it has no resource and no visible children
+     * This method is used to hide empty parent items in backend navigation
+     *
+     * @param  Zend_Navigation_Page $page      page to check
+     * @return bool
+     */
+    public function isVisibleAtBackend(Zend_Navigation_Page $page)
+    {
+        if ($page->getResource()) {
+            return true;
+        }
+
+        $visible  = true;
+        $iterator = new RecursiveIteratorIterator($page,
+            RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($iterator as $child) {
+            if (!$child->getResource()) {
+                continue; // anchor page
+            }
+
+            $visible = $this->accept($child, false);
+            if ($visible) {
+                break;
+            }
+        }
+
+        return $visible;
     }
 }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Community
  * @subpackage  Axis_Community_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -96,6 +96,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                     'Review not found'
             ));
         }
+        $this->setCanonicalUrl($this->_getCanonicalUrl('community_review'));
         $this->render('list');
     }
 
@@ -107,11 +108,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         $this->view->review = array();
 
         if (!$this->_hasParam('id') || !is_numeric($this->_getParam('id'))) {
-            $this->setTitle(Axis::translate('community')->__(
-                'Review not found'
-            ));
-            $this->render();
-            return;
+            return $this->_forward('not-found', 'Error', 'Axis_Core');
         }
 
         $where = 'cr.id = ' . (int)$this->_getParam('id');
@@ -142,6 +139,15 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             ));
         }
 
+        $this->setCanonicalUrl($this->view->url(
+            array(
+                'action' => 'detail',
+                'id'     => $this->_getParam('id')
+            ),
+            'community_review',
+            true
+        ));
+
         $this->render();
     }
 
@@ -156,12 +162,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         );
 
         if (!$this->_hasParam('hurl')) {
-            $this->setTitle(
-                Axis::translate('community')->__(
-                    'Review not found'
-            ));
-            $this->render('list-product');
-            return;
+            return $this->_forward('not-found', 'Error', 'Axis_Core');
         }
 
         $where = "ch.key_word = '{$this->_getParam('hurl')}'";
@@ -212,12 +213,17 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         $title = Axis::translate('community')->__(
             'Reviews for the %s', $productName
         );
+        $this->setCanonicalUrl($this->_getCanonicalUrl(
+            'community_review_product',
+            array(
+                'hurl' => $this->_getParam('hurl')
+            )
+        ));
         $this->setTitle($title, false, $productName);
         $this->view->meta()
             ->setTitle($title)
             ->setKeywords($productName)
-            ->setDescription($title)
-        ;
+            ->setDescription($title);
 
         $this->render('list-product');
     }
@@ -268,6 +274,13 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         $title = Axis::translate('community')->__(
             'Reviews written by customer %s', $nickname
         );
+        $this->setCanonicalUrl($this->_getCanonicalUrl(
+            'community_review',
+            array(
+                'action' => 'customer',
+                'id'     => $customerId
+            )
+        ));
         $this->setTitle($title);
 
         if (count($this->view->data['reviews'])) {
@@ -333,7 +346,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
         if ($this->_request->isPost()) {
             $ratings = $this->_getRatings();
             $data = array(
-                'customer_id' => Axis::getCustomerId(), 
+                'customer_id' => Axis::getCustomerId(),
                 'product_id'  => $this->_getParam('product'),
                 'summary'     => $this->_getParam('summary'),
                 'author'      => $this->_getParam('author'),
@@ -357,7 +370,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
                         'Review was successfully saved'
                 ));
                 $review->setRating($ratings);
-                
+
                 Axis::dispatch('community_review_add_success', $data);
                 $this->_redirect(
                     $this->getRequest()->getServer('HTTP_REFERER')
@@ -380,7 +393,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
      *
      * @return array (rating_id => rating_values)
      */
-    private function _getRatings()
+    protected function _getRatings()
     {
         $result = array();
         foreach ($this->_getAllParams() as $key => $value) {
@@ -392,12 +405,36 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     }
 
     /**
+     * Retrieve canonical url for index, product
+     * and customer action
+     */
+    protected function _getCanonicalUrl($route = 'community_review', $params = array())
+    {
+        $paramNames = array(
+            'dir',
+            'order',
+            'limit',
+            'page'
+        );
+
+        $urlParams = array();
+        foreach ($paramNames as $name) {
+            if (!$this->_hasParam($name)) {
+                continue;
+            }
+            $urlParams[$name] = $this->_getParam($name);
+        }
+
+        return $this->view->url(array_merge($urlParams, $params), $route, true);
+    }
+
+    /**
      * Retrieve current review listing params
      *  order, dir, limit, page
      *
      * @return array
      */
-    private function _getListingParams()
+    protected function _getListingParams()
     {
         if ($this->_hasParam('dir')
             && in_array($this->_getParam('dir'), array('asc', 'desc'))) {
@@ -462,7 +499,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     /**
      * Get available per page listing numbers
      */
-    private function _getPerPage()
+    protected function _getPerPage()
     {
         $paging = array();
         foreach (explode(',', Axis::config('community/review/perPage')) as $perPage) {
@@ -474,7 +511,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
     /**
      * Get available sortby options
      */
-    private function _getSortBy()
+    protected function _getSortBy()
     {
         $sort = array();
         $sort[$this->view->url(array('order' => 'date'))] =
@@ -483,5 +520,4 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
             Axis::translate('community')->__('Users rating');
         return $sort;
     }
-
 }

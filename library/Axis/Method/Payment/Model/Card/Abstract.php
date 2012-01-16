@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Method
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -146,5 +146,80 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
             }
         }
         return $ret;
+    }
+
+    /**
+     * Adds information about credit card to the database
+     * and sends it by email if required
+     *
+     * @param Axis_Sales_Model_Order_Row $order
+     * @return void
+     */
+    public function saveCreditCard(Axis_Sales_Model_Order_Row $order)
+    {
+        $card   = $this->getCreditCard();
+        $number = $card->getCcNumber();
+
+        switch (Axis::config("payment/{$order->payment_method_code}/saveCCAction")) {
+            case 'last_four':
+                $number = str_repeat('X', (strlen($number) - 4)) .
+                    substr($number, -4);
+                break;
+            case 'first_last_four':
+                $number = substr($number, 0, 4) .
+                    str_repeat('X', (strlen($number) - 8)) .
+                    substr($number, -4);
+                break;
+            case 'partial_email':
+                $number = substr($number, 0, 4) .
+                    str_repeat('X', (strlen($number) - 8)) .
+                    substr($number, -4);
+
+                try {
+                    $numberToSend = $card->getCcNumber();
+                    $mail = new Axis_Mail();
+                    $mail->setLocale(Axis::config('locale/main/language_admin'));
+                    $mail->setConfig(array(
+                        'subject' => Axis::translate('sales')->__(
+                            'Order #%s. Credit card number'
+                        ),
+                        'data' => array(
+                            'text' => Axis::translate('sales')->__(
+                                'Order #%s, Credit card middle digits: %s',
+                                $order->number,
+                                substr($numberToSend, 4, (strlen($numberToSend) - 8))
+                            )
+                        ),
+                        'from' => Axis_Collect_MailBoxes::getName(
+                            Axis::config('core/company/salesDepartmentEmail')
+                        ),
+                        'to' => Axis_Collect_MailBoxes::getName(
+                            Axis::config('sales/order/email')
+                        )
+                    ));
+                    $mail->send();
+                } catch (Zend_Mail_Transport_Exception $e) {
+                }
+                break;
+            case 'complete':
+                break;
+            default:
+                return true;
+        }
+
+        $crypt = Axis_Crypt::factory();
+        $data  = array(
+            'order_id'         => $order->id,
+            'cc_type'          => $crypt->encrypt($card->getCcType()),
+            'cc_owner'         => $crypt->encrypt($card->getCcOwner()),
+            'cc_number'        => $crypt->encrypt($number),
+            'cc_expires_year'  => $crypt->encrypt($card->getCcExpiresYear()),
+            'cc_expires_month' => $crypt->encrypt($card->getCcExpiresMonth()),
+            'cc_cvv'           => Axis::config()->payment->{$order->payment_method_code}->saveCvv ?
+                $crypt->encrypt($card->getCcCvv()) : '',
+            'cc_issue_year'    => $crypt->encrypt($card->getCcIssueYear()),
+            'cc_issue_month'   => $crypt->encrypt($card->getCcIssueMonth())
+        );
+        Axis::model('sales/order_creditcard')->save($data);
     }
 }

@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Account
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -71,10 +71,5 @@ class Axis_Account_Upgrade_0_2_2 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/customer_custom-fields/batch-save-fields',            'admin/account/field/batch-save')
             ->rename('admin/customer_custom-fields/delete-fields',                'admin/account/field/remove')
         ;
-    }
-
-    public function down()
-    {
-
     }
 }

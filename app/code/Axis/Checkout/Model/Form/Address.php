@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -194,7 +194,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                 $values['type']->removeDecorator('HtmlTag')
                     ->addDecorator('HtmlTag', array(
                         'tag'   => 'li',
-                        'id'    => "{$name}-row",
+                        'id'    => "{$subform}-{$name}-row",
                         'class' => 'element-row'
                     ));
                 $values['type']->options = $countries;
@@ -203,7 +203,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                 $values['type']->removeDecorator('HtmlTag')
                     ->addDecorator('HtmlTag', array(
                         'tag'   => 'li',
-                        'id'    => "{$name}-row",
+                        'id'    => "{$subform}-{$name}-row",
                         'class' => 'element-row'
                     ));
                 if (isset($zones[$defaultCountry]) && count($countries)) {

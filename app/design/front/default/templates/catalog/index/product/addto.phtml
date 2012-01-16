@@ -1,8 +1,8 @@
 <div class="addto-box">
     <?php if ($this->product['stock']['is_saleable']) : ?>
     <div class="addto-cart">
-        <?php echo $this->translate('catalog')->__('Quantity')?>: 
-        <input type="text" name="quantity" 
+        <?php echo $this->translate('catalog')->__('Quantity')?>:
+        <input type="text" name="quantity"
             value="<?php echo $this->product['stock']['min_qty_allowed'] > 0 ? $this->product['stock']['min_qty_allowed'] : 1 ?>"
             size="2" class="input-text"
         />
@@ -16,14 +16,14 @@
     <?php endif; ?>
     <ul>
         <li>
-            <a class="add-to-wishlist" 
+            <a class="add-to-wishlist"
                 href="<?php echo $this->href('account/wishlist/add/id/' . $this->product['id'], true);?>"
                 rel="nofollow"
                 ><?php echo $this->translate('catalog')->__('Add to Wishlist') ?></a>
         </li>
         <li>
-            <a class="add-to-compare" 
-                href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/') . $this->product['id']?>"
+            <a class="add-to-compare"
+                href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/' . $this->product['id'])?>"
                 rel="nofollow">
                 <span><?php echo $this->translate('catalog')->__('Add to Compare') ?></span>
             </a>

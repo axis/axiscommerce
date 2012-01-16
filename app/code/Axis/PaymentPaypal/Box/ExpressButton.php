@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_PaymentPaypal
  * @subpackage  Axis_PaymentPaypal_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -38,6 +38,8 @@ class Axis_PaymentPaypal_Box_ExpressButton extends Axis_Core_Box_Abstract
 
     protected function _beforeRender()
     {
-        return Axis::single('PaymentPaypal/Express')->isEnabled();
+        return Axis::single('PaymentPaypal/Express')->isEnabled()
+            && !Axis::single('checkout/cart')->isEmpty()
+        ;
     }
 }

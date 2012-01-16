@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -46,12 +46,10 @@ class Axis_View_Helper_Url extends Zend_View_Helper_Url
     public function url(
         array $urlOptions = array(), $name = null, $reset = false, $encode = true)
     {
-        $locale = trim(Axis_Locale::getLanguageUrl(), '/ ');
-
-        if (!empty($locale)) {
-            $urlOptions = array_merge(array('locale' => $locale), $urlOptions);
+        if (isset($urlOptions['includeGetParams'])) { // search pagination fix
+            unset($urlOptions['includeGetParams']);
+            $urlOptions = array_merge($_GET, $urlOptions);
         }
-        $urlOptions = array_merge($_GET, $urlOptions);
         return parent::url($urlOptions, $name, $reset, $encode);
     }
 }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,32 +35,6 @@ class Axis_Catalog_Model_Product_Category extends Axis_Db_Table
 {
     protected $_name = 'catalog_product_category';
     protected $_selectClass = 'Axis_Catalog_Model_Product_Category_Select';
-
-
-    /**
-     * Retrieve the categories ids for the recieved product ids
-     *
-     * @return array
-     * <pre>
-     * array(
-     *  product_id => array(
-     *      category_id, ...
-     *  )
-     * )
-     * </pre>
-     */
-    public function getCategoriesByProductIds(array $productIds)
-    {
-        $categories = array();
-        $rowset = $this->select()
-            ->where('product_id IN (?)', $productIds)
-            ->fetchAll();
-
-        foreach ($rowset as $row) {
-            $categories[$row['product_id']][] = $row['category_id'];
-        }
-        return $categories;
-    }
 
     /**
      * Retrieve site ids array. Keys are the product id

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -52,21 +52,5 @@ class Axis_Catalog_Model_Product_Variation extends Axis_Db_Table
             $data['price'] = 0;
         }
         return parent::insert($data);
-    }
-
-    public function getVariationsByProductIds(array $productIds)
-    {
-        $rowset = $this->fetchAll(
-            $this->getAdapter()->quoteInto('product_id IN (?) OR product_id IS NULL', $productIds)
-        );
-        $result = array();
-        foreach ($productIds as $productId) {
-            foreach ($rowset as $row) {
-                if ($productId == $row->product_id) {
-                    $result[$row->product_id][$row->id] = $row->toArray();
-                }
-            }
-        }
-        return $result;
     }
 }

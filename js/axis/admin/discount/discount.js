@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -128,15 +128,13 @@ Ext.onReady(function () {
                 icon: Axis.skinUrl + '/images/icons/add.png',
                 cls: 'x-btn-text-icon',
                 handler : function() {
-                    window.location = Axis.getUrl('discount/create');
+                    discountWindow.create();
                 }
             },{
                 text: 'Delete'.l(),
                 icon: Axis.skinUrl + '/images/icons/delete.png',
                 cls: 'x-btn-text-icon',
                 handler : function () {
-                    if (!confirm('Are you sure?'.l()))
-                        return;
                     var data = {};
                     var selectedItems = grid.getSelectionModel().selections.items;
                     var len = selectedItems.length;
@@ -146,13 +144,8 @@ Ext.onReady(function () {
                         }
                         data[i] = selectedItems[i]['data']['id'];
                     }
-
-                    Ext.Ajax.request({
-                        url: Axis.getUrl('discount/remove'),
-                        params: {data: Ext.encode(data)},
-                        callback: function() {
-                            grid.getStore().reload();
-                        }
+                    discountWindow.remove(data, function() {
+                        grid.getStore().reload();
                     });
                 }
             }, {
@@ -165,9 +158,7 @@ Ext.onReady(function () {
                         alert('Select discount'.l());
                         return;
                     }
-                    window.location = Axis.getUrl(
-                        'discount/load/id/' + selectedItems[0]['data']['id']
-                    );
+                    discountWindow.load(selectedItems[0]['data']['id']);
                 }
             },
             new Ext.Toolbar.Separator(),
@@ -193,18 +184,22 @@ Ext.onReady(function () {
         ]
     });
 
-    Ext.getCmp('gridDiscount').getStore().load({params:{
-        start:0, limit:25, displayMode: 'without-special'
-    }});
+    ds.load({
+        params:{
+            start:0, 
+            limit:25, 
+            displayMode: 'without-special'
+        }
+    });
+
     Ext.getCmp('gridDiscount').on('rowdblclick', function(grid, rowIndex, e){
-        var row = Ext.getCmp('gridDiscount').getStore().getAt(rowIndex);
-        window.location = Axis.getUrl('discount/load/id/')
-            + row.data.id;
+        var row = ds.getAt(rowIndex);
+        
+        discountWindow.load(row.data.id);
     });
 
     Ext.get('tbar-display-mode').on('change', function(event, element) {
-        Ext.getCmp('gridDiscount').getStore().baseParams['displayMode'] =
-            element.options[element.selectedIndex].value;
-        Ext.getCmp('gridDiscount').getStore().load();
+        ds.baseParams['displayMode'] = element.options[element.selectedIndex].value;
+        ds.load();
     })
 });
