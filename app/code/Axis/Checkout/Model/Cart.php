@@ -254,6 +254,12 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
 
         $attributes = $modifierAttributes + $variationAttributes;
 
+        Axis::message()->addSuccess(
+            Axis::translate('checkout')->__(
+                'Product was successfully added to your shopping cart'
+            )
+        );
+
         // Check for clon exists
         if (false !== ($clon = $this->_getClon($productId, $attributes))) {
             $this->updateItem(
@@ -281,11 +287,6 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
                 'product_attribute_value'  => $attributeValue
             ));
         }
-        Axis::message()->addSuccess(
-            Axis::translate('checkout')->__(
-                'Product was successfully added to your shopping cart'
-            )
-        );
 
         Axis::dispatch('checkout_cart_add_product_success', array(
             'product'         => $product,
@@ -548,12 +549,12 @@ class Axis_Checkout_Model_Cart extends Axis_Db_Table
         }
         return $count;
     }
-    
+
     /**
      *
-     * @return bool 
+     * @return bool
      */
-    public function isEmpty() 
+    public function isEmpty()
     {
         return (0 === $this->getCount());
     }

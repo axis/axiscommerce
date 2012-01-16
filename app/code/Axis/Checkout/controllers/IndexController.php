@@ -74,6 +74,7 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
 
         Axis::dispatch('sales_order_create_success', $order);
         $this->view->order = $order;
+        $checkout->getCart()->clear();
         $checkout->clean();
 
         $this->render();

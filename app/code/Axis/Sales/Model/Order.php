@@ -142,9 +142,6 @@ class Axis_Sales_Model_Order extends Axis_Db_Table
         // update product stock
         $orderRow->setStatus('pending');
 
-        // Clear cart after checkout
-        $checkout->getCart()->clear();
-
         return $orderRow;
     }
 
