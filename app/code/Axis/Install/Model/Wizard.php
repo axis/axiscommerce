@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Install
  * @subpackage  Axis_Install_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 

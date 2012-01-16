@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_PaymentFreeOrder
  * @subpackage  Axis_PaymentFreeOrder_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
