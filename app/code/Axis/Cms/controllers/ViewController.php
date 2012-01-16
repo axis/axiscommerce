@@ -123,11 +123,9 @@ class Axis_Cms_ViewController extends Axis_Cms_Controller_Abstract
 
         $metaTitle = empty($rowContent->meta_title) ?
             $rowContent->title : $rowContent->meta_title;
-        $metaDescription = empty($rowContent->meta_description) ?
-            $rowContent->description : $rowContent->meta_description;
         $this->view->meta()
             ->setTitle($metaTitle, 'cms_category', $categoryId)
-            ->setDescription($metaDescription)
+            ->setDescription($rowContent->meta_description)
             ->setKeywords($rowContent->meta_keyword);
         $this->setCanonicalUrl(
             $this->view->url(array('cat' => $link), 'cms_category', true)
