@@ -42,7 +42,7 @@
 "Image","Imagem"
 "Invalid data recieved","Dados recebidos inválidos"
 "Invalid parameter recieved. ProductId is required","Parâmetro recebido inválido. Id do produto é obrigatório"
-"Item(s)","Item(s)"
+"%s Item(s)","%s Item(s)"
 "Keywords","Palavras-chave"
 "Language sensivity","Sensibilidade de idioma"
 "List","Lista"
