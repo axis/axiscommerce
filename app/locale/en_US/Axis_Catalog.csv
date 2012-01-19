@@ -38,7 +38,7 @@
 "Image","Image"
 "Invalid data recieved","Invalid data recieved"
 "Invalid parameter recieved. ProductId is required","Invalid parameter recieved. ProductId is required"
-"Item(s)","Item(s)"
+"%s Item(s)","%s Item(s)"
 "Keywords","Keywords"
 "Language sensivity","Language sensivity"
 "List","List"
