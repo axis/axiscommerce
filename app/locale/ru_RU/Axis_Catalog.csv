@@ -38,7 +38,7 @@
 "Image","Изображение"
 "Invalid data recieved","Получены не корректные данные"
 "Invalid parameter recieved. ProductId is required","Получен не правильный параметр. Нужно ProductId"
-"Item(s)","Товар(ы)"
+"%s Item(s)","%s Товар(ы)"
 "Keywords","Ключевые слова"
 "Language sensivity","Зависит от языка"
 "List","Список"
