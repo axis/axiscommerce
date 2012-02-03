@@ -258,14 +258,15 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
 
         $products = Axis::model('catalog/product')->find($productIds);
         foreach ($products as $product) {
+            if (empty($categories[$product->id])) {
+                continue;
+            }
+
             $collection
                 ->addProductIdFilter($product->id)
                 ->addManufactureFilter($product->manufacturer_id)
+                ->addCategoryFilter($categories[$product->id])
                 ->addPriceFilter($product->price);
-
-            if (!empty($categories[$product->id])) {
-                $collection->addCategoryFilter($categories[$product->id]);
-            }
 
             $baseVariationAttributes = isset($attributes[$product->id][0]) ? $attributes[$product->id][0] : array();
 
