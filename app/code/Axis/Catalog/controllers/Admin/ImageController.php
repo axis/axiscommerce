@@ -133,13 +133,19 @@ class Axis_Catalog_Admin_ImageController extends Axis_Admin_Controller_Back
      */
     private function _delete($path)
     {
+        $path = realpath($path);
+        if (!$path) {
+            return false;
+        }
+
         /* check are we in 'ROOT/media' */
-        if (false === strpos($path, Axis::config()->system->path . '/media')) {
+        $mediaDir = realpath(Axis::config()->system->path . '/media');
+        if (0 !== strpos($path, $mediaDir) || strlen($path) <= strlen($mediaDir)) {
             return false;
         }
 
         if (is_dir($path)) {
-            $path = rtrim($path, '/');
+            $path = rtrim($path, DIRECTORY_SEPARATOR);
             $dir = dir($path);
             while (false !== ($file = $dir->read())) {
                 if ($file != '.' && $file != '..') {
