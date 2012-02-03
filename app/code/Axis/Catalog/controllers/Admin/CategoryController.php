@@ -129,11 +129,19 @@ class Axis_Catalog_Admin_CategoryController extends Axis_Admin_Controller_Back
             if (isset($image[$imageType]['delete'])
                 && !empty($image[$imageType]['src'])) {
 
-                @unlink(
-                    Axis::config()->system->path
-                    . '/media/category'
-                    . $image[$imageType]['src']
-                );
+                $categoryDir = realpath(Axis::config()->system->path . '/media/category');
+                $src = realpath($categoryDir . $image[$imageType]['src']);
+                if (!$src) {
+                    continue;
+                }
+
+                if (0 !== strpos($src, $categoryDir)
+                    || strlen($src) <= strlen($categoryDir)) {
+
+                    continue;
+                }
+
+                @unlink($src);
                 $image[$imageType]['src'] = '';
             }
         }
