@@ -106,7 +106,7 @@ class Axis_Catalog_Admin_CategoryController extends Axis_Admin_Controller_Back
 
         $parentId   = $this->_getParam('parent_id', 0);
         $categoryId = $this->_getParam('id', 0);
-        $catKeyWord = strtolower($this->_getParam('key_word'));
+        $catKeyWord = $this->_getParam('key_word');
         $siteId     = $this->_getParam('site_id');
 
         /* if human url already exist */
