@@ -65,7 +65,7 @@ class Axis_Config_Handler_Crypt implements  Axis_Config_Handler_Interface
      * @param string $value
      * @return string
      */
-    public static function getConfig($value)
+    public static function getConfigOptionValue($value)
     {
         return Axis_Crypt::factory()->decrypt($value);
     }

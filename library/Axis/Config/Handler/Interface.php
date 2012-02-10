@@ -60,5 +60,5 @@ interface Axis_Config_Handler_Interface extends Axis_Config_Option_Interface
      * @param  string $value
      * @return mixed
      */
-    public static function getConfig($value);
+    public static function getConfigOptionValue($value);
 }

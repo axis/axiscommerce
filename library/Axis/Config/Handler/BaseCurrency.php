@@ -73,7 +73,7 @@ class Axis_Config_Handler_BaseCurrency implements  Axis_Config_Handler_Interface
      * @param string $value
      * @return string
      */
-    public static function getConfig($value)
+    public static function getConfigOptionValue($value)
     {
         return $value;
     }

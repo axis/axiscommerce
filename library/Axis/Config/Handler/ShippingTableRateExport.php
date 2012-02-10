@@ -92,7 +92,7 @@ class Axis_Config_Handler_ShippingTableRateExport implements Axis_Config_Handler
      * @param string $value
      * @return string
      */
-    public static function getConfig($value)
+    public static function getConfigOptionValue($value)
     {
         return $value;
     }

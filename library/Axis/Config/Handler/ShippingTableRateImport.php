@@ -109,7 +109,7 @@ class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler
      * @param mixed $value
      * @return mixed
      */
-    public static function getConfig($value)
+    public static function getConfigOptionValue($value)
     {
         return $value;
     }
