@@ -187,10 +187,8 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 $value = array($value, 'siteId' => $siteId);
             }
 
-            $value = //$this->_getSaveValue($rowField->model, $value);
-            
-            call_user_func(
-                array('Axis_Config_Handler_' . $rowField->model, 'getSaveValue'), $value
+            $value = call_user_func(
+                array('Axis_Config_Handler_' . $rowField->model, 'prepareConfigOptionValue'), $value
             );
         } elseif (is_array($value)) {
             $value = implode(Axis_Config::MULTI_SEPARATOR, $value);

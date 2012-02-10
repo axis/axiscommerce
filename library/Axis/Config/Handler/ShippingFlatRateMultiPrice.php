@@ -77,7 +77,7 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
     {
         $value = json_decode($value, true);
         if (!is_array($value)) {
-            $value = json_decode(self::getSaveValue('25'), true);
+            $value = json_decode(self::prepareConfigOptionValue('25'), true);
         }
         $html = '<script type="text/javascript">
             function removeRate(id) {
@@ -158,4 +158,16 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
     {
         return json_decode($value, true);
     }
+    
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getConfigOptionName($id) 
+    {
+        return $id;
+    }
+    
 }

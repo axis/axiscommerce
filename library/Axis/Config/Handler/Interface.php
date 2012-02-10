@@ -31,7 +31,7 @@
  * @subpackage  Axis_Config_Handler
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-interface Axis_Config_Handler_Interface //extends Axis_Config_Option_Interface
+interface Axis_Config_Handler_Interface extends Axis_Config_Option_Interface
 {
     /**
      *

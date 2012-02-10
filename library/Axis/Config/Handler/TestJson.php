@@ -123,4 +123,15 @@ class Axis_Config_Handler_TestJson implements  Axis_Config_Handler_Interface
     {
         return json_decode($value, true);
     }
+    
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getConfigOptionName($id) 
+    {
+        return $id;
+    }
 }

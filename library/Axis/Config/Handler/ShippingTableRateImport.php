@@ -113,4 +113,15 @@ class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler
     {
         return $value;
     }
+    
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getConfigOptionName($id) 
+    {
+        return $id;
+    }
 }

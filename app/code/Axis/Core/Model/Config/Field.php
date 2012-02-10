@@ -170,7 +170,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             if ($rowData['config_type'] == 'handler') {
                 $class = 'Axis_Config_Handler_' . ucfirst($rowData['model']);
                 $value = call_user_func(
-                    array($class, 'getSaveValue'), $value
+                    array($class, 'prepareConfigOptionValue'), $value
                 );
             }
             $rowValue->setFromArray(array(
