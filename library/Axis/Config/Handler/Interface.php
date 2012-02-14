@@ -39,7 +39,7 @@ interface Axis_Config_Handler_Interface extends Axis_Config_Option_Interface
      * @param  array $params
      * @return string
      */
-    public static function prepareConfigOptionValue($params);
+    public static function encodeConfigOptionValue($params);
 
     /**
      * @todo move to spec helpers
@@ -60,5 +60,5 @@ interface Axis_Config_Handler_Interface extends Axis_Config_Option_Interface
      * @param  string $value
      * @return mixed
      */
-    public static function getConfigOptionValue($value);
+    public static function decodeConfigOptionValue($value);
 }

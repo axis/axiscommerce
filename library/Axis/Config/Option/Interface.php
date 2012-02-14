@@ -41,7 +41,7 @@ interface Axis_Config_Option_Interface
     
     //@todo getConfigOptionDeafultValue
     
-    //@todo prepareConfigOptionValue exapmle: encrypt
+    //@todo encodeConfigOptionValue exapmle: encrypt
     
-    //@todo getConfigOptionValue  example: decrypt
+    //@todo decodeConfigOptionValue  example: decrypt
 }

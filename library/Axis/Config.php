@@ -130,10 +130,10 @@ class Axis_Config extends Zend_Config
                 case 'bool':
                     $value = (bool) $data['value'];
                     break;
-                case 'handler':
+                case 'handler': //@todo remove
                     $class = 'Axis_Config_Handler_' . ucfirst($data['model']);
                     if ($data['model']) {
-                        $value = call_user_func(array($class, 'getConfigOptionValue'), $data['value']);
+                        $value = call_user_func(array($class, 'decodeConfigOptionValue'), $data['value']);
                     } else {
                         $value = $data['value'];
                     }

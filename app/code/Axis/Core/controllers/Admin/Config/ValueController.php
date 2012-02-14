@@ -188,15 +188,15 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             }
 
             $value = call_user_func(
-                array('Axis_Config_Handler_' . $rowField->model, 'prepareConfigOptionValue'), $value
+                array('Axis_Config_Handler_' . $rowField->model, 'encodeConfigOptionValue'), $value
             );
         } elseif (is_array($value)) {
             $value = implode(Axis_Config::MULTI_SEPARATOR, $value);
         }
 
-        if (method_exists($rowField->model, 'prepareConfigOptionValue')) { 
+        if (method_exists($rowField->model, 'encodeConfigOptionValue')) { 
             $value = call_user_func(
-                array($rowField->model, 'prepareConfigOptionValue'), $value 
+                array($rowField->model, 'encodeConfigOptionValue'), $value 
            );
         }
 

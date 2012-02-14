@@ -56,7 +56,7 @@ class Axis_Config_Handler_TestJson implements  Axis_Config_Handler_Interface
      * @param array $params
      * @return string
      */
-    public static function prepareConfigOptionValue($params)
+    public static function encodeConfigOptionValue($params)
     {
         return json_encode($params);
     }
@@ -119,7 +119,7 @@ class Axis_Config_Handler_TestJson implements  Axis_Config_Handler_Interface
      * @param string $value
      * @return array
      */
-    public static function getConfigOptionValue($value)
+    public static function decodeConfigOptionValue($value)
     {
         return json_decode($value, true);
     }

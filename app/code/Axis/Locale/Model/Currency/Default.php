@@ -39,7 +39,7 @@ class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency impl
      * @param string $value
      * @return string
      */
-    public static function prepareConfigOptionValue($value)
+    public static function encodeConfigOptionValue($value)
     {
         $row = Axis::single('locale/currency')->select()
             ->where('code = ?' , $value)
@@ -73,7 +73,7 @@ class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency impl
      * @param string $value
      * @return string
      */
-    public static function getConfigOptionValue($value)
+    public static function decodeConfigOptionValue($value)
     {
         return $value;
     }

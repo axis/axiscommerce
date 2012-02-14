@@ -38,7 +38,7 @@ class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler
      * @param mixed $value
      * @return mixed
      */
-    public static function prepareConfigOptionValue($value)
+    public static function encodeConfigOptionValue($value)
     {
         if (!is_array($value)) {
            return $value;
@@ -109,7 +109,7 @@ class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler
      * @param mixed $value
      * @return mixed
      */
-    public static function getConfigOptionValue($value)
+    public static function decodeConfigOptionValue($value)
     {
         return $value;
     }

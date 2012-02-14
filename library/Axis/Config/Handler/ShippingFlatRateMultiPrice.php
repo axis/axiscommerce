@@ -39,7 +39,7 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
      * @param mixed
      * @return array
      */
-    public static function prepareConfigOptionValue($params)
+    public static function encodeConfigOptionValue($params)
     {
         if (is_array($params)) {
             $temp = array();
@@ -77,7 +77,7 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
     {
         $value = json_decode($value, true);
         if (!is_array($value)) {
-            $value = json_decode(self::prepareConfigOptionValue('25'), true);
+            $value = json_decode(self::encodeConfigOptionValue('25'), true);
         }
         $html = '<script type="text/javascript">
             function removeRate(id) {
@@ -154,7 +154,7 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
      * @param string $value
      * @return string
      */
-    public static function getConfigOptionValue($value)
+    public static function decodeConfigOptionValue($value)
     {
         return json_decode($value, true);
     }
