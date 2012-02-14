@@ -193,8 +193,12 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         } elseif (is_array($value)) {
             $value = implode(Axis_Config::MULTI_SEPARATOR, $value);
         }
-        
-        Axis_FirePhp::log($value);
+
+        if (method_exists($rowField->model, 'prepareConfigOptionValue')) { 
+            $value = call_user_func(
+                array($rowField->model, 'prepareConfigOptionValue'), $value 
+           );
+        }
 
         $model = Axis::model('core/config_value');
         $row = $model->select()

@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
+ * @package     Axis_Locale
+ * @subpackage  Axis_Locale_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,11 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
+ * @package     Axis_Locale
+ * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Config_Handler_BaseCurrency implements  Axis_Config_Handler_Interface
+class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency implements  Axis_Config_Handler_Interface
 {
     /**
      *
@@ -64,7 +64,7 @@ class Axis_Config_Handler_BaseCurrency implements  Axis_Config_Handler_Interface
     public static function getHtml($value, Zend_View_Interface $view = null)
     {
         return $view->formSelect('confValue',
-            $value, null, Axis_Locale_Model_Currency::getConfigOptionsArray()
+            $value, null, self::getConfigOptionsArray()
         );
     }
 
@@ -76,16 +76,5 @@ class Axis_Config_Handler_BaseCurrency implements  Axis_Config_Handler_Interface
     public static function getConfigOptionValue($value)
     {
         return $value;
-    }
-    
-    /**
-     *
-     * @static
-     * @param int $id
-     * @return string
-     */
-    public static function getConfigOptionName($id) 
-    {
-        return $id;
     }
 }

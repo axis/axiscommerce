@@ -46,5 +46,14 @@ class Axis_Locale_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
                 $row->save();
             }
         }
+        
+        $row = Axis::single('core/config_field')->select()
+            ->where('path = ?', 'locale/main/currency')
+            ->fetchRow();
+        
+        $row->config_type = 'select';
+        $row->model = 'Axis_Locale_Model_Currency_Default';
+        $row->save();
+        
     }
 }
