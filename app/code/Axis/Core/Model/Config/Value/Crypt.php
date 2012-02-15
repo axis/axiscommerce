@@ -27,11 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Config_Handler_Crypt implements  Axis_Config_Handler_Interface
+class Axis_Core_Model_Config_Value_Crypt implements  Axis_Config_Handler_Interface
 {
 
     /**

@@ -152,7 +152,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         if ($value instanceof Axis_Config) {
             $value = $value->toArray();
         }
-        $this->view->value = $value;
 
         if (!empty($row->model)) {
             
@@ -163,9 +162,29 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                     $this->view
                 );
             } else {
-                $this->view->options = $row->getConfigOptions();
+                if (method_exists($row->model, 'getConfigOptionsArray')) {
+                    //$this->view->options = $row->getConfigOptions();
+                    if (!empty($row->model_assigned_with)) {
+                        $param = Axis::config($row->model_assigned_with);
+                        $this->view->options = call_user_func(
+                            array($row->model, 'getConfigOptionsArray'), $param
+                        );
+                    } else {
+                        $this->view->options = call_user_func(
+                            array($row->model, 'getConfigOptionsArray')
+                        );
+                    }
+                }
+                
+                if (method_exists($row->model, 'decodeConfigOptionValue')) {
+                    $value = call_user_func(
+                        array($row->model, 'decodeConfigOptionValue'), $value
+                    );
+                }
             } 
-        } 
+        }
+        $this->view->value = $value;
+        
         $this->view->row = $row;       
         $this->render();
     }

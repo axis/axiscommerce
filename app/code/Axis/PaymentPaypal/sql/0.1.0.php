@@ -50,7 +50,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Standard', 'Payment Methods/PayPal Standard', null, null, array('translation_module' => 'Axis_PaymentPaypal'))
             ->add('payment/Paypal_Standard/title', 'Payment Methods/PayPal Standard/Title', 'PayPal Standard')
             ->add('payment/Paypal_Standard/name', 'Paypal business name', 'Axis Paypal Standard Payment')
-            ->add('payment/Paypal_Standard/email', 'Paypal business email', 'REQUIRED', 'handler', '', array('model' => 'Crypt'))
+            ->add('payment/Paypal_Standard/email', 'Paypal business email', 'REQUIRED', 'string', '', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
             ->add('payment/Paypal_Standard/logo', 'Paypal Logo Image URL', 'logo.gif', 'string', 'Maximum image size is 750x90px')
             ->add('payment/Paypal_Standard/sandboxMode', 'Sandbox Mode', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
             ->add('payment/Paypal_Standard/enabled', 'Enabled', 0 , 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean', 'translation_module' => 'Axis_Core'))
@@ -89,15 +89,15 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Express/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Shipping', 'translation_module' => 'Axis_Admin'))
 
             ->add('payment/payflow', 'Payment Methods/PayPal Payflow Api', null, null, array('translation_module' => 'Axis_PaymentPaypal'))
-            ->add('payment/payflow/pfuser', 'Payment Methods/PayPal Payflow Api/PAYFLOW: User', '', 'handler', 'If you set up one or more additional users on the account, this value is the ID of the user authorized to process transactions. Otherwise it should be the same value as VENDOR. This value is case-sensitive.', array('model' => 'Crypt'))
-            ->add('payment/payflow/pfpartner', 'PAYFLOW: Partner', 'Axis', 'handler', 'Your Payflow Partner linked to your Payflow account. This value is case-sensitive.  Typical values: <strong>PayPal</strong> or <strong>Axis</strong>', array('model' => 'Crypt'))
-            ->add('payment/payflow/pfvendor', 'PAYFLOW: Vendor', '', 'handler', 'Your merchant login ID that you created when you registered for the Payflow Pro account. This value is case-sensitive.', array('model' => 'Crypt'))
-            ->add('payment/payflow/pfpassword', 'PAYFLOW: Password', '', 'handler',  'The 6- to 32-character password that you defined while registering for the account. This value is case-sensitive.', array('model' => 'Crypt'))
+            ->add('payment/payflow/pfuser', 'Payment Methods/PayPal Payflow Api/PAYFLOW: User', '', 'string', 'If you set up one or more additional users on the account, this value is the ID of the user authorized to process transactions. Otherwise it should be the same value as VENDOR. This value is case-sensitive.', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
+            ->add('payment/payflow/pfpartner', 'PAYFLOW: Partner', 'Axis', 'string', 'Your Payflow Partner linked to your Payflow account. This value is case-sensitive.  Typical values: <strong>PayPal</strong> or <strong>Axis</strong>', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
+            ->add('payment/payflow/pfvendor', 'PAYFLOW: Vendor', '', 'string', 'Your merchant login ID that you created when you registered for the Payflow Pro account. This value is case-sensitive.', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
+            ->add('payment/payflow/pfpassword', 'PAYFLOW: Password', '', 'string',  'The 6- to 32-character password that you defined while registering for the account. This value is case-sensitive.', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
 
             ->add('payment/nvp', 'Payment Methods/PayPal NVP Api', null, null, array('translation_module' => 'Axis_PaymentPaypal'))
-            ->add('payment/nvp/apiusername', 'Payment Methods/PayPal NVP Api/API Signature -- Username', '', 'handler', 'The API Username from your PayPal API Signature settings under *API Access*. This value typically looks like an email address and is case-sensitive.', array('model' => 'Crypt'))
-            ->add('payment/nvp/apipassword', 'API Signature -- Password', '', 'handler', 'The API Password from your PayPal API Signature settings under *API Access*. This value is a 16-character code and is case-sensitive.', array('model' => 'Crypt'))
-            ->add('payment/nvp/apisignature', 'API Signature -- Signature', '', 'handler', 'The API Signature from your PayPal API Signature settings under *API Access*. This value is a 56-character code, and is case-sensitive.', array('model' => 'Crypt'))
+            ->add('payment/nvp/apiusername', 'Payment Methods/PayPal NVP Api/API Signature -- Username', '', 'string', 'The API Username from your PayPal API Signature settings under *API Access*. This value typically looks like an email address and is case-sensitive.', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
+            ->add('payment/nvp/apipassword', 'API Signature -- Password', '', 'string', 'The API Password from your PayPal API Signature settings under *API Access*. This value is a 16-character code and is case-sensitive.', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
+            ->add('payment/nvp/apisignature', 'API Signature -- Signature', '', 'string', 'The API Signature from your PayPal API Signature settings under *API Access*. This value is a 56-character code, and is case-sensitive.', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
             ->add('payment/nvp/version', 'VERSION', '3.2', 'string', 'Used protocol Paypal version');
 
         Axis::single('core/page')

@@ -71,6 +71,15 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             $row->model = 'Axis_Core_Model_Config_Value_Boolean';
             $row->save();
         }
+        
+        $rowset = Axis::single('core/config_field')->select()
+            ->where('model = ?', 'Crypt')
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $row->config_type = 'string';
+            $row->model = 'Axis_Core_Model_Config_Value_Crypt';
+            $row->save();
+        }
                       
         Axis::model('admin/acl_rule')
             ->rename('admin/axis/core/config-field',      'admin/axis/core/config_field')

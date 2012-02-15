@@ -42,7 +42,7 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('shipping/Fedex_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
             ->add('shipping/Fedex_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Payment', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Fedex_Standard/title', 'Title', 'Fedex Express')
-            ->add('shipping/Fedex_Standard/account', 'Account Id', '', 'handler', '', array('model' => 'Crypt'))
+            ->add('shipping/Fedex_Standard/account', 'Account Id', '', 'string', '', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
             ->add('shipping/Fedex_Standard/package', 'Package', Axis_ShippingFedex_Model_Standard_Package::YOUR_PACKAGING, 'select', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Package'))
             ->add('shipping/Fedex_Standard/dropoff', 'Dropoff', Axis_ShippingFedex_Model_Standard_Pickup::REGULAR_PICKUP, 'select', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Pickup'))
             ->add('shipping/Fedex_Standard/allowedTypes', 'Allowed methods', Axis_ShippingFedex_Model_Standard_Service::FEDEX_GROUND, 'multiple', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Service'))

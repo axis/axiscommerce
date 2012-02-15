@@ -75,7 +75,6 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
      */
     public static function getHtml($value, Zend_View_Interface $view = null)
     {
-        $value = json_decode($value, true);
         if (!is_array($value)) {
             $value = json_decode(self::encodeConfigOptionValue('25'), true);
         }

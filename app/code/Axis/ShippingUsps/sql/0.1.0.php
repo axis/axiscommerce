@@ -44,7 +44,7 @@ class Axis_ShippingUsps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
             ->add('shipping/Usps_Standard/gateway',        'Gateway Url', 'http://production.shippingapis.com/ShippingAPI.dll')
             ->add('shipping/Usps_Standard/service',        'Allowed Service', Axis_ShippingUsps_Model_Standard_Service::getConfigOptionDeafultValue(), 'multiple', array('model' => 'Axis_ShippingUsps_Model_Standard_Service'))
-            ->add('shipping/Usps_Standard/userId',         'User ID', '', 'handler', '', array('model' => 'Crypt'))
+            ->add('shipping/Usps_Standard/userId',         'User ID', '', 'string', '', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
             ->add('shipping/Usps_Standard/container',      'Container', Axis_ShippingUsps_Model_Standard_Package::VARIABLE, 'select', '', array('model' => 'Axis_ShippingUsps_Model_Standard_Package'))
             ->add('shipping/Usps_Standard/size',           'Size', Axis_ShippingUsps_Model_Standard_Size::REGULAR, 'select', '', array('model' => 'Axis_ShippingUsps_Model_Standard_Size'))
             ->add('shipping/Usps_Standard/machinable',     'Machinable', '1', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
