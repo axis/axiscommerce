@@ -18,20 +18,35 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Import
- * @subpackage  Axis_Import_Admin_Controller
+ * @package     Axis_ShippingTable
+ * @subpackage  Axis_ShippingTable_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
- *
  * @category    Axis
  * @package     Axis_ShippingTable
- * @subpackage  Axis_ShippingTable_Admin_Controller
+ * @subpackage  Axis_ShippingTable_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_ShippingTable_Admin_IndexController extends Axis_Admin_Controller_Back
+class Axis_ShippingTable_Model_Observer
 {
-    
+    public function prepareAdminNavigationBox(Axis_Admin_Box_Navigation $box)
+    {
+        $box->addItem(array(
+            'sales' => array(
+                'pages' => array(
+                    'shipping-table' => array(
+                        'label'         => 'Shipping Table Method',
+                        'order'         => 20,
+                        'translator'    => 'Axis_ShippingTable',
+                        'module'        => 'Axis_ShippingTable',
+                        'route'         => 'admin/axis/shipping-table/rate',
+                        'resource'      => 'admin/axis/shipping-table/rate'
+                    )
+                )
+            )
+        ));
+    }
 }

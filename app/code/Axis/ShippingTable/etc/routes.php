@@ -23,11 +23,11 @@
  * @license     GNU Public License V3.0
  */
 
-$router->addRoute('admin/axis/shipping_table', new Axis_Controller_Router_Route_Back(
-    'shipping_table/:action/*',
+$router->addRoute('admin/axis/shipping-table/rate', new Axis_Controller_Router_Route_Back(
+    'shipping-table/rate/:action/*',
     array(
         'module'     => 'Axis_ShippingTable',
-        'controller' => 'index',
+        'controller' => 'rate',
         'action'     => 'index'
     )
 ), 'admin/axis/admin');
