@@ -109,6 +109,12 @@ var RateController = function (){
                     grid.getStore().reload();
                 }
             });
+        },
+        Export: function (){
+            window.location = Axis.getUrl('shipping-table/rate/export');
+        },
+        Import: function (){
+            
         }
     };
 }(); 

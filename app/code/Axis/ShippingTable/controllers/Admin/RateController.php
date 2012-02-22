@@ -104,4 +104,48 @@ class Axis_ShippingTable_Admin_RateController extends Axis_Admin_Controller_Back
         );
         return $this->_helper->json->sendSuccess();
     }
+    
+    public function exportAction () 
+    {
+        $this->_helper->layout->disableLayout();
+        $filename = 'shippingtablerate.csv';
+        $rowset = Axis::model('shippingTable/rate')->select()
+            ->fetchRowset();
+        $countrySet = Axis::model('location/country')->select()->fetchAssoc();
+        $zoneSet = Axis::model('location/zone')->select()->fetchAssoc();
+        $delimiter = ',';
+        $enclosure = '"';
+        
+        ob_start();
+        $outstream = fopen("php://output", "w");
+        if (is_resource($outstream)) {
+            $titles = explode(',', 'Country,Region/State,Zip,Value,Price');
+            fputcsv($outstream, $titles, $delimiter, $enclosure);
+            foreach ($rowset as $row) { 
+                fputcsv($outstream, array(
+                    $countrySet[$row->country_id]['iso_code_3'],
+                    $zoneSet[$row->zone_id]['code'],
+                    $row->zip,
+                    $row->value,
+                    $row->price
+                ), $delimiter, $enclosure);
+            }
+            $content = ob_get_clean();
+            $content = utf8_decode($content);
+        }
+        ob_end_clean();
+        
+        $this->getResponse()
+            ->clearAllHeaders()
+            ->setHeader('Content-Description','File Transfer', true)
+            ->setHeader('Content-Type', 'text/csv; charset=utf-8', true)
+            ->setHeader('Content-Disposition','attachment; filename=' . $filename, true)
+            ->setHeader('Content-Transfer-Encoding','binary', true)
+            ->setHeader('Expires','0', true)
+            ->setHeader('Cache-Control','private, must-revalidate', true)
+            ->setHeader('Pragma','public', true)
+            ->setHeader('Content-Length: ', mb_strlen($content, 'utf-8'), true)
+            ;
+        $this->getResponse()->setBody($content);
+    }
 }

@@ -150,6 +150,16 @@ Ext.onReady(function () {
             icon: Axis.skinUrl + '/images/icons/delete.png',
             cls: 'x-btn-text-icon',
             handler : RateController.remove
+        }, new Ext.Toolbar.Separator(), {
+            text: 'Export'.l(),
+            icon: Axis.skinUrl + '/images/icons/brick_go.png',
+            cls: 'x-btn-text-icon',
+            handler : RateController.Export
+        }, {
+            text: 'Import'.l(),
+            icon: Axis.skinUrl + '/images/icons/brick_add.png',
+            cls: 'x-btn-text-icon',
+            handler : RateController.Import
         }, '->', {
             text: 'Reload'.l(),
             icon: Axis.skinUrl + '/images/icons/refresh.png',
