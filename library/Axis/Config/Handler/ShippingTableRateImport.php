@@ -63,7 +63,7 @@ class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler
         array_walk($titles, 'remove_quotes');
         $rowSize = count($titles);
 
-        Axis::table('shippingtable_rate')->delete(
+        Axis::model('shippingTable/rate')->delete(
             "site_id = " . $value['siteId']
         );
         while (!feof($fp)) {
@@ -75,7 +75,7 @@ class Axis_Config_Handler_ShippingTableRateImport implements Axis_Config_Handler
             array_walk($data, 'remove_quotes');
             $data = array_combine($titles, $data);
 
-            Axis::table('shippingtable_rate')->insert(array(
+            Axis::model('shippingTable/rate')->insert(array(
                 'site_id' => $value['siteId'],
                 'country_id' => Axis::single('location/country')
                     ->getIdByIsoCode3($data['Country']),

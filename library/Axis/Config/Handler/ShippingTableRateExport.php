@@ -59,7 +59,7 @@ class Axis_Config_Handler_ShippingTableRateExport implements Axis_Config_Handler
 
         $titles = explode(',', 'Country,Region/State,Zip,Value,Price');
         fputcsv($fp, $titles, ',', "'");
-        foreach (Axis::table('shippingtable_rate')->fetchAll() as $row) {
+        foreach (Axis::model('shippingTable/rate')->fetchAll() as $row) {
             fputcsv($fp, array(
                 Axis::single('location/country')
                     ->getIsoCode3ById($row->country_id),

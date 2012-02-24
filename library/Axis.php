@@ -209,21 +209,6 @@ class Axis
     }
 
     /**
-     * Create and return table object (Axis_Db_Table)
-     *
-     * @static
-     * @param string table name
-     * @param array() arguments
-     * @return Axis_Db_Table object
-     */
-    public static function table($tableName, $arguments = array())
-    {
-        return new Axis_Db_Table(array_merge(
-            $arguments, array('name' => $tableName)
-        ));
-    }
-
-    /**
      * Retrieve database adapter object
      *
      * @static

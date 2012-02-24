@@ -52,7 +52,7 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
                 break;
         }
 
-        $select = Axis::table('shippingtable_rate')->select();
+        $select = Axis::model('shippingTable/rate')->select();
         $select->where('value <= ? ', $value)
             ->where('site_id = ? OR site_id = 0', Axis::getSiteId())
             ->where('country_id = ? OR country_id = 0', $request['country']['id'])
