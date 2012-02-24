@@ -154,12 +154,17 @@ Ext.onReady(function () {
             text: 'Export'.l(),
             icon: Axis.skinUrl + '/images/icons/brick_go.png',
             cls: 'x-btn-text-icon',
-            handler : RateController.Export
+            handler : function (){
+                window.location = Axis.getUrl('shipping-table/rate/export');
+            }
         }, {
             text: 'Import'.l(),
             icon: Axis.skinUrl + '/images/icons/brick_add.png',
             cls: 'x-btn-text-icon',
-            handler : RateController.Import
+            handler : function(){
+                importForm.getForm().clear();
+                importWin.show();
+            }
         }, '->', {
             text: 'Reload'.l(),
             icon: Axis.skinUrl + '/images/icons/refresh.png',
@@ -171,4 +176,65 @@ Ext.onReady(function () {
             store: store
         })
     });
+    
+    var importForm = new Ext.FormPanel({
+        url: Axis.getUrl('shipping-table/rate/import'),
+        fileUpload: true,
+        defaults: {
+            anchor: '100%',
+            allowBlank: false
+        },
+        border: false,
+        bodyStyle: 'padding: 10px 5px 0',
+        items: [new Ext.form.ComboBox({
+            fieldLabel: 'Site'.l(),
+            editable: false,
+            typeAhead: true,
+            triggerAction: 'all',
+            store: storeCoreSite,
+            displayField: 'name',
+            valueField: 'id',
+            hiddenName: 'site_id', 
+            name: 'site_id',
+//            mode: 'local',
+            allowBlank: false
+        }),{
+            fieldLabel: 'File'.l(),
+            name: 'data',
+            xtype: 'fileuploadfield',
+            allowBlank: false
+        }]
+    });
+    
+    var importWin = new Ext.Window({
+        layout: 'fit',
+        width: 300,
+        height: 200,
+        plain: false,
+        title: 'Template',
+        closeAction: 'hide',
+        buttons: [{
+            text: 'Ok'.l(),
+            handler: function(button, event) {
+                importForm.getForm().submit({
+                    method: 'get',
+                    success: function() {
+                        store.reload();
+                        button.findParentByType('window').hide();
+                    },
+                    failure: function(form, response){
+                        var data = Ext.decode(response.response.responseText);
+                        console.log(data);
+                    }
+                });
+            }//Template.importT
+        }, {
+            text: 'Cancel'.l(),
+            handler: function(button, event){
+                button.findParentByType('window').hide();
+            }
+        }],
+        items: importForm
+    });
+    
 });

@@ -105,7 +105,7 @@ class Axis_ShippingTable_Admin_RateController extends Axis_Admin_Controller_Back
         return $this->_helper->json->sendSuccess();
     }
     
-    public function exportAction () 
+    public function exportAction() 
     {
         $this->_helper->layout->disableLayout();
         $filename = 'shippingtablerate.csv';
@@ -147,5 +147,81 @@ class Axis_ShippingTable_Admin_RateController extends Axis_Admin_Controller_Back
             ->setHeader('Content-Length: ', mb_strlen($content, 'utf-8'), true)
             ;
         $this->getResponse()->setBody($content);
+    }
+    
+    public function importAction()
+    {
+        $this->_helper->layout->disableLayout();
+        try {
+            $upload = new Zend_File_Transfer_Adapter_Http();
+            $upload->addValidator('Count', 1, 1)
+                ->addValidator('Extension', false, 'csv');
+            if (!$upload->isValid()) {
+                throw new Zend_Validate_Exception();
+            }
+            $files = $upload->getFileInfo();
+            $filename = $files['data']['tmp_name'];
+            
+            if (!file_exists($filename) || !$fp = fopen($filename, 'r')) {
+                throw new Axis_Exception(
+                    Axis::translate('core')->__(
+                        "Can't open file : %s", $filename
+                ));
+            }
+            $siteId     = $this->_getParam('site_id', Axis::getSiteId());
+            $keys       = fgetcsv($fp);
+            $rowSize    = count($keys);
+            $model      = Axis::model('shippingTable/rate');
+            $countrySet = Axis::model('location/country')->select(array('iso_code_3', 'id'))
+                ->fetchPairs();
+            while (!feof($fp)) {
+                $value = fgetcsv($fp);
+                if (!is_array($value)) {
+                    continue;
+                }
+                $value = array_pad($value, $rowSize, '');
+                $value = array_combine($keys, $value);
+                
+                $countryId = 0;
+                if (isset($countrySet[$value['Country']])) {
+                   $countryId = $countrySet[$value['Country']];
+                }
+                $zoneSet = Axis::model('location/zone')->select(array('code', 'id'))
+                    ->where('country_id = ?', $countryId)
+                    ->fetchPairs();
+                
+                $zoneId = 0;
+                if (isset($zoneSet[$value['Region/State']])) {
+                   $zoneId = $zoneSet[$value['Region/State']];
+                }
+                               
+                $model->getRow(array(
+                    'site_id'    => $siteId,
+                    'country_id' => $countryId,
+                    'zone_id'    => $zoneId,
+                    'zip'        => $value['Zip'],  
+                    'value'      => $value['Value'],
+                    'price'      => $value['Price']
+                ))->save();
+            }
+            
+        } catch (Zend_Exception $e) {
+            return $this->getResponse()->appendBody(
+                Zend_Json::encode(array(
+                    'success' => false,
+                    'messages' => array('error' => $e->getMessage())
+                ))
+            );
+        }
+        return $this->getResponse()->appendBody(
+            Zend_Json::encode(array(
+                'success' => true,
+                'messages' => array(
+                    'success' => Axis::translate('admin')->__(
+                        'Data was imported successfully'
+                    )
+                )
+            ))
+        );
     }
 }
