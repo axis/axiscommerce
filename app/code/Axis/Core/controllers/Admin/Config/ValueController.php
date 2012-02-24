@@ -200,11 +200,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 
         if ($rowField->config_type === 'handler') {
 
-            //@todo kostul
-            if (in_array($rowField->model, array('ShippingTableRateImport', 'ShippingTableRateExport'))) {
-                $value = array($value, 'siteId' => $siteId);
-            }
-
             $value = call_user_func(
                 array('Axis_Config_Handler_' . $rowField->model, 'encodeConfigOptionValue'), $value
             );

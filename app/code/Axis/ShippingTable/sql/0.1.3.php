@@ -35,5 +35,10 @@ class Axis_ShippingTable_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
         $row->config_options = null;
         $row->model = 'Axis_ShippingTable_Model_Standard_Service';
         $row->save();
+        
+        Axis::single('core/config_field')
+            ->remove('shipping/Table_Standard/import')
+            ->remove('shipping/Table_Standard/export')
+        ;
     }
 }
