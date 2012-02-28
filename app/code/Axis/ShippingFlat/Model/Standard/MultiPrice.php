@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
+ * @package     Axis_ShippingFlat
+ * @subpackage  Axis_ShippingFlat_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,11 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
+ * @package     Axis_ShippingFlat
+ * @subpackage  Axis_ShippingFlat_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Handler_Interface
+class Axis_ShippingFlat_Model_Standard_MultiPrice implements  Axis_Config_Handler_Interface
 {
     /**
      *
@@ -45,23 +45,13 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
             $temp = array();
             foreach ($params as $param) {
                 $temp[$param['subcode']] = array(
-                    'title' => $param['title'],
-                    'price' => $param['price'],
+                    'title'         => $param['title'],
+                    'price'         => $param['price'],
                     'minOrderTotal' => $param['minOrderTotal'],
                     'maxOrderTotal' => $param['maxOrderTotal']
                 );
             }
             $params = $temp;
-        }
-        if (is_string($params)) {
-            $params = array(
-                'standard' => array(
-                    'title' => 'Standard',
-                    'price' => $params,
-                    'minOrderTotal' => '',
-                    'maxOrderTotal' => ''
-                )
-            );
         }
         return json_encode($params);
     }
@@ -76,7 +66,14 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
     public static function getHtml($value, Zend_View_Interface $view = null)
     {
         if (!is_array($value)) {
-            $value = json_decode(self::encodeConfigOptionValue('25'), true);
+            $value = json_decode(array(
+                'standard' => array(
+                    'title'         => 'Standard',
+                    'price'         => 25,
+                    'minOrderTotal' => '',
+                    'maxOrderTotal' => ''
+                )
+            ), true);
         }
         $html = '<script type="text/javascript">
             function removeRate(id) {
@@ -96,14 +93,12 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
                 . 'Subcode : ' . $view->formText('confValue[' . $i . '][subcode]', $subcode, array('size' => '10'))
                 . 'Title : ' . $view->formText('confValue[' . $i . '][title]', $item['title'], array('size' => '10'))
                 . 'Price : ' . $view->formText('confValue[' . $i . '][price]', $item['price'], array('size' => '10'))
-                . 'Min Subtotal : '
-                    . $view->formText(
+                . 'Min Subtotal : ' . $view->formText(
                         'confValue[' . $i . '][minOrderTotal]',
                         isset($item['minOrderTotal']) ? $item['minOrderTotal'] : '',
                         array('size' => '10')
                     )
-                . 'Max Subtotal : '
-                    . $view->formText(
+                . 'Max Subtotal : ' . $view->formText(
                         'confValue[' . $i . '][maxOrderTotal]',
                         isset($item['maxOrderTotal']) ? $item['maxOrderTotal'] : '',
                         array('size' => '10')
@@ -120,14 +115,12 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
             . 'Subcode : ' . $view->formText('{template}[subcode]', $subcode, array('size' => '10'))
             . 'Title : ' . $view->formText('{template}[title]', $item['title'], array('size' => '10'))
             . 'Price : ' . $view->formText('{template}[price]', $item['price'], array('size' => '10'))
-            . 'Min Subtotal : '
-                . $view->formText(
+            . 'Min Subtotal : ' . $view->formText(
                     '{template}[minOrderTotal]',
                     isset($item['minOrderTotal']) ? $item['minOrderTotal'] : '',
                     array('size' => '10')
                 )
-            . 'Max Subtotal : '
-                . $view->formText(
+            . 'Max Subtotal : ' . $view->formText(
                     '{template}[maxOrderTotal]',
                     isset($item['maxOrderTotal']) ? $item['maxOrderTotal'] : '',
                     array('size' => '10')
@@ -167,6 +160,5 @@ class Axis_Config_Handler_ShippingFlatRateMultiPrice implements  Axis_Config_Han
     public static function getConfigOptionName($id) 
     {
         return $id;
-    }
-    
+    }   
 }

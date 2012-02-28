@@ -79,8 +79,8 @@ class Axis_Config_Handler_TestJson implements  Axis_Config_Handler_Interface
                         'confValue[' . $options['name']. ']',
                         $value[$options['id']], null,
                         array(
-                            '1' => Axis::translate()->__(' Yes'),
-                            '0' => Axis::translate()->__(' No')
+                            '1' => Axis::translate()->__('Yes'),
+                            '0' => Axis::translate()->__('No')
                         )
                     );
                     break;

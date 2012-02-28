@@ -102,11 +102,13 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 //                
 //            }
             
-            if ('bool' == $row->config_type) {
-                $_value = Axis_Core_Model_Config_Value_Boolean::getConfigOptionName($row->value);
-            } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
-                $_value = '****************';
-            } elseif ('handler' !== $row->config_type && !empty($row->model)) {
+//            if ('bool' == $row->config_type) {
+//                $_value = Axis_Core_Model_Config_Value_Boolean::getConfigOptionName($row->value);
+//            } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
+//                $_value = '****************';
+//            } else
+            if (/*'handler' !== $row->config_type && */!empty($row->model) 
+                && method_exists($row->model, 'getConfigOptionName')) {
                 
                 $_value = call_user_func(
                     array($row->model, 'getConfigOptionName'), $row->value
@@ -155,14 +157,17 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 
         if (!empty($row->model)) {
             
-            if ('handler' === $row->config_type) {
-                $this->view->handlerHtml = call_user_func(
-                    array('Axis_Config_Handler_' . $row->model, 'getHtml'), 
-                    $value, 
-                    $this->view
-                );
-            } else {
+//            if ('handler' === $row->config_type) {
+//                $this->view->handlerHtml = call_user_func(
+//                    array('Axis_Config_Handler_' . $row->model, 'getHtml'), 
+//                    $value, 
+//                    $this->view
+//                );
+//            } else {
                 if (method_exists($row->model, 'getConfigOptionsArray')) {
+//                    $this->view->options = call_user_func(
+//                        array($row->model, 'getConfigOptionsArray')
+//                    );
                     if (!empty($row->model_assigned_with)) {
                         $param = Axis::config($row->model_assigned_with);
                         $this->view->options = call_user_func(
@@ -180,7 +185,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                         array($row->model, 'decodeConfigOptionValue'), $value
                     );
                 }
-            } 
+//            } 
         }
         $this->view->value = $value;
         

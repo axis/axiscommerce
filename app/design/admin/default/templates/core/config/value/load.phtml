@@ -12,6 +12,7 @@
     <?php endif; ?>
     <dt><label for="confValue"><?php echo $this->translate('admin')->__('Value');?>:</label></dt>
     <dd><?php
+    //@todo echo $this->render($this->row->config_type)
     switch ($this->row->config_type) {
         case 'bool':
             echo $this->bool('confValue', $this->value, $this->options);
@@ -25,8 +26,8 @@
         case 'text':
             echo $this->text('confValue', $this->value);
             break;
-        case 'handler':
-            echo $this->handlerHtml;
+        case 'multiprice':
+            echo $this->render('shippingflat/standard/multiprice.phtml');
             break;
 
         default:
