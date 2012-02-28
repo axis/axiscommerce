@@ -45,21 +45,7 @@ class Axis_Core_Model_Config_Value_Crypt implements  Axis_Config_Handler_Interfa
         return Axis_Crypt::factory()->encrypt($value);
     }
 
-    /**
-     *
-     * @param string $value
-     * @param Zend_View_Interface $view
-     * @return string
-     */
-    public static function getHtml($value, Zend_View_Interface $view = null)
-    {
-        return $view->formText(
-            'confValue',
-            Axis_Crypt::factory()->decrypt($value),
-            array('size' => '50')
-        );
-    }
-
+    
     /**
      *
      * @param string $value

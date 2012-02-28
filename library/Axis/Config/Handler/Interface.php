@@ -42,16 +42,6 @@ interface Axis_Config_Handler_Interface extends Axis_Config_Option_Interface
     public static function encodeConfigOptionValue($params);
 
     /**
-     * @todo move to spec helpers
-     * Get html
-     *
-     * @static
-     * @param string $value
-     * @return string
-     */
-    public static function getHtml($value, Zend_View_Interface $view = null);
-
-    /**
      * Get config
      * 
      * from db format to current value 

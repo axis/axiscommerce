@@ -41,6 +41,7 @@ class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency impl
      */
     public static function encodeConfigOptionValue($value)
     {
+        //@todo move to specific event 
         $row = Axis::single('locale/currency')->select()
             ->where('code = ?' , $value)
             ->fetchRow();
@@ -53,19 +54,6 @@ class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency impl
         }
 
         return $value;
-    }
-
-    /**
-     *
-     * @param string $value
-     * @param Zend_View_Interface $view
-     * @return string
-     */
-    public static function getHtml($value, Zend_View_Interface $view = null)
-    {
-        return $view->formSelect('confValue',
-            $value, null, self::getConfigOptionsArray()
-        );
     }
 
     /**
