@@ -30,7 +30,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 //@todo axis_collection implements Axis_Config_Option_Array_Interface
-interface Axis_Config_Option_Array_Interface extends Axis_Config_Option_Interface
+interface Axis_Config_Option_Array_Interface 
 {
     /**
      *
@@ -38,5 +38,13 @@ interface Axis_Config_Option_Array_Interface extends Axis_Config_Option_Interfac
      * @return array
      */
     public static function getConfigOptionsArray();
-
+    
+    /**
+     *
+     * @static
+     * @param int $id
+     * @return string
+     */
+    public static function getConfigOptionName($id);
+    
 }

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Config_Value_Crypt implements  Axis_Config_Handler_Interface
+class Axis_Core_Model_Config_Value_Crypt implements Axis_Config_Option_Encodable_Interface
 {
 
     /**
@@ -54,16 +54,5 @@ class Axis_Core_Model_Config_Value_Crypt implements  Axis_Config_Handler_Interfa
     public static function decodeConfigOptionValue($value)
     {
         return Axis_Crypt::factory()->decrypt($value);
-    }
-    
-    /**
-     *
-     * @static
-     * @param int $id
-     * @return string
-     */
-    public static function getConfigOptionName($id) 
-    {
-        return $id;
     }
 }

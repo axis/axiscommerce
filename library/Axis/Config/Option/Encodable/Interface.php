@@ -19,6 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Config
+ * @subpackage  Axis_Config_Handler
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,21 +28,27 @@
  *
  * @category    Axis
  * @package     Axis_Config
+ * @subpackage  Axis_Config_Handler
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-interface Axis_Config_Option_Interface
+interface Axis_Config_Option_Encodable_Interface
 {
     /**
      *
      * @static
-     * @param int $id
+     * @param  array $params
      * @return string
      */
-    public static function getConfigOptionName($id);
-    
-    //@todo getConfigOptionDeafultValue
-    
-    //@todo encodeConfigOptionValue exapmle: encrypt
-    
-    //@todo decodeConfigOptionValue  example: decrypt
+    public static function encodeConfigOptionValue($params);
+
+    /**
+     * Get config
+     * 
+     * from db format to current value 
+     *
+     * @static
+     * @param  string $value
+     * @return mixed
+     */
+    public static function decodeConfigOptionValue($value);
 }

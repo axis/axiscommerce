@@ -31,7 +31,7 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency implements  Axis_Config_Handler_Interface
+class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency implements Axis_Config_Option_Encodable_Interface
 {
     /**
      *

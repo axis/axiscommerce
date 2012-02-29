@@ -31,7 +31,7 @@
  * @subpackage  Axis_ShippingFlat_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_ShippingFlat_Model_Standard_MultiPrice implements  Axis_Config_Handler_Interface
+class Axis_ShippingFlat_Model_Standard_MultiPrice implements Axis_Config_Option_Encodable_Interface
 {
     /**
      *
@@ -66,15 +66,4 @@ class Axis_ShippingFlat_Model_Standard_MultiPrice implements  Axis_Config_Handle
     {
         return json_decode($value, true);
     }
-    
-    /**
-     *
-     * @static
-     * @param int $id
-     * @return string
-     */
-    public static function getConfigOptionName($id) 
-    {
-        return $id;
-    }   
 }
