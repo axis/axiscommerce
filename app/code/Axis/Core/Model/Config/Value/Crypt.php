@@ -33,26 +33,61 @@
  */
 class Axis_Core_Model_Config_Value_Crypt implements Axis_Config_Option_Encodable_Interface
 {
+    /**
+     *
+     * @var Axis_Crypt_Interface 
+     */
+    protected $_handler = null;
+    
+    /**
+     *
+     * @param Axis_Crypt_Interface $handler 
+     */
+    public function __construct(Axis_Crypt_Interface $handler = null) 
+    {
+        if (empty($handler)) {
+            $handler = Axis_Crypt::factory();
+        }
+        $this->setHandler($handler);
+    }
 
     /**
      *
-     * @static
+     * @param type $handler
+     * @return Axis_Core_Model_Config_Value_Crypt 
+     */
+    public function setHandler(Axis_Crypt_Interface $handler) 
+    {
+        $this->_handler = $handler;
+        return $this; 
+    }
+    
+    /**
+     *
+     * @return Axis_Crypt_Interface 
+     */
+    public function getHandler() 
+    {
+        return $this->_handler;
+    }
+        
+    /**
+     *
      * @param string $value
      * @return string
      */
-    public static function encodeConfigOptionValue($value)
+    public function encodeConfigOptionValue($value)
     {
-        return Axis_Crypt::factory()->encrypt($value);
+        return $this->getHandler()->encrypt($value);
     }
-
     
     /**
      *
      * @param string $value
      * @return string
      */
-    public static function decodeConfigOptionValue($value)
+    public function decodeConfigOptionValue($value)
     {
-        return Axis_Crypt::factory()->decrypt($value);
+        return $this->getHandler()->decrypt($value);
     }
 }

@@ -35,14 +35,13 @@ class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency impl
 {
     /**
      *
-     * @static
      * @param string $value
      * @return string
      */
-    public static function encodeConfigOptionValue($value)
+    public function encodeConfigOptionValue($value)
     {
         //@todo move to specific event 
-        $row = Axis::single('locale/currency')->select()
+        $row = $this->select()
             ->where('code = ?' , $value)
             ->fetchRow();
         if ($row instanceof Axis_Db_Table_Row && 1 !== $row->rate) {
@@ -61,7 +60,7 @@ class Axis_Locale_Model_Currency_Default extends Axis_Locale_Model_Currency impl
      * @param string $value
      * @return string
      */
-    public static function decodeConfigOptionValue($value)
+    public function decodeConfigOptionValue($value)
     {
         return $value;
     }

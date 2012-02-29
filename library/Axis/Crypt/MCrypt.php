@@ -29,7 +29,7 @@
  * @package     Axis_Crypt
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Crypt_MCrypt
+class Axis_Crypt_MCrypt implements Axis_Crypt_Interface
 {
     protected $_cipher;
     protected $_mode;
@@ -64,29 +64,31 @@ class Axis_Crypt_MCrypt
     
     /**
      * Encrypt
+     * 
      * @return mixed string|null
-     * @param object $data
+     * @param object $value
      */
-    public function encrypt($data)
+    public function encrypt($value)
     {
-        if (empty($data)) {
-            return $data;
+        if (empty($value)) {
+            return $value;
         }
-        return base64_encode(mcrypt_generic($this->_handler, (string) $data));
+        return base64_encode(mcrypt_generic($this->_handler, (string) $value));
     }
     
     /**
      * Decrypt
+     * 
      * @return mixed string|null
-     * @param object $data
+     * @param object $value
      */
-    public function decrypt($data)
+    public function decrypt($value)
     {
-        if (empty($data)) {
-            return $data;
+        if (empty($value)) {
+            return $value;
         }
         return str_replace("\x0", '', trim(
-            mdecrypt_generic($this->_handler, base64_decode((string) $data))
+            mdecrypt_generic($this->_handler, base64_decode((string) $value))
         ));
     }
     

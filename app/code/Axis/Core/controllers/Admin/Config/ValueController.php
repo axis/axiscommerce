@@ -179,11 +179,14 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                         );
                     }
                 }
-                
-                if (method_exists($row->model, 'decodeConfigOptionValue')) {
-                    $value = call_user_func(
-                        array($row->model, 'decodeConfigOptionValue'), $value
-                    );
+                //@todo $row->getBackend()
+                $modelBackend = null;
+                if (class_exists($row->model)) {
+                    $modelBackend = new $row->model();
+                }
+
+                if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
+                    $value = $modelBackend->decodeConfigOptionValue($value);
                 }
 //            } 
         }
@@ -203,19 +206,16 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             ->where('path = ?', $path)
             ->fetchRow();
 
-        if ($rowField->config_type === 'handler') {
-
-            $value = call_user_func(
-                array('Axis_Config_Handler_' . $rowField->model, 'encodeConfigOptionValue'), $value
-            );
-        } elseif (is_array($value)) {
-            $value = implode(Axis_Config::MULTI_SEPARATOR, $value);
+        $modelBackend = null;
+        if (class_exists($rowField->model)) {
+            $modelBackend = new $rowField->model();
         }
-
-        if (method_exists($rowField->model, 'encodeConfigOptionValue')) { 
-            $value = call_user_func(
-                array($rowField->model, 'encodeConfigOptionValue'), $value 
-           );
+        
+        if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
+            $value = $modelBackend->encodeConfigOptionValue($value);
+        } elseif ($modelBackend instanceof Axis_Config_Option_Array_Interface) {
+            //@todo use implode/explode default encode/decode on axis_collection
+            $value = implode(Axis_Config::MULTI_SEPARATOR, $value);
         }
 
         $model = Axis::model('core/config_value');

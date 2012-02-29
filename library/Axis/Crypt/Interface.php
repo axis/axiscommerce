@@ -18,33 +18,25 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
- * @copyright   Copyright 2008-2011 Axis
+ * @package     Axis_Crypt
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
 /**
  *
  * @category    Axis
- * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
+ * @package     Axis_Crypt
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-interface Axis_Config_Option_Encodable_Interface
+interface Axis_Crypt_Interface
 {
-    /**
-     *
-     * @param  array $params
-     * @return string
-     */
-    public function encodeConfigOptionValue($params);
-
-    /**
-     *
-     * @param  string $value
-     * @return mixed
-     */
-    public function decodeConfigOptionValue($value);
     
+    public function __construct($key = null);
+        
+    public function encrypt($value);
+
+    public function decrypt($value);
+    
+    public function __destruct();
 }
