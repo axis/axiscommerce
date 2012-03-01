@@ -165,19 +165,9 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 //                );
 //            } else {
                 if (method_exists($row->model, 'getConfigOptionsArray')) {
-//                    $this->view->options = call_user_func(
-//                        array($row->model, 'getConfigOptionsArray')
-//                    );
-                    if (!empty($row->model_assigned_with)) {
-                        $param = Axis::config($row->model_assigned_with);
-                        $this->view->options = call_user_func(
-                            array($row->model, 'getConfigOptionsArray'), $param
-                        );
-                    } else {
-                        $this->view->options = call_user_func(
-                            array($row->model, 'getConfigOptionsArray')
-                        );
-                    }
+                    $this->view->options = call_user_func(
+                        array($row->model, 'getConfigOptionsArray')
+                    );
                 }
                 //@todo $row->getBackend()
                 $modelBackend = null;

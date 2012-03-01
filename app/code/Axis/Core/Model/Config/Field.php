@@ -97,7 +97,6 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
      * @param string $description Config field description
      * @param array $data
      *  model => '',
-     *  model_assigned_with => '',
      *  config_options = 'red,blue,green',
      * @return Axis_Core_Model_Config_Field Provides fluent interface
      */
@@ -133,8 +132,6 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                 'config_type' => 'string',
                 'description' => '',
                 'model'       => isset($data['model']) ? $data['model'] : '',
-                'model_assigned_with' => isset($data['model_assigned_with']) ?
-                    $data['model_assigned_with'] : '',
                 'translation_module' => isset($data['translation_module']) ?
                     $data['translation_module'] : new Zend_Db_Expr('NULL')
             ), $rowData);

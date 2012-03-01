@@ -34,9 +34,7 @@ class Axis_Location_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             'AddressFormat' => 'Axis_Location_Model_Address_Format',
             'Country'       => 'Axis_Location_Model_Country',
             'Geozone'       => 'Axis_Location_Model_Geozone',
-            'Zone'          => 'Axis_Location_Model_Zone',
-            'ZoneByCountry' => 'Axis_Location_Model_ZoneByCountry',
-            
+            'Zone'          => 'Axis_Location_Model_Zone'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         

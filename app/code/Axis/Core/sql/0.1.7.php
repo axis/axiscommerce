@@ -52,7 +52,6 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             `title` varchar(128) NOT NULL,
             `config_type` varchar(15) NOT NULL DEFAULT '',
             `model` varchar(128) NOT NULL,
-            `model_assigned_with` varchar(128) NOT NULL,
             `config_options` text,
             `description` text,
             `translation_module` VARCHAR(45) DEFAULT NULL,
@@ -271,7 +270,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/store/name', 'Core/Store/Name', 'Enter store name')
             ->add('core/store/city', 'City', '')
             ->add('core/store/country', 'Country', 223, 'select', 'Store Country', array('model' => 'Axis_Location_Model_Country'))
-            ->add('core/store/zone', 'Zone', 43, 'select', 'Store zone(state,province)', array('model' => 'Axis_Location_Model_ZoneByCountry', 'model_assigned_with' => 'core/store/country'))
+            ->add('core/store/zone', 'Zone', 43, 'select', 'Store zone(state,province)', array('model' => 'Axis_Core_Model_Option_Store_Zone'))
             ->add('core/store/zip', 'Zip code', '10001', 'string', 'Zip code')
             ->add('core/store/owner', 'Store owner', 'Owner')
 
@@ -282,9 +281,9 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 
             ->add('core/company/name', 'Core/Company/Name', 'Axiscommerce', 'string', 'Company name')
             ->add('core/company/site', 'Website', 'www.example.com', 'string', 'Company website')
-            ->add('core/company/country', 'Country',  '223', 'select', 'Company country', array('model' => 'Axis_Location_Model_Country'))
+            ->add('core/company/country', 'Country',  223, 'select', 'Company country', array('model' => 'Axis_Location_Model_Country'))
             ->add('core/company/city', 'City', 'New York')
-            ->add('core/company/zone', 'Zone', '43', 'select', array('model' => 'Axis_Location_Model_ZoneByCountry', 'model_assigned_with' => 'core/company/country'))
+            ->add('core/company/zone', 'Zone', 43, 'select', array('model' => 'Axis_Core_Model_Option_Company_Zone'))
             ->add('core/company/street', 'Street', 'Enter this your street')
             ->add('core/company/zip', 'Zip code', '10001')
             ->add('core/company/phone', 'Phone', '')

@@ -46,7 +46,9 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             'design/htmlHead/defaultRobots' => 'Axis_Core_Model_Template_Robots',
             'design/htmlHead/titlePattern'  => 'Axis_Core_Model_Template_TitlePattern',
             'mail/main/transport'           => 'Axis_Core_Model_Mail_Transport',
-            'mail/smtp/secure'              => 'Axis_Core_Model_Mail_Secure'
+            'mail/smtp/secure'              => 'Axis_Core_Model_Mail_Secure',
+            'core/store/zone'               => 'Axis_Core_Model_Option_Store_Zone',
+            'core/company/zone'             => 'Axis_Core_Model_Option_Company_Zone'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         
@@ -102,5 +104,12 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
         foreach ($rowset as $row) {
             $row->delete();
         }
+        
+        $installer = $this->getInstaller();
+        $installer->run("
+            ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `model_assigned_with`;
+            
+            -- ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `config_options`;
+        ");
     }
 }
