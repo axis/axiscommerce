@@ -59,11 +59,11 @@ class Axis_Core_Model_Config_Field_Type implements Axis_Config_Option_Array_Inte
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        return self::$_types[$id];
+        return self::$_types[$key];
     }
 }

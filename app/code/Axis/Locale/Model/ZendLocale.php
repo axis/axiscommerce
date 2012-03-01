@@ -71,15 +71,15 @@ class Axis_Locale_Model_ZendLocale implements Axis_Config_Option_Array_Interface
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return mixed string|void
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (empty($id)) {
+        if (empty($key)) {
             return;
         }
-        $data     = explode('_', $id);
+        $data     = explode('_', $key);
         $locale   = Axis_Locale::getLocale();
         $language = $locale->getTranslation($data[0], 'language', $locale);
         $country  = $locale->getTranslation($data[1], 'country', $locale);

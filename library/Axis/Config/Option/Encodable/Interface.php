@@ -38,7 +38,7 @@ interface Axis_Config_Option_Encodable_Interface
      * @param  array $params
      * @return string
      */
-    public function encodeConfigOptionValue($params);
+    public function encodeConfigOptionValue($value);
 
     /**
      *

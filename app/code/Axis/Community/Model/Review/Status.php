@@ -56,12 +56,12 @@ class Axis_Community_Model_Review_Status implements Axis_Config_Option_Array_Int
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
         $options = self::getConfigOptionsArray();
-        return isset($options[$id]) ? $options[$id] : '';
+        return isset($options[$key]) ? $options[$key] : '';
     }
 }

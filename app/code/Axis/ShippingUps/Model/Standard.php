@@ -179,7 +179,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         // Set UPS rate-quote method
         $r->pickupCode = $this->_config->pickup;
-        $r->pickupLabel =  Axis_ShippingUps_Model_Standard_Pickup::getConfigOptionName($r->pickupCode);
+        $r->pickupLabel =  Axis_ShippingUps_Model_Standard_Pickup::getConfigOptionValue($r->pickupCode);
 
         // Set UPS Container type
         $r->containerCode = $this->_config->package;
@@ -265,7 +265,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $service->addChild('Code', $this->_request->productCode);
         $code = $this->_request->productCode ?
             $this->_codeToValue[$this->_request->productCode] : '';
-        $service->addChild('Description', Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionName($code));
+        $service->addChild('Description', Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionValue($code));
         
         $shipper = $shipment->addChild('Shipper');
         if ($this->_config->negotiatedActive && $this->_config->shipperNumber) {
@@ -378,7 +378,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             $methods[] = array(
                 'id'    => $this->_code . '_' . $code,
                 'title' => $this->getTranslator()->__(
-                    Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionName(
+                    Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionValue(
                         (string)$shipElement->Service->Code
                     )
                 ),
@@ -489,7 +489,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             $methods[] = array(
                 'id' => $this->_code . '_' . $code,
                 'title' => $this->getTranslator()->__(
-                    Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionName(
+                    Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionValue(
                         $this->_codeToValue[$code]
                     )
                 ) /*. ' ' . $show_box_weight*/,

@@ -42,9 +42,9 @@ interface Axis_Config_Option_Array_Interface
     /**
      *
      * @static
-     * @param int $id
+     * @param mixed $key
      * @return string
      */
-    public static function getConfigOptionName($id);
+    public static function getConfigOptionValue($key);
     
 }

@@ -88,14 +88,14 @@ class Axis_Core_Model_Template_Layout implements Axis_Config_Option_Array_Interf
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
         if (null === self::$_collection) {
             self::$_collection = self::getConfigOptionsArray();
         }
-        return isset(self::$_collection[$id]) ? self::$_collection[$id] : false;
+        return isset(self::$_collection[$key]) ? self::$_collection[$key] : false;
     }
 }

@@ -52,13 +52,13 @@ class Axis_Checkout_Model_Form_Address_CustomFieldsDisplayMode implements Axis_C
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
         $options = self::getConfigOptionsArray();
-        return isset($options[$id]) ? $options[$id] : '';
+        return isset($options[$key]) ? $options[$key] : '';
     }
     
     /**

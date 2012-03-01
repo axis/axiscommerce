@@ -341,12 +341,14 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
     /**
      *
      * @static
-     * @param string  $code
+     * @param string  $key
      * @return string
      */
-    public static function getConfigOptionName($code)
+    public static function getConfigOptionValue($key)
     {
-        if (!$code) return '';
-        return Axis::single('locale/currency')->getTitleByCode($code);
+        if (!$key) {
+            return '';
+        }
+        return Axis::single('locale/currency')->getTitleByCode($key);
     }
 }

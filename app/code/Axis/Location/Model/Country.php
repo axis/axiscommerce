@@ -83,15 +83,15 @@ class Axis_Location_Model_Country extends Axis_Db_Table implements Axis_Config_O
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
         self::getConfigOptionsArray();
         $return = array();
 
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $id) as $key) {
+        foreach(explode(Axis_Config::MULTI_SEPARATOR, $key) as $key) {
             if (array_key_exists($key, self::$_collection)) {
                 $return[$key] = isset(self::$_collection[$key]) ?
                         self::$_collection[$key] : '';

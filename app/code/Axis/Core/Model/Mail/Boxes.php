@@ -55,23 +55,16 @@ class Axis_Core_Model_Mail_Boxes implements Axis_Config_Option_Array_Interface
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
         return Axis::single('core/config_value')
             ->select('value')
             ->where('path LIKE "mail/mailboxes/%"')
-            ->where('SUBSTR(path,16) = ?', $id)
+            ->where('SUBSTR(path,16) = ?', $key)
             ->fetchOne()
             ;
     }
-
-    /*
-    public static function isReturned()
-    {
-        return true;
-    }
-    */
 }

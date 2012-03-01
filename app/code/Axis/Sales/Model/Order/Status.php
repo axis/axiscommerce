@@ -141,11 +141,11 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Config
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        return Axis::single('sales/order_status')->getNameById($id);
+        return Axis::single('sales/order_status')->getNameById($key);
     }
 }

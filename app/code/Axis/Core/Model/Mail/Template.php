@@ -72,12 +72,12 @@ class Axis_Core_Model_Mail_Template implements Axis_Config_Option_Array_Interfac
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        $templates = $this->collect();
-        return $templates[$id];
+        $templates = self::getConfigOptionsArray();
+        return $templates[$key];
     }
 }

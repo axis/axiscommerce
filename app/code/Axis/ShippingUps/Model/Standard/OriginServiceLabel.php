@@ -50,12 +50,12 @@ class Axis_ShippingUps_Model_Standard_OriginServiceLabel extends Axis_ShippingUp
     /**
      *
      * @static
-     * @param string $code
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($code)
+    public static function getConfigOptionValue($key)
     {
-        $shipments = self::getConfigOptionsArray();
-        return isset($shipments[$code]) ? $shipments[$code] : '';
+        $options = self::getConfigOptionsArray();
+        return isset($options[$key]) ? $options[$key] : '';
     }
 }

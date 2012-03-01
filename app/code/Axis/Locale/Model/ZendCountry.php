@@ -53,17 +53,17 @@ class Axis_Locale_Model_ZendCountry implements Axis_Config_Option_Array_Interfac
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (empty($id)) {
+        if (empty($key)) {
             return;
         }
         $locale = Axis_Locale::getLocale();
-        $name  = $locale->getTranslation($id, 'country', $locale);
+        $name  = $locale->getTranslation($key, 'country', $locale);
 
-        return empty($name) ? $id : $name . ' (' . $id . ')';
+        return empty($name) ? $key : $name . ' (' . $key . ')';
     }
 }

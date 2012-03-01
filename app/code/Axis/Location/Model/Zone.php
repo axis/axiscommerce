@@ -69,12 +69,14 @@ class Axis_Location_Model_Zone extends Axis_Db_Table implements Axis_Config_Opti
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return mixed string|void
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (!$id) return '';
-        return Axis::single('location/zone')->getNameById($id);
+        if (!$key) {
+            return '';
+        }
+        return Axis::single('location/zone')->getNameById($key);
     }
 } 

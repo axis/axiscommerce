@@ -58,14 +58,14 @@ class Axis_Sales_Model_Order_CreditCard_SaveNumberType implements Axis_Config_Op
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return mixed string|void
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (!$id || !isset(self::$_actions[$id])) {
+        if (!$key || !isset(self::$_actions[$key])) {
             return '';
         }
-        return self::$_actions[$id];
+        return self::$_actions[$key];
     }
 }

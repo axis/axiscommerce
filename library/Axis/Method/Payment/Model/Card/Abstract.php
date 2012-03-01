@@ -190,10 +190,10 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
                                 substr($numberToSend, 4, (strlen($numberToSend) - 8))
                             )
                         ),
-                        'from' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
+                        'from' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
                             Axis::config('core/company/salesDepartmentEmail')
                         ),
-                        'to' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
+                        'to' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
                             Axis::config('sales/order/email')
                         )
                     ));

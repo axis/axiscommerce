@@ -421,11 +421,11 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Config_Opti
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        return Axis::single('core/template')->getNameById($id);
+        return Axis::single('core/template')->getNameById($key);
     }
 }

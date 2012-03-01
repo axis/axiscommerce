@@ -83,11 +83,11 @@ class Axis_Locale_Model_Language extends Axis_Db_Table implements Axis_Config_Op
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        return Axis::single('locale/language')->getLanguageById($id);
+        return Axis::single('locale/language')->getLanguageById($key);
     }
 }

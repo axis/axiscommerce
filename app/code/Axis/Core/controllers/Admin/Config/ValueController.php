@@ -103,15 +103,15 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 //            }
             
 //            if ('bool' == $row->config_type) {
-//                $_value = Axis_Core_Model_Config_Value_Boolean::getConfigOptionName($row->value);
+//                $_value = Axis_Core_Model_Config_Value_Boolean::getConfigOptionValue($row->value);
 //            } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
 //                $_value = '****************';
 //            } else
             if (/*'handler' !== $row->config_type && */!empty($row->model) 
-                && method_exists($row->model, 'getConfigOptionName')) {
+                && method_exists($row->model, 'getConfigOptionValue')) {
                 
                 $_value = call_user_func(
-                    array($row->model, 'getConfigOptionName'), $row->value
+                    array($row->model, 'getConfigOptionValue'), $row->value
                 );
                 
             /*} else if (in_array($row->config_type, array('select', 'multiple'))

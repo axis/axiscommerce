@@ -56,14 +56,14 @@ class Axis_Sales_Model_Order_Status_Text extends Axis_Db_Table implements Axis_C
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
         return Axis::single('sales/order_status_text')
             ->select('status_name')
-            ->where('status_id = ?', $id)
+            ->where('status_id = ?', $key)
             ->where('language_id = ?', Axis_Locale::getLanguageId())
             ->fetchOne();
     }

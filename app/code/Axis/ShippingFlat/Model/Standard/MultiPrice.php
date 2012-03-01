@@ -38,11 +38,11 @@ class Axis_ShippingFlat_Model_Standard_MultiPrice implements Axis_Config_Option_
      * @param mixed
      * @return array
      */
-    public function encodeConfigOptionValue($params)
+    public function encodeConfigOptionValue($value)
     {
-        if (is_array($params)) {
+        if (is_array($value)) {
             $temp = array();
-            foreach ($params as $param) {
+            foreach ($value as $param) {
                 $temp[$param['subcode']] = array(
                     'title'         => $param['title'],
                     'price'         => $param['price'],
@@ -50,9 +50,9 @@ class Axis_ShippingFlat_Model_Standard_MultiPrice implements Axis_Config_Option_
                     'maxOrderTotal' => $param['maxOrderTotal']
                 );
             }
-            $params = $temp;
+            $value = $temp;
         }
-        return json_encode($params);
+        return json_encode($value);
     }
 
     /**

@@ -62,23 +62,18 @@ class Axis_Core_Model_Mail_Event implements Axis_Config_Option_Array_Interface
     /**
      *
      * @static
-     * @param string $id
+     * @param string $keys
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($keys)
     {
-        if (!$id)
-            return '';
-        if (strstr($id, ",")) {
-            $ret = array();
-            foreach(explode(",", $id) as $key) {
-                if (array_key_exists($key, self::$_events))
-                    $ret[$key] = self::$_events[$key];
+        $return = array();
+        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
+            if (array_key_exists($key, self::$_events)) {
+                $return[$key] = self::$_events[$key];
             }
-
-            return implode(", ", $ret);
         }
 
-        return isset(self::$_events[$id]) ? self::$_events[$id] : '';
+        return implode(", ", $return);
     }
 }

@@ -48,14 +48,14 @@ class Axis_Core_Model_Config_Field_Status implements Axis_Config_Option_Array_In
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        $values = self::getConfigOptionsArray();
-        if (isset($values[$id])) {
-            return $values[$id];
+        $options = self::getConfigOptionsArray();
+        if (isset($options[$key])) {
+            return $options[$key];
         }
         return 'Undefined';
     }

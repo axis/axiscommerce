@@ -66,12 +66,12 @@ class Axis_Tax_Model_Class extends Axis_Db_Table implements Axis_Config_Option_A
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (!$id) return '';
-        return Axis::single('tax/class')->getNameById($id);
+        if (!$key) return '';
+        return Axis::single('tax/class')->getNameById($key);
     }
 }

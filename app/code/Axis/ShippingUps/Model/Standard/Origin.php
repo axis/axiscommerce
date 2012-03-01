@@ -130,13 +130,13 @@ class Axis_ShippingUps_Model_Standard_Origin implements Axis_Config_Option_Array
     /**
      *
      * @static
-     * @param string $code
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($code)
+    public static function getConfigOptionValue($key)
     {
         $shipments = self::getConfigOptionsArray();
-        return isset($shipments[$code]) ? $shipments[$code] : '';
+        return isset($shipments[$key]) ? $shipments[$key] : '';
     }
     
     /**

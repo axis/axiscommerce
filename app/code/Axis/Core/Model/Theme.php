@@ -55,11 +55,11 @@ class Axis_Core_Model_Theme  implements Axis_Config_Option_Array_Interface
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        return $id;
+        return $key;
     }
 }

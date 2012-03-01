@@ -89,14 +89,14 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Co
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (!$id) {
+        if (!$key) {
             return '';
         }
-        return Axis::single('account/customer_group')->getNameById($id);
+        return Axis::single('account/customer_group')->getNameById($key);
     }
 }

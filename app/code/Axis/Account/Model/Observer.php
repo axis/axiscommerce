@@ -82,7 +82,7 @@ class Axis_Account_Model_Observer
                 'data'    => array(
                     'customer' => $data['customer']
                 ),
-                'to' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
+                'to' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
                     Axis::config('core/company/administratorEmail')
                 )
             ));

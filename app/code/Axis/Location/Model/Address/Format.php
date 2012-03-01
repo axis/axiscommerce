@@ -49,12 +49,14 @@ class Axis_Location_Model_Address_Format extends Axis_Db_Table implements Axis_C
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (!$id) return '';
-        return Axis::single('location/address_format')->getNameById($id);
+        if (!$key) {
+            return '';
+        }
+        return Axis::single('location/address_format')->getNameById($key);
     }
 }

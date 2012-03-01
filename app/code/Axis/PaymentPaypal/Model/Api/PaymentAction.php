@@ -54,13 +54,13 @@ class Axis_PaymentPaypal_Model_Api_PaymentAction implements Axis_Config_Option_A
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
         $options = self::getConfigOptionsArray();
-        return isset($options[$id]) ? $options[$id] : '';
+        return isset($options[$key]) ? $options[$key] : '';
     }
    
 }

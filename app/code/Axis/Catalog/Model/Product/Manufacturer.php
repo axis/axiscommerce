@@ -161,11 +161,11 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements A
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        return Axis::single('catalog/prooduct_manufacturer')->getNameById($id);
+        return Axis::single('catalog/prooduct_manufacturer')->getNameById($key);
     }
 }

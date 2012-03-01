@@ -51,11 +51,11 @@ class Axis_Contacts_Model_Department extends Axis_Db_Table implements Axis_Confi
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        return Axis::single('contacts/department')->getNameById($id);
+        return Axis::single('contacts/department')->getNameById($key);
     }
 }

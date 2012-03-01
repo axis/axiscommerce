@@ -57,17 +57,17 @@ class Axis_Locale_Model_ZendTimezone implements Axis_Config_Option_Array_Interfa
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return mixed string|void
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (empty($id)) {
+        if (empty($key)) {
             return;
         }
         $locale = Axis_Locale::getLocale();
-        $name  = $locale->getTranslation($id, 'WindowsToTimezone', $locale);
+        $name  = $locale->getTranslation($key, 'WindowsToTimezone', $locale);
 
-        return empty($name) ? $id : $name . ' (' . $id . ')';
+        return empty($name) ? $key : $name . ' (' . $key . ')';
     }
 }

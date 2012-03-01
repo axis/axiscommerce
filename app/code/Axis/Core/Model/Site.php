@@ -116,23 +116,23 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_A
         $company = Axis::config('core/company', $siteId)->toArray();
         //@todo Use Axis_Object
         return array(
-            'email'     => Axis_Core_Model_Mail_Boxes::getConfigOptionName($company['administratorEmail']),
+            'email'     => Axis_Core_Model_Mail_Boxes::getConfigOptionValue($company['administratorEmail']),
             'city'      => $company['city'],
-            'country'   => Axis_Location_Model_Country::getConfigOptionName($company['country']),
+            'country'   => Axis_Location_Model_Country::getConfigOptionValue($company['country']),
             'fax'       => $company['fax'],
             'name'      => $company['name'],
             'phone'     => $company['phone'],
             'postcode'  => $company['zip'],
             'site'      => $company['site'],
-            'zone'      => Axis_Location_Model_Zone::getConfigOptionName($company['zone']),
+            'zone'      => Axis_Location_Model_Zone::getConfigOptionValue($company['zone']),
             'street_address' => $company['street'],
-            'customer_relation_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
+            'customer_relation_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
                 $company['customerRelationEmail']
             ),
-            'sales_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
+            'sales_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
                 $company['salesDepartmentEmail']
             ),
-            'support_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionName(
+            'support_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
                 $company['supportEmail']
             )
         );
@@ -168,12 +168,14 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_A
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (!$id) return '';
-        return Axis::single('core/site')->getNameById($id);
+        if (!$key) {
+            return '';
+        }
+        return Axis::single('core/site')->getNameById($key);
     }
 }

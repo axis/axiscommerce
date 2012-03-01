@@ -49,7 +49,7 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
             $status = $statusId;
             $statusId = Axis::single('sales/order_status')->getIdByName($status);
         } else {
-            $status = Axis_Sales_Model_Order_Status::getConfigOptionName($statusId);
+            $status = Axis_Sales_Model_Order_Status::getConfigOptionValue($statusId);
         }
 
         /* Relation exist or not */

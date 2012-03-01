@@ -52,12 +52,12 @@ class Axis_Tax_Model_Basis implements Axis_Config_Option_Array_Interface
     /**
      *
      * @static
-     * @param string $id
+     * @param string $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        $basis = self::getConfigOptionsArray();
-        return isset($basis[$id]) ? $basis[$id] : '';
+        $options = self::getConfigOptionsArray();
+        return isset($options[$key]) ? $options[$key] : '';
     }
 }

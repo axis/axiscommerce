@@ -41,7 +41,9 @@ class Axis_Location_Model_ZoneByCountry implements Axis_Config_Option_Array_Inte
      */
     public static function getConfigOptionsArray($countryId = null)
     {
-        if (!$countryId) return array();
+        if (!$countryId) {
+            return array();
+        }
 
         return Axis::single('location/zone')
                 ->select(array('id', 'name'))
@@ -52,12 +54,14 @@ class Axis_Location_Model_ZoneByCountry implements Axis_Config_Option_Array_Inte
     /**
      *
      * @static
-     * @param int $id
+     * @param int $key
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($key)
     {
-        if (!$id) return '';
-        return Axis::single('location/zone')->getNameById($id);
+        if (!$key) {
+            return '';
+        }
+        return Axis::single('location/zone')->getNameById($key);
     }
 }

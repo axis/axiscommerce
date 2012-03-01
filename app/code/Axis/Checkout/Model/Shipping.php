@@ -38,25 +38,25 @@ class Axis_Checkout_Model_Shipping implements Axis_Config_Option_Array_Interface
      */
     public static function getConfigOptionsArray()
     {
-        $ret = array();
+        $options = array();
         foreach (Axis_Shipping::getMethods() as $methodCode => $method) {
-            $ret[$methodCode] = $method->getTitle();
+            $options[$methodCode] = $method->getTitle();
         }
-        return $ret;
+        return $options;
     }
 
     /**
      *
      * @static
-     * @param string $id
+     * @param string $keys
      * @return string
      */
-    public static function getConfigOptionName($id)
+    public static function getConfigOptionValue($keys)
     {
         $options = self::getConfigOptionsArray();
         $return = array();
 
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $id) as $key) {
+        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
             if (array_key_exists($key, $options)) {
                 $return[$key] = $options[$key];
             }
