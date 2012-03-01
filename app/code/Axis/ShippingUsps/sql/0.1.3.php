@@ -41,7 +41,6 @@ class Axis_ShippingUsps_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
         
         foreach ($rowset as $row) {
             if (isset($paths[$row->path])) {
-                $row->config_options = null; 
                 $row->model = $paths[$row->path];
                 $row->save();
             }

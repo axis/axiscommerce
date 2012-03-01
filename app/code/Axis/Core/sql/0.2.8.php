@@ -60,7 +60,6 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             }
             
             if (isset($paths[$row->path])) {
-                $row->config_options = null; 
                 $row->model = $paths[$row->path];
                 $row->save();
             }
@@ -109,7 +108,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
         $installer->run("
             ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `model_assigned_with`;
             
-            -- ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `config_options`;
+            ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `config_options`;
         ");
     }
 }

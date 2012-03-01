@@ -113,11 +113,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 $_value = call_user_func(
                     array($row->model, 'getConfigOptionValue'), $row->value
                 );
-                
-            /*} else if (in_array($row->config_type, array('select', 'multiple'))
-                && isset($data[$row->id]['config_options'][$row->value])) {
-
-                $_value = $data[$row->id]['config_options'][$row->value];*/
             } else {
                 $_value = $row->value;
             }

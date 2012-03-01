@@ -37,7 +37,6 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_2 extends Axis_Core_Model_Migratio
         
         foreach ($rowset as $row) {
             if (isset($paths[$row->path])) {
-                $row->config_options = null; 
                 $row->model = $paths[$row->path];
                 $row->save();
             }

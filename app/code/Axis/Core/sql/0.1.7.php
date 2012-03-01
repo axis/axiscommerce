@@ -52,7 +52,6 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             `title` varchar(128) NOT NULL,
             `config_type` varchar(15) NOT NULL DEFAULT '',
             `model` varchar(128) NOT NULL,
-            `config_options` text,
             `description` text,
             `translation_module` VARCHAR(45) DEFAULT NULL,
             PRIMARY KEY  (`id`),

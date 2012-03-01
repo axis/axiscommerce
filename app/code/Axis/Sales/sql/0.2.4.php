@@ -48,7 +48,6 @@ class Axis_Sales_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', 'sales/order/defaultStatusId')
             ->fetchRow();
-        $row->config_options = null;
         $row->model = 'Axis_Sales_Model_Order_Status';
         $row->save();
     }

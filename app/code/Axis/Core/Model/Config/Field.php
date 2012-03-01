@@ -58,10 +58,6 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         } 
         $row->setFromArray($data);
         
-        //before save
-        if (empty($row->config_options)) {
-            $row->config_options = new Zend_Db_Expr('NULL');
-        }
         $row->lvl = count(explode('/', $row->path));
         
         if ($row->lvl <= 2) {
@@ -96,8 +92,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
      * @param string $type 'bool|multiple|string|select|text|handler'
      * @param string $description Config field description
      * @param array $data
-     *  model => '',
-     *  config_options = 'red,blue,green',
+     *  model => ''
      * @return Axis_Core_Model_Config_Field Provides fluent interface
      */
     public function add(

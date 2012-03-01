@@ -49,7 +49,6 @@ class Axis_Checkout_Upgrade_0_2_6 extends Axis_Core_Model_Migration_Abstract
             }
             
             if (isset($paths[$row->path])) {
-                $row->config_options = null; 
                 $row->model = $paths[$row->path];
                 $row->save();
             }

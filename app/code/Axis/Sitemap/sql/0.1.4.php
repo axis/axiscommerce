@@ -40,7 +40,6 @@ class Axis_Sitemap_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         
         foreach ($rowset as $row) {
-            $row->config_options = null; 
             $row->model = 'Axis_Sitemap_Model_Frequency';
             $row->save();
         }

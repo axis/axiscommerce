@@ -54,7 +54,6 @@ class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
         
         foreach ($rowset as $row) {
             if (isset($paths[$row->path])) {
-                $row->config_options = null; 
                 $row->model = $paths[$row->path];
                 $row->save();
             }
