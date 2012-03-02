@@ -287,10 +287,10 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/company/zip', 'Zip code', '10001')
             ->add('core/company/phone', 'Phone', '')
             ->add('core/company/fax', 'Fax', '')
-            ->add('core/company/administratorEmail', 'Administrator email',  'email1', 'select', array('model' => 'Axis_Core_Model_Mail_Boxes'))
-            ->add('core/company/customerRelationEmail', 'Customer relations email',  'email3', 'select', array('model' => 'Axis_Core_Model_Mail_Boxes'))
-            ->add('core/company/salesDepartmentEmail', 'Sales department email',  'email4', 'select', array('model' => 'Axis_Core_Model_Mail_Boxes'))
-            ->add('core/company/supportEmail', 'Support email', 'email5', 'select', array('model' => 'Axis_Core_Model_Mail_Boxes'))
+            ->add('core/company/administratorEmail', 'Administrator email',  'email1', 'select', array('model' => 'Axis_Core_Model_Option_Mail_Boxes'))
+            ->add('core/company/customerRelationEmail', 'Customer relations email',  'email3', 'select', array('model' => 'Axis_Core_Model_Option_Mail_Boxes'))
+            ->add('core/company/salesDepartmentEmail', 'Sales department email',  'email4', 'select', array('model' => 'Axis_Core_Model_Option_Mail_Boxes'))
+            ->add('core/company/supportEmail', 'Support email', 'email5', 'select', array('model' => 'Axis_Core_Model_Option_Mail_Boxes'))
 
             ->add('core/cache/default_lifetime', 'core/Cache/Default Lifetime', '86400')
             ->add('core/translation/autodetect', 'core/Translation/Autodetect new words',  '0', 'bool', 'Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)', array('model'=> 'Axis_Core_Model_Option_Boolean'))
@@ -301,7 +301,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/minify/css_admin', 'Enable css merging on the backend', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
 
             ->add('mail', 'Mail', null, null, array('translation_module' => 'Axis_Core'))
-            ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email2', 'select', array('model' => 'Axis_Core_Model_Mail_Boxes'))
+            ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email2', 'select', array('model' => 'Axis_Core_Model_Option_Mail_Boxes'))
             ->add('mail/main/transport', 'Mail transport', Axis_Core_Model_Mail_Transport::SENDMAIL, 'select', 'Mail Transport (smtp or sendmail)', array('model' => 'Axis_Core_Model_Mail_Transport'))
             ->add('mail/smtp/host', 'Mail/Smtp/Host', 'host.smtp.com')
             ->add('mail/smtp/user', 'User', 'test+axiscommerce.com', 'string', '', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))

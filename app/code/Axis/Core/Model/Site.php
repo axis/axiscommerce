@@ -116,7 +116,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_A
         $company = Axis::config('core/company', $siteId)->toArray();
         //@todo Use Axis_Object
         return array(
-            'email'     => Axis_Core_Model_Mail_Boxes::getConfigOptionValue($company['administratorEmail']),
+            'email'     => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue($company['administratorEmail']),
             'city'      => $company['city'],
             'country'   => Axis_Location_Model_Option_Country::getConfigOptionValue($company['country']),
             'fax'       => $company['fax'],
@@ -126,13 +126,13 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_A
             'site'      => $company['site'],
             'zone'      => Axis_Location_Model_Zone::getConfigOptionValue($company['zone']),
             'street_address' => $company['street'],
-            'customer_relation_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
+            'customer_relation_email' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
                 $company['customerRelationEmail']
             ),
-            'sales_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
+            'sales_email' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
                 $company['salesDepartmentEmail']
             ),
-            'support_email' => Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
+            'support_email' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
                 $company['supportEmail']
             )
         );

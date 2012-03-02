@@ -126,7 +126,7 @@ class Axis_Mail extends Zend_Mail
             $type = isset($config['type']) ? $config['type'] : $mailTemplate->type;
 
             if (is_array($from) && !isset($from['email'])) {
-                $from['email'] = Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
+                $from['email'] = Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
                     $mailTemplate->from
                 );
             }
@@ -148,7 +148,7 @@ class Axis_Mail extends Zend_Mail
                 $from['name'] = $siteName;
             }
             if (empty($from['email'])) {
-                $from['email'] = Axis_Core_Model_Mail_Boxes::getConfigOptionValue(
+                $from['email'] = Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
                     Axis::config('mail/main/mtcFrom')
                 );
             }

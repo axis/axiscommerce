@@ -97,7 +97,7 @@ class Admin_MailController extends Axis_Admin_Controller_Back
     
     public function listMailAction()
     {
-        $templates = Axis_Core_Model_Mail_Boxes::getConfigOptionsArray();
+        $templates = Axis_Core_Model_Option_Mail_Boxes::getConfigOptionsArray();
         
         $data = array();
         $i = 0;
