@@ -214,7 +214,7 @@ class Axis_Mail extends Zend_Mail
         if (null === self::$_defaultTransport) {
             $config = Axis::config();
             switch ($config->mail->main->transport) {
-                case Axis_Core_Model_Mail_Transport::SMTP:
+                case Axis_Core_Model_Option_Mail_Transport::SMTP:
                     $options = array(
                         'port' => intval($config->mail->smtp->port)
                     );
@@ -222,7 +222,7 @@ class Axis_Mail extends Zend_Mail
                         $options['auth']     = 'login';
                         $options['username'] = $config->mail->smtp->user;
                         $options['password'] = $config->mail->smtp->password;
-                        if (Axis_Core_Model_Mail_Secure::NONE != $config->mail->smtp->secure) {
+                        if (Axis_Core_Model_Option_Mail_Secure::NONE != $config->mail->smtp->secure) {
                             $options['ssl'] = $config->mail->smtp->secure;
                         }
                     }
@@ -233,7 +233,7 @@ class Axis_Mail extends Zend_Mail
                     //$transport->EOL = "\r\n";    // gmail is fussy about this
                     break;
 
-                case Axis_Core_Model_Mail_Transport::SENDMAIL:
+                case Axis_Core_Model_Option_Mail_Transport::SENDMAIL:
                 default:
                     $transport = new Zend_Mail_Transport_Sendmail();
                     break;

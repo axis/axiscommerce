@@ -37,16 +37,16 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             'Layout'              => 'Axis_Core_Model_Template_Layout',
             'Site'                => 'Axis_Core_Model_Site',
             'MailBoxes'           => 'Axis_Core_Model_Option_Mail_Boxes',
-            'MailEvent'           => 'Axis_Core_Model_Mail_Event',
-            'MailTemplate'        => 'Axis_Core_Model_Mail_Template',
+            'MailEvent'           => 'Axis_Core_Model_Option_Mail_Event',
+            'MailTemplate'        => 'Axis_Core_Model_Option_Mail_Template',
             'AddressFieldStatus'  => 'Axis_Core_Model_Config_Field_Status'
         );
 
         $paths = array(
             'design/htmlHead/defaultRobots' => 'Axis_Core_Model_Template_Robots',
             'design/htmlHead/titlePattern'  => 'Axis_Core_Model_Template_TitlePattern',
-            'mail/main/transport'           => 'Axis_Core_Model_Mail_Transport',
-            'mail/smtp/secure'              => 'Axis_Core_Model_Mail_Secure',
+            'mail/main/transport'           => 'Axis_Core_Model_Option_Mail_Transport',
+            'mail/smtp/secure'              => 'Axis_Core_Model_Option_Mail_Secure',
             'core/store/zone'               => 'Axis_Core_Model_Option_Store_Zone',
             'core/company/zone'             => 'Axis_Core_Model_Option_Company_Zone'
         );

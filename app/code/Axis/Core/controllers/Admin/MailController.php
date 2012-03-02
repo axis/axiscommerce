@@ -65,7 +65,7 @@ class Admin_MailController extends Axis_Admin_Controller_Back
 
     public function listEventAction()
     {
-        $events = Axis_Core_Model_Mail_Event::getConfigOptionsArray();
+        $events = Axis_Core_Model_Option_Mail_Event::getConfigOptionsArray();
         
         $data = array();
         $i = 0;
@@ -81,7 +81,7 @@ class Admin_MailController extends Axis_Admin_Controller_Back
     
     public function listTemplateAction()
     {
-        $templates = Axis_Core_Model_Mail_Template::getConfigOptionsArray();
+        $templates = Axis_Core_Model_Option_Mail_Template::getConfigOptionsArray();
         
         $data = array();
         $i = 0;
