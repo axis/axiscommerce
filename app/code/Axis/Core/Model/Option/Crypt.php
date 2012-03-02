@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Config_Value_Crypt implements Axis_Config_Option_Encodable_Interface
+class Axis_Core_Model_Option_Crypt implements Axis_Config_Option_Encodable_Interface
 {
     /**
      *
@@ -54,7 +54,7 @@ class Axis_Core_Model_Config_Value_Crypt implements Axis_Config_Option_Encodable
     /**
      *
      * @param type $handler
-     * @return Axis_Core_Model_Config_Value_Crypt 
+     * @return Axis_Core_Model_Option_Crypt 
      */
     public function setHandler(Axis_Crypt_Interface $handler) 
     {

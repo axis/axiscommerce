@@ -35,8 +35,8 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $modelOld = 'Axis_Core_Model_Option_Mail_Event';
-        $modelNew = 'Axis_Core_Model_Option_Mail_Event';
+        $modelOld = 'Axis_Core_Model_Option_Crypt';
+        $modelNew = 'Axis_Core_Model_Option_Crypt';
         
         $rowset = Axis::single('core/config_field')->select()
             ->where('model = ?', $modelOld)

@@ -53,13 +53,13 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Ups_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Payment', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Ups_Standard/gateway',  'Gateway Url', 'http://www.ups.com/using/services/rave/qcostcgi.cgi')
 
-            ->add('shipping/Ups_Standard/xmlUserId',              'XML Account User Id', '', 'string', '', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
-            ->add('shipping/Ups_Standard/xmlPassword',            'XML Account Password', '', 'string', '', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
-            ->add('shipping/Ups_Standard/xmlAccessLicenseNumber', 'XML Access License Number', '', 'string', '', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
+            ->add('shipping/Ups_Standard/xmlUserId',              'XML Account User Id', '', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
+            ->add('shipping/Ups_Standard/xmlPassword',            'XML Account Password', '', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
+            ->add('shipping/Ups_Standard/xmlAccessLicenseNumber', 'XML Access License Number', '', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
             ->add('shipping/Ups_Standard/xmlGateway',             'Gateway XML URL', 'https://onlinetools.ups.com/ups.app/xml/Rate')
             ->add('shipping/Ups_Standard/xmlOrigin',              'Origin of the shipment', Axis_ShippingUps_Model_Standard_Origin::getConfigOptionDeafultValue(), 'select', '', array('model' => 'Axis_ShippingUps_Model_Standard_Origin'))
             ->add('shipping/Ups_Standard/negotiatedActive',       'Enable Negotiated Rates', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
-            ->add('shipping/Ups_Standard/shipperNumber',          'Shipper Number', '', 'string', '', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
+            ->add('shipping/Ups_Standard/shipperNumber',          'Shipper Number', '', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
             ;
     }
 

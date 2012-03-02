@@ -78,7 +78,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         foreach ($rowset as $row) {
             $row->config_type = 'string';
-            $row->model = 'Axis_Core_Model_Config_Value_Crypt';
+            $row->model = 'Axis_Core_Model_Option_Crypt';
             $row->save();
         }
                       
