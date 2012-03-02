@@ -35,6 +35,22 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
+        $modelOld = 'Axis_Location_Model_Country';
+        $modelNew = 'Axis_Location_Model_Option_Country';
+        
+        $rowset = Axis::single('core/config_field')->select()
+            ->where('model = ?', $modelOld)
+            ->fetchRowset();
+        
+        foreach ($rowset as $row) {
+            $row->model = $modelNew;
+            $row->save();
+        }
+        
+        $v = Axis::config('shipping/Flat_Standard/multiPrice');
+        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
+        
+        
 //        $routeAdmin = new Axis_Controller_Router_Route_Admin(
 //            'admin/:controller/:action/*',
 //            array(

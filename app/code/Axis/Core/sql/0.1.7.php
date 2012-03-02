@@ -268,7 +268,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 
             ->add('core/store/name', 'Core/Store/Name', 'Enter store name')
             ->add('core/store/city', 'City', '')
-            ->add('core/store/country', 'Country', 223, 'select', 'Store Country', array('model' => 'Axis_Location_Model_Country'))
+            ->add('core/store/country', 'Country', 223, 'select', 'Store Country', array('model' => 'Axis_Location_Model_Option_Country'))
             ->add('core/store/zone', 'Zone', 43, 'select', 'Store zone(state,province)', array('model' => 'Axis_Core_Model_Option_Store_Zone'))
             ->add('core/store/zip', 'Zip code', '10001', 'string', 'Zip code')
             ->add('core/store/owner', 'Store owner', 'Owner')
@@ -280,7 +280,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 
             ->add('core/company/name', 'Core/Company/Name', 'Axiscommerce', 'string', 'Company name')
             ->add('core/company/site', 'Website', 'www.example.com', 'string', 'Company website')
-            ->add('core/company/country', 'Country',  223, 'select', 'Company country', array('model' => 'Axis_Location_Model_Country'))
+            ->add('core/company/country', 'Country',  223, 'select', 'Company country', array('model' => 'Axis_Location_Model_Option_Country'))
             ->add('core/company/city', 'City', 'New York')
             ->add('core/company/zone', 'Zone', 43, 'select', array('model' => 'Axis_Core_Model_Option_Company_Zone'))
             ->add('core/company/street', 'Street', 'Enter this your street')

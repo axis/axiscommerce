@@ -31,37 +31,44 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Country extends Axis_Db_Table
+class Axis_Location_Model_Option_Country implements Axis_Config_Option_Array_Interface
 {
-    protected $_name = 'location_country';
-
+    protected static $_collection = null;
+    
+    /**
+     * @static
+     * @return array
+     */
+    public static function getConfigOptionsArray()
+    {
+        if (null === self::$_collection) {
+            self::$_collection = Axis::single('location/country')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+        }
+        return self::$_collection;
+    }
+    
     /**
      *
-     * @param array $data
-     * @return Axis_Db_Table_Row
+     * @static
+     * @param int $key
+     * @return string
      */
-    public function save(array $data)
+    public static function getConfigOptionValue($key)
     {
-        $row = $this->getRow($data);
-        //validate
-        $primary = $this->_primary;
-        if (!is_array($primary)) {
-           $primary = array($primary); 
-        }
-        $columns = array_diff($this->_getCols(), $primary);
-        foreach ($columns as $column) {
-            if (empty($row->$column)) {
-                //must by throw
-                Axis::message()->addError(
-                    Axis::translate('core')->__(
-                        'Required fields "%s" are missing', $column
-                    )
-                );
-                return false; 
+        self::getConfigOptionsArray();
+        $return = array();
+
+        foreach(explode(Axis_Config::MULTI_SEPARATOR, $key) as $key) {
+            if (array_key_exists($key, self::$_collection)) {
+                $return[$key] = isset(self::$_collection[$key]) ?
+                        self::$_collection[$key] : '';
             }
         }
-        $row->save();
-        
-        return $row;
+        if (count($return) === count(self::$_collection)) {
+            return 'All';
+        }
+        return implode(", ", $return);
     }
 }

@@ -140,7 +140,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
             $this->addSubForm($form, $subform);
         }
 
-        $countries = Axis_Location_Model_Country::getConfigOptionsArray();
+        $countries = Axis_Location_Model_Option_Country::getConfigOptionsArray();
         if (isset($countries['0'])
             && 'ALL WORLD COUNTRY' === $countries['0']) {
 

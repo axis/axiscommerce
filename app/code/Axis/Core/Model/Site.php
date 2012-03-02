@@ -118,7 +118,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_A
         return array(
             'email'     => Axis_Core_Model_Mail_Boxes::getConfigOptionValue($company['administratorEmail']),
             'city'      => $company['city'],
-            'country'   => Axis_Location_Model_Country::getConfigOptionValue($company['country']),
+            'country'   => Axis_Location_Model_Option_Country::getConfigOptionValue($company['country']),
             'fax'       => $company['fax'],
             'name'      => $company['name'],
             'phone'     => $company['phone'],

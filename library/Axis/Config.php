@@ -116,7 +116,17 @@ class Axis_Config extends Zend_Config
             $this->_data[$key] = $default;
             return;
         }
-
+        /*
+            $value = $data['value'];
+            $modelBackend = null;
+            if (class_exists($data['model'])) {
+                $modelBackend = new $data['model']();
+            }
+            Zend_Debug::dump($modelBackend);
+            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
+                $value = $modelBackend->decodeConfigOptionValue($value);
+            }
+         */
         $values = array();
         foreach ($dataset as $path => $data) {
             $parts = explode('/', $path);
@@ -130,13 +140,14 @@ class Axis_Config extends Zend_Config
                 case 'bool':
                     $value = (bool) $data['value'];
                     break;
-                case 'handler': //@todo remove
-                    $class = 'Axis_Config_Handler_' . ucfirst($data['model']);
-                    if ($data['model']) {
-                        $value = call_user_func(array($class, 'decodeConfigOptionValue'), $data['value']);
-                    } else {
-                        $value = $data['value'];
-                    }
+                case 'multiprice': //@todo here is bug 
+
+//                    $class = 'Axis_Config_Handler_' . ucfirst($data['model']);
+//                    if ($data['model']) {
+//                        $value = call_user_func(array($class, 'decodeConfigOptionValue'), $data['value']);
+//                    } else {
+//                        $value = $data['value'];
+//                    }
                     break;
                 case 'multiple':
                     if (!isset($data['value'])) {

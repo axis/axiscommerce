@@ -198,9 +198,10 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         
         if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
             $value = $modelBackend->encodeConfigOptionValue($value);
-        } elseif ($modelBackend instanceof Axis_Config_Option_Array_Interface) {
+        } elseif ($modelBackend instanceof Axis_Config_Option_Array_Interface
+            && strchr(Axis_Config::MULTI_SEPARATOR, (string)$value)) {
             //@todo use implode/explode default encode/decode on axis_collection
-            $value = implode(Axis_Config::MULTI_SEPARATOR, $value);
+            $value = implode(Axis_Config::MULTI_SEPARATOR, (string)$value);
         }
 
         $model = Axis::model('core/config_value');

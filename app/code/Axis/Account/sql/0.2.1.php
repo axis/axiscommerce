@@ -31,6 +31,6 @@ class Axis_Account_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         Axis::single('core/config_field')
-            ->add('account/address_form/country_id_allow', 'Allowed Countries', 0, 'multiple', array('model' => 'Axis_Location_Model_Country'));
+            ->add('account/address_form/country_id_allow', 'Allowed Countries', 0, 'multiple', array('model' => 'Axis_Location_Model_Option_Country'));
     }
 }
