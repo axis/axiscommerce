@@ -35,7 +35,7 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Fedex_Standard', 'Shipping Methods/Fedex', null, null, array('translation_module' => 'Axis_ShippingFedex'))
-            ->add('shipping/Fedex_Standard/enabled', 'Shipping Methods/Fedex/Enabled', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Fedex_Standard/enabled', 'Shipping Methods/Fedex/Enabled', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Core'))
             ->add('shipping/Fedex_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Fedex_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Fedex_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))
@@ -47,7 +47,7 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('shipping/Fedex_Standard/dropoff', 'Dropoff', Axis_ShippingFedex_Model_Standard_Pickup::REGULAR_PICKUP, 'select', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Pickup'))
             ->add('shipping/Fedex_Standard/allowedTypes', 'Allowed methods', Axis_ShippingFedex_Model_Standard_Service::FEDEX_GROUND, 'multiple', '', array('model' => 'Axis_ShippingFedex_Model_Standard_Service'))
             ->add('shipping/Fedex_Standard/measure', 'UPS Weight Unit', Axis_ShippingFedex_Model_Standard_Measure::LBS, 'select', 'LBS or KGS', array('model' => 'Axis_ShippingFedex_Model_Standard_Measure'))
-            ->add('shipping/Fedex_Standard/residenceDelivery', 'Residential Delivery', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('shipping/Fedex_Standard/residenceDelivery', 'Residential Delivery', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('shipping/Fedex_Standard/gateway', 'Fedex Gateway Url', 'https://gateway.fedex.com/GatewayDC')
             ->add('shipping/Fedex_Standard/handling', 'Handling Fee', '0', 'string', '')
         ;

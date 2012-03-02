@@ -54,7 +54,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
         Axis::single('core/config_field')
             ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('payment/AuthorizenetAim_Standard', 'Payment Methods/Authorize.Net Aim', null, null, array('translation_module' => 'Axis_PaymentAuthorizenetAim'))
-            ->add('payment/AuthorizenetAim_Standard/enabled', 'Payment Methods/Authorize.Net Aim/Enabled', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean', 'translation_module' => 'Axis_Core'))
+            ->add('payment/AuthorizenetAim_Standard/enabled', 'Payment Methods/Authorize.Net Aim/Enabled', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Core'))
             ->add('payment/AuthorizenetAim_Standard/title', 'Title', 'Authorize.Net')
             ->add('payment/AuthorizenetAim_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Shipping', 'translation_module' => 'Axis_Admin'))
             ->add('payment/AuthorizenetAim_Standard/creditCard', 'Accepted Credit Cards', 'VISA', 'multiple', 'Credits cards allowed to use with this payment method', array('model' => 'Axis_Sales_Model_Order_CreditCard_Type', 'translation_module' => 'Axis_Admin'))
@@ -65,9 +65,9 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
             ->add('payment/AuthorizenetAim_Standard/xLogin', 'Login Id', '', 'string', 'The API Login ID used for the Authorize.net service', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
             ->add('payment/AuthorizenetAim_Standard/xTransactionKey','Transaction Key', '', 'string', 'Transaction Key used for encrypting TP data (See your Authorizenet Account->Security Settings->API Login ID and Transaction Key for details.)', array('model' => 'Axis_Core_Model_Config_Value_Crypt'))
             ->add('payment/AuthorizenetAim_Standard/gateway', 'Gateway URL', 'https://test.authorize.net/gateway/transact.dll')
-            ->add('payment/AuthorizenetAim_Standard/emailCustomer', 'Customer Notification', 0, 'bool', 'Should Authorize.Net email a receipt to the customer?', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('payment/AuthorizenetAim_Standard/emailCustomer', 'Customer Notification', 0, 'bool', 'Should Authorize.Net email a receipt to the customer?', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('payment/AuthorizenetAim_Standard/emailMerchant', 'Merchant Email', '')
-            ->add('payment/AuthorizenetAim_Standard/test', 'Test Mode', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('payment/AuthorizenetAim_Standard/test', 'Test Mode', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ;
     }
 

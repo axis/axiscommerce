@@ -31,6 +31,6 @@ class Axis_ShippingUsps_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         Axis::single('core/config_field')
-            ->add('shipping/Usps_Standard/showErrors', 'Display messages from service provider', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean', 'translation_module' => 'Axis_Admin'));
+            ->add('shipping/Usps_Standard/showErrors', 'Display messages from service provider', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Admin'));
     }
 }

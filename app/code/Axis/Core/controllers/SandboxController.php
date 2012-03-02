@@ -35,8 +35,8 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $modelOld = 'Axis_Location_Model_Country';
-        $modelNew = 'Axis_Location_Model_Option_Country';
+        $modelOld = 'Axis_Core_Model_Option_Boolean';
+        $modelNew = 'Axis_Core_Model_Option_Boolean';
         
         $rowset = Axis::single('core/config_field')->select()
             ->where('model = ?', $modelOld)

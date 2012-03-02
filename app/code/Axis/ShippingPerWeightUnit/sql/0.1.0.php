@@ -33,7 +33,7 @@ class Axis_ShippingPerWeightUnit_Upgrade_0_1_0 extends Axis_Core_Model_Migration
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/PerWeightUnit_Standard', 'Shipping Methods/Per Weight Unit', null, null, array('translation_module' => 'Axis_ShippingPerWeightUnit'))
-            ->add('shipping/PerWeightUnit_Standard/enabled', 'Shipping Methods/Per Weight Unit/Enabled', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/PerWeightUnit_Standard/enabled', 'Shipping Methods/Per Weight Unit/Enabled', 0, 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Core'))
             ->add('shipping/PerWeightUnit_Standard/geozone', 'Allowed Shipping Zone', 1, 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/PerWeightUnit_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/PerWeightUnit_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))

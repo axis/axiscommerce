@@ -33,7 +33,7 @@ class Axis_ShippingItem_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Item_Standard', 'Shipping Methods/Item Standard', null, null, array('translation_module' => 'Axis_ShippingItem'))
-            ->add('shipping/Item_Standard/enabled', 'Shipping Methods/Item Standard/Enabled', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Item_Standard/enabled', 'Shipping Methods/Item Standard/Enabled', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Core'))
             ->add('shipping/Item_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Item_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Item_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Class', 'translation_module' => 'Axis_Tax'))

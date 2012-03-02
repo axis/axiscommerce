@@ -103,7 +103,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 //            }
             
 //            if ('bool' == $row->config_type) {
-//                $_value = Axis_Core_Model_Config_Value_Boolean::getConfigOptionValue($row->value);
+//                $_value = Axis_Core_Model_Option_Boolean::getConfigOptionValue($row->value);
 //            } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
 //                $_value = '****************';
 //            } else

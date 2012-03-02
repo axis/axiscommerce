@@ -69,7 +69,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             ->where('config_type = ?', 'bool')
             ->fetchRowset();
         foreach ($rowset as $row) {
-            $row->model = 'Axis_Core_Model_Config_Value_Boolean';
+            $row->model = 'Axis_Core_Model_Option_Boolean';
             $row->save();
         }
         

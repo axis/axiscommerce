@@ -89,13 +89,13 @@ class Axis_Checkout_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')
             ->add('orderTotal', 'Order Total Modules', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('orderTotal/subtotal/enabled', 'Order Total Modules/Shipping/Enabled', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('orderTotal/subtotal/enabled', 'Order Total Modules/Shipping/Enabled', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('orderTotal/subtotal/sortOrder', 'Sort Order', '10')
-            ->add('orderTotal/shipping/enabled', 'Order Total Modules/Subtotal/Enabled', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('orderTotal/shipping/enabled', 'Order Total Modules/Subtotal/Enabled', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('orderTotal/shipping/sortOrder', 'Sort Order', '20')
-            ->add('orderTotal/tax/enabled', 'Order Total Modules/Tax/Enabled', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('orderTotal/tax/enabled', 'Order Total Modules/Tax/Enabled', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('orderTotal/tax/sortOrder', 'Sort Order', '30')
-            ->add('orderTotal/shipping_tax/enabled', 'Order Total Modules/ShippingTax/Enabled', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Config_Value_Boolean'))
+            ->add('orderTotal/shipping_tax/enabled', 'Order Total Modules/ShippingTax/Enabled', 1, 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('orderTotal/shipping_tax/sortOrder', 'Sort Order', '40');
     }
 }

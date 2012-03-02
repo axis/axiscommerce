@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Config_Value_Boolean implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Boolean implements Axis_Config_Option_Array_Interface
 {
     /**
      *
