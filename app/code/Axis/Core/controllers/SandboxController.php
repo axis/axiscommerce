@@ -35,11 +35,12 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $modelOld = 'Axis_Locale_Model_Currency_Position';
-        $modelNew = 'Axis_Locale_Model_Option_Currency_Position';
+        $modelOld = 'Axis_Location_Model_Address_Format';
+        
+        $modelNew = str_replace('_Model_', '_Model_Option_', $modelOld);
         
         $rowset = Axis::single('core/config_field')->select()
-            ->where('model = ?', $modelOld)
+            ->where('model = ?', $modelOld) // model != '' and model not like '%Model_Option%'
             ->fetchRowset();
         
         foreach ($rowset as $row) {

@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
+class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
 {
     protected $_name = 'catalog_product_manufacturer';
 
@@ -95,7 +95,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements A
 //        $url = preg_replace('/[^a-zA-Z0-9]/', '-', $url);
         if (Axis::single('catalog/hurl')->hasDuplicate(
                 $url,
-                array_keys(Axis_Core_Model_Site::getConfigOptionsArray()),
+                array_keys(Axis_Core_Model_Option_Site::getConfigOptionsArray()),
                 (int)$row->id
             )) {
 
@@ -111,7 +111,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements A
         //after save
         //add relation site
         $model = Axis::model('catalog/hurl');
-        foreach (Axis_Core_Model_Site::getConfigOptionsArray() as $siteId => $siteName) {
+        foreach (Axis_Core_Model_Option_Site::getConfigOptionsArray() as $siteId => $siteName) {
             $model->save(array(
                 'site_id'  => $siteId,
                 'key_id'   => $row->id,
@@ -144,28 +144,5 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table implements A
             Axis::db()->quoteInto("key_type = 'm' AND key_id IN (?)", $ids)
         );
         return $success;
-    }
-    
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray()
-    {
-        return Axis::single('catalog/product_manufacturer')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('catalog/prooduct_manufacturer')->getNameById($key);
     }
 }

@@ -35,7 +35,7 @@ class Axis_Account_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         
         foreach ($rowset as $row) {
-            $row->model = 'Axis_Account_Model_Customer_Group';
+            $row->model = 'Axis_Account_Model_Option_Customer_Group';
             $row->save();
         }
     }

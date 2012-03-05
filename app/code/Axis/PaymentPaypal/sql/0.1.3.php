@@ -70,8 +70,8 @@ class Axis_PaymentPaypal_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
             'payment/Paypal_Direct/mode'              => 'Axis_PaymentPaypal_Model_Api_Type',
             'payment/Paypal_Express/mode'             => 'Axis_PaymentPaypal_Model_Api_Type',
             
-            'payment/Paypal_Standard/orderStatusId'   => 'Axis_Sales_Model_Order_Status',
-            'payment/Paypal_Express/orderStatusId'    => 'Axis_Sales_Model_Order_Status',
+            'payment/Paypal_Standard/orderStatusId'   => 'Axis_Sales_Model_Option_Order_Status',
+            'payment/Paypal_Express/orderStatusId'    => 'Axis_Sales_Model_Option_Order_Status',
             
             'payment/Paypal_Direct/paymentAction'     => 'Axis_PaymentPaypal_Model_Api_PaymentAction',
             'payment/Paypal_Standard/paymentAction'   => 'Axis_PaymentPaypal_Model_Api_PaymentAction',

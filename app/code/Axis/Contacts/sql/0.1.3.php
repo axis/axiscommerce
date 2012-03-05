@@ -35,7 +35,7 @@ class Axis_Contacts_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         
         foreach ($rowset as $row) {
-            $row->model = 'Axis_Contacts_Model_Department';
+            $row->model = 'Axis_Contacts_Model_Option_Department';
             $row->save();
         }
     }

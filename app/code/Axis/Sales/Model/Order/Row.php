@@ -44,12 +44,12 @@ class Axis_Sales_Model_Order_Row extends Axis_Db_Table_Row
     public function setStatus($statusId, $comments = '', $notifyCustomer = false)
     {
         if (is_string($statusId)
-            && in_array($statusId, array_values(Axis_Sales_Model_Order_Status::getConfigOptionsArray()))) {
+            && in_array($statusId, array_values(Axis_Sales_Model_Option_Order_Status::getConfigOptionsArray()))) {
 
             $status = $statusId;
             $statusId = Axis::single('sales/order_status')->getIdByName($status);
         } else {
-            $status = Axis_Sales_Model_Order_Status::getConfigOptionValue($statusId);
+            $status = Axis_Sales_Model_Option_Order_Status::getConfigOptionValue($statusId);
         }
 
         /* Relation exist or not */

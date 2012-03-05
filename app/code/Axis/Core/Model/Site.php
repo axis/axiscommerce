@@ -31,12 +31,10 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Site extends Axis_Db_Table
 {
     protected $_name = 'core_site';
 
-    protected static $_collection = null;
-    
     /**
      * @return array
      */
@@ -124,7 +122,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_A
             'phone'     => $company['phone'],
             'postcode'  => $company['zip'],
             'site'      => $company['site'],
-            'zone'      => Axis_Location_Model_Zone::getConfigOptionValue($company['zone']),
+            'zone'      => Axis_Location_Model_Option_Zone::getConfigOptionValue($company['zone']),
             'street_address' => $company['street'],
             'customer_relation_email' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
                 $company['customerRelationEmail']
@@ -148,34 +146,5 @@ class Axis_Core_Model_Site extends Axis_Db_Table implements Axis_Config_Option_A
         $row = $this->getRow($data);
         $row->save();
         return $row;
-    }
-    
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray()
-    {
-        if (null === self::$_collection) {
-            self::$_collection = Axis::single('core/site')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-        }
-        return self::$_collection;
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('core/site')->getNameById($key);
     }
 }

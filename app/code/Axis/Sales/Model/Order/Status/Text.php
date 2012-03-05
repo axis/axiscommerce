@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_Status_Text extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
+class Axis_Sales_Model_Order_Status_Text extends Axis_Db_Table
 {
     protected $_name = "sales_order_status_text";
     protected $_primary = array('status_id', 'language_id');
@@ -39,32 +39,5 @@ class Axis_Sales_Model_Order_Status_Text extends Axis_Db_Table implements Axis_C
     public function getList()
     {
         return $this->fetchAll("language_id = " . (int) Axis_Locale::getLanguageId())->toArray();
-    }
-    
-    /**
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray()
-    {
-        return Axis::single('sales/order_status_text')
-                ->select(array('status_id', 'status_name'))
-                ->where('language_id = ?', Axis_Locale::getLanguageId())
-                ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('sales/order_status_text')
-            ->select('status_name')
-            ->where('status_id = ?', $key)
-            ->where('language_id = ?', Axis_Locale::getLanguageId())
-            ->fetchOne();
     }
 }

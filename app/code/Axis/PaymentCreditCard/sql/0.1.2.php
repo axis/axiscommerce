@@ -33,7 +33,7 @@ class Axis_PaymentCreditCard_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abs
          $row = Axis::single('core/config_field')->select()
              ->where('path = ?', 'payment/CreditCard_Standard/orderStatusId')
              ->fetchRow();
-         $row->model = 'Axis_Sales_Model_Order_Status';
+         $row->model = 'Axis_Sales_Model_Option_Order_Status';
          $row->save();
     }
 }

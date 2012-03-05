@@ -61,7 +61,7 @@ class Axis_Cms_Admin_CategoryController extends Axis_Admin_Controller_Back
         }
 
         $data = array();
-        foreach (Axis_Core_Model_Site::getConfigOptionsArray() as $siteId => $siteName) {
+        foreach (Axis_Core_Model_Option_Site::getConfigOptionsArray() as $siteId => $siteName) {
             $data[] = array(
                 'leaf'     => false,
                 'id'       => "_" . $siteId, // preventing duplicate ids. siteId == $cat['id]

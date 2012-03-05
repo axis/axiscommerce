@@ -31,10 +31,10 @@ class Axis_Location_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $models = array(
-            'AddressFormat' => 'Axis_Location_Model_Address_Format',
+            'AddressFormat' => 'Axis_Location_Model_Option_Address_Format',
             'Country'       => 'Axis_Location_Model_Option_Country',
-            'Geozone'       => 'Axis_Location_Model_Geozone',
-            'Zone'          => 'Axis_Location_Model_Zone'
+            'Geozone'       => 'Axis_Location_Model_Option_Geozone',
+            'Zone'          => 'Axis_Location_Model_Option_Zone'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         

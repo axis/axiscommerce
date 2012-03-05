@@ -31,7 +31,7 @@
  * @subpackage  Axis_Account_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
+class Axis_Account_Model_Customer_Group extends Axis_Db_Table
 {
     const GROUP_ALL_ID = 0;
     const GROUP_GUEST_ID = 5;
@@ -72,31 +72,5 @@ class Axis_Account_Model_Customer_Group extends Axis_Db_Table implements Axis_Co
             'group'     => $row
         ));
         return $row;
-    }
-    
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray()
-    {
-        return Axis::single('account/customer_group')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('account/customer_group')->getNameById($key);
     }
 }

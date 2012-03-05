@@ -38,7 +38,7 @@ class Axis_Tag_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         
         foreach ($rowset as $row) {
-            $row->model = 'Axis_Tag_Model_Status';
+            $row->model = 'Axis_Tag_Model_Option_Status';
             $row->save();
         }
     }

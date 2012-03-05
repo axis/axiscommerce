@@ -155,7 +155,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
 
-        $zones = Axis_Location_Model_Zone::getConfigOptionsArray();
+        $zones = Axis_Location_Model_Option_Zone::getConfigOptionsArray();
         $this->_zones = $zones;
         foreach ($this->_fields as $name => $values) {
             $status = $this->_fieldConfig[$name . '_status'];

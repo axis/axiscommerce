@@ -64,8 +64,8 @@ class Axis_Tag_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')
             ->add('tag', 'Tag', null, null, array('translation_module' => 'Axis_Tag'))
-            ->add('tag/main/customer_status', 'Tag/General/Default customer tag status', Axis_Tag_Model_Status::APPROVED, 'select', 'Default tag status added by registered customer', array('model' => 'Axis_Tag_Model_Status'))
-            ->add('tag/main/guest_status', 'Default guest tag status', Axis_Tag_Model_Status::PENDING, 'select', 'Default tag status added by guest', array('model' => 'Axis_Tag_Model_Status'));
+            ->add('tag/main/customer_status', 'Tag/General/Default customer tag status', Axis_Tag_Model_Option_Status::APPROVED, 'select', 'Default tag status added by registered customer', array('model' => 'Axis_Tag_Model_Option_Status'))
+            ->add('tag/main/guest_status', 'Default guest tag status', Axis_Tag_Model_Option_Status::PENDING, 'select', 'Default tag status added by guest', array('model' => 'Axis_Tag_Model_Option_Status'));
 
         Axis::single('core/page')
             ->add('tag/*/*')

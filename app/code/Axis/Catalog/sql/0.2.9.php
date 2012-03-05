@@ -35,7 +35,7 @@ class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         
         foreach ($rowset as $row) {
-            $row->model = 'Axis_Catalog_Model_Product_Manufacturer';
+            $row->model = 'Axis_Catalog_Model_Option_Product_Manufacturer';
             $row->save();
         }
         

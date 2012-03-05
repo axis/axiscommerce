@@ -236,6 +236,6 @@ class Axis_Sales_Model_Order_Status_Run
 
     public function __call($call, $argv)
     {
-        return in_array($call, Axis_Sales_Model_Order_Status::getConfigOptionsArray());
+        return in_array($call, Axis_Sales_Model_Option_Order_Status::getConfigOptionsArray());
     }
 }

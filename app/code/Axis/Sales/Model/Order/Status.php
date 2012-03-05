@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
+class Axis_Sales_Model_Order_Status extends Axis_Db_Table
 {
     protected $_name = "sales_order_status";
     protected $_rowClass = 'Axis_Sales_Model_Order_Status_Row';
@@ -124,28 +124,5 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table implements Axis_Config
         ));
 
         return $this;
-    }
-    
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray()
-    {
-        return Axis::single('sales/order_status')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('sales/order_status')->getNameById($key);
     }
 }

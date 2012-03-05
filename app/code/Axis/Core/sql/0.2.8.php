@@ -35,7 +35,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             'Template'            => 'Axis_Core_Model_Option_Template',
             'Theme'               => 'Axis_Core_Model_Theme',
             'Layout'              => 'Axis_Core_Model_Template_Layout',
-            'Site'                => 'Axis_Core_Model_Site',
+            'Site'                => 'Axis_Core_Model_Option_Site',
             'MailBoxes'           => 'Axis_Core_Model_Option_Mail_Boxes',
             'MailEvent'           => 'Axis_Core_Model_Option_Mail_Event',
             'MailTemplate'        => 'Axis_Core_Model_Option_Mail_Template',

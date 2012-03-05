@@ -66,7 +66,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
                     $modelCustomerValueSetValue->getValues($fd['customer_valueset_id']);
             }
         }
-        $this->view->groups = Axis_Account_Model_Customer_Group::getConfigOptionsArray();
+        $this->view->groups = Axis_Account_Model_Option_Customer_Group::getConfigOptionsArray();
         $this->render();
     }
 
@@ -145,8 +145,8 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
         $orders = Axis::single('sales/order')->fetchAll(
             $this->db->quoteInto('customer_id = ?', $customer->id)
         );
-        $orderStatus     = Axis_Sales_Model_Order_Status::getConfigOptionsArray();
-        $orderStatusText = Axis_Sales_Model_Order_Status_Text::getConfigOptionsArray();
+        $orderStatus     = Axis_Sales_Model_Option_Order_Status::getConfigOptionsArray();
+        $orderStatusText = Axis_Sales_Model_Option_Order_Status_Text::getConfigOptionsArray();
 
         $data['order'] = array();
         $i = 0;

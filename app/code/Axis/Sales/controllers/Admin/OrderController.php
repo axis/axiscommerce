@@ -152,10 +152,10 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         );
 
         $order = $order->toArray();
-        $order['status_name'] = Axis_Sales_Model_Order_Status_Text::getConfigOptionValue(
+        $order['status_name'] = Axis_Sales_Model_Option_Order_Status_Text::getConfigOptionValue(
             $order['order_status_id']
         );
-        $order['site_name'] = Axis_Core_Model_Site::getConfigOptionValue(
+        $order['site_name'] = Axis_Core_Model_Option_Site::getConfigOptionValue(
             $order['site_id']
         );
         // convert price with rates that was available

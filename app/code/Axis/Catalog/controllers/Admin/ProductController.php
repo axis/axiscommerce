@@ -43,8 +43,8 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
             $this->view->productId = $this->_getParam('productId');
         }
         
-        $this->view->manufacturers = Axis_Catalog_Model_Product_Manufacturer::getConfigOptionsArray();
-        $this->view->taxs = Axis_Tax_Model_Class::getConfigOptionsArray();
+        $this->view->manufacturers = Axis_Catalog_Model_Option_Product_Manufacturer::getConfigOptionsArray();
+        $this->view->taxs = Axis_Tax_Model_Option_Class::getConfigOptionsArray();
         $this->render();
     }
 

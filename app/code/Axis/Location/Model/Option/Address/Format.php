@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Tax
+ * @package     Axis_Location
+ * @subpackage  Axis_Location_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,38 +27,34 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Tax
+ * @package     Axis_Location
+ * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Tax_Model_Basis implements Axis_Config_Option_Array_Interface
+class Axis_Location_Model_Option_Address_Format implements Axis_Config_Option_Array_Interface
 {
-    const SHIPPING = 'delivery';
-    const BILLING  = 'billing';
-    const STORE    = 'store';
-
     /**
-     *
      * @static
-     * @return const array
+     * @return array
      */
     public static function getConfigOptionsArray()
     {
-        return array(
-            self::SHIPPING => ucfirst(self::SHIPPING),
-            self::BILLING  => ucfirst(self::BILLING),
-            self::STORE    => ucfirst(self::STORE)
-        );
+        return Axis::single('location/address_format')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
     }
 
     /**
      *
      * @static
-     * @param string $key
+     * @param int $key
      * @return string
      */
     public static function getConfigOptionValue($key)
     {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
+        if (!$key) {
+            return '';
+        }
+        return Axis::single('location/address_format')->getNameById($key);
     }
 }
