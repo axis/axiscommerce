@@ -35,8 +35,8 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $modelOld = 'Axis_Locale_Model_ZendTimezone';
-        $modelNew = 'Axis_Locale_Model_Option_ZendTimezone';
+        $modelOld = 'Axis_Locale_Model_Currency_Position';
+        $modelNew = 'Axis_Locale_Model_Option_Currency_Position';
         
         $rowset = Axis::single('core/config_field')->select()
             ->where('model = ?', $modelOld)

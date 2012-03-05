@@ -75,7 +75,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             ->add('payment/Paypal_Direct/saveCvv', 'Save verification code', '0', 'bool', 'Do you want to save cvv code?', array('translation_module' => 'Axis_Admin'))
             ->add('payment/Paypal_Direct/server', 'Live or Sandbox', 'sandbox', 'select', 'Live: Used to process Live transactions Sandbox: For developers and testing', array('model' => 'Axis_PaymentPaypal_Model_Api_ServerType'))
             ->add('payment/Paypal_Direct/paymentAction', 'Payment Action', 'Sale', 'select', 'How do you want to obtain payment?', array('model' => 'Axis_PaymentPaypal_Model_Api_PaymentAction'))
-            ->add('payment/Paypal_Direct/currency', 'Transaction Currency',  'USD', 'select', 'Which currency should the order be sent to PayPal?   If an unsupported currency is sent to PayPal, it will be auto-converted to USD (or GBP if using UK account)', array('model' => 'Axis_Locale_Model_Currency'))
+            ->add('payment/Paypal_Direct/currency', 'Transaction Currency',  'USD', 'select', 'Which currency should the order be sent to PayPal?   If an unsupported currency is sent to PayPal, it will be auto-converted to USD (or GBP if using UK account)', array('model' => 'Axis_Locale_Model_Option_Currency'))
             ->add('payment/Paypal_Direct/mode', 'PayPal Api Mode',  'nvp', 'select', 'Which PayPal API system should be used for processing?', array('model' => 'Axis_PaymentPaypal_Model_Api_Type'))
             ->add('payment/Paypal_Direct/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Shipping', 'translation_module' => 'Axis_Admin'))
 

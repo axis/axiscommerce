@@ -31,35 +31,30 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Currency_Position implements Axis_Config_Option_Array_Interface
-{
-    const STANDARD = 8;
-    const RIGHT    = 16;
-    const LEFT     = 32;
-
-
+class Axis_Locale_Model_Option_Currency implements Axis_Config_Option_Array_Interface
+{  
     /**
      * @static
      * @return array
      */
     public static function getConfigOptionsArray()
     {
-        return array(
-            self::STANDARD => Axis::translate('locale')->__('Standard'),
-            self::RIGHT    => Axis::translate('locale')->__('Right'),
-            self::LEFT     => Axis::translate('locale')->__('Left')
-        );
+        return Axis::single('locale/currency')
+                ->select(array('code', 'title'))
+                ->fetchPairs();
     }
-    
+
     /**
      *
      * @static
-     * @param string $key
+     * @param string  $key
      * @return string
      */
     public static function getConfigOptionValue($key)
     {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
+        if (!$key) {
+            return '';
+        }
+        return Axis::single('locale/currency')->getTitleByCode($key);
     }
 }

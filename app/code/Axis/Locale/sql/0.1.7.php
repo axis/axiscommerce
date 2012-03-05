@@ -30,7 +30,7 @@ class Axis_Locale_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $models = array(
-            'Currency'     => 'Axis_Locale_Model_Currency',
+            'Currency'     => 'Axis_Locale_Model_Option_Currency',
             'Language'     => 'Axis_Locale_Model_Option_Language',
             'ZendCountry'  => 'Axis_Locale_Model_Option_ZendCountry',
             'ZendCurrency' => 'Axis_Locale_Model_Option_ZendCurrency',
@@ -52,7 +52,7 @@ class Axis_Locale_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->fetchRow();
         
         $row->config_type = 'select';
-        $row->model = 'Axis_Locale_Model_Currency_Default';
+        $row->model = 'Axis_Locale_Model_Option_Currency_Default';
         $row->save();
         
     }

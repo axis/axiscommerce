@@ -31,7 +31,7 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Currency extends Axis_Db_Table
 {
     protected $_name = 'locale_currency';
 
@@ -64,7 +64,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
         $currency = $this->getCurrency();
 
         $position = $row['position'];
-        if ($position == Axis_Locale_Model_Currency_Position::STANDARD) { // Standard
+        if ($position == Axis_Locale_Model_Option_Currency_Position::STANDARD) { // Standard
            $position = $currency->toCurrency(1);
            $position = strpos($position, $currency->getSymbol());
            if ($position) {
@@ -72,7 +72,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
            } else {
                $position = 'Left';
            }
-        } elseif ($position == Axis_Locale_Model_Currency_Position::RIGHT) {
+        } elseif ($position == Axis_Locale_Model_Option_Currency_Position::RIGHT) {
             $position = 'Right';
         } else {
             $position = 'Left';
@@ -211,8 +211,8 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
     {
         return array(
             'currency'  => 'USD',
-            'position'  => Axis_Locale_Model_Currency_Position::STANDARD,
-            'display'   => Axis_Locale_Model_Currency_Display::NO_SYMBOL,
+            'position'  => Axis_Locale_Model_Option_Currency_Position::STANDARD,
+            'display'   => Axis_Locale_Model_Option_Currency_Display::NO_SYMBOL,
             'format'    => 'en_US',
             'precision' => 1
         );
@@ -325,30 +325,5 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table implements Axis_Config_Op
         //end before save
         $row->save();
         return $row;
-    }
-    
-    /**
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray()
-    {
-        return Axis::single('locale/currency')
-                ->select(array('code', 'title'))
-                ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param string  $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('locale/currency')->getTitleByCode($key);
     }
 }

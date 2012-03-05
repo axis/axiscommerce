@@ -31,13 +31,13 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Currency_Display implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_Currency_Position implements Axis_Config_Option_Array_Interface
 {
-    const NO_SYMBOL     = 1;
-    const USE_SYMBOL    = 2;
-    const USE_SHORTNAME = 3;
-    const USE_NAME      = 4;
-    
+    const STANDARD = 8;
+    const RIGHT    = 16;
+    const LEFT     = 32;
+
+
     /**
      * @static
      * @return array
@@ -45,10 +45,9 @@ class Axis_Locale_Model_Currency_Display implements Axis_Config_Option_Array_Int
     public static function getConfigOptionsArray()
     {
         return array(
-            self::NO_SYMBOL     => Axis::translate('locale')->__('No Symbol'),
-            self::USE_SYMBOL    => Axis::translate('locale')->__('Use Symbol'),
-            self::USE_SHORTNAME => Axis::translate('locale')->__('Use Shortname'),
-            self::USE_NAME      => Axis::translate('locale')->__('Use Name')
+            self::STANDARD => Axis::translate('locale')->__('Standard'),
+            self::RIGHT    => Axis::translate('locale')->__('Right'),
+            self::LEFT     => Axis::translate('locale')->__('Left')
         );
     }
     
