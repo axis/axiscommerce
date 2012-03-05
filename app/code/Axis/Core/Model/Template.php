@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Template extends Axis_Db_Table
 {
     const DEFAULT_TEMPLATE = 'default';
 
@@ -108,7 +108,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Config_Opti
                     ->join('cms_block_content', 'cb.id = cbc.block_id', '*')
                     ->where('cb.name = ?', $name)
                     ->fetchAll();
-                $languageIds = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
+                $languageIds = array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray());
 //                $cmsBlocks = array();
                 foreach ($rowset as $row) {
 
@@ -309,7 +309,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Config_Opti
         }
         //import cms blocks
         $modelBlock = Axis::model('cms/block');
-        $languageIds  = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
+        $languageIds  = array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray());
         $modelContent = Axis::model('cms/block_content');
         foreach ($cmsBlocks as $cmsBlock) {
             $cmsBlockId = $modelBlock->getIdByName($cmsBlock['name']);
@@ -404,28 +404,5 @@ class Axis_Core_Model_Template extends Axis_Db_Table implements Axis_Config_Opti
         }
 
         return $template;
-    }
-    
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray()
-    {
-        return Axis::single('core/template')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('core/template')->getNameById($key);
     }
 }

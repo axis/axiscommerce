@@ -18,7 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Locale
+ * @subpackage  Axis_Locale_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -26,11 +27,14 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Collect
+ * @package     Axis_Locale
+ * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_ZendTimezone implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_Language implements Axis_Config_Option_Array_Interface
 {
+    protected static $_collection = null;
+    
     /**
      *
      * @static
@@ -38,36 +42,22 @@ class Axis_Locale_Model_ZendTimezone implements Axis_Config_Option_Array_Interfa
      */
     public static function getConfigOptionsArray()
     {
-        $options= array();
-        $locale = Axis_Locale::getLocale();
-        $zones  = $locale->getTranslationList('WindowsToTimezone', $locale);
-
-        if (!$zones) {
-            $zones  = $locale->getTranslationList('WindowsToTimezone', Axis_Locale::DEFAULT_LOCALE);
+        if (null === self::$_collection) {
+            self::$_collection = Axis::single('locale/language')
+                ->select(array('id', 'language'))
+                ->fetchPairs();
         }
-
-        asort($zones);
-        foreach ($zones as $code => $name) {
-            $name = trim($name);
-            $options[$code] =  empty($name) ? $code : $name . ' (' . $code . ')';
-        }
-        return $options;
+        return self::$_collection;
     }
 
     /**
      *
      * @static
-     * @param string $key
-     * @return mixed string|void
+     * @param int $key
+     * @return string
      */
     public static function getConfigOptionValue($key)
     {
-        if (empty($key)) {
-            return;
-        }
-        $locale = Axis_Locale::getLocale();
-        $name  = $locale->getTranslation($key, 'WindowsToTimezone', $locale);
-
-        return empty($name) ? $key : $name . ' (' . $key . ')';
+        return Axis::single('locale/language')->getLanguageById($key);
     }
 }

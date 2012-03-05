@@ -29,7 +29,7 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_ZendLocale implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_ZendLocale implements Axis_Config_Option_Array_Interface
 {
     /**
      * @static

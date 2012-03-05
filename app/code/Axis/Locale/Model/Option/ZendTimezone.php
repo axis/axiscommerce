@@ -29,25 +29,29 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_ZendCurrency implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_ZendTimezone implements Axis_Config_Option_Array_Interface
 {
     /**
+     *
      * @static
      * @return array
      */
     public static function getConfigOptionsArray()
     {
+        $options= array();
         $locale = Axis_Locale::getLocale();
+        $zones  = $locale->getTranslationList('WindowsToTimezone', $locale);
 
-        $currencies = $locale->getTranslationList('NameToCurrency', $locale);
-
-        if (!$currencies) {
-            $currencies = $locale->getTranslationList(
-                'NameToCurrency', Axis_Locale::DEFAULT_LOCALE
-            );
+        if (!$zones) {
+            $zones  = $locale->getTranslationList('WindowsToTimezone', Axis_Locale::DEFAULT_LOCALE);
         }
 
-        return $currencies;
+        asort($zones);
+        foreach ($zones as $code => $name) {
+            $name = trim($name);
+            $options[$code] =  empty($name) ? $code : $name . ' (' . $code . ')';
+        }
+        return $options;
     }
 
     /**
@@ -62,7 +66,7 @@ class Axis_Locale_Model_ZendCurrency implements Axis_Config_Option_Array_Interfa
             return;
         }
         $locale = Axis_Locale::getLocale();
-        $name  = $locale->getTranslation($key, 'NameToCurrency', $locale);
+        $name  = $locale->getTranslation($key, 'WindowsToTimezone', $locale);
 
         return empty($name) ? $key : $name . ' (' . $key . ')';
     }

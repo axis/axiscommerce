@@ -35,8 +35,8 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $modelOld = 'Axis_Core_Model_Option_Crypt';
-        $modelNew = 'Axis_Core_Model_Option_Crypt';
+        $modelOld = 'Axis_Locale_Model_ZendTimezone';
+        $modelNew = 'Axis_Locale_Model_Option_ZendTimezone';
         
         $rowset = Axis::single('core/config_field')->select()
             ->where('model = ?', $modelOld)
@@ -46,7 +46,7 @@ class SandboxController extends Axis_Core_Controller_Front
             $row->model = $modelNew;
             $row->save();
         }
-        
+//        die;
         $v = Axis::config('shipping/Flat_Standard/multiPrice');
         Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
         

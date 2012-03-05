@@ -18,7 +18,7 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Locale
+ * @package     Axis_Collect
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -29,32 +29,32 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_ZendCountry implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_ZendCurrency implements Axis_Config_Option_Array_Interface
 {
     /**
-     *
      * @static
      * @return array
      */
     public static function getConfigOptionsArray()
     {
-        $options    = array();
         $locale = Axis_Locale::getLocale();
 
-        $countries = $locale->getTranslationList('territory', $locale, 2);
+        $currencies = $locale->getTranslationList('NameToCurrency', $locale);
 
-        if (!$countries) {
-            $countries = $locale->getTranslationList('territory', Axis_Locale::DEFAULT_LOCALE, 2);
+        if (!$currencies) {
+            $currencies = $locale->getTranslationList(
+                'NameToCurrency', Axis_Locale::DEFAULT_LOCALE
+            );
         }
 
-        return $countries;
+        return $currencies;
     }
 
     /**
      *
      * @static
      * @param string $key
-     * @return string
+     * @return mixed string|void
      */
     public static function getConfigOptionValue($key)
     {
@@ -62,7 +62,7 @@ class Axis_Locale_Model_ZendCountry implements Axis_Config_Option_Array_Interfac
             return;
         }
         $locale = Axis_Locale::getLocale();
-        $name  = $locale->getTranslation($key, 'country', $locale);
+        $name  = $locale->getTranslation($key, 'NameToCurrency', $locale);
 
         return empty($name) ? $key : $name . ' (' . $key . ')';
     }

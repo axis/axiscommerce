@@ -31,11 +31,11 @@ class Axis_Locale_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
     {
         $models = array(
             'Currency'     => 'Axis_Locale_Model_Currency',
-            'Language'     => 'Axis_Locale_Model_Language',
-            'ZendCountry'  => 'Axis_Locale_Model_ZendCountry',
-            'ZendCurrency' => 'Axis_Locale_Model_ZendCurrency',
-            'ZendLocale'   => 'Axis_Locale_Model_ZendLocale',
-            'ZendTimezone' => 'Axis_Locale_Model_ZendTimezone'
+            'Language'     => 'Axis_Locale_Model_Option_Language',
+            'ZendCountry'  => 'Axis_Locale_Model_Option_ZendCountry',
+            'ZendCurrency' => 'Axis_Locale_Model_Option_ZendCurrency',
+            'ZendLocale'   => 'Axis_Locale_Model_Option_ZendLocale',
+            'ZendTimezone' => 'Axis_Locale_Model_Option_ZendTimezone'
             
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();

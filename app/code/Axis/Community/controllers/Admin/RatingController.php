@@ -56,7 +56,7 @@ class Axis_Community_Admin_RatingController extends Axis_Admin_Controller_Back
         $_rowset     = Zend_Json::decode($this->_getParam('data'));
         $model       = Axis::model('community/review_rating');
         $modelTitle  = Axis::single('community/review_rating_title');
-        $languageIds = array_keys(Axis_Locale_Model_Language::getConfigOptionsArray());
+        $languageIds = array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray());
         
         foreach ($_rowset as $_row) {
             $row = $model->save($_row);

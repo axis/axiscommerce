@@ -32,7 +32,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
     {
         $models = array(
             'Configuration_Field' => 'Axis_Core_Model_Config_Field_Type',
-            'Template'            => 'Axis_Core_Model_Template',
+            'Template'            => 'Axis_Core_Model_Option_Template',
             'Theme'               => 'Axis_Core_Model_Theme',
             'Layout'              => 'Axis_Core_Model_Template_Layout',
             'Site'                => 'Axis_Core_Model_Site',
@@ -43,8 +43,8 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
         );
 
         $paths = array(
-            'design/htmlHead/defaultRobots' => 'Axis_Core_Model_Template_Robots',
-            'design/htmlHead/titlePattern'  => 'Axis_Core_Model_Template_TitlePattern',
+            'design/htmlHead/defaultRobots' => 'Axis_Core_Model_Option_Template_Robots',
+            'design/htmlHead/titlePattern'  => 'Axis_Core_Model_Option_Template_TitlePattern',
             'mail/main/transport'           => 'Axis_Core_Model_Option_Mail_Transport',
             'mail/smtp/secure'              => 'Axis_Core_Model_Option_Mail_Secure',
             'core/store/zone'               => 'Axis_Core_Model_Option_Store_Zone',

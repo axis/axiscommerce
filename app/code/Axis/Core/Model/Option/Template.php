@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Model
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,28 +27,32 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Model
+ * @package     Axis_Core
+ * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Product_Manufacturer_Row extends Axis_Db_Table_Row
+class Axis_Core_Model_Option_Template implements Axis_Config_Option_Array_Interface
 {
     /**
      *
-     * @param array $dataset
-     * @return Axis_Catalog_Model_Product_Manufacturer_Row 
+     * @static
+     * @return array
      */
-    public function setDescriptions(array $dataset) 
+    public static function getConfigOptionsArray()
     {
-        $model = Axis::model('catalog/product_manufacturer_description');
-        foreach (array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray()) as $languageId) {
-            if (!isset($dataset[$languageId])) {
-                continue;
-            }
-            $model->getRow($this->id, $languageId)
-                ->setFromArray($dataset[$languageId])
-                ->save();
-        }
-        return $this;
+        return Axis::single('core/template')
+                ->select(array('id', 'name'))
+                ->fetchPairs();
+    }
+
+    /**
+     *
+     * @static
+     * @param int $key
+     * @return string
+     */
+    public static function getConfigOptionValue($key)
+    {
+        return Axis::single('core/template')->getNameById($key);
     }
 }

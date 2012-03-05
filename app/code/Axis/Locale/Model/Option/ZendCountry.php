@@ -19,7 +19,6 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @subpackage  Axis_Locale_Model
  * @copyright   Copyright 2008-2011 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,39 +26,44 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Locale
- * @subpackage  Axis_Locale_Model
+ * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Language extends Axis_Db_Table
+class Axis_Locale_Model_Option_ZendCountry implements Axis_Config_Option_Array_Interface
 {
-    protected $_name = 'locale_language';
-    protected $_rowClass = 'Axis_Db_Table_Row';
-    
     /**
      *
-     * @var array
-     */
-    protected $_localeList = null;
-
-    /**
-     *
+     * @static
      * @return array
      */
-    public function getCodeLanguages()
+    public static function getConfigOptionsArray()
     {
-        return $this->select(array('locale', 'language'))->fetchPairs();
+        $options = array();
+        $locale = Axis_Locale::getLocale();
+
+        $countries = $locale->getTranslationList('territory', $locale, 2);
+
+        if (!$countries) {
+            $countries = $locale->getTranslationList('territory', Axis_Locale::DEFAULT_LOCALE, 2);
+        }
+
+        return $countries;
     }
 
     /**
      *
-     * @return array
+     * @static
+     * @param string $key
+     * @return string
      */
-    public function getLocaleList()
+    public static function getConfigOptionValue($key)
     {
-        if (null === $this->_localeList) {
-            $this->_localeList = $this->select('locale')->fetchCol();
+        if (empty($key)) {
+            return;
         }
-        return $this->_localeList;
+        $locale = Axis_Locale::getLocale();
+        $name  = $locale->getTranslation($key, 'country', $locale);
+
+        return empty($name) ? $key : $name . ' (' . $key . ')';
     }
 }

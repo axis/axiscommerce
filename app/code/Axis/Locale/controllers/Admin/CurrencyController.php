@@ -38,8 +38,8 @@ class Axis_Locale_Admin_CurrencyController extends Axis_Admin_Controller_Back
         $this->view->pageTitle         = Axis::translate('locale')->__('Currency List');
         $this->view->currencyDisplays  = Axis_Locale_Model_Currency_Display::getConfigOptionsArray();
         $this->view->currencyPositions = Axis_Locale_Model_Currency_Position::getConfigOptionsArray();
-        $this->view->zendLocales       = Axis_Locale_Model_ZendLocale::getConfigOptionsArray();
-        $this->view->zendCurrencies    = Axis_Locale_Model_ZendCurrency::getConfigOptionsArray();
+        $this->view->zendLocales       = Axis_Locale_Model_Option_ZendLocale::getConfigOptionsArray();
+        $this->view->zendCurrencies    = Axis_Locale_Model_Option_ZendCurrency::getConfigOptionsArray();
         $this->render();
     }
     

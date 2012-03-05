@@ -222,7 +222,7 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             'Failed'
         );
         $mStatusText = Axis::model('sales/order_status_text');
-        $languages = Axis_Locale_Model_Language::getConfigOptionsArray();
+        $languages = Axis_Locale_Model_Option_Language::getConfigOptionsArray();
         foreach (Axis::model('sales/order_status')->fetchAll() as $status) {
             foreach ($languages as $langId => $langName) {
                 $mStatusText->createRow(array(

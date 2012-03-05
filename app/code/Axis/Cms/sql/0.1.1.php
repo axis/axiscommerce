@@ -216,7 +216,7 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         // content
         $mCategoryContent   = Axis::model('cms/category_content');
         $mPageContent       = Axis::model('cms/page_content');
-        foreach (Axis_Locale_Model_Language::getConfigOptionsArray() as $langId => $langName) {
+        foreach (Axis_Locale_Model_Option_Language::getConfigOptionsArray() as $langId => $langName) {
             $mPageContent->insert(array(
                 'cms_page_id'   => $privacyPageId,
                 'language_id'   => $langId,
