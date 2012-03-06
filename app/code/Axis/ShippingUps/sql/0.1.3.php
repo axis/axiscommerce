@@ -31,11 +31,11 @@ class Axis_ShippingUps_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $_pickup = array( 
-            'RDP' => Axis_ShippingUps_Model_Standard_Pickup::RDP,
-            'CC'  => Axis_ShippingUps_Model_Standard_Pickup::CC,
-            'OTP' => Axis_ShippingUps_Model_Standard_Pickup::OTP,
-            'OCA' => Axis_ShippingUps_Model_Standard_Pickup::OCA,
-            'LC'  => Axis_ShippingUps_Model_Standard_Pickup::LC
+            'RDP' => Axis_ShippingUps_Model_Option_Standard_Pickup::RDP,
+            'CC'  => Axis_ShippingUps_Model_Option_Standard_Pickup::CC,
+            'OTP' => Axis_ShippingUps_Model_Option_Standard_Pickup::OTP,
+            'OCA' => Axis_ShippingUps_Model_Option_Standard_Pickup::OCA,
+            'LC'  => Axis_ShippingUps_Model_Option_Standard_Pickup::LC
         );
         
         $rowset = Axis::single('core/config_value')->select()
@@ -43,46 +43,46 @@ class Axis_ShippingUps_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         foreach ($rowset as $row) {
             $row->value = isset($_pickup[$row->value]) ? 
-                $_pickup[$row->value] : Axis_ShippingUps_Model_Standard_Pickup::CC;
+                $_pickup[$row->value] : Axis_ShippingUps_Model_Option_Standard_Pickup::CC;
             $row->save();
         }
         ///////////////////////////
         $_package = array( 
-            'CP'  => Axis_ShippingUps_Model_Standard_Package::CP,
-            'ULE' => Axis_ShippingUps_Model_Standard_Package::ULE,
-            'UT'  => Axis_ShippingUps_Model_Standard_Package::UT,
-            'UEB' => Axis_ShippingUps_Model_Standard_Package::UEB
+            'CP'  => Axis_ShippingUps_Model_Option_Standard_Package::CP,
+            'ULE' => Axis_ShippingUps_Model_Option_Standard_Package::ULE,
+            'UT'  => Axis_ShippingUps_Model_Option_Standard_Package::UT,
+            'UEB' => Axis_ShippingUps_Model_Option_Standard_Package::UEB
         );
         $rowset = Axis::single('core/config_value')->select()
             ->where('path = ?', 'shipping/Ups_Standard/package')
             ->fetchRowset();
         foreach ($rowset as $row) {
             $row->value = isset($_package[$row->value]) ? 
-                $_package[$row->value] : Axis_ShippingUps_Model_Standard_Package::CP;
+                $_package[$row->value] : Axis_ShippingUps_Model_Option_Standard_Package::CP;
             $row->save();
         }
         ///////////////////////////
         $_dest = array( 
-            'RES' => Axis_ShippingUps_Model_Standard_DestinationType::RES,
-            'COM' => Axis_ShippingUps_Model_Standard_DestinationType::COM
+            'RES' => Axis_ShippingUps_Model_Option_Standard_DestinationType::RES,
+            'COM' => Axis_ShippingUps_Model_Option_Standard_DestinationType::COM
         );
         $rowset = Axis::single('core/config_value')->select()
             ->where('path = ?', 'shipping/Ups_Standard/res')
             ->fetchRowset();
         foreach ($rowset as $row) {
             $row->value = isset($_dest[$row->value]) ? 
-                $_dest[$row->value] : Axis_ShippingUps_Model_Standard_DestinationType::RES;
+                $_dest[$row->value] : Axis_ShippingUps_Model_Option_Standard_DestinationType::RES;
             $row->save();
         }
         ///////////////////////////
         $paths = array(
-            'shipping/Ups_Standard/pickup'    => 'Axis_ShippingUps_Model_Standard_Pickup',
-            'shipping/Ups_Standard/package'   => 'Axis_ShippingUps_Model_Standard_Package',
-            'shipping/Ups_Standard/res'       => 'Axis_ShippingUps_Model_Standard_DestinationType',
-            'shipping/Ups_Standard/measure'   => 'Axis_ShippingUps_Model_Standard_Measure',
-            'shipping/Ups_Standard/type'      => 'Axis_ShippingUps_Model_Standard_RequestType',
-            'shipping/Ups_Standard/types'     => 'Axis_ShippingUps_Model_Standard_Service',
-            'shipping/Ups_Standard/xmlOrigin' => 'Axis_ShippingUps_Model_Standard_Origin'
+            'shipping/Ups_Standard/pickup'    => 'Axis_ShippingUps_Model_Option_Standard_Pickup',
+            'shipping/Ups_Standard/package'   => 'Axis_ShippingUps_Model_Option_Standard_Package',
+            'shipping/Ups_Standard/res'       => 'Axis_ShippingUps_Model_Option_Standard_DestinationType',
+            'shipping/Ups_Standard/measure'   => 'Axis_ShippingUps_Model_Option_Standard_Measure',
+            'shipping/Ups_Standard/type'      => 'Axis_ShippingUps_Model_Option_Standard_RequestType',
+            'shipping/Ups_Standard/types'     => 'Axis_ShippingUps_Model_Option_Standard_Service',
+            'shipping/Ups_Standard/xmlOrigin' => 'Axis_ShippingUps_Model_Option_Standard_Origin'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         

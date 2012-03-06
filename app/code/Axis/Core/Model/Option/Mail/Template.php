@@ -77,7 +77,7 @@ class Axis_Core_Model_Option_Mail_Template implements Axis_Config_Option_Array_I
      */
     public static function getConfigOptionValue($key)
     {
-        $templates = self::getConfigOptionsArray();
-        return $templates[$key];
+        $options = self::getConfigOptionsArray();
+        return $options[$key];
     }
 }

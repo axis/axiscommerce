@@ -32,7 +32,7 @@ class Axis_ShippingFlat_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', 'shipping/Flat_Standard/type')
             ->fetchRow();
-        $row->model = 'Axis_ShippingTable_Model_Standard_Service';
+        $row->model = 'Axis_ShippingTable_Model_Option_Standard_Service';
         $row->save();
         
         $rowset = Axis::single('core/config_field')->select()
@@ -40,7 +40,7 @@ class Axis_ShippingFlat_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         foreach ($rowset as $row) {
             $row->config_type = 'multiprice'; //@todo shippingflat/standard/multiprice 
-            $row->model = 'Axis_ShippingFlat_Model_Standard_MultiPrice';
+            $row->model = 'Axis_ShippingFlat_Model_Option_Standard_MultiPrice';
             $row->save();
         }
     }

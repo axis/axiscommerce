@@ -79,7 +79,7 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
         }
         if ($result) {
             $location = Axis::config('checkout/cart/redirect');
-            if (Axis_Checkout_Model_Cart_Redirect::REFERER == $location) {
+            if (Axis_Checkout_Model_Option_Cart_Redirect::REFERER == $location) {
                 $location = $this->getRequest()->getServer('HTTP_REFERER');
             }
             return $this->_redirect($location);

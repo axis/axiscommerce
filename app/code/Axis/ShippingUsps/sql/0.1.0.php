@@ -39,16 +39,16 @@ class Axis_ShippingUsps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Usps_Standard/geozone',   'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Option_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Usps_Standard/handling',  'Handling price', '5')
             ->add('shipping/Usps_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Usps_Standard/payments',  'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Payment', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Usps_Standard/payments',  'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Option_Payment', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Usps_Standard/title',     'Title', 'United States Postal Service')
 
             ->add('shipping/Usps_Standard/gateway',        'Gateway Url', 'http://production.shippingapis.com/ShippingAPI.dll')
-            ->add('shipping/Usps_Standard/service',        'Allowed Service', Axis_ShippingUsps_Model_Standard_Service::getConfigOptionDeafultValue(), 'multiple', array('model' => 'Axis_ShippingUsps_Model_Standard_Service'))
+            ->add('shipping/Usps_Standard/service',        'Allowed Service', Axis_ShippingUsps_Model_Option_Standard_Service::getConfigOptionDeafultValue(), 'multiple', array('model' => 'Axis_ShippingUsps_Model_Option_Standard_Service'))
             ->add('shipping/Usps_Standard/userId',         'User ID', '', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
-            ->add('shipping/Usps_Standard/container',      'Container', Axis_ShippingUsps_Model_Standard_Package::VARIABLE, 'select', '', array('model' => 'Axis_ShippingUsps_Model_Standard_Package'))
-            ->add('shipping/Usps_Standard/size',           'Size', Axis_ShippingUsps_Model_Standard_Size::REGULAR, 'select', '', array('model' => 'Axis_ShippingUsps_Model_Standard_Size'))
+            ->add('shipping/Usps_Standard/container',      'Container', Axis_ShippingUsps_Model_Option_Standard_Package::VARIABLE, 'select', '', array('model' => 'Axis_ShippingUsps_Model_Option_Standard_Package'))
+            ->add('shipping/Usps_Standard/size',           'Size', Axis_ShippingUsps_Model_Option_Standard_Size::REGULAR, 'select', '', array('model' => 'Axis_ShippingUsps_Model_Option_Standard_Size'))
             ->add('shipping/Usps_Standard/machinable',     'Machinable', '1', 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
-            ->add('shipping/Usps_Standard/allowedMethods', 'Allowed Shipping Methods', Axis_ShippingUsps_Model_Standard_ServiceLabel::getConfigOptionDeafultValue(), 'multiple', array('model' => 'Axis_ShippingUsps_Model_Standard_ServiceLabel'))
+            ->add('shipping/Usps_Standard/allowedMethods', 'Allowed Shipping Methods', Axis_ShippingUsps_Model_Option_Standard_ServiceLabel::getConfigOptionDeafultValue(), 'multiple', array('model' => 'Axis_ShippingUsps_Model_Option_Standard_ServiceLabel'))
             ;
     }
 

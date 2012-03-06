@@ -64,7 +64,7 @@ class Axis_PaymentPaypal_Model_Standard extends Axis_Method_Payment_Model_Abstra
             $formFields['paymentaction'] = strtolower($this->_config->paymentAction);
         }
 
-        $isAggregate = Axis_PaymentPaypal_Model_Standard_TransactionType::AGGREGATE == $this->_config->transactionType 
+        $isAggregate = Axis_PaymentPaypal_Model_Option_Standard_TransactionType::AGGREGATE == $this->_config->transactionType 
             ? true : false;
         /*
         O=aggregate cart amount to paypal

@@ -57,7 +57,7 @@ class Axis_ShippingFlat_Model_Standard extends Axis_Method_Shipping_Model_Abstra
             }
 
             $price = $item['price'];
-            if (Axis_ShippingFlat_Model_Standard_Service::PER_ITEM === $this->_config->type) {
+            if (Axis_ShippingFlat_Model_Option_Standard_Service::PER_ITEM === $this->_config->type) {
                 $price = $request['qty'] * $price;
             }
 

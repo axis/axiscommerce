@@ -62,20 +62,20 @@ class Axis_PaymentPaypal_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
         }
 
         $paths = array(
-            'payment/Paypal_Standard/transactionType' => 'Axis_PaymentPaypal_Model_Standard_TransactionType',
+            'payment/Paypal_Standard/transactionType' => 'Axis_PaymentPaypal_Model_Option_Standard_TransactionType',
             
-            'payment/Paypal_Direct/server'            => 'Axis_PaymentPaypal_Model_Api_ServerType',
-            'payment/Paypal_Express/server'           => 'Axis_PaymentPaypal_Model_Api_ServerType',
+            'payment/Paypal_Direct/server'            => 'Axis_PaymentPaypal_Model_Option_ServerType',
+            'payment/Paypal_Express/server'           => 'Axis_PaymentPaypal_Model_Option_ServerType',
             
-            'payment/Paypal_Direct/mode'              => 'Axis_PaymentPaypal_Model_Api_Type',
-            'payment/Paypal_Express/mode'             => 'Axis_PaymentPaypal_Model_Api_Type',
+            'payment/Paypal_Direct/mode'              => 'Axis_PaymentPaypal_Model_Option_Type',
+            'payment/Paypal_Express/mode'             => 'Axis_PaymentPaypal_Model_Option_Type',
             
             'payment/Paypal_Standard/orderStatusId'   => 'Axis_Sales_Model_Option_Order_Status',
             'payment/Paypal_Express/orderStatusId'    => 'Axis_Sales_Model_Option_Order_Status',
             
-            'payment/Paypal_Direct/paymentAction'     => 'Axis_PaymentPaypal_Model_Api_PaymentAction',
-            'payment/Paypal_Standard/paymentAction'   => 'Axis_PaymentPaypal_Model_Api_PaymentAction',
-            'payment/Paypal_Express/paymentAction'    => 'Axis_PaymentPaypal_Model_Express_PaymentAction'
+            'payment/Paypal_Direct/paymentAction'     => 'Axis_PaymentPaypal_Model_Option_PaymentAction',
+            'payment/Paypal_Standard/paymentAction'   => 'Axis_PaymentPaypal_Model_Option_PaymentAction',
+            'payment/Paypal_Express/paymentAction'    => 'Axis_PaymentPaypal_Model_Option_Express_PaymentAction'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         

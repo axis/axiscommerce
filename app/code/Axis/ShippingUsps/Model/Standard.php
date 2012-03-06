@@ -89,7 +89,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         $this->_request = new Axis_Object();
         $services = $this->_config->service->toArray();
         $services = (!count($services) || count($services) > 6)
-            ? implode(',', $services) : Axis_ShippingUsps_Model_Standard_Service::ALL;
+            ? implode(',', $services) : Axis_ShippingUsps_Model_Option_Standard_Service::ALL;
 
         $this->_request->setService($services);// test ALL
 
@@ -287,7 +287,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         }
 
         $allowedMethods = $this->_config->allowedMethods->toArray();
-        $allMethods = Axis_ShippingUsps_Model_Standard_ServiceLabel::getConfigOptionsArray();
+        $allMethods = Axis_ShippingUsps_Model_Option_Standard_ServiceLabel::getConfigOptionsArray();
 
         if ($this->_request->getDestCountryId() == 'US'
             || $this->_request->getDestCountryId() == 'PR') {

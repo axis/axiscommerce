@@ -35,17 +35,17 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $modelOld = 'Axis_Location_Model_Address_Format';
-        
-        $modelNew = str_replace('_Model_', '_Model_Option_', $modelOld);
-        
         $rowset = Axis::single('core/config_field')->select()
-            ->where('model = ?', $modelOld) // model != '' and model not like '%Model_Option%'
+            ->where("model != ''")
+//            ->where("model NOT LIKE '%Model_Option%'")
             ->fetchRowset();
         
         foreach ($rowset as $row) {
-            $row->model = $modelNew;
-            $row->save();
+            if (!class_exists($row->model)) {
+                Zend_Debug::dump($row->model);
+            }
+//            $row->model = str_replace('_Model_', '_Model_Option_', $row->model);
+//            $row->save();
         }
 //        die;
         $v = Axis::config('shipping/Flat_Standard/multiPrice');

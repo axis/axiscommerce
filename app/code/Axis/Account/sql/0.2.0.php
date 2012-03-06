@@ -31,28 +31,28 @@ class Axis_Account_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         Axis::single('core/config_field')
-            ->add('account/address_form/company_status', 'Account/Address Form/Company Status', 'optional', 'select', array('model' => 'Axis_Core_Model_Config_Field_Status'))
+            ->add('account/address_form/company_status', 'Account/Address Form/Company Status', 'optional', 'select', array('model' => 'Axis_Core_Model_Option_Config_Field_Status'))
             ->add('account/address_form/company_sort_order', 'Account/Address Form/Company Sort Order', 10)
 
-            ->add('account/address_form/phone_status', 'Account/Address Form/Phone Status', 'required', 'select', array('model' => 'Axis_Core_Model_Config_Field_Status'))
+            ->add('account/address_form/phone_status', 'Account/Address Form/Phone Status', 'required', 'select', array('model' => 'Axis_Core_Model_Option_Config_Field_Status'))
             ->add('account/address_form/phone_sort_order', 'Account/Address Form/Company Sort Order', 20)
 
-            ->add('account/address_form/fax_status', 'Account/Address Form/Fax Status', 'optional', 'select', array('model' => 'Axis_Core_Model_Config_Field_Status'))
+            ->add('account/address_form/fax_status', 'Account/Address Form/Fax Status', 'optional', 'select', array('model' => 'Axis_Core_Model_Option_Config_Field_Status'))
             ->add('account/address_form/fax_sort_order', 'Account/Address Form/Company Sort Order', 30)
 
-            ->add('account/address_form/street_address_status', 'Account/Address Form/Street Status', 'required', 'select', array('model' => 'Axis_Core_Model_Config_Field_Status'))
+            ->add('account/address_form/street_address_status', 'Account/Address Form/Street Status', 'required', 'select', array('model' => 'Axis_Core_Model_Option_Config_Field_Status'))
             ->add('account/address_form/street_address_sort_order', 'Account/Address Form/Company Sort Order', 40)
 
-            ->add('account/address_form/city_status', 'Account/Address Form/City Status', 'required', 'select', array('model' => 'Axis_Core_Model_Config_Field_Status'))
+            ->add('account/address_form/city_status', 'Account/Address Form/City Status', 'required', 'select', array('model' => 'Axis_Core_Model_Option_Config_Field_Status'))
             ->add('account/address_form/city_sort_order', 'Account/Address Form/Company Sort Order', 50)
 
-            ->add('account/address_form/zone_id_status', 'Account/Address Form/Region Status', 'required', 'select', array('model' => 'Axis_Core_Model_Config_Field_Status'))
+            ->add('account/address_form/zone_id_status', 'Account/Address Form/Region Status', 'required', 'select', array('model' => 'Axis_Core_Model_Option_Config_Field_Status'))
             ->add('account/address_form/zone_id_sort_order', 'Account/Address Form/Company Sort Order', 60)
 
-            ->add('account/address_form/postcode_status', 'Account/Address Form/Postcode Status', 'required', 'select', array('model' => 'Axis_Core_Model_Config_Field_Status'))
+            ->add('account/address_form/postcode_status', 'Account/Address Form/Postcode Status', 'required', 'select', array('model' => 'Axis_Core_Model_Option_Config_Field_Status'))
             ->add('account/address_form/postcode_sort_order', 'Account/Address Form/Company Sort Order', 70)
 
-            ->add('account/address_form/country_id_status', 'Account/Address Form/Country Status', 'required', 'select', array('model' => 'Axis_Core_Model_Config_Field_Status'))
+            ->add('account/address_form/country_id_status', 'Account/Address Form/Country Status', 'required', 'select', array('model' => 'Axis_Core_Model_Option_Config_Field_Status'))
             ->add('account/address_form/country_id_sort_order', 'Account/Address Form/Company Sort Order', 80);
     }
 }

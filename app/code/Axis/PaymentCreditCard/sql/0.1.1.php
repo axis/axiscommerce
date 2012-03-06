@@ -42,9 +42,9 @@ class Axis_PaymentCreditCard_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abs
             ->add('payment/CreditCard_Standard/saveCvv', 'Save verification code', '0', 'bool', 'Do you want to save cvv code?', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Admin'))
             ->add('payment/CreditCard_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
             ->add('payment/CreditCard_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/CreditCard_Standard/creditCard', 'Accepted Credit Cards', 'VISA', 'multiple', 'Credits cards allowed to use with this payment method', array('model' => 'Axis_Sales_Model_Order_CreditCard_Type', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/CreditCard_Standard/saveCCAction', 'Save credit card number action', 'last_four', 'select', 'How would you like to save credit card number', array('model' => 'Axis_Sales_Model_Order_CreditCard_SaveNumberType', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/CreditCard_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Shipping', 'translation_module' => 'Axis_Admin'));
+            ->add('payment/CreditCard_Standard/creditCard', 'Accepted Credit Cards', 'VISA', 'multiple', 'Credits cards allowed to use with this payment method', array('model' => 'Axis_Sales_Model_Option_Order_CreditCard_Type', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/saveCCAction', 'Save credit card number action', 'last_four', 'select', 'How would you like to save credit card number', array('model' => 'Axis_Sales_Model_Option_Order_CreditCard_SaveNumberType', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Option_Shipping', 'translation_module' => 'Axis_Admin'));
     }
 
     public function down()

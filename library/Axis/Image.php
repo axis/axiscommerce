@@ -178,32 +178,32 @@ class Axis_Image
         }
 
         switch($verticalAlign) {
-            case Axis_Catalog_Model_Watermark_Position::MIDDLE:
+            case Axis_Catalog_Model_Option_Watermark_Position::MIDDLE:
                 $positionY = $this->_imageSrcHeight / 2 - $watermarkSrcHeight / 2;
                 break;
-            case Axis_Catalog_Model_Watermark_Position::BOTTOM:
+            case Axis_Catalog_Model_Option_Watermark_Position::BOTTOM:
                 $positionY = $this->_imageSrcHeight - $watermarkSrcHeight;
                 break;
-            case Axis_Catalog_Model_Watermark_Position::TOP:
+            case Axis_Catalog_Model_Option_Watermark_Position::TOP:
             default:
                 $positionY = 0;
                 break;
         }
 
         switch($horizontalAlign) {
-            case Axis_Catalog_Model_Watermark_Position::CENTER:
+            case Axis_Catalog_Model_Option_Watermark_Position::CENTER:
                 $positionX = $this->_imageSrcWidth / 2 - $watermarkSrcWidth / 2;
                 break;
-            case Axis_Catalog_Model_Watermark_Position::RIGHT:
+            case Axis_Catalog_Model_Option_Watermark_Position::RIGHT:
                 $positionX = $this->_imageSrcWidth - $watermarkSrcWidth;
                 break;
-            case Axis_Catalog_Model_Watermark_Position::LEFT:
+            case Axis_Catalog_Model_Option_Watermark_Position::LEFT:
             default:
                 $positionX = 0;
                 break;
         }
 
-//        if (Axis_Catalog_Model_Watermark_Position::STRETCH === $position) {
+//        if (Axis_Catalog_Model_Option_Watermark_Position::STRETCH === $position) {
 //            //@todo stretch, opacity and repeat;
 //        }
 

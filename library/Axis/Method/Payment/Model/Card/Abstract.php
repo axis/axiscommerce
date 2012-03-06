@@ -138,7 +138,7 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
     public function getCCTypes()
     {
         $usedTypes = $this->_config->creditCard->toArray();
-        $allTypes = Axis_Sales_Model_Order_CreditCard_Type::getConfigOptionsArray();
+        $allTypes = Axis_Sales_Model_Option_Order_CreditCard_Type::getConfigOptionsArray();
         $ret = array();
         foreach ($allTypes as $typeKey => $typeName) {
             if (in_array($typeKey, $usedTypes)) {

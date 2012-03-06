@@ -402,7 +402,7 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             $methods[] = array(
                 'id' => $this->_code . '_' . (string)$entry->Service,
                 'title' => $this->getTranslator()->__(
-                    Axis_ShippingFedex_Model_Standard_Service::getConfigOptionValue(
+                    Axis_ShippingFedex_Model_Option_Standard_Service::getConfigOptionValue(
                         (string)$entry->Service
                     )
                 ),

@@ -79,16 +79,16 @@ class Axis_PaymentPaypal_Model_Express extends Axis_PaymentPaypal_Model_Abstract
             return false;
         }
         switch ($this->_config->paymentAction) {
-            case Axis_PaymentPaypal_Model_Express_PaymentAction::ORDER:
+            case Axis_PaymentPaypal_Model_Option_Express_PaymentAction::ORDER:
 
-                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Express_PaymentAction::ORDER;
+                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Option_Express_PaymentAction::ORDER;
                 break;
-            case Axis_PaymentPaypal_Model_Express_PaymentAction::SALE:
+            case Axis_PaymentPaypal_Model_Option_Express_PaymentAction::SALE:
 
-                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Express_PaymentAction::SALE;
+                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Option_Express_PaymentAction::SALE;
                 break;
             default:
-                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Express_PaymentAction::AUTHORIZATION;
+                $options['PAYMENTACTION'] = Axis_PaymentPaypal_Model_Option_Express_PaymentAction::AUTHORIZATION;
                 break;
         }
         

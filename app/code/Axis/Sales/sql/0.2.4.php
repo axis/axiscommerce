@@ -33,8 +33,8 @@ class Axis_Sales_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
         $models = array(
             'OrderStatus'                 => 'Axis_Sales_Model_Option_Order_Status',
             'OrderStatusText'             => 'Axis_Sales_Model_Option_Order_Status_Text',
-            'CreditCard'                  => 'Axis_Sales_Model_Order_CreditCard_Type',
-            'CreditCard_SaveNumberAction' => 'Axis_Sales_Model_Order_CreditCard_SaveNumberType'
+            'CreditCard'                  => 'Axis_Sales_Model_Option_Order_CreditCard_Type',
+            'CreditCard_SaveNumberAction' => 'Axis_Sales_Model_Option_Order_CreditCard_SaveNumberType'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         

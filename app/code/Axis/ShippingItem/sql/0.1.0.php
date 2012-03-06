@@ -39,7 +39,7 @@ class Axis_ShippingItem_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Item_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Class', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Item_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
             ->add('shipping/Item_Standard/price', 'Shipping Price', '1', 'string', 'Shipping price (per item)')
-            ->add('shipping/Item_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Payment', 'translation_module' => 'Axis_Admin'));
+            ->add('shipping/Item_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Option_Payment', 'translation_module' => 'Axis_Admin'));
     }
 
     public function down()

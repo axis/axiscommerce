@@ -131,10 +131,10 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         // Set UPS Product Code
         // Set UPS Action method
         switch ($this->_config->res) {
-            case Axis_ShippingUps_Model_Standard_DestinationType::RES: 
+            case Axis_ShippingUps_Model_Option_Standard_DestinationType::RES: 
                 $r->productCode = 'GNDRES';
                 break;
-            case Axis_ShippingUps_Model_Standard_DestinationType::COM: 
+            case Axis_ShippingUps_Model_Option_Standard_DestinationType::COM: 
                 $r->productCode = 'GNDCOM';
                 break;
         }
@@ -179,7 +179,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         // Set UPS rate-quote method
         $r->pickupCode = $this->_config->pickup;
-        $r->pickupLabel =  Axis_ShippingUps_Model_Standard_Pickup::getConfigOptionValue($r->pickupCode);
+        $r->pickupLabel =  Axis_ShippingUps_Model_Option_Standard_Pickup::getConfigOptionValue($r->pickupCode);
 
         // Set UPS Container type
         $r->containerCode = $this->_config->package;
@@ -194,10 +194,10 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         //Set UPS address-quote method (residential vs commercial)
         switch ($this->_config->res) {
-            case Axis_ShippingUps_Model_Standard_DestinationType::RES: // Residential Address
+            case Axis_ShippingUps_Model_Option_Standard_DestinationType::RES: // Residential Address
                 $r->residentialCode = '1';
                 break;
-            case Axis_ShippingUps_Model_Standard_DestinationType::COM: // Commercial Address
+            case Axis_ShippingUps_Model_Option_Standard_DestinationType::COM: // Commercial Address
                 $r->residentialCode = '0';
                 break;
         }
@@ -208,7 +208,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
     protected function _getQuotes()
     {
-        if (Axis_ShippingUps_Model_Standard_RequestType::XML === $this->_config->type) {
+        if (Axis_ShippingUps_Model_Option_Standard_RequestType::XML === $this->_config->type) {
             return $this->_getXmlQuotes();
         }
         return $this->_getCgiQuotes();
@@ -265,7 +265,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $service->addChild('Code', $this->_request->productCode);
         $code = $this->_request->productCode ?
             $this->_codeToValue[$this->_request->productCode] : '';
-        $service->addChild('Description', Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionValue($code));
+        $service->addChild('Description', Axis_ShippingUps_Model_Option_Standard_OriginServiceLabel::getConfigOptionValue($code));
         
         $shipper = $shipment->addChild('Shipper');
         if ($this->_config->negotiatedActive && $this->_config->shipperNumber) {
@@ -378,7 +378,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             $methods[] = array(
                 'id'    => $this->_code . '_' . $code,
                 'title' => $this->getTranslator()->__(
-                    Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionValue(
+                    Axis_ShippingUps_Model_Option_Standard_OriginServiceLabel::getConfigOptionValue(
                         (string)$shipElement->Service->Code
                     )
                 ),
@@ -489,7 +489,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             $methods[] = array(
                 'id' => $this->_code . '_' . $code,
                 'title' => $this->getTranslator()->__(
-                    Axis_ShippingUps_Model_Standard_OriginServiceLabel::getConfigOptionValue(
+                    Axis_ShippingUps_Model_Option_Standard_OriginServiceLabel::getConfigOptionValue(
                         $this->_codeToValue[$code]
                     )
                 ) /*. ' ' . $show_box_weight*/,
