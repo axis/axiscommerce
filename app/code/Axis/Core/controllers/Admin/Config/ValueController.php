@@ -152,28 +152,20 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 
         if (!empty($row->model)) {
             
-//            if ('handler' === $row->config_type) {
-//                $this->view->handlerHtml = call_user_func(
-//                    array('Axis_Config_Handler_' . $row->model, 'getHtml'), 
-//                    $value, 
-//                    $this->view
-//                );
-//            } else {
-                if (method_exists($row->model, 'getConfigOptionsArray')) {
-                    $this->view->options = call_user_func(
-                        array($row->model, 'getConfigOptionsArray')
-                    );
-                }
-                //@todo $row->getBackend()
-                $modelBackend = null;
-                if (class_exists($row->model)) {
-                    $modelBackend = new $row->model();
-                }
-
-                if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
-                    $value = $modelBackend->decodeConfigOptionValue($value);
-                }
-//            } 
+            if (method_exists($row->model, 'getConfigOptionsArray')) {
+                $this->view->options = call_user_func(
+                    array($row->model, 'getConfigOptionsArray')
+                );
+            }
+//            //@todo $row->getBackend()
+//            $modelBackend = null;
+//            if (class_exists($row->model)) {
+//                $modelBackend = new $row->model();
+//            }
+//
+//            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
+//                $value = $modelBackend->decode($value);
+//            }
         }
         $this->view->value = $value;
         
@@ -197,7 +189,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         }
         
         if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
-            $value = $modelBackend->encodeConfigOptionValue($value);
+            $value = $modelBackend->encode($value);
         } elseif ($modelBackend instanceof Axis_Config_Option_Array_Interface
             && strchr(Axis_Config::MULTI_SEPARATOR, (string)$value)) {
             //@todo use implode/explode default encode/decode on axis_collection

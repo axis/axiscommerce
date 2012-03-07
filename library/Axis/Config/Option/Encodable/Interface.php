@@ -38,13 +38,13 @@ interface Axis_Config_Option_Encodable_Interface
      * @param  array $params
      * @return string
      */
-    public function encodeConfigOptionValue($value);
+    public function encode($value);
 
     /**
      *
      * @param  string $value
      * @return mixed
      */
-    public function decodeConfigOptionValue($value);
+    public function decode($value);
     
 }

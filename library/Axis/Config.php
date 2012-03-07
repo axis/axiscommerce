@@ -116,20 +116,11 @@ class Axis_Config extends Zend_Config
             $this->_data[$key] = $default;
             return;
         }
-        /*
-            $value = $data['value'];
-            $modelBackend = null;
-            if (class_exists($data['model'])) {
-                $modelBackend = new $data['model']();
-            }
-            Zend_Debug::dump($modelBackend);
-            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
-                $value = $modelBackend->decodeConfigOptionValue($value);
-            }
-         */
+        
         $values = array();
         foreach ($dataset as $path => $data) {
             $parts = explode('/', $path);
+            
             switch ($data['config_type']) {
                 case 'string':
                     $value = $data['value'];
@@ -141,27 +132,27 @@ class Axis_Config extends Zend_Config
                     $value = (bool) $data['value'];
                     break;
                 case 'multiprice': //@todo here is bug 
-
-//                    $class = 'Axis_Config_Handler_' . ucfirst($data['model']);
-//                    if ($data['model']) {
-//                        $value = call_user_func(array($class, 'decodeConfigOptionValue'), $data['value']);
-//                    } else {
-//                        $value = $data['value'];
-//                    }
+                    $value = $data['value'];
                     break;
                 case 'multiple':
-                    if (!isset($data['value'])) {
-                        $value = array();
-                    } else {
-                        $value = explode(self::MULTI_SEPARATOR, $data['value']);
-                    }
+                    $value = explode(self::MULTI_SEPARATOR, $data['value']);
                     break;
                 default:
                     $value = $data['value'];
                     break;
             }
+//            $value = $data['value'];
+            $modelBackend = null;
+            if (class_exists($data['model'])) {
+                $modelBackend = new $data['model']();
+            }
+            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
+                $value = $modelBackend->decode($value);
+            }
+            
             $values[$parts[0]][$parts[1]][$parts[2]] = $value;
         }
+        
         foreach ($values as $key => $value) {
             if (is_array($value)) {
                 $this->_data[$key] = new self($value, $this->_allowModifications);

@@ -38,7 +38,7 @@ class Axis_ShippingFlat_Model_Option_Standard_MultiPrice implements Axis_Config_
      * @param mixed
      * @return array
      */
-    public function encodeConfigOptionValue($value)
+    public function encode($value)
     {
         if (is_array($value)) {
             $temp = array();
@@ -60,7 +60,7 @@ class Axis_ShippingFlat_Model_Option_Standard_MultiPrice implements Axis_Config_
      * @param string $value
      * @return string
      */
-    public function decodeConfigOptionValue($value)
+    public function decode($value)
     {
         return json_decode($value, true);
     }

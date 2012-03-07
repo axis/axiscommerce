@@ -35,6 +35,7 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
+        Zend_Debug::dump(Axis::config('design/htmlHead/titlePattern'));
         $rowset = Axis::single('core/config_field')->select()
             ->where("model != ''")
 //            ->where("model NOT LIKE '%Model_Option%'")
@@ -49,7 +50,10 @@ class SandboxController extends Axis_Core_Controller_Front
         }
 //        die;
         $v = Axis::config('shipping/Flat_Standard/multiPrice');
-        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
+        Zend_Debug::dump(
+            Axis::config('shipping/Flat_Standard/multiPrice'),
+            '================================'
+        );
         
         
 //        $routeAdmin = new Axis_Controller_Router_Route_Admin(

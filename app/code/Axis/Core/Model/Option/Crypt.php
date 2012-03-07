@@ -76,7 +76,7 @@ class Axis_Core_Model_Option_Crypt implements Axis_Config_Option_Encodable_Inter
      * @param string $value
      * @return string
      */
-    public function encodeConfigOptionValue($value)
+    public function encode($value)
     {
         return $this->getHandler()->encrypt($value);
     }
@@ -86,7 +86,7 @@ class Axis_Core_Model_Option_Crypt implements Axis_Config_Option_Encodable_Inter
      * @param string $value
      * @return string
      */
-    public function decodeConfigOptionValue($value)
+    public function decode($value)
     {
         return $this->getHandler()->decrypt($value);
     }

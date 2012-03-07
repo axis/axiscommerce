@@ -38,7 +38,7 @@ class Axis_Locale_Model_Option_Currency_Default extends Axis_Locale_Model_Option
      * @param string $value
      * @return string
      */
-    public function encodeConfigOptionValue($value)
+    public function encode($value)
     {
         //@todo move to specific event 
         $row = $this->select()
@@ -60,7 +60,7 @@ class Axis_Locale_Model_Option_Currency_Default extends Axis_Locale_Model_Option
      * @param string $value
      * @return string
      */
-    public function decodeConfigOptionValue($value)
+    public function decode($value)
     {
         return $value;
     }

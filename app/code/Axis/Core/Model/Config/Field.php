@@ -159,19 +159,15 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             if (!$rowValue) {
                 $rowValue = $modelValue->createRow();
             }
-            // @todo remove
-            if ($rowData['config_type'] == 'handler') {
-                $class = 'Axis_Config_Handler_' . ucfirst($rowData['model']);
-                $value = call_user_func(
-                    array($class, 'encodeConfigOptionValue'), $value
-                );
+             //
+            $modelBackend = null;
+            if (class_exists($rowData['model'])) {
+                $modelBackend = new $rowData['model']();
             }
-            //
-            if (method_exists($rowData['model'], 'encodeConfigOptionValue')) { 
-                $value = call_user_func(
-                    array($rowData['model'], 'encodeConfigOptionValue'), $value 
-            );
+            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
+                $value = $modelBackend->encode($value);
             }
+            
             $rowValue->setFromArray(array(
                 'config_field_id' => $rowField->id,
                 'path'            => $rowData['path'],
