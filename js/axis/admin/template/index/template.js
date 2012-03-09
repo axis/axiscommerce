@@ -43,7 +43,7 @@ Ext.onReady(function() {
             if (tree.getSelectionModel().getSelectedNode() && tree.getSelectionModel().getSelectedNode().isSelected()) {
                 var templateId = tree.getSelectionModel().getSelectedNode().id;
                 templateForm.getForm().load({
-                    url:   Axis.getUrl('core/theme/load/'),
+                    url:   Axis.getUrl('core/theme/load'),
                     params: {templateId: templateId},
                     method: 'post'
                 });
