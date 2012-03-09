@@ -57,6 +57,9 @@ class Axis_Shipping
             if (substr($moduleName, 0, strlen($prefix)) != $prefix) {
                 continue;
             }
+            if (!is_dir($path . '/Model')) {
+                continue;
+            }
             $dir = opendir($path . '/Model');
             while ($fname = readdir($dir)) {
                 if (!is_file("{$path}/Model/{$fname}")) {
