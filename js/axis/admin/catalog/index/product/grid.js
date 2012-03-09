@@ -109,7 +109,7 @@ var ProductGrid = {
         }
 
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog/product/') + url,
+            url: Axis.getUrl('catalog/product/' + url),
             params: params,
             callback: function() {
                 ProductGrid.reload();

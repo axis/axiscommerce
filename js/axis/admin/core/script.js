@@ -50,11 +50,11 @@ Axis.getUrl = function(url, disableSsl, front) {
         prefix += Axis.adminUrl;
     }
     if (url) {
-        url = url.replace(new RegExp("^[/]+", "g"), "");
+        url = url.replace(/^\/+/g, '');
     } else {
         url = '';
     }
-    return prefix + '/' + url;
+    return (prefix + '/' + url).replace(/\/+$/g, '');
 };
 
 Axis.escape = function (string) {
