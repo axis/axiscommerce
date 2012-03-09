@@ -68,6 +68,28 @@ class Axis_Catalog_Admin_ImageController extends Axis_Admin_Controller_Back
     }
 
     /**
+     * Returns validated path.
+     * If the received path is not inside the media folder, returns boolean false
+     *
+     * @return string
+     */
+    private function _getValidPath($path)
+    {
+        $path = realpath($path);
+        if (!$path) {
+            return false;
+        }
+
+        /* check are we in 'ROOT/media' */
+        $mediaDir = realpath(Axis::config()->system->path . '/media');
+        if (0 !== strpos($path, $mediaDir) || strlen($path) <= strlen($mediaDir)) {
+            return false;
+        }
+
+        return $path;
+    }
+
+    /**
      * @param string $path
      * @param string $mode ['all', 'file', 'folder']
      * @param bool $recursive
@@ -133,14 +155,7 @@ class Axis_Catalog_Admin_ImageController extends Axis_Admin_Controller_Back
      */
     private function _delete($path)
     {
-        $path = realpath($path);
-        if (!$path) {
-            return false;
-        }
-
-        /* check are we in 'ROOT/media' */
-        $mediaDir = realpath(Axis::config()->system->path . '/media');
-        if (0 !== strpos($path, $mediaDir) || strlen($path) <= strlen($mediaDir)) {
+        if (!$path = $this->_getValidPath($path)) {
             return false;
         }
 
@@ -181,6 +196,16 @@ class Axis_Catalog_Admin_ImageController extends Axis_Admin_Controller_Back
     {
         $this->_helper->layout->disableLayout();
 
+        $path = Axis::config()->system->path . '/' . $this->_getParam('path');
+        if (!$path = $this->_getValidPath($path)) {
+            return $this->getResponse()->appendBody(Zend_Json::encode(array(
+                'success' => false,
+                'messages' => array(
+                    'error' => 'Invalid destination directory'
+                )
+            )));
+        }
+
         $result = array();
         foreach ($_FILES as $key => $values) {
             if (strpos($key, 'ext-gen') !== 0) {
@@ -190,7 +215,7 @@ class Axis_Catalog_Admin_ImageController extends Axis_Admin_Controller_Back
                 $uploader = new Axis_File_Uploader($key);
                 $file = $uploader
                     ->setUseDispersion(false)
-                    ->save(Axis::config()->system->path . '/' . $this->_getParam('path'));
+                    ->save($path);
 
                 $result = array(
                     'success' => true,
@@ -239,11 +264,16 @@ class Axis_Catalog_Admin_ImageController extends Axis_Admin_Controller_Back
 
     public function _renameAction()
     {
-        if (!@rename(
-                Axis::config()->system->path . '/' . $this->_getParam('oldname'),
-                Axis::config()->system->path . '/' . $this->_getParam('newname')
-           )) {
+        $oldname = Axis::config()->system->path . '/' . $this->_getParam('oldname');
+        $newname = Axis::config()->system->path . '/' . $this->_getParam('newname');
 
+        if (!$oldname = $this->_getValidPath($oldname)
+            || !$newname = $this->_getValidPath($newname)) {
+
+            return $this->_helper->json->sendFailure();
+        }
+
+        if (!@rename($oldname, $newname)) {
            return $this->_helper->json->sendFailure();
        }
 
