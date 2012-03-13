@@ -272,10 +272,17 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
     {
         $this->_helper->layout->disableLayout();
 
-        $checkout   = $this->_getCheckout();
-        $cart       = Axis::single('checkout/cart');
+        $checkout = $this->_getCheckout();
+        $cart     = Axis::single('checkout/cart');
         foreach ($this->_getParam('quantity') as $itemId => $quantity) {
             $cart->updateItem($itemId, $quantity);
+        }
+
+        $products = $checkout->getCart()->getProducts();
+        if (!count($products)) {
+            return $this->_helper->json->sendSuccess(array(
+                'redirect' => $this->view->href('checkout/cart', true)
+            ));
         }
 
         $shippingMethods = Axis_Shipping::getAllowedMethods(
@@ -285,18 +292,12 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
             $checkout->getPaymentRequest()
         );
         $this->view->checkout = array(
-            'shipping_methods'  => $shippingMethods,
-            'payment_methods'   => $paymentMethods,
-            'products'  => $checkout->getCart()->getProducts(),
-            'totals'    => $checkout->getTotal()->getCollects(),
-            'total'     => $checkout->getTotal()->getTotal()
+            'shipping_methods' => $shippingMethods,
+            'payment_methods'  => $paymentMethods,
+            'products'         => $products,
+            'totals'           => $checkout->getTotal()->getCollects(),
+            'total'            => $checkout->getTotal()->getTotal()
         );
-
-        if (!count($this->view->checkout['products'])) {
-            return $this->_helper->json->sendSuccess(array(
-                'redirect' => $this->view->href('checkout/cart', true)
-            ));
-        }
 
         return $this->_helper->json->sendSuccess(array(
             'sections' => $this->_renderSections(
