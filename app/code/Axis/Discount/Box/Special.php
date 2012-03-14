@@ -36,6 +36,12 @@ class Axis_Discount_Box_Special extends Axis_Catalog_Box_Product_Listing
     protected $_title = 'Special Products';
     protected $_class = 'box-special';
 
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setData('cache_lifetime', 10800); // 3 hours
+    }
+
     protected function _beforeRender()
     {
         $ids = Axis::single('discount/discount')->cache()->getSpecialProducts(
@@ -47,13 +53,19 @@ class Axis_Discount_Box_Special extends Axis_Catalog_Box_Product_Listing
             return false;
         }
 
-        $products = Axis::single('catalog/product')->select('*')
+        $this->products = Axis::single('catalog/product')->select('*')
             ->addCommonFields()
             ->addFinalPrice()
             ->where('cp.id IN (?)', $ids)
             ->fetchProducts($ids);
+    }
 
-        $this->products = $products;
-        return $this->hasProducts();
+    protected function _getCacheKeyInfo()
+    {
+        $keyInfo = parent::_getCacheKeyInfo();
+        if ($catId = Axis_HumanUri::getInstance()->getParamValue('cat')) {
+            $keyInfo[] = $catId;
+        }
+        return $keyInfo;
     }
 }

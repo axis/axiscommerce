@@ -40,6 +40,11 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
     private $_questionId;
     private $_showResult = false;
 
+    protected function _construct()
+    {
+        $this->setData('cache_lifetime', 0);
+    }
+
     protected function _beforeRender()
     {
         $modelQuestion = Axis::single('poll/question');
@@ -78,6 +83,5 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
             'status'      => $this->_showResult,
             'total_count' => $totalVoteCount
         ));
-        return true;
     }
 }

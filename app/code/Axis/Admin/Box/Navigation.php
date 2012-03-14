@@ -35,37 +35,23 @@ class Axis_Admin_Box_Navigation extends Axis_Admin_Box_Abstract
 {
     protected $_items = array();
 
-    protected $_cacheKey = null;
-
     public function addItem(array $item)
     {
         $this->_items = array_merge_recursive($this->_items, $item);
         return $this;
     }
 
-    public function render()
+    protected function _beforeRender()
     {
-        if (!$navigationHtml = Axis::cache()->load($this->getCacheKey())) {
-            $this->_items = array(); // forward fix
-            Axis::dispatch('admin_box_navigation_prepare', $this);
-            $this->menu     = new Zend_Navigation($this->_items);
-            $navigationHtml = parent::render();
-            Axis::cache()->save(
-                $navigationHtml, $this->getCacheKey(), array('modules')
-            );
-        }
-        return $navigationHtml;
+        $this->_items = array(); // forward fix
+        Axis::dispatch('admin_box_navigation_prepare', $this);
+        $this->menu = new Zend_Navigation($this->_items);
     }
 
-    public function getCacheKey()
+    protected function _getCacheKeyInfo()
     {
-        if (null === $this->_cacheKey) {
-            $this->_cacheKey = md5(
-                'admin_navigation'
-                . Axis::session()->roleId
-                . Axis_Locale::getLocale()->toString()
-            );
-        }
-        return $this->_cacheKey;
+        return array(
+            Axis::session()->roleId
+        );
     }
 }

@@ -382,7 +382,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $db = $this->getResource('DbAdapter');
         $db->setProfiler($profiler);
 
-        return;
+        // return;
 
         $autoloader = Zend_Loader_Autoloader::getInstance();
         $autoloader->registerNamespace('ZFDebug');

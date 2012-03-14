@@ -36,6 +36,13 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
     protected $_title = 'Reviews';
     protected $_class = 'box-review-product';
 
+    protected function _construct()
+    {
+        // @todo: split this box into review list and review form, to cache the review list
+        $this->setData('cache_lifetime', 0);
+        $this->setData('cache_tags', 'community_review');
+    }
+
     protected function _beforeRender()
     {
         if (!$this->product_id = $this->_getProductId()) {
@@ -45,7 +52,7 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
         if ($this->last_product_id == $this->product_id
             && $this->hasReviews() && $this->hasCount()) {
 
-            return true;
+            return;
         }
 
         $data = Axis::single('community/review')->getTinyList(
@@ -59,6 +66,5 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
         $this->last_product_id = $this->product_id;
         $this->reviews = $data['reviews'];
         $this->count = $data['count'];
-        return true;
     }
 }

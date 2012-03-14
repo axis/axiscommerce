@@ -34,6 +34,11 @@
  */
 abstract class Axis_Catalog_Box_Product_Abstract extends Axis_Core_Box_Abstract
 {
+    protected function _construct()
+    {
+        $this->setData('cache_tags', 'catalog_product');
+    }
+
     protected function _getProductId()
     {
         $productId = $this->product_id; // received from box configuration
@@ -67,6 +72,15 @@ abstract class Axis_Catalog_Box_Product_Abstract extends Axis_Core_Box_Abstract
                 'fieldLabel'    => Axis::translate('catalog')->__('Product Id'),
                 'xtype'         => 'numberfield'
             )
+        );
+    }
+
+    protected function _getCacheKeyInfo()
+    {
+        return array(
+            $this->_getProductId(),
+            Axis::single('locale/currency')->getCode(),
+            Axis::model('account/customer')->getGroupId()
         );
     }
 }

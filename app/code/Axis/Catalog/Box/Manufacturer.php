@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
@@ -35,20 +35,18 @@ class Axis_Catalog_Box_Manufacturer extends Axis_Core_Box_Abstract
 {
     protected $_title = 'Manufacturer';
     protected $_class = 'box-manufacturer';
-    
-    public function init()
+
+    protected function _construct()
     {
-        $manufacturers = Axis::single('catalog/product_manufacturer')->cache()
-            ->getList();
+        $this->setData('cache_tags', 'catalog_manufacturer');
+    }
+
+    protected function _beforeRender()
+    {
+        $manufacturers = Axis::single('catalog/product_manufacturer')->getList();
         if (!count($manufacturers)) {
             return false;
         }
         $this->setData('manufacturers', $manufacturers);
-        return true;
-    }
-    
-    protected function _beforeRender()
-    {
-        return $this->hasData('manufacturers');
     }
 }
