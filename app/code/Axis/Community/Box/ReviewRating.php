@@ -42,7 +42,7 @@ class Axis_Community_Box_ReviewRating extends Axis_Core_Box_Abstract
         $this->review_count = array();
         $this->ratings      = array();
 
-        $this->setData('cache_tags', 'community_review');
+        $this->setData('cache_tags', array('community', 'community_review'));
     }
 
     protected function _beforeRender()

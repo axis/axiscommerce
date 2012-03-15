@@ -18,35 +18,18 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Box
+ * @package     Axis_Core
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Box
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Catalog_Box_Manufacturer extends Axis_Core_Box_Abstract
+class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_title = 'Manufacturer';
-    protected $_class = 'box-manufacturer';
+    protected $_version = '0.2.8';
+    protected $_info = 'Boxes cache was added';
 
-    protected function _construct()
+    public function up()
     {
-        $this->setData('cache_tags', array('catalog', 'catalog_manufacturer'));
-    }
-
-    protected function _beforeRender()
-    {
-        $manufacturers = Axis::single('catalog/product_manufacturer')->getList();
-        if (!count($manufacturers)) {
-            return false;
-        }
-        $this->setData('manufacturers', $manufacturers);
+        Axis::single('core/cache')->add('boxes', 1);
     }
 }

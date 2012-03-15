@@ -40,7 +40,7 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
     {
         // @todo: split this box into review list and review form, to cache the review list
         $this->setData('cache_lifetime', 0);
-        $this->setData('cache_tags', 'community_review');
+        $this->setData('cache_tags', array('community', 'community_review'));
     }
 
     protected function _beforeRender()
@@ -66,5 +66,12 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
         $this->last_product_id = $this->product_id;
         $this->reviews = $data['reviews'];
         $this->count = $data['count'];
+    }
+
+    protected function _getCacheKeyInfo()
+    {
+        return array(
+            $this->_getProductId()
+        );
     }
 }

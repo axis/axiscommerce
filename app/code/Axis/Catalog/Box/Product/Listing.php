@@ -39,7 +39,7 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
 
     protected function _construct()
     {
-        $this->setData('cache_tags', 'catalog_product');
+        $this->setData('cache_tags', array('catalog', 'catalog_product'));
     }
 
     /**

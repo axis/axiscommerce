@@ -39,7 +39,7 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
 
     protected function _construct()
     {
-        $this->setData('cache_tags', 'cms_block');
+        $this->setData('cache_tags', array('cms', 'cms_block'));
     }
 
     protected function _beforeRender()

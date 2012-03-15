@@ -35,6 +35,11 @@ class Axis_Admin_Box_Navigation extends Axis_Admin_Box_Abstract
 {
     protected $_items = array();
 
+    protected function _construct()
+    {
+        $this->setData('cache_tags', array('modules'));
+    }
+
     public function addItem(array $item)
     {
         $this->_items = array_merge_recursive($this->_items, $item);

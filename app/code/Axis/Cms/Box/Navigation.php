@@ -38,7 +38,7 @@ class Axis_Cms_Box_Navigation extends Axis_Core_Box_Abstract
 
     protected function _construct()
     {
-        $this->setData('cache_tags', array('cms_category', 'cms_page'));
+        $this->setData('cache_tags', array('cms', 'cms_category', 'cms_page'));
     }
 
     protected function _beforeRender()

@@ -19,34 +19,17 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Box
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Catalog
- * @subpackage  Axis_Catalog_Box
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Catalog_Box_Manufacturer extends Axis_Core_Box_Abstract
+class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_title = 'Manufacturer';
-    protected $_class = 'box-manufacturer';
+    protected $_version = '0.2.9';
+    protected $_info = 'Cache tag added';
 
-    protected function _construct()
+    public function up()
     {
-        $this->setData('cache_tags', array('catalog', 'catalog_manufacturer'));
-    }
-
-    protected function _beforeRender()
-    {
-        $manufacturers = Axis::single('catalog/product_manufacturer')->getList();
-        if (!count($manufacturers)) {
-            return false;
-        }
-        $this->setData('manufacturers', $manufacturers);
+        Axis::single('core/cache')->add('catalog', 1);
     }
 }
