@@ -376,7 +376,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
      *
      * @return array
      */
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array();
     }
@@ -398,7 +398,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
                 'locale'          => Axis_Locale::getLocale()->toString(),
                 'site_id'         => Axis::getSiteId()
             ),
-            $this->_getCacheKeyInfo()
+            $this->_getCacheKeyParams()
         );
 
         $keyInfo = implode(',', $keyInfo);

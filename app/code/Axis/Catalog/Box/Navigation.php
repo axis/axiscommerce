@@ -101,7 +101,7 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
         $this->setData('menu', $container);
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         $categoryId = null;
         if (Zend_Registry::isRegistered('catalog/current_category')) {

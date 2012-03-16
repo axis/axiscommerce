@@ -75,7 +75,7 @@ class Axis_Tag_Box_Cloud extends Axis_Core_Box_Abstract
         $this->tags = $tags;
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             $this->_getTagsCount()

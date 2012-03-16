@@ -64,7 +64,7 @@ class Axis_Account_Box_Navigation extends Axis_Account_Box_Abstract
         }
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             Axis::model('account/customer')->getGroupId()

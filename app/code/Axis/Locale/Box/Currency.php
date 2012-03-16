@@ -53,7 +53,7 @@ class Axis_Locale_Box_Currency extends Axis_Core_Box_Abstract
         ));
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             Axis::single('locale/currency')->getCode()

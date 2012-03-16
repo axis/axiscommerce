@@ -57,7 +57,7 @@ class Axis_Tag_Box_Product extends Axis_Catalog_Box_Product_Abstract
         );
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             $this->_getProductId()

@@ -68,7 +68,7 @@ class Axis_Community_Box_ReviewProduct extends Axis_Catalog_Box_Product_Abstract
         $this->count = $data['count'];
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             $this->_getProductId()

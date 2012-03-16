@@ -65,9 +65,9 @@ class Axis_Catalog_Box_Featured extends Axis_Catalog_Box_Product_Listing
         $this->products = $list['data'];
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
-        $keyInfo = parent::_getCacheKeyInfo();
+        $keyInfo = parent::_getCacheKeyParams();
         if ($catId = Axis_HumanUri::getInstance()->getParamValue('cat')) {
             $keyInfo[] = $catId;
         }

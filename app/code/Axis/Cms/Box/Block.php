@@ -94,7 +94,7 @@ class Axis_Cms_Box_Block extends Axis_Core_Box_Abstract
        return '';
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             $this->getStaticBlock()

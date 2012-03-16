@@ -300,7 +300,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         );
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         $this->hurl = Axis_HumanUri::getInstance();
         $filters    = $this->_getActiveFilters();

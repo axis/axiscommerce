@@ -65,7 +65,7 @@ class Axis_Core_Box_Breadcrumbs extends Axis_Core_Box_Abstract
         );
     }
 
-//    protected function _getCacheKeyInfo()
+//    protected function _getCacheKeyParams()
 //    {
 //        $request = Zend_Controller_Front::getInstance()->getRequest();
 //        $hurl    = Axis_HumanUri::getInstance();

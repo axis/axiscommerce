@@ -53,7 +53,7 @@ class Axis_Admin_Box_Navigation extends Axis_Admin_Box_Abstract
         $this->menu = new Zend_Navigation($this->_items);
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             Axis::session()->roleId

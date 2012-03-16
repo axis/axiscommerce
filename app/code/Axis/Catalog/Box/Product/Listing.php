@@ -86,7 +86,7 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
         );
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             Axis::single('locale/currency')->getCode(),

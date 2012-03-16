@@ -77,7 +77,7 @@ class Axis_Community_Box_ReviewRating extends Axis_Core_Box_Abstract
             );
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             $this->product_id,

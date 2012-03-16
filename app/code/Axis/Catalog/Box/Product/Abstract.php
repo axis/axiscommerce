@@ -75,7 +75,7 @@ abstract class Axis_Catalog_Box_Product_Abstract extends Axis_Core_Box_Abstract
         );
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             $this->_getProductId(),

@@ -74,7 +74,7 @@ class Axis_Admin_Box_Greeting extends Axis_Admin_Box_Abstract
         ));
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
         return array(
             Zend_Auth::getInstance()->getIdentity()

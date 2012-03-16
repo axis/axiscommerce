@@ -60,9 +60,9 @@ class Axis_Discount_Box_Special extends Axis_Catalog_Box_Product_Listing
             ->fetchProducts($ids);
     }
 
-    protected function _getCacheKeyInfo()
+    protected function _getCacheKeyParams()
     {
-        $keyInfo = parent::_getCacheKeyInfo();
+        $keyInfo = parent::_getCacheKeyParams();
         if ($catId = Axis_HumanUri::getInstance()->getParamValue('cat')) {
             $keyInfo[] = $catId;
         }
