@@ -45,6 +45,19 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
     }
 
     /**
+     * HTTP_REFERER is not always present in _SERVER[]
+     *
+     * @return string
+     */
+    protected function _getBackUrl()
+    {
+        if (!$back = $this->getRequest()->getServer('HTTP_REFERER')) {
+            $back = $this->view->href();
+        }
+        return $back;
+    }
+
+    /**
      * Write a snapshot to session
      *
      * @param string $snapshot

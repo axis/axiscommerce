@@ -113,7 +113,7 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
             ));
         }
 
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 
     /**
