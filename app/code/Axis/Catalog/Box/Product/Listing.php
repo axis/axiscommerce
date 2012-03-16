@@ -37,6 +37,11 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
     protected $_productsCount   = 6;
     protected $_columnsCount    = 3;
 
+    protected function _construct()
+    {
+        $this->setData('cache_tags', array('catalog', 'catalog_product'));
+    }
+
     /**
      * @return integer
      */
@@ -78,6 +83,17 @@ class Axis_Catalog_Box_Product_Listing extends Axis_Core_Box_Abstract
                 'fieldLabel'    => Axis::translate('catalog')->__('Columns Count'),
                 'initialValue'  => $this->_columnsCount
             )
+        );
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        return array(
+            Axis::single('locale/currency')->getCode(),
+            Axis::model('account/customer')->getGroupId(),
+            $this->getProductsCount(),
+            $this->getColumnsCount(),
+            $this->getData('view_mode')
         );
     }
 }

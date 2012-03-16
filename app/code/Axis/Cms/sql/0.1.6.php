@@ -18,31 +18,18 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_View
- * @subpackage  Axis_View_Helper
+ * @package     Axis_Cms
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_View
- * @subpackage  Axis_View_Helper
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_View_Helper_Box
+class Axis_Cms_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
 {
-    /**
-     * Retrieve the box object
-     *
-     * @param string $block
-     * @param array $config
-     * @return Axis_Core_Box_Abstract
-     * @throws Axis_Exception
-     */
-    public function box($block, $config = array())
+    protected $_version = '0.1.6';
+    protected $_info = 'Cache tag added';
+
+    public function up()
     {
-        return Axis::model(Axis::getClass($block, 'Box'), $config);
+        Axis::single('core/cache')->add('cms', 1);
     }
 }

@@ -36,7 +36,12 @@ class Axis_Account_Box_Wishlist extends Axis_Account_Box_Abstract
     protected $_title = 'My Wishlist';
     protected $_class = 'box-wishlist';
 
-    public function init()
+    protected function _construct()
+    {
+        $this->setData('cache_lifetime', 0);
+    }
+
+    protected function _beforeRender()
     {
         if (!$customerId = Axis::getCustomerId()) {
             return false;
@@ -46,14 +51,5 @@ class Axis_Account_Box_Wishlist extends Axis_Account_Box_Abstract
             return false;
         }
         $this->wishlist = $result;
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function _beforeRender()
-    {
-        return $this->hasWishlist();
     }
 }

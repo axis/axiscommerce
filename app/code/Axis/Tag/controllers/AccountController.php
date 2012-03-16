@@ -52,7 +52,6 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
      */
     public function addAction()
     {
-
         $tags = array_filter(explode(',', $this->_getParam('tags')));
         $productId = $this->_getParam('productId');
 
@@ -81,18 +80,6 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
                 $_row['name'] = $tag;
                 $row = $modelCustomer->createRow($_row);
                 $row->save();
-
-                Axis::message()->addSuccess(
-                    Axis::translate('tag')->__(
-                        "Tag '%s' was successfully added to product", $tag
-                    )
-                );
-            } else {
-                Axis::message()->addNotice(
-                    Axis::translate('tag')->__(
-                        "Your tag '%s' is already added to this product", $tag
-                    )
-                );
             }
 
             // add to product relation
@@ -106,6 +93,18 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
                     'customer_tag_id' => $row->id,
                     'product_id'      => $productId
                 ))->save();
+
+                Axis::message()->addSuccess(
+                    Axis::translate('tag')->__(
+                        "Tag '%s' was successfully added to product", $tag
+                    )
+                );
+            } else {
+                Axis::message()->addNotice(
+                    Axis::translate('tag')->__(
+                        "Your tag '%s' is already added to this product", $tag
+                    )
+                );
             }
 
             Axis::dispatch('tag_product_add_success', array(
