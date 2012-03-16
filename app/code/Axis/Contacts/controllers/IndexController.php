@@ -93,7 +93,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                     )
                 );
                 $this->_redirect(
-                    $this->getRequest()->getServer('HTTP_REFERER')
+                    $this->_getBackUrl()
                 );
             } else {
                 $form->populate($data);

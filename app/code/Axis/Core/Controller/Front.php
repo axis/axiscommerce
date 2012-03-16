@@ -92,8 +92,10 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
     protected function _redirect(
         $url, array $options = array(), $addLanguage = true)
     {
-        $httpReferer = $this->getRequest()->getServer('HTTP_REFERER');
-        if (($httpReferer && $url == $httpReferer) || !$addLanguage) {
+        if (0 === strpos($url, 'http://')
+            || 0 === strpos($url, 'https://')
+            || !$addLanguage) {
+
             parent::_redirect($url, $options);
             return;
         }
