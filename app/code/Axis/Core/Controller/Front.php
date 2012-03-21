@@ -42,7 +42,8 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
             'route' => 'core'
         ));
         // fix to remove duplicate favicon, canonical when forwarding request
-        $this->view->headLink()->getContainer()->exchangeArray(array());
+        // this is not an option, because we should allow to add resources from the bootstrap in future
+        // $this->view->headLink()->getContainer()->exchangeArray(array());
     }
 
     /**
