@@ -35,17 +35,20 @@ class Axis_Cms_Box_News extends Axis_Core_Box_Abstract
 {
     protected $_title = 'News';
     protected $_class = 'box-cms-news';
-    protected $_disableWrapper = true;
+    protected $_disableWrapper = true; // don't use wrapper because of custom box header
 
-    protected $_newsCount     = 3;
+    protected $_count = 3;
     protected $_excerptLength = 300;
-    protected $_categoryName  = 'News';
 
     /**
      * Fetch the category and pages
      */
     protected function _beforeRender()
     {
+        if (!$this->category_id) {
+            return false;
+        }
+
         $languageId = Axis_Locale::getLanguageId();
         $this->category = Axis::model('cms/category')->select('*')
             ->joinLeft(
@@ -53,7 +56,7 @@ class Axis_Cms_Box_News extends Axis_Core_Box_Abstract
                 'cc.id = ccc.cms_category_id',
                 'link'
             )
-            ->where('cc.name = ?', $this->getCategoryName())
+            ->where('cc.id = ?', $this->category_id)
             ->where('cc.is_active = 1')
             ->where('ccc.language_id = ?' , $languageId)
             ->where('cc.site_id = ?', Axis::getSiteId())
@@ -78,11 +81,11 @@ class Axis_Cms_Box_News extends Axis_Core_Box_Abstract
             ->where('cp.is_active = 1')
             ->where('cpc.language_id = ?' , $languageId)
             ->where('cpc.link IS NOT NULL')
-            ->limit($this->getNewsCount())
+            ->limit($this->getCount())
             ->order('cp.id DESC')
             ->fetchAll();
 
-        return $this->pages;
+        return count($this->pages);
     }
 
     /**
@@ -136,25 +139,14 @@ class Axis_Cms_Box_News extends Axis_Core_Box_Abstract
     }
 
     /**
-     * @return string
-     */
-    public function getCategoryName()
-    {
-        if (null === $this->category_name) {
-            return $this->_categoryName;
-        }
-        return $this->category_name;
-    }
-
-    /**
      * @return integer
      */
-    public function getNewsCount()
+    public function getCount()
     {
-        if (null === $this->news_count) {
-            return $this->_newsCount;
+        if (null === $this->count) {
+            return $this->_count;
         }
-        return $this->news_count;
+        return $this->count;
     }
 
     /**
@@ -170,15 +162,20 @@ class Axis_Cms_Box_News extends Axis_Core_Box_Abstract
 
     public function getConfigurationFields()
     {
+        $categories = Axis::model('cms/category')->select(array('id', 'name'))
+            ->fetchPairs();
+
         return array(
-            'category_name' => array(
-                'fieldLabel'   => Axis::translate('example_module')->__('Category Name'),
-                'initialValue' => $this->_categoryName
+            'category_id' => array(
+                'fieldLabel'   => Axis::translate('catalog')->__('Category'),
+                'initialValue' => current(array_keys($categories)),
+                'xtype'        => 'combo',
+                'data'         => $categories
             ),
-            'news_count' => array(
+            'count' => array(
                 'fieldLabel'   => Axis::translate('example_module')->__('News Count'),
                 'xtype'        => 'numberfield',
-                'initialValue' => $this->_newsCount
+                'initialValue' => $this->_count
             ),
             'excerpt_length' => array(
                 'fieldLabel'   => Axis::translate('example_module')->__('Excerpt Length'),
@@ -205,5 +202,14 @@ class Axis_Cms_Box_News extends Axis_Core_Box_Abstract
        }
 
        return '';
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        return array(
+            $this->category_id,
+            $this->getCount(),
+            $this->getExcerptLength()
+        );
     }
 }

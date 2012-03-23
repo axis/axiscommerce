@@ -9,14 +9,14 @@
         </span>
     </div>
     <div class="content">
-        <ul class="cms-page-list no-bullet no-indent">
+        <ul class="cms-page-list">
             <?php foreach ($pages as $_page) : ?>
             <li>
-                <a href="<?php echo $this->url(array(
+                <p class="heading"><a href="<?php echo $this->url(array(
                     'page' => $_page['link']
                     ), 'cms_page', true); ?>"
                 ><?php echo ($_page['title'] == '' ? $_page['link'] : $_page['title']); ?>
-                </a>
+                </a></p>
                 <div class="content">
                     <?php echo $this->box->getExcerpt($_page['content']) ?>
                 </div>

@@ -473,6 +473,21 @@ dl.attributes-list dd { padding-left: 10px; }
 .actions a { line-height: 28px; text-decoration: underline; }
 .actions a:hover { text-decoration: none; }
 
+.box .heading {
+    font: normal 1.25em "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+    margin: 0 0 0.3em;
+}
+
+/* cms-news styles */
+.box-cms-news { margin-bottom: 7px; border: 1px solid #dfdfdf;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #f6f6f6 url(../images/box.gif) repeat-x 0 0; }
+.box-cms-news .content { padding: 0 10px 10px; }
+.box-cms-news .cms-page-list li { margin: 0 0 0.8em; padding: 0 5px; }
+.box-cms-news .cms-page-list li.last { margin: 0; }
+
 .side-col .product-name a  { color: #555; font-weight: normal; }
 
 .side-col select { width: 100%; }
