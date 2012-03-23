@@ -1,0 +1,27 @@
+<?php $pages = $this->box->getData('pages', array()); ?>
+<div class="box base-mini box-cms-news">
+    <div class="head">
+        <span class="title">
+            <a href="<?php echo $this->url(array(
+                'cat' => $this->box->category->link),
+                'cms_category', true); ?>"
+            ><?php echo $this->translate('cms')->__($this->box->title);?></a>
+        </span>
+    </div>
+    <div class="content">
+        <ul class="cms-page-list">
+            <?php foreach ($pages as $_page) : ?>
+            <li>
+                <p class="heading"><a href="<?php echo $this->url(array(
+                    'page' => $_page['link']
+                    ), 'cms_page', true); ?>"
+                ><?php echo ($_page['title'] == '' ? $_page['link'] : $_page['title']); ?>
+                </a></p>
+                <div class="content">
+                    <?php echo $this->box->getExcerpt($_page['content']) ?>
+                </div>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>
