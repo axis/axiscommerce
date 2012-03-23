@@ -54,9 +54,12 @@ abstract class Axis_Admin_Controller_Back extends Axis_Controller_Action
      //@todo */*/* === referer , */*/otherAction
     protected function _redirect($url, array $options = array(), $addAdmin = true)
     {
-        $httpReferer = $this->getRequest()->getServer('HTTP_REFERER');
-        if (($httpReferer && $url == $httpReferer) || !$addAdmin) {
+        if (0 === strpos($url, 'http://')
+            || 0 === strpos($url, 'https://')
+            || !$addAdmin) {
+
             parent::_redirect($url, $options);
+            return;
         }
 
         parent::_redirect($this->view->adminUrl . '/' . ltrim($url, '/ '), $options);

@@ -39,6 +39,6 @@ class Axis_Locale_CurrencyController extends Axis_Core_Controller_Front
         if (Axis::single('locale/currency')->isExists($code)) {
             Axis::session()->currency = $code;
         }
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 }

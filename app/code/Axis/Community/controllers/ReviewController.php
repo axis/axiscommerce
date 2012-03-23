@@ -312,7 +312,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
 
     public function loginAction()
     {
-        $this->_setSnapshot($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_setSnapshot($this->_getBackUrl());
         $this->_forward('index', 'auth', 'Axis_Account');
     }
 
@@ -373,7 +373,7 @@ class Axis_Community_ReviewController extends Axis_Core_Controller_Front
 
                 Axis::dispatch('community_review_add_success', $data);
                 $this->_redirect(
-                    $this->getRequest()->getServer('HTTP_REFERER')
+                    $this->_getBackUrl()
                 );
             } else {
                 $form->populate($data);

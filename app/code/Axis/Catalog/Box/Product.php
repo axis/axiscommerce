@@ -55,6 +55,5 @@ class Axis_Catalog_Box_Product extends Axis_Catalog_Box_Product_Abstract
         }
 
         $this->product = $product;
-        return true;
     }
 }

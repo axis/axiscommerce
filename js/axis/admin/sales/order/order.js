@@ -64,7 +64,7 @@ Ext.onReady(function(){
 //            console.log(Order.form.getForm().clear);
 
             form.load({
-                url: Axis.getUrl('sales/order/load/orderId/') + Order.activeId,
+                url: Axis.getUrl('sales/order/load/orderId/' + Order.activeId),
                 method: 'post',
                 success: function(form, action) {
                     var data = Ext.decode(action.response.responseText).data;

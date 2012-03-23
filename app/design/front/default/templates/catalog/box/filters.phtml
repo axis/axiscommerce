@@ -43,12 +43,12 @@ $currency   = Axis::single('locale/currency')->getCurrency();
     endforeach;
 endif; ?>
 
-<?php if ($this->box->hasData('filters/category')) : ?>
+<?php if ($categories = $this->box->getData('filters/category')) : ?>
 <li class="filter-box" id="filter-category">
     <h3 class="filter-name"><?php echo $this->translate('catalog')->__('Category')?></h3>
     <ul>
 <?php
-foreach ($this->box->getData('filters/category') as $item) :
+foreach ($categories as $item) :
     echo  '<li><a rel="nofollow" href="' . $this->hurl(array(
            'cat' => array(
               'value' => $item['category_id'],
@@ -62,7 +62,7 @@ endforeach; ?>
 </li>
 <?php endif; ?>
 
-<?php if ($this->box->hasData('filters/price/groups')) : ?>
+<?php if ($priceGroups = $this->box->getData('filters/price/groups')) : ?>
 <li class="filter-box" id="filter-price">
     <h3 class="filter-name"><?php echo $this->translate('catalog')->__('Price')?></h3>
     <ul>
@@ -70,7 +70,7 @@ endforeach; ?>
 $priceSubstract = $this->box->getData('filters/price/roundTo');
 $priceMin       = (isset($price[0]) && !empty($price[0])) ? $price[0] : 0;
 $priceMax       = (isset($price[1]) && !empty($price[1])) ? $price[1] : null;
-foreach ($this->box->getData('filters/price/groups') as $price) :
+foreach ($priceGroups as $price) :
     $priceFrom  = $price['price_group'];
     if ($priceFrom < $priceMin) {
         $priceFrom = $priceMin;
@@ -92,12 +92,12 @@ endforeach; ?>
 </li>
 <?php endif; ?>
 
-<?php if ($this->box->hasData('filters/manufacturer')) : ?>
+<?php if ($manufacturer = $this->box->getData('filters/manufacturer')) : ?>
 <li class="filter-box" id="filter-manufacturer">
     <h3 class="filter-name"><?php echo $this->translate('catalog')->__('Manufacturer')?></h3>
     <ul>
 <?php
-foreach ($this->box->getData('filters/manufacturer') as $item) :
+foreach ($manufacturer as $item) :
     echo  '<li><a rel="nofollow" href="' . $this->hurl(array(
            'manufacturer' => array(
               'value' => $item['manufacturer_id'],
@@ -111,9 +111,9 @@ endforeach; ?>
 </li>
 <?php endif; ?>
 
-<?php if ($this->box->hasData('filters/attributes')) :
+<?php if ($attributes = $this->box->getData('filters/attributes')) :
 echo '<li class="filter-box" id="filter-attributes">';
-    foreach ($this->box->getData('filters/attributes') as $optionId => $values) :
+    foreach ($attributes as $optionId => $values) :
         echo '<h3 class="filter-name">' . $values[0]['option_name'] . '</h3><ul>';
         foreach ($values as $value) :
             echo '<li><a rel="nofollow" href="' . $this->hurl(array(

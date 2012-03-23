@@ -52,7 +52,6 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
      */
     public function addAction()
     {
-
         $tags = array_filter(explode(',', $this->_getParam('tags')));
         $productId = $this->_getParam('productId');
 
@@ -81,6 +80,19 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
                 $_row['name'] = $tag;
                 $row = $modelCustomer->createRow($_row);
                 $row->save();
+            }
+
+            // add to product relation
+            $isExist = (bool) $modelProduct->select('id')
+                ->where('customer_tag_id = ?', $row->id)
+                ->where('product_id = ?', $productId)
+                ->fetchOne();
+
+            if (!$isExist) {
+                $modelProduct->createRow(array(
+                    'customer_tag_id' => $row->id,
+                    'product_id'      => $productId
+                ))->save();
 
                 Axis::message()->addSuccess(
                     Axis::translate('tag')->__(
@@ -95,26 +107,13 @@ class Axis_Tag_AccountController extends Axis_Account_Controller_Abstract
                 );
             }
 
-            // add to product relation
-            $isExist = (bool) $modelProduct->select('id')
-                ->where('customer_tag_id = ?', $row->id)
-                ->where('product_id = ?', $productId)
-                ->fetchOne();
-
-            if (!$isExist) {
-                $modelProduct->createRow(array(
-                    'customer_tag_id' => $row->id,
-                    'product_id'      => $productId
-                ))->save();
-            }
-
             Axis::dispatch('tag_product_add_success', array(
                 'tag'        => $tag,
                 'product_id' => $productId
             ));
         }
 
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 
     /**
