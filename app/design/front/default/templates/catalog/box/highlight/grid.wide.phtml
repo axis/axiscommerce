@@ -1,10 +1,10 @@
-<div class="product-listing product-listing-grid listing-highlight" id="<?php echo $this->box->getData('class') ?>">
+<?php $columnCount = $this->box->getColumnsCount(); ?>
+<div class="product-listing product-listing-grid grid-wide grid-wide-<?php echo $columnCount ?>-cols" id="<?php echo $this->box->getData('class') ?>">
 <?php
 $reviewSummaryBox = $this->box('community/ReviewRating')
     ->setProductIds(array_keys($this->box->getData('products')));
 
 $i = 0;
-$columnCount = $this->box->getColumnsCount();
 foreach ($this->box->getData('products') as $prodId => $product) :
     $url = $this->hurl(array(
         'product' => array('value' => $prodId, 'seo' => $product['key_word']),

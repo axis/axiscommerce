@@ -375,6 +375,14 @@ dl.attributes-list dd { padding-left: 10px; }
 .footer .bug-report { color: #fff; }
 .footer .bug-report a { color: #fff; font-weight: bold; }
 
+/* Home page layout */
+.core-index-index .layout-2columns-right .side-col,
+.core-index-index .layout-2columns-left .side-col { width: 262px; }
+.core-index-index .layout-2columns-right .col-main,
+.core-index-index .layout-2columns-left .col-main { width: 679px }
+.core-index-index .layout-2columns-right .product-listing-list .product-content,
+.core-index-index .layout-2columns-left .product-listing-list .product-content { width: 490px; }
+
 /* Navigation */
 .navigation li { position: relative; z-index: 10; vertical-align: top; zoom: 1; }
 .navigation li.over { z-index: 15; }
@@ -413,6 +421,13 @@ dl.attributes-list dd { padding-left: 10px; }
 
 .header .navigation ul.shown { left: 0; }
 .header .navigation ul ul.shown { left: 70px; }
+
+.core-index-index .header .navigation .nav-home a,
+.contacts-index-index .header .navigation .nav-contacts a { color: #fff !important; }
+.core-index-index .header .navigation .nav-home > a,
+.contacts-index-index .header .navigation .nav-contacts > a { color: #fff !important; background: url(../images/nav.gif) no-repeat 0 -109px !important; }
+.core-index-index .header .navigation .nav-home > a span,
+.contacts-index-index .header .navigation .nav-contacts > a span { background-position: 100% -131px !important; }
 
 /* side navigation */
 .side-col .navigation {}
@@ -554,13 +569,12 @@ dl.attributes-list dd { padding-left: 10px; }
 
 /* LI grid listing */
 .grid-row { clear: left; }
-.grid-row li.entry { width: 352px; padding: 10px; float: left; }
-.grid-row li.entry.last { }
-.layout-3columns .grid-row li.entry { width: 253px; }
-.layout-1column .grid-row li.entry { width: 452px; }
 
 /* Poll listing */
 .poll-listing { padding-bottom: 7px; border-bottom: 2px solid #eee; }
+.grid-row li.poll-entry { width: 352px; padding: 10px; float: left; }
+.layout-3columns .grid-row li.poll-entry { width: 253px; }
+.layout-1column .grid-row li.poll-entry { width: 452px; }
 .poll-answers { overflow: hidden; zoom: 1; padding-left: 0;}
 .poll-answers label { font-weight: normal; }
 /* Chartlist for poll results */
@@ -732,11 +746,10 @@ span.filter-name { color: #555; font-size: 12px; font-weight: bold; float: left;
 /* Grid listing */
 .product-listing-grid { margin-bottom: 5px; }
 .product-listing-grid .grid-row { position: relative; border-bottom: 1px solid #ccc; }
-.layout-3columns .grid-row { background: url(../images/listing_grid_bg_col3.gif) repeat-y 0 0; }
+.layout-3columns .grid-3-cols .grid-row { background: url(../images/listing_grid_bg_col3.gif) repeat-y 0 0; }
+.layout-3columns .tab .grid-3-cols .grid-row { background: none; }
 .product-listing-grid .grid-row.last { border-bottom: none; }
-.product-listing-grid .product-item { float: left; width: 229px; padding: 10px 10px 85px; }
-.layout-3columns .product-listing-grid .product-item { width: 164px; }
-.layout-1column .product-listing-grid .product-item { width: 295px; }
+.product-listing-grid .product-item { float: left; padding: 10px 10px 85px; }
 .product-listing-grid .product-actions { position: absolute; bottom: 10px; }
 .product-listing-grid .product-name { text-transform: uppercase; }
 .product-listing-grid .add-to { float: left; }
@@ -744,6 +757,24 @@ span.filter-name { color: #555; font-size: 12px; font-weight: bold; float: left;
 .product-listing-grid .btn-add-to-cart { }
 .product-listing-grid .add-to { }
 .product-listing-grid .out-of-stock { margin: .3em 0 0; }
+
+/* various column sets */
+.product-listing .product-item { width: 145px; } /* to support not existing .grid-x-cols and stretch listing */
+
+.grid-2-cols .product-item { width: 46%; }
+.grid-3-cols .product-item { width: 29.6%; }
+.grid-4-cols .product-item { width: 21.3%; }
+/* a bit smaller width for the listing inside tab - tab container has side padding */
+.tab-container .content .grid-2-cols .product-item { width: 45%; }
+.tab-container .content .grid-3-cols .product-item { width: 29%; }
+.tab-container .content .grid-4-cols .product-item { width: 21%; }
+
+.grid-wide .product-item { width: 320px; border: none;
+    background: url(../images/vline_dashed_grey.gif) repeat-y 100% 0; padding: 0 7px; }
+.grid-wide .product-item.last { background: none; }
+.grid-wide .product-image { float: left; }
+.grid-wide .product-info { float: right; padding: 0; width: 160px; }
+.grid-wide-2-cols .product-item { width: 47.5%; }
 
 /* Paging */
 table.paging-bar,

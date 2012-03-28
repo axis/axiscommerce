@@ -943,7 +943,7 @@
     <cms_block multiple="1">
         <content multiple="1">
             <language_id>1</language_id>
-            <content><![CDATA[<div class="col3-set">
+            <content><![CDATA[<div class="col3-set" style="padding: 0 7px !important;">
   <div class="col-1">
     <p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Sed euismod odio consectetur augue elementum dictum non ac orci. Pellentesque nunc nunc, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
   </div>

@@ -5,100 +5,100 @@
         <?php echo $this->translate('tag')->__('There are no products matching your request'); ?>
     </p>
 <?php else: ?>
-<div class="product-listing product-listing-grid" id="content-listing">
-<?php
-$i = 0;
-$columnCount = 3;
-foreach ($this->tagItems as $item) :
-    $product = $this->products[$item['product_id']];
-    $productUrl = $this->hurl(array(
-            'product' => array('value' => $item['product_id'], 'seo' => $product['key_word']),
-            'controller' => 'catalog',
-            'action' => 'product'
-       ), false, true);
-?>
-    <?php if ($i%$columnCount==0): ?>
-    <ul class="grid-row">
+    <?php $columnCount = 3; ?>
+    <div class="product-listing product-listing-grid grid-<?php echo $columnCount ?>-cols" id="content-listing">
+    <?php
+    $i = 0;
+    foreach ($this->tagItems as $item) :
+        $product = $this->products[$item['product_id']];
+        $productUrl = $this->hurl(array(
+                'product' => array('value' => $item['product_id'], 'seo' => $product['key_word']),
+                'controller' => 'catalog',
+                'action' => 'product'
+           ), false, true);
+    ?>
+        <?php if ($i%$columnCount==0): ?>
+        <ul class="grid-row">
+        <?php endif; ?>
+
+            <li class="product-item">
+                <?php if ($this->showRemove): ?>
+                    <a href="<?php echo $this->href('account/tag/remove-item/itemId/' . $item['id'], true) ?>"
+                        class="tag-remove"><?php echo $this->translate('tag')->__('Remove tag from this product') ?>
+                    </a>
+                <?php endif; ?>
+                <?php
+                $imagePath = isset($product['images'][$product['image_listing']]) ?
+                    $product['images'][$product['image_listing']]['path'] : '';
+                $imageTitle = isset($product['images'][$product['image_listing']]) ?
+                    $product['images'][$product['image_listing']]['title'] : '';
+                ?>
+                <a href="<?php echo $productUrl;?>" class="product-image"
+                    title="<?php echo $this->escape($imageTitle) ?>"
+                ><?php echo $this->imager('/product' . $imagePath, array(
+                    'width'  => $this->config()->image->product->widthSmall,
+                    'height' => $this->config()->image->product->heightSmall,
+                    'alt' => $this->escape($imageTitle),
+                    'seo' => $product['image_seo_name']
+                ));
+                ?></a>
+                <h4 class="product-name"><a href="<?php echo $productUrl;?>"
+                    title="<?php echo $this->escape($product['name']);?>"
+                    ><?php echo $this->escape($product['name']);?></a></h4>
+                <?php echo $this->price($product['prices']) ?>
+
+                <div class="product-actions">
+                    <?php if ($product['is_saleable']): ?>
+                        <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(
+                            'class' => 'button btn-add-to-cart',
+                            'rel' => 'nofollow',
+                            'href' => $this->href('checkout/cart/add/productId/' . $item['product_id'], true)
+                        )) ?>
+                    <?php else: ?>
+                        <div class="out-of-stock"><?php echo $this->translate('catalog')->__('Out of stock') ?></div>
+                    <?php endif ?>
+
+                    <p class="add-to">
+                        <a href="<?php echo $this->href('/account/wishlist/add/id/' . $item['product_id'], true)?>"
+                            rel="nofollow"
+                            class="add-to-wishlist">
+                            <span><span>
+                                <?php echo $this->translate('catalog')->__('Add to Wishlist')?>
+                            </span></span>
+                        </a>
+                        <br/>
+                        <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/' . $item['product_id']) ?>"
+                            rel="nofollow"
+                            class="add-to-compare">
+                            <span><span>
+                                <?php echo $this->translate('catalog')->__('Add to Compare')?>
+                            </span></span>
+                        </a>
+                    </p>
+                </div>
+            </li>
+
+        <?php $i++;
+
+        if ($i%$columnCount==0) : ?>
+        </ul>
+        <?php endif;
+
+    endforeach;
+
+    if ($i % $columnCount != 0) : ?>
+        </ul>
     <?php endif; ?>
 
-        <li class="product-item">
-            <?php if ($this->showRemove): ?>
-                <a href="<?php echo $this->href('account/tag/remove-item/itemId/' . $item['id'], true) ?>"
-                    class="tag-remove"><?php echo $this->translate('tag')->__('Remove tag from this product') ?>
-                </a>
-            <?php endif; ?>
-            <?php
-            $imagePath = isset($product['images'][$product['image_listing']]) ?
-                $product['images'][$product['image_listing']]['path'] : '';
-            $imageTitle = isset($product['images'][$product['image_listing']]) ?
-                $product['images'][$product['image_listing']]['title'] : '';
-            ?>
-            <a href="<?php echo $productUrl;?>" class="product-image"
-                title="<?php echo $this->escape($imageTitle) ?>"
-            ><?php echo $this->imager('/product' . $imagePath, array(
-                'width'  => $this->config()->image->product->widthSmall,
-                'height' => $this->config()->image->product->heightSmall,
-                'alt' => $this->escape($imageTitle),
-                'seo' => $product['image_seo_name']
-            ));
-            ?></a>
-            <h4 class="product-name"><a href="<?php echo $productUrl;?>"
-                title="<?php echo $this->escape($product['name']);?>"
-                ><?php echo $this->escape($product['name']);?></a></h4>
-            <?php echo $this->price($product['prices']) ?>
+    </div>
 
-            <div class="product-actions">
-                <?php if ($product['is_saleable']): ?>
-                    <?php echo $this->button($this->translate('catalog')->__('Add to cart'), array(
-                        'class' => 'button btn-add-to-cart',
-                        'rel' => 'nofollow',
-                        'href' => $this->href('checkout/cart/add/productId/' . $item['product_id'], true)
-                    )) ?>
-                <?php else: ?>
-                    <div class="out-of-stock"><?php echo $this->translate('catalog')->__('Out of stock') ?></div>
-                <?php endif ?>
-
-                <p class="add-to">
-                    <a href="<?php echo $this->href('/account/wishlist/add/id/' . $item['product_id'], true)?>"
-                        rel="nofollow"
-                        class="add-to-wishlist">
-                        <span><span>
-                            <?php echo $this->translate('catalog')->__('Add to Wishlist')?>
-                        </span></span>
-                    </a>
-                    <br/>
-                    <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/' . $item['product_id']) ?>"
-                        rel="nofollow"
-                        class="add-to-compare">
-                        <span><span>
-                            <?php echo $this->translate('catalog')->__('Add to Compare')?>
-                        </span></span>
-                    </a>
-                </p>
-            </div>
-        </li>
-
-    <?php $i++;
-
-    if ($i%$columnCount==0) : ?>
-    </ul>
-    <?php endif;
-
-endforeach;
-
-if ($i % $columnCount != 0) : ?>
-    </ul>
-<?php endif; ?>
-
-</div>
-
-<script type="text/javascript">
-    var rows = $('#content-listing .grid-row');
-    var count = rows.length;
-    if (count) {
-        $(rows[0]).addClass('first');
-        $(rows[count - 1]).addClass('last');
-    }
-</script>
+    <script type="text/javascript">
+        var rows = $('#content-listing .grid-row');
+        var count = rows.length;
+        if (count) {
+            $(rows[0]).addClass('first');
+            $(rows[count - 1]).addClass('last');
+        }
+    </script>
 
 <?php endif ?>
