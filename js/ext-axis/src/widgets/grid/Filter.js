@@ -130,7 +130,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             }
         }
 
-        if (undefined !== typeof column.table) {
+        if ('undefined' !== typeof column.table) {
             cfg.table = column.table;
         }
 
