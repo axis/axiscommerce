@@ -378,6 +378,9 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
                 if (undefined !== field.table) {
                     params['filter[' + length + '][table]'] = field.table;
                 }
+                if (undefined !== field.clause) {
+                    params['filter[' + length + '][clause]'] = field.clause;
+                }
                 length++;
             });
         });
