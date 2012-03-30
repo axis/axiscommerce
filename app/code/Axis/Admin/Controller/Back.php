@@ -62,6 +62,7 @@ abstract class Axis_Admin_Controller_Back extends Axis_Controller_Action
             return;
         }
 
-        parent::_redirect($this->view->adminUrl . '/' . ltrim($url, '/ '), $options);
+        $url = $this->view->adminUrl . '/' . ltrim($url, '/ ');
+        parent::_redirect(rtrim($url, '/'), $options);
     }
 }
