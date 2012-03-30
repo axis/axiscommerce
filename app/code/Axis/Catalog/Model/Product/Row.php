@@ -184,6 +184,27 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     }
 
     /**
+     * Update related products assignment
+     *
+     * @param array $data
+     * @return Axis_Catalog_Model_Product_Row
+     */
+    public function setRelated($data)
+    {
+        $mRelated = Axis::model('catalog/product_related');
+        foreach ($data as $rowData) {
+            $row = $mRelated->getRow($this->id, $rowData['related_product_id']);
+            if (!$rowData['status']) {
+                $row->delete();
+            } else {
+                $row->setFromArray($rowData)
+                    ->save();
+            }
+        }
+        return $this;
+    }
+
+    /**
      * Update discount on product
      *
      * @param array $data

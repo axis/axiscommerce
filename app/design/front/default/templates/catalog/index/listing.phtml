@@ -103,10 +103,10 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
     <?php endforeach; ?>
     </ul>
 <?php else : /* Grid listing */ ?>
-    <div class="product-listing product-listing-grid" id="content-listing">
+    <?php $columnCount = 3; ?>
+    <div class="product-listing product-listing-grid grid-<?php echo $columnCount ?>-cols" id="content-listing">
     <?php
     $i = 0;
-    $columnCount = 3;
     foreach ($this->products as $prodId => $product) :
         $productUrl = $this->hurl(array(
             'product' => array('value' => $prodId, 'seo' => $product['key_word']),

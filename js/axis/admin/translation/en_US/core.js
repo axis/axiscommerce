@@ -518,5 +518,6 @@ Locale.module("core", {
     "New Question": "New Question",
     "New Customer": "New Customer",
     "Resource": "Resource",
-    'Price to' : 'Price to'
+    'Price to': 'Price to',
+    "Related Products": "Related Products"
 });
