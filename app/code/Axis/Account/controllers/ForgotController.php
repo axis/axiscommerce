@@ -150,10 +150,14 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             $row->password = md5($params['password']);
             $row->save();
 
+            Axis::message()->addSuccess(Axis::translate('admin')->__(
+                'Password successfully changed'
+            ));
+
             $modelForgotPass->delete(
                 $this->db->quoteInto('hash = ?', $params['hash'])
             );
         }
-        $this->_redirect($this->_getBackUrl());
+        $this->_redirect('account/auth');
     }
 }
