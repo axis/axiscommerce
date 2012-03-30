@@ -518,5 +518,6 @@ Locale.module("core", {
     "New Question": "Нове питання",
     "New Customer": "Новий користувач",
     "Resource": "Ресурс",
-    'Price to' : 'Ціна до'
+    'Price to': 'Ціна до',
+    "Related Products": "Супутні товари"
 });
