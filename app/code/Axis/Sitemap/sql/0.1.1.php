@@ -69,6 +69,13 @@ class Axis_Sitemap_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
+        $installer = $this->getInstaller();
+
+        $installer->run("
+            ALTER TABLE `{$installer->getTable('sitemap')}`
+                RENAME TO `{$installer->getTable('sitemap_file')}`;
+        ");
+
 //        Axis::single('core/config_field')
 //            ->add('sitemap/main/startTime', 'Start Time', '', 'string', 'Start Time')
 //
