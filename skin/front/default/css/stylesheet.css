@@ -759,7 +759,7 @@ span.filter-name { color: #555; font-size: 12px; font-weight: bold; float: left;
 .product-listing-grid .out-of-stock { margin: .3em 0 0; }
 
 /* various column sets */
-.product-listing .product-item { width: 145px; } /* to support not existing .grid-x-cols and stretch listing */
+.product-listing-grid .product-item { width: 145px; } /* to support not existing .grid-x-cols and stretch listing */
 
 .grid-2-cols .product-item { width: 46%; }
 .grid-3-cols .product-item { width: 29.6%; }
