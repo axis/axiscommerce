@@ -118,9 +118,11 @@ class Axis_Account_Model_Form_Signup extends Axis_Form
                     ->setAttrib('class', $el->getAttrib('class') . ' required');
             }
             if (!empty($row['validator'])) {
-                $el->addValidator($row['validator']);
                 if ($row['validator'] == 'Date') {
+                    $el->addValidator($row['validator'], false, array('format' => 'yyyy-MM-dd'));
                     $el->setAttrib('class', $el->getAttrib('class') . ' input-date');
+                } else {
+                    $el->addValidator($row['validator']);
                 }
             }
             if (!empty($row['axis_validator'])) {
