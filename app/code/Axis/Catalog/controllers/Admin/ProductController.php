@@ -238,7 +238,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
             ->select(array('language_id', '*'))
             ->where('product_id = ? ', $product->id)
             ->fetchAssoc();
-        foreach (Axis_Locale_Model_Option_Language::getConfigOptionsArray() as $languageId => $values) {
+        foreach (Axis::model('locale/option_language')->toArray() as $languageId => $values) {
             $data['description']['lang_' . $languageId] = array();
             if (!isset($descriptions[$languageId])) {
                 continue;

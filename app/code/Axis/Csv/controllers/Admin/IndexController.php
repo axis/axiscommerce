@@ -254,7 +254,7 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
 
         // Load languages
         $filter_languages = explode(',', trim($filters['language_ids'], ' ,'));
-        $languageIds = array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray());
+        $languageIds = array_keys(Axis::model('locale/option_language')->toArray());
         $languageId = Axis_Locale::getLanguageId();
         $langIdToCode = array();
         foreach (Axis::single('locale/language')->fetchAll() as $lang) {
@@ -475,7 +475,7 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
 
                 // caching language_ids
                 if (!Zend_Registry::isRegistered('language_ids')) {
-                    Zend_Registry::set('language_ids', array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray()));
+                    Zend_Registry::set('language_ids', array_keys(Axis::model('locale/option_language')->toArray()));
                 }
                 // insert the same text for all languages
                 foreach (Zend_Registry::get('language_ids') as $langId) {
@@ -524,7 +524,7 @@ class Axis_Csv_Admin_IndexController extends Axis_Admin_Controller_Back
 
                 // caching language_ids
                 if (!Zend_Registry::isRegistered('language_ids')) {
-                    Zend_Registry::set('language_ids', array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray()));
+                    Zend_Registry::set('language_ids', array_keys(Axis::model('locale/option_language')->toArray()));
                 }
                 // insert the same text for all languages
                 foreach (Zend_Registry::get('language_ids') as $langId) {

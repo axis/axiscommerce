@@ -107,15 +107,14 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
 //            } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
 //                $_value = '****************';
 //            } else
-            if (/*'handler' !== $row->config_type && */!empty($row->model) 
-                && method_exists($row->model, 'getConfigOptionValue')) {
-                
-                $_value = call_user_func(
-                    array($row->model, 'getConfigOptionValue'), $row->value
-                );
-            } else {
-                $_value = $row->value;
-            }
+            $_value = $row->value;
+//            if (/*'handler' !== $row->config_type && */!empty($row->model) 
+//                && method_exists($row->model, 'getConfigOptionValue')) {
+//                
+//                $_value = call_user_func(
+//                    array($row->model, 'getConfigOptionValue'), $row->value
+//                );
+//            } 
 
             $data[$row->id]['value'] = $_value;
             $data[$row->id]['from'] = $row->site_id ? 'site' : 'global';
@@ -158,14 +157,14 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 );
             }
 //            //@todo $row->getBackend()
-//            $modelBackend = null;
-//            if (class_exists($row->model)) {
-//                $modelBackend = new $row->model();
-//            }
-//
-//            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
-//                $value = $modelBackend->decode($value);
-//            }
+            $modelBackend = null;
+            if (class_exists($row->model)) {
+                $modelBackend = new $row->model();
+            }
+
+            if ($modelBackend instanceof Axis_Config_Option_Array_Abstract) {
+                $this->view->options = $modelBackend->toArray();
+            }
         }
         $this->view->value = $value;
         

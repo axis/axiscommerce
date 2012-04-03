@@ -38,7 +38,7 @@ abstract class Axis_Admin_Controller_Back extends Axis_Controller_Action
     {
         parent::init();
 
-        $this->view->languages = Axis_Locale_Model_Option_Language::getConfigOptionsArray();
+        $this->view->languages = Axis::model('locale/option_language')->toArray();
         $this->view->sites     = Axis_Core_Model_Option_Site::getConfigOptionsArray();
         $this->view->locales   = Axis::single('locale/language')->select()->fetchAssoc();
         

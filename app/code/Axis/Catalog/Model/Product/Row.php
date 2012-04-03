@@ -129,7 +129,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     {
         $mImage      = Axis::single('catalog/product_image');
         $mImageTitle = Axis::single('catalog/product_image_title');
-        $languages   = Axis_Locale_Model_Option_Language::getConfigOptionsArray();
+        $languages   = Axis::model('locale/option_language')->toArray();
 
         $imageTypes     = array('base', 'listing', 'thumbnail');
         $updatedImages  = array();
@@ -241,7 +241,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     public function setDescription($data)
     {
         $tableDesc = Axis::single('catalog/product_description');
-        foreach (Axis_Locale_Model_Option_Language::getConfigOptionsArray() as $languageId => $name) {
+        foreach (Axis::model('locale/option_language') as $languageId => $_n) {
             if (!$row = $tableDesc->find($this->id, $languageId)->current()) {
                 $row = $tableDesc->createRow();
                 $row->product_id = $this->id;
@@ -338,7 +338,7 @@ class Axis_Catalog_Model_Product_Row extends Axis_Db_Table_Row
     {
         $mAttribute = Axis::single('catalog/product_attribute');
         $mAttributeValue = Axis::single('catalog/product_attribute_value');
-        $languages = Axis_Locale_Model_Option_Language::getConfigOptionsArray();
+        $languages = Axis::model('locale/option_language')->toArray();
 
         foreach ($data as $property) {
             if (!isset($property['id'])

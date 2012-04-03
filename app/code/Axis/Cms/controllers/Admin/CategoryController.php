@@ -91,7 +91,7 @@ class Axis_Cms_Admin_CategoryController extends Axis_Admin_Controller_Back
             ->where('ccc.cms_category_id = ?', $row->id)
             ->fetchAssoc();
 
-        foreach(Axis_Locale_Model_Option_Language::getConfigOptionsArray() as $languageId => $lName) {
+        foreach(Axis::model('locale/option_language') as $languageId => $_n) {
             $data['content']['lang' . '_' . $languageId] =
                 isset($content[$languageId]) ? $content[$languageId] : array();
         }

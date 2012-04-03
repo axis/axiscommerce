@@ -31,33 +31,16 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Option_Language implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_Language extends Axis_Config_Option_Array_Abstract
 {
-    protected static $_collection = null;
-    
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        if (null === self::$_collection) {
-            self::$_collection = Axis::single('locale/language')
+        return Axis::single('locale/language')
                 ->select(array('id', 'language'))
                 ->fetchPairs();
-        }
-        return self::$_collection;
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('locale/language')->getLanguageById($key);
     }
 }

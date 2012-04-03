@@ -116,14 +116,14 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             'Quality',
             'Value'
         );
-        $languages = Axis_Locale_Model_Option_Language::getConfigOptionsArray();
+        $languages    = Axis::model('locale/option_language');
         $mRatingTitle = Axis::model('community/review_rating_title');
         foreach (Axis::model('community/review_rating')->fetchAll() as $rating) {
-            foreach ($languages as $langId => $langName) {
+            foreach ($languages as $languageId => $languageName) {
                 $mRatingTitle->createRow(array(
-                    'rating_id'     => $rating->id,
-                    'language_id'   => $langId,
-                    'title'         => $titles[$rating->id - 1]
+                    'rating_id'   => $rating->id,
+                    'language_id' => $languageId,
+                    'title'       => $titles[$rating->id - 1]
                 ))->save();
             }
         }

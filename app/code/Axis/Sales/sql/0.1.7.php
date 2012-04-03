@@ -221,14 +221,14 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             'Refund',
             'Failed'
         );
-        $mStatusText = Axis::model('sales/order_status_text');
-        $languages = Axis_Locale_Model_Option_Language::getConfigOptionsArray();
+        $modelOrderStatusText = Axis::model('sales/order_status_text');
+        $languages = Axis::model('locale/option_language');
         foreach (Axis::model('sales/order_status')->fetchAll() as $status) {
-            foreach ($languages as $langId => $langName) {
-                $mStatusText->createRow(array(
-                    'status_id'     => $status->id,
-                    'language_id'   => $langId,
-                    'status_name'   => $statusText[$status->id]
+            foreach ($languages as $languageId => $langName) {
+                $modelOrderStatusText->createRow(array(
+                    'status_id'   => $status->id,
+                    'language_id' => $languageId,
+                    'status_name' => $statusText[$status->id]
                 ))->save();
             }
         }

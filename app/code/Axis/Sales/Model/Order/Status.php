@@ -106,7 +106,7 @@ class Axis_Sales_Model_Order_Status extends Axis_Db_Table
 
         //add labels
         $modelLabel  = Axis::model('sales/order_status_text');
-        $languageIds = array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray());
+        $languageIds = array_keys(Axis::model('locale/option_language')->toArray());
         foreach ($languageIds as $languageId) {
             if (!isset($translates[$languageId])) {
                 continue;

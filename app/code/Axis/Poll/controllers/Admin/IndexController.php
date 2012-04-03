@@ -88,7 +88,7 @@ class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
         $modelLabel  = Axis::model('poll/question_description');
         $modelSite   = Axis::model('poll/question_site');
         $modelAnswer = Axis::single('poll/answer');
-        $languageIds = array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray());
+        $languageIds = array_keys(Axis::model('locale/option_language')->toArray());
 
         $row = $model->save($_row);
 

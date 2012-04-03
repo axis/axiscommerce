@@ -107,7 +107,7 @@ class Axis_Account_Admin_FieldController extends Axis_Admin_Controller_Back
         unset($data['field']['customer_field_id']);
         unset($data['field']['field_label']);
         unset($data['field']['language_id']);
-        foreach (array_keys(Axis_Locale_Model_Option_Language::getConfigOptionsArray()) as $languageId) {
+        foreach (Axis::model('locale/option_language') as $languageId => $_n) {
             $label = isset($rowset[$languageId]['field_label']) ?
                 $rowset[$languageId]['field_label'] : '';
 

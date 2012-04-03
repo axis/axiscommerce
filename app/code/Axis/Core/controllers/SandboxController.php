@@ -35,6 +35,16 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
+        $languges = Axis::single('locale/option_language');
+        Zend_Debug::dump($languges);
+        Zend_Debug::dump(array_keys((array)$languges));
+        Zend_Debug::dump($languges[1]);
+        Zend_Debug::dump($languges['1,2']);
+        Zend_Debug::dump($languges['2,0']);
+        foreach ($languges as $k => $n) {
+            Zend_Debug::dump($k, $n);
+        }
+        die;
         Zend_Debug::dump(Axis::config('design/htmlHead/titlePattern'));
         $rowset = Axis::single('core/config_field')->select()
             ->where("model != ''")
@@ -50,10 +60,7 @@ class SandboxController extends Axis_Core_Controller_Front
         }
 //        die;
         $v = Axis::config('shipping/Flat_Standard/multiPrice');
-        Zend_Debug::dump(
-            Axis::config('shipping/Flat_Standard/multiPrice'),
-            '================================'
-        );
+        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
         
         
 //        $routeAdmin = new Axis_Controller_Router_Route_Admin(

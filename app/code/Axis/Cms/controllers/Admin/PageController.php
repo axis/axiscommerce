@@ -85,7 +85,7 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
 
         $data = $rowPage->toArray();
         $data['category'] = $category;
-        foreach(Axis_Locale_Model_Option_Language::getConfigOptionsArray() as $languageId => $lName) {
+        foreach(Axis::model('locale/option_language')->toArray() as $languageId => $lName) {
             $data['content']['lang_' . $languageId] =
                 isset($content[$languageId]) ? $content[$languageId] : array();
         }
