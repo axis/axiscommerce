@@ -302,11 +302,15 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                     );
             }
             if (!empty($row['validator'])) {
-                $field->addValidator($row['validator']);
                 if ('Date' == $row['validator']) {
+                    $field->addValidator(
+                        $row['validator'], false, array('format' => 'yyyy-MM-dd')
+                    );
                     $field->setAttrib(
                         'class', $field->getAttrib('class') . ' input-date'
                     );
+                } else {
+                    $field->addValidator($row['validator']);
                 }
             }
             if (!empty($row['axis_validator'])) {
