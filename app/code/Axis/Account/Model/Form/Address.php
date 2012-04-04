@@ -40,7 +40,12 @@ class Axis_Account_Model_Form_Address extends Axis_Form
 
     protected $_translatorModule = 'account';
 
-    protected $_fieldConfig = array();
+    protected $_fieldConfig = array(
+        'firstname_sort_order' => -20,
+        'firstname_status'     => 'required',
+        'lastname_sort_order'  => -19,
+        'lastname_status'      => 'required'
+    );
 
     protected $_eventPrefix = 'account_form_address';
 
@@ -129,14 +134,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         ));
 
         $configOptions = Axis::config('account/address_form')->toArray();
-        $this->_fieldConfig = array_merge(array(
-                'firstname_sort_order'  => -20,
-                'firstname_status'      => 'required',
-                'lastname_sort_order'   => -19,
-                'lastname_status'       => 'required'
-            ),
-            $configOptions
-        );
+        $this->_fieldConfig = array_merge($this->_fieldConfig, $configOptions);
 
         $countries = Axis_Collect_Country::collect();
         if (isset($countries['0'])
