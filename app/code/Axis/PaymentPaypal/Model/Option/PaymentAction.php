@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_PaymentPaypal_Model_Option_PaymentAction implements Axis_Config_Option_Array_Interface
+class Axis_PaymentPaypal_Model_Option_PaymentAction extends Axis_Config_Option_Array_Abstract
 {
     const AUTHORIZATION = 'Authorization';
     const SALE          = 'Sale';
@@ -40,27 +40,13 @@ class Axis_PaymentPaypal_Model_Option_PaymentAction implements Axis_Config_Optio
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::AUTHORIZATION => self::AUTHORIZATION,
             self::SALE          => self::SALE
         );
     }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
-    }
-   
 }

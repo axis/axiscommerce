@@ -31,13 +31,12 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Config_Field_Type implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Config_Field_Type extends Axis_Config_Option_Array_Abstract
 {
     /**
-     * @static
      * @var const array
      */
-    static protected $_types = array(
+     protected $_types = array(
         'radio'    => 'bool',
         'checkbox' => 'multiple',
         'select'   => 'select',
@@ -48,22 +47,10 @@ class Axis_Core_Model_Option_Config_Field_Type implements Axis_Config_Option_Arr
 
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        return self::$_types;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return self::$_types[$key];
+        return $this->_types;
     }
 }

@@ -31,33 +31,18 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Company_Zone implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Company_Zone extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         $countryId = Axis::config('core/company/country');
         return Axis::single('location/zone')
                 ->select(array('id', 'name'))
                 ->where('country_id = ?', $countryId)
                 ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('location/zone')->getNameById($key);
     }
 }

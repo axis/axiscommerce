@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingTable_Model_Option_Standard_Service implements Axis_Config_Option_Array_Interface
+class Axis_ShippingTable_Model_Option_Standard_Service extends Axis_Config_Option_Array_Abstract
 {   
     const PER_WEIGHT = 'Per Weight';
     const PER_ITEM   = 'Per Item';
@@ -41,27 +41,14 @@ class Axis_ShippingTable_Model_Option_Standard_Service implements Axis_Config_Op
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::PER_WEIGHT => 'Per Weight',
             self::PER_ITEM   => 'Per Item',
             self::PER_PRICE  => 'Per Price'
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

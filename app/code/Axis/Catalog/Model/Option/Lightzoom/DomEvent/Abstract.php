@@ -31,49 +31,11 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-abstract class Axis_Catalog_Model_Option_Lightzoom_DomEvent_Abstract implements Axis_Config_Option_Array_Interface
+abstract class Axis_Catalog_Model_Option_Lightzoom_DomEvent_Abstract extends Axis_Config_Option_Array_Abstract
 {   
     const NONE       = 'none';
     const CLICK      = 'click';
     const DBLCLICK   = 'dblclick';
     const MOUSEENTER = 'mouseenter';
     const MOUSELEAVE = 'mouseleave';
-
-    /**
-     *
-     * @static
-     * @return array
-     */
-    public static function getConfigOptionsArray()
-    {
-        return array(
-            self::NONE       => ucfirst(self::NONE), 
-            self::CLICK      => ucfirst(self::CLICK), 
-            self::DBLCLICK   => ucfirst(self::DBLCLICK), 
-            self::MOUSEENTER => ucfirst(self::MOUSEENTER), 
-            self::MOUSELEAVE => ucfirst(self::MOUSELEAVE)
-        );
-    }
-    
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
-    }
-    
-    /**
-     *
-     * @static
-     * @return const array
-     */
-    public static function getConfigOptionDeafultValue()
-    {
-        return self::NONE;
-    }
 }

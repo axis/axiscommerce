@@ -31,53 +31,32 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Mail_Template implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Mail_Template extends Axis_Config_Option_Array_Abstract
 {
+    
     /**
      *
-     * @static
-     * @var array
-     */
-    private static $_templates;
-
-    /**
-     *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        if (null === self::$_templates) {
-            $path = Axis::config()->system->path . '/app/design/mail';
-            $templates = array();
-            if (!file_exists($path))
-                return false;
-            $dh = opendir($path);
+        $path = Axis::config()->system->path . '/app/design/mail';
+        $templates = array();
+        if (!file_exists($path))
+            return false;
+        $dh = opendir($path);
 
-            while (($file = readdir($dh))) {
+        while (($file = readdir($dh))) {
 
-                if (!is_dir($path . '/' . $file) &&
-                    substr($file, -11) == '_html.phtml' &&
-                    is_file($path . '/' . substr($file, 0, -11) . '_txt.phtml')
-                   )
-                $templates[substr($file, 0, -11)] = substr($file, 0, -11);
-            }
-
-            closedir($dh);
-            self::$_templates = $templates;
+            if (!is_dir($path . '/' . $file) &&
+                substr($file, -11) == '_html.phtml' &&
+                is_file($path . '/' . substr($file, 0, -11) . '_txt.phtml')
+                )
+            $templates[substr($file, 0, -11)] = substr($file, 0, -11);
         }
-        return self::$_templates;
-    }
 
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return $options[$key];
+        closedir($dh);
+            
+        return $templates;
     }
 }

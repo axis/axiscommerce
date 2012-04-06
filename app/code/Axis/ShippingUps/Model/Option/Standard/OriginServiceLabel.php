@@ -36,26 +36,12 @@ class Axis_ShippingUps_Model_Option_Standard_OriginServiceLabel extends Axis_Shi
 {
     /**
      *
-     * @static
      * @return const array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         $origin = Axis::config('shipping/Ups_Standard/xmlOrigin');
         
-        return isset(self::$_origins[$origin]) ?
-            self::$_origins[$origin] : array();
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
+        return isset($this->_origins[$origin]) ? $this->_origins[$origin] : array();
     }
 }

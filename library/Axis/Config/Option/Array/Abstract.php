@@ -29,27 +29,33 @@
  * @package     Axis_Config
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-abstract class Axis_Config_Option_Array_Abstract implements 
-    IteratorAggregate, Countable, ArrayAccess,
+abstract class Axis_Config_Option_Array_Abstract implements IteratorAggregate, Countable, ArrayAccess
 //    Axis_Config_Option_Array_Interface, 
-    Axis_Config_Option_Encodable_Interface
+//    Axis_Config_Option_Encodable_Interface
     
 {
-    const MULTI_SEPARATOR = ',';
-    
     /**
      *
      * @var array 
      */
     protected $_collection = array();
     
-    public function __construct() 
-    {
-        $this->_collection = $this->_loadCollection();
-    }
-    
+    /**
+     *
+     * @var bool 
+     */
+    protected $_isLoaded = false;
+
     abstract protected function _loadCollection();
-    
+       
+    protected function _load() 
+    {
+        if (!$this->_isLoaded) {
+            $this->_collection = $this->_loadCollection();
+            $this->_isLoaded = true;
+        }
+    }
+
     /**
      * Implementation of IteratorAggregate::getIterator()
      *
@@ -57,6 +63,7 @@ abstract class Axis_Config_Option_Array_Abstract implements
      */    
     public function getIterator()
     {
+        $this->_load();
         return new ArrayIterator($this->_collection);
     }
     
@@ -67,6 +74,7 @@ abstract class Axis_Config_Option_Array_Abstract implements
      */
     public function count()
     {
+        $this->_load();
         return count($this->_collection);
     }
     
@@ -93,14 +101,8 @@ abstract class Axis_Config_Option_Array_Abstract implements
      */
     public function offsetExists($offset) 
     {
+        $this->_load();
         return isset($this->_collection[$offset]);
-//        
-//        foreach($this->decode($offset) as $key) {
-//            if (!array_key_exists($key, $this->_collection)) {
-//                return false;
-//            }
-//        }
-//        return true;
     }
     
     /**
@@ -122,18 +124,8 @@ abstract class Axis_Config_Option_Array_Abstract implements
      */
     public function offsetGet($offset) 
     {
+        $this->_load();
         return isset($this->_collection[$offset]) ? $this->_collection[$offset] : null;
-        
-//        $return = array();
-//        foreach($this->decode($offset) as $key) {
-//            if (array_key_exists($key, $this->_collection)) {
-//                $return[$key] = $this->_collection[$key];
-//            }
-//        }
-////        if (count($return) === count($this->_collection)) {
-////            return 'All';
-////        }
-//        return $this->encode($return);
     }
     
     /**
@@ -142,30 +134,7 @@ abstract class Axis_Config_Option_Array_Abstract implements
      */
     public function toArray() 
     {
+        $this->_load();
         return $this->_collection;
-    }
-    
-    /**
-     *
-     * @param  array $value
-     * @return string
-     */
-    public function encode($value)
-    {
-        if (!is_array($value)) {
-            throw new Axis_Exception('get me array');
-        }
-        //@todo remove $value !in_array($this->_collection)
-        return implode(self::MULTI_SEPARATOR, $value);
-    }
-    
-    /**
-     *
-     * @param  string $value
-     * @return array
-     */
-    public function decode($value)
-    {
-        return explode(self::MULTI_SEPARATOR, $value);
     }
 }

@@ -31,41 +31,26 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Option_Order_CreditCard_SaveNumberType implements Axis_Config_Option_Array_Interface
+class Axis_Sales_Model_Option_Order_CreditCard_SaveNumberType extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
      * @var const array
      */
-    static protected $_actions = array(
-        'dont_save'         => 'Don\'t save',
-        'last_four'         => 'Last 4 digits',
-        'first_last_four'   => 'First and last 4 digits',
-        'partial_email'     => 'First and last 4 digits to database, rest send by email',
-        'complete'          => 'Save complete number',
+    protected $_actions = array(
+        'dont_save'       => 'Don\'t save',
+        'last_four'       => 'Last 4 digits',
+        'first_last_four' => 'First and last 4 digits',
+        'partial_email'   => 'First and last 4 digits to database, rest send by email',
+        'complete'        => 'Save complete number',
     );
 
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        return self::$_actions;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return mixed string|void
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key || !isset(self::$_actions[$key])) {
-            return '';
-        }
-        return self::$_actions[$key];
+        return $this->_actions;
     }
 }

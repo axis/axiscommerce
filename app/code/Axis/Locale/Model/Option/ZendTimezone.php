@@ -29,14 +29,13 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Option_ZendTimezone implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_ZendTimezone extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         $options= array();
         $locale = Axis_Locale::getLocale();
@@ -52,22 +51,5 @@ class Axis_Locale_Model_Option_ZendTimezone implements Axis_Config_Option_Array_
             $options[$code] =  empty($name) ? $code : $name . ' (' . $code . ')';
         }
         return $options;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return mixed string|void
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (empty($key)) {
-            return;
-        }
-        $locale = Axis_Locale::getLocale();
-        $name  = $locale->getTranslation($key, 'WindowsToTimezone', $locale);
-
-        return empty($name) ? $key : $name . ' (' . $key . ')';
     }
 }

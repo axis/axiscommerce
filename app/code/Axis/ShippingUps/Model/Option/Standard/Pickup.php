@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUps_Model_Option_Standard_Pickup implements Axis_Config_Option_Array_Interface
+class Axis_ShippingUps_Model_Option_Standard_Pickup extends Axis_Config_Option_Array_Abstract
 {
     const RDP = '01';
     const CC  = '03';
@@ -42,10 +42,9 @@ class Axis_ShippingUps_Model_Option_Standard_Pickup implements Axis_Config_Optio
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::RDP => 'Daily Pickup',
@@ -54,17 +53,5 @@ class Axis_ShippingUps_Model_Option_Standard_Pickup implements Axis_Config_Optio
             self::OCA => 'On Call Air',
             self::LC  => 'Letter Center'
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

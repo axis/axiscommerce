@@ -31,35 +31,22 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Option_Currency_Position implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_Currency_Position extends Axis_Config_Option_Array_Abstract 
 {
     const STANDARD = 8;
     const RIGHT    = 16;
     const LEFT     = 32;
 
-
     /**
-     * @static
+     * 
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::STANDARD => Axis::translate('locale')->__('Standard'),
             self::RIGHT    => Axis::translate('locale')->__('Right'),
             self::LEFT     => Axis::translate('locale')->__('Left')
         );
-    }
-    
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

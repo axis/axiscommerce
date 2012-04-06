@@ -35,10 +35,9 @@ class Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger extends Axis_Catal
 {   
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::NONE       => ucfirst(self::NONE), 

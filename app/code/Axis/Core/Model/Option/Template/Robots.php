@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Template_Robots implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Template_Robots extends Axis_Config_Option_Array_Abstract
 {
     //@todo delimeter ','
     const FOLLOW   = 'FOLLOW';  
@@ -42,10 +42,9 @@ class Axis_Core_Model_Option_Template_Robots implements Axis_Config_Option_Array
     // 0 - nofollow noindex, 1 - follow noindex, 2 - nofollow index, 3 - follow index
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::INDEX . ' ' . self::FOLLOW     => self::INDEX . ',' . self::FOLLOW,
@@ -55,19 +54,6 @@ class Axis_Core_Model_Option_Template_Robots implements Axis_Config_Option_Array
         );
     }
 
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
-    }
-    
-        
     /**
      *
      * @static

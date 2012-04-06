@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_Community_Model_Option_Review_Status implements Axis_Config_Option_Array_Interface
+class Axis_Community_Model_Option_Review_Status extends Axis_Config_Option_Array_Abstract
 {   
     //@todo int value
     const APPROVED    = 'approved';
@@ -41,27 +41,14 @@ class Axis_Community_Model_Option_Review_Status implements Axis_Config_Option_Ar
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::APPROVED    => ucfirst(self::APPROVED),
             self::PENDING     => ucfirst(self::PENDING),
             self::DISAPPROVED => ucfirst(self::DISAPPROVED)
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

@@ -74,6 +74,8 @@ class Axis_Account_Model_Observer
         }
 
         try {
+            $mailBoxes = Axis::model('core/option_mail_boxes');
+            
             $mailNotice = new Axis_Mail();
             $mailNotice->setLocale(Axis::config('locale/main/language_admin'));
             $mailNotice->setConfig(array(
@@ -82,9 +84,7 @@ class Axis_Account_Model_Observer
                 'data'    => array(
                     'customer' => $data['customer']
                 ),
-                'to' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
-                    Axis::config('core/company/administratorEmail')
-                )
+                'to' => $mailBoxes[Axis::config('core/company/administratorEmail')]
             ));
             $mailNotice->send();
         } catch (Zend_Mail_Transport_Exception $e) {

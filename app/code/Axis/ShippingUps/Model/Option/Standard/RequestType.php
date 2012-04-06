@@ -32,33 +32,20 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUps_Model_Option_Standard_RequestType implements Axis_Config_Option_Array_Interface
+class Axis_ShippingUps_Model_Option_Standard_RequestType extends Axis_Config_Option_Array_Abstract
 {
     const CGI = 'CGI';
     const XML = 'XML';
   
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::CGI => self::CGI,
             self::XML => self::XML
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

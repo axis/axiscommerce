@@ -87,7 +87,7 @@ class Axis_Config extends Zend_Config
             $siteId = Axis::getSiteId();
         }
 
-        $hasCache =  (bool) Zend_Registry::isRegistered('cache') ?
+        $hasCache = (bool) Zend_Registry::isRegistered('cache') ?
             Axis::cache() instanceof Zend_Cache_Core : false;
 
         if (!$hasCache
@@ -122,18 +122,18 @@ class Axis_Config extends Zend_Config
             $parts = explode('/', $path);
             
             switch ($data['config_type']) {
-                case 'string':
-                    $value = $data['value'];
-                    break;
-                case 'select':
-                    $value = $data['value'];
-                    break;
-                case 'bool':
-                    $value = (bool) $data['value'];
-                    break;
-                case 'multiprice': //@todo here is bug 
-                    $value = $data['value'];
-                    break;
+//                case 'string':
+//                    $value = $data['value'];
+//                    break;
+//                case 'select':
+//                    $value = $data['value'];
+//                    break;
+//                case 'bool':
+//                    $value = (bool) $data['value'];
+//                    break;
+//                case 'multiprice': //@todo here is bug 
+//                    $value = $data['value'];
+//                    break;
                 case 'multiple':
                     $value = explode(self::MULTI_SEPARATOR, $data['value']);
                     break;
@@ -143,10 +143,12 @@ class Axis_Config extends Zend_Config
             }
 //            $value = $data['value'];
             $modelBackend = null;
-            if (class_exists($data['model'])) {
+            if (class_exists($data['model']) 
+                && in_array('Axis_Config_Option_Encodable_Interface', class_implements($data['model']))) {
+                
                 $modelBackend = new $data['model']();
-            }
-            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
+//            }
+//            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
                 $value = $modelBackend->decode($value);
             }
             

@@ -31,31 +31,16 @@
  * @subpackage  Axis_Tax_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Tax_Model_Option_Class implements Axis_Config_Option_Array_Interface
+class Axis_Tax_Model_Option_Class extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return Axis::single('tax/class')
                 ->select(array('id', 'name'))
                 ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('tax/class')->getNameById($key);
     }
 }

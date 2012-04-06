@@ -31,34 +31,20 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Option_Zone implements Axis_Config_Option_Array_Interface
+//@ move to collection 
+class Axis_Location_Model_Option_Zone extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-       $rows = Axis::single('location/zone')->fetchAll()->toArray();
+       $rowset = Axis::single('location/zone')->fetchAll();
        $zones = array();
-       foreach ($rows as $row) {
-            $zones[$row['country_id']][$row['id']] = $row['name'];
+       foreach ($rowset as $row) {
+            $zones[$row->country_id][$row->id] = $row->name;
         }
        return $zones;
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return mixed string|void
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('location/zone')->getNameById($key);
     }
 } 

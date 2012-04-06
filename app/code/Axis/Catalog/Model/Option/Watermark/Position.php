@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Option_Watermark_Position implements Axis_Config_Option_Array_Interface
+class Axis_Catalog_Model_Option_Watermark_Position extends Axis_Config_Option_Array_Abstract
 {
     const TOP    = 'top';
     const MIDDLE = 'middle';
@@ -45,10 +45,9 @@ class Axis_Catalog_Model_Option_Watermark_Position implements Axis_Config_Option
 
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         $options = array();
         foreach (array(self::TOP, self::MIDDLE, self::BOTTOM) as $h) {
@@ -59,18 +58,6 @@ class Axis_Catalog_Model_Option_Watermark_Position implements Axis_Config_Option
         }
         
         return $options;
-    }
-    
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
     
     /**

@@ -179,7 +179,8 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         // Set UPS rate-quote method
         $r->pickupCode = $this->_config->pickup;
-        $r->pickupLabel =  Axis_ShippingUps_Model_Option_Standard_Pickup::getConfigOptionValue($r->pickupCode);
+        $pickups = Axis::model('shippingUps/option_standard_pickup');
+        $r->pickupLabel =  $pickups[$r->pickupCode];
 
         // Set UPS Container type
         $r->containerCode = $this->_config->package;
@@ -265,7 +266,8 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $service->addChild('Code', $this->_request->productCode);
         $code = $this->_request->productCode ?
             $this->_codeToValue[$this->_request->productCode] : '';
-        $service->addChild('Description', Axis_ShippingUps_Model_Option_Standard_OriginServiceLabel::getConfigOptionValue($code));
+        $originServiceLabels = Axis::model('ShippingUps/Option_Standard_OriginServiceLabel');
+        $service->addChild('Description', $originServiceLabels[$code]);
         
         $shipper = $shipment->addChild('Shipper');
         if ($this->_config->negotiatedActive && $this->_config->shipperNumber) {
@@ -360,6 +362,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $negotiatedActive = $this->_config->negotiatedActive &&
             $this->_config->shipperNumber && !empty($negotiatedArr);
 
+        $originServiceLabels = Axis::model('ShippingUps/Option_Standard_OriginServiceLabel');    
         foreach ($xml->RatedShipment as $shipElement) {
             $code = $this->_valueToCode[(string)$shipElement->Service->Code];
 
@@ -378,9 +381,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             $methods[] = array(
                 'id'    => $this->_code . '_' . $code,
                 'title' => $this->getTranslator()->__(
-                    Axis_ShippingUps_Model_Option_Standard_OriginServiceLabel::getConfigOptionValue(
-                        (string)$shipElement->Service->Code
-                    )
+                    $originServiceLabels[(string)$shipElement->Service->Code]
                 ),
                 'price' => $cost + $this->_config->handling
             );
@@ -462,7 +463,8 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         //        }
 
         $allowedMethods = $this->_config->types->toArray();
-
+        $originServiceLabels = Axis::model('ShippingUps/Option_Standard_OriginServiceLabel');
+        
         for ($i = 0; $i < sizeof($rows); $i++) {
             $code = null;
             $row = explode('%', $rows[$i]);
@@ -489,9 +491,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
             $methods[] = array(
                 'id' => $this->_code . '_' . $code,
                 'title' => $this->getTranslator()->__(
-                    Axis_ShippingUps_Model_Option_Standard_OriginServiceLabel::getConfigOptionValue(
-                        $this->_codeToValue[$code]
-                    )
+                    $originServiceLabels[$this->_codeToValue[$code]]
                 ) /*. ' ' . $show_box_weight*/,
                 'price' => $cost + $this->_config->handling
                 // @todo)* $this->_request->numberBoxes

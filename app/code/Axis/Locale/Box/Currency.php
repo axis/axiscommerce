@@ -38,7 +38,7 @@ class Axis_Locale_Box_Currency extends Axis_Core_Box_Abstract
     
     public function init()
     {
-        $currencies = Axis_Locale_Model_Option_Currency::getConfigOptionsArray();
+        $currencies = Axis::model('locale/option_currency')->toArray();
         if (count($currencies) <= 1) {
             return false;
         }

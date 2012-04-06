@@ -31,30 +31,28 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Boolean implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Boolean extends Axis_Config_Option_Array_Abstract
+implements Axis_Config_Option_Encodable_Interface
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             1 => Axis::translate('admin')->__('Yes'), 
             0 => Axis::translate('admin')->__('No')
         );
     }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
+    
+    public function encode($value) 
     {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
+        return $value ? 1 : 0;
+    }
+    
+    public function decode($value) 
+    {
+        return (bool) $value;
     }
 }

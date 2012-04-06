@@ -32,35 +32,20 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_PaymentPaypal_Model_Option_ServerType implements Axis_Config_Option_Array_Interface
+class Axis_PaymentPaypal_Model_Option_ServerType extends Axis_Config_Option_Array_Abstract
 {
     const LIVE    = 'live';
     const SANDBOX = 'sandbox';
     
-    
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::LIVE    => ucfirst(self::LIVE),
             self::SANDBOX => ucfirst(self::SANDBOX)
         );
     }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
-    }
-   
 }

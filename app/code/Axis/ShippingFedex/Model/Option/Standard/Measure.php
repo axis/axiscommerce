@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingFedex_Model_Option_Standard_Measure implements Axis_Config_Option_Array_Interface
+class Axis_ShippingFedex_Model_Option_Standard_Measure extends Axis_Config_Option_Array_Abstract
 {
     const LBS = 'LBS';
     const KGS = 'KGS';
@@ -40,26 +40,13 @@ class Axis_ShippingFedex_Model_Option_Standard_Measure implements Axis_Config_Op
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::LBS => 'Pounds',
             self::KGS => 'Kilograms'
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

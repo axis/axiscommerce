@@ -31,28 +31,16 @@
  * @subpackage  Axis_Contacts_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Contacts_Model_Option_Department implements Axis_Config_Option_Array_Interface
+class Axis_Contacts_Model_Option_Department extends Axis_Config_Option_Array_Abstract 
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return Axis::single('contacts/department')
                 ->select(array('id', 'name'))
                 ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('contacts/department')->getNameById($key);
     }
 }

@@ -31,33 +31,20 @@
  * @subpackage  Axis_PaymentPaypal_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_PaymentPaypal_Model_Option_Standard_TransactionType implements Axis_Config_Option_Array_Interface
+class Axis_PaymentPaypal_Model_Option_Standard_TransactionType extends Axis_Config_Option_Array_Abstract
 {
     const AGGREGATE  = 'Aggregate Cart';
     const INDIVIDUAL = 'Individual Item';
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::AGGREGATE  => self::AGGREGATE,
             self::INDIVIDUAL => self::INDIVIDUAL
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

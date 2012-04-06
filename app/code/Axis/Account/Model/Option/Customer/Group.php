@@ -31,31 +31,16 @@
  * @subpackage  Axis_Account_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Account_Model_Option_Customer_Group implements Axis_Config_Option_Array_Interface
+class Axis_Account_Model_Option_Customer_Group extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        return Axis::single('account/customer_group')
+        return Axis::model('account/customer_group')
                 ->select(array('id', 'name'))
                 ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('account/customer_group')->getNameById($key);
     }
 }

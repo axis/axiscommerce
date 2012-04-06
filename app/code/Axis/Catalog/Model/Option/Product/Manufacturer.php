@@ -31,28 +31,16 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Option_Product_Manufacturer implements Axis_Config_Option_Array_Interface
+class Axis_Catalog_Model_Option_Product_Manufacturer extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return Axis::single('catalog/product_manufacturer')
                 ->select(array('id', 'name'))
                 ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('catalog/prooduct_manufacturer')->getNameById($key);
     }
 }

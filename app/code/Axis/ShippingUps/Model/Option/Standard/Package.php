@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUps_Model_Option_Standard_Package implements Axis_Config_Option_Array_Interface
+class Axis_ShippingUps_Model_Option_Standard_Package extends Axis_Config_Option_Array_Abstract
 {
     const CP   = '00';
     const ULE  = '01';
@@ -47,10 +47,9 @@ class Axis_ShippingUps_Model_Option_Standard_Package implements Axis_Config_Opti
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::CP   => 'Customer Packaging',
@@ -64,17 +63,5 @@ class Axis_ShippingUps_Model_Option_Standard_Package implements Axis_Config_Opti
             self::MEB  => 'Medium Express Box',
             self::LEB  => 'Large Express Box'
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

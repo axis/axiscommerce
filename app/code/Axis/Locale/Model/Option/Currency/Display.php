@@ -31,7 +31,7 @@
  * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Option_Currency_Display implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_Currency_Display extends Axis_Config_Option_Array_Abstract 
 {
     const NO_SYMBOL     = 1;
     const USE_SYMBOL    = 2;
@@ -39,10 +39,10 @@ class Axis_Locale_Model_Option_Currency_Display implements Axis_Config_Option_Ar
     const USE_NAME      = 4;
     
     /**
-     * @static
+     * 
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::NO_SYMBOL     => Axis::translate('locale')->__('No Symbol'),
@@ -50,17 +50,5 @@ class Axis_Locale_Model_Option_Currency_Display implements Axis_Config_Option_Ar
             self::USE_SHORTNAME => Axis::translate('locale')->__('Use Shortname'),
             self::USE_NAME      => Axis::translate('locale')->__('Use Name')
         );
-    }
-    
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

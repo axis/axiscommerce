@@ -32,33 +32,20 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingFlat_Model_Option_Standard_Service implements Axis_Config_Option_Array_Interface
+class Axis_ShippingFlat_Model_Option_Standard_Service extends Axis_Config_Option_Array_Abstract
 {   
     const PER_ORDER = 'Per Order';
     const PER_ITEM  = 'Per Item';
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::PER_ORDER => 'Per Order',
             self::PER_ITEM  => 'Per Item'
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

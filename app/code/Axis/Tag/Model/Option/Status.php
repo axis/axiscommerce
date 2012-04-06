@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_Tag_Model_Option_Status implements Axis_Config_Option_Array_Interface
+class Axis_Tag_Model_Option_Status extends Axis_Config_Option_Array_Abstract
 {   
     const APPROVED    = '1';
     const PENDING     = '2';
@@ -40,27 +40,14 @@ class Axis_Tag_Model_Option_Status implements Axis_Config_Option_Array_Interface
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::APPROVED    => 'Approved',
             self::PENDING     => 'Pending',
             self::DISAPPROVED => 'Disaproved'
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

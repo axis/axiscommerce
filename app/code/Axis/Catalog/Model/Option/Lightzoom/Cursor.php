@@ -31,7 +31,7 @@
  * @subpackage  Axis_Catalog_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Catalog_Model_Option_Lightzoom_Cursor implements Axis_Config_Option_Array_Interface
+class Axis_Catalog_Model_Option_Lightzoom_Cursor extends Axis_Config_Option_Array_Abstract 
 {   
     const NONE      = 'none';
     const DEF       = 'default';
@@ -40,24 +40,16 @@ class Axis_Catalog_Model_Option_Lightzoom_Cursor implements Axis_Config_Option_A
 
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        return array(self::NONE, self::DEF, self::CROSSHAIR, self::POINTER);
-    }
-    
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
+        return array(
+            self::NONE      => ucfirst(self::NONE), 
+            self::DEF       => ucfirst(self::DEF), 
+            self::CROSSHAIR => ucfirst(self::CROSSHAIR), 
+            self::POINTER   => ucfirst(self::POINTER)
+        );
     }
     
     /**

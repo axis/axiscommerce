@@ -32,9 +32,9 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUps_Model_Option_Standard_Origin implements Axis_Config_Option_Array_Interface
+class Axis_ShippingUps_Model_Option_Standard_Origin extends Axis_Config_Option_Array_Abstract
 {
-    protected static $_origins = array(
+    protected $_origins = array(
             'United States Domestic Shipments' => array(
                 '01' => 'UPS Next Day Air',
                 '02' => 'UPS Second Day Air',
@@ -119,24 +119,11 @@ class Axis_ShippingUps_Model_Option_Standard_Origin implements Axis_Config_Optio
 
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        return array_keys(self::$_origins);
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $shipments = self::getConfigOptionsArray();
-        return isset($shipments[$key]) ? $shipments[$key] : '';
+        return array_keys($this->_origins);
     }
     
     /**

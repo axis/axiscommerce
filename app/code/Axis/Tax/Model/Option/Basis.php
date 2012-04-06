@@ -29,7 +29,7 @@
  * @package     Axis_Tax
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Tax_Model_Option_Basis implements Axis_Config_Option_Array_Interface
+class Axis_Tax_Model_Option_Basis extends Axis_Config_Option_Array_Abstract
 {
     const SHIPPING = 'delivery';
     const BILLING  = 'billing';
@@ -37,27 +37,14 @@ class Axis_Tax_Model_Option_Basis implements Axis_Config_Option_Array_Interface
 
     /**
      *
-     * @static
      * @return const array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::SHIPPING => ucfirst(self::SHIPPING),
             self::BILLING  => ucfirst(self::BILLING),
             self::STORE    => ucfirst(self::STORE)
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

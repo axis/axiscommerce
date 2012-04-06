@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingUsps_Model_Option_Standard_Size implements Axis_Config_Option_Array_Interface
+class Axis_ShippingUsps_Model_Option_Standard_Size extends Axis_Config_Option_Array_Abstract
 {
     const REGULAR  = 'REGULAR';
     const LARGE    = 'LARGE';
@@ -40,27 +40,14 @@ class Axis_ShippingUsps_Model_Option_Standard_Size implements Axis_Config_Option
        
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::REGULAR  => 'Regular',
             self::LARGE    => 'Large',
             self::OVERSIZE => 'Oversize'
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

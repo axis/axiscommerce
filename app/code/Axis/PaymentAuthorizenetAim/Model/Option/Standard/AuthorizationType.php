@@ -31,33 +31,20 @@
  * @subpackage  Axis_PaymentAuthorizenetAim_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_PaymentAuthorizenetAim_Model_Option_Standard_AuthorizationType implements Axis_Config_Option_Array_Interface
+class Axis_PaymentAuthorizenetAim_Model_Option_Standard_AuthorizationType extends Axis_Config_Option_Array_Abstract
 {
     const AUTHORIZE = 'authorize';
     const CAPTURE   = 'capture';
     
     /**
      *
-     * @static
      * @return const array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::AUTHORIZE => ucfirst(self::AUTHORIZE),
             self::CAPTURE   => ucfirst(self::CAPTURE)
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

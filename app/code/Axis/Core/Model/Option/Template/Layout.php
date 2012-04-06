@@ -31,24 +31,16 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Template_Layout implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Template_Layout extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
-     * @static
-     * @var array
-     */
-    protected static $_collection;
-
-    /**
-     *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        if (null === self::$_collection) {
-            $themes = Axis_Core_Model_Option_Theme::getConfigOptionsArray();
+        if (empty($this->_collection)) {
+            $themes = Axis::model('core/option_theme');
             $layouts = array();
             $designPath = Axis::config('system/path') . '/app/design/front';
             foreach ($themes as $theme) {
@@ -69,7 +61,7 @@ class Axis_Core_Model_Option_Template_Layout implements Axis_Config_Option_Array
                         continue;
                     }
                     $layouts[$layout] = array(
-                        'name' => $layout,
+                        'name'   => $layout,
                         'themes' => array($theme)
                     );
                 }
@@ -80,22 +72,8 @@ class Axis_Core_Model_Option_Template_Layout implements Axis_Config_Option_Array
                     . ' (' . implode(', ', $layout['themes']) . ')';
             }
 
-            self::$_collection = $collection;
+            $this->_collection = $collection;
         }
-        return self::$_collection;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (null === self::$_collection) {
-            self::$_collection = self::getConfigOptionsArray();
-        }
-        return isset(self::$_collection[$key]) ? self::$_collection[$key] : false;
+        return $this->_collection;
     }
 }

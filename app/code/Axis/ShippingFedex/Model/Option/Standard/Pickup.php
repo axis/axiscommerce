@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingFedex_Model_Option_Standard_Pickup implements Axis_Config_Option_Array_Interface
+class Axis_ShippingFedex_Model_Option_Standard_Pickup extends Axis_Config_Option_Array_Abstract
 {
     const REGULAR_PICKUP          = 'REGULARPICKUP';
     const REQUEST_COURIER         = 'REQUESTCOURIER';
@@ -42,10 +42,9 @@ class Axis_ShippingFedex_Model_Option_Standard_Pickup implements Axis_Config_Opt
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::REGULAR_PICKUP          => 'Regular Pickup',
@@ -54,17 +53,5 @@ class Axis_ShippingFedex_Model_Option_Standard_Pickup implements Axis_Config_Opt
             self::BUSINESS_SERVICE_CENTER => 'Business Service Center',
             self::STATION                 => 'Station'
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

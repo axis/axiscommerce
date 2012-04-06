@@ -65,13 +65,14 @@ class Admin_MailController extends Axis_Admin_Controller_Back
 
     public function listEventAction()
     {
-        $events = Axis_Core_Model_Option_Mail_Event::getConfigOptionsArray();
+        $events = Axis::model('core/option_mail_event')->toArray();
         
         $data = array();
-        $i = 0;
-        foreach ($events as $eventKey => $event) {
-            $data[$i] = array('name' => $event, 'id' => $eventKey);
-            $i++;
+        foreach ($events as $id => $name) {
+            $data[] = array(
+                'id'   => $id, 
+                'name' => $name
+            );
         }
         
         return $this->_helper->json
@@ -81,13 +82,13 @@ class Admin_MailController extends Axis_Admin_Controller_Back
     
     public function listTemplateAction()
     {
-        $templates = Axis_Core_Model_Option_Mail_Template::getConfigOptionsArray();
         
         $data = array();
-        $i = 0;
-        foreach ($templates as $templateKey => $template) {
-            $data[$i] = array('name' => $template, 'id' => $templateKey);
-            $i++;
+        foreach (Axis::model('core/option_mail_template') as $id => $name) {
+            $data[] = array(
+                'id'   => $id,
+                'name' => $name
+            );
         }
         
         return $this->_helper->json
@@ -97,13 +98,14 @@ class Admin_MailController extends Axis_Admin_Controller_Back
     
     public function listMailAction()
     {
-        $templates = Axis_Core_Model_Option_Mail_Boxes::getConfigOptionsArray();
+        $mailBoxes = Axis::model('core/option_mail_boxes')->toArray();
         
         $data = array();
-        $i = 0;
-        foreach ($templates as $templateKey => $template) {
-            $data[$i] = array('name' => $template, 'id' => $templateKey);
-            $i++;
+        foreach ($mailBoxes as $id => $name) {
+            $data[] = array(
+                'id' => $id, 
+                'name' => $name
+            );
         }
         
         return $this->_helper->json

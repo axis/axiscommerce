@@ -31,32 +31,17 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Option_Order_Status_Text implements Axis_Config_Option_Array_Interface
+class Axis_Sales_Model_Option_Order_Status_Text extends Axis_Config_Option_Array_Abstract
 {  
     /**
-     * @static
+     * 
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return Axis::single('sales/order_status_text')
                 ->select(array('status_id', 'status_name'))
                 ->where('language_id = ?', Axis_Locale::getLanguageId())
                 ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('sales/order_status_text')
-            ->select('status_name')
-            ->where('status_id = ?', $key)
-            ->where('language_id = ?', Axis_Locale::getLanguageId())
-            ->fetchOne();
     }
 }

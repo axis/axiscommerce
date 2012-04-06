@@ -111,10 +111,12 @@ class Axis_Core_Model_Site extends Axis_Db_Table
      */
     public function getCompanyInfo($siteId = null)
     {
+        $mailBoxes = Axis::model('core/option_mail_boxes');
+        $zones = Axis::model('location/option_zone');
         $company = Axis::config('core/company', $siteId)->toArray();
         //@todo Use Axis_Object
         return array(
-            'email'     => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue($company['administratorEmail']),
+            'email'     => $mailBoxes[$company['administratorEmail']],
             'city'      => $company['city'],
             'country'   => Axis_Location_Model_Option_Country::getConfigOptionValue($company['country']),
             'fax'       => $company['fax'],
@@ -122,17 +124,12 @@ class Axis_Core_Model_Site extends Axis_Db_Table
             'phone'     => $company['phone'],
             'postcode'  => $company['zip'],
             'site'      => $company['site'],
-            'zone'      => Axis_Location_Model_Option_Zone::getConfigOptionValue($company['zone']),
-            'street_address' => $company['street'],
-            'customer_relation_email' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
-                $company['customerRelationEmail']
-            ),
-            'sales_email' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
-                $company['salesDepartmentEmail']
-            ),
-            'support_email' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
-                $company['supportEmail']
-            )
+            
+            'zone'                    => $zones[$company['country']][$company['zone']],
+            'street_address'          => $company['street'],
+            'customer_relation_email' => $mailBoxes[$company['customerRelationEmail']],
+            'sales_email'             => $mailBoxes[$company['salesDepartmentEmail']],
+            'support_email'           => $mailBoxes[$company['supportEmail']]
         );
     }
 

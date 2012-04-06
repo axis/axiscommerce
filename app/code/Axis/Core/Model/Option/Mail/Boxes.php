@@ -31,40 +31,23 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Mail_Boxes implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Mail_Boxes extends Axis_Catalog_Model_Option_Lightzoom_DomEvent_Abstract
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        $rows = Axis::single('core/config_value')
+        $dataset = Axis::single('core/config_value')
             ->select(array('path', 'value'))
                 ->where('path LIKE "mail/mailboxes/%"')
                 ->fetchPairs();
 
         $result = array();
-        foreach ($rows as $rowId => $rowValue) {
-            $result[substr($rowId, 15)] = $rowValue;
+        foreach ($dataset as $key => $value) {
+            $result[substr($key, 15)] = $value;
         }
         return $result;
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('core/config_value')
-            ->select('value')
-            ->where('path LIKE "mail/mailboxes/%"')
-            ->where('SUBSTR(path,16) = ?', $key)
-            ->fetchOne()
-            ;
     }
 }

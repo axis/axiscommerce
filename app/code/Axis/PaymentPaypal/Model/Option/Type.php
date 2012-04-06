@@ -32,35 +32,20 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_PaymentPaypal_Model_Option_Type implements Axis_Config_Option_Array_Interface
+class Axis_PaymentPaypal_Model_Option_Type extends Axis_Config_Option_Array_Abstract
 {
     const NVP     = 'nvp';
     const PAYFLOW = 'payflow';
     
-    
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::NVP     => ucfirst(self::NVP),
             self::PAYFLOW => ucfirst(self::PAYFLOW)
         );
     }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
-    }
-   
 }

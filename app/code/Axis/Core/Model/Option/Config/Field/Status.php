@@ -29,13 +29,13 @@
  * @package     Axis_Core
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Config_Field_Status implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Config_Field_Status extends Axis_Config_Option_Array_Abstract
 {
     /**
-     * @static
+     * 
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         $translate = Axis::translate('Axis_Core');
         return array(
@@ -43,20 +43,5 @@ class Axis_Core_Model_Option_Config_Field_Status implements Axis_Config_Option_A
             'optional' => $translate->__('Optional'),
             'disabled' => $translate->__('Disabled')
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        if (isset($options[$key])) {
-            return $options[$key];
-        }
-        return 'Undefined';
     }
 }

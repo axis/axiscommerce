@@ -31,30 +31,16 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Option_Address_Format implements Axis_Config_Option_Array_Interface
+class Axis_Location_Model_Option_Address_Format extends Axis_Config_Option_Array_Abstract 
 {
     /**
-     * @static
+     * 
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        return Axis::single('location/address_format')
+        return Axis::model('location/address_format')
                 ->select(array('id', 'name'))
                 ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('location/address_format')->getNameById($key);
     }
 }

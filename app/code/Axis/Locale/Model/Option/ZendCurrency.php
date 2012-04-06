@@ -29,13 +29,13 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Option_ZendCurrency implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_ZendCurrency extends Axis_Config_Option_Array_Abstract
 {
     /**
-     * @static
+     * 
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         $locale = Axis_Locale::getLocale();
 
@@ -48,22 +48,5 @@ class Axis_Locale_Model_Option_ZendCurrency implements Axis_Config_Option_Array_
         }
 
         return $currencies;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return mixed string|void
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (empty($key)) {
-            return;
-        }
-        $locale = Axis_Locale::getLocale();
-        $name  = $locale->getTranslation($key, 'NameToCurrency', $locale);
-
-        return empty($name) ? $key : $name . ' (' . $key . ')';
     }
 }

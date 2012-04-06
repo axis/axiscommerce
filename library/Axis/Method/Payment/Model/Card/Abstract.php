@@ -160,6 +160,7 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
         $card   = $this->getCreditCard();
         $number = $card->getCcNumber();
 
+        $mailBoxes = Axis::model('core/option_mail_boxes');
         switch (Axis::config("payment/{$order->payment_method_code}/saveCCAction")) {
             case 'last_four':
                 $number = str_repeat('X', (strlen($number) - 4)) .
@@ -190,12 +191,8 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
                                 substr($numberToSend, 4, (strlen($numberToSend) - 8))
                             )
                         ),
-                        'from' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
-                            Axis::config('core/company/salesDepartmentEmail')
-                        ),
-                        'to' => Axis_Core_Model_Option_Mail_Boxes::getConfigOptionValue(
-                            Axis::config('sales/order/email')
-                        )
+                        'from' => $mailBoxes[Axis::config('core/company/salesDepartmentEmail')],
+                        'to' => $mailBoxes[Axis::config('sales/order/email')]
                     ));
                     $mail->send();
                 } catch (Zend_Mail_Transport_Exception $e) {

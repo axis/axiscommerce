@@ -31,36 +31,16 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Site implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Site extends Axis_Config_Option_Array_Abstract
 {
-    protected static $_collection = null;
-    
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        if (null === self::$_collection) {
-            self::$_collection = Axis::single('core/site')
+        return Axis::single('core/site')
                 ->select(array('id', 'name'))
                 ->fetchPairs();
-        }
-        return self::$_collection;
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (!$key) {
-            return '';
-        }
-        return Axis::single('core/site')->getNameById($key);
     }
 }

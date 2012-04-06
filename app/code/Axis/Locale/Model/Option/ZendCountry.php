@@ -29,41 +29,24 @@
  * @package     Axis_Collect
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Model_Option_ZendCountry implements Axis_Config_Option_Array_Interface
+class Axis_Locale_Model_Option_ZendCountry extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        $options = array();
         $locale = Axis_Locale::getLocale();
 
         $countries = $locale->getTranslationList('territory', $locale, 2);
 
         if (!$countries) {
-            $countries = $locale->getTranslationList('territory', Axis_Locale::DEFAULT_LOCALE, 2);
+            $countries = $locale->getTranslationList(
+                'territory', Axis_Locale::DEFAULT_LOCALE, 2
+            );
         }
 
         return $countries;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        if (empty($key)) {
-            return;
-        }
-        $locale = Axis_Locale::getLocale();
-        $name  = $locale->getTranslation($key, 'country', $locale);
-
-        return empty($name) ? $key : $name . ' (' . $key . ')';
     }
 }

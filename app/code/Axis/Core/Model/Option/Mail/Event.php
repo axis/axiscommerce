@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Mail_Event implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Mail_Event extends Axis_Config_Option_Array_Abstract
 {
     /**
      *
@@ -39,41 +39,22 @@ class Axis_Core_Model_Option_Mail_Event implements Axis_Config_Option_Array_Inte
      */
     static protected $_events = array(
 
-        'contact_us'            => 'Contact Us',//
-        'default'               => 'Default', //
-        'forgot_password'       => 'Forgot password', //
-        'account_new-owner'     => 'New account store owner notice',
-        'account_new-customer'  => 'New account congratulation',
-        'order_new-owner'       => 'Order create store owner notice',
-        'order_new-customer'    => 'Order create congratulation',
+        'contact_us'                   => 'Contact Us',//
+        'default'                      => 'Default', //
+        'forgot_password'              => 'Forgot password', //
+        'account_new-owner'            => 'New account store owner notice',
+        'account_new-customer'         => 'New account congratulation',
+        'order_new-owner'              => 'Order create store owner notice',
+        'order_new-customer'           => 'Order create congratulation',
         'change_order_status-customer' => 'Order status change'
     );
 
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return self::$_events;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $keys
-     * @return string
-     */
-    public static function getConfigOptionValue($keys)
-    {
-        $return = array();
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
-            if (array_key_exists($key, self::$_events)) {
-                $return[$key] = self::$_events[$key];
-            }
-        }
-
-        return implode(", ", $return);
     }
 }

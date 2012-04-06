@@ -35,32 +35,11 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $languges = Axis::single('locale/option_language');
-        Zend_Debug::dump($languges);
-        Zend_Debug::dump(array_keys((array)$languges));
-        Zend_Debug::dump($languges[1]);
-        Zend_Debug::dump($languges['1,2']);
-        Zend_Debug::dump($languges['2,0']);
-        foreach ($languges as $k => $n) {
-            Zend_Debug::dump($k, $n);
-        }
-        die;
-        Zend_Debug::dump(Axis::config('design/htmlHead/titlePattern'));
-        $rowset = Axis::single('core/config_field')->select()
-            ->where("model != ''")
-//            ->where("model NOT LIKE '%Model_Option%'")
-            ->fetchRowset();
+        Zend_Debug::dump(Axis::config('core/company/zone'));
         
-        foreach ($rowset as $row) {
-            if (!class_exists($row->model)) {
-                Zend_Debug::dump($row->model);
-            }
-//            $row->model = str_replace('_Model_', '_Model_Option_', $row->model);
-//            $row->save();
-        }
 //        die;
-        $v = Axis::config('shipping/Flat_Standard/multiPrice');
         Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
+        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice')->toArray());
         
         
 //        $routeAdmin = new Axis_Controller_Router_Route_Admin(

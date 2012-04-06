@@ -32,33 +32,20 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_GoogleBase_Model_Option_ConnectionType implements Axis_Config_Option_Array_Interface
+class Axis_GoogleBase_Model_Option_ConnectionType extends Axis_Config_Option_Array_Abstract 
 {   
     const CLIENT_LOGIN = 'ClientLogin';
     const AUTH_SUB     = 'AuthSub';
     
     /**
      *
-     * @static
      * @return const array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::CLIENT_LOGIN => self::CLIENT_LOGIN,
             self::AUTH_SUB     => self::AUTH_SUB
         );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
 }

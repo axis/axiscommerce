@@ -31,34 +31,21 @@
  * @subpackage  Axis_Checkout_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode implements Axis_Config_Option_Array_Interface
+class Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode extends Axis_Config_Option_Array_Abstract 
 {   
     const ALL      = 'all';
     const REQUIRED = 'required';
 
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::ALL      => 'Display All Fields',
             self::REQUIRED => 'Display Required Fields Only'
         );
-    }
-    
-    /**
-     *
-     * @static
-     * @param string $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        $options = self::getConfigOptionsArray();
-        return isset($options[$key]) ? $options[$key] : '';
     }
     
     /**

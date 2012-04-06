@@ -38,10 +38,9 @@ class Axis_PaymentPaypal_Model_Option_Express_PaymentAction extends Axis_Payment
     
     /**
      *
-     * @static
      * @return const array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::AUTHORIZATION => self::AUTHORIZATION,

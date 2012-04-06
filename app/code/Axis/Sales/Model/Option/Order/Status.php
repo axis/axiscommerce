@@ -31,28 +31,16 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Option_Order_Status implements Axis_Config_Option_Array_Interface
+class Axis_Sales_Model_Option_Order_Status extends Axis_Config_Option_Array_Abstract
 {  
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return Axis::single('sales/order_status')
                 ->select(array('id', 'name'))
                 ->fetchPairs();
-    }
-
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        return Axis::single('sales/order_status')->getNameById($key);
     }
 }
