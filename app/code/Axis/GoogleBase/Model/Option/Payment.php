@@ -69,6 +69,6 @@ class Axis_GoogleBase_Model_Option_Payment extends Axis_Config_Option_Array_Mult
      */
     public static function getConfigOptionDeafultValue()
     {
-        return implode( self::MULTI_SEPARATOR, array_keys(self::$_cards));
+        return implode( self::SEPARATOR, array_keys(self::$_cards));
     }
 }

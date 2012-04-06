@@ -94,6 +94,6 @@ class Axis_ShippingUsps_Model_Option_Standard_ServiceLabel extends Axis_Shipping
      */
     public static function getConfigOptionDeafultValue()
     {
-        return implode(self::MULTI_SEPARATOR, self::$_labels);
+        return implode(self::SEPARATOR, self::$_labels);
     }
 }

@@ -32,8 +32,6 @@
  */
 class Axis_Config extends Zend_Config
 {
-    const MULTI_SEPARATOR = ',';
-
     /**
      * @param  array   $array
      * @param  boolean $allowModifications
