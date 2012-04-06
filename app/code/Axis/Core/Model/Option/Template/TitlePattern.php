@@ -31,7 +31,7 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Template_TitlePattern implements Axis_Config_Option_Array_Interface
+class Axis_Core_Model_Option_Template_TitlePattern extends Axis_Config_Option_Array_Multi
 {
     // @todo PROFIT:
     // refac const type multiselect like rwx
@@ -43,10 +43,9 @@ class Axis_Core_Model_Option_Template_TitlePattern implements Axis_Config_Option
     
     /**
      *
-     * @static
-     * @return const array
+     * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
             self::PAGE_TITLE        => 'Page Title',
@@ -54,29 +53,7 @@ class Axis_Core_Model_Option_Template_TitlePattern implements Axis_Config_Option
             self::SITE_NAME         => 'Site Name'
         );
     }
-
-    /**
-     *
-     * @static
-     * @param string $keys
-     * @return string
-     */
-    public static function getConfigOptionValue($keys)
-    {
-        $options = self::getConfigOptionsArray();
-        $return = array();
-
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
-            if (array_key_exists($key, $options)) {
-                $return[$key] = $options[$key];
-            }
-        }
-        if (count($return) === count($options)) {
-            return 'All';
-        }
-        return implode(", ", $return);
-    }    
-        
+    
     /**
      *
      * @static

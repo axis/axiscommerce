@@ -45,7 +45,6 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Ups_Standard/title',     'Title', 'Ups')
             ->add('shipping/Ups_Standard/types',     'Allowed Shipping Methods', Axis_ShippingUps_Model_Option_Standard_Service::getConfigOptionDeafultValue(), 'multiple', 'Select the UPS services to be offered. : <br />Nxt AM, Nxt AM Ltr, Nxt, Nxt Ltr, Nxt PR, Nxt Save, Nxt Save Ltr, 2nd AM, 2nd AM Ltr, 2nd, 2nd Ltr, 3 Day Select, Ground, Canada,World Xp, World Xp Ltr, World Xp Plus, World Xp Plus Ltr, World Expedite, WorldWideSaver.',
                 array('model' => 'Axis_ShippingUps_Model_Option_Standard_Service')
-
             )
             ->add('shipping/Ups_Standard/boxWeightDisplay', 'Shipping/Default/boxWeightDisplay', '1', 'string', 'Variants: 0, 1 or 2 ')
             ->add('shipping/Ups_Standard/type',     'UPS Type', Axis_ShippingUps_Model_Option_Standard_RequestType::CGI, 'select', 'CGI or XML', array('model' => 'Axis_ShippingUps_Model_Option_Standard_RequestType'))

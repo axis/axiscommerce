@@ -30,9 +30,6 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 abstract class Axis_Config_Option_Array_Abstract implements IteratorAggregate, Countable, ArrayAccess
-//    Axis_Config_Option_Array_Interface, 
-//    Axis_Config_Option_Encodable_Interface
-    
 {
     /**
      *

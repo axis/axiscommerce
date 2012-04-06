@@ -94,7 +94,7 @@ class Axis_Config extends Zend_Config
             || !$dataset = Axis::cache()->load("config_{$key}_site_{$siteId}")) {
 
             $dataset = Axis::single('core/config_field')
-                ->select(array('path', 'config_type', 'model'))
+                ->select(array('path', 'model'))
                 ->joinInner(
                     'core_config_value',
                     'ccv.config_field_id = ccf.id',
@@ -121,34 +121,13 @@ class Axis_Config extends Zend_Config
         foreach ($dataset as $path => $data) {
             $parts = explode('/', $path);
             
-            switch ($data['config_type']) {
-//                case 'string':
-//                    $value = $data['value'];
-//                    break;
-//                case 'select':
-//                    $value = $data['value'];
-//                    break;
-//                case 'bool':
-//                    $value = (bool) $data['value'];
-//                    break;
-//                case 'multiprice': //@todo here is bug 
-//                    $value = $data['value'];
-//                    break;
-                case 'multiple':
-                    $value = explode(self::MULTI_SEPARATOR, $data['value']);
-                    break;
-                default:
-                    $value = $data['value'];
-                    break;
-            }
-//            $value = $data['value'];
+            $value = $data['value'];
+            
             $modelBackend = null;
             if (class_exists($data['model']) 
                 && in_array('Axis_Config_Option_Encodable_Interface', class_implements($data['model']))) {
                 
                 $modelBackend = new $data['model']();
-//            }
-//            if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
                 $value = $modelBackend->decode($value);
             }
             

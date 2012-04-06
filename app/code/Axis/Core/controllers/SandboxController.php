@@ -35,7 +35,10 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        Zend_Debug::dump(Axis::config('core/company/zone'));
+        Zend_Debug::dump(Axis_Payment::getMethodNames());
+        Zend_Debug::dump(Axis::config('payment/CreditCard_Standard/shippings'));
+//        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());
+        
         
 //        die;
         Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));

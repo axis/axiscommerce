@@ -133,6 +133,6 @@ class Axis_ShippingUps_Model_Option_Standard_Origin extends Axis_Config_Option_A
      */
     public static function getConfigOptionDeafultValue()
     {
-        return current(self::getConfigOptionsArray());
+        return current(array_keys($this->_origins));
     }
 }

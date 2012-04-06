@@ -29,7 +29,7 @@
  * @package     Axis_Config
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_Abstract
+abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_Abstract implements Axis_Config_Option_Encodable_Interface
 {
     const SEPARATOR = ',';
     
@@ -41,7 +41,7 @@ abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_A
     public function encode($value)
     {
         //@todo remove $value !in_array($this->_collection)
-        return implode(self::SEPARATOR, $value);
+        return implode(self::SEPARATOR, (array)$value);
     }
     
     /**
@@ -70,7 +70,7 @@ abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_A
 ////        }
 ////        return true;
 //    }
-//    
+//        
 //    /**
 //     * Required by the ArrayAccess implementation
 //     * 

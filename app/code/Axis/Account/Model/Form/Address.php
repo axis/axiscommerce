@@ -138,7 +138,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
             $configOptions
         );
 
-        $countries = Axis_Location_Model_Option_Country::getConfigOptionsArray();
+        $countries = Axis::model('location/option_country')->toArray();
         if (isset($countries['0'])
             && 'ALL WORLD COUNTRY' === $countries['0']) {
 

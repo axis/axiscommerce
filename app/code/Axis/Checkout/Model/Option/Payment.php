@@ -29,41 +29,18 @@
  * @package     Axis_Checkout
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Checkout_Model_Option_Payment implements Axis_Config_Option_Array_Interface
+class Axis_Checkout_Model_Option_Payment extends Axis_Config_Option_Array_Multi
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         $ret = array();
         foreach (Axis_Payment::getMethods() as $methodCode => $method) {
             $ret[$methodCode] = $method->getTitle();
         }
         return $ret;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $keys
-     * @return string
-     */
-    public static function getConfigOptionValue($keys)
-    {
-        $options = self::getConfigOptionsArray();
-        $return = array();
-
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
-            if (array_key_exists($key, $options)) {
-                $return[$key] = $options[$key];
-            }
-        }
-        if (count($return) === count($options)) {
-            return 'All';
-        }
-        return implode(", ", $return);
     }
 }

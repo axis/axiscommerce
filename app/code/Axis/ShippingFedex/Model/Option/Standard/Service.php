@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_ShippingFedex_Model_Option_Standard_Service implements Axis_Config_Option_Array_Interface
+class Axis_ShippingFedex_Model_Option_Standard_Service extends Axis_Config_Option_Array_Multi
 {
     const EUROPE_FIRST_INTERNATIONAL_PRIORITY = 'EUROPEFIRSTINTERNATIONALPRIORITY';
     const FEDEX_1_DAY_FREIGHT                 = 'FEDEX1DAYFREIGHT';
@@ -54,16 +54,14 @@ class Axis_ShippingFedex_Model_Option_Standard_Service implements Axis_Config_Op
     const STANDARD_OVERNIGHT                  = 'STANDARDOVERNIGHT';
     const FEDEX_FREIGHT                       = 'FEDEXFREIGHT';
     const FEDEX_NATIONAL_FREIGHT              = 'FEDEX_NATIONAL_FREIGHT';
-    
+
     /**
      *
-     * @static
-     * @return const array
+     * @return  array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return array(
-            
             self::EUROPE_FIRST_INTERNATIONAL_PRIORITY => 'Europe First Priority',
             self::FEDEX_1_DAY_FREIGHT                 => '1 Day Freight',
             self::FEDEX_2_DAY_FREIGHT                 => '2 Day Freight',
@@ -84,41 +82,6 @@ class Axis_ShippingFedex_Model_Option_Standard_Service implements Axis_Config_Op
             self::STANDARD_OVERNIGHT                  => 'Standard Overnight',
             self::FEDEX_FREIGHT                       => 'Freight',
             self::FEDEX_NATIONAL_FREIGHT              => 'National Freight'
-        );
-    }
-
-    /**
-     *
-     * @static
-     * @param string $keys
-     * @return string
-     */
-    public static function getConfigOptionValue($keys)
-    {
-        $options = self::getConfigOptionsArray();
-        $return = array();
-
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
-            if (array_key_exists($key, $options)) {
-                $return[$key] = $options[$key];
-            }
-        }
-        if (count($return) === count($options)) {
-            return 'All';
-        }
-        return implode(", ", $return);
-    }
-    
-    /**
-     *
-     * @static
-     * @return const array
-     */
-    public static function getConfigOptionDeafultValue()
-    {
-        return implode(
-            Axis_Config::MULTI_SEPARATOR, 
-            array_keys(self::getConfigOptionsArray())
         );
     }
 }

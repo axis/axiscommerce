@@ -94,29 +94,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             $data[$row->id]['title'] =
                 Axis::translate($row->getTranslationModule())->__($row->title);
 
-//            if (empty($row->model)) {
-//                $_value = $row->value;
-//            } elseif ('handler' == $row->config_type && 'Crypt' == $row->model){
-//                $_value = '****************';
-//            } else {
-//                
-//            }
-            
-//            if ('bool' == $row->config_type) {
-//                $_value = Axis_Core_Model_Option_Boolean::getConfigOptionValue($row->value);
-//            } elseif ('handler' == $row->config_type && 'Crypt' == $row->model) {
-//                $_value = '****************';
-//            } else
-            $_value = $row->value;
-//            if (/*'handler' !== $row->config_type && */!empty($row->model) 
-//                && method_exists($row->model, 'getConfigOptionValue')) {
-//                
-//                $_value = call_user_func(
-//                    array($row->model, 'getConfigOptionValue'), $row->value
-//                );
-//            } 
-
-            $data[$row->id]['value'] = $_value;
+            $data[$row->id]['value'] = $row->value;
             $data[$row->id]['from'] = $row->site_id ? 'site' : 'global';
         }
 
@@ -148,15 +126,10 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         if ($value instanceof Axis_Config) {
             $value = $value->toArray();
         }
-
+        
         if (!empty($row->model)) {
             
-            if (method_exists($row->model, 'getConfigOptionsArray')) {
-                $this->view->options = call_user_func(
-                    array($row->model, 'getConfigOptionsArray')
-                );
-            }
-//            //@todo $row->getBackend()
+            //@todo $row->getBackend()
             $modelBackend = null;
             if (class_exists($row->model)) {
                 $modelBackend = new $row->model();
@@ -189,6 +162,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         
         if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
             $value = $modelBackend->encode($value);
+//            die;
         } elseif ($modelBackend instanceof Axis_Config_Option_Array_Interface
             && strchr(Axis_Config::MULTI_SEPARATOR, (string)$value)) {
             //@todo use implode/explode default encode/decode on axis_collection

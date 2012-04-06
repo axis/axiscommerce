@@ -287,7 +287,7 @@ class Axis_ShippingUsps_Model_Standard extends Axis_Method_Shipping_Model_Abstra
         }
 
         $allowedMethods = $this->_config->allowedMethods->toArray();
-        $allMethods = Axis_ShippingUsps_Model_Option_Standard_ServiceLabel::getConfigOptionsArray();
+        $allMethods = Axis::model('shippingUsps/Option_Standard_ServiceLabel')->toArray();
 
         if ($this->_request->getDestCountryId() == 'US'
             || $this->_request->getDestCountryId() == 'PR') {

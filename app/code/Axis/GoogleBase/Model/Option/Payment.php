@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  * @abstract
  */
-class Axis_GoogleBase_Model_Option_Payment implements Axis_Config_Option_Array_Interface
+class Axis_GoogleBase_Model_Option_Payment extends Axis_Config_Option_Array_Multi
 {   
     //@todo ? int value
     const DISCOVER         = 'Discover';
@@ -43,44 +43,23 @@ class Axis_GoogleBase_Model_Option_Payment implements Axis_Config_Option_Array_I
     const CHECK            = 'Check';
     const CASH             = 'Cash';
     
-    /**
-     *
-     * @static
-     * @return const array
-     */
-    public static function getConfigOptionsArray()
-    {
-        return array(
-            self::DISCOVER         => self::DISCOVER,
-            self::AMERICAN_EXPRESS => self::AMERICAN_EXPRESS,
-            self::VISA             => self::VISA,
-            self::MASTER_CARD      => self::MASTER_CARD,
-            self::WIRE_TRANSFER    => self::WIRE_TRANSFER,
-            self::CHECK            => self::CHECK,
-            self::CASH             => self::CASH
-        );
-    }
+    private static $_cards = array(
+        self::DISCOVER         => self::DISCOVER,
+        self::AMERICAN_EXPRESS => self::AMERICAN_EXPRESS,
+        self::VISA             => self::VISA,
+        self::MASTER_CARD      => self::MASTER_CARD,
+        self::WIRE_TRANSFER    => self::WIRE_TRANSFER,
+        self::CHECK            => self::CHECK,
+        self::CASH             => self::CASH
+    );
 
     /**
      *
-     * @static
-     * @param string $keys
-     * @return string
+     * @return array
      */
-    public static function getConfigOptionValue($keys)
+    protected function _loadCollection()
     {
-        $options = self::getConfigOptionsArray();
-        $return = array();
-
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
-            if (array_key_exists($key, $options)) {
-                $return[$key] = $options[$key];
-            }
-        }
-        if (count($return) === count($options)) {
-            return 'All';
-        }
-        return implode(", ", $return);
+        return self::$_cards;
     }
     
     /**
@@ -90,9 +69,6 @@ class Axis_GoogleBase_Model_Option_Payment implements Axis_Config_Option_Array_I
      */
     public static function getConfigOptionDeafultValue()
     {
-        return implode(
-            Axis_Config::MULTI_SEPARATOR, 
-            array_keys(self::getConfigOptionsArray())
-        );
+        return implode( self::MULTI_SEPARATOR, array_keys(self::$_cards));
     }
 }

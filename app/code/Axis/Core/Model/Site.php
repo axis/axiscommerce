@@ -112,13 +112,15 @@ class Axis_Core_Model_Site extends Axis_Db_Table
     public function getCompanyInfo($siteId = null)
     {
         $mailBoxes = Axis::model('core/option_mail_boxes');
-        $zones = Axis::model('location/option_zone');
-        $company = Axis::config('core/company', $siteId)->toArray();
+        $zones     = Axis::model('location/option_zone');
+        $countries = Axis::model('location/option_country');
+        $company   = Axis::config('core/company', $siteId)->toArray();
+        
         //@todo Use Axis_Object
         return array(
             'email'     => $mailBoxes[$company['administratorEmail']],
             'city'      => $company['city'],
-            'country'   => Axis_Location_Model_Option_Country::getConfigOptionValue($company['country']),
+            'country'   => $countries[$company['country']],
             'fax'       => $company['fax'],
             'name'      => $company['name'],
             'phone'     => $company['phone'],

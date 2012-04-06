@@ -29,41 +29,18 @@
  * @package     Axis_Checkout
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Checkout_Model_Option_Shipping implements Axis_Config_Option_Array_Interface
+class Axis_Checkout_Model_Option_Shipping extends Axis_Config_Option_Array_Multi
 {
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        $options = array();
+        $methods = array();
         foreach (Axis_Shipping::getMethods() as $methodCode => $method) {
-            $options[$methodCode] = $method->getTitle();
+            $methods[$methodCode] = $method->getTitle();
         }
-        return $options;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $keys
-     * @return string
-     */
-    public static function getConfigOptionValue($keys)
-    {
-        $options = self::getConfigOptionsArray();
-        $return = array();
-
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
-            if (array_key_exists($key, $options)) {
-                $return[$key] = $options[$key];
-            }
-        }
-        if (count($return) === count($options)) {
-            return 'All';
-        }
-        return implode(", ", $return);
+        return $methods;
     }
 }

@@ -391,7 +391,7 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         } 
 
         $allowedMethods = $this->_config->allowedTypes->toArray();
-        
+        $services = Axis::model('ShippingFedex/Option_Standard_Service');
         foreach ($xml->Entry as $entry) {
             if (!in_array((string)$entry->Service, $allowedMethods)) {
                 continue;
@@ -400,12 +400,8 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
                 (float)$entry->EstimatedCharges->DiscountedCharges->NetCharge
             );
             $methods[] = array(
-                'id' => $this->_code . '_' . (string)$entry->Service,
-                'title' => $this->getTranslator()->__(
-                    Axis_ShippingFedex_Model_Option_Standard_Service::getConfigOptionValue(
-                        (string)$entry->Service
-                    )
-                ),
+                'id'    => $this->_code . '_' . (string)$entry->Service,
+                'title' => $this->getTranslator()->__($services[(string)$entry->Service]),
                 'price' => $cost + $this->_config->handling
             );
         }

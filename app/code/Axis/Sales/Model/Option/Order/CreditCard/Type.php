@@ -31,7 +31,7 @@
  * @subpackage  Axis_Sales_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Sales_Model_Option_Order_CreditCard_Type implements Axis_Config_Option_Array_Interface
+class Axis_Sales_Model_Option_Order_CreditCard_Type extends Axis_Config_Option_Array_Multi
 {
     /**
      * @static
@@ -55,33 +55,10 @@ class Axis_Sales_Model_Option_Order_CreditCard_Type implements Axis_Config_Optio
 
     /**
      *
-     * @static
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
         return self::$_cards;
-    }
-
-    /**
-     *
-     * @static
-     * @param string $keys
-     * @return string
-     */
-    public static function getConfigOptionValue($keys)
-    {
-        $options = self::getConfigOptionsArray();
-        $return = array();
-
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
-            if (array_key_exists($key, $options)) {
-                $return[$key] = $options[$key];
-            }
-        }
-        if (count($return) === count($options)) {
-            return 'All';
-        }
-        return implode(", ", $return);
     }
 }

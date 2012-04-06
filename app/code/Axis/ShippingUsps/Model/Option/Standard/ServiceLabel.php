@@ -34,78 +34,57 @@
  */
 class Axis_ShippingUsps_Model_Option_Standard_ServiceLabel extends Axis_ShippingUsps_Model_Option_Standard_Service
 {
+    private static $_labels = array(
+        'First-Class',
+        'First-Class Mail International Large Envelope',
+        'First-Class Mail International Letter',
+        'First-Class Mail International Package' ,
+        'First-Class Mail',
+        'First-Class Mail Flat' ,
+        'First-Class Mail Large Envelope' ,
+        'First-Class Mail International',
+        'First-Class Mail Letter' ,
+        'First-Class Mail Parcel' ,
+        'First-Class Mail Package',
+        'Parcel Post',
+        'Bound Printed Matter' ,
+        'Media Mail',
+        'Library Mail',
+        'Express Mail',
+        'Express Mail PO to PO' ,
+        'Express Mail Flat Rate Envelope' ,
+        'Express Mail Flat-Rate Envelope Sunday/Holiday Guarantee',
+        'Express Mail Sunday/Holiday Guarantee' ,
+        'Express Mail Flat Rate Envelope Hold For Pickup' ,
+        'Express Mail Hold For Pickup',
+        'Global Express Guaranteed (GXG)' ,
+        'Global Express Guaranteed Non-Document Rectangular',
+        'Global Express Guaranteed Non-Document Non-Rectangular',
+        'USPS GXG Envelopes',
+        'Express Mail International',
+        'Express Mail International Flat Rate Envelope' ,
+        'Priority Mail',
+        'Priority Mail Small Flat Rate Box',
+        'Priority Mail Medium Flat Rate Box' ,
+        'Priority Mail Large Flat Rate Box',
+        'Priority Mail Flat Rate Box',
+        'Priority Mail Flat Rate Envelope' ,
+        'Priority Mail International',
+        'Priority Mail International Flat Rate Envelope' ,
+        'Priority Mail International Small Flat Rate Box',
+        'Priority Mail International Medium Flat Rate Box' ,
+        'Priority Mail International Large Flat Rate Box',
+        'Priority Mail International Flat Rate Box'
+    );
+
     /**
      *
-     * @static
      * @return const array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        $_labels = array(
-            'First-Class',
-            'First-Class Mail International Large Envelope',
-            'First-Class Mail International Letter',
-            'First-Class Mail International Package' ,
-            'First-Class Mail',
-            'First-Class Mail Flat' ,
-            'First-Class Mail Large Envelope' ,
-            'First-Class Mail International',
-            'First-Class Mail Letter' ,
-            'First-Class Mail Parcel' ,
-            'First-Class Mail Package',
-            'Parcel Post',
-            'Bound Printed Matter' ,
-            'Media Mail',
-            'Library Mail',
-            'Express Mail',
-            'Express Mail PO to PO' ,
-            'Express Mail Flat Rate Envelope' ,
-            'Express Mail Flat-Rate Envelope Sunday/Holiday Guarantee',
-            'Express Mail Sunday/Holiday Guarantee' ,
-            'Express Mail Flat Rate Envelope Hold For Pickup' ,
-            'Express Mail Hold For Pickup',
-            'Global Express Guaranteed (GXG)' ,
-            'Global Express Guaranteed Non-Document Rectangular',
-            'Global Express Guaranteed Non-Document Non-Rectangular',
-            'USPS GXG Envelopes',
-            'Express Mail International',
-            'Express Mail International Flat Rate Envelope' ,
-            'Priority Mail',
-            'Priority Mail Small Flat Rate Box',
-            'Priority Mail Medium Flat Rate Box' ,
-            'Priority Mail Large Flat Rate Box',
-            'Priority Mail Flat Rate Box',
-            'Priority Mail Flat Rate Envelope' ,
-            'Priority Mail International',
-            'Priority Mail International Flat Rate Envelope' ,
-            'Priority Mail International Small Flat Rate Box',
-            'Priority Mail International Medium Flat Rate Box' ,
-            'Priority Mail International Large Flat Rate Box',
-            'Priority Mail International Flat Rate Box'
-        );
-        return array_combine($_labels, $_labels);
-    }
-
-    /**
-     *
-     * @static
-     * @param string $keys
-     * @return string
-     */
-    public static function getConfigOptionValue($keys)
-    {
-        $options = self::getConfigOptionsArray();
-        $return = array();
-
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $keys) as $key) {
-            if (array_key_exists($key, $options)) {
-                $return[$key] = $options[$key];
-            }
-        }
-        if (count($return) === count($options)) {
-            return 'All';
-        }
-        return implode(", ", $return);
+        
+        return array_combine(self::$_labels, self::$_labels);
     }
 
     /**
@@ -115,9 +94,6 @@ class Axis_ShippingUsps_Model_Option_Standard_ServiceLabel extends Axis_Shipping
      */
     public static function getConfigOptionDeafultValue()
     {
-        return implode(
-            Axis_Config::MULTI_SEPARATOR, 
-            array_keys(self::getConfigOptionsArray())
-        );
+        return implode(self::MULTI_SEPARATOR, self::$_labels);
     }
 }

@@ -31,44 +31,17 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Option_Country implements Axis_Config_Option_Array_Interface
+//@todo split class, only 'account/address_form/country_id_allow' is multi :(
+class Axis_Location_Model_Option_Country extends Axis_Config_Option_Array_Multi
 {
-    protected static $_collection = null;
-    
     /**
-     * @static
+     * 
      * @return array
      */
-    public static function getConfigOptionsArray()
+    protected function _loadCollection()
     {
-        if (null === self::$_collection) {
-            self::$_collection = Axis::single('location/country')
-                ->select(array('id', 'name'))
-                ->fetchPairs();
-        }
-        return self::$_collection;
-    }
-    
-    /**
-     *
-     * @static
-     * @param int $key
-     * @return string
-     */
-    public static function getConfigOptionValue($key)
-    {
-        self::getConfigOptionsArray();
-        $return = array();
-
-        foreach(explode(Axis_Config::MULTI_SEPARATOR, $key) as $key) {
-            if (array_key_exists($key, self::$_collection)) {
-                $return[$key] = isset(self::$_collection[$key]) ?
-                        self::$_collection[$key] : '';
-            }
-        }
-        if (count($return) === count(self::$_collection)) {
-            return 'All';
-        }
-        return implode(", ", $return);
+        return Axis::single('location/country')
+            ->select(array('id', 'name'))
+            ->fetchPairs();
     }
 }
