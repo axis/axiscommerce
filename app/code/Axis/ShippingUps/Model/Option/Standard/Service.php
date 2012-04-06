@@ -78,7 +78,7 @@ class Axis_ShippingUps_Model_Option_Standard_Service extends Axis_Config_Option_
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return implode(self::SEPARATOR, array_keys(self::$_services));
     }

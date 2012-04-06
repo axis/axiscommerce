@@ -57,7 +57,7 @@ class Axis_Catalog_Model_Option_Lightzoom_Cursor extends Axis_Config_Option_Arra
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return self::CROSSHAIR;
     }

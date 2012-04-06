@@ -51,7 +51,7 @@ class Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger extends Axis_Catalo
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return self::MOUSEENTER;
     }

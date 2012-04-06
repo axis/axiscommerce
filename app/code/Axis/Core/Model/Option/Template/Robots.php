@@ -59,7 +59,7 @@ class Axis_Core_Model_Option_Template_Robots extends Axis_Config_Option_Array_Ab
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return self::INDEX . ' ' . self::FOLLOW;
     }

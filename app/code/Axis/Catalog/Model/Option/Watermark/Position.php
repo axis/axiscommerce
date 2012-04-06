@@ -65,7 +65,7 @@ class Axis_Catalog_Model_Option_Watermark_Position extends Axis_Config_Option_Ar
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return self::BOTTOM . '_' . self::RIGHT;
     }

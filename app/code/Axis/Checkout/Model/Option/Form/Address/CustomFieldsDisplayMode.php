@@ -53,7 +53,7 @@ class Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode extends Ax
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return self::ALL;
     }

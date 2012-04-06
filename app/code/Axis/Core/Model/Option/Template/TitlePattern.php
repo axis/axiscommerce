@@ -59,7 +59,7 @@ class Axis_Core_Model_Option_Template_TitlePattern extends Axis_Config_Option_Ar
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return self::PAGE_TITLE . ',' . self::SITE_NAME;
     }

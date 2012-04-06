@@ -66,7 +66,7 @@ class Axis_ShippingUsps_Model_Option_Standard_Service extends Axis_Config_Option
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return self::ALL;
     }

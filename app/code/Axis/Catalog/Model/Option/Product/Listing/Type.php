@@ -53,7 +53,7 @@ class Axis_Catalog_Model_Option_Product_Listing_Type extends Axis_Config_Option_
      * @static
      * @return const array
      */
-    public static function getConfigOptionDeafultValue()
+    public static function getDeafult()
     {
         return self::GRID;
     }
