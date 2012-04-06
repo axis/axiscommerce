@@ -64,6 +64,10 @@ class Axis_Payment
                 if ($ext != 'php' || $methodName == 'Abstract') {
                     continue;
                 }
+                $className = $code . '_Model_' . $methodName;
+                if (!in_array('Axis_Method_Payment_Model_Abstract', class_parents($className))) {
+                    continue;
+                }
                 $methods[$code . '/' . $methodName] = substr($moduleName, strlen($prefix)) . '_' . $methodName;
             }
             closedir($dir);
