@@ -35,7 +35,15 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-
+        $model = Axis::single('core/config_field');
+        $rowset = $model->select()
+            ->where('type = ?', 'text')
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $row->type = 'textarea';
+            $row->save();
+        }
+        
         Zend_Debug::dump(Axis_Payment::getMethodNames());
         Zend_Debug::dump(Axis::config('payment/CreditCard_Standard/shippings'));
 //        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());

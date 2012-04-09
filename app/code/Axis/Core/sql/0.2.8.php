@@ -30,6 +30,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
+        $model = Axis::single('core/config_field');
         $models = array(
             'Configuration_Field' => 'Axis_Core_Model_Option_Config_Field_Type',
             'Template'            => 'Axis_Core_Model_Option_Template',
@@ -50,7 +51,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             'core/store/zone'               => 'Axis_Core_Model_Option_Store_Zone',
             'core/company/zone'             => 'Axis_Core_Model_Option_Company_Zone'
         );
-        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
+        $rowset = $model->select()->fetchRowset();
         
         foreach ($rowset as $row) {
             
@@ -97,7 +98,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
 
         ");
             
-        $rowset = Axis::single('core/config_field')->select()
+        $rowset = $model->select()
             ->where('type = ?', 'radio')
             ->fetchRowset();
         foreach ($rowset as $row) {
@@ -105,12 +106,19 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             $row->save();
         }
         
-        $rowset = Axis::single('core/config_field')->select()
+        $rowset = $model->select()
             ->where('model = ?', 'Crypt')
             ->fetchRowset();
         foreach ($rowset as $row) {
             $row->type = 'string';
             $row->model = 'Axis_Core_Model_Option_Crypt';
+            $row->save();
+        }
+        $rowset = $model->select()
+            ->where('type = ?', 'text')
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $row->type = 'textarea';
             $row->save();
         }
     }

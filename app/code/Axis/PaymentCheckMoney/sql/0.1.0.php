@@ -41,7 +41,7 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
             ->add('payment/CheckMoney_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
             ->add('payment/CheckMoney_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
             ->add('payment/CheckMoney_Standard/payTo',         'Make check payable to', 'The Axis Store Company', 'string', 'Who should payments be made payable to?')
-            ->add('payment/CheckMoney_Standard/sendCheckTo',   'Send your check to', 'Store Name <br />Address <br />Country <br />Phone', 'text', ' This is the Store Name, Address and Phone used on printable documents and displayed online')
+            ->add('payment/CheckMoney_Standard/sendCheckTo',   'Send your check to', 'Store Name <br />Address <br />Country <br />Phone', 'textarea', ' This is the Store Name, Address and Phone used on printable documents and displayed online')
             ->add('payment/CheckMoney_Standard/shippings',     'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Axis_Checkout_Model_Option_Shipping', 'translation_module' => 'Axis_Admin'));
     }
 
