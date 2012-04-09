@@ -90,13 +90,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             if (isset($data[$row->id])) {
                 continue;
             }
-//            $data[$row->id] = $row->toArray();
-//            $data[$row->id]['title'] =
-//                Axis::translate($row->getTranslationModule())->__($row->title);
-//
-//            $data[$row->id]['value'] = $row->value;
-//            $data[$row->id]['from'] = $row->site_id ? 'site' : 'global';
-            
+           
             $translator = Axis::translate($row->getTranslationModule());
             $data[$row->id] = array_merge($row->toArray(), array(
                 'title' => $translator->__($row->title),

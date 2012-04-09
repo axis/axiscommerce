@@ -65,24 +65,6 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             }
         }
         
-        $rowset = Axis::single('core/config_field')->select()
-            ->where('config_type = ?', 'radio')
-            ->fetchRowset();
-        foreach ($rowset as $row) {
-            $row->config_type = 'radio';
-            $row->model = 'Axis_Core_Model_Option_Boolean';
-            $row->save();
-        }
-        
-        $rowset = Axis::single('core/config_field')->select()
-            ->where('model = ?', 'Crypt')
-            ->fetchRowset();
-        foreach ($rowset as $row) {
-            $row->config_type = 'string';
-            $row->model = 'Axis_Core_Model_Option_Crypt';
-            $row->save();
-        }
-                      
         Axis::model('admin/acl_rule')
             ->rename('admin/axis/core/config-field',      'admin/axis/core/config_field')
             ->rename('admin/axis/core/config-field/list', 'admin/axis/core/config_field/list')
@@ -110,6 +92,26 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `model_assigned_with`;
             
             ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `config_options`;
+            
+            ALTER TABLE `{$installer->getTable('core_config_field')}` CHANGE COLUMN `config_type` `type` VARCHAR(128) CHARACTER SET utf8 DEFAULT NULL;
+
         ");
+            
+        $rowset = Axis::single('core/config_field')->select()
+            ->where('type = ?', 'radio')
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $row->model = 'Axis_Core_Model_Option_Boolean';
+            $row->save();
+        }
+        
+        $rowset = Axis::single('core/config_field')->select()
+            ->where('model = ?', 'Crypt')
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $row->type = 'string';
+            $row->model = 'Axis_Core_Model_Option_Crypt';
+            $row->save();
+        }
     }
 }

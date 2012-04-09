@@ -83,7 +83,7 @@ abstract class Axis_Config_Option_Array_Abstract implements IteratorAggregate, C
      */
     public function offsetSet($offset, $value) 
     {
-        throw new Axis_Exception('Option c\'ant be added');
+        throw new Axis_Exception("Option can't be added");
 //        if (is_null($offset)) {
 //            $this->_collection[] = $value;
 //        } else {
@@ -109,7 +109,7 @@ abstract class Axis_Config_Option_Array_Abstract implements IteratorAggregate, C
      */
     public function offsetUnset($offset) 
     {
-        throw new Axis_Exception('Option c\'ant be remove');
+        throw new Axis_Exception("Option can't be removed");
 //        unset($this->_collection[$offset]);
     }
     
@@ -122,7 +122,8 @@ abstract class Axis_Config_Option_Array_Abstract implements IteratorAggregate, C
     public function offsetGet($offset) 
     {
         $this->_load();
-        return isset($this->_collection[$offset]) ? $this->_collection[$offset] : null;
+        return isset($this->_collection[$offset]) ? 
+            $this->_collection[$offset] : null;
     }
     
     /**

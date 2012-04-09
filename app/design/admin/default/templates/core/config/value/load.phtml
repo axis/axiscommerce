@@ -12,27 +12,31 @@
     <?php endif; ?>
     <dt><label for="confValue"><?php echo $this->translate('admin')->__('Value');?>:</label></dt>
     <dd><?php
-    //@todo echo $this->render($this->row->config_type)
-    switch ($this->row->config_type) {
+    $value = $this->value;
+    $type  = $this->row->type;
+    switch ($type) {
+        case 'string':
+            echo $this->formText('confValue', $value, array('size' => '50'));
+            break;
         case 'radio':
-            echo $this->view->formRadio('confValue', $this->value, $this->options);
-//            echo $this->bool('confValue', $this->value, $this->options);
+            echo $this->formRadio('confValue', $value, null, $this->options);
             break;
         case 'select':
-            echo $this->select('confValue', $this->value, $this->options);
+            echo $this->formSelect('confValue', $value, null, $this->options);
             break;
         case 'multiple':
-            echo $this->multiple('confValue', $this->value, $this->options);
+            echo $this->formSelect('confValue', $value, array(
+                'multiple' => 'multiple',
+                'size'     => 10
+            ), $this->options);
             break;
         case 'text':
-            echo $this->text('confValue', $this->value);
+            echo $this->formTextarea(
+                'confValue', $value, array('rows' => 8, 'cols' => 45)
+            );
             break;
-        case 'multiprice':
-            echo $this->render('shippingflat/standard/multiprice.phtml');
-            break;
-
         default:
-            echo $this->string('confValue', $this->value);
+            echo $this->render($type);
     }
     ?></dd>
 </dl>

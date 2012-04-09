@@ -40,7 +40,6 @@ abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_A
      */
     public function encode($value)
     {
-        //@todo remove $value !in_array($this->_collection)
         return implode(self::SEPARATOR, (array)$value);
     }
     

@@ -61,7 +61,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         $row->lvl = count(explode('/', $row->path));
         
         if ($row->lvl <= 2) {
-            $row->config_type = '';
+            $row->type = '';
         }
         
         $row->save();
@@ -124,7 +124,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                 $title[$rowData['lvl']-1] : $title[0];
 
             $rowData = array_merge(array(
-                'config_type' => 'string',
+                'type'        => 'string',
                 'description' => '',
                 'model'       => isset($data['model']) ? $data['model'] : '',
                 'translation_module' => isset($data['translation_module']) ?
@@ -132,7 +132,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             ), $rowData);
 
             if ($rowData['lvl'] == 3) {
-                $rowData['config_type'] = $type;
+                $rowData['type'] = $type;
                 $rowData['description'] = $description;
                 $rowData = array_merge($data, $rowData);
             }

@@ -29,6 +29,9 @@ $config = array(
         'name'     => 'Locale',
         'version'  => '0.1.3',
         'required' => 1,
+        'depends'  => array(
+            'Axis_Core' => '0.2.8'
+        ),
         'events'   => array(
             'admin_box_navigation_prepare' => array(
                 'prepare_menu' => array(

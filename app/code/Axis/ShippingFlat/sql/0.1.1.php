@@ -39,7 +39,7 @@ class Axis_ShippingFlat_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->where('model = ?', 'ShippingFlatRateMultiPrice')
             ->fetchRowset();
         foreach ($rowset as $row) {
-            $row->config_type = 'multiprice'; //@todo shippingflat/standard/multiprice 
+            $row->type = 'shippingflat/standard/multiprice.phtml'; 
             $row->model = 'Axis_ShippingFlat_Model_Option_Standard_MultiPrice';
             $row->save();
         }

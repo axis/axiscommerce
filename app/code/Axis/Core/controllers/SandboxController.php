@@ -35,14 +35,7 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $rowset = Axis::single('core/config_field')->select()
-            ->where('config_type = ?', 'radio')
-            ->fetchRowset();
-        foreach ($rowset as $row) {
-            $row->config_type = 'radio';
-            $row->model = 'Axis_Core_Model_Option_Boolean';
-            $row->save();
-        }
+
         Zend_Debug::dump(Axis_Payment::getMethodNames());
         Zend_Debug::dump(Axis::config('payment/CreditCard_Standard/shippings'));
 //        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());

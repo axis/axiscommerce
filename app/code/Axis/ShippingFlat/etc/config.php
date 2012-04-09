@@ -27,6 +27,9 @@ $config = array(
         'package' => 'Axis_Shipping',
         'name' => 'Flat',
         'version' => '0.1.0',
-        'required' => 0
+        'required' => 0,
+        'depends'  => array(
+            'Axis_Core' => '0.2.8'
+        ),
     )
 );

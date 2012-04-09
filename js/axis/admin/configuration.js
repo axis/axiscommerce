@@ -229,7 +229,7 @@ Ext.onReady(function() {
             totalProperty: 'count'
         }, [
             {name: 'id', type: 'int'},
-            {name: 'config_type'},
+            {name: 'type'},
             {name: 'path'},
             {name: 'title'},
             {name: 'value'},
