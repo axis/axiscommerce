@@ -14,8 +14,9 @@
     <dd><?php
     //@todo echo $this->render($this->row->config_type)
     switch ($this->row->config_type) {
-        case 'bool':
-            echo $this->bool('confValue', $this->value, $this->options);
+        case 'radio':
+            echo $this->view->formRadio('confValue', $this->value, $this->options);
+//            echo $this->bool('confValue', $this->value, $this->options);
             break;
         case 'select':
             echo $this->select('confValue', $this->value, $this->options);

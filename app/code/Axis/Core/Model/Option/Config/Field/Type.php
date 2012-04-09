@@ -37,7 +37,7 @@ class Axis_Core_Model_Option_Config_Field_Type extends Axis_Config_Option_Array_
      * @var const array
      */
      protected $_types = array(
-        'radio'    => 'bool',
+        'radio'    => 'radio',
         'checkbox' => 'multiple',
         'select'   => 'select',
         'string'   => 'string',

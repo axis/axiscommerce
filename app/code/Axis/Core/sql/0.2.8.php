@@ -66,9 +66,10 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
         }
         
         $rowset = Axis::single('core/config_field')->select()
-            ->where('config_type = ?', 'bool')
+            ->where('config_type = ?', 'radio')
             ->fetchRowset();
         foreach ($rowset as $row) {
+            $row->config_type = 'radio';
             $row->model = 'Axis_Core_Model_Option_Boolean';
             $row->save();
         }

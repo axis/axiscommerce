@@ -90,12 +90,19 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             if (isset($data[$row->id])) {
                 continue;
             }
-            $data[$row->id] = $row->toArray();
-            $data[$row->id]['title'] =
-                Axis::translate($row->getTranslationModule())->__($row->title);
-
-            $data[$row->id]['value'] = $row->value;
-            $data[$row->id]['from'] = $row->site_id ? 'site' : 'global';
+//            $data[$row->id] = $row->toArray();
+//            $data[$row->id]['title'] =
+//                Axis::translate($row->getTranslationModule())->__($row->title);
+//
+//            $data[$row->id]['value'] = $row->value;
+//            $data[$row->id]['from'] = $row->site_id ? 'site' : 'global';
+            
+            $translator = Axis::translate($row->getTranslationModule());
+            $data[$row->id] = array_merge($row->toArray(), array(
+                'title' => $translator->__($row->title),
+                'value' => $row->value,
+                'from'  => $row->site_id ? 'site' : 'global'
+            ));
         }
 
         return $this->_helper->json
@@ -155,15 +162,6 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             ->where('path = ?', $path)
             ->fetchRow();
 
-        $modelBackend = null;
-        if (class_exists($rowField->model)) {
-            $modelBackend = new $rowField->model();
-        }
-        
-        if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
-            $value = $modelBackend->encode($value);
-        } 
-
         $model = Axis::model('core/config_value');
         $row = $model->select()
             ->where('path = ?', $path)
@@ -179,6 +177,15 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 'path'            => $path,
                 'site_id'         => $siteId
             ));
+        }
+        
+        $modelBackend = null;
+        if (class_exists($rowField->model)) {
+            $modelBackend = new $rowField->model();
+        }
+        
+        if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
+            $value = $modelBackend->encode($value);
         }
         $row->value = $value;
         $row->save();

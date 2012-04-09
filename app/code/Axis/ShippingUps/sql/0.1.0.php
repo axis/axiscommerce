@@ -33,7 +33,7 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')
             ->add('shipping',                        'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Ups_Standard',           'Shipping Methods/Ups Standard', null, null, array('translation_module' => 'Axis_ShippingUps'))
-            ->add('shipping/Ups_Standard/enabled',   'Shipping Methods/Ups Standard/Enabled', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Ups_Standard/enabled',   'Shipping Methods/Ups Standard/Enabled', '0', 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Core'))
             ->add('shipping/Ups_Standard/geozone',   'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Option_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Ups_Standard/taxBasis',  'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Ups_Standard/taxClass',  'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Class', 'translation_module' => 'Axis_Tax'))
@@ -57,7 +57,7 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Ups_Standard/xmlAccessLicenseNumber', 'XML Access License Number', '', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
             ->add('shipping/Ups_Standard/xmlGateway',             'Gateway XML URL', 'https://onlinetools.ups.com/ups.app/xml/Rate')
             ->add('shipping/Ups_Standard/xmlOrigin',              'Origin of the shipment', Axis_ShippingUps_Model_Option_Standard_Origin::getDeafult(), 'select', '', array('model' => 'Axis_ShippingUps_Model_Option_Standard_Origin'))
-            ->add('shipping/Ups_Standard/negotiatedActive',       'Enable Negotiated Rates', '0', 'bool', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
+            ->add('shipping/Ups_Standard/negotiatedActive',       'Enable Negotiated Rates', '0', 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('shipping/Ups_Standard/shipperNumber',          'Shipper Number', '', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
             ;
     }
