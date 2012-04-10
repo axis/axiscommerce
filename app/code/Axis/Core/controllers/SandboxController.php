@@ -37,10 +37,10 @@ class SandboxController extends Axis_Core_Controller_Front
     {   
         $model = Axis::single('core/config_field');
         $rowset = $model->select()
-            ->where('type = ?', 'text')
+            ->where('type = ?', 'string')
             ->fetchRowset();
         foreach ($rowset as $row) {
-            $row->type = 'textarea';
+            $row->type = 'text';
             $row->save();
         }
         

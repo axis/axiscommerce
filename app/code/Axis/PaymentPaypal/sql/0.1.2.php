@@ -31,6 +31,6 @@ class Axis_PaymentPaypal_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
     public function up()
     {
         Axis::single('core/config_field')
-            ->add('payment/Paypal_Express/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'));
+            ->add('payment/Paypal_Express/sortOrder', 'Sort Order', '1', 'text', array('translation_module' => 'Axis_Core'));
     }
 }

@@ -99,7 +99,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             $path,
             $title,
             $value = '',
-            $type = 'string',
+            $type = 'text',
             $description = '',
             $data = array())
     {
@@ -124,7 +124,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                 $title[$rowData['lvl']-1] : $title[0];
 
             $rowData = array_merge(array(
-                'type'        => 'string',
+                'type'        => 'text',
                 'description' => '',
                 'model'       => isset($data['model']) ? $data['model'] : '',
                 'translation_module' => isset($data['translation_module']) ?

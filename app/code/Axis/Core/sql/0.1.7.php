@@ -270,16 +270,16 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('core/store/city', 'City', '')
             ->add('core/store/country', 'Country', 223, 'select', 'Store Country', array('model' => 'Axis_Location_Model_Option_Country'))
             ->add('core/store/zone', 'Zone', 43, 'select', 'Store zone(state,province)', array('model' => 'Axis_Core_Model_Option_Store_Zone'))
-            ->add('core/store/zip', 'Zip code', '10001', 'string', 'Zip code')
+            ->add('core/store/zip', 'Zip code', '10001', 'text', 'Zip code')
             ->add('core/store/owner', 'Store owner', 'Owner')
 
-            ->add('core/backend/route', 'Core/Backend/Route', 'admin', 'string', 'Admin url (example.com/<b>adminRoute</b>)')
+            ->add('core/backend/route', 'Core/Backend/Route', 'admin', 'text', 'Admin url (example.com/<b>adminRoute</b>)')
             ->add('core/backend/ssl', 'Ssl Enabled', 0, 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
 
             ->add('core/frontend/ssl', 'Core/Frontend/Ssl Enabled', 0, 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
 
-            ->add('core/company/name', 'Core/Company/Name', 'Axiscommerce', 'string', 'Company name')
-            ->add('core/company/site', 'Website', 'www.example.com', 'string', 'Company website')
+            ->add('core/company/name', 'Core/Company/Name', 'Axiscommerce', 'text', 'Company name')
+            ->add('core/company/site', 'Website', 'www.example.com', 'text', 'Company website')
             ->add('core/company/country', 'Country',  223, 'select', 'Company country', array('model' => 'Axis_Location_Model_Option_Country'))
             ->add('core/company/city', 'City', 'New York')
             ->add('core/company/zone', 'Zone', 43, 'select', array('model' => 'Axis_Core_Model_Option_Company_Zone'))
@@ -304,8 +304,8 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email2', 'select', array('model' => 'Axis_Core_Model_Option_Mail_Boxes'))
             ->add('mail/main/transport', 'Mail transport', Axis_Core_Model_Option_Mail_Transport::SENDMAIL, 'select', 'Mail Transport (smtp or sendmail)', array('model' => 'Axis_Core_Model_Option_Mail_Transport'))
             ->add('mail/smtp/host', 'Mail/Smtp/Host', 'host.smtp.com')
-            ->add('mail/smtp/user', 'User', 'test+axiscommerce.com', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
-            ->add('mail/smtp/password', 'Password', 'test', 'string', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
+            ->add('mail/smtp/user', 'User', 'test+axiscommerce.com', 'text', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
+            ->add('mail/smtp/password', 'Password', 'test', 'text', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
             ->add('mail/smtp/port', 'Port', '465')
             ->add('mail/smtp/auth', 'Use Auth', '1', 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('mail/smtp/secure', 'Secure', Axis_Core_Model_Option_Mail_Secure::SSL, 'select', array('model' => 'Axis_Core_Model_Option_Mail_Secure'))
@@ -338,7 +338,7 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('design/htmlHead/defaultRobots', 'Default Robots', Axis_Core_Model_Option_Template_Robots::getDeafult(), 'select', array('model' => 'Axis_Core_Model_Option_Template_Robots'))
             ->add('design/htmlHead/homeDescription', 'Homepage description', '', 'textarea', 'Homepage description')
             ->add('design/htmlHead/homeKeywords', 'Homepage keywords', 'Axis, store', 'textarea')
-            ->add('design/htmlHead/homeTitle', 'Homepage title', 'Homepage title', 'string', 'Homepage title')
+            ->add('design/htmlHead/homeTitle', 'Homepage title', 'Homepage title', 'text', 'Homepage title')
             ;
 
         Axis::single('core/cache')

@@ -37,7 +37,7 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Flat_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Option_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Flat_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Flat_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Class', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Flat_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Flat_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
             ->add('shipping/Flat_Standard/multiPrice', 'Multi Price', '25', 'multiprice', '', array('model' => 'Axis_ShippingFlat_Model_Option_Standard_MultiPrice'))
             ->add('shipping/Flat_Standard/type', 'Type', Axis_ShippingFlat_Model_Option_Standard_Service::PER_ORDER, 'select', 'The shipping cost is based on:', array('model' => 'Axis_ShippingFlat_Model_Option_Standard_Service'))
             ->add('shipping/Flat_Standard/formDesc', 'Checkout Description', 'Flat Rate')

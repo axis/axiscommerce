@@ -36,9 +36,9 @@ class Axis_Checkout_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
             ->add('checkout/address_form/shipping_address_enabled', 'Display Shipping Address', 1, 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('checkout/default_values', 'Checkout/Default Values', null, null, array('translation_module' => 'Axis_Checkout'))
             ->add('checkout/default_values/country_id', 'Checkout/Default Values/Country', 223, 'select', array('model' => 'Axis_Location_Model_Option_Country', 'translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/zone_id', 'State(Region) Id', 12, 'string', 'You can get the id of desired region at admin/location_zone', array('translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/postcode', 'Postcode', 90064, 'string', array('translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/shipping_method', 'Shipping Method', 'Flat_Standard_standard', 'string')
+            ->add('checkout/default_values/zone_id', 'State(Region) Id', 12, 'text', 'You can get the id of desired region at admin/location_zone', array('translation_module' => 'Axis_Account'))
+            ->add('checkout/default_values/postcode', 'Postcode', 90064, 'text', array('translation_module' => 'Axis_Account'))
+            ->add('checkout/default_values/shipping_method', 'Shipping Method', 'Flat_Standard_standard', 'text')
             ->add('checkout/default_values/payment_method', 'Payment Method', 'CashOnDelivery_Standard', 'select', array('model' => 'Axis_Checkout_Model_Option_Payment'));
     }
 }

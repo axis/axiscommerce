@@ -15,7 +15,7 @@
     $value = $this->value;
     $type  = $this->row->type;
     switch ($type) {
-        case 'string':
+        case 'text':
             echo $this->formText('confValue', $value, array('size' => '50'));
             break;
         case 'radio':

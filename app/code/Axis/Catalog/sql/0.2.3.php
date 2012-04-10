@@ -356,7 +356,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')
             ->add('catalog', 'Catalog', null, null, array('translation_module' => 'Axis_Catalog'))
 
-            ->add('catalog/main/route', 'Catalog/General/Catalog route', 'store', 'string', 'Catalog url (example.com/<b>route</b>/product)')
+            ->add('catalog/main/route', 'Catalog/General/Catalog route', 'store', 'text', 'Catalog url (example.com/<b>route</b>/product)')
 
             ->add('catalog/listing/type', 'Catalog/Product Listing/Type', Axis_Catalog_Model_Option_Product_Listing_Type::getDeafult(), 'select', 'Default listing type', array('model' => 'Axis_Catalog_Model_Option_Product_Listing_Type'))
             ->add('catalog/listing/perPage', 'Show per page', '6,9,18,32')
@@ -377,13 +377,13 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('catalog/lightzoom/zoomOnTrigger', 'Zoom on trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger'))
             ->add('catalog/lightzoom/zoomOffTrigger', 'Zoom off trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger'))
             ->add('catalog/lightzoom/lightboxTrigger', 'Lightbox trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger'))
-            ->add('catalog/lightzoom/lightboxResizeSpeed', 'Lightbox resize speed', 800, 'string', 'Animation speed, ms')
-            ->add('catalog/lightzoom/lightboxFadeSpeed', 'Lightbox fade speed', 300, 'string', 'Animation speed, ms')
+            ->add('catalog/lightzoom/lightboxResizeSpeed', 'Lightbox resize speed', 800, 'text', 'Animation speed, ms')
+            ->add('catalog/lightzoom/lightboxFadeSpeed', 'Lightbox fade speed', 300, 'text', 'Animation speed, ms')
             ->add('catalog/lightzoom/lightboxMaskOpacity', 'Mask opacity', 0.8)
             ->add('catalog/lightzoom/switchImageTrigger', 'Switch image trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_ImageTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_ImageTrigger'))
 
             ->add('image', 'Images', null, null, array('translation_module' => 'Axis_Catalog'))
-            ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'string', 'Image cache path, relative to AXIS_ROOT')
+            ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'text', 'Image cache path, relative to AXIS_ROOT')
             ->add('image/product/cache', 'Images/Product Images/Cache', 1, 'radio', 'Enable image cache', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('image/product/widthLarge', 'Large width', 0)
             ->add('image/product/heightLarge', 'Large height', 0)
@@ -394,9 +394,9 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('image/product/widthThumbnail', 'Thumbnail image width', 40)
             ->add('image/product/heightThumbnail', 'Thumbnail image height', 40)
             ->add('image/watermark/enabled', 'Images/Watermark/Enabled', 0, 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
-            ->add('image/watermark/image', 'Image path', 'catalog/watermark.png', 'string', 'Path relative to the skin images folder: catalog/watermark.png')
+            ->add('image/watermark/image', 'Image path', 'catalog/watermark.png', 'text', 'Path relative to the skin images folder: catalog/watermark.png')
             ->add('image/watermark/position', 'Watermark Position', Axis_Catalog_Model_Option_Watermark_Position::getDeafult(), 'select', array('model' => 'Axis_Catalog_Model_Option_Watermark_Position'))
-            ->add('image/watermark/opacity', 'Opacity', 50, 'string', 'Values [0 - 100]')
+            ->add('image/watermark/opacity', 'Opacity', 50, 'text', 'Values [0 - 100]')
             ->add('image/watermark/repeat', 'Repeat', 0, 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'));
 
         Axis::single('core/page')

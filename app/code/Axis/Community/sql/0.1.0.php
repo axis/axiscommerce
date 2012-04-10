@@ -143,12 +143,12 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('community/image/customer_status', 'Default customers image status', Axis_Community_Model_Option_Review_Status::APPROVED, 'select', 'Default image status uploaded by registered customer', array('model' => 'Axis_Community_Model_Option_Review_Status'))
             ->add('community/image/guest_status', 'Default guest image status', Axis_Community_Model_Option_Review_Status::APPROVED, 'select', 'Default image status uploaded by guest', array('model' => 'Axis_Community_Model_Option_Review_Status'))
             ->add('community/image/guest_permission', 'Allow guest to upload an images', 1, 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
-            ->add('community/image/max_size', 'Maximum image size', '1', 'string', 'Maximum image size, allowed to upload (Mb)')
+            ->add('community/image/max_size', 'Maximum image size', '1', 'text', 'Maximum image size, allowed to upload (Mb)')
             ->add('community/video/enabled', 'Community/Videos/Enabled', 1, 'radio', 'Community video module status', array('model'=> 'Axis_Core_Model_Option_Boolean'))
             ->add('community/video/customer_status', 'Default customers video status', Axis_Community_Model_Option_Review_Status::APPROVED, 'select', 'Default status of video uploaded by registered customer', array('model' => 'Axis_Community_Model_Option_Review_Status'))
             ->add('community/video/guest_status', 'Default guest video status', Axis_Community_Model_Option_Review_Status::APPROVED, 'select', 'Default status of video uploaded by guest', array('model' => 'Axis_Community_Model_Option_Review_Status'))
             ->add('community/video/guest_permission', 'Allow guest to upload videos', 1, 'radio', 'Allow guest to upload videos', array('model'=> 'Axis_Core_Model_Option_Boolean'))
-            ->add('community/video/max_size', 'Maximum video size', '5', 'string', 'Maximum video size, allowed to upload (Mb)')
+            ->add('community/video/max_size', 'Maximum video size', '5', 'text', 'Maximum video size, allowed to upload (Mb)')
             */;
 
         Axis::single('account/customer_field')

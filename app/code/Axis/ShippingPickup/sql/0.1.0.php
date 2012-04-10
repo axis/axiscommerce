@@ -37,9 +37,9 @@ class Axis_ShippingPickup_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstra
             ->add('shipping/Pickup_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Option_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Pickup_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Pickup_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Class', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Pickup_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Pickup_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
             ->add('shipping/Pickup_Standard/handling', 'Handling Fee', '0')
-            ->add('shipping/Pickup_Standard/price', 'Shipping Cost', '0', 'string', 'The shipping cost for all orders using this shipping method.')
+            ->add('shipping/Pickup_Standard/price', 'Shipping Cost', '0', 'text', 'The shipping cost for all orders using this shipping method.')
             ->add('shipping/Pickup_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Axis_Checkout_Model_Option_Payment', 'translation_module' => 'Axis_Admin'));
     }
 

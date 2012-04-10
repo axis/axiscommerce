@@ -110,7 +110,7 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             ->where('model = ?', 'Crypt')
             ->fetchRowset();
         foreach ($rowset as $row) {
-            $row->type = 'string';
+            $row->type = 'text';
             $row->model = 'Axis_Core_Model_Option_Crypt';
             $row->save();
         }
@@ -119,6 +119,13 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         foreach ($rowset as $row) {
             $row->type = 'textarea';
+            $row->save();
+        }
+        $rowset = $model->select()
+            ->where('type = ?', 'string')
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $row->type = 'text';
             $row->save();
         }
     }
