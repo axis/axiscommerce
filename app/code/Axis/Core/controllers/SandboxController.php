@@ -37,23 +37,25 @@ class SandboxController extends Axis_Core_Controller_Front
     {   
         
         $model = Axis::single('core/config_field');
-        $rowset = $model->select()
+        $rowset = $model->select(array('id','model'))
             ->where('model != ?', '')
-            ->fetchRowset()->toArray();
-        array_unique($rowset);
+            ->fetchPairs()
+            ;
+        $rowset = array_unique($rowset);
         sort($rowset);
         function sse(&$item1, $key) {
             $item1  = lcfirst($item1); 
         }
-        foreach ($rowset as $row) {
-            $item = explode('_', $row['model']);
+        Zend_Debug::dump(count($rowset));
+        foreach ($rowset as $model) {
+            $item = explode('_', $model);
             array_walk($item, 'sse');
             $item = implode('_', $item); 
             $str = str_replace(array('axis_', '_model_'), array('', '/'), $item);
             
-            Zend_Debug::dump(" '{$row['model']}' => '{$str}'   " );
+            Zend_Debug::dump(" '{$model}''{$str}' ");
         }
-        
+        die;
         Zend_Debug::dump(Axis_Payment::getMethodNames());
         Zend_Debug::dump(Axis::config('payment/CreditCard_Standard/shippings'));
 //        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());
@@ -95,8 +97,8 @@ class SandboxController extends Axis_Core_Controller_Front
 //            echo '--------------------------';
 //        }
         
-        $row = Axis::model('account/customer')->find(1)->current();
-        $row->password  = 1; 
+        $model = Axis::model('account/customer')->find(1)->current();
+        $model->password  = 1; 
         $_row = array();
         Zend_Debug::dump(!isset($_row['name']));
         Zend_Debug::dump(empty($_row['name']));

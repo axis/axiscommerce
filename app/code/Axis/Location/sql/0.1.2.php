@@ -548,6 +548,6 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')
             ->add('locale', 'Locale', null, null, array('translation_module' => 'Axis_Locale'))
-            ->add('locale/main/addressFormat', 'Locale/General/Default Address Format', 1, 'select', 'Default address format', array('model' => 'Axis_Location_Model_Option_Address_Format'));
+            ->add('locale/main/addressFormat', 'Locale/General/Default Address Format', 1, 'select', 'Default address format', array('model' => 'location/option_address_format'));
     }
 }

@@ -62,20 +62,20 @@ class Axis_PaymentPaypal_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
         }
 
         $paths = array(
-            'payment/Paypal_Standard/transactionType' => 'Axis_PaymentPaypal_Model_Option_Standard_TransactionType',
+            'payment/Paypal_Standard/transactionType' => 'paymentPaypal/option_standard_transactionType',
             
-            'payment/Paypal_Direct/server'            => 'Axis_PaymentPaypal_Model_Option_ServerType',
-            'payment/Paypal_Express/server'           => 'Axis_PaymentPaypal_Model_Option_ServerType',
+            'payment/Paypal_Direct/server'            => 'paymentPaypal/option_serverType',
+            'payment/Paypal_Express/server'           => 'paymentPaypal/option_serverType',
             
-            'payment/Paypal_Direct/mode'              => 'Axis_PaymentPaypal_Model_Option_Type',
-            'payment/Paypal_Express/mode'             => 'Axis_PaymentPaypal_Model_Option_Type',
+            'payment/Paypal_Direct/mode'              => 'paymentPaypal/option_type',
+            'payment/Paypal_Express/mode'             => 'paymentPaypal/option_type',
             
-            'payment/Paypal_Standard/orderStatusId'   => 'Axis_Sales_Model_Option_Order_Status',
-            'payment/Paypal_Express/orderStatusId'    => 'Axis_Sales_Model_Option_Order_Status',
+            'payment/Paypal_Standard/orderStatusId'   => 'sales/option_order_status',
+            'payment/Paypal_Express/orderStatusId'    => 'sales/option_order_status',
             
-            'payment/Paypal_Direct/paymentAction'     => 'Axis_PaymentPaypal_Model_Option_PaymentAction',
-            'payment/Paypal_Standard/paymentAction'   => 'Axis_PaymentPaypal_Model_Option_PaymentAction',
-            'payment/Paypal_Express/paymentAction'    => 'Axis_PaymentPaypal_Model_Option_Express_PaymentAction'
+            'payment/Paypal_Direct/paymentAction'     => 'paymentPaypal/option_paymentAction',
+            'payment/Paypal_Standard/paymentAction'   => 'paymentPaypal/option_paymentAction',
+            'payment/Paypal_Express/paymentAction'    => 'paymentPaypal/option_express_paymentAction'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         

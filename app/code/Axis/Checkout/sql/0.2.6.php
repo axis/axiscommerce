@@ -30,13 +30,13 @@ class Axis_Checkout_Upgrade_0_2_6 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $models = array(
-            'Payment'  => 'Axis_Checkout_Model_Option_Payment',
-            'Shipping' => 'Axis_Checkout_Model_Option_Shipping'
+            'Payment'  => 'checkout/option_payment',
+            'Shipping' => 'checkout/option_shipping'
         ); 
         
         $paths = array(
             'checkout/address_form/custom_fields_display_mode' => 'checkout/option_form_address_customFieldsDisplayMode',
-            'checkout/cart/redirect'                           => 'Axis_Checkout_Model_Option_Cart_Redirect'
+            'checkout/cart/redirect'                           => 'checkout/option_cart_redirect'
         );
         
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();

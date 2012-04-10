@@ -35,19 +35,19 @@ class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         
         foreach ($rowset as $row) {
-            $row->model = 'Axis_Catalog_Model_Option_Product_Manufacturer';
+            $row->model = 'catalog/option_product_manufacturer';
             $row->save();
         }
         
         $paths = array(
-            'image/watermark/position'             => 'Axis_Catalog_Model_Option_Watermark_Position',
-            'catalog/lightzoom/zoomStagePosition'  => 'Axis_Catalog_Model_Option_Lightzoom_StagePosition',
+            'image/watermark/position'             => 'catalog/option_watermark_position',
+            'catalog/lightzoom/zoomStagePosition'  => 'catalog/option_lightzoom_stagePosition',
             'catalog/lightzoom/zoomCursor'         => 'catalog/option_lightzoom_cursor',
-            'catalog/lightzoom/zoomOnTrigger'      => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger',
-            'catalog/lightzoom/zoomOffTrigger'     => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger',
-            'catalog/lightzoom/lightboxTrigger'    => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger',
-            'catalog/lightzoom/switchImageTrigger' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_ImageTrigger',
-            'catalog/listing/type'                 => 'Axis_Catalog_Model_Option_Product_Listing_Type'
+            'catalog/lightzoom/zoomOnTrigger'      => 'catalog/option_lightzoom_domEvent_onTrigger',
+            'catalog/lightzoom/zoomOffTrigger'     => 'catalog/option_lightzoom_domEvent_offTrigger',
+            'catalog/lightzoom/lightboxTrigger'    => 'catalog/option_lightzoom_domEvent_trigger',
+            'catalog/lightzoom/switchImageTrigger' => 'catalog/option_lightzoom_domEvent_imageTrigger',
+            'catalog/listing/type'                 => 'catalog/option_product_listing_type'
            
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();

@@ -32,7 +32,7 @@ class Axis_ShippingTable_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', 'shipping/Table_Standard/type')
             ->fetchRow();
-        $row->model = 'Axis_ShippingTable_Model_Option_Standard_Service';
+        $row->model = 'shippingTable/option_standard_service';
         $row->save();
         
         Axis::single('core/config_field')

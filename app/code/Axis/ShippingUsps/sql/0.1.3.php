@@ -31,10 +31,10 @@ class Axis_ShippingUsps_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $paths = array(
-            'shipping/Usps_Standard/container'      => 'Axis_ShippingUsps_Model_Option_Standard_Package',
-            'shipping/Usps_Standard/service'        => 'Axis_ShippingUsps_Model_Option_Standard_Service',
-            'shipping/Usps_Standard/size'           => 'Axis_ShippingUsps_Model_Option_Standard_Size',
-            'shipping/Usps_Standard/allowedMethods' => 'Axis_ShippingUsps_Model_Option_Standard_ServiceLabel'
+            'shipping/Usps_Standard/container'      => 'shippingUsps/option_standard_package',
+            'shipping/Usps_Standard/service'        => 'shippingUsps/option_standard_service',
+            'shipping/Usps_Standard/size'           => 'shippingUsps/option_standard_size',
+            'shipping/Usps_Standard/allowedMethods' => 'shippingUsps/option_standard_serviceLabel'
             
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();

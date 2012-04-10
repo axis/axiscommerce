@@ -358,7 +358,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
             ->add('catalog/main/route', 'Catalog/General/Catalog route', 'store', 'text', 'Catalog url (example.com/<b>route</b>/product)')
 
-            ->add('catalog/listing/type', 'Catalog/Product Listing/Type', Axis_Catalog_Model_Option_Product_Listing_Type::getDeafult(), 'select', 'Default listing type', array('model' => 'Axis_Catalog_Model_Option_Product_Listing_Type'))
+            ->add('catalog/listing/type', 'Catalog/Product Listing/Type', Axis_Catalog_Model_Option_Product_Listing_Type::getDeafult(), 'select', 'Default listing type', array('model' => 'catalog/option_product_listing_type'))
             ->add('catalog/listing/perPage', 'Show per page', '6,9,18,32')
             ->add('catalog/listing/perPageDefault', 'Default product count per page', 9)
             ->add('catalog/listing/sortBy', 'Sort By', 'Name,Price')
@@ -369,18 +369,18 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
             ->add('catalog/lightzoom/zoomStageWidth', 'Catalog/Lightzoom/Zoomer width', 250)
             ->add('catalog/lightzoom/zoomStageHeight', 'Zoomer height', 250)
-            ->add('catalog/lightzoom/zoomStagePosition', 'Zoomer position', Axis_Catalog_Model_Option_Lightzoom_StagePosition::getDeafult(), 'select', '', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_StagePosition'))
+            ->add('catalog/lightzoom/zoomStagePosition', 'Zoomer position', Axis_Catalog_Model_Option_Lightzoom_StagePosition::getDeafult(), 'select', '', array('model' => 'catalog/option_lightzoom_stagePosition'))
             ->add('catalog/lightzoom/zoomStageOffsetX', 'Zoomer offset-x', 10)
             ->add('catalog/lightzoom/zoomStageOffsetY', 'Zoomer offset-y', 0)
             ->add('catalog/lightzoom/zoomLensOpacity', 'Lens opacity', 0.7)
             ->add('catalog/lightzoom/zoomCursor', 'Lens cursor', Axis_Catalog_Model_Option_Lightzoom_Cursor::getDeafult(), 'select', '', array('model' => 'catalog/option_lightzoom_cursor'))
-            ->add('catalog/lightzoom/zoomOnTrigger', 'Zoom on trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger'))
-            ->add('catalog/lightzoom/zoomOffTrigger', 'Zoom off trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger'))
-            ->add('catalog/lightzoom/lightboxTrigger', 'Lightbox trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger'))
+            ->add('catalog/lightzoom/zoomOnTrigger', 'Zoom on trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'catalog/option_lightzoom_domEvent_onTrigger'))
+            ->add('catalog/lightzoom/zoomOffTrigger', 'Zoom off trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'catalog/option_lightzoom_domEvent_offTrigger'))
+            ->add('catalog/lightzoom/lightboxTrigger', 'Lightbox trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'catalog/option_lightzoom_domEvent_trigger'))
             ->add('catalog/lightzoom/lightboxResizeSpeed', 'Lightbox resize speed', 800, 'text', 'Animation speed, ms')
             ->add('catalog/lightzoom/lightboxFadeSpeed', 'Lightbox fade speed', 300, 'text', 'Animation speed, ms')
             ->add('catalog/lightzoom/lightboxMaskOpacity', 'Mask opacity', 0.8)
-            ->add('catalog/lightzoom/switchImageTrigger', 'Switch image trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_ImageTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_ImageTrigger'))
+            ->add('catalog/lightzoom/switchImageTrigger', 'Switch image trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_ImageTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'catalog/option_lightzoom_domEvent_imageTrigger'))
 
             ->add('image', 'Images', null, null, array('translation_module' => 'Axis_Catalog'))
             ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'text', 'Image cache path, relative to AXIS_ROOT')
@@ -395,7 +395,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('image/product/heightThumbnail', 'Thumbnail image height', 40)
             ->add('image/watermark/enabled', 'Images/Watermark/Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
             ->add('image/watermark/image', 'Image path', 'catalog/watermark.png', 'text', 'Path relative to the skin images folder: catalog/watermark.png')
-            ->add('image/watermark/position', 'Watermark Position', Axis_Catalog_Model_Option_Watermark_Position::getDeafult(), 'select', array('model' => 'Axis_Catalog_Model_Option_Watermark_Position'))
+            ->add('image/watermark/position', 'Watermark Position', Axis_Catalog_Model_Option_Watermark_Position::getDeafult(), 'select', array('model' => 'catalog/option_watermark_position'))
             ->add('image/watermark/opacity', 'Opacity', 50, 'text', 'Values [0 - 100]')
             ->add('image/watermark/repeat', 'Repeat', 0, 'radio', '', array('model'=> 'core/option_boolean'));
 

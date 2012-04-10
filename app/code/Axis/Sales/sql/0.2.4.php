@@ -31,10 +31,10 @@ class Axis_Sales_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $models = array(
-            'OrderStatus'                 => 'Axis_Sales_Model_Option_Order_Status',
-            'OrderStatusText'             => 'Axis_Sales_Model_Option_Order_Status_Text',
-            'CreditCard'                  => 'Axis_Sales_Model_Option_Order_CreditCard_Type',
-            'CreditCard_SaveNumberAction' => 'Axis_Sales_Model_Option_Order_CreditCard_SaveNumberType'
+            'OrderStatus'                 => 'sales/option_order_status',
+            'OrderStatusText'             => 'sales/option_order_status_text',
+            'CreditCard'                  => 'sales/option_order_creditCard_type',
+            'CreditCard_SaveNumberAction' => 'sales/option_order_creditCard_saveNumberType'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         
@@ -48,7 +48,7 @@ class Axis_Sales_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', 'sales/order/defaultStatusId')
             ->fetchRow();
-        $row->model = 'Axis_Sales_Model_Option_Order_Status';
+        $row->model = 'sales/option_order_status';
         $row->save();
     }
 }

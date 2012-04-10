@@ -235,10 +235,10 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')
             ->add('sales', 'Sales', null, null, array('translation_module' => 'Axis_Sales'))
-            ->add('sales/order/defaultStatusId', 'Sales/Order/Default Order Status', 1, 'select', 'Default Order Status', array('model' => 'Axis_Sales_Model_Option_Order_Status'))
+            ->add('sales/order/defaultStatusId', 'Sales/Order/Default Order Status', 1, 'select', 'Default Order Status', array('model' => 'sales/option_order_status'))
             ->add('sales/order/order_number_pattern_prefix', 'Prefix for Custom Order Number', '')
             ->add('sales/order/order_number_pattern', 'Pattern for Custom Order Number', '100000000', 'text', 'Please notice: Changing code pattern for existing orders in database can cause problems.')
-            ->add('sales/order/email', 'Order notifications reciever', 'email1', 'select', 'All notifications about new orders will be sended to this email', array('model' => 'Axis_Core_Model_Option_Mail_Boxes'));
+            ->add('sales/order/email', 'Order notifications reciever', 'email1', 'select', 'All notifications about new orders will be sended to this email', array('model' => 'core/option_mail_boxes'));
 
     }
 }

@@ -33,7 +33,7 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abs
         $row = Axis::single('core/config_field')->select()
             ->where('path = ?', 'payment/CheckMoney_Standard/orderStatusId')
             ->fetchRow();
-        $row->model = 'Axis_Sales_Model_Option_Order_Status';
+        $row->model = 'sales/option_order_status';
         $row->save();
     }
 }

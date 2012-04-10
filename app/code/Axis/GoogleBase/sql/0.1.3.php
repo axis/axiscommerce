@@ -30,8 +30,8 @@ class Axis_GoogleBase_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $paths = array(
-            'gbase/main/payment'    => 'Axis_GoogleBase_Model_Option_Payment',
-            'gbase/main/link'       => 'Axis_GoogleBase_Model_Option_LinkType',
+            'gbase/main/payment'    => 'googleBase/option_payment',
+            'gbase/main/link'       => 'googleBase/option_linkType',
             'gbase/auth/connection' => 'googleBase/option_connectionType'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();

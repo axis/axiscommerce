@@ -32,24 +32,24 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
     {
         $model = Axis::single('core/config_field');
         $models = array(
-            'Configuration_Field' => 'Axis_Core_Model_Option_Config_Field_Type',
-            'Template'            => 'Axis_Core_Model_Option_Template',
-            'Theme'               => 'Axis_Core_Model_Option_Theme',
-            'Layout'              => 'Axis_Core_Model_Option_Template_Layout',
-            'Site'                => 'Axis_Core_Model_Option_Site',
-            'MailBoxes'           => 'Axis_Core_Model_Option_Mail_Boxes',
-            'MailEvent'           => 'Axis_Core_Model_Option_Mail_Event',
-            'MailTemplate'        => 'Axis_Core_Model_Option_Mail_Template',
-            'AddressFieldStatus'  => 'Axis_Core_Model_Option_Config_Field_Status'
+            'Configuration_Field' => 'core/option_config_field_type',
+            'Template'            => 'core/option_template',
+            'Theme'               => 'core/option_theme',
+            'Layout'              => 'core/option_template_layout',
+            'Site'                => 'core/option_site',
+            'MailBoxes'           => 'core/option_mail_boxes',
+            'MailEvent'           => 'core/option_mail_event',
+            'MailTemplate'        => 'core/option_mail_template',
+            'AddressFieldStatus'  => 'core/option_config_field_status'
         );
 
         $paths = array(
-            'design/htmlHead/defaultRobots' => 'Axis_Core_Model_Option_Template_Robots',
-            'design/htmlHead/titlePattern'  => 'Axis_Core_Model_Option_Template_TitlePattern',
-            'mail/main/transport'           => 'Axis_Core_Model_Option_Mail_Transport',
-            'mail/smtp/secure'              => 'Axis_Core_Model_Option_Mail_Secure',
-            'core/store/zone'               => 'Axis_Core_Model_Option_Store_Zone',
-            'core/company/zone'             => 'Axis_Core_Model_Option_Company_Zone'
+            'design/htmlHead/defaultRobots' => 'core/option_template_robots',
+            'design/htmlHead/titlePattern'  => 'core/option_template_titlePattern',
+            'mail/main/transport'           => 'core/option_mail_transport',
+            'mail/smtp/secure'              => 'core/option_mail_secure',
+            'core/store/zone'               => 'core/option_store_zone',
+            'core/company/zone'             => 'core/option_company_zone'
         );
         $rowset = $model->select()->fetchRowset();
         

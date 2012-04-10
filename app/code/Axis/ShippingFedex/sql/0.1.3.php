@@ -31,10 +31,10 @@ class Axis_ShippingFedex_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
     public function up()
     {
         $paths = array(
-            'shipping/Fedex_Standard/package'      => 'Axis_ShippingFedex_Model_Option_Standard_Package',
-            'shipping/Fedex_Standard/dropoff'      => 'Axis_ShippingFedex_Model_Option_Standard_Pickup',
-            'shipping/Fedex_Standard/allowedTypes' => 'Axis_ShippingFedex_Model_Option_Standard_Service',
-            'shipping/Fedex_Standard/measure'      => 'Axis_ShippingFedex_Model_Option_Standard_Measure'
+            'shipping/Fedex_Standard/package'      => 'shippingFedex/option_standard_package',
+            'shipping/Fedex_Standard/dropoff'      => 'shippingFedex/option_standard_pickup',
+            'shipping/Fedex_Standard/allowedTypes' => 'shippingFedex/option_standard_service',
+            'shipping/Fedex_Standard/measure'      => 'shippingFedex/option_standard_measure'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         
