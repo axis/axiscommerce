@@ -57,7 +57,7 @@ Ext.onReady(function() {
                     }
                     Config.window.show();
                     Config.window.body.update(response.responseText, true);
-                    $('#confValue').focus();
+                    $('#value').focus();
                 }
             });
         },

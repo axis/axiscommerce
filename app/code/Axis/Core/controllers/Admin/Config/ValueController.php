@@ -150,7 +150,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
     {
         $path   = $this->_getParam('path');
         $siteId = $this->_getParam('siteId');
-        $value  = $this->_getParam('confValue');
+        $value  = $this->_getParam('value');
 
         $rowField = Axis::single('core/config_field')->select()
             ->where('path = ?', $path)

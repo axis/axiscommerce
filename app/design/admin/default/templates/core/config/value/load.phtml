@@ -10,29 +10,29 @@
         <dt><label><?php echo $this->translate('admin')->__('Description');?>: </label></dt>
         <dd><?php echo $this->row->description;?></dd>
     <?php endif; ?>
-    <dt><label for="confValue"><?php echo $this->translate('admin')->__('Value');?>:</label></dt>
+    <dt><label for="value"><?php echo $this->translate('admin')->__('Value');?>:</label></dt>
     <dd><?php
     $value = $this->value;
     $type  = $this->row->type;
     switch ($type) {
         case 'text':
-            echo $this->formText('confValue', $value, array('size' => '50'));
+            echo $this->formText('value', $value, array('size' => '50'));
             break;
         case 'radio':
-            echo $this->formRadio('confValue', $value, null, $this->options);
+            echo $this->formRadio('value', $value, null, $this->options);
             break;
         case 'select':
-            echo $this->formSelect('confValue', $value, null, $this->options);
+            echo $this->formSelect('value', $value, null, $this->options);
             break;
         case 'multiple':
-            echo $this->formSelect('confValue', $value, array(
+            echo $this->formSelect('value', $value, array(
                 'multiple' => 'multiple',
                 'size'     => 10
             ), $this->options);
             break;
         case 'textarea':
             echo $this->formTextarea(
-                'confValue', $value, array('rows' => 8, 'cols' => 45)
+                'value', $value, array('rows' => 8, 'cols' => 45)
             );
             break;
         default:
