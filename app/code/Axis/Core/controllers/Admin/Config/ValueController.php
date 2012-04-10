@@ -127,11 +127,13 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         if ($value instanceof Axis_Config) {
             $value = $value->toArray();
         }
-        
-        if (class_exists($row->model) 
-            && in_array('Axis_Config_Option_Array_Abstract', class_parents($row->model))) {
+        if (!empty($row->model)) {
+            $class = Axis::getClass($row->model);
+            if (class_exists($class) 
+                && in_array('Axis_Config_Option_Array_Abstract', class_parents($class))) {
 
-            $this->view->options = Axis::model($row->model)->toArray();
+                $this->view->options = Axis::model($row->model)->toArray();
+            }
         }
         $this->view->value = $value;
         
@@ -165,11 +167,13 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                 'site_id'         => $siteId
             ));
         }
-        
-        if (class_exists($rowField->model) 
-            && in_array('Axis_Config_Option_Encodable_Interface', class_implements($rowField->model))) {
+        if (!empty($rowField->model)) {
+            $class = Axis::getClass($rowField->model);
+            if (class_exists($class) 
+                && in_array('Axis_Config_Option_Encodable_Interface', class_implements($class))) {
 
-            $value = Axis::model($rowField->model)->encode($value);
+                $value = Axis::model($rowField->model)->encode($value);
+            }
         }
         $row->value = $value;
         $row->save();

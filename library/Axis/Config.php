@@ -121,12 +121,14 @@ class Axis_Config extends Zend_Config
             
             $value = $data['value'];
             
-            if (class_exists($data['model']) 
-                && in_array('Axis_Config_Option_Encodable_Interface', class_implements($data['model']))) {
-                
-                $value = Axis::single($data['model'])->decode($value);
+            if (!empty($data['model'])) {
+                $class = Axis::getClass($data['model']);
+                if (class_exists($class) 
+                    && in_array('Axis_Config_Option_Encodable_Interface', class_implements($class))) {
+
+                    $value = Axis::single($data['model'])->decode($value);
+                }
             }
-            
             $values[$parts[0]][$parts[1]][$parts[2]] = $value;
         }
         

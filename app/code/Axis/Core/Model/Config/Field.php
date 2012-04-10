@@ -159,10 +159,13 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             if (!$rowValue) {
                 $rowValue = $modelValue->createRow();
             }
-            if (class_exists($rowData['model']) 
-                && in_array('Axis_Config_Option_Encodable_Interface', class_implements($rowData['model']))) {
-                
-                $value = Axis::model($rowData['model'])->encode($value);
+            if (!empty($rowData['model'])) {
+                $class = Axis::getClass($rowData['model']);
+                if (class_exists($class) 
+                    && in_array('Axis_Config_Option_Encodable_Interface', class_implements($class))) {
+
+                    $value = Axis::model($rowData['model'])->encode($value);
+                }
             }
             
             $rowValue->setFromArray(array(
