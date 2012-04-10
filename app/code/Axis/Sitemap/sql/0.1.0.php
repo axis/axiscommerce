@@ -60,7 +60,7 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')
             ->add('sitemap', 'Sitemap', null, null, array('translation_module' => 'Axis_Sitemap'))
-            ->add('sitemap/main/enabled', 'Sitemap/General/Enabled', '0', 'radio', 'Enabled', array('model'=> 'Axis_Core_Model_Option_Boolean'))
+            ->add('sitemap/main/enabled', 'Sitemap/General/Enabled', '0', 'radio', 'Enabled', array('model'=> 'core/option_boolean'))
             ->add('sitemap/main/startTime', 'Start Time', '', 'text', 'Start Time')
             ->add('sitemap/main/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'Axis_Sitemap_Model_Option_Frequency'))
 
@@ -75,7 +75,7 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('sitemap/products/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'Axis_Sitemap_Model_Option_Frequency'))
             ->add('sitemap/cms/priority', 'Sitemap/CMS Pages Options/Priority', '0.5', 'text', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
             ->add('sitemap/cms/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'Axis_Sitemap_Model_Option_Frequency'))
-            ->add('sitemap/cms/showPages', 'Show pages', '1', 'radio', 'Show pages on sitemap page', array('model'=> 'Axis_Core_Model_Option_Boolean'));
+            ->add('sitemap/cms/showPages', 'Show pages', '1', 'radio', 'Show pages on sitemap page', array('model'=> 'core/option_boolean'));
 
         Axis::single('core/page')
             ->add('sitemap/*/*')

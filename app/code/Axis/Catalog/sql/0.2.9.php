@@ -42,7 +42,7 @@ class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
         $paths = array(
             'image/watermark/position'             => 'Axis_Catalog_Model_Option_Watermark_Position',
             'catalog/lightzoom/zoomStagePosition'  => 'Axis_Catalog_Model_Option_Lightzoom_StagePosition',
-            'catalog/lightzoom/zoomCursor'         => 'Axis_Catalog_Model_Option_Lightzoom_Cursor',
+            'catalog/lightzoom/zoomCursor'         => 'catalog/option_lightzoom_cursor',
             'catalog/lightzoom/zoomOnTrigger'      => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger',
             'catalog/lightzoom/zoomOffTrigger'     => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger',
             'catalog/lightzoom/lightboxTrigger'    => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger',

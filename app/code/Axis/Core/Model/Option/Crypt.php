@@ -41,18 +41,6 @@ class Axis_Core_Model_Option_Crypt implements Axis_Config_Option_Encodable_Inter
     
     /**
      *
-     * @param Axis_Crypt_Interface $handler 
-     */
-    public function __construct(Axis_Crypt_Interface $handler = null) 
-    {
-        if (empty($handler)) {
-            $handler = Axis_Crypt::factory();
-        }
-        $this->setHandler($handler);
-    }
-
-    /**
-     *
      * @param type $handler
      * @return Axis_Core_Model_Option_Crypt 
      */
@@ -68,6 +56,9 @@ class Axis_Core_Model_Option_Crypt implements Axis_Config_Option_Encodable_Inter
      */
     public function getHandler() 
     {
+        if (empty($this->_handler)) {
+            $this->_handler = Axis_Crypt::factory();
+        }
         return $this->_handler;
     }
         

@@ -373,7 +373,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('catalog/lightzoom/zoomStageOffsetX', 'Zoomer offset-x', 10)
             ->add('catalog/lightzoom/zoomStageOffsetY', 'Zoomer offset-y', 0)
             ->add('catalog/lightzoom/zoomLensOpacity', 'Lens opacity', 0.7)
-            ->add('catalog/lightzoom/zoomCursor', 'Lens cursor', Axis_Catalog_Model_Option_Lightzoom_Cursor::getDeafult(), 'select', '', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_Cursor'))
+            ->add('catalog/lightzoom/zoomCursor', 'Lens cursor', Axis_Catalog_Model_Option_Lightzoom_Cursor::getDeafult(), 'select', '', array('model' => 'catalog/option_lightzoom_cursor'))
             ->add('catalog/lightzoom/zoomOnTrigger', 'Zoom on trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger'))
             ->add('catalog/lightzoom/zoomOffTrigger', 'Zoom off trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger'))
             ->add('catalog/lightzoom/lightboxTrigger', 'Lightbox trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger'))
@@ -384,7 +384,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
             ->add('image', 'Images', null, null, array('translation_module' => 'Axis_Catalog'))
             ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'text', 'Image cache path, relative to AXIS_ROOT')
-            ->add('image/product/cache', 'Images/Product Images/Cache', 1, 'radio', 'Enable image cache', array('model'=> 'Axis_Core_Model_Option_Boolean'))
+            ->add('image/product/cache', 'Images/Product Images/Cache', 1, 'radio', 'Enable image cache', array('model'=> 'core/option_boolean'))
             ->add('image/product/widthLarge', 'Large width', 0)
             ->add('image/product/heightLarge', 'Large height', 0)
             ->add('image/product/widthMedium', 'Product Info width', 250)
@@ -393,11 +393,11 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('image/product/heightSmall', 'Small height', 150)
             ->add('image/product/widthThumbnail', 'Thumbnail image width', 40)
             ->add('image/product/heightThumbnail', 'Thumbnail image height', 40)
-            ->add('image/watermark/enabled', 'Images/Watermark/Enabled', 0, 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
+            ->add('image/watermark/enabled', 'Images/Watermark/Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
             ->add('image/watermark/image', 'Image path', 'catalog/watermark.png', 'text', 'Path relative to the skin images folder: catalog/watermark.png')
             ->add('image/watermark/position', 'Watermark Position', Axis_Catalog_Model_Option_Watermark_Position::getDeafult(), 'select', array('model' => 'Axis_Catalog_Model_Option_Watermark_Position'))
             ->add('image/watermark/opacity', 'Opacity', 50, 'text', 'Values [0 - 100]')
-            ->add('image/watermark/repeat', 'Repeat', 0, 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'));
+            ->add('image/watermark/repeat', 'Repeat', 0, 'radio', '', array('model'=> 'core/option_boolean'));
 
         Axis::single('core/page')
             ->add('catalog/*/*')

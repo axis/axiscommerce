@@ -68,7 +68,7 @@ class Axis_Locale_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->add('locale/main/language', 'Locale/General/Default language',  '1', 'select', 'Default site language', array('model' => 'Axis_Locale_Model_Option_Language'))
             ->add('locale/main/locale', 'Default locale', 'en_US', 'select', 'Default site locale', array('sort_order' => 8, 'model' => 'Axis_Locale_Model_Option_ZendLocale'))
             ->add('locale/main/timezone', 'Timezone', 'Europe/London', 'select', 'Timezone' , array('sort_order' => 9, 'model' => 'Axis_Locale_Model_Option_ZendTimezone'))
-            ->add('locale/main/baseCurrency', 'Base currency', 'USD', 'select', 'Currency will be used for all online payment transactions', array('model' => 'Axis_Locale_Model_Option_Currency'))
+            ->add('locale/main/baseCurrency', 'Base currency', 'USD', 'select', 'Currency will be used for all online payment transactions', array('model' => 'locale/option_currency'))
             ->add('locale/main/currency', 'Default display currency', 'USD', 'select', 'Default currency', array('model' => 'Axis_Locale_Model_Option_Currency_Default'))
             ;
     }

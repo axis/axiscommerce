@@ -48,7 +48,7 @@ class Axis_PaymentAuthorizenetAim_Model_Standard extends Axis_Method_Payment_Mod
      */
     public function postProcess(Axis_Sales_Model_Order_Row $order)
     {
-        if (Axis_PaymentAuthorizenetAim_Model_Standard_AuthorizationType::AUTHORIZE === $this->_config->authorizationType) {
+        if (Axis_PaymentAuthorizenetAim_Model_Option_Standard_AuthorizationType::AUTHORIZE === $this->_config->authorizationType) {
             $response = $this->_authorize($order);
         } else {
             $response = $this->_capture($order);

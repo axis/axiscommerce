@@ -30,7 +30,7 @@ class Axis_Locale_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $models = array(
-            'Currency'     => 'Axis_Locale_Model_Option_Currency',
+            'Currency'     => 'locale/option_currency',
             'Language'     => 'Axis_Locale_Model_Option_Language',
             'ZendCountry'  => 'Axis_Locale_Model_Option_ZendCountry',
             'ZendCurrency' => 'Axis_Locale_Model_Option_ZendCurrency',

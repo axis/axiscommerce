@@ -35,13 +35,23 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
+        
         $model = Axis::single('core/config_field');
         $rowset = $model->select()
-            ->where('type = ?', 'string')
-            ->fetchRowset();
+            ->where('model != ?', '')
+            ->fetchRowset()->toArray();
+        array_unique($rowset);
+        sort($rowset);
+        function sse(&$item1, $key) {
+            $item1  = lcfirst($item1); 
+        }
         foreach ($rowset as $row) {
-            $row->type = 'text';
-            $row->save();
+            $item = explode('_', $row['model']);
+            array_walk($item, 'sse');
+            $item = implode('_', $item); 
+            $str = str_replace(array('axis_', '_model_'), array('', '/'), $item);
+            
+            Zend_Debug::dump(" '{$row['model']}' => '{$str}'   " );
         }
         
         Zend_Debug::dump(Axis_Payment::getMethodNames());
@@ -237,7 +247,7 @@ class SandboxController extends Axis_Core_Controller_Front
 //            camelize('shipping_tax')
 //
 //            );
-        
+
     //        $matches = array();
 //        $str = '#10 /usr/share/php/libzend-framework-php/Zend/Controller/Dispatcher/Standard.php(289): Zend_Controller_Action->dispatch(\'indexAction\')
 //#11 /usr/share/php/libzend-framework-php/Zend/Controller/Front.php(954):';

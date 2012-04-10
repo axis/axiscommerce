@@ -33,9 +33,9 @@ class Axis_ShippingUsps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Usps_Standard',           'Shipping Methods/Usps Standard', null, null, array('translation_module' => 'Axis_ShippingUsps'))
-            ->add('shipping/Usps_Standard/enabled',   'Shipping Methods/Usps Standard/Enabled', '0', 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean', 'translation_module' => 'Axis_Core'))
-            ->add('shipping/Usps_Standard/taxClass',  'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Class', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Usps_Standard/taxBasis',  'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'Axis_Tax_Model_Option_Basis', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Usps_Standard/enabled',   'Shipping Methods/Usps Standard/Enabled', '0', 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Usps_Standard/taxClass',  'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Usps_Standard/taxBasis',  'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Usps_Standard/geozone',   'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Axis_Location_Model_Option_Geozone', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Usps_Standard/handling',  'Handling price', '5')
             ->add('shipping/Usps_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
@@ -44,10 +44,10 @@ class Axis_ShippingUsps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
             ->add('shipping/Usps_Standard/gateway',        'Gateway Url', 'http://production.shippingapis.com/ShippingAPI.dll')
             ->add('shipping/Usps_Standard/service',        'Allowed Service', Axis_ShippingUsps_Model_Option_Standard_Service::getDeafult(), 'multiple', array('model' => 'Axis_ShippingUsps_Model_Option_Standard_Service'))
-            ->add('shipping/Usps_Standard/userId',         'User ID', '', 'text', '', array('model' => 'Axis_Core_Model_Option_Crypt'))
+            ->add('shipping/Usps_Standard/userId',         'User ID', '', 'text', '', array('model' => 'core/option_crypt'))
             ->add('shipping/Usps_Standard/container',      'Container', Axis_ShippingUsps_Model_Option_Standard_Package::VARIABLE, 'select', '', array('model' => 'Axis_ShippingUsps_Model_Option_Standard_Package'))
             ->add('shipping/Usps_Standard/size',           'Size', Axis_ShippingUsps_Model_Option_Standard_Size::REGULAR, 'select', '', array('model' => 'Axis_ShippingUsps_Model_Option_Standard_Size'))
-            ->add('shipping/Usps_Standard/machinable',     'Machinable', '1', 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
+            ->add('shipping/Usps_Standard/machinable',     'Machinable', '1', 'radio', '', array('model'=> 'core/option_boolean'))
             ->add('shipping/Usps_Standard/allowedMethods', 'Allowed Shipping Methods', Axis_ShippingUsps_Model_Option_Standard_ServiceLabel::getDeafult(), 'multiple', array('model' => 'Axis_ShippingUsps_Model_Option_Standard_ServiceLabel'))
             ;
     }

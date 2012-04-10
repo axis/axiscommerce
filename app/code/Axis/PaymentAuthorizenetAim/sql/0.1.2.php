@@ -31,7 +31,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_2 extends Axis_Core_Model_Migratio
     {
         $paths = array(
             'payment/AuthorizenetAim_Standard/orderStatusId'     => 'Axis_Sales_Model_Option_Order_Status',
-            'payment/AuthorizenetAim_Standard/authorizationType' => 'Axis_PaymentAuthorizenetAim_Model_Standard_AuthorizationType'
+            'payment/AuthorizenetAim_Standard/authorizationType' => 'paymentAuthorizenetAim/option_standard_authorizationType'
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();
         
@@ -46,7 +46,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_2 extends Axis_Core_Model_Migratio
             ->where('path = ?', 'payment/AuthorizenetAim_Standard/authorizationType')
             ->fetchRowset();
         foreach ($rowset as $row) {
-            $row->value = Axis_PaymentAuthorizenetAim_Model_Standard_AuthorizationType::AUTHORIZE;
+            $row->value = Axis_PaymentAuthorizenetAim_Model_Option_Standard_AuthorizationType::AUTHORIZE;
             $row->save();
         }
         

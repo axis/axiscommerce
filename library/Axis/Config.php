@@ -121,12 +121,10 @@ class Axis_Config extends Zend_Config
             
             $value = $data['value'];
             
-            $modelBackend = null;
             if (class_exists($data['model']) 
                 && in_array('Axis_Config_Option_Encodable_Interface', class_implements($data['model']))) {
                 
-                $modelBackend = new $data['model']();
-                $value = $modelBackend->decode($value);
+                $value = Axis::single($data['model'])->decode($value);
             }
             
             $values[$parts[0]][$parts[1]][$parts[2]] = $value;

@@ -128,17 +128,10 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             $value = $value->toArray();
         }
         
-        if (!empty($row->model)) {
-            
-            //@todo $row->getBackend()
-            $modelBackend = null;
-            if (class_exists($row->model)) {
-                $modelBackend = new $row->model();
-            }
+        if (class_exists($row->model) 
+            && in_array('Axis_Config_Option_Array_Abstract', class_parents($row->model))) {
 
-            if ($modelBackend instanceof Axis_Config_Option_Array_Abstract) {
-                $this->view->options = $modelBackend->toArray();
-            }
+            $this->view->options = Axis::model($row->model)->toArray();
         }
         $this->view->value = $value;
         
@@ -173,13 +166,10 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             ));
         }
         
-        $modelBackend = null;
-        if (class_exists($rowField->model)) {
-            $modelBackend = new $rowField->model();
-        }
-        
-        if ($modelBackend instanceof Axis_Config_Option_Encodable_Interface) {
-            $value = $modelBackend->encode($value);
+        if (class_exists($rowField->model) 
+            && in_array('Axis_Config_Option_Encodable_Interface', class_implements($rowField->model))) {
+
+            $value = Axis::model($rowField->model)->encode($value);
         }
         $row->value = $value;
         $row->save();

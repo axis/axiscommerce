@@ -41,14 +41,14 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
     public function down()
     {
         Axis::single('core/config_field')
-            ->add('analytics/main/usedPageName', 'USE PAGENAME',1 , 'radio', '', array('model'=> 'Axis_Core_Model_Option_Boolean'))
+            ->add('analytics/main/usedPageName', 'USE PAGENAME',1 , 'radio', '', array('model'=> 'core/option_boolean'))
             ->add('analytics/main/affiliation', 'Optional partner or store affilation', '' )
             ->add('analytics/attributes/brackets', 'Google analytics/Products attributes/PRODUCTS ATTRIBUTES BRACKETS', '[]')
             ->add('analytics/attributes/delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
-            ->add('analytics/conversion/used', 'Google analytics/Conversion option/Enabled', 1, 'radio', 'Enabled currency convertion', array('model'=> 'Axis_Core_Model_Option_Boolean'))
+            ->add('analytics/conversion/used', 'Google analytics/Conversion option/Enabled', 1, 'radio', 'Enabled currency convertion', array('model'=> 'core/option_boolean'))
             ->add('analytics/conversion/id', 'Id', '"')
             ->add('analytics/conversion/language', 'Language(en_EN)', 'en_EN')
-            ->add('analytics/tracking/used', 'Google analytics/Tracking options/Enabled', 1, 'radio', 'Enabled tracking', array('model'=> 'Axis_Core_Model_Option_Boolean'))
+            ->add('analytics/tracking/used', 'Google analytics/Tracking options/Enabled', 1, 'radio', 'Enabled tracking', array('model'=> 'core/option_boolean'))
             ->add('analytics/tracking/linksPrefix', 'Prefix')
         ;
     }

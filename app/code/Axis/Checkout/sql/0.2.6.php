@@ -35,7 +35,7 @@ class Axis_Checkout_Upgrade_0_2_6 extends Axis_Core_Model_Migration_Abstract
         ); 
         
         $paths = array(
-            'checkout/address_form/custom_fields_display_mode' => 'Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode',
+            'checkout/address_form/custom_fields_display_mode' => 'checkout/option_form_address_customFieldsDisplayMode',
             'checkout/cart/redirect'                           => 'Axis_Checkout_Model_Option_Cart_Redirect'
         );
         

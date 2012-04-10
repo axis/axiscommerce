@@ -31,8 +31,8 @@ class Axis_Tax_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $models = array(
-            'TaxBasis' => 'Axis_Tax_Model_Option_Basis',
-            'TaxClass' => 'Axis_Tax_Model_Option_Class'
+            'TaxBasis' => 'tax/option_basis',
+            'TaxClass' => 'tax/option_class'
             
         );
         $rowset = Axis::single('core/config_field')->select()->fetchRowset();

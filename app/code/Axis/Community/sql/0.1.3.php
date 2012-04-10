@@ -39,7 +39,7 @@ class Axis_Community_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->fetchRowset();
         
         foreach ($rowset as $row) {
-            $row->model = 'Axis_Community_Model_Option_Review_Status';
+            $row->model = 'community/option_review_status';
             $row->save();
         }
     }
