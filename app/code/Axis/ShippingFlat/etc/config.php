@@ -29,7 +29,7 @@ $config = array(
         'version' => '0.1.0',
         'required' => 0,
         'depends'  => array(
-            'Axis_Core' => '0.2.8'
+            'Axis_Core' => '0.2.9'
         ),
     )
 );

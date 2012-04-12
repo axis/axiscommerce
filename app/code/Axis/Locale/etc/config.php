@@ -30,7 +30,7 @@ $config = array(
         'version'  => '0.1.3',
         'required' => 1,
         'depends'  => array(
-            'Axis_Core' => '0.2.8'
+            'Axis_Core' => '0.2.9'
         ),
         'events'   => array(
             'admin_box_navigation_prepare' => array(

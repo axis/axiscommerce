@@ -23,9 +23,9 @@
  * @license     GNU Public License V3.0
  */
 
-class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
+class Axis_Core_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
 {
-    protected $_version = '0.2.8';
+    protected $_version = '0.2.9';
     protected $_info = '';
 
     public function up()
@@ -89,14 +89,27 @@ class Axis_Core_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
         }
         
         $installer = $this->getInstaller();
-        $installer->run("
-            ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `model_assigned_with`;
-            
-            ALTER TABLE `{$installer->getTable('core_config_field')}` DROP COLUMN `config_options`;
-            
-            ALTER TABLE `{$installer->getTable('core_config_field')}` CHANGE COLUMN `config_type` `type` VARCHAR(128) CHARACTER SET utf8 DEFAULT NULL;
-
-        ");
+        
+        $columns = $model->info('cols');
+        if (in_array('model_assigned_with', $columns)) {
+            $installer->run("
+                ALTER TABLE `{$installer->getTable('core_config_field')}` 
+                    DROP COLUMN `model_assigned_with`;
+            ");
+        }
+        
+        if (in_array('config_options', $columns)) {
+            $installer->run("
+                ALTER TABLE `{$installer->getTable('core_config_field')}` 
+                    DROP COLUMN `config_options`;
+            ");
+        }
+        if (in_array('config_type', $columns)) {
+            $installer->run("
+                ALTER TABLE `{$installer->getTable('core_config_field')}` 
+                    CHANGE COLUMN `config_type` `type` VARCHAR(128);
+            ");
+        }
             
         $rowset = $model->select()
             ->where('type = ?', 'radio')

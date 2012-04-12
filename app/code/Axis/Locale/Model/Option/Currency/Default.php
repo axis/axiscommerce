@@ -41,7 +41,7 @@ class Axis_Locale_Model_Option_Currency_Default extends Axis_Locale_Model_Option
     public function encode($value)
     {
         //@todo move to specific event 
-        $row = $this->select()
+        $row = Axis::model('locale/currency')->select()
             ->where('code = ?' , $value)
             ->fetchRow();
         if ($row instanceof Axis_Db_Table_Row && 1 !== $row->rate) {

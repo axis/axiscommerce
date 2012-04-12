@@ -34,7 +34,7 @@
  */
 class Axis_ShippingUps_Model_Option_Standard_Origin extends Axis_Config_Option_Array_Abstract
 {
-    protected $_origins = array(
+    protected static $_origins = array(
             'United States Domestic Shipments' => array(
                 '01' => 'UPS Next Day Air',
                 '02' => 'UPS Second Day Air',
@@ -123,7 +123,7 @@ class Axis_ShippingUps_Model_Option_Standard_Origin extends Axis_Config_Option_A
      */
     protected function _loadCollection()
     {
-        return array_keys($this->_origins);
+        return array_keys(self::$_origins);
     }
     
     /**
@@ -133,6 +133,6 @@ class Axis_ShippingUps_Model_Option_Standard_Origin extends Axis_Config_Option_A
      */
     public static function getDeafult()
     {
-        return current(array_keys($this->_origins));
+        return current(array_keys(self::$_origins));
     }
 }

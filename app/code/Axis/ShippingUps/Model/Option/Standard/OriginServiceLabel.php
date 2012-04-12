@@ -42,6 +42,6 @@ class Axis_ShippingUps_Model_Option_Standard_OriginServiceLabel extends Axis_Shi
     {
         $origin = Axis::config('shipping/Ups_Standard/xmlOrigin');
         
-        return isset($this->_origins[$origin]) ? $this->_origins[$origin] : array();
+        return isset(self::$_origins[$origin]) ? self::$_origins[$origin] : array();
     }
 }
