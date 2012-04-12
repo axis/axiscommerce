@@ -49,7 +49,6 @@ class Axis_Core_Model_Template extends Axis_Db_Table
             ->where('value = ?', $templateId)
             ->fetchOne()
             ;
-        return false;
     }
 
     /**
@@ -109,7 +108,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
                     ->join('cms_block_content', 'cb.id = cbc.block_id', '*')
                     ->where('cb.name = ?', $name)
                     ->fetchAll();
-                $languageIds = array_keys(Axis_Collect_Language::collect());
+                $languageIds = array_keys(Axis::model('locale/option_language')->toArray());
 //                $cmsBlocks = array();
                 foreach ($rowset as $row) {
 
@@ -310,7 +309,7 @@ class Axis_Core_Model_Template extends Axis_Db_Table
         }
         //import cms blocks
         $modelBlock = Axis::model('cms/block');
-        $languageIds  = array_keys(Axis_Collect_Language::collect());
+        $languageIds  = array_keys(Axis::model('locale/option_language')->toArray());
         $modelContent = Axis::model('cms/block_content');
         foreach ($cmsBlocks as $cmsBlock) {
             $cmsBlockId = $modelBlock->getIdByName($cmsBlock['name']);

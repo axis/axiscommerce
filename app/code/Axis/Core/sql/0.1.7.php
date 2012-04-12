@@ -50,10 +50,8 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             `lvl` tinyint(3) unsigned NOT NULL,
             `path` varchar(255) NOT NULL,
             `title` varchar(128) NOT NULL,
-            `config_type` varchar(15) NOT NULL DEFAULT '',
+            `type` varchar(128) NOT NULL DEFAULT '',
             `model` varchar(128) NOT NULL,
-            `model_assigned_with` varchar(128) NOT NULL,
-            `config_options` text,
             `description` text,
             `translation_module` VARCHAR(45) DEFAULT NULL,
             PRIMARY KEY  (`id`),
@@ -270,47 +268,47 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
 
             ->add('core/store/name', 'Core/Store/Name', 'Enter store name')
             ->add('core/store/city', 'City', '')
-            ->add('core/store/country', 'Country', 223, 'select', 'Store Country', array('model' => 'Country'))
-            ->add('core/store/zone', 'Zone', 43, 'select', 'Store zone(state,province)', array('model' => 'ZoneByCountry', 'model_assigned_with' => 'core/store/country'))
-            ->add('core/store/zip', 'Zip code', '10001', 'string', 'Zip code')
+            ->add('core/store/country', 'Country', 223, 'select', 'Store Country', array('model' => 'location/option_country'))
+            ->add('core/store/zone', 'Zone', 43, 'select', 'Store zone(state,province)', array('model' => 'core/option_store_zone'))
+            ->add('core/store/zip', 'Zip code', '10001', 'text', 'Zip code')
             ->add('core/store/owner', 'Store owner', 'Owner')
 
-            ->add('core/backend/route', 'Core/Backend/Route', 'admin', 'string', 'Admin url (example.com/<b>adminRoute</b>)')
-            ->add('core/backend/ssl', 'Ssl Enabled', 0, 'bool')
+            ->add('core/backend/route', 'Core/Backend/Route', 'admin', 'text', 'Admin url (example.com/<b>adminRoute</b>)')
+            ->add('core/backend/ssl', 'Ssl Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
 
-            ->add('core/frontend/ssl', 'Core/Frontend/Ssl Enabled', 0, 'bool')
+            ->add('core/frontend/ssl', 'Core/Frontend/Ssl Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
 
-            ->add('core/company/name', 'Core/Company/Name', 'Axiscommerce', 'string', 'Company name')
-            ->add('core/company/site', 'Website', 'www.example.com', 'string', 'Company website')
-            ->add('core/company/country', 'Country',  '223', 'select', 'Company country', array('model' => 'Country'))
+            ->add('core/company/name', 'Core/Company/Name', 'Axiscommerce', 'text', 'Company name')
+            ->add('core/company/site', 'Website', 'www.example.com', 'text', 'Company website')
+            ->add('core/company/country', 'Country',  223, 'select', 'Company country', array('model' => 'location/option_country'))
             ->add('core/company/city', 'City', 'New York')
-            ->add('core/company/zone', 'Zone', '43', 'select', array('model' => 'ZoneByCountry', 'model_assigned_with' => 'core/company/country'))
+            ->add('core/company/zone', 'Zone', 43, 'select', array('model' => 'core/option_company_zone'))
             ->add('core/company/street', 'Street', 'Enter this your street')
             ->add('core/company/zip', 'Zip code', '10001')
             ->add('core/company/phone', 'Phone', '')
             ->add('core/company/fax', 'Fax', '')
-            ->add('core/company/administratorEmail', 'Administrator email',  'email1', 'select', array('model' => 'MailBoxes'))
-            ->add('core/company/customerRelationEmail', 'Customer relations email',  'email3', 'select', array('model' => 'MailBoxes'))
-            ->add('core/company/salesDepartmentEmail', 'Sales department email',  'email4', 'select', array('model' => 'MailBoxes'))
-            ->add('core/company/supportEmail', 'Support email', 'email5', 'select', array('model' => 'MailBoxes'))
+            ->add('core/company/administratorEmail', 'Administrator email',  'email1', 'select', array('model' => 'core/option_mail_boxes'))
+            ->add('core/company/customerRelationEmail', 'Customer relations email',  'email3', 'select', array('model' => 'core/option_mail_boxes'))
+            ->add('core/company/salesDepartmentEmail', 'Sales department email',  'email4', 'select', array('model' => 'core/option_mail_boxes'))
+            ->add('core/company/supportEmail', 'Support email', 'email5', 'select', array('model' => 'core/option_mail_boxes'))
 
             ->add('core/cache/default_lifetime', 'core/Cache/Default Lifetime', '86400')
-            ->add('core/translation/autodetect', 'core/Translation/Autodetect new words',  '0', 'bool', 'Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)')
+            ->add('core/translation/autodetect', 'core/Translation/Autodetect new words',  '0', 'radio', 'Detect not translated words and write them to the file (Make sure that locale folder has writable permissions: >chmod -R 0777 [root_path]/app/locale)', array('model'=> 'core/option_boolean'))
 
-            ->add('core/minify/js_front', 'Core/Minify/Enable javascript merging the frontend', '0', 'bool')
-            ->add('core/minify/js_admin', 'Core/Minify/Enable javascript merging on the backend', '0', 'bool')
-            ->add('core/minify/css_front', 'Enable css merging on the frontend', '0', 'bool')
-            ->add('core/minify/css_admin', 'Enable css merging on the backend', '0', 'bool')
+            ->add('core/minify/js_front', 'Core/Minify/Enable javascript merging the frontend', '0', 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('core/minify/js_admin', 'Core/Minify/Enable javascript merging on the backend', '0', 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('core/minify/css_front', 'Enable css merging on the frontend', '0', 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('core/minify/css_admin', 'Enable css merging on the backend', '0', 'radio', '', array('model'=> 'core/option_boolean'))
 
             ->add('mail', 'Mail', null, null, array('translation_module' => 'Axis_Core'))
-            ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email2', 'select', array('model' => 'MailBoxes'))
-            ->add('mail/main/transport', 'Mail transport', 'sendmail', 'select', 'Mail Transport (smtp or sendmail)', array('config_options' => 'smtp,sendmail'))
+            ->add('mail/main/mtcFrom', 'Mail/General/Sender', 'email2', 'select', array('model' => 'core/option_mail_boxes'))
+            ->add('mail/main/transport', 'Mail transport', Axis_Core_Model_Option_Mail_Transport::SENDMAIL, 'select', 'Mail Transport (smtp or sendmail)', array('model' => 'core/option_mail_transport'))
             ->add('mail/smtp/host', 'Mail/Smtp/Host', 'host.smtp.com')
-            ->add('mail/smtp/user', 'User', 'test+axiscommerce.com', 'handler', '', array('model' => 'Crypt'))
-            ->add('mail/smtp/password', 'Password', 'test', 'handler', '', array('model' => 'Crypt'))
+            ->add('mail/smtp/user', 'User', 'test+axiscommerce.com', 'text', '', array('model' => 'core/option_crypt'))
+            ->add('mail/smtp/password', 'Password', 'test', 'text', '', array('model' => 'core/option_crypt'))
             ->add('mail/smtp/port', 'Port', '465')
-            ->add('mail/smtp/auth', 'Use Auth', '1', 'bool')
-            ->add('mail/smtp/secure', 'Secure', 'ssl', 'select', array('config_options' => 'none,tls,ssl'))
+            ->add('mail/smtp/auth', 'Use Auth', '1', 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('mail/smtp/secure', 'Secure', Axis_Core_Model_Option_Mail_Secure::SSL, 'select', array('model' => 'core/option_mail_secure'))
             ->add('mail/mailboxes/email1', 'Mail/Mailboxes/Email', 'test@axiscommerce.com')
             ->add('mail/mailboxes/email2', 'Email', 'test@axiscommerce.com')
             ->add('mail/mailboxes/email3', 'Email', 'test@axiscommerce.com')
@@ -328,19 +326,19 @@ class Axis_Core_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             ->add('mail/mailboxes/email15', 'Email', 'test@axiscommerce.com')
 
             ->add('design', 'Design', null, null, array('translation_module' => 'Axis_Core'))
-            ->add('design/main/frontTemplateId', 'Design/General/Front Template', 2, 'select', array('model' => 'Template'))
-            ->add('design/main/adminTemplateId', 'Admin Template',  1, 'select', array('model' => 'Template'))
+            ->add('design/main/frontTemplateId', 'Design/General/Front Template', 2, 'select', array('model' => 'core/option_template'))
+            ->add('design/main/adminTemplateId', 'Admin Template',  1, 'select', array('model' => 'core/option_template'))
             ->add('design/htmlHead/defaultTitle', 'Design/HTML Head/Default Title', 'Default Title')
-            ->add('design/htmlHead/defaultDescription', 'Default Description', 'Default Description',  'text')
-            ->add('design/htmlHead/defaultKeywords', 'Default Keywords',  'Axis, store', 'text')
+            ->add('design/htmlHead/defaultDescription', 'Default Description', 'Default Description',  'textarea')
+            ->add('design/htmlHead/defaultKeywords', 'Default Keywords',  'Axis, store', 'textarea')
             ->add('design/htmlHead/titlePrefix', 'Title Prefix')
             ->add('design/htmlHead/titleSuffix', 'Title Suffix')
             ->add('design/htmlHead/titleDivider', 'Title Divider', ' - ')
-            ->add('design/htmlHead/titlePattern', 'Title Pattern', 'Page Title,Site Name', 'multiple', 'Check values, which you want to see on page title', array('config_options' => 'Page Title,Parent Page Titles,Site Name'))
-            ->add('design/htmlHead/defaultRobots', 'Default Robots', 'INDEX FOLLOW', 'select', array('config_options' => 'INDEX FOLLOW,INDEX NOFOLLOW,NOINDEX FOLLOW,NOINDEX NOFOLLOW'))
-            ->add('design/htmlHead/homeDescription', 'Homepage description', '', 'text', 'Homepage description')
-            ->add('design/htmlHead/homeKeywords', 'Homepage keywords', 'Axis, store', 'text')
-            ->add('design/htmlHead/homeTitle', 'Homepage title', 'Homepage title', 'string', 'Homepage title')
+            ->add('design/htmlHead/titlePattern', 'Title Pattern', Axis_Core_Model_Option_Template_TitlePattern::getDeafult(), 'multiple', 'Check values, which you want to see on page title', array('model' => 'core/option_template_titlePattern'))
+            ->add('design/htmlHead/defaultRobots', 'Default Robots', Axis_Core_Model_Option_Template_Robots::getDeafult(), 'select', array('model' => 'core/option_template_robots'))
+            ->add('design/htmlHead/homeDescription', 'Homepage description', '', 'textarea', 'Homepage description')
+            ->add('design/htmlHead/homeKeywords', 'Homepage keywords', 'Axis, store', 'textarea')
+            ->add('design/htmlHead/homeTitle', 'Homepage title', 'Homepage title', 'text', 'Homepage title')
             ;
 
         Axis::single('core/cache')

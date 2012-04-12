@@ -55,25 +55,31 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
      */
     protected $_defaultGatewayUrl = 'http://www.ups.com/using/services/rave/qcostcgi.cgi';
 
+     //@todo collection serrvices value|code|label 01|1da|UPS Next Day Air®
     /**
      * Subcodes
      * @var array
      */
-
-    private $_codes = array(
-       '01' => '1DA',
-       '02' => '2DA',
-       '03' => 'GND',
-       '07' => 'XPR',
-       '08' => 'XPD',
-       '11' => 'STD',
-       '12' => '3DS',
-       '13' => '1DP',
-       '14' => '1DM',
-       '54' => 'XDM',
-       '59' => '2DM',
-       '65' => 'WXS',
-
+    private $_valueToCode = array(
+       '01' => '1DA', //UPS Next Day Air®
+       '02' => '2DA', //UPS Second Day Air®
+       '03' => 'GND', //UPS Ground
+       '07' => 'XPR', //UPS Worldwide ExpressSM
+       '08' => 'XPD', //UPS Worldwide ExpeditedSM
+       '11' => 'STD', //UPS Standard
+       '12' => '3DS', //UPS Three-Day Select®
+       '13' => '1DP', //UPS Next Day Air Saver®
+       '14' => '1DM', //UPS Next Day Air® Early A.M. SM
+       '54' => 'XDM', //UPS Worldwide Express PlusSM
+       '59' => '2DM', //UPS Second Day Air A.M.®
+       '65' => 'WXS', //UPS Saver
+    );
+    
+    /**
+     * Subcodes
+     * @var array
+     */
+    private $_codeToValue = array(
        '1DM'    => '14',
        '1DML'   => '14',
        '1DA'    => '01',
@@ -98,24 +104,6 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
        'XPD'    => '08'
 
     );
-
-    private $_pikup = array (
-        'RDP' => array('label' => 'Regular Daily Pickup', 'code' => '01'),
-        'OCA' => array('label' => 'On Call Air',          'code' => '07'),
-        'OTP' => array('label' => 'One Time Pickup',      'code' => '06'),
-        'LC'  => array('label' => 'Letter Center',        'code' => '19'),
-        'CC'  => array('label' => 'Customer Counter',     'code' => '03')
-    );
-
-    private $_package = array(
-        'CP'   => array('label' => 'Customer Packaging',    'code' => '00'),
-        'ULE'  => array('label' => 'UPS Letter Envelope',   'code' => '01'),
-        'UT'   => array('label' => 'UPS Tube',              'code' => '03'),
-        'UEB'  => array('label' => 'UPS Express Box',       'code' => '21'),
-        'UW25' => array('label' => 'UPS Worldwide 25 kilo', 'code' => '24'),
-        'UW10' => array('label' => 'UPS Worldwide 10 kilo', 'code' => '25'),
-    );
-
 
     //http://www.google.com.ua/url?sa=t&source=web&ct=res&cd=1&url=http%3A%2F%2Faricmackey.com%2Fwp-content%2Fuploads%2F2008%2F04%2Fups-servicecodes.pdf&ei=ilFwSrCgApPmnAOSnuG4Bw&usg=AFQjCNEsnvbbKqFJpNC11Usd9T7sceF1Cg&sig2=C4YzeB2s4p-xbSENCFTtRw
 
@@ -142,11 +130,18 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $r = new Axis_Object();
         // Set UPS Product Code
         // Set UPS Action method
-        $r->productCode = 'GND' . $this->_config->res;
+        switch ($this->_config->res) {
+            case Axis_ShippingUps_Model_Option_Standard_DestinationType::RES: 
+                $r->productCode = 'GNDRES';
+                break;
+            case Axis_ShippingUps_Model_Option_Standard_DestinationType::COM: 
+                $r->productCode = 'GNDCOM';
+                break;
+        }
         $r->actionCode = '4';
          /* 3 - Single Quote (Rate)
             4 - All Available Quotes (Shop)*/
-        if ($request['country']['iso_code_2'] === 'CA') {
+        if ('CA' === $request['country']['iso_code_2']) {
             $r->productCode = 'STD';
             $r->actionCode = '3';
         }
@@ -183,11 +178,12 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
 
         // Set UPS rate-quote method
-        $r->rateCode = $this->_config->pickup;
-        $r->rateLabel =  $this->_pikup[$r->rateCode]['label'];
+        $r->pickupCode = $this->_config->pickup;
+        $pickups = Axis::model('shippingUps/option_standard_pickup');
+        $r->pickupLabel =  $pickups[$r->pickupCode];
 
         // Set UPS Container type
-        $r->containerCode = $this->_package[$this->_config->package]['code'];
+        $r->containerCode = $this->_config->package;
 
         // Set UPS package weight
         $r->packageWeight = $request['weight'] < 0.1 ? 0.1 : $request['weight'];
@@ -199,11 +195,11 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
         //Set UPS address-quote method (residential vs commercial)
         switch ($this->_config->res) {
-            case 'RES': // Residential Address
-                $r->resComCode = '1';
+            case Axis_ShippingUps_Model_Option_Standard_DestinationType::RES: // Residential Address
+                $r->residentialCode = '1';
                 break;
-            case 'COM': // Commercial Address
-                $r->resComCode = '0';
+            case Axis_ShippingUps_Model_Option_Standard_DestinationType::COM: // Commercial Address
+                $r->residentialCode = '0';
                 break;
         }
         $this->_request = $r;
@@ -213,7 +209,7 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
 
     protected function _getQuotes()
     {
-        if ($this->_config->type === 'XML') {
+        if (Axis_ShippingUps_Model_Option_Standard_RequestType::XML === $this->_config->type) {
             return $this->_getXmlQuotes();
         }
         return $this->_getCgiQuotes();
@@ -243,20 +239,20 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $request->addChild('RequestAction', 'Rate');
 
         $option = 'Rate';
-        if ($this->_request->actionCode == '4')  {
+        if ('4' == $this->_request->actionCode)  {
             $option = 'Shop';
         }
         $request->addChild('RequestOption', $option);
 
         $pickupType = $xml->addChild('PickupType');
 
-        $pickupType->addChild('Code', $this->_pikup[$this->_request->rateCode]['code']);
+        $pickupType->addChild('Code', $this->_request->pickupCode);
         /*
         '01' (daily pickup), '03' (customer counter), '06' (one time pickup),
         '07' (oncall air), '11' (suggested retail rates),
         '19' (letter center), or '20' (air service center)
         */
-        $pickupType->addChild('Description', $this->_request->rateLabel);
+        $pickupType->addChild('Description', $this->_request->pickupLabel);
         //$customerClassification = $xml->addChild('CustomerClassification');
         //$customerClassification->addChild('Code',);
         /*string '01' (wholesale), '03' (occasional), or '04' (retail);
@@ -266,12 +262,13 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         */
         $shipment = $xml->addChild('Shipment');
         $service = $shipment->addChild('Service');
+        
+        $service->addChild('Code', $this->_request->productCode);
         $code = $this->_request->productCode ?
-            $this->_codes[$this->_request->productCode] : '';
-        $service->addChild('Code', $code);
-        $service->addChild('Description', $this->_getShipmentDescription(
-             $this->_request->productCode
-        ));
+            $this->_codeToValue[$this->_request->productCode] : '';
+        $originServiceLabels = Axis::model('ShippingUps/Option_Standard_OriginServiceLabel');
+        $service->addChild('Description', $originServiceLabels[$code]);
+        
         $shipper = $shipment->addChild('Shipper');
         if ($this->_config->negotiatedActive && $this->_config->shipperNumber) {
             $shipper->addChild('<ShipperNumber>', $this->_config->shipperNumber);
@@ -285,10 +282,10 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $address = $shipment->addChild('ShipTo')->addChild('Address');
         $address->addChild('PostalCode', $this->_request->destPostalCode);
         $address->addChild('CountryCode', $this->_request->destCountryCode);
-        $address->addChild('ResidentialAddress', $this->_request->resComCode);
+        $address->addChild('ResidentialAddress', $this->_request->residentialCode);
         $address->addChild('StateProvinceCode', $this->_request->destZone);
-        if ($this->_request->resComCode === '01') {
-            $address->addChild('ResidentialAddressIndicator', $this->_request->resComCode);
+        if ('1' === $this->_request->residentialCode) {
+            $address->addChild('ResidentialAddressIndicator', $this->_request->residentialCode);
         }
 
         $address = $shipment->addChild('ShipFrom')->addChild('Address');
@@ -365,25 +362,27 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $negotiatedActive = $this->_config->negotiatedActive &&
             $this->_config->shipperNumber && !empty($negotiatedArr);
 
+        $originServiceLabels = Axis::model('ShippingUps/Option_Standard_OriginServiceLabel');    
         foreach ($xml->RatedShipment as $shipElement) {
-            $code = $this->_codes[(string)$shipElement->Service->Code];
+            $code = $this->_valueToCode[(string)$shipElement->Service->Code];
 
-            #$shipment = $this->getShipmentByCode($code);
             if (!in_array($code, $allowedMethods)) {
                 continue;
             }
 
             if ($negotiatedActive) {
-                $cost = (float)$shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->MonetaryValue;
-                $currency = (string)$shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->CurrencyCode;
+                $cost     = (float) $shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->MonetaryValue;
+                $currency = (string) $shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->CurrencyCode;
             } else {
-                $cost = (float)$shipElement->TotalCharges->MonetaryValue;
-                $currency = (string)$shipElement->TotalCharges->CurrencyCode;
+                $cost     = (float) $shipElement->TotalCharges->MonetaryValue;
+                $currency = (string) $shipElement->TotalCharges->CurrencyCode;
             }
             $cost = Axis::single('locale/currency')->from($cost, $currency);
             $methods[] = array(
-                'id' => $this->_code . '_' . $code,
-                'title' => $this->getTranslator()->__($this->_getShipmentDescription((string)$shipElement->Service->Code)),
+                'id'    => $this->_code . '_' . $code,
+                'title' => $this->getTranslator()->__(
+                    $originServiceLabels[(string)$shipElement->Service->Code]
+                ),
                 'price' => $cost + $this->_config->handling
             );
         }
@@ -397,24 +396,20 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
      */
     protected function _getCgiQuotes()
     {
-        if (!isset($this->_request->actionCode)) {
-            $this->_request->actionCode = '4';
-        }
-
         $request = join('&', array(
             'accept_UPS_license_agreement=yes',
-            '10_action=' . $this->_request->actionCode,
-            '13_product=' . $this->_request->productCode,
+            '10_action='      . $this->_request->actionCode,
+            '13_product='     . $this->_request->productCode,
             '14_origCountry=' . $this->_request->originCountryCode,
-            '15_origPostal=' . $this->_request->originPostalCode,
-            'origCity='      . $this->_request->originCity,
-            '19_destPostal=' . $this->_request->destPostalCode,
+            '15_origPostal='  . $this->_request->originPostalCode,
+            'origCity='       . $this->_request->originCity,
+            '19_destPostal='  . $this->_request->destPostalCode,
             '22_destCountry=' . $this->_request->destCountryCode,
-            '23_weight=' . $this->_request->packageWeight,
-            '47_rate_chart=' . $this->_request->rateLabel,
-            '48_container=' . $this->_request->containerCode,
-            '49_residential=' . $this->_request->resComCode,
-            'weight_std='. $this->_request->weightUnit
+            '23_weight='      . $this->_request->packageWeight,
+            '47_rate_chart='  . $this->_request->pickupLabel,
+            '48_container='   . $this->_request->containerCode,
+            '49_residential=' . $this->_request->residentialCode,
+            'weight_std='     . $this->_request->weightUnit
         ));
         $httpClient = new Zend_Http_Client();
         $httpClient->setHeaders(array(
@@ -467,140 +462,42 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         //                break;
         //        }
 
-        $allowed_methods = $this->_config->types->toArray();
-        $std_rcd = false;
-
+        $allowedMethods = $this->_config->types->toArray();
+        $originServiceLabels = Axis::model('ShippingUps/Option_Standard_OriginServiceLabel');
+        
         for ($i = 0; $i < sizeof($rows); $i++) {
-            $type = null;
+            $code = null;
             $row = explode('%', $rows[$i]);
             $errcode = substr($row[0], -1);
             switch ($errcode) {
                 case 3:
                 case 4:
-                    $type = $row[1];
+                    $code = $row[1];
                     $cost = $row[10];
                     break;
                 case 5:
                     $this->log($row[1]);
                     break;
                 case 6:
-                    $type = $row[3];
+                    $code = $row[3];
                     $cost = $row[10];
                     break;
             }
 
-            if (!in_array($type, $allowed_methods)) {
+            if (!in_array($code, $allowedMethods)) {
                 continue;
             }
             $cost = Axis::single('locale/currency')->from($cost, 'USD');
             $methods[] = array(
-                'id' => $this->_code . '_' . $type,
+                'id' => $this->_code . '_' . $code,
                 'title' => $this->getTranslator()->__(
-                    $this->_getShipmentDescription($this->_codes[$type])
-                    ) /*. ' ' . $show_box_weight*/,
+                    $originServiceLabels[$this->_codeToValue[$code]]
+                ) /*. ' ' . $show_box_weight*/,
                 'price' => $cost + $this->_config->handling
                 // @todo)* $this->_request->numberBoxes
             );
 
         }
         return $methods;
-    }
-
-
-    protected function _getShipmentDescription($code)
-    {
-        $origin = $this->_config->xmlOrigin;
-
-        $originShipment = array(
-            // United States Domestic Shipments
-            'United States Domestic Shipments' => array(
-                '01' => 'UPS Next Day Air',
-                '02' => 'UPS Second Day Air',
-                '03' => 'UPS Ground',
-                '07' => 'UPS Worldwide Express',
-                '08' => 'UPS Worldwide Expedited',
-                '11' => 'UPS Standard',
-                '12' => 'UPS Three-Day Select',
-                '13' => 'UPS Next Day Air Saver',
-                '14' => 'UPS Next Day Air Early A.M.',
-                '54' => 'UPS Worldwide Express Plus',
-                '59' => 'UPS Second Day Air A.M.',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in United States
-            'Shipments Originating in United States' => array(
-                '01' => 'UPS Next Day Air',
-                '02' => 'UPS Second Day Air',
-                '03' => 'UPS Ground',
-                '07' => 'UPS Worldwide Express',
-                '08' => 'UPS Worldwide Expedited',
-                '11' => 'UPS Standard',
-                '12' => 'UPS Three-Day Select',
-                '14' => 'UPS Next Day Air Early A.M.',
-                '54' => 'UPS Worldwide Express Plus',
-                '59' => 'UPS Second Day Air A.M.',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in Canada
-            'Shipments Originating in Canada' => array(
-                '01' => 'UPS Express',
-                '02' => 'UPS Expedited',
-                '07' => 'UPS Worldwide Express',
-                '08' => 'UPS Worldwide Expedited',
-                '11' => 'UPS Standard',
-                '12' => 'UPS Three-Day Select',
-                '14' => 'UPS Express Early A.M.',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in the European Union
-            'Shipments Originating in the European Union' => array(
-                '07' => 'UPS Express',
-                '08' => 'UPS Expedited',
-                '11' => 'UPS Standard',
-                '54' => 'UPS Worldwide Express PlusSM',
-                '65' => 'UPS Saver',
-            ),
-            // Polish Domestic Shipments
-            'Polish Domestic Shipments' => array(
-                '07' => 'UPS Express',
-                '08' => 'UPS Expedited',
-                '11' => 'UPS Standard',
-                '54' => 'UPS Worldwide Express Plus',
-                '65' => 'UPS Saver',
-                '82' => 'UPS Today Standard',
-                '83' => 'UPS Today Dedicated Courrier',
-                '84' => 'UPS Today Intercity',
-                '85' => 'UPS Today Express',
-                '86' => 'UPS Today Express Saver',
-            ),
-            // Puerto Rico Origin
-            'Puerto Rico Origin' => array(
-                '01' => 'UPS Next Day Air',
-                '02' => 'UPS Second Day Air',
-                '03' => 'UPS Ground',
-                '07' => 'UPS Worldwide Express',
-                '08' => 'UPS Worldwide Expedited',
-                '14' => 'UPS Next Day Air Early A.M.',
-                '54' => 'UPS Worldwide Express Plus',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in Mexico
-            'Shipments Originating in Mexico' => array(
-                '07' => 'UPS Express',
-                '08' => 'UPS Expedited',
-                '54' => 'UPS Express Plus',
-                '65' => 'UPS Saver',
-            ),
-            // Shipments Originating in Other Countries
-            'Shipments Originating in Other Countries' => array(
-                '07' => 'UPS Express',
-                '08' => 'UPS Worldwide Expedited',
-                '11' => 'UPS Standard',
-                '54' => 'UPS Worldwide Express Plus',
-                '65' => 'UPS Saver')
-        );
-
-        return isset($originShipment[$origin][$code]) ?
-            $originShipment[$origin][$code] : '';
     }
 }

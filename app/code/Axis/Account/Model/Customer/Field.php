@@ -179,14 +179,16 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
             $group = array($group => $group);
         }
 
-        $languageIds = array_keys(Axis_Collect_Language::collect());
+        $languageIds = array_keys(Axis::model('locale/option_language')->toArray());
 
         $modelFieldGroup = Axis::single('account/customer_FieldGroup');
         /* create field group */
         if (!($groupId = $modelFieldGroup->getIdByName(key($group)))) {
 
             $defaultGroupInfo = array(
-                'name' => key($group), 'sort_order' => 5, 'is_active' => 1
+                'name'       => key($group), 
+                'sort_order' => 5, 
+                'is_active'  => 1
             );
             $groupId = $modelFieldGroup->insert(
                 array_merge($defaultGroupInfo, $groupInfo)
@@ -198,8 +200,8 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
             foreach ($languageIds as $languageId) {
                 $modelFieldGroupLabel->insert(array(
                     'customer_field_group_id' => $groupId,
-                    'language_id' => $languageId,
-                    'group_label' => $groupLabel
+                    'language_id'             => $languageId,
+                    'group_label'             => $groupLabel
                 ));
             }
         }
@@ -207,15 +209,15 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
         /* create field */
         if (!($fieldId = $this->getIdByName(key($field)))) {
             $defaultFieldInfo = array(
-                'name' => key($field),
+                'name'                    => key($field),
                 'customer_field_group_id' => $groupId,
-                'field_type' => 'text',
-                'required' => 0,
-                'sort_order' => 5,
-                'is_active' => 1,
-                'customer_valueset_id' => new Zend_Db_Expr('NULL'),
-                'validator' => new Zend_Db_Expr('NULL'),
-                'axis_validator' => new Zend_Db_Expr('NULL')
+                'field_type'              => 'text',
+                'required'                => 0,
+                'sort_order'              => 5,
+                'is_active'               => 1,
+                'customer_valueset_id'    => new Zend_Db_Expr('NULL'),
+                'validator'               => new Zend_Db_Expr('NULL'),
+                'axis_validator'          => new Zend_Db_Expr('NULL')
             );
             $fieldId = $this->insert(
                 array_merge($defaultFieldInfo, $fieldInfo)
@@ -224,8 +226,8 @@ class Axis_Account_Model_Customer_Field extends Axis_Db_Table
             foreach ($languageIds as $languageId) {
                 Axis::single('account/customer_field_label')->insert(array(
                     'customer_field_id' => $fieldId,
-                    'language_id' => $languageId,
-                    'field_label' => $fieldLabel
+                    'language_id'       => $languageId,
+                    'field_label'       => $fieldLabel
                 ));
             }
         }

@@ -36,6 +36,7 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('contacts')->__('Incoming Box');
+        $this->view->departments = Axis::model('contacts/option_department')->toArray();
         $this->render();
     }
 

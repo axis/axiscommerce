@@ -86,7 +86,7 @@ class Axis_Catalog_Admin_ProductOptionController extends Axis_Admin_Controller_B
         }
 
         $data = current($rowset);
-        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
+        foreach (array_keys(Axis::model('locale/option_language')->toArray()) as $languageId) {
             if (!isset($rowset[$languageId]['name'])) {
                 $rowset[$languageId]['name'] = '';
                 $rowset[$languageId]['description'] = '';

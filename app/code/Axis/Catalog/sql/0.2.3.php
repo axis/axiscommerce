@@ -342,12 +342,12 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        $languages = Axis_Collect_Language::collect();
-        $mCategoryDescription = Axis::model('catalog/category_description');
-        foreach ($languages as $langId => $langName) {
-            $mCategoryDescription->createRow(array(
+        $languages = Axis::model('locale/option_language');
+        $modelCatalogCategoryDescription = Axis::model('catalog/category_description');
+        foreach ($languages as $languageId => $languageName) {
+            $modelCatalogCategoryDescription->createRow(array(
                 'category_id'   => 1,
-                'language_id'   => $langId,
+                'language_id'   => $languageId,
                 'name'          => 'Main Store',
                 'description'   => 'Root Category'
             ))->save();
@@ -356,9 +356,9 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/config_field')
             ->add('catalog', 'Catalog', null, null, array('translation_module' => 'Axis_Catalog'))
 
-            ->add('catalog/main/route', 'Catalog/General/Catalog route', 'store', 'string', 'Catalog url (example.com/<b>route</b>/product)')
+            ->add('catalog/main/route', 'Catalog/General/Catalog route', 'store', 'text', 'Catalog url (example.com/<b>route</b>/product)')
 
-            ->add('catalog/listing/type', 'Catalog/Product Listing/Type', 'grid', 'select', 'Default listing type', array('config_options' => 'grid,list'))
+            ->add('catalog/listing/type', 'Catalog/Product Listing/Type', Axis_Catalog_Model_Option_Product_Listing_Type::getDeafult(), 'select', 'Default listing type', array('model' => 'catalog/option_product_listing_type'))
             ->add('catalog/listing/perPage', 'Show per page', '6,9,18,32')
             ->add('catalog/listing/perPageDefault', 'Default product count per page', 9)
             ->add('catalog/listing/sortBy', 'Sort By', 'Name,Price')
@@ -369,22 +369,22 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
 
             ->add('catalog/lightzoom/zoomStageWidth', 'Catalog/Lightzoom/Zoomer width', 250)
             ->add('catalog/lightzoom/zoomStageHeight', 'Zoomer height', 250)
-            ->add('catalog/lightzoom/zoomStagePosition', 'Zoomer position', 'right', 'select', '', array('config_options' => 'left,right'))
+            ->add('catalog/lightzoom/zoomStagePosition', 'Zoomer position', Axis_Catalog_Model_Option_Lightzoom_StagePosition::getDeafult(), 'select', '', array('model' => 'catalog/option_lightzoom_stagePosition'))
             ->add('catalog/lightzoom/zoomStageOffsetX', 'Zoomer offset-x', 10)
             ->add('catalog/lightzoom/zoomStageOffsetY', 'Zoomer offset-y', 0)
             ->add('catalog/lightzoom/zoomLensOpacity', 'Lens opacity', 0.7)
-            ->add('catalog/lightzoom/zoomCursor', 'Lens cursor', 'crosshair', 'select', '', array('config_options' => 'none,default,crosshair,pointer'))
-            ->add('catalog/lightzoom/zoomOnTrigger', 'Zoom on trigger', 'mouseenter', 'select', 'Select none, if you wish to disable this event', array('config_options' => 'none,click,mouseenter'))
-            ->add('catalog/lightzoom/zoomOffTrigger', 'Zoom off trigger', 'mouseleave', 'select', 'Select none, if you wish to disable this event', array('config_options' => 'none,click,mouseleave'))
-            ->add('catalog/lightzoom/lightboxTrigger', 'Lightbox trigger', 'click', 'select', 'Select none, if you wish to disable this event', array('config_options' => 'none,click,dblclick'))
-            ->add('catalog/lightzoom/lightboxResizeSpeed', 'Lightbox resize speed', 800, 'string', 'Animation speed, ms')
-            ->add('catalog/lightzoom/lightboxFadeSpeed', 'Lightbox fade speed', 300, 'string', 'Animation speed, ms')
+            ->add('catalog/lightzoom/zoomCursor', 'Lens cursor', Axis_Catalog_Model_Option_Lightzoom_Cursor::getDeafult(), 'select', '', array('model' => 'catalog/option_lightzoom_cursor'))
+            ->add('catalog/lightzoom/zoomOnTrigger', 'Zoom on trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OnTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'catalog/option_lightzoom_domEvent_onTrigger'))
+            ->add('catalog/lightzoom/zoomOffTrigger', 'Zoom off trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_OffTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'catalog/option_lightzoom_domEvent_offTrigger'))
+            ->add('catalog/lightzoom/lightboxTrigger', 'Lightbox trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_Trigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'catalog/option_lightzoom_domEvent_trigger'))
+            ->add('catalog/lightzoom/lightboxResizeSpeed', 'Lightbox resize speed', 800, 'text', 'Animation speed, ms')
+            ->add('catalog/lightzoom/lightboxFadeSpeed', 'Lightbox fade speed', 300, 'text', 'Animation speed, ms')
             ->add('catalog/lightzoom/lightboxMaskOpacity', 'Mask opacity', 0.8)
-            ->add('catalog/lightzoom/switchImageTrigger', 'Switch image trigger', 'click', 'select', 'Select none, if you wish to disable this event', array('config_options' => 'none,click,mouseenter,dblclick'))
+            ->add('catalog/lightzoom/switchImageTrigger', 'Switch image trigger', Axis_Catalog_Model_Option_Lightzoom_DomEvent_ImageTrigger::getDeafult(), 'select', 'Select none, if you wish to disable this event', array('model' => 'catalog/option_lightzoom_domEvent_imageTrigger'))
 
             ->add('image', 'Images', null, null, array('translation_module' => 'Axis_Catalog'))
-            ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'string', 'Image cache path, relative to AXIS_ROOT')
-            ->add('image/product/cache', 'Images/Product Images/Cache', 1, 'bool', 'Enable image cache')
+            ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'text', 'Image cache path, relative to AXIS_ROOT')
+            ->add('image/product/cache', 'Images/Product Images/Cache', 1, 'radio', 'Enable image cache', array('model'=> 'core/option_boolean'))
             ->add('image/product/widthLarge', 'Large width', 0)
             ->add('image/product/heightLarge', 'Large height', 0)
             ->add('image/product/widthMedium', 'Product Info width', 250)
@@ -393,11 +393,11 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ->add('image/product/heightSmall', 'Small height', 150)
             ->add('image/product/widthThumbnail', 'Thumbnail image width', 40)
             ->add('image/product/heightThumbnail', 'Thumbnail image height', 40)
-            ->add('image/watermark/enabled', 'Images/Watermark/Enabled', 0, 'bool')
-            ->add('image/watermark/image', 'Image path', 'catalog/watermark.png', 'string', 'Path relative to the skin images folder: catalog/watermark.png')
-            ->add('image/watermark/position', 'Watermark Position', 'bottom_right', 'select', array('config_options' => 'stretch,top_left,top_center,top_right,middle_left,middle_center,middle_right,bottom_left,bottom_center,bottom_right'))
-            ->add('image/watermark/opacity', 'Opacity', 50, 'string', 'Values [0 - 100]')
-            ->add('image/watermark/repeat', 'Repeat', 0, 'bool');
+            ->add('image/watermark/enabled', 'Images/Watermark/Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('image/watermark/image', 'Image path', 'catalog/watermark.png', 'text', 'Path relative to the skin images folder: catalog/watermark.png')
+            ->add('image/watermark/position', 'Watermark Position', Axis_Catalog_Model_Option_Watermark_Position::getDeafult(), 'select', array('model' => 'catalog/option_watermark_position'))
+            ->add('image/watermark/opacity', 'Opacity', 50, 'text', 'Values [0 - 100]')
+            ->add('image/watermark/repeat', 'Repeat', 0, 'radio', '', array('model'=> 'core/option_boolean'));
 
         Axis::single('core/page')
             ->add('catalog/*/*')

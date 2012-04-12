@@ -72,14 +72,14 @@ class Axis_Core_Model_Observer
             ),
             'admin' => array(
                 'pages' => array(
-                    'core/config-value' => array(
+                    'core/config_value' => array(
                         'label'         => 'Configuration',
                         'order'         => 10,
                         'module'        => 'Axis_Core',
-                        'controller'    => 'config-value',
+                        'controller'    => 'config_value',
                         'action'        => 'index',
                         'route'         => 'admin/axis/core',
-                        'resource'      => 'admin/axis/core/config-value/index'
+                        'resource'      => 'admin/axis/core/config_value/index'
                     ),
                     'core/site' => array(
                         'label'         => 'Site',

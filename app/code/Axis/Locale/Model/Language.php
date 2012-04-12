@@ -35,7 +35,7 @@ class Axis_Locale_Model_Language extends Axis_Db_Table
 {
     protected $_name = 'locale_language';
     protected $_rowClass = 'Axis_Db_Table_Row';
-
+    
     /**
      *
      * @var array

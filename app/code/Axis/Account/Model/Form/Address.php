@@ -136,7 +136,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         $configOptions = Axis::config('account/address_form')->toArray();
         $this->_fieldConfig = array_merge($this->_fieldConfig, $configOptions);
 
-        $countries = Axis_Collect_Country::collect();
+        $countries = Axis::model('location/option_country')->toArray();
         if (isset($countries['0'])
             && 'ALL WORLD COUNTRY' === $countries['0']) {
 
@@ -153,7 +153,7 @@ class Axis_Account_Model_Form_Address extends Axis_Form
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
 
-        $zones = Axis_Collect_Zone::collect();
+        $zones = Axis::model('location/option_zone')->toArray();
         $this->_zones = $zones;
         foreach ($this->_fields as $name => $values) {
             $status = $this->_fieldConfig[$name . '_status'];

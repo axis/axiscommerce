@@ -191,7 +191,7 @@ class Axis_GoogleBase_Admin_IndexController extends Axis_Admin_Controller_Back
     {
         $authType = Axis::config()->gbase->auth->connection;
         try {
-            if ($authType == 'ClientLogin') {
+            if ($authType == Axis_GoogleBase_Model_Option_ConnectionType::CLIENT_LOGIN) {
                 $this->_service = Zend_Gdata_Gbase::AUTH_SERVICE_NAME;
                 $user = Axis::config()->gbase->auth->login;
                 $password = Axis::config()->gbase->auth->password;
@@ -260,7 +260,7 @@ class Axis_GoogleBase_Admin_IndexController extends Axis_Admin_Controller_Back
         $entry->content->type = 'text';
         $entry->itemType = Axis::config()->gbase->main->itemType;
 
-        if (Axis::config()->gbase->main->link == 'Website'
+        if (Axis_GoogleBase_Model_Option_LinkType::WEBSITE === Axis::config('gbase/main/link')
             && $siteUrl = $this->_getSiteUrl($params['site'])) {
 
             $link = new Zend_Gdata_App_Extension_Link();

@@ -138,14 +138,14 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
     public function getCCTypes()
     {
         $usedTypes = $this->_config->creditCard->toArray();
-        $allTypes = Axis_Collect_CreditCard::collect();
-        $ret = array();
-        foreach ($allTypes as $typeKey => $typeName) {
-            if (in_array($typeKey, $usedTypes)) {
-                $ret[$typeKey] = $typeName;
+        $allTypes = Axis::model('sales/Option_Order_CreditCard_Type');
+        $return = array();
+        foreach ($allTypes as $key => $name) {
+            if (in_array($key, $usedTypes)) {
+                $return[$key] = $name;
             }
         }
-        return $ret;
+        return $return;
     }
 
     /**
@@ -160,6 +160,7 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
         $card   = $this->getCreditCard();
         $number = $card->getCcNumber();
 
+        $mailBoxes = Axis::model('core/option_mail_boxes');
         switch (Axis::config("payment/{$order->payment_method_code}/saveCCAction")) {
             case 'last_four':
                 $number = str_repeat('X', (strlen($number) - 4)) .
@@ -190,12 +191,8 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
                                 substr($numberToSend, 4, (strlen($numberToSend) - 8))
                             )
                         ),
-                        'from' => Axis_Collect_MailBoxes::getName(
-                            Axis::config('core/company/salesDepartmentEmail')
-                        ),
-                        'to' => Axis_Collect_MailBoxes::getName(
-                            Axis::config('sales/order/email')
-                        )
+                        'from' => $mailBoxes[Axis::config('core/company/salesDepartmentEmail')],
+                        'to' => $mailBoxes[Axis::config('sales/order/email')]
                     ));
                     $mail->send();
                 } catch (Zend_Mail_Transport_Exception $e) {

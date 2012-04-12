@@ -62,10 +62,11 @@ $this->setButtons(array(
 
 <script type="text/javascript">
 
+//@todo extjs model 
 var manufacturers = [
 <?php
 $json = "{'id': null, 'name': 'None'.l()},\n";
-foreach (Axis_Collect_Manufacturer::collect() as $id => $name) :
+foreach ($this->manufacturers as $id => $name) :
     $name = addslashes($name);
     $json .= "{'id': $id, 'name': '$name'},\n";
 endforeach;
@@ -73,10 +74,11 @@ echo substr($json, 0, -2);
 ?>
 ];
 
+//@todo extjs model 
 var taxClasses = [
 <?php
 $json = "{'id': null, 'name': 'None'.l()},\n";
-foreach (Axis_Collect_TaxClass::collect() as $id => $name) :
+foreach ($this->taxs as $id => $name) :
     $name = addslashes($name);
     $json .= "{'id': $id, 'name': '$name'},\n";
 endforeach;

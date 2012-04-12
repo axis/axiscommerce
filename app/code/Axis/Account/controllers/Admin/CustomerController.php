@@ -66,6 +66,7 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
                     $modelCustomerValueSetValue->getValues($fd['customer_valueset_id']);
             }
         }
+        $this->view->groups = Axis::model('account/option_customer_group')->toArray();
         $this->render();
     }
 
@@ -107,9 +108,10 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
 
     public function loadAction()
     {
-        if (!$customer = Axis::single('account/customer')->find((int)$this->_getParam('id'))->current()) {
+        $customerId = (int)$this->_getParam('id');
+        if (!$customer = Axis::single('account/customer')->find($customerId)->current()) {
             Axis::message()->addError(Axis::translate('Axis_Account')->__(
-                "Customer '%s' not found", $this->_getParam('id')
+                "Customer '%s' not found", $customerId
             ));
             return $this->_helper->json->sendFailure();
         }
@@ -143,8 +145,8 @@ class Axis_Account_Admin_CustomerController extends Axis_Admin_Controller_Back
         $orders = Axis::single('sales/order')->fetchAll(
             $this->db->quoteInto('customer_id = ?', $customer->id)
         );
-        $orderStatus = Axis_Collect_OrderStatus::collect();
-        $orderStatusText = Axis_Collect_OrderStatusText::collect();
+        $orderStatus     = Axis::model('sales/option_order_status');
+        $orderStatusText = Axis::model('sales/option_order_status_text');
 
         $data['order'] = array();
         $i = 0;

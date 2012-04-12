@@ -52,16 +52,14 @@ class Axis_ShippingTable_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
         Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('shipping/Table_Standard', 'Shipping Methods/Table Standard', null, null, array('translation_module' => 'Axis_ShippingTable'))
-            ->add('shipping/Table_Standard/enabled', 'Shipping Methods/Table Standard/Enabled', '0', 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Table_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Table_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'TaxBasis', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Table_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'TaxClass', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Table_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Table_Standard/enabled', 'Shipping Methods/Table Standard/Enabled', '0', 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Table_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Table_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Table_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Table_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
             ->add('shipping/Table_Standard/handling', 'Handling Fee', '0')
-            ->add('shipping/Table_Standard/import', 'Import', 'shippingtable.csv', 'handler', 'File at AXIS_ROOT/var/export folder, with shipping rates', array('model' => 'ShippingTableRateImport'))
-            ->add('shipping/Table_Standard/export', 'Export', 'shippingtable_export.csv', 'handler', 'File will be written to AXIS_ROOT/var/export folder', array('model' => 'ShippingTableRateExport'))
-            ->add('shipping/Table_Standard/type', 'Table Method', 'Per Price', 'select', 'The shipping cost is based on the order total or the total weight of the items ordered or the total number of items orderd.', array('config_options' => 'Per Price,Per Weight,Per Item'))
-            ->add('shipping/Table_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Payment', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Table_Standard/type', 'Table Method', Axis_ShippingTable_Model_Option_Standard_Service::PER_PRICE, 'select', 'The shipping cost is based on the order total or the total weight of the items ordered or the total number of items orderd.', array('model' => 'shippingTable/option_standard_service'))
+            ->add('shipping/Table_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'))
             ->add('shipping/Table_Standard/formDesc', 'Checkout Description', 'Table Rate');
     }
 

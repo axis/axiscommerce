@@ -36,6 +36,7 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('cms')->__('Categories/Pages');
+        $this->view->layouts = Axis::model('core/option_template_layout')->toArray();
         $this->render();
     }
     
@@ -84,7 +85,7 @@ class Axis_Cms_Admin_PageController extends Axis_Admin_Controller_Back
 
         $data = $rowPage->toArray();
         $data['category'] = $category;
-        foreach(Axis_Collect_Language::collect() as $languageId => $lName) {
+        foreach(Axis::model('locale/option_language')->toArray() as $languageId => $lName) {
             $data['content']['lang_' . $languageId] =
                 isset($content[$languageId]) ? $content[$languageId] : array();
         }

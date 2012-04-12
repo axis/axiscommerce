@@ -33,12 +33,12 @@ class Axis_PaymentFreeOrder_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abst
         Axis::single('core/config_field')
             ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
             ->add('payment/FreeOrder_Standard', 'Payment Methods/Free Order', null, null, array('translation_module' => 'Axis_PaymentFreeOrder'))
-            ->add('payment/FreeOrder_Standard/enabled', 'Payment Methods/Free Order/Enabled', '0', 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('payment/FreeOrder_Standard/title', 'Title', 'Free Order', 'string', 'Title')
-            ->add('payment/FreeOrder_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/FreeOrder_Standard/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('payment/FreeOrder_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('config_options' => '{"1":"pending","2":"processing"}', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/FreeOrder_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Shipping', 'translation_module' => 'Axis_Admin'));
+            ->add('payment/FreeOrder_Standard/enabled', 'Payment Methods/Free Order/Enabled', '0', 'radio', '',array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('payment/FreeOrder_Standard/title', 'Title', 'Free Order', 'text', 'Title')
+            ->add('payment/FreeOrder_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/FreeOrder_Standard/sortOrder', 'Sort Order', '1', 'text', array('translation_module' => 'Axis_Core'))
+            ->add('payment/FreeOrder_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('model' => 'sales/option_order_status', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/FreeOrder_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'checkout/option_shipping', 'translation_module' => 'Axis_Admin'));
     }
 
     public function down()

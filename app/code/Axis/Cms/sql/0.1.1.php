@@ -216,10 +216,10 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         // content
         $mCategoryContent   = Axis::model('cms/category_content');
         $mPageContent       = Axis::model('cms/page_content');
-        foreach (Axis_Collect_Language::collect() as $langId => $langName) {
+        foreach (Axis::model('locale/option_language') as $languageId => $languageName) {
             $mPageContent->insert(array(
                 'cms_page_id'   => $privacyPageId,
-                'language_id'   => $langId,
+                'language_id'   => $languageId,
                 'link'          => 'privacy',
                 'title'         => 'Privacy policy',
                 'content'       => "<div class=\"col2-set\">\n    <div class=\"col-1\">asd, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna.\nFusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem.\nMorbi adipiscing. Aenean eu mi. Praesent erat lectus, fringilla non, condimentum ut, semper vitae, lectus. Ut vulputate. Vivamus purus velit, semper nec, dignissim vel, faucibus nec, felis. Cras posuere. Curabitur dignissim convallis lorem. Aenean bibendum auctor justo. Nulla nec diam vel justo rutrum tempor. Suspendisse nec tortor a eros laoreet rutrum. In sapien.\n</div>\n<div class=\"col-2\">\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis\nProin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque.</div>\n</div>",
@@ -229,7 +229,7 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ));
             $mPageContent->insert(array(
                 'cms_page_id'   => $shippingPageId,
-                'language_id'   => $langId,
+                'language_id'   => $languageId,
                 'link'          => 'shipping',
                 'title'         => 'Shipping and returns',
                 'content'       => "Praesent vestibulum iaculis eros. Donec porta odio in tortor. Proin nulla nunc, ornare eu, rhoncus non, laoreet quis, sem. Praesent dictum, sapien a fermentum adipiscing, erat mauris dignissim nisi, <span style=\"background-color: rgb(153, 204, 0);\">nec placerat lorem quam id est.<br/><br/><span style=\"background-color: rgb(192, 192, 192);\">Nullam ut libero. Fusce libero magna, iaculis ac, tempus nec, posuere id, felis. Nulla suscipit augue in sapien. Nullam congue convallis dolor. Cras gravida felis vel nulla. Etiam pulvinar sem in nisi ornare mattis. Proin tempus.</span></span><span style=\"background-color: rgb(192, 192, 192);\"> </span><br/><br/>Phasellus tincidunt mattis nunc. Fusce lorem. Sed consequat. Nulla ac purus. Donec vel nibh. Aliquam in sapien. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In eget quam.",
@@ -239,7 +239,7 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ));
             $mPageContent->insert(array(
                 'cms_page_id'   => $termsPageId,
-                'language_id'   => $langId,
+                'language_id'   => $languageId,
                 'link'          => 'terms-of-use',
                 'title'         => 'Terms of use',
                 'content'       => "{{static_intro}}<br/>\n<p>\nIt is a long established fact that a reader will be distracted by the\nreadable content of a page when looking at its layout. The point of\nusing  is that it has a more-or-less normal distribution of\nletters, as opposed to using \"Content here, content here\", making it\nlook like readable English.</p>&nbsp;{{static_google_banner}}\n<br/>\n<p>\nMany desktop publishing packages and web\npage editors now use Lorem Ipsum as their default model text, and a\nsearch for \"lorem ipsum\" will uncover many web sites still in their\ninfancy. Various versions have evolved over the years, sometimes by\naccident, sometimes on purpose (injected humour and the like).\n</p>\n{{static_name_new}}",
@@ -249,7 +249,7 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ));
             $mPageContent->insert(array(
                 'cms_page_id'   => $historyPageId,
-                'language_id'   => $langId,
+                'language_id'   => $languageId,
                 'link'          => 'company-history',
                 'title'         => 'Company history',
                 'content'       => "<div class=\"col3-set\">\n    <div class=\"col-1\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna.\nFusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem.\n</div>\n  <div class=\"col-2\">\nMorbi adipiscing. Aenean eu mi. Praesent erat lectus, fringilla non, condimentum ut, semper vitae, lectus. Ut vulputate. Vivamus purus velit, semper nec, dignissim vel, faucibus nec, felis. Cras posuere. Curabitur dignissim convallis lorem. Aenean bibendum auctor justo. Nulla nec diam vel justo rutrum tempor. Suspendisse nec tortor a eros laoreet rutrum. In sapien.\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis. </div>\n<div class=\"col-3\">Proin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque.</div>\n</div>",
@@ -259,7 +259,7 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ));
             $mPageContent->insert(array(
                 'cms_page_id'   => $careersPageId,
-                'language_id'   => $langId,
+                'language_id'   => $languageId,
                 'link'          => 'careers',
                 'title'         => 'Careers at our store',
                 'content'       => "<div class=\"col2-set\" style=\"margin-bottom: 7px;\">\n <div class=\"col-1\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dolor urna, dapibus ac, convallis eget, ornare a, nisl. Quisque vestibulum congue est. Vivamus ante. Nullam neque tellus, aliquet sed, placerat eget, sagittis hendrerit, leo. Fusce varius pulvinar pede. Fusce at lectus. Nunc ac purus. Aenean rhoncus lacinia nisl. Sed eros sapien, pretium ut, condimentum at, lobortis porta, leo. Aenean ut nibh non metus porttitor sodales. Suspendisse nisl. Phasellus condimentum egestas magna. </div>\n <div class=\"col-2\">Fusce porta porttitor enim. Aenean tempor est nec massa. Phasellus in sapien. Vestibulum urna odio, imperdiet eu, faucibus eu, pretium a, arcu. Morbi mi urna, commodo in, eleifend id, interdum sed, lorem. Pellentesque ullamcorper purus in sapien. Integer faucibus quam a leo. Vivamus posuere porta ipsum. In purus. Proin commodo. Cras eget mi in lacus dignissim volutpat. Fusce orci. Donec eget erat. Mauris sapien libero, sodales non, consequat ut, varius id, lorem. </div>\n</div>\n<div>\nCras sem sem, condimentum sed, bibendum ac, molestie eget, felis. Integer diam pede, pulvinar quis, eleifend vel, pretium at, nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque id lectus vitae augue imperdiet sodales. Donec dapibus nisl nec arcu. Ut felis turpis, accumsan ac, sagittis a, aliquet vitae, leo. Nullam venenatis, leo quis consectetuer ullamcorper, nisl justo bibendum lorem, sit amet pulvinar quam lorem nec sem. Nunc eleifend, quam sed viverra sollicitudin, dui arcu aliquet nibh, nec tincidunt sem quam non ante. Maecenas et lectus. In tincidunt nisl et velit. Nam venenatis, augue eget congue gravida, mi neque facilisis nunc, sed porta augue erat ac felis. Proin tellus risus, pulvinar ac, pretium eu, faucibus eu, ipsum. Fusce mauris nisl, elementum id, auctor sit amet, porta ac, nibh. Mauris vulputate egestas ipsum.\n\nNunc eget nisi. Phasellus id elit nec elit sollicitudin imperdiet. Cras a justo. Praesent orci. Vivamus sagittis libero ut nulla. Integer dapibus lectus quis lorem. Maecenas consectetuer urna vitae lectus volutpat malesuada. Duis risus. Sed vulputate nulla ac nibh. Pellentesque tincidunt pharetra turpis. Cras libero velit, tristique ut, vehicula a, tempor in, nibh. Praesent ac magna at risus lobortis dictum. Curabitur ultrices neque vehicula neque. \n</div>",
@@ -269,12 +269,12 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ));
             $mCategoryContent->insert(array(
                 'cms_category_id'   => $generalCatId,
-                'language_id'       => $langId,
+                'language_id'       => $languageId,
                 'link'              => 'general'
             ));
             $mCategoryContent->insert(array(
                 'cms_category_id'   => $aboutCatId,
-                'language_id'       => $langId,
+                'language_id'       => $languageId,
                 'link'              => 'about-us'
             ));
         }

@@ -34,7 +34,26 @@
 class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
-    {
+    {   
+        $installer = Axis::single('install/installer');
+        $installer->run("
+
+        ALTER TABLE `{$installer->getTable('sales_order_product_attribute')}`
+            MODIFY COLUMN `product_option_value` TEXT NOT NULL default '';
+
+        ");
+        
+        
+        Zend_Debug::dump(Axis_Payment::getMethodNames());
+        Zend_Debug::dump(Axis::config('payment/CreditCard_Standard/shippings'));
+//        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());
+        
+        
+//        die;
+        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
+        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice')->toArray());
+        
+        
 //        $routeAdmin = new Axis_Controller_Router_Route_Admin(
 //            'admin/:controller/:action/*',
 //            array(
@@ -218,7 +237,7 @@ class SandboxController extends Axis_Core_Controller_Front
 //            camelize('shipping_tax')
 //
 //            );
-        
+
     //        $matches = array();
 //        $str = '#10 /usr/share/php/libzend-framework-php/Zend/Controller/Dispatcher/Standard.php(289): Zend_Controller_Action->dispatch(\'indexAction\')
 //#11 /usr/share/php/libzend-framework-php/Zend/Controller/Front.php(954):';

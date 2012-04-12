@@ -116,39 +116,39 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             'Quality',
             'Value'
         );
-        $languages = Axis_Collect_Language::collect();
+        $languages    = Axis::model('locale/option_language');
         $mRatingTitle = Axis::model('community/review_rating_title');
         foreach (Axis::model('community/review_rating')->fetchAll() as $rating) {
-            foreach ($languages as $langId => $langName) {
+            foreach ($languages as $languageId => $languageName) {
                 $mRatingTitle->createRow(array(
-                    'rating_id'     => $rating->id,
-                    'language_id'   => $langId,
-                    'title'         => $titles[$rating->id - 1]
+                    'rating_id'   => $rating->id,
+                    'language_id' => $languageId,
+                    'title'       => $titles[$rating->id - 1]
                 ))->save();
             }
         }
 
         Axis::single('core/config_field')
             ->add('community', 'Community', null, null, array('translation_module' => 'Axis_Community'))
-            ->add('community/review/enabled', 'Community/Reviews/Enabled', 1, 'bool')
-            ->add('community/review/rating_enabled', 'Enable ratings', 1, 'bool', 'Enable rating system in reviews')
-            ->add('community/review/rating_title', 'Show rating title', 1, 'bool', 'Show rating titles')
-            ->add('community/review/merge_average', 'Merge average ratings', 1, 'bool', 'Show average rating as one')
-            ->add('community/review/customer_status', 'Default customer review status', 'pending', 'select', 'Default review status written by registered customer', array('config_options' => 'pending,approved,disapproved'))
-            ->add('community/review/guest_status', 'Default guest review status', 'pending', 'select', 'Default review status written by guest', array('config_options' => 'pending,approved,disapproved'))
-            ->add('community/review/guest_permission', 'Allow guest to write a reviews', 1, 'bool')
+            ->add('community/review/enabled', 'Community/Reviews/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('community/review/rating_enabled', 'Enable ratings', 1, 'radio', 'Enable rating system in reviews', array('model'=> 'core/option_boolean'))
+            ->add('community/review/rating_title', 'Show rating title', 1, 'radio', 'Show rating titles', array('model'=> 'core/option_boolean'))
+            ->add('community/review/merge_average', 'Merge average ratings', 1, 'radio', 'Show average rating as one', array('model'=> 'core/option_boolean'))
+            ->add('community/review/customer_status', 'Default customer review status', Axis_Community_Model_Option_Review_Status::PENDING, 'select', 'Default review status written by registered customer', array('model' => 'community/option_review_status'))
+            ->add('community/review/guest_status', 'Default guest review status', Axis_Community_Model_Option_Review_Status::PENDING, 'select', 'Default review status written by guest', array('model' => 'community/option_review_status'))
+            ->add('community/review/guest_permission', 'Allow guest to write a reviews', 1, 'radio', '', array('model'=> 'core/option_boolean'))
             ->add('community/review/perPage', 'Reviews showed per page', '10,25,50,all')
             ->add('community/review/perPageDefault', 'Default reviews count per page', '10')
-            /*->add('community/image/enabled', 'Community/Images/Enabled', 1, 'bool', 'Community images module status')
-            ->add('community/image/customer_status', 'Default customers image status', 'approved', 'select', 'Default image status uploaded by registered customer', array('config_options' => 'pending,approved,disapproved'))
-            ->add('community/image/guest_status', 'Default guest image status', 'approved', 'select', 'Default image status uploaded by guest', array('config_options' => 'pending,approved,disapproved'))
-            ->add('community/image/guest_permission', 'Allow guest to upload an images', 1, 'bool')
-            ->add('community/image/max_size', 'Maximum image size', '1', 'string', 'Maximum image size, allowed to upload (Mb)')
-            ->add('community/video/enabled', 'Community/Videos/Enabled', 1, 'bool', 'Community video module status')
-            ->add('community/video/customer_status', 'Default customers video status', 'approved', 'select', 'Default status of video uploaded by registered customer', array('config_options' => 'pending,approved,disapproved'))
-            ->add('community/video/guest_status', 'Default guest video status', 'approved', 'select', 'Default status of video uploaded by guest', array('config_options' => 'pending,approved,disapproved'))
-            ->add('community/video/guest_permission', 'Allow guest to upload videos', 1, 'bool', 'Allow guest to upload videos')
-            ->add('community/video/max_size', 'Maximum video size', '5', 'string', 'Maximum video size, allowed to upload (Mb)')
+            /*->add('community/image/enabled', 'Community/Images/Enabled', 1, 'radio', 'Community images module status', array('model'=> 'core/option_boolean'))
+            ->add('community/image/customer_status', 'Default customers image status', Axis_Community_Model_Option_Review_Status::APPROVED, 'select', 'Default image status uploaded by registered customer', array('model' => 'community/option_review_status'))
+            ->add('community/image/guest_status', 'Default guest image status', Axis_Community_Model_Option_Review_Status::APPROVED, 'select', 'Default image status uploaded by guest', array('model' => 'community/option_review_status'))
+            ->add('community/image/guest_permission', 'Allow guest to upload an images', 1, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('community/image/max_size', 'Maximum image size', '1', 'text', 'Maximum image size, allowed to upload (Mb)')
+            ->add('community/video/enabled', 'Community/Videos/Enabled', 1, 'radio', 'Community video module status', array('model'=> 'core/option_boolean'))
+            ->add('community/video/customer_status', 'Default customers video status', Axis_Community_Model_Option_Review_Status::APPROVED, 'select', 'Default status of video uploaded by registered customer', array('model' => 'community/option_review_status'))
+            ->add('community/video/guest_status', 'Default guest video status', Axis_Community_Model_Option_Review_Status::APPROVED, 'select', 'Default status of video uploaded by guest', array('model' => 'community/option_review_status'))
+            ->add('community/video/guest_permission', 'Allow guest to upload videos', 1, 'radio', 'Allow guest to upload videos', array('model'=> 'core/option_boolean'))
+            ->add('community/video/max_size', 'Maximum video size', '5', 'text', 'Maximum video size, allowed to upload (Mb)')
             */;
 
         Axis::single('account/customer_field')

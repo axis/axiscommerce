@@ -42,7 +42,9 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
         if ($this->_hasParam('productId')) {
             $this->view->productId = $this->_getParam('productId');
         }
-
+        
+        $this->view->manufacturers = Axis::model('catalog/option_product_manufacturer')->toArray();
+        $this->view->taxs = Axis::model('tax/option_class')->toArray();
         $this->render();
     }
 
@@ -233,7 +235,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
             ->select(array('language_id', '*'))
             ->where('product_id = ? ', $product->id)
             ->fetchAssoc();
-        foreach (Axis_Collect_Language::collect() as $languageId => $values) {
+        foreach (Axis::model('locale/option_language')->toArray() as $languageId => $values) {
             $data['description']['lang_' . $languageId] = array();
             if (!isset($descriptions[$languageId])) {
                 continue;

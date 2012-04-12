@@ -1,0 +1,43 @@
+<form method="post" action="<?php echo $this->href('core/config_value/save');?>" id="form-edit"
+      onsubmit="Config.save(); return false;">
+<?php
+    echo $this->formHidden('siteId', $this->siteId);
+    echo $this->formHidden('path', $this->row->path);
+?>
+<h3 class="config-title"> <?php echo $this->row->title;?> </h3>
+<dl class="general-form">
+    <?php if (!empty($this->row->description)) : ?>
+        <dt><label><?php echo $this->translate('admin')->__('Description');?>: </label></dt>
+        <dd><?php echo $this->row->description;?></dd>
+    <?php endif; ?>
+    <dt><label for="value"><?php echo $this->translate('admin')->__('Value');?>:</label></dt>
+    <dd><?php
+    $value = $this->value;
+    $type  = $this->row->type;
+    switch ($type) {
+        case 'text':
+            echo $this->formText('value', $value, array('size' => '50'));
+            break;
+        case 'radio':
+            echo $this->formRadio('value', $value, null, $this->options);
+            break;
+        case 'select':
+            echo $this->formSelect('value', $value, null, $this->options);
+            break;
+        case 'multiple':
+            echo $this->formSelect('value', $value, array(
+                'multiple' => 'multiple',
+                'size'     => 10
+            ), $this->options);
+            break;
+        case 'textarea':
+            echo $this->formTextarea(
+                'value', $value, array('rows' => 8, 'cols' => 45)
+            );
+            break;
+        default:
+            echo $this->render($type);
+    }
+    ?></dd>
+</dl>
+</form>

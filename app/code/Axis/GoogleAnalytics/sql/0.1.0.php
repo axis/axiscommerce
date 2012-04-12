@@ -32,16 +32,16 @@ class Axis_GoogleAnalytics_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstr
     {
         Axis::single('core/config_field')
             ->add('analytics', 'Google analytics', null, null, array('translation_module' => 'Axis_GoogleAnalytics'))
-            ->add('analytics/main/uacct', 'Google analytics/General/GOOGLE_ANALYTICS_UACCT', '', 'handler', '', array('model' => 'Crypt'))
-            ->add('analytics/main/used', 'Enabled', 0, 'bool')
-            ->add('analytics/main/usedPageName', 'USE PAGENAME', 1, 'bool')
+            ->add('analytics/main/uacct', 'Google analytics/General/GOOGLE_ANALYTICS_UACCT', '', 'text', '', array('model' => 'core/option_crypt'))
+            ->add('analytics/main/used', 'Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('analytics/main/usedPageName', 'USE PAGENAME', 1, 'radio', '', array('model'=> 'core/option_boolean'))
             ->add('analytics/main/affiliation', 'Optional partner or store affilation', '' )
             ->add('analytics/attributes/brackets', 'Google analytics/Products attributes/PRODUCTS ATTRIBUTES BRACKETS', '[]')
             ->add('analytics/attributes/delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
-            ->add('analytics/conversion/used', 'Google analytics/Conversion option/Enabled', 1, 'bool', 'Enabled currency convertion')
+            ->add('analytics/conversion/used', 'Google analytics/Conversion option/Enabled', 1, 'radio', 'Enabled currency convertion', array('model'=> 'core/option_boolean'))
             ->add('analytics/conversion/id', 'Id', '"')
             ->add('analytics/conversion/language', 'Language(en_EN)', 'en_EN')
-            ->add('analytics/tracking/used', 'Google analytics/Tracking options/Enabled', 1, 'bool', 'Enabled tracking')
+            ->add('analytics/tracking/used', 'Google analytics/Tracking options/Enabled', 1, 'radio', 'Enabled tracking', array('model'=> 'core/option_boolean'))
             ->add('analytics/tracking/linksPrefix', 'Prefix');
     }
 

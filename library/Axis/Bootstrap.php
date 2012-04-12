@@ -117,7 +117,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     $errorMessage .= "Unknown error ($level)";
                     break;
             }
-
+            
             $errorMessage .= ": {$message}  in {$file} on line {$line}";
             throw new Exception($errorMessage);
         }

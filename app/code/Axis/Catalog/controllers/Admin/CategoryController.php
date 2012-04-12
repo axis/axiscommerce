@@ -181,7 +181,7 @@ class Axis_Catalog_Admin_CategoryController extends Axis_Admin_Controller_Back
         $metaKeyword         = $this->_getParam('meta_keyword');
 
         $mCategoryDescription = Axis::model('catalog/category_description');
-        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
+        foreach (Axis::model('locale/option_language') as $languageId => $_n) {
             if (!isset($categoryName[$languageId])) {
                 continue;
             }

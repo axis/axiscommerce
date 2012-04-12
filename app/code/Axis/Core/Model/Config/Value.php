@@ -36,25 +36,6 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
     protected $_name = 'core_config_value';
 
     /**
-     *
-     * @param string $path
-     * @param int $siteId
-     * @return mixed
-     */
-    public function getValue($path, $siteId)
-    {
-        $row = $this->select()
-            ->where('path = ?', $path)
-            ->where('site_id IN(?)', array(0, $siteId))
-            ->order('site_id DESC')
-            ->fetchRow();
-        if ($row) {
-            return $row->value;
-        }
-        return '';
-    }
-
-    /**
      * Removes config values, and all of it childrens
      * 
      * @param string $path

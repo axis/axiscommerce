@@ -111,28 +111,27 @@ class Axis_Core_Model_Site extends Axis_Db_Table
      */
     public function getCompanyInfo($siteId = null)
     {
-        $company = Axis::config('core/company', $siteId)->toArray();
+        $mailBoxes = Axis::model('core/option_mail_boxes');
+        $zones     = Axis::model('location/option_zone');
+        $countries = Axis::model('location/option_country');
+        $company   = Axis::config('core/company', $siteId)->toArray();
+        
         //@todo Use Axis_Object
         return array(
-            'email'     => Axis_Collect_MailBoxes::getName($company['administratorEmail']),
+            'email'     => $mailBoxes[$company['administratorEmail']],
             'city'      => $company['city'],
-            'country'   => Axis_Collect_Country::getName($company['country']),
+            'country'   => $countries[$company['country']],
             'fax'       => $company['fax'],
             'name'      => $company['name'],
             'phone'     => $company['phone'],
             'postcode'  => $company['zip'],
             'site'      => $company['site'],
-            'zone'      => Axis_Collect_Zone::getName($company['zone']),
-            'street_address' => $company['street'],
-            'customer_relation_email' => Axis_Collect_MailBoxes::getName(
-                $company['customerRelationEmail']
-            ),
-            'sales_email' => Axis_Collect_MailBoxes::getName(
-                $company['salesDepartmentEmail']
-            ),
-            'support_email' => Axis_Collect_MailBoxes::getName(
-                $company['supportEmail']
-            )
+            
+            'zone'                    => $zones[$company['country']][$company['zone']],
+            'street_address'          => $company['street'],
+            'customer_relation_email' => $mailBoxes[$company['customerRelationEmail']],
+            'sales_email'             => $mailBoxes[$company['salesDepartmentEmail']],
+            'support_email'           => $mailBoxes[$company['supportEmail']]
         );
     }
 

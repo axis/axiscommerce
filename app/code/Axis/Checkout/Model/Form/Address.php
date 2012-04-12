@@ -138,7 +138,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
             $this->addSubForm($form, $subform);
         }
 
-        $countries = Axis_Collect_Country::collect();
+        $countries = Axis::model('location/option_country')->toArray();
         if (isset($countries['0'])
             && 'ALL WORLD COUNTRY' === $countries['0']) {
 
@@ -155,7 +155,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
 
-        $zones = Axis_Collect_Zone::collect();
+        $zones = Axis::model('location/option_zone')->toArray();
         $this->_zones = $zones;
 
         if ('billing_address' == $subform
@@ -274,7 +274,8 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         $rows = Axis::model('account/customer_field')->getFields();
         $displayMode = Axis::config('checkout/address_form/custom_fields_display_mode');
         foreach ($rows as $row) {
-            if (!$row['required'] && 'required' == $displayMode) {
+            if (!$row['required'] 
+                && Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode::REQUIRED == $displayMode) {
                 continue;
             }
 

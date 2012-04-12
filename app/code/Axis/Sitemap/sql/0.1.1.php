@@ -77,7 +77,7 @@ class Axis_Sitemap_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         ");
 
 //        Axis::single('core/config_field')
-//            ->add('sitemap/main/startTime', 'Start Time', '', 'string', 'Start Time')
+//            ->add('sitemap/main/startTime', 'Start Time', '', 'text', 'Start Time')
 //
 //            ->add('sitemap/main/googlePingUrl', 'Google Ping Url', 'http://www.google.com/webmasters/sitemaps/ping?sitemap=')
 //            ->add('sitemap/main/yahooPingUrl', 'Yahoo Ping Url', 'http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=')
