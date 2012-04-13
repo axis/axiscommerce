@@ -290,11 +290,20 @@ Ext.onReady(function() {
         tbar: {
             enableOverflow: true,
             items: [{
+                xtype: 'splitbutton',
                 handler: function() {
                     Category.add();
                 },
                 icon: Axis.skinUrl + '/images/icons/add.png',
-                text: 'Add'.l()
+                text: 'Add'.l(),
+                menu: new Ext.menu.Menu({
+                    items: [{
+                        text: 'Add root category'.l(),
+                        handler: function() {
+                            Category.addRoot();
+                        }
+                    }]
+                })
             }, {
                 handler: function() {
                     CategoryGrid.remove();
