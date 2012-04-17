@@ -684,7 +684,7 @@
     <box multiple="1">
         <class>Axis_Catalog_Related</class>
         <block>content</block>
-        <sort_order>5</sort_order>
+        <sort_order>110</sort_order>
         <config>{"template":"catalog\/box\/highlight\/listing.phtml","tab_container":"product-info"}</config>
         <status>1</status>
         <page multiple="1">
