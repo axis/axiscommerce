@@ -38,14 +38,24 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/Item_Standard', 'Shipping Methods/Item Standard', null, null, array('translation_module' => 'Axis_ShippingItem'))
-            ->add('shipping/Item_Standard/enabled', 'Shipping Methods/Item Standard/Enabled', '0', 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
-            ->add('shipping/Item_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Item_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Item_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Item_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Item_Standard/price', 'Shipping Price', '1', 'text', 'Shipping price (per item)')
-            ->add('shipping/Item_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Fedex_Standard', 'Shipping Methods/Fedex', null, null, array('translation_module' => 'Axis_ShippingFedex'))
+            ->add('shipping/Fedex_Standard/enabled', 'Shipping Methods/Fedex/Enabled', '0', 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Fedex_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Fedex_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Fedex_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Fedex_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Fedex_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Fedex_Standard/title', 'Title', 'Fedex Express')
+            ->add('shipping/Fedex_Standard/account', 'Account Id', '', 'text', '', array('model' => 'core/option_crypt'))
+            ->add('shipping/Fedex_Standard/package', 'Package', Axis_ShippingFedex_Model_Option_Standard_Package::YOUR_PACKAGING, 'select', '', array('model' => 'shippingFedex/option_standard_package'))
+            ->add('shipping/Fedex_Standard/dropoff', 'Dropoff', Axis_ShippingFedex_Model_Option_Standard_Pickup::REGULAR_PICKUP, 'select', '', array('model' => 'shippingFedex/option_standard_pickup'))
+            ->add('shipping/Fedex_Standard/allowedTypes', 'Allowed methods', Axis_ShippingFedex_Model_Option_Standard_Service::FEDEX_GROUND, 'multiple', '', array('model' => 'shippingFedex/option_standard_service'))
+            ->add('shipping/Fedex_Standard/measure', 'UPS Weight Unit', Axis_ShippingFedex_Model_Option_Standard_Measure::LBS, 'select', 'LBS or KGS', array('model' => 'shippingFedex/option_standard_measure'))
+            ->add('shipping/Fedex_Standard/residenceDelivery', 'Residential Delivery', '0', 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('shipping/Fedex_Standard/gateway', 'Fedex Gateway Url', 'https://gateway.fedex.com/GatewayDC')
+            ->add('shipping/Fedex_Standard/handling', 'Handling Fee', '0', 'text', '')
+             
+             
             ->transform()
 ;
          
