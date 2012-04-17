@@ -37,7 +37,7 @@ class SandboxController extends Axis_Core_Controller_Front
     {   
         $installer = Axis::single('install/installer');
         $installer->run("
-
+        
         ALTER TABLE `{$installer->getTable('sales_order_product_attribute')}`
             MODIFY COLUMN `product_option_value` TEXT NOT NULL default '';
 
