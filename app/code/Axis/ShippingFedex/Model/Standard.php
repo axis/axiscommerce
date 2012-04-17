@@ -69,11 +69,11 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         $r->originPostalCode = Axis::config()->core->store->zip;
 
         $r->origStateOrProvinceCode = Axis::single('location/zone')->getCode(
-            Axis::config()->core->store->zone
+            Axis::config('core/store/zone')
         );
 
         $r->originCountryCode = Axis::single('location/country')->find(
-            Axis::config()->core->store->country
+            Axis::config('core/store/country')
         )->current()->iso_code_2;
 
         // Set Destination information

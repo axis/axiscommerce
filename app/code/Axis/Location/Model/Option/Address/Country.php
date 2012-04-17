@@ -31,7 +31,7 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Location_Model_Option_Country extends Axis_Config_Option_Array_Abstract
+class Axis_Location_Model_Option_Address_Country extends Axis_Config_Option_Array_Multi
 {
     /**
      * 
