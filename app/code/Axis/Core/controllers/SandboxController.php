@@ -38,16 +38,23 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
              
-            ->add('gbase', 'Google Base', null, null, array('translation_module' => 'Axis_GoogleBase'))
-            ->add('gbase/main/payment', 'Google Base/General/Payment', Axis_GoogleBase_Model_Option_Payment::getDeafult(), 'multiple', 'Let your customers buy with all major credit cards', array('model' => 'googleBase/option_payment'))
-            ->add('gbase/main/notes', 'Payment notes', 'Google Checkout', 'text')
-            ->add('gbase/main/application', 'Application', 'StoreArchitect-Axis-' . Axis::app()->getVersion(), 'text', 'Name of the application that last modified this item.\r\nAll applications should set this attribute whenever they insert or update an item. Recommended format : Organization-ApplicationName-Version')
-            ->add('gbase/main/dryRun', 'dryRun', '0', 'radio', "Set 'Yes' for testing, 'No' for production", array('model'=> 'core/option_boolean'))
-            ->add('gbase/main/link', 'Link products to', Axis_GoogleBase_Model_Option_LinkType::WEBSITE, 'select', "If you want to use GoogleBase pages as landing page for your items, or you  can't give the link to your webstore - select Google Base, otherwise - select Website.", array('model' => 'googleBase/option_linkType'))
-            ->add('gbase/main/itemType', 'Item type', 'Products', 'text', 'Type of your products. Read this for more information http://code.google.com/apis/base/starting-out.html#ItemTypes')
-            ->add('gbase/auth/login', 'Login', '', 'text', 'Your google account to submit products', array('model' => 'core/option_crypt'))
-            ->add('gbase/auth/password', 'Password', '', 'text', 'Password to google account', array('model' => 'core/option_crypt'))
-            ->add('gbase/auth/connection', 'Connection type', Axis_GoogleBase_Model_Option_ConnectionType::AUTH_SUB, 'select', 'Login type. For ClientLogin fill login and password fields. For AuthSub you will have to enter login and password manually', array('model' => 'googleBase/option_connectionType'))
+            ->add('sitemap', 'Sitemap', null, null, array('translation_module' => 'Axis_Sitemap'))
+            ->add('sitemap/main/enabled', 'Sitemap/General/Enabled', '0', 'radio', 'Enabled', array('model'=> 'core/option_boolean'))
+            ->add('sitemap/main/startTime', 'Start Time', '', 'text', 'Start Time')
+            ->add('sitemap/main/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'sitemap/option_frequency'))
+
+            ->add('sitemap/main/googlePingUrl', 'Google Ping Url', 'http://www.google.com/webmasters/sitemaps/ping?sitemap=')
+            ->add('sitemap/main/yahooPingUrl', 'Yahoo Ping Url', 'http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=')
+            ->add('sitemap/main/askPingUrl', 'Ask Ping Url', 'http://submissions.ask.com/ping?sitemap=')
+            ->add('sitemap/main/msnPingUrl', 'Msn Ping Url', 'http://www.moreover.com/ping?u=')
+
+            ->add('sitemap/categories/priority', 'Sitemap/Categories Options/Priority', '0.8', 'text', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
+            ->add('sitemap/categories/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'sitemap/option_frequency'))
+            ->add('sitemap/products/priority', 'Sitemap/Products Options/Priority', '0.8', 'text', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
+            ->add('sitemap/products/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'sitemap/option_frequency'))
+            ->add('sitemap/cms/priority', 'Sitemap/CMS Pages Options/Priority', '0.5', 'text', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
+            ->add('sitemap/cms/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'sitemap/option_frequency'))
+            ->add('sitemap/cms/showPages', 'Show pages', '1', 'radio', 'Show pages on sitemap page', array('model'=> 'core/option_boolean'))
              
             ->transform()
 ;
