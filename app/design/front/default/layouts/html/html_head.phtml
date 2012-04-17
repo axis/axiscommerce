@@ -28,8 +28,8 @@ $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->skinUrl('favico
     ->offsetSetStylesheet(-90, 'custom.css');
 
 $this->headLink()
-    ->offsetSetStylesheet(-85, 'ie.css', 'all', 'IE');
-    //->appendStylesheet('ielte7.css', 'all', 'lte IE7');
+    ->offsetSetStylesheet(-85, 'ie.css', 'all', 'lt IE 9');
+    //->appendStylesheet('ielte7.css', 'all', 'lte IE 7');
 
 $this->headScript()
     ->setProxy('axis_core')

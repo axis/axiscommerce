@@ -41,9 +41,9 @@ if (!file_exists('./app/etc/config.php')) {
 }
 
 set_include_path(
-    realpath('library')  . PATH_SEPARATOR
-    . realpath('app/code') . PATH_SEPARATOR
-    . get_include_path()
+    realpath('library')
+    . PATH_SEPARATOR . realpath('app/code')
+//    . PATH_SEPARATOR . get_include_path() // commented to fix open_basedir restriction. See Zend_Loader::isReadable()
 );
 
 
