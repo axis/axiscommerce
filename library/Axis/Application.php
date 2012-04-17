@@ -28,6 +28,12 @@
   */
 @include_once 'Zend/Application.php';
 
+if (!class_exists('Zend_Application')) {
+    echo 'Please, copy Zend Framework to the "library" folder: '
+        . realpath('library');
+    exit();
+}
+
 /**
  *
  * @uses        Zend_Application
