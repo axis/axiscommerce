@@ -115,7 +115,7 @@ class Axis_Core_Model_Config_Builder extends Axis_Db_Table
         return $this;
     }
     
-    public function container($path = null, $title = null) 
+    public function section($path = null, $title = null) 
     {
         $this->_savePrevious();
         if ('/' === $path) {
@@ -178,7 +178,6 @@ class Axis_Core_Model_Config_Builder extends Axis_Db_Table
                 'model' => '',
             ));
         }
-        Axis_FirePhp::log($rowData);
         $rowField->setFromArray($rowData);
         $rowField->save();
         

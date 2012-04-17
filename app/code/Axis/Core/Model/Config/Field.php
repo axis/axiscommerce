@@ -81,6 +81,8 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         Axis::single('core/config_value')->remove($path);
         return $this;
     }
+    
+    protected $_datarowset = array();
 
     /**
      * Add config field row, and config value,
@@ -142,13 +144,18 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                     ->where('path = ?', $rowData['path'])
                     ->fetchRow();
                 if ($rowField) {
-                    continue;
+//                    continue;
                 } else {
                     $checkBeforeInsert = false;
                 }
             }
             $rowField = $this->createRow($rowData);
-            $rowField->save();
+//            $rowField->save();
+            if (!isset($this->_datarowset[$rowData['path']])) {
+                $this->_datarowset[$rowData['path']] = array_merge($rowData, array(
+                    'value' => $value
+                ));
+            }
         }
 
         if ($rowData['lvl'] == 3) {
@@ -174,9 +181,81 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                 'site_id'         => 0,
                 'value'           => $value
             ));
-            $rowValue->save();
+//            $rowValue->save();
         }
 
+        return $this;
+    }
+    
+    public function transform() 
+    {
+        $_defaultsRowField = array(
+            'type'               => 'text',
+            'description'        => '',
+            'model'              => '',
+        );
+        
+        $str = '';
+        $container = array(); 
+        foreach ($this->_datarowset as $option) {
+            $tab = str_repeat(' ', 4);
+            $tabs = str_repeat($tab, $option['lvl']);
+            
+            $isOption = (bool)($option['lvl'] == 3);
+            
+            $proporties = '';
+            $title = '';
+            if (!empty($option['title'])) {
+                $title = "'{$option['title']}'";
+//                $proporties .= "{$tabs}{$tab}->setTitle(" . $title . ")\n"; $title = '';
+                $title = empty($title) ? '' : ', ' . $title;
+            }
+            $value = '';
+            if ($isOption /*&& !empty($option['value'])*/) {
+                $value = is_string($option['value']) ? "'{$option['value']}'" : $option['value'];
+//                $proporties .= "{$tabs}{$tab}->setValue(" . $value . ")\n"; $value = '';
+                $value = empty($option['value']) ? '' : ', ' . $value;
+            }
+            if ($isOption && $option['type'] !== $_defaultsRowField['type']) {
+                $proporties .= "{$tabs}{$tab}->setType('" . $option['type'] . "')\n";
+            }
+            if ($option['description'] !== $_defaultsRowField['description']) {
+                $proporties .= "{$tabs}{$tab}->setDescription('" . $option['description'] . "')\n";
+            }
+            if ($isOption && $option['model'] !== $_defaultsRowField['model']) {
+                $proporties .= "{$tabs}{$tab}->setModel('" . $option['model'] . "')\n";
+            }
+            $tm = (string) $option['translation_module'];
+            if (!empty($tm) && $tm !== 'NULL') {
+                $proporties .= "{$tabs}{$tab}->setTranslation('" . $option['translation_module'] . "')\n";
+            }
+            
+            $paths = explode('/', $option['path']);
+            $path = array_pop($paths);
+            
+            
+            if (!$isOption) {
+                if (count($container) >= $option['lvl']) {
+                    $k =  array_pop($container);
+                    $tabsk = str_repeat($tab, 1 + min(array(count($container), $option['lvl'])));
+                    $str .=  "{$tabsk}->section('/{$k}')\n" ;
+                }
+                array_push($container, $path);
+            }
+            
+            $str .= "{$tabs}->" . ( $isOption ? 'option' : 'container') 
+                 . "('" . $path . "'" . $title . $value . ")\n"; 
+            
+            if (!empty($proporties)) {
+                $str  .= $proporties;
+            }
+        }
+        Zend_Debug::dump(
+            "\nAxis::single('core/config_builder')\n" 
+                . $str 
+                . "\n{$tab}->section('/');\n"
+        );
+        $this->_datarowset = array();
         return $this;
     }
 }

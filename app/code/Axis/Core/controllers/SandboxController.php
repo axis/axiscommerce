@@ -36,6 +36,33 @@ class SandboxController extends Axis_Core_Controller_Front
     public function indexAction()
     {   
         
+         Axis::single('core/config_field')
+             ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
+            ->add('payment/AuthorizenetAim_Standard', 'Payment Methods/Authorize.Net Aim', null, null, array('translation_module' => 'Axis_PaymentAuthorizenetAim'))
+            ->add('payment/AuthorizenetAim_Standard/enabled', 'Payment Methods/Authorize.Net Aim/Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('payment/AuthorizenetAim_Standard/title', 'Title', 'Authorize.Net')
+            ->add('payment/AuthorizenetAim_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'checkout/option_shipping', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/AuthorizenetAim_Standard/creditCard', 'Accepted Credit Cards', 'VISA', 'multiple', 'Credits cards allowed to use with this payment method', array('model' => 'sales/option_order_creditCard_type', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/AuthorizenetAim_Standard/geozone', 'Allowed Payment Zone', 1, 'select', 'Payment method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/AuthorizenetAim_Standard/sortOrder', 'Sort Order', '1', 'text', array('translation_module' => 'Axis_Core'))
+            ->add('payment/AuthorizenetAim_Standard/orderStatusId', 'Order Status on payment complete', 2, 'select', 'Set the status of orders made with this payment module to this value', array('model' => 'sales/option_order_status', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/AuthorizenetAim_Standard/authorizationType','Authorization Type', Axis_PaymentAuthorizenetAim_Model_Option_Standard_AuthorizationType::AUTHORIZE, 'select', 'Do you want submitted credit card transactions to be authorized only, or authorized and captured?', array('model' => 'paymentAuthorizenetAim/option_standard_authorizationType'))
+            ->add('payment/AuthorizenetAim_Standard/xLogin', 'Login Id', '', 'text', 'The API Login ID used for the Authorize.net service', array('model' => 'core/option_crypt'))
+            ->add('payment/AuthorizenetAim_Standard/xTransactionKey','Transaction Key', '', 'text', 'Transaction Key used for encrypting TP data (See your Authorizenet Account->Security Settings->API Login ID and Transaction Key for details.)', array('model' => 'core/option_crypt'))
+            ->add('payment/AuthorizenetAim_Standard/gateway', 'Gateway URL', 'https://test.authorize.net/gateway/transact.dll')
+            ->add('payment/AuthorizenetAim_Standard/emailCustomer', 'Customer Notification', 0, 'radio', 'Should Authorize.Net email a receipt to the customer?', array('model'=> 'core/option_boolean'))
+            ->add('payment/AuthorizenetAim_Standard/emailMerchant', 'Merchant Email', '')
+            ->add('payment/AuthorizenetAim_Standard/test', 'Test Mode', 0, 'radio', '', array('model'=> 'core/option_boolean'))
+
+            ->transform()
+;
+         
+Axis::single('core/config_builder')
+    ->remove('core3')
+        ->remove('mail3')
+    ->remove('design3')
+//    ->section('/')
+    ;
         
         Zend_Debug::dump(Axis_Payment::getMethodNames());
         Zend_Debug::dump(Axis::config('payment/CreditCard_Standard/shippings'));
