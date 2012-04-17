@@ -37,24 +37,17 @@ class SandboxController extends Axis_Core_Controller_Front
     {   
         
          Axis::single('core/config_field')
-             
-            ->add('sitemap', 'Sitemap', null, null, array('translation_module' => 'Axis_Sitemap'))
-            ->add('sitemap/main/enabled', 'Sitemap/General/Enabled', '0', 'radio', 'Enabled', array('model'=> 'core/option_boolean'))
-            ->add('sitemap/main/startTime', 'Start Time', '', 'text', 'Start Time')
-            ->add('sitemap/main/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'sitemap/option_frequency'))
 
-            ->add('sitemap/main/googlePingUrl', 'Google Ping Url', 'http://www.google.com/webmasters/sitemaps/ping?sitemap=')
-            ->add('sitemap/main/yahooPingUrl', 'Yahoo Ping Url', 'http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=')
-            ->add('sitemap/main/askPingUrl', 'Ask Ping Url', 'http://submissions.ask.com/ping?sitemap=')
-            ->add('sitemap/main/msnPingUrl', 'Msn Ping Url', 'http://www.moreover.com/ping?u=')
-
-            ->add('sitemap/categories/priority', 'Sitemap/Categories Options/Priority', '0.8', 'text', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
-            ->add('sitemap/categories/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'sitemap/option_frequency'))
-            ->add('sitemap/products/priority', 'Sitemap/Products Options/Priority', '0.8', 'text', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
-            ->add('sitemap/products/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'sitemap/option_frequency'))
-            ->add('sitemap/cms/priority', 'Sitemap/CMS Pages Options/Priority', '0.5', 'text', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
-            ->add('sitemap/cms/frequency', 'Frequency', Axis_Sitemap_Model_Option_Frequency::DAILY, 'select', 'Frequency', array('model' => 'sitemap/option_frequency'))
-            ->add('sitemap/cms/showPages', 'Show pages', '1', 'radio', 'Show pages on sitemap page', array('model'=> 'core/option_boolean'))
+             ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
+            ->add('shipping/Pickup_Standard', 'Shipping Methods/Pickup Standard', null, null, array('translation_module' => 'Axis_ShippingPickup'))
+            ->add('shipping/Pickup_Standard/enabled', 'Shipping Methods/Pickup Standard/Enabled', '0', 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Pickup_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Pickup_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Pickup_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Pickup_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Pickup_Standard/handling', 'Handling Fee', '0')
+            ->add('shipping/Pickup_Standard/price', 'Shipping Cost', '0', 'text', 'The shipping cost for all orders using this shipping method.')
+            ->add('shipping/Pickup_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'))
              
             ->transform()
 ;
