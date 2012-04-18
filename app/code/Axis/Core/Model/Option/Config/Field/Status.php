@@ -31,6 +31,10 @@
  */
 class Axis_Core_Model_Option_Config_Field_Status extends Axis_Config_Option_Array_Abstract
 {
+    const REQUIRED = 'required';
+    const OPTIONAL = 'optional';
+    const DISABLED = 'disabled';
+    
     /**
      * 
      * @return array
@@ -39,9 +43,9 @@ class Axis_Core_Model_Option_Config_Field_Status extends Axis_Config_Option_Arra
     {
         $translate = Axis::translate('Axis_Core');
         return array(
-            'required' => $translate->__('Required'),
-            'optional' => $translate->__('Optional'),
-            'disabled' => $translate->__('Disabled')
+            self::REQUIRED => $translate->__(ucfirst(self::REQUIRED)),
+            self::OPTIONAL => $translate->__(ucfirst(self::OPTIONAL)),
+            self::DISABLED => $translate->__(ucfirst(self::DISABLED))
         );
     }
 }

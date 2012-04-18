@@ -30,29 +30,45 @@ class Axis_Account_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('account/address_form/company_status', 'Account/Address Form/Company Status', 'optional', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/company_sort_order', 'Account/Address Form/Company Sort Order', 10)
+        $required = Axis_Core_Model_Option_Config_Field_Status::REQUIRED;
+        $optional = Axis_Core_Model_Option_Config_Field_Status::OPTIONAL;
+        
+        Axis::single('core/config_builder')
+            ->section('account', 'Account')
+                ->section('address_form', 'Address Form')
+                    ->option('company_status', 'Company Status', $optional)
+                        ->setType('select')
+                        ->setModel('core/option_config_field_status')
+                    ->option('company_sort_order', 'Company Sort Order', 10)
+                    ->option('phone_status', 'Phone Status', $required)
+                        ->setType('select')
+                        ->setModel('core/option_config_field_status')
+                    ->option('phone_sort_order', 'Company Sort Order', 20)
+                    ->option('fax_status', 'Fax Status', $optional)
+                        ->setType('select')
+                        ->setModel('core/option_config_field_status')
+                    ->option('fax_sort_order', 'Company Sort Order', 30)
+                    ->option('street_address_status', 'Street Status', $required)
+                        ->setType('select')
+                        ->setModel('core/option_config_field_status')
+                    ->option('street_address_sort_order', 'Company Sort Order', 40)
+                    ->option('city_status', 'City Status', $required)
+                        ->setType('select')
+                        ->setModel('core/option_config_field_status')
+                    ->option('city_sort_order', 'Company Sort Order', 50)
+                    ->option('zone_id_status', 'Region Status', $required)
+                        ->setType('select')
+                        ->setModel('core/option_config_field_status')
+                    ->option('zone_id_sort_order', 'Company Sort Order', 60)
+                    ->option('postcode_status', 'Postcode Status', $required)
+                        ->setType('select')
+                        ->setModel('core/option_config_field_status')
+                    ->option('postcode_sort_order', 'Company Sort Order', 70)
+                    ->option('country_id_status', 'Country Status', $required)
+                        ->setType('select')
+                        ->setModel('core/option_config_field_status')
+                    ->option('country_id_sort_order', 'Company Sort Order', 80)
 
-            ->add('account/address_form/phone_status', 'Account/Address Form/Phone Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/phone_sort_order', 'Account/Address Form/Company Sort Order', 20)
-
-            ->add('account/address_form/fax_status', 'Account/Address Form/Fax Status', 'optional', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/fax_sort_order', 'Account/Address Form/Company Sort Order', 30)
-
-            ->add('account/address_form/street_address_status', 'Account/Address Form/Street Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/street_address_sort_order', 'Account/Address Form/Company Sort Order', 40)
-
-            ->add('account/address_form/city_status', 'Account/Address Form/City Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/city_sort_order', 'Account/Address Form/Company Sort Order', 50)
-
-            ->add('account/address_form/zone_id_status', 'Account/Address Form/Region Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/zone_id_sort_order', 'Account/Address Form/Company Sort Order', 60)
-
-            ->add('account/address_form/postcode_status', 'Account/Address Form/Postcode Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/postcode_sort_order', 'Account/Address Form/Company Sort Order', 70)
-
-            ->add('account/address_form/country_id_status', 'Account/Address Form/Country Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/country_id_sort_order', 'Account/Address Form/Company Sort Order', 80);
+            ->section('/');
     }
 }

@@ -39,15 +39,30 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
             
-            ->add('checkout', 'Checkout', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('checkout/address_form/custom_fields_display_mode', 'Checkout/Address Form/Display Mode for Custom Fields', Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode::getDeafult(), 'select', array('model' => 'checkout/option_form_address_customFieldsDisplayMode'))
-            ->add('checkout/address_form/shipping_address_enabled', 'Display Shipping Address', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('checkout/default_values', 'Checkout/Default Values', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('checkout/default_values/country_id', 'Checkout/Default Values/Country', 223, 'select', array('model' => 'location/option_country', 'translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/zone_id', 'State(Region) Id', 12, 'text', 'You can get the id of desired region at admin/location_zone', array('translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/postcode', 'Postcode', 90064, 'text', array('translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/shipping_method', 'Shipping Method', 'Flat_Standard_standard', 'text')
-            ->add('checkout/default_values/payment_method', 'Payment Method', 'CashOnDelivery_Standard', 'select', array('model' => 'checkout/option_payment'))
+            ->add('account/address_form/company_status', 'Account/Address Form/Company Status', 'optional', 'select', array('model' => 'core/option_config_field_status'))
+            ->add('account/address_form/company_sort_order', 'Account/Address Form/Company Sort Order', 10)
+
+            ->add('account/address_form/phone_status', 'Account/Address Form/Phone Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
+            ->add('account/address_form/phone_sort_order', 'Account/Address Form/Company Sort Order', 20)
+
+            ->add('account/address_form/fax_status', 'Account/Address Form/Fax Status', 'optional', 'select', array('model' => 'core/option_config_field_status'))
+            ->add('account/address_form/fax_sort_order', 'Account/Address Form/Company Sort Order', 30)
+
+            ->add('account/address_form/street_address_status', 'Account/Address Form/Street Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
+            ->add('account/address_form/street_address_sort_order', 'Account/Address Form/Company Sort Order', 40)
+
+            ->add('account/address_form/city_status', 'Account/Address Form/City Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
+            ->add('account/address_form/city_sort_order', 'Account/Address Form/Company Sort Order', 50)
+
+            ->add('account/address_form/zone_id_status', 'Account/Address Form/Region Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
+            ->add('account/address_form/zone_id_sort_order', 'Account/Address Form/Company Sort Order', 60)
+
+            ->add('account/address_form/postcode_status', 'Account/Address Form/Postcode Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
+            ->add('account/address_form/postcode_sort_order', 'Account/Address Form/Company Sort Order', 70)
+
+            ->add('account/address_form/country_id_status', 'Account/Address Form/Country Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
+            ->add('account/address_form/country_id_sort_order', 'Account/Address Form/Company Sort Order', 80)
+            
                         
             ->transform()
 ;
