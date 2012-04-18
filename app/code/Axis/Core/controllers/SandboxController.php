@@ -39,30 +39,10 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
             
-            ->add('account/address_form/company_status', 'Account/Address Form/Company Status', 'optional', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/company_sort_order', 'Account/Address Form/Company Sort Order', 10)
-
-            ->add('account/address_form/phone_status', 'Account/Address Form/Phone Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/phone_sort_order', 'Account/Address Form/Company Sort Order', 20)
-
-            ->add('account/address_form/fax_status', 'Account/Address Form/Fax Status', 'optional', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/fax_sort_order', 'Account/Address Form/Company Sort Order', 30)
-
-            ->add('account/address_form/street_address_status', 'Account/Address Form/Street Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/street_address_sort_order', 'Account/Address Form/Company Sort Order', 40)
-
-            ->add('account/address_form/city_status', 'Account/Address Form/City Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/city_sort_order', 'Account/Address Form/Company Sort Order', 50)
-
-            ->add('account/address_form/zone_id_status', 'Account/Address Form/Region Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/zone_id_sort_order', 'Account/Address Form/Company Sort Order', 60)
-
-            ->add('account/address_form/postcode_status', 'Account/Address Form/Postcode Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/postcode_sort_order', 'Account/Address Form/Company Sort Order', 70)
-
-            ->add('account/address_form/country_id_status', 'Account/Address Form/Country Status', 'required', 'select', array('model' => 'core/option_config_field_status'))
-            ->add('account/address_form/country_id_sort_order', 'Account/Address Form/Company Sort Order', 80)
-            
+            ->add('checkout/onestep_ajax/billing_address', 'Checkout/Onestep Ajax Requests/Reload when Billing Address was Changed', 1, 'radio', "You can disable this option if you don't use different payment methods for different addresses", array('model'=> 'core/option_boolean'))
+            ->add('checkout/onestep_ajax/delivery_address', 'Reload when Delivery Address was Changed', 1, 'radio', "You can disable this option if you don't use different shipping methods or shipping taxes for different addresses", array('model'=> 'core/option_boolean'))
+            ->add('checkout/onestep_ajax/shipping_method', 'Reload when Shipping Method was Changed', 1, 'radio', "You can disable this option if all of your shipping methods have equal pricing, and if you don't have dependency between available payment methods and shipping method", array('model'=> 'core/option_boolean'))
+            ->add('checkout/onestep_ajax/payment_method', 'Reload when Payment Method was Changed', 1, 'radio', "You can disable this option if you don't have dependency between available shipping methods and payment method", array('model'=> 'core/option_boolean'))
                         
             ->transform()
 ;

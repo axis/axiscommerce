@@ -30,10 +30,26 @@ class Axis_Checkout_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('checkout/onestep_ajax/billing_address', 'Checkout/Onestep Ajax Requests/Reload when Billing Address was Changed', 1, 'radio', "You can disable this option if you don't use different payment methods for different addresses", array('model'=> 'core/option_boolean'))
-            ->add('checkout/onestep_ajax/delivery_address', 'Reload when Delivery Address was Changed', 1, 'radio', "You can disable this option if you don't use different shipping methods or shipping taxes for different addresses", array('model'=> 'core/option_boolean'))
-            ->add('checkout/onestep_ajax/shipping_method', 'Reload when Shipping Method was Changed', 1, 'radio', "You can disable this option if all of your shipping methods have equal pricing, and if you don't have dependency between available payment methods and shipping method", array('model'=> 'core/option_boolean'))
-            ->add('checkout/onestep_ajax/payment_method', 'Reload when Payment Method was Changed', 1, 'radio', "You can disable this option if you don't have dependency between available shipping methods and payment method", array('model'=> 'core/option_boolean'));
+        Axis::single('core/config_builder')
+            ->section('checkout')
+                ->section('onestep_ajax', 'Onestep Ajax Requests')
+                    ->option('billing_address', 'Reload when Billing Address was Changed', true)
+                        ->setType('radio')
+                        ->setDescription("You can disable this option if you don't use different payment methods for different addresses")
+                        ->setModel('core/option_boolean')
+                    ->option('delivery_address', 'Reload when Delivery Address was Changed', true)
+                        ->setType('radio')
+                        ->setDescription("You can disable this option if you don't use different shipping methods or shipping taxes for different addresses")
+                        ->setModel('core/option_boolean')
+                    ->option('shipping_method', 'Reload when Shipping Method was Changed', true)
+                        ->setType('radio')
+                        ->setDescription("You can disable this option if all of your shipping methods have equal pricing, and if you don't have dependency between available payment methods and shipping method")
+                        ->setModel('core/option_boolean')
+                    ->option('payment_method', 'Reload when Payment Method was Changed', true)
+                        ->setType('radio')
+                        ->setDescription("You can disable this option if you don't have dependency between available shipping methods and payment method")
+                        ->setModel('core/option_boolean')
+
+            ->section('/');
     }
 }
