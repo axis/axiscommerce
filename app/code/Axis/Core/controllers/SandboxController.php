@@ -39,7 +39,7 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
 
-            ->add('shipping/Ups_Standard/showErrors', 'Display messages from service provider', 1, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Usps_Standard/showErrors', 'Display messages from service provider', 1, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Admin'))
             
             ->transform()
 ;
