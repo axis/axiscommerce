@@ -540,14 +540,21 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::model('location/address_format')->insert(array(
+        $optionId = Axis::model('location/address_format')->insert(array(
             'name'              => 'ISO/IEC 19773',
             'address_format'    => '{{firstname}} {{lastname}}EOL{{if company}}{{company}}EOL{{/if}}{{if street_address}}{{street_address}}EOL{{/if}}{{if suburb}}{{suburb}}EOL{{/if}}{{if city}}{{city}}{{/if}} {{if zone.name}}{{zone.name}} {{/if}}{{if postcode}}{{postcode}}{{/if}}{{if country}}EOL{{country.name}}EOL{{/if}}{{if phone}}T: {{phone}}EOL{{/if}}{{if fax}}F: {{fax}}EOL{{/if}}',
             'address_summary'   => '{{firstname}} {{lastname}}'
         ));
 
-        Axis::single('core/config_field')
-            ->add('locale', 'Locale', null, null, array('translation_module' => 'Axis_Locale'))
-            ->add('locale/main/addressFormat', 'Locale/General/Default Address Format', 1, 'select', 'Default address format', array('model' => 'location/option_address_format'));
+        Axis::single('core/config_builder')
+            ->section('locale', 'Locale')
+                ->setTranslation('Axis_Locale')
+                ->section('main', 'General')
+                    ->option('addressFormat', 'Default Address Format', $optionId)
+                        ->setType('select')
+                        ->setDescription('Default address format')
+                        ->setModel('location/option_address_format')
+
+            ->section('/');
     }
 }
