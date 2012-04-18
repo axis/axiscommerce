@@ -69,7 +69,6 @@ class Axis_ShippingFree_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        Axis::single('core/config_value')->remove('shipping/Free_Standard');
-        Axis::single('core/config_field')->remove('shipping/Free_Standard');
+        Axis::single('core/config_builder')->remove('shipping/Free_Standard');
     }
 }

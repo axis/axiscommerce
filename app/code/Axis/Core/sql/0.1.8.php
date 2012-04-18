@@ -45,6 +45,6 @@ class Axis_Core_Upgrade_0_1_8 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        Axis::single('core/config_field')->remove('core/session');
+        Axis::single('core/config_builder')->remove('core/session');
     }
 }

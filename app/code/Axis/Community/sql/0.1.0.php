@@ -243,9 +243,9 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('community_review_rating_title')}`;
         ");
 
-        Axis::single('core/config_field')->remove('community');
-        Axis::single('core/config_value')->remove('community');
-        Axis::single('account/customer_field')->remove('nickname');
+        Axis::single('core/config_builder')
+            ->remove('community')
+            ->remove('nickname');
         //Axis::single('core/template_box')->remove('Axis_Community_ReviewProduct');
     }
 }

@@ -73,7 +73,6 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
 
     public function down()
     {
-        Axis::single('core/config_value')->remove('payment/CheckMoney_Standard');
-        Axis::single('core/config_field')->remove('payment/CheckMoney_Standard');
+        Axis::single('core/config_builder')->remove('payment/CheckMoney_Standard');
     }
 }

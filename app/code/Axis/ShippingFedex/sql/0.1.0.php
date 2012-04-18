@@ -90,12 +90,10 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
 
     public function down()
     {
-        //Axis::single('core/config_value')->remove('shipping/Fedex_Express');
-        //Axis::single('core/config_field')->remove('shipping/Fedex_Express');
-        //Axis::single('core/config_value')->remove('shipping/Fedex_Ground');
-        //Axis::single('core/config_field')->remove('shipping/Fedex_Ground');
-
-        Axis::single('core/config_value')->remove('shipping/Fedex_Standard');
-        Axis::single('core/config_field')->remove('shipping/Fedex_Standard');
+        Axis::single('core/config_builder')
+            ->remove('shipping/Fedex_Standard')
+//            ->remove('shipping/Fedex_Express')
+//            ->remove('shipping/Fedex_Ground')
+        ;
     }
 }

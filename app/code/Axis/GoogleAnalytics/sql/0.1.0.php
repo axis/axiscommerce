@@ -71,7 +71,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstr
 
     public function down()
     {
-        Axis::single('core/config_field')->remove('analytics');
+        Axis::single('core/config_builder')->remove('analytics');
         //Axis::single('core/template_box')->remove('Axis_GoogleAnalytics_Ga');
     }
 }

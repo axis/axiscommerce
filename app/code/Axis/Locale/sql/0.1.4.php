@@ -36,9 +36,8 @@ class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             $languageId = 1;
         }
 
-        Axis::single('core/config_field')->remove('locale/main/language');
-
         Axis::single('core/config_builder')
+            ->remove('locale/main/language')
             ->section('locale')
                 ->section('main')
                     ->option('language_admin', 'Default backend language', $languageId)
@@ -57,11 +56,9 @@ class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
     {
         $languageId = Axis::config('locale/main/language_front');
 
-        Axis::single('core/config_field')
-            ->remove('locale/main/language_admin')
-            ->remove('locale/main/language_front');
-
         Axis::single('core/config_builder')
+            ->remove('locale/main/language_admin')
+            ->remove('locale/main/language_front')
             ->section('locale')
                 ->section('main')
                     ->option('language', 'Default language', $languageId)

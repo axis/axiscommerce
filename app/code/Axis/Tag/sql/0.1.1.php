@@ -92,8 +92,7 @@ class Axis_Tag_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('tag_product')}`;
         ");
 
-        Axis::single('core/config_field')->remove('tag');
-        Axis::single('core/config_value')->remove('tag');
+        Axis::single('core/config_builder')->remove('tag');
 
         Axis::single('core/page')
             ->remove('tag/*/*')

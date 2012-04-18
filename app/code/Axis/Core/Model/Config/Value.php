@@ -35,15 +35,4 @@ class Axis_Core_Model_Config_Value extends Axis_Db_Table
 {
     protected $_name = 'core_config_value';
 
-    /**
-     * Removes config values, and all of it childrens
-     * 
-     * @param string $path
-     * @return Axis_Core_Model_Config_Value Provides fluent intarface
-     */
-    public function remove($path)
-    {
-        $this->delete("path LIKE '{$path}%'");
-        return $this;
-    }
 }

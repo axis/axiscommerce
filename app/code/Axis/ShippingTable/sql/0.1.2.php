@@ -99,7 +99,6 @@ class Axis_ShippingTable_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
             DROP TABLE IF EXISTS `{$installer->getTable('shippingtable_rate')}`;
         ");
 
-        Axis::single('core/config_value')->remove('shipping/Table_Standard');
-        Axis::single('core/config_field')->remove('shipping/Table_Standard');
+        Axis::single('core/config_builder')->remove('shipping/Table_Standard');
     }
 }

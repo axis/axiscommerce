@@ -82,7 +82,7 @@ class Axis_Log_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             ->section('log', 'Log')
                 ->setTranslation('Axis_Log')
                 ->section('main', 'General')
-                    ->option('enabled', 'Enabled', 1)
+                    ->option('enabled', 'Enabled', true)
                         ->setType('radio')
                         ->setModel('core/option_boolean')
                     ->option('php', 'Php log', '/var/logs/php.log')
@@ -109,8 +109,7 @@ class Axis_Log_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('log_visitor_info')}`;
         ");
 
-        Axis::single('core/config_field')->remove('log/main/enabled');
-        Axis::single('core/config_value')->remove('log/main/enabled');
+        Axis::single('core/config_builder')->remove('log/main/enabled');
 
         //Axis::single('core/template_box')
         //    ->remove('Axis_Log_Visitor')

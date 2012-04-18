@@ -39,9 +39,6 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
             
-            ->add('design/header/logoSrc', 'Design/Header/Logo Image Src', 'logo.gif')
-            ->add('design/header/logoAlt', 'Logo Image Alt', 'Axiscommerce')
-            
                         
             ->transform()
 ;

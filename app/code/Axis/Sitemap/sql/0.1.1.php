@@ -51,31 +51,12 @@ class Axis_Sitemap_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('sitemap_file_engine')}`;
         ");
 
-        Axis::single('core/config_field')
+        Axis::single('core/config_builder')
             ->remove('sitemap/main/startTime')
             ->remove('sitemap/main/googlePingUrl')
             ->remove('sitemap/main/yahooPingUrl')
             ->remove('sitemap/main/askPingUrl')
             ->remove('sitemap/main/msnPingUrl')
             ;
-        Axis::single('core/config_value')
-            ->remove('sitemap/main/startTime')
-            ->remove('sitemap/main/googlePingUrl')
-            ->remove('sitemap/main/yahooPingUrl')
-            ->remove('sitemap/main/askPingUrl')
-            ->remove('sitemap/main/msnPingUrl')
-            ;
-    }
-
-    public function down()
-    {
-//        Axis::single('core/config_field')
-//            ->add('sitemap/main/startTime', 'Start Time', '', 'text', 'Start Time')
-//
-//            ->add('sitemap/main/googlePingUrl', 'Google Ping Url', 'http://www.google.com/webmasters/sitemaps/ping?sitemap=')
-//            ->add('sitemap/main/yahooPingUrl', 'Yahoo Ping Url', 'http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=')
-//            ->add('sitemap/main/askPingUrl', 'Ask Ping Url', 'http://submissions.ask.com/ping?sitemap=')
-//            ->add('sitemap/main/msnPingUrl', 'Msn Ping Url', 'http://www.moreover.com/ping?u=')
-//            ;
     }
 }

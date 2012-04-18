@@ -30,7 +30,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
 
     public function up()
     {
-        Axis::single('core/config_field')
+        Axis::single('core/config_builder')
             ->remove('analytics/main/usedPageName')
             ->remove('analytics/main/affiliation')
             ->remove('analytics/attributes')

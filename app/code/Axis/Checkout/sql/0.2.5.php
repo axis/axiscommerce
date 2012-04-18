@@ -30,7 +30,7 @@ class Axis_Checkout_Upgrade_0_2_5 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
+        Axis::single('core/config_builder')
             ->remove('checkout/default_values/country_id')
             ->remove('checkout/default_values/zone_id')
             ->remove('checkout/default_values/postcode');

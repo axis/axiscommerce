@@ -76,7 +76,6 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        Axis::single('core/config_value')->remove('shipping/Flat_Standard');
-        Axis::single('core/config_field')->remove('shipping/Flat_Standard');
+        Axis::single('core/config_builder')->remove('shipping/Flat_Standard');
     }
 }

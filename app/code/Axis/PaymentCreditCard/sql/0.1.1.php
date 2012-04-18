@@ -87,7 +87,6 @@ class Axis_PaymentCreditCard_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abs
 
     public function down()
     {
-        Axis::single('core/config_value')->remove('payment/CreditCard_Standard');
-        Axis::single('core/config_field')->remove('payment/CreditCard_Standard');
+        Axis::single('core/config_builder')->remove('payment/CreditCard_Standard');
     }
 }

@@ -229,16 +229,12 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
             DROP TABLE IF EXISTS `{$installer->getTable('payment_paypal_standard_order')}`;
         ");
 
-        Axis::single('core/config_value')->remove('payment/Paypal_Standard');
-        Axis::single('core/config_field')->remove('payment/Paypal_Standard');
-        Axis::single('core/config_value')->remove('payment/Paypal_Direct');
-        Axis::single('core/config_field')->remove('payment/Paypal_Direct');
-        Axis::single('core/config_value')->remove('payment/Paypal_Express');
-        Axis::single('core/config_field')->remove('payment/Paypal_Express');
-        Axis::single('core/config_value')->remove('payment/payflow');
-        Axis::single('core/config_field')->remove('payment/payflow');
-        Axis::single('core/config_value')->remove('payment/nvp');
-        Axis::single('core/config_field')->remove('payment/nvp');
+        Axis::single('core/config_builder')
+            ->remove('payment/Paypal_Standard')
+            ->remove('payment/Paypal_Direct')
+            ->remove('payment/Paypal_Express')
+            ->remove('payment/payflow')
+            ->remove('payment/nvp');
 
         //Axis::single('core/template_box')->remove('Axis_PaymentPaypal_ExpressButton');
     }
