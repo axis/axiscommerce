@@ -30,15 +30,34 @@ class Axis_Checkout_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('checkout', 'Checkout', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('checkout/address_form/custom_fields_display_mode', 'Checkout/Address Form/Display Mode for Custom Fields', Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode::getDeafult(), 'select', array('model' => 'checkout/option_form_address_customFieldsDisplayMode'))
-            ->add('checkout/address_form/shipping_address_enabled', 'Display Shipping Address', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('checkout/default_values', 'Checkout/Default Values', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('checkout/default_values/country_id', 'Checkout/Default Values/Country', 223, 'select', array('model' => 'location/option_country', 'translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/zone_id', 'State(Region) Id', 12, 'text', 'You can get the id of desired region at admin/location_zone', array('translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/postcode', 'Postcode', 90064, 'text', array('translation_module' => 'Axis_Account'))
-            ->add('checkout/default_values/shipping_method', 'Shipping Method', 'Flat_Standard_standard', 'text')
-            ->add('checkout/default_values/payment_method', 'Payment Method', 'CashOnDelivery_Standard', 'select', array('model' => 'checkout/option_payment'));
+        Axis::single('core/config_builder')
+            ->section('checkout')
+                ->section('address_form', 'Address Form')
+                    ->option('custom_fields_display_mode', 'Display Mode for Custom Fields')
+                        ->setValue(Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode::getDeafult())
+                        ->setType('select')
+                        ->setModel('checkout/option_form_address_customFieldsDisplayMode')
+                    ->option('shipping_address_enabled', 'Display Shipping Address', 1)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                ->section('/address_form')
+
+                ->section('default_values', 'Default Values')
+                    ->setTranslation('Axis_Checkout')
+                    ->option('country_id', 'Country', 223)
+                        ->setType('select')
+                        ->setModel('location/option_country')
+                        ->setTranslation('Axis_Account')
+                    ->option('zone_id', 'State(Region) Id', 12)
+                        ->setDescription('You can get the id of desired region at admin/location_zone')
+                        ->setTranslation('Axis_Account')
+                    ->option('postcode', 'Postcode', 90064)
+                        ->setTranslation('Axis_Account')
+                    ->option('shipping_method', 'Shipping Method', 'Flat_Standard_standard')
+                    ->option('payment_method', 'Payment Method', 'CashOnDelivery_Standard')
+                        ->setType('select')
+                        ->setModel('checkout/option_payment')
+
+            ->section('/');
     }
 }
