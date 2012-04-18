@@ -38,14 +38,16 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
 
-            ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('payment/FreeOrder_Standard', 'Payment Methods/Free Order', null, null, array('translation_module' => 'Axis_PaymentFreeOrder'))
-            ->add('payment/FreeOrder_Standard/enabled', 'Payment Methods/Free Order/Enabled', '0', 'radio', '',array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
-            ->add('payment/FreeOrder_Standard/title', 'Title', 'Free Order', 'text', 'Title')
-            ->add('payment/FreeOrder_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/FreeOrder_Standard/sortOrder', 'Sort Order', '1', 'text', array('translation_module' => 'Axis_Core'))
-            ->add('payment/FreeOrder_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('model' => 'sales/option_order_status', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/FreeOrder_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'checkout/option_shipping', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
+            ->add('shipping/Free_Standard', 'Shipping Methods/Free Shipping Standard', null, null, array('translation_module' => 'Axis_ShippingFree'))
+            ->add('shipping/Free_Standard/enabled', 'Shipping Methods/Free Shipping Standard/Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Free_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Free_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Free_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Free_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Free_Standard/handling', 'Handling Fee', '0')
+            ->add('shipping/Free_Standard/cost', 'Free Shipping Cost', '0')
+            ->add('shipping/Free_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'))
              
             ->transform()
 ;
