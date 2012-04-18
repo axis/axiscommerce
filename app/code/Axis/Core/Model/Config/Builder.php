@@ -221,8 +221,8 @@ class Axis_Core_Model_Config_Builder extends Axis_Db_Table
      */
     public function remove($path)
     {
+        Axis::single('core/config_value')->delete("path LIKE '{$path}%'");
         Axis::single('core/config_field')->delete("path LIKE '{$path}%'");
-        Axis::single('core/config_value')->remove($path);
         return $this;
     }
 }

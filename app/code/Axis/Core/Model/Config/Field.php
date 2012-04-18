@@ -238,7 +238,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                 if (count($container) >= $option['lvl']) {
                     $k =  array_pop($container);
                     $tabsk = str_repeat($tab, 1 + min(array(count($container), $option['lvl'])));
-                    $str .=  "\n{$tabsk}->section('/{$k}')\n" ;
+                    $str .=  "{$tabsk}->section('/{$k}')\n\n" ;
                 }
                 array_push($container, $path);
             }

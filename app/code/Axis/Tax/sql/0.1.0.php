@@ -72,10 +72,25 @@ class Axis_Tax_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('core/config_field')
-            ->add('tax', 'Tax', null, null, array('translation_module' => 'Axis_Tax'))
-            ->add('tax/main/taxBasis', 'Tax/General/TaxBasis', 'delivery', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis'))
-            ->add('tax/shipping/taxBasis', 'Tax/Shipping Tax/Shipping TaxBasis', 'delivery', 'select', 'Address that will be used for shipping tax calculation', array('model' => 'tax/option_basis'))
-            ->add('tax/shipping/taxClass', 'Shipping TaxClass', '1', 'select', 'Tax class that will be used for shipping tax calculation', array('model' => 'tax/option_class'));
+        Axis::single('core/config_builder')
+            ->container('tax', 'Tax')
+                ->setTranslation('Axis_Tax')
+                ->container('main', 'General')
+                    ->option('taxBasis', 'TaxBasis', 'delivery')
+                        ->setType('select')
+                        ->setDescription('Address that will be used for tax calculation')
+                        ->setModel('tax/option_basis')
+                ->section('/main')
+                ->container('shipping', 'Shipping Tax')
+                    ->option('taxBasis', 'Shipping TaxBasis', 'delivery')
+                        ->setType('select')
+                        ->setDescription('Address that will be used for shipping tax calculation')
+                        ->setModel('tax/option_basis')
+                    ->option('taxClass', 'Shipping TaxClass', '1')
+                        ->setType('select')
+                        ->setDescription('Tax class that will be used for shipping tax calculation')
+                        ->setModel('tax/option_class')
+
+            ->section('/');
     }
 }
