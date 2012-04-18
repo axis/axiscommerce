@@ -87,15 +87,36 @@ class Axis_Checkout_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->add('checkout/wizard/*')
             ->add('checkout/index/success');
 
-        Axis::single('core/config_field')
-            ->add('orderTotal', 'Order Total Modules', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('orderTotal/subtotal/enabled', 'Order Total Modules/Shipping/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('orderTotal/subtotal/sortOrder', 'Sort Order', '10')
-            ->add('orderTotal/shipping/enabled', 'Order Total Modules/Subtotal/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('orderTotal/shipping/sortOrder', 'Sort Order', '20')
-            ->add('orderTotal/tax/enabled', 'Order Total Modules/Tax/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('orderTotal/tax/sortOrder', 'Sort Order', '30')
-            ->add('orderTotal/shipping_tax/enabled', 'Order Total Modules/ShippingTax/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('orderTotal/shipping_tax/sortOrder', 'Sort Order', '40');
+        Axis::single('core/config_builder')
+            ->section('orderTotal', 'Order Total Modules')
+                ->setTranslation('Axis_Checkout')
+                ->section('subtotal', 'Shipping')
+                    ->option('enabled', 'Enabled', 1)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                    ->option('sortOrder', 'Sort Order', 10)
+                ->section('/subtotal')
+
+                ->section('shipping', 'Subtotal')
+                    ->option('enabled', 'Enabled', 1)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                    ->option('sortOrder', 'Sort Order', 20)
+                ->section('/shipping')
+
+                ->section('tax', 'Tax')
+                    ->option('enabled', 'Enabled', 1)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                    ->option('sortOrder', 'Sort Order', 30)
+                ->section('/tax')
+
+                ->section('shipping_tax', 'ShippingTax')
+                    ->option('enabled', 'Enabled', 1)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                    ->option('sortOrder', 'Sort Order', 40)
+
+            ->section('/');
     }
 }

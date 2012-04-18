@@ -39,7 +39,15 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
 
-              ->add('shipping/Fedex_Standard/showErrors', 'Display messages from service provider', 1, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Admin'))
+            ->add('orderTotal', 'Order Total Modules', null, null, array('translation_module' => 'Axis_Checkout'))
+            ->add('orderTotal/subtotal/enabled', 'Order Total Modules/Shipping/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('orderTotal/subtotal/sortOrder', 'Sort Order', '10')
+            ->add('orderTotal/shipping/enabled', 'Order Total Modules/Subtotal/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('orderTotal/shipping/sortOrder', 'Sort Order', '20')
+            ->add('orderTotal/tax/enabled', 'Order Total Modules/Tax/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('orderTotal/tax/sortOrder', 'Sort Order', '30')
+            ->add('orderTotal/shipping_tax/enabled', 'Order Total Modules/ShippingTax/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('orderTotal/shipping_tax/sortOrder', 'Sort Order', '40')
             
             ->transform()
 ;
