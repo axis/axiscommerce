@@ -37,7 +37,7 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
      * 
      * @var Axis_Install_Model_Installer
      */
-    protected $_installer;
+    protected $_installer = null;
     
     /**
      *
@@ -51,11 +51,6 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
      */
     protected $_version;
 
-    public function  __construct()
-    {
-        $this->_installer = Axis::single('install/installer');
-    }
-    
     /**
      *
      * @return string 
@@ -80,6 +75,10 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
      */
     public function getInstaller()
     {
+        if (null === $this->_installer) {
+            $this->_installer = Axis::single('install/installer');
+        }
+        
         return $this->_installer;
     }
 
