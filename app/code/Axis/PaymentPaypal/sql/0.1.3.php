@@ -52,7 +52,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstrac
             'payment/Paypal_Direct/debugging'
             
         );
-        Axis::single('core/config_field')->select()
+        $rowset = Axis::single('core/config_field')->select()
             ->where('path IN (?)', $paths)
             ->fetchRowset()
             ;

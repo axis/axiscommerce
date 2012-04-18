@@ -37,7 +37,7 @@ class Axis_Checkout_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
                         ->setValue(Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode::getDeafult())
                         ->setType('select')
                         ->setModel('checkout/option_form_address_customFieldsDisplayMode')
-                    ->option('shipping_address_enabled', 'Display Shipping Address', 1)
+                    ->option('shipping_address_enabled', 'Display Shipping Address', true)
                         ->setType('radio')
                         ->setModel('core/option_boolean')
                 ->section('/address_form')

@@ -40,7 +40,6 @@ class SandboxController extends Axis_Core_Controller_Front
         Axis::single('core/config_field')
             
                         
-            ->transform()
 ;
          
 Axis::single('core/config_builder')

@@ -43,7 +43,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
         Axis::single('core/config_builder')
             ->section('analytics')
                 ->section('main')
-                    ->option('usedPageName', 'USE PAGENAME', 1)
+                    ->option('usedPageName', 'USE PAGENAME', true)
                         ->setType('radio')
                         ->setModel('core/option_boolean')
                     ->option('affiliation', 'Optional partner or store affilation')
@@ -55,7 +55,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
                 ->section('/attributes')
 
                 ->section('conversion', 'Conversion option')
-                    ->option('used', 'Enabled', 1)
+                    ->option('used', 'Enabled', true)
                         ->setType('radio')
                         ->setDescription('Enabled currency convertion')
                         ->setModel('core/option_boolean')
@@ -64,7 +64,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
                 ->section('/conversion')
 
                 ->section('tracking', 'Tracking options')
-                    ->option('used', 'Enabled', 1)
+                    ->option('used', 'Enabled', true)
                         ->setType('radio')
                         ->setDescription('Enabled tracking')
                         ->setModel('core/option_boolean')

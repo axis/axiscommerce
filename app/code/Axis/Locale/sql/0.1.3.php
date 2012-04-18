@@ -67,7 +67,7 @@ class Axis_Locale_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
             ->section('locale', 'Locale')
                 ->setTranslation('Axis_Locale')
                 ->section('main', 'General')
-                    ->option('language', 'Default language', '1')
+                    ->option('language', 'Default language', 1)
                         ->setType('select')
                         ->setDescription('Default site language')
                         ->setModel('locale/option_language')

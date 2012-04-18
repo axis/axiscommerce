@@ -443,7 +443,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
                 ->section('/product')
 
                 ->section('watermark', 'Watermark')
-                    ->option('enabled', 'Enabled')
+                    ->option('enabled', 'Enabled', false)
                         ->setType('radio')
                         ->setModel('core/option_boolean')
                     ->option('image', 'Image path', 'catalog/watermark.png')
