@@ -38,18 +38,17 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
 
-             ->add('analytics', 'Google analytics', null, null, array('translation_module' => 'Axis_GoogleAnalytics'))
-            ->add('analytics/main/uacct', 'Google analytics/General/GOOGLE_ANALYTICS_UACCT', '', 'text', '', array('model' => 'core/option_crypt'))
-            ->add('analytics/main/used', 'Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('analytics/main/usedPageName', 'USE PAGENAME', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('analytics/main/affiliation', 'Optional partner or store affilation', '' )
-            ->add('analytics/attributes/brackets', 'Google analytics/Products attributes/PRODUCTS ATTRIBUTES BRACKETS', '[]')
-            ->add('analytics/attributes/delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
-            ->add('analytics/conversion/used', 'Google analytics/Conversion option/Enabled', 1, 'radio', 'Enabled currency convertion', array('model'=> 'core/option_boolean'))
-            ->add('analytics/conversion/id', 'Id', '"')
-            ->add('analytics/conversion/language', 'Language(en_EN)', 'en_EN')
-            ->add('analytics/tracking/used', 'Google analytics/Tracking options/Enabled', 1, 'radio', 'Enabled tracking', array('model'=> 'core/option_boolean'))
-            ->add('analytics/tracking/linksPrefix', 'Prefix')
+            ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
+            ->add('payment/CashOnDelivery_Standard', 'Payment Methods/Cash On Delivery', null, null, array('translation_module' => 'Axis_PaymentCashOnDelivery'))
+            ->add('payment/CashOnDelivery_Standard/enabled', 'Payment Methods/Cash On Delivery/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('payment/CashOnDelivery_Standard/title', 'Title', 'Cash On Delivery')
+            ->add('payment/CashOnDelivery_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CashOnDelivery_Standard/sortOrder', 'Sort Order', '1', 'text', array('translation_module' => 'Axis_Core'))
+            ->add('payment/CashOnDelivery_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('model' => 'sales/option_order_status', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CashOnDelivery_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'checkout/option_shipping', 'translation_module' => 'Axis_Admin'))
+             
+            ->add('payment/CashOnDelivery_Standard/costs', 'Costs for inland shipping', '0', 'text', 'Costs')
+            ->add('payment/CashOnDelivery_Standard/costsForeign', 'Costs for shipping to foreign countries', '', 'text', 'Costs')
              
             ->transform()
 ;
