@@ -38,15 +38,20 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
 
-           ->add('payment/Paypal_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/Paypal_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-
-            ->add('payment/Paypal_Direct/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/Paypal_Direct/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-
-            ->add('payment/Paypal_Express/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/Paypal_Express/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-             
+            ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard', 'Payment Methods/Save Credit Card', null, null, array('translation_module' => 'Axis_PaymentCreditCard'))
+            ->add('payment/CreditCard_Standard/title', 'Payment Methods/Save Credit Card/Title', 'Save Credit Card', 'text', 'Title')
+            ->add('payment/CreditCard_Standard/enabled', 'Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('payment/CreditCard_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/sortOrder', 'Sort Order', '1', 'text', array('translation_module' => 'Axis_Core'))
+            ->add('payment/CreditCard_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('model' => 'sales/option_order_status', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/enabledCvv', 'Accept verification code', '1', 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/saveCvv', 'Save verification code', '0', 'radio', 'Do you want to save cvv code?', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/creditCard', 'Accepted Credit Cards', 'VISA', 'multiple', 'Credits cards allowed to use with this payment method', array('model' => 'sales/option_order_creditCard_type', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/saveCCAction', 'Save credit card number action', 'last_four', 'select', 'How would you like to save credit card number', array('model' => 'sales/option_order_creditCard_saveNumberType', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/CreditCard_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'checkout/option_shipping', 'translation_module' => 'Axis_Admin'))
              
             ->transform()
 ;
