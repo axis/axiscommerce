@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -40,7 +40,12 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
 
     protected $_translatorModule = 'account';
 
-    protected $_fieldConfig = array();
+    protected $_fieldConfig = array(
+        'firstname_sort_order' => -20,
+        'firstname_status'     => 'required',
+        'lastname_sort_order'  => -19,
+        'lastname_status'      => 'required'
+    );
 
     protected $_eventPrefix = 'checkout_form_address';
 
@@ -123,14 +128,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
     public function init()
     {
         $configOptions = Axis::config('account/address_form')->toArray();
-        $this->_fieldConfig = array_merge(array(
-                'firstname_sort_order'  => -20,
-                'firstname_status'      => 'required',
-                'lastname_sort_order'   => -19,
-                'lastname_status'       => 'required'
-            ),
-            $configOptions
-        );
+        $this->_fieldConfig = array_merge($this->_fieldConfig, $configOptions);
 
         $form = $this;
         if ($subform = $this->getAttrib('subform')) {
@@ -303,11 +301,15 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                     );
             }
             if (!empty($row['validator'])) {
-                $field->addValidator($row['validator']);
                 if ('Date' == $row['validator']) {
+                    $field->addValidator(
+                        $row['validator'], false, array('format' => 'yyyy-MM-dd')
+                    );
                     $field->setAttrib(
                         'class', $field->getAttrib('class') . ' input-date'
                     );
+                } else {
+                    $field->addValidator($row['validator']);
                 }
             }
             if (!empty($row['axis_validator'])) {

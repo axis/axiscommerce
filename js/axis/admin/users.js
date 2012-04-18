@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -79,6 +79,7 @@ Ext.onReady(function(){
             header: "Firstname".l(),
             dataIndex: 'firstname',
             width: 160,
+            renderer: Axis.escape,
             editor: new Ext.form.TextField({
                allowBlank: false
             })
@@ -86,6 +87,7 @@ Ext.onReady(function(){
             header: "Lastname".l(),
             dataIndex: 'lastname',
             width: 160,
+            renderer: Axis.escape,
             editor: new Ext.form.TextField({
                allowBlank: false
             })
@@ -94,6 +96,7 @@ Ext.onReady(function(){
             dataIndex: 'email',
             id: 'email',
             width: 200,
+            renderer: Axis.escape,
             editor: new Ext.form.TextField({
                allowBlank: false,
                vtype: 'email'
@@ -102,6 +105,7 @@ Ext.onReady(function(){
             header: "Username".l(),
             dataIndex: 'username',
             width: 120,
+            renderer: Axis.escape,
             editor: new Ext.form.TextField({
                allowBlank: false
             })
@@ -109,6 +113,7 @@ Ext.onReady(function(){
             header: "Password".l(),
             dataIndex: 'password',
             width: 120,
+            renderer: Axis.escape,
             editor: new Ext.form.TextField({
                allowBlank: true
             }),

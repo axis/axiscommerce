@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Sales
  * @subpackage  Axis_Sales_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,20 +36,19 @@ class Axis_Sales_Box_Recent extends Axis_Account_Box_Abstract
     protected $_title = 'Recent Orders';
     protected $_class = 'box-orders';
 
-    public function init()
+    protected function _construct()
     {
-        $orders = Axis::single('sales/order')
+        $this->setData('cache_lifetime', 0);
+    }
+
+    protected function _beforeRender()
+    {
+        $orders = Axis::model('sales/order')
             ->getOrdersByCustomer(Axis::getCustomerId());
 
         if (!count($orders)) {
            return false;
         }
         $this->orders = $orders;
-        return true;
-    }
-
-    protected function _beforeRender()
-    {
-        return $this->hasOrders();
     }
 }

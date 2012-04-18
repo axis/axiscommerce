@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Cms
  * @subpackage  Axis_Cms_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -53,7 +53,7 @@ class Axis_Cms_CommentController extends Axis_Cms_Controller_Abstract
                         'Comment successfully added'
                 ));
                 $this->_redirect(
-                    $this->getRequest()->getServer('HTTP_REFERER')
+                    $this->_getBackUrl()
                 );
             } else {
                 $form->populate($data);

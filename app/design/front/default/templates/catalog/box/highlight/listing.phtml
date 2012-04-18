@@ -67,7 +67,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                         class="add-to-wishlist"><span><span>
                         <?php echo $this->translate('catalog')->__('Add to Wishlist')?></span></span></a>
                     <br/>
-                    <a href="<?php echo $this->href('/' . $this->catalogUrl . '/product-compare/add/product/') . $prodId ?>"
+                    <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/' . $prodId) ?>"
                         rel="nofollow"
                         title="<?php echo $this->translate('catalog')->__('Add to Compare') ?>"
                         class="add-to-compare"><span><span>
@@ -78,10 +78,11 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
     <?php endforeach; ?>
     </ul>
 <?php else : /* Grid listing */ ?>
-    <div class="product-listing product-listing-grid" id="<?php echo $this->box->getData('class') ?>">
+    <?php $columnCount = $this->box->getColumnsCount(); ?>
+    <div class="product-listing product-listing-grid grid-<?php echo $columnCount ?>-cols"
+        id="<?php echo $this->box->getData('class') ?>">
     <?php
     $i = 0;
-    $columnCount = $this->box->getColumnsCount();
     foreach ($this->box->products as $prodId => $product) :
         $productUrl = $this->hurl(array(
             'product' => array('value' => $prodId, 'seo' => $product['key_word']),
@@ -139,7 +140,7 @@ $reviewSummaryBox = $this->box('community/ReviewRating')
                             class="add-to-wishlist"><span><span>
                             <?php echo $this->translate('catalog')->__('Add to Wishlist')?></span></span></a>
                         <br/>
-                        <a href="<?php echo $this->href('/' . $this->catalogUrl . '/product-compare/add/product/') . $prodId ?>"
+                        <a href="<?php echo $this->href($this->catalogUrl . '/product-compare/add/product/' . $prodId )?>"
                             rel="nofollow"
                             title="<?php echo $this->translate('catalog')->__('Add to Compare') ?>"
                             class="add-to-compare"><span><span>

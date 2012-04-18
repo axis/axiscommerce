@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -74,6 +74,7 @@ class Axis_Checkout_IndexController extends Axis_Checkout_Controller_Checkout
 
         Axis::dispatch('sales_order_create_success', $order);
         $this->view->order = $order;
+        $checkout->getCart()->clear();
         $checkout->clean();
 
         $this->render();

@@ -19,24 +19,16 @@
  *
  * @category    Axis
  * @package     Axis_Contacts
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
 $router->addRoute('contacts', new Axis_Controller_Router_Route_Front(
-    'contacts/:controller/:action/*',
+    'contacts/:controller/:action',
     array(
         'module'     => 'Axis_Contacts',
         'controller' => 'index',
         'action'     => 'index'
-    )
-));
-$router->addRoute('contacts_send', new Axis_Controller_Router_Route_Front(
-    'contacts/send',
-    array(
-        'module'     => 'Axis_Contacts',
-        'controller' => 'index',
-        'action'     => 'send'
     )
 ));
 

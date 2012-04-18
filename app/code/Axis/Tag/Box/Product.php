@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Tag
  * @subpackage  Axis_Tag_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,6 +36,11 @@ class Axis_Tag_Box_Product extends Axis_Catalog_Box_Product_Abstract
     protected $_title = 'Tags';
     protected $_class = 'box-tag';
 
+    protected function _construct()
+    {
+        $this->setData('cache_lifetime', 0);
+    }
+
     protected function _beforeRender()
     {
         if (!$this->product_id = $this->_getProductId()) {
@@ -50,6 +55,12 @@ class Axis_Tag_Box_Product extends Axis_Catalog_Box_Product_Abstract
         $this->tags = Axis::single('tag/customer')->getByProductId(
             $this->product_id
         );
-        return true;
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        return array(
+            $this->_getProductId()
+        );
     }
 }

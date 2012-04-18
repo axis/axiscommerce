@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper_Front
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -72,17 +72,29 @@ class Axis_View_Helper_Tags
         $content .= '<ul class="tagcloud">';
         foreach ($this->_tags as $tag) {
             if (is_array($tag)) {
-                $content .= '<li><span title="' . $tag['name'] . '"  class="'
-                    . $tag['class']  . ' nowrap">';
-                $content .= '<a  style="font-size:'
-                         . $this->view->escape($tag['font-size']) . '%" href="'
-                         . $this->view->href('tag/index/show-products/');
                 if ($this->_usageTagAsId) {
-                    $content .= 'tag/' . $this->view->escape($tag['name']);
+                    $href = $this->view->url(
+                        array(
+                            'tag' => $this->view->escape($tag['name'])
+                        ),
+                        'tag_products'
+                    );
                 } else {
-                    $content .= 'tagId/' . $this->view->escape($tag['id']);
+                    $href = $this->view->url(
+                        array(
+                            'tagId'  => $tag['id'],
+                            'action' => 'show-products'
+                        ),
+                        'tag'
+                    );
                 }
-                $content .= '">'. $this->view->escape($tag['name']);
+
+                $content .= '<li><span title="' . $tag['name'] . '" class="'
+                    . $tag['class']  . ' nowrap">'
+                    . '<a  style="font-size:'
+                    . $this->view->escape($tag['font-size']) . '%" href="'
+                    . $href . '">' . $this->view->escape($tag['name']);
+
                 if ($this->_disableWeight) {
                     $content .= '(' . $this->view->escape($tag['weight']) .')';
                 }

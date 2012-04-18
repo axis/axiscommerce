@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -65,7 +65,7 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
         $quantity         = $this->_getParam('quantity', false);
         $modifierOptions  = $this->_getParam('modifier', array());
         $variationOptions = $this->_getParam('attribute', array());
-        Axis::session()->lastUrl = $this->getRequest()->getServer('HTTP_REFERER');
+        Axis::session()->lastUrl = $this->_getBackUrl();
 
         $result = Axis::single('checkout/cart')->add(
             $productId, $modifierOptions, $variationOptions, $quantity
@@ -96,14 +96,14 @@ class Axis_Checkout_CartController extends Axis_Core_Controller_Front_Secure
             Axis::single('checkout/cart')->updateItem($itemId, $quantity);
         }
         Axis::session()->lastUrl = $this->_getParam('last_url');
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 
     public function removeAction()
     {
         $this->_helper->layout->disableLayout();
         Axis::single('checkout/cart')->deleteItem($this->_getParam('scItemId', 0));
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 
     public function reOrderAction()

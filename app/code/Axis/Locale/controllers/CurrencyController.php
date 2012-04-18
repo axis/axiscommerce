@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Locale
  * @subpackage  Axis_Locale_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -39,6 +39,6 @@ class Axis_Locale_CurrencyController extends Axis_Core_Controller_Front
         if (Axis::single('locale/currency')->isExists($code)) {
             Axis::session()->currency = $code;
         }
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 }

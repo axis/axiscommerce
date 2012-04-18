@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -303,6 +303,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // include routes files
         $routeFiles = Axis::app()->getRoutes();
         foreach ($routeFiles as $routeFile) {
+            if (!is_readable($routeFile)) {
+                continue;
+            }
             include_once($routeFile);
         }
 

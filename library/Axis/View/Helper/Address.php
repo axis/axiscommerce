@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -96,6 +96,17 @@ class Axis_View_Helper_Address
                    $address[$matches[1][$key]][$matches[2][$key]];
 
            $template = str_replace($condition, $this->view->escape($replaced), $template);
+        }
+
+        // __(string) or __(string, module)
+        preg_match_all('/__\((.+)(,(.+))?\)/U', $template, $matches);
+        foreach ($matches[0] as $key => $match) {
+           $module = 'account';
+           if (!empty($matches[3][$key])) {
+               $module = trim($matches[3][$key]);
+           }
+           $replacement = $this->view->translate($module)->__($matches[1][$key]);
+           $template    = str_replace($match, $replacement, $template);
         }
 
         return str_replace('EOL', $EOL, $template);

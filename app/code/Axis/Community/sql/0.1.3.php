@@ -19,28 +19,17 @@
  *
  * @category    Axis
  * @package     Axis_Community
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
 class Axis_Community_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.3';
+    protected $_info = 'Cache tag added';
 
     public function up()
     {
-        $paths = array(
-            'community/review/customer_status',
-            'community/review/guest_status'
-        );
-        
-        $rowset = Axis::single('core/config_field')->select()
-            ->where('path IN (?)', $paths)
-            ->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            $row->model = 'community/option_review_status';
-            $row->save();
-        }
+        Axis::single('core/cache')->add('community', 1);
     }
 }

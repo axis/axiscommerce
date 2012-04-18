@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,7 +36,12 @@ class Axis_Catalog_Box_Compare extends Axis_Core_Box_Abstract
     protected $_title = 'Compare';
     protected $_class = 'box-compare';
 
-    public function init()
+    protected function _construct()
+    {
+        $this->setData('cache_lifetime', 0);
+    }
+
+    protected function _beforeRender()
     {
         $modelCompare = Axis::single('catalog/product_compare');
         $ids = $modelCompare->getItems();
@@ -60,11 +65,5 @@ class Axis_Catalog_Box_Compare extends Axis_Core_Box_Abstract
         }
 
         $this->items = $products;
-        return true;
-    }
-
-    protected function _beforeRender()
-    {
-        return $this->hasItems();
     }
 }

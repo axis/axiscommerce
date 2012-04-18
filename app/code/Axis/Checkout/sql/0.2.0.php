@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Checkout
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -56,7 +56,7 @@ class Axis_Checkout_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
                     ->option('shipping_method', 'Shipping Method', 'Flat_Standard_standard')
                     ->option('payment_method', 'Payment Method', 'CashOnDelivery_Standard')
                         ->setType('select')
-                        ->setModel('checkout/option_payment')
+                        ->setModel('checkout/option_default_payment')
 
             ->section('/');
     }

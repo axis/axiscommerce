@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Cms
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -132,7 +132,7 @@ class Axis_Cms_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
         //blocks
         $mBlock = Axis::model('cms/block');
         $mBlock->insert(array(
-            'content'   => '<p class="legality">&copy; 2008-2011 <a href="http://axiscommerce.com">Axis</a> Demo Store. All rights reserved.</p>',
+            'content'   => '<p class="legality">&copy; 2008-2012 <a href="http://axiscommerce.com">Axis</a> Demo Store. All rights reserved.</p>',
             'is_active' => 1,
             'name'      => 'copyright'
         ));

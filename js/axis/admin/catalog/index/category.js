@@ -15,16 +15,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * @copyright   Copyright 2008-2011 Axis
+ *
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
 var Category = {
-    
+
+    addRoot: function() {
+        RootCategoryWindow.el.setTitle('Category'.l());
+        RootCategoryWindow.form.getForm().clear();
+        RootCategoryWindow.show();
+    },
+
     /**
      * Opens categoryWindow
-     * 
+     *
      * @param {int} parentId
      */
     add: function(parentId, siteId) {
@@ -37,7 +43,7 @@ var Category = {
             parentId = parent.get('id');
             siteId = parent.get('site_id');
         }
-        
+
         CategoryWindow.el.setTitle('Category'.l());
         CategoryWindow.form.getForm().clear();
         CategoryWindow.form.getForm().setValues({
@@ -46,10 +52,10 @@ var Category = {
         });
         CategoryWindow.show();
     },
-    
+
     /**
      * Load data of recieved category id, and open categoryWindow on success
-     * 
+     *
      * @param {int} id
      */
     load: function(id) {
@@ -63,5 +69,5 @@ var Category = {
             }
         });
     }
-    
+
 };

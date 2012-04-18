@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -130,7 +130,7 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
             }
         }
 
-        if (undefined !== typeof column.table) {
+        if ('undefined' !== typeof column.table) {
             cfg.table = column.table;
         }
 
@@ -377,6 +377,9 @@ Axis.grid.Filter = Ext.extend(Ext.util.Observable, {
                 }
                 if (undefined !== field.table) {
                     params['filter[' + length + '][table]'] = field.table;
+                }
+                if (undefined !== field.clause) {
+                    params['filter[' + length + '][clause]'] = field.clause;
                 }
                 length++;
             });

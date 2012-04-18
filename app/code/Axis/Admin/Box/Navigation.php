@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,7 +35,10 @@ class Axis_Admin_Box_Navigation extends Axis_Admin_Box_Abstract
 {
     protected $_items = array();
 
-    protected $_cacheKey = null;
+    protected function _construct()
+    {
+        $this->setData('cache_tags', array('modules'));
+    }
 
     public function addItem(array $item)
     {
@@ -43,29 +46,17 @@ class Axis_Admin_Box_Navigation extends Axis_Admin_Box_Abstract
         return $this;
     }
 
-    public function render()
+    protected function _beforeRender()
     {
-        if (!$navigationHtml = Axis::cache()->load($this->getCacheKey())) {
-            $this->_items = array(); // forward fix
-            Axis::dispatch('admin_box_navigation_prepare', $this);
-            $this->menu     = new Zend_Navigation($this->_items);
-            $navigationHtml = parent::render();
-            Axis::cache()->save(
-                $navigationHtml, $this->getCacheKey(), array('modules')
-            );
-        }
-        return $navigationHtml;
+        $this->_items = array(); // forward fix
+        Axis::dispatch('admin_box_navigation_prepare', $this);
+        $this->menu = new Zend_Navigation($this->_items);
     }
 
-    public function getCacheKey()
+    protected function _getCacheKeyParams()
     {
-        if (null === $this->_cacheKey) {
-            $this->_cacheKey = md5(
-                'admin_navigation'
-                . Axis::session()->roleId
-                . Axis_Locale::getLocale()->toString()
-            );
-        }
-        return $this->_cacheKey;
+        return array(
+            Axis::session()->roleId
+        );
     }
 }

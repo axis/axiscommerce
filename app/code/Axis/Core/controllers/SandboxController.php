@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,6 +35,13 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
+        $installer = Axis::single('install/installer');
+        $installer->run("
+        
+        ALTER TABLE `{$installer->getTable('sales_order_product_attribute')}`
+            MODIFY COLUMN `product_option_value` TEXT NOT NULL default '';
+
+        ");
         
 
         Axis::single('core/config_field')

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Contacts
  * @subpackage  Axis_Contacts_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -142,7 +142,7 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
                 );
             }
             $this->_helper->json->sendSuccess();
-        } catch (Zend_Mail_Transport_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
             Axis::message()->addError(
                 Axis::translate('core')->__('Mail sending was failed.')
                 . ' ' . $e->getMessage()

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Install
  * @subpackage  Axis_Install_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -68,9 +68,9 @@ class IndexController extends Zend_Controller_Action
 
     public function preDispatch()
     {
-        if ('development' === APPLICATION_ENV) { //@todo remove in release
-            return;
-        }
+//        if ('development' === APPLICATION_ENV) { //@todo remove in release
+//            return;
+//        }
         if (Axis_Application::isInstalled()
             && !isset($this->_session->permit_installation)) {
 
@@ -376,42 +376,42 @@ class IndexController extends Zend_Controller_Action
         return $this->_session->store_path . '/app/etc/config.php';
     }
 
-    public function dropAction()
-    {
-        Axis::single('core/cache')->clean();
+//    public function dropAction()
+//    {
+//        Axis::single('core/cache')->clean();
 
-        /**
-         * @var Axis_Install_Model_Installer
-         */
-        $installer = Axis::single('install/installer');
+//        /**
+//         * @var Axis_Install_Model_Installer
+//         */
+//        $installer = Axis::single('install/installer');
 
-        $installer->run("
-            SET SQL_MODE='';
-            SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-            SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
-        ");
+//        $installer->run("
+//            SET SQL_MODE='';
+//            SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+//            SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
+//        ");
 
-        $tables = Axis::db()->fetchAll('show tables');
-        foreach ($tables as $table) {
-            $tableName = current($table);
-            $installer->run("DROP TABLE `{$tableName}`;");
-        }
+//        $tables = Axis::db()->fetchAll('show tables');
+//        foreach ($tables as $table) {
+//            $tableName = current($table);
+//            $installer->run("DROP TABLE `{$tableName}`;");
+//        }
 
-        Axis::single('install/installer')->run("
-            SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'');
-            SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0);
-        ");
+//        Axis::single('install/installer')->run("
+//            SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'');
+//            SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0);
+//        ");
 
-        unlink(AXIS_ROOT . '/app/etc/config.php');
+//        unlink(AXIS_ROOT . '/app/etc/config.php');
 
-        if (!headers_sent()) {
-            $host  = $_SERVER['HTTP_HOST'];
-            $uri   = rtrim(
-                dirname(str_replace('/install', '', $_SERVER['PHP_SELF'])),
-                '/\\'
-            );
-            header("Location: http://$host$uri/");
-        }
-        exit();
-    }
+//        if (!headers_sent()) {
+//            $host  = $_SERVER['HTTP_HOST'];
+//            $uri   = rtrim(
+//                dirname(str_replace('/install', '', $_SERVER['PHP_SELF'])),
+//                '/\\'
+//            );
+//            header("Location: http://$host$uri/");
+//        }
+//        exit();
+//    }
 }

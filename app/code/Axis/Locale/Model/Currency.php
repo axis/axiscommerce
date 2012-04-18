@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Locale
  * @subpackage  Axis_Locale_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -231,10 +231,22 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
                 ->fetchRow();
 
             if (!$row) {
-                throw new Axis_Exception("Currency {$code} not found");
+                $this->_data[$code] = array(
+                    'id'                 => 0,
+                    'code'               => 'USD',
+                    'title'              => 'USD',
+                    'position'           => 8,
+                    'display'            => 2,
+                    'format'             => 'en_US',
+                    'currency_precision' => 2,
+                    'rate'               => 1
+                );
+                Axis::message()->addError(
+                    "Currency {$code} not found. System safe currency will be used."
+                );
+            } else {
+                $this->_data[$code] = $row->toArray();
             }
-
-            $this->_data[$code] = $row->toArray();
         }
 
         if (!empty($key)) {

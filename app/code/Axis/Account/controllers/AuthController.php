@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -72,14 +72,13 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
         }
 
         $this->_redirect($this->_hasSnapshot() ?
-            $this->_getSnapshot() :
-                $this->getRequest()->getServer('HTTP_REFERER'));
+            $this->_getSnapshot() : $this->_getBackUrl());
     }
 
     public function logoutAction()
     {
         Axis::single('account/customer')->logout();
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 
     public function registerAction()
@@ -100,12 +99,12 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
                 $data['is_active'] = 1;
                 list($row, $password) = $model->create($data);
                 $row->setDetails($data);
-                
+
                 Axis::dispatch('account_customer_register_success', array(
                     'customer' => $row,
                     'password' => $password
                 ));
-                
+
                 $model->login($data['email'], $password);
                 return $this->_redirect('account');
             } else {

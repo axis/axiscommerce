@@ -19,8 +19,8 @@
  *
  * @category    Axis
  * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
- * @copyright   Copyright 2008-2011 Axis
+ * @subpackage  Axis_Config_Option
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -28,7 +28,7 @@
  *
  * @category    Axis
  * @package     Axis_Config
- * @subpackage  Axis_Config_Handler
+ * @subpackage  Axis_Config_Option
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 interface Axis_Config_Option_Encodable_Interface

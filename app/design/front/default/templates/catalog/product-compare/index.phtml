@@ -3,8 +3,7 @@
 <table id="product-compare" class="data-table">
 <?php
 $misc = array(
-    'name' => 'Name',
-    'description' => 'Description'
+    'description' => $this->translate('catalog')->__('Description')
 );
 
 /* column customization */
@@ -21,7 +20,7 @@ foreach ($this->products as $product) {
 echo '</colgroup>';
 
 /* name */
-echo '<thead><tr><th>Product: </th>';
+echo '<thead><tr><th>' . $this->translate('catalog')->__('Product') . '</th>';
 foreach ($this->products as $product) {
     echo '<th>' .
     '<a href="' . $this->href($this->catalogUrl . '/'. $product['key_word']) .'">' . $product['name'] . '</a>'
@@ -30,7 +29,7 @@ foreach ($this->products as $product) {
 echo '</tr></thead>';
 
 /* image */
-echo '<tr><td>&nbsp;</td>';
+echo '<tr><td><strong>' . $this->translate('catalog')->__('Picture') . '</strong></td>';
 foreach ($this->products as $product) {
     $imagePath = isset($product['images'][$product['image_listing']]) ?
         $product['images'][$product['image_listing']]['path'] : '';
@@ -46,8 +45,7 @@ foreach ($this->products as $product) {
 echo '</tr>';
 
 /* price */
-echo '<tr><td><strong>' . $this->translate('catalog')->__('Price')
-    .':</strong></td>';
+echo '<tr><td><strong>' . $this->translate('catalog')->__('Price') . '</strong></td>';
 foreach ($this->products as $product) {
     echo '<td>'
        . $this->price($product['prices'])

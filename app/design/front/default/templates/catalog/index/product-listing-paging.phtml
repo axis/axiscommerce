@@ -2,7 +2,7 @@
 <tr>
     <td class="a-left">
     <?php if ($this->paging['limit'] == $this->paging['count']): ?>
-       <strong><?php echo $this->paging['count'] ?> <?php echo $this->translate('catalog')->__('Item(s)')?></strong>
+        <strong><?php echo $this->translate('catalog')->__('%s Item(s)', $this->paging['count'])?></strong>
     <?php else:
         $_current = ($this->paging['page'] - 1) * $this->paging['limit'] + 1;
     ?>

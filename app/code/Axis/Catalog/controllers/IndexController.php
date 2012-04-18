@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -106,10 +106,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
 
             return $this->_forward('not-found', 'Error', 'Axis_Core');
         }
-        $this->view->headLink()->headLink(array(
-            'rel'  => 'canonical',
-            'href' => $this->view->hurl($this->hurl->getParams())
-        ), 'PREPEND');
+        $this->setCanonicalUrl($this->view->hurl($this->hurl->getParams()));
 
         if ($this->hurl->hasParam('product') || $this->getRequest()->getParam('product')) {
             $this->_request->setActionName('product');

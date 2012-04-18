@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -35,17 +35,17 @@ class Axis_View_Helper_AddJsValidateTranslation
 {
     public function addJsValidateTranslation()
     {
-        if (file_exists('js/jquery/jquery-validation-1.8.1/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js')) {
+        if (file_exists('js/jquery/jquery-validation-1.9.01/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js')) {
             $this->view->headScript()->appendFile(
-                'js/jquery/jquery-validation-1.8.1/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js'
+                'js/jquery/jquery-validation-1.9.0/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js'
             );
-        } elseif (file_exists('js/jquery/jquery-validation-1.8.1/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
+        } elseif (file_exists('js/jquery/jquery-validation-1.9.0/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
             $this->view->headScript()->appendFile(
-                'js/jquery/jquery-validation-1.8.1/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js'
+                'js/jquery/jquery-validation-1.9.0/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js'
             );
-        } elseif (file_exists('js/jquery/jquery-validation-1.8.1/localization/messages_' . strtolower(Axis_Locale::getLocale()->getRegion()) . '.js')) {
+        } elseif (file_exists('js/jquery/jquery-validation-1.9.0/localization/messages_' . strtolower(Axis_Locale::getLocale()->getRegion()) . '.js')) {
             $this->view->headScript()->appendFile(
-                'js/jquery/jquery-validation-1.8.1/localization/messages_' . strtolower(Axis_Locale::getLocale()->getRegion()) . '.js'
+                'js/jquery/jquery-validation-1.9.0/localization/messages_' . strtolower(Axis_Locale::getLocale()->getRegion()) . '.js'
             );
         }
     }

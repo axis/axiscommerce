@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -37,7 +37,12 @@ class Axis_Checkout_Box_Cart extends Axis_Core_Box_Abstract
     protected $_class = 'box-shopping-cart';
     protected $_url = 'checkout/cart';
 
-    public function init()
+    protected function _construct()
+    {
+        $this->setData('cache_lifetime', 0);
+    }
+
+    protected function _beforeRender()
     {
         $modelCheckoutCart = Axis::single('checkout/cart');
         $this->setFromArray(array(
@@ -45,6 +50,5 @@ class Axis_Checkout_Box_Cart extends Axis_Core_Box_Abstract
             'sum'   => $modelCheckoutCart->getTotalPrice(),
             'count' => $modelCheckoutCart->getCount()
         ));
-        return true;
     }
 }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -80,7 +80,7 @@ class Axis_Catalog_ProductCompareController extends Axis_Core_Controller_Front
             return;
         }
         Axis::single('catalog/product_compare')->add($productId);
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 
     public function removeAction()
@@ -90,13 +90,13 @@ class Axis_Catalog_ProductCompareController extends Axis_Core_Controller_Front
             return;
         }
         Axis::single('catalog/product_compare')->remove($productId);
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 
     public function compareAction()
     {
         if (!$this->_hasParam('product_id')) {
-            return $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+            return $this->_redirect($this->_getBackUrl());
         }
         $mCompare = Axis::model('catalog/product_compare');
         $mCompare->clear();

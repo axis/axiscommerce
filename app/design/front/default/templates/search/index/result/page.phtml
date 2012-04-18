@@ -1,7 +1,5 @@
 <li class="product-item">
-    <?php $pageUrl = $this->href(
-        '/page/' . $this->page['url']
-    );?>
+    <?php $pageUrl = $this->href('page/' . $this->page['url']);?>
     <div class="">
 
         <h4>
@@ -27,10 +25,7 @@
             <a href="<?php
                 echo $pageUrl;?>" class="product-name" title="<?php
                 echo $this->page['nameHighlight'];?>"><?php
-                echo $this->href(
-                    '/' . $this->catalogUrl .
-                    '/' . $this->page['urlHighlight']
-                );?>
+                echo $this->href($this->catalogUrl . '/' . $this->page['urlHighlight']);?>
             </a>
         </div>
     </div>

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Sales
  * @subpackage  Axis_Sales_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -55,7 +55,7 @@ class Axis_Sales_Model_Observer
             ));
             $mail->send();
             return true;
-        } catch (Zend_Mail_Transport_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
             return false;
         }
     }
@@ -88,7 +88,7 @@ class Axis_Sales_Model_Observer
 //                );
 //            }
             return true;
-        } catch (Zend_Mail_Transport_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
             Axis::message()->addError(
                 Axis::translate('core')->__('Mail sending was failed.')
             );

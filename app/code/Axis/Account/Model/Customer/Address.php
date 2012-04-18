@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -60,16 +60,22 @@ class Axis_Account_Model_Customer_Address extends Axis_Db_Table
         }
 
         if ($countryId) {
-            $address['country'] = Axis::single('location/country')
+            $country = Axis::single('location/country')
                 ->find($countryId)
-                ->current()
-                ->toArray();
+                ->current();
+
+            if ($country) {
+                $address['country'] = $country->toArray();
+            }
         }
         if ($zoneId) {
-            $address['zone'] = Axis::single('location/zone')
+            $zone = Axis::single('location/zone')
                 ->find($zoneId)
-                ->current()
-                ->toArray();
+                ->current();
+
+            if ($zone) {
+                $address['zone'] = $zone->toArray();
+            }
         }
         return new Axis_Address($address);
     }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -138,8 +138,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
         return $this->_helper->json
             ->setData(array_values($list['data']))
             ->setTotalCount($list['count'])
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function listBestsellerAction()
@@ -168,8 +167,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
         return $this->_helper->json
             ->setData(array_values($list['data']))
             ->setCount($list['count'])
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function listViewedAction()
@@ -198,8 +196,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
         return $this->_helper->json
             ->setData(array_values($list['data']))
             ->setCount($list['count'])
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function loadAction()
@@ -380,8 +377,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
 
         return $this->_helper->json
             ->setData($data)
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function saveAction()
@@ -408,10 +404,19 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
             ->setSpecial($this->_getParam('special'))
             ->setUrl($this->_getParam('key_word'), $categories['site_ids']);
 
-        $jsonParams = array('image', 'variation', 'modifier', 'property');
+        $jsonParams = array('image', 'variation', 'modifier', 'property', 'related');
         foreach ($jsonParams as $param) {
             if ($this->_hasParam($param)) {
-                $product->{'set' . ucfirst($param)}(Zend_Json::decode($this->_getParam($param)));
+                try {
+                    $decodedData = Zend_Json::decode($this->_getParam($param));
+                    if (!is_array($decodedData)) {
+                        throw new Zend_Json_Exception('Decoding failed');
+                    }
+                } catch (Zend_Json_Exception $e) {
+                    Axis::message()->addError($param . ':' . $e->getMessage());
+                    continue;
+                }
+                $product->{'set' . ucfirst($param)}($decodedData);
             }
         }
 
@@ -426,8 +431,7 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
 
         return $this->_helper->json
             ->setData(array('product_id' => $product->id))
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function batchSaveAction()
@@ -656,6 +660,61 @@ class Axis_Catalog_Admin_ProductController extends Axis_Admin_Controller_Back
 
         $this->_helper->json->sendSuccess(array(
             'completed' => $completed
+        ));
+    }
+
+    public function listRelatedAction()
+    {
+        $productId = $this->_getParam('id', 0);
+        $model = Axis::model('catalog/product');
+        $select = $model->select('id')
+            ->distinct()
+            ->calcFoundRows()
+            ->addDescription()
+            ->joinLeft(
+                'catalog_product_related',
+                'cpr.related_product_id = cp.id AND cpr.product_id = ' . $productId,
+                array(
+                    'status' => "IF (cpr.product_id = {$productId}, 1, 0)"
+                )
+            )
+            ->addFilters($this->_getParam('filter', array()))
+            ->limit(
+                $this->_getParam('limit', 10),
+                $this->_getParam('start', 0)
+            )
+            ->order(
+                $this->_getParam('sort', 'id')
+                . ' '
+                . $this->_getParam('dir', 'DESC')
+            );
+
+        if (!$ids = $select->fetchCol()) {
+            return $this->_helper->json->sendSuccess(array(
+                'count' => 0,
+                'data'  => array()
+            ));
+        }
+
+        $count = $select->foundRows();
+
+        $products = $select->reset()
+            ->from('catalog_product', '*')
+            ->addCommonFields()
+            ->joinLeft(
+                'catalog_product_related',
+                'cpr.related_product_id = cp.id AND cpr.product_id = ' . $productId,
+                array(
+                    'status'     => "IF (cpr.product_id = {$productId}, 1, 0)",
+                    'sort_order' => "IF (cpr.sort_order IS NULL, 50, cpr.sort_order)"
+                )
+            )
+            ->where('cp.id IN (?)', $ids)
+            ->fetchProducts($ids);
+
+        return $this->_helper->json->sendSuccess(array(
+            'data'  => array_values($products),
+            'count' => $count
         ));
     }
 }

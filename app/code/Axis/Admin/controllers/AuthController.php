@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Admin
  * @subpackage  Axis_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -56,14 +56,14 @@ class Axis_Admin_AuthController extends Axis_Admin_Controller_Back
 
         if (!$result->isValid()) {
             Axis::dispatch('admin_user_login_failed', array('username' => $username));
-            $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+            $this->_redirect($this->_getBackUrl());
         } else {
             Zend_Session::regenerateId();
             Axis::dispatch('admin_user_login_success', array('username' => $username));
             Axis::session()->roleId = Axis::single('admin/user')->select('role_id')
                 ->where('id = ?', $result->getIdentity())
                 ->fetchOne();
-            $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+            $this->_redirect($this->_getBackUrl());
         }
     }
 

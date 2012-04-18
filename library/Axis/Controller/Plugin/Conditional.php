@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Controller
  * @subpackage  Axis_Controller_Plugin
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @copyright   $Author: danila $
  * @license     GNU Public License V3.0
  */

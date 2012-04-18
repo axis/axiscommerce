@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Checkout
  * @subpackage  Axis_Checkout_Method
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -138,7 +138,7 @@ abstract class Axis_Method_Payment_Model_Card_Abstract extends Axis_Method_Payme
     public function getCCTypes()
     {
         $usedTypes = $this->_config->creditCard->toArray();
-        $allTypes = Axis::model('sales/Option_Order_CreditCard_Type');
+        $allTypes = Axis::model('sales/option_order_creditCard_type');
         $return = array();
         foreach ($allTypes as $key => $name) {
             if (in_array($key, $usedTypes)) {

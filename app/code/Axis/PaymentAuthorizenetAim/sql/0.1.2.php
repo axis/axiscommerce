@@ -19,36 +19,19 @@
  *
  * @category    Axis
  * @package     Axis_PaymentAuthorizenetAim
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
 class Axis_PaymentAuthorizenetAim_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.2';
+    protected $_info = 'Authorization type option fixed';
 
     public function up()
     {
-        $paths = array(
-            'payment/AuthorizenetAim_Standard/orderStatusId'     => 'sales/option_order_status',
-            'payment/AuthorizenetAim_Standard/authorizationType' => 'paymentAuthorizenetAim/option_standard_authorizationType'
-        );
-        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            if (isset($paths[$row->path])) {
-                $row->model = $paths[$row->path];
-                $row->save();
-            }
-        }
-        
-        $rowset = Axis::single('core/config_value')->select()
-            ->where('path = ?', 'payment/AuthorizenetAim_Standard/authorizationType')
-            ->fetchRowset();
-        foreach ($rowset as $row) {
-            $row->value = Axis_PaymentAuthorizenetAim_Model_Option_Standard_AuthorizationType::AUTHORIZE;
-            $row->save();
-        }
-        
+        Axis::single('core/config_field')
+            ->remove('payment/AuthorizenetAim_Standard/authorizationType')
+            ->add('payment/AuthorizenetAim_Standard/authorizationType','Authorization Type', '1', 'select', 'Do you want submitted credit card transactions to be authorized only, or authorized and captured?', array('config_options' => '{"0":"Authorize","1":"Authorize Capture"}'));
     }
 }

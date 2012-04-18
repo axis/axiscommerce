@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Controller
  * @subpackage  Axis_Controller_Router
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @copyright   Dmitry Merva  http://myengine.com.ua  d.merva@gmail.com
  * @license     GNU Public License V3.0
  */
@@ -181,9 +181,24 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
             }
 
             if ($locale != $defaultLocale) {
-                $assemble = implode($this->_urlDelimiter, array($locale, $assemble));
+                if (empty($assemble)) { // preventing urlDelimiter at the end of the url for the homepage
+                    $assemble = $locale;
+                } else {
+                    $assemble = implode($this->_urlDelimiter, array($locale, $assemble));
+                }
             }
         }
         return $assemble;
+    }
+
+    /**
+     * Retrieve associative array that holds wildcard variable
+     * names and values.
+     *
+     * @var array
+     */
+    public function getWildcardData()
+    {
+        return $this->_wildcardData;
     }
 }

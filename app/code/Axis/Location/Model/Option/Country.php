@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Location
  * @subpackage  Axis_Location_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -31,8 +31,7 @@
  * @subpackage  Axis_Location_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-//@todo split class, only 'account/address_form/country_id_allow' is multi :(
-class Axis_Location_Model_Option_Country extends Axis_Config_Option_Array_Multi
+class Axis_Location_Model_Option_Country extends Axis_Config_Option_Array_Abstract
 {
     /**
      * 

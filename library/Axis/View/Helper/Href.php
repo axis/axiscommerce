@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -57,7 +57,12 @@ class Axis_View_Helper_Href
         $locale = isset($options['locale']) ?
             $options['locale'] : Axis_Locale::getLanguageUrl();
 
-        return $baseUrl . $locale . '/' . ltrim($href, '/');
+        $href = trim($href, '/');
+        if (!empty($href)) {
+            $href = '/' . $href;
+        }
+
+        return $baseUrl . $locale . $href;
     }
 
     public function setView($view)

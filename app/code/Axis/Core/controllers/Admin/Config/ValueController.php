@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -145,6 +145,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
     {
         $path   = $this->_getParam('path');
         $siteId = $this->_getParam('siteId');
+
         $value  = $this->_getParam('value');
 
         $rowField = Axis::single('core/config_field')->select()

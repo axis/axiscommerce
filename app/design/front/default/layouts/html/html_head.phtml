@@ -1,5 +1,5 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo $this->meta()->getTitle() ?></title>
+<title><?php echo $this->escape($this->meta()->getTitle()) ?></title>
 <meta name="description" content="<?php echo $this->escape($this->meta()->getDescription()) ?>" />
 <meta name="keywords" content="<?php echo $this->escape($this->meta()->getKeywords()) ?>" />
 <meta name="robots" content="<?php echo $this->escape($this->meta()->getRobots()) ?>" />
@@ -8,12 +8,17 @@
 {{headLink}}
 <script type="text/javascript">
 var Axis = {
-    baseUrl     : "<?php echo $this->baseUrl ?>",
-    secureUrl   : "<?php echo Axis::config('core/frontend/ssl') ? $this->secureUrl : $this->baseUrl ?>",
-    langUrl     : "<?php echo Axis_Locale::getLanguageUrl() ?>"
+    baseUrl  : "<?php echo $this->baseUrl ?>",
+    secureUrl: "<?php echo Axis::config('core/frontend/ssl') ? $this->secureUrl : $this->baseUrl ?>",
+    langUrl  : "<?php echo Axis_Locale::getLanguageUrl() ?>"
 };
 </script>
 {{headScript}}
+<script type="text/javascript">
+$(document).ready(function($){
+    $(document).axisTabs();
+});
+</script>
 
 <?php
 $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->skinUrl('favicon.ico'), 'type' => 'image/x-icon'))
@@ -23,20 +28,21 @@ $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->skinUrl('favico
     ->offsetSetStylesheet(-90, 'custom.css');
 
 $this->headLink()
-    ->offsetSetStylesheet(-85, 'ie.css', 'all', 'IE');
-    //->appendStylesheet('ielte7.css', 'all', 'lte IE7');
+    ->offsetSetStylesheet(-85, 'ie.css', 'all', 'lt IE 9');
+    //->appendStylesheet('ielte7.css', 'all', 'lte IE 7');
 
 $this->headScript()
     ->setProxy('axis_core')
     //appendStylesheet(src, type, attributes)
-    ->offsetSetFile(-100, 'js/jquery/jquery-1.6.4.min.js')
-    ->offsetSetFile(-99, 'js/jquery/jquery-validation-1.8.1/jquery.validate.min.js')
+    ->offsetSetFile(-100, 'js/jquery/jquery-1.7.1.min.js')
+    ->offsetSetFile(-99, 'js/jquery/jquery-validation-1.9.0/jquery.validate.min.js')
     ->appendFile('js/axis/core/script.js')
     ->appendFile('js/axis/catalog/attributes.js')
     ->appendFile('js/axis/catalog/lightzoom.js')
     ->appendFile('js/axis/community/ratings.js')
     ->appendFile('js/axis/core/messageStack.js')
-    ->appendFile('js/axis/core/axisWindow.js');
+    ->appendFile('js/axis/core/axisWindow.js')
+    ->appendFile('js/axis/core/axisTabs.js');
 
 $this->addJsValidateTranslation();
 

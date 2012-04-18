@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Log
  * @subpackage  Axis_Log_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -46,9 +46,13 @@ class Axis_Log_Admin_IndexController extends Axis_Admin_Controller_Back
         $limit  = $this->_getParam('limit', 25);
         $sort   = $this->_getParam('sort', 'id');
         $dir    = $this->_getParam('dir', 'DESC');
-        
+
         $select = Axis::single('log/url_info')
-            ->select(array('url', 'hit' => 'COUNT(*)'))
+            ->select(array(
+                'url',
+                'hit'      => 'COUNT(*)',
+                'referrer' => 'GROUP_CONCAT(DISTINCT refer SEPARATOR " ")'
+            ))
             ->calcFoundRows()
             ->joinLeft('log_url',
                'lu.url_id = lui.id',

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Locale
  * @subpackage  Axis_Locale_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,7 +36,7 @@ class Axis_Locale_IndexController extends Axis_Core_Controller_Front
     public function changeAction()
     {
         $locale = $this->_getParam('lang');
-        $redirectUrl = $lastUrl = $this->getRequest()->getServer('HTTP_REFERER');
+        $redirectUrl = $lastUrl = $this->_getBackUrl();
         if ($locale) {
             $langUrl = Axis_Locale::getLanguageUrl();
             if (0 === strpos($redirectUrl, $this->view->secureUrl)) {

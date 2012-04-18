@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Locale
  * @subpackage  Axis_Locale_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -134,6 +134,6 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
             Axis_Locale::setLocale($locale);
         }
         
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 }

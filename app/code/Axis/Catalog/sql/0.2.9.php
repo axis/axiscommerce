@@ -19,44 +19,17 @@
  *
  * @category    Axis
  * @package     Axis_Catalog
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
 class Axis_Catalog_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.2.9';
-    protected $_info = '';
+    protected $_info = 'Cache tag added';
 
     public function up()
-    {       
-        $rowset = Axis::single('core/config_field')->select()
-            ->where('model = ?', 'Manufacturer')
-            ->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            $row->model = 'catalog/option_product_manufacturer';
-            $row->save();
-        }
-        
-        $paths = array(
-            'image/watermark/position'             => 'catalog/option_watermark_position',
-            'catalog/lightzoom/zoomStagePosition'  => 'catalog/option_lightzoom_stagePosition',
-            'catalog/lightzoom/zoomCursor'         => 'catalog/option_lightzoom_cursor',
-            'catalog/lightzoom/zoomOnTrigger'      => 'catalog/option_lightzoom_domEvent_onTrigger',
-            'catalog/lightzoom/zoomOffTrigger'     => 'catalog/option_lightzoom_domEvent_offTrigger',
-            'catalog/lightzoom/lightboxTrigger'    => 'catalog/option_lightzoom_domEvent_trigger',
-            'catalog/lightzoom/switchImageTrigger' => 'catalog/option_lightzoom_domEvent_imageTrigger',
-            'catalog/listing/type'                 => 'catalog/option_product_listing_type'
-           
-        );
-        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            if (isset($paths[$row->path])) {
-                $row->model = $paths[$row->path];
-                $row->save();
-            }
-        }
+    {
+        Axis::single('core/cache')->add('catalog', 1);
     }
 }

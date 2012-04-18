@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Csv
  * @subpackage  Axis_Csv_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -39,7 +39,7 @@ class Axis_Csv_Model_Profile extends Axis_Db_Table
 
     public function getList()
     {
-        return $this->select()->from($this->_name)
+        return $this->select('*')
             ->joinLeft('csv_profile_filter',
                 'cp.id = cpf.profile_id',
                 array(
@@ -114,10 +114,9 @@ class Axis_Csv_Model_Profile extends Axis_Db_Table
             return array();
         }
 
-        $select = Axis::single('catalog/product')->select()
+        $select = Axis::single('catalog/product')->select('*')
             ->setIntegrityCheck(false)
             ->distinct()
-            ->from('catalog_product')
             ->where('cp.id > ' . $minId)
             ->order('cp.id ASC')
             ->limit($limit);

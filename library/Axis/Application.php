@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -27,6 +27,12 @@
   * @see Zend_Application
   */
 @include_once 'Zend/Application.php';
+
+if (!class_exists('Zend_Application')) {
+    echo 'Please, copy Zend Framework to the "library" folder: '
+        . realpath('library');
+    exit();
+}
 
 /**
  *
@@ -150,6 +156,6 @@ class Axis_Application extends Zend_Application
      */
     public function getVersion()
     {
-        return '0.8.5.1 dev';
+        return '0.8.7 dev';
     }
 }

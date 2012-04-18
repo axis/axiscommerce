@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_NSTree
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @copyright   Marat Komarov <bassguitarrer@gmail.com>
  * @license     GNU Public License V3.0
  */

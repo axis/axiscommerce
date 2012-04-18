@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -43,7 +43,7 @@ Ext.onReady(function() {
             if (tree.getSelectionModel().getSelectedNode() && tree.getSelectionModel().getSelectedNode().isSelected()) {
                 var templateId = tree.getSelectionModel().getSelectedNode().id;
                 templateForm.getForm().load({
-                    url:   Axis.getUrl('core/theme/load/'),
+                    url:   Axis.getUrl('core/theme/load'),
                     params: {templateId: templateId},
                     method: 'post'
                 });

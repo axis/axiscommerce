@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -42,6 +42,19 @@ abstract class Axis_Controller_Action extends Zend_Controller_Action
         $this->db = Axis::db();
 
         $this->layout = Axis_Layout::getMvcInstance();
+    }
+
+    /**
+     * HTTP_REFERER is not always present in _SERVER[]
+     *
+     * @return string
+     */
+    protected function _getBackUrl()
+    {
+        if (!$back = $this->getRequest()->getServer('HTTP_REFERER')) {
+            $back = $this->view->href();
+        }
+        return $back;
     }
 
     /**

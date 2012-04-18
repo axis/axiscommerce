@@ -1,31 +1,31 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * @copyright   Copyright 2008-2011 Axis
+ *
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
 Ext.onReady(function(){
-    
+
     Ext.DomHelper.insertFirst(Ext.get('targetCountry'), '<option value="">All</option>')
-    
+
     var gbaseStore = new Ext.data.GroupingStore({
-        url: Axis.getUrl('google-base/load/'),
+        url: Axis.getUrl('google-base/load'),
         reader: new Ext.data.JsonReader({
             id: 'id',
             totalProperty: 'total_count',
@@ -50,13 +50,13 @@ Ext.onReady(function(){
         sortInfo:{field: 'modification_time', direction: "DESC"},
         remoteSort: true
     })
-    
+
     var sm = new Ext.grid.CheckboxSelectionModel();
-    
+
     function statsRenderer(value) {
         return value ? value : '0';
     }
-    
+
     var cm = new Ext.grid.ColumnModel([
         sm, {
             header: "Id".l(),
@@ -64,7 +64,7 @@ Ext.onReady(function(){
             width: 30,
             menuDisabled: true
         }, {
-            header: "Title".l(), 
+            header: "Title".l(),
             dataIndex: 'title',
             width: 200,
             sortable: false,
@@ -121,7 +121,7 @@ Ext.onReady(function(){
         }
     ]);
     cm.defaultSortable = true;
-    
+
     gbaseGrid = new Ext.grid.GridPanel({
         id: 'grid-gbase-list',
         trackMouseOver: false,
@@ -198,11 +198,11 @@ Ext.onReady(function(){
             }
         }]
     });
-    
+
     gbaseGrid.getStore().on('beforeload', function(store, options) {
         var field = store.getSortState().field;
         var index = gbaseGrid.getColumnModel().findColumnIndex(field);
-        
+
         if (typeof(options.params) != 'undefined') {
             options.params.country = Ext.getDom('targetCountry').value;
             options.params.sortType = store.fields.items[index-1].type;
@@ -213,29 +213,29 @@ Ext.onReady(function(){
             }
         }
     })
-    
+
     Ext.EventManager.addListener(Ext.getDom('targetCountry'), 'change', function(){
         var country = this.selectedIndex;
         var index = gbaseGrid.getColumnModel().findColumnIndex('price');
-        
+
         if (country == '0')
             gbaseGrid.getColumnModel().config[index].menuDisabled = true;
         else
             gbaseGrid.getColumnModel().config[index].menuDisabled = false;
-            
+
         gbaseGrid.getStore().reload();
     })
-    
+
 })
 
 function updateItem(){
     var selectedItems = gbaseGrid.getSelectionModel().selections.items;
-    
+
     if (selectedItems.length < 1)
-        return; 
-        
+        return;
+
     var data = {};
-    
+
     for (var i = 0; i < selectedItems.length; i++) {
         data[i] = {};
         data[i]['id'] = selectedItems[i].data.id;
@@ -245,56 +245,56 @@ function updateItem(){
         data[i]['currency'] = selectedItems[i].data.currency;
     }
     var items = Ext.encode(data);
-    
+
     ajaxUpdate(items, 1);
 }
 
 function deleteItem(){
     var selectedItems = gbaseGrid.getSelectionModel().selections.items;
-    
+
     if (selectedItems.length < 1)
-        return; 
-        
+        return;
+
     if (!confirm('Delete Item(s)?'))
         return;
-        
+
     var data = {};
-   
+
     for (var i = 0; i < selectedItems.length; i++) {
         data[i] = selectedItems[i].id;
     }
     var items = Ext.encode(data);
-    
+
     ajaxDelete(items, 1)
 }
 
 function setDraft(draft) {
     var selectedItems = gbaseGrid.getSelectionModel().selections.items;
-    
+
     if (selectedItems.length < 1)
-        return; 
-        
+        return;
+
     var data = {};
     var params = {};
-    
+
     for (var i = 0; i < selectedItems.length; i++) {
         data[i] = selectedItems[i].id;
     }
-    
+
     params['items'] = Ext.encode(data);
     params['draft'] = draft;
-    
+
     ajaxSetDraft(params, 1);
 }
 
 function ajaxUpdate(items, clearSession){
-    
+
     if (clearSession) {
         Ext.getCmp('extProgressBar').clear();
         Ext.getCmp('extProgressBar').updateText('Initializing...');
         Ext.get('lightbox-info').show();
     }
-    
+
     Ext.Ajax.request({
         url: Axis.getUrl('google-base/update'),
         method: 'post',
@@ -321,13 +321,13 @@ function ajaxUpdate(items, clearSession){
 }
 
 function ajaxDelete(items, clearSession){
-    
+
     if (clearSession) {
         Ext.getCmp('extProgressBar').clear();
         Ext.getCmp('extProgressBar').updateText('Initializing...');
         Ext.get('lightbox-info').show();
     }
-    
+
     Ext.Ajax.request({
         url: Axis.getUrl('google-base/remove'),
         method: 'post',
@@ -354,13 +354,13 @@ function ajaxDelete(items, clearSession){
 }
 
 function ajaxSetDraft(params, clearSession){
-    
+
     if (clearSession) {
         Ext.getCmp('extProgressBar').clear();
         Ext.getCmp('extProgressBar').updateText('Initializing...');
         Ext.get('lightbox-info').show();
     }
-    
+
     Ext.Ajax.request({
         url: Axis.getUrl('google-base/set-status'),
         method: 'post',

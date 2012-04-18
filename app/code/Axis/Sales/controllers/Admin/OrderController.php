@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Sales
  * @subpackage  Axis_Sales_Admin_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -87,7 +87,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
             ->sendSuccess()
         ;
     }
-    
+
     public function loadAction()
     {
         $orderId = $this->_getParam('orderId');
@@ -97,18 +97,18 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
 
         $products = $order->getProducts();
         foreach($products as &$product) {
-            $product['price'] =
-                $product['price'] * $order->currency_rate;
-            $product['final_price'] =
-                $product['final_price'] * $order->currency_rate;
+//            $product['price'] =
+//                $product['price'] * $order->currency_rate;
+//            $product['final_price'] =
+//                $product['final_price'] * $order->currency_rate;
             $product['tax_rate'] = $product['tax'] * 100 / $product['final_price'];
         }
         $data['products'] = array_values($products);
 
         $totals = $order->getTotals();
-        foreach ($totals as &$total) {
-            $total['value'] = $total['value'] * $order->currency_rate;
-        }
+//        foreach ($totals as &$total) {
+//            $total['value'] = $total['value'] * $order->currency_rate;
+//        }
         $this->view->totals = $data['totals'] = $totals;
 
 
@@ -160,13 +160,12 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         
         // convert price with rates that was available
         // during order was created (not current rates)
-        $order['order_total'] = $order['order_total'] * $order['currency_rate'];
+//        $order['order_total'] = $order['order_total'] * $order['currency_rate'];
         $data['order'] = $order;
 
         return $this->_helper->json
             ->setData($data)
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function saveAction()
@@ -248,7 +247,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
                 'password' => $password
             ));
         }
-        
+
         ////////////////////////////////////////////////////////////////////////
         //prepare order data
         $params['order']['currency_rate'] = Axis::single('locale/currency')
@@ -281,6 +280,11 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
             $orderRow = Axis::single('sales/order')
                 ->createRow($params['order']);
         } else {
+            // Unset updated currency rate.
+            // It cannot be changed in already placed order.
+            if ($params['order']['currency'] === $orderRow->currency) {
+                unset($params['order']['currency_rate']);
+            }
             $orderRow->setFromArray($params['order']);
         }
         $orderRow->save();

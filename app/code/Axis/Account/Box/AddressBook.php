@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -36,7 +36,12 @@ class Axis_Account_Box_AddressBook extends Axis_Account_Box_Abstract
     protected $_title = 'My Addresses';
     protected $_class = 'box-address';
 
-    public function init()
+    protected function _construct()
+    {
+        $this->setData('cache_lifetime', 0);
+    }
+
+    protected function _beforeRender()
     {
         if (!$customerId = Axis::getCustomerId()) {
             return false;
@@ -60,11 +65,5 @@ class Axis_Account_Box_AddressBook extends Axis_Account_Box_Abstract
         }
 
         $this->setFromArray($data);
-        return true;
-    }
-
-    protected function _beforeRender()
-    {
-        return $this->hasDelivery() || $this->hasBilling();
     }
 }

@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -55,6 +55,5 @@ class Axis_Catalog_Box_Product extends Axis_Catalog_Box_Product_Abstract
         }
 
         $this->product = $product;
-        return true;
     }
 }

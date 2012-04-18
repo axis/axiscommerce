@@ -19,7 +19,7 @@
  * @category    Axis
  * @package     Axis_ShippingUps
  * @subpackage  Axis_ShippingUps_Model
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @copyright   Copyright 2003-2007 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @license     GNU Public License V3.0
@@ -150,11 +150,11 @@ class Axis_ShippingUps_Model_Standard extends Axis_Method_Shipping_Model_Abstrac
         $r->originPostalCode = Axis::config()->core->store->zip;
 
         $r->originCountryCode = Axis::single('location/country')->find(
-            Axis::config()->core->store->country
+            Axis::config('core/store/country')
         )->current()->iso_code_2;
 
         $r->originZone = Axis::single('location/zone')->getCode(
-            Axis::config()->core->store->zone
+            Axis::config('core/store/zone')
         );
 
         $r->originCity = str_replace(

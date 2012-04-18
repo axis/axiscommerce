@@ -19,36 +19,24 @@
  *
  * @category    Axis
  * @package     Axis_Sales
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
 class Axis_Sales_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.2.4';
-    protected $_info = '';
+    protected $_info = 'Increased size of product_option_value column';
 
     public function up()
     {
-        $models = array(
-            'OrderStatus'                 => 'sales/option_order_status',
-            'OrderStatusText'             => 'sales/option_order_status_text',
-            'CreditCard'                  => 'sales/option_order_creditCard_type',
-            'CreditCard_SaveNumberAction' => 'sales/option_order_creditCard_saveNumberType'
-        );
-        $rowset = Axis::single('core/config_field')->select()->fetchRowset();
-        
-        foreach ($rowset as $row) {
-            if (isset($models[$row->model])) {
-                $row->model = $models[$row->model];
-                $row->save();
-            }
-        }
-        
-        $row = Axis::single('core/config_field')->select()
-            ->where('path = ?', 'sales/order/defaultStatusId')
-            ->fetchRow();
-        $row->model = 'sales/option_order_status';
-        $row->save();
+        $installer = $this->getInstaller();
+
+        $installer->run("
+
+        ALTER TABLE `{$installer->getTable('sales_order_product_attribute')}`
+            MODIFY COLUMN `product_option_value` TEXT NOT NULL default '';
+
+        ");
     }
 }

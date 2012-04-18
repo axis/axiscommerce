@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -79,7 +79,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
      *
      * @var bool
      */
-    protected $_enabled = true;
+    protected $_enabled = null;
 
     /**
      * Temporary container for array of called boxes.
@@ -89,6 +89,38 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
      * @var array
      */
     private static $_stack = array();
+
+    /**
+     * Use this method to add the default cache tags, specific lifetime, etc.
+     * All variables intialized in this method, can be overriden with box configuration.
+     *
+     * @return void
+     */
+    protected function _construct() {}
+
+    /**
+     * Use this method to initialize box variables.
+     * If the method will return boolean false,
+     * the box output will return an empty string.
+     *
+     * @return void|false
+     */
+    protected function _beforeRender() {}
+
+    public function __construct($config = array())
+    {
+        list($namespace, $module, , $name) = explode('_', get_class($this));
+        $this->_data = array(
+            'box_namespace' => $namespace,
+            'box_module'    => $module,
+            'box_name'      => $name
+        );
+
+        $this->_construct();
+
+        $this->refresh()
+            ->setFromArray($config);
+    }
 
     /**
      * @static
@@ -105,77 +137,81 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
      */
     public function getView()
     {
+        if (null === self::$_view) {
+            $this->setView(Axis_Layout::getMvcInstance()->getView());
+        }
         return self::$_view;
     }
 
-    public function __construct($config = array())
+    /**
+     * @return boolean
+     */
+    protected function _isEnabled()
     {
-        if (null === self::$_view) {
-            $this->setView(
-                Axis_Layout::getMvcInstance()->getView()
+        if (null === $this->_enabled) {
+            $this->_enabled = in_array(
+                $this->getData('box_namespace') . '_' . $this->getData('box_module'),
+                array_keys(Axis::app()->getModules())
             );
         }
-
-        list($namespace, $module, , $name) = explode('_', get_class($this));
-        $this->_enabled = in_array(
-            $namespace . '_' . $module,
-            array_keys(Axis::app()->getModules())
-        );
-        if (!$this->_enabled) {
-            return;
-        }
-        $this->_data = array(
-            'box_namespace' => $namespace,
-            'box_module'    => $module,
-            'box_name'      => $name
-        );
-        $this->_enabled = $this->refresh()
-            ->setFromArray($config);
-
-        if (!isset($config['supress_init'])) { // used at backend box configuration
-            $this->init();
-        }
+        return $this->_enabled;
     }
 
     /**
-     *
      * @return string
      */
     public function render()
     {
-        if (!$this->_enabled || !$this->_beforeRender()) {
+        $output = $this->_getCachedOutput();
+        if (false !== $output) {
+            return $output;
+        }
+
+        if (!$this->_isEnabled()) {
+            $this->_setCachedOutput('');
             return '';
         }
 
-        $this->getView()->box = self::$_stack[] = $this;
-
-        if (!empty($this->_data['tab_container'])) {
-            $path = 'core/box/tab.phtml';
-        } elseif ($this->disable_wrapper) {
-            $path = $this->getTemplate();
+        if (false === $this->_beforeRender()) {
+            $html = '';
         } else {
-            $path = 'core/box/box.phtml';
-        }
+            $this->getView()->box = self::$_stack[] = $this;
 
-        $html = null;
-        $obStartLevel = ob_get_level();
-        try {
-            $html = $this->getView()->render($path);
-        } catch (Exception $e) {
-            while (ob_get_level() > $obStartLevel) {
-                $html .= ob_get_clean();
+            if (!empty($this->_data['tab_container'])) {
+                $path = 'core/box/tab.phtml';
+            } elseif ($this->disable_wrapper) {
+                $path = $this->getTemplate();
+            } else {
+                $path = 'core/box/box.phtml';
             }
-            throw $e;
+
+            $html = '';
+            $obStartLevel = ob_get_level();
+            try {
+                $html = $this->getView()->render($path);
+            } catch (Exception $e) {
+                while (ob_get_level() > $obStartLevel) {
+                    $html .= ob_get_clean();
+                }
+                throw $e;
+            }
+
+            unset($this->getView()->box);
+            array_pop(self::$_stack);
+            if (count(self::$_stack)) {
+                $this->getView()->box = end(self::$_stack);
+            }
         }
 
-        unset($this->getView()->box);
-        array_pop(self::$_stack);
-        if (count(self::$_stack)) {
-            $this->getView()->box = end(self::$_stack);
-        }
+        $this->_setCachedOutput($html);
         return $html;
     }
 
+    /**
+     * Retrieve the box template
+     *
+     * @return string
+     */
     public function getTemplate()
     {
         $template = $this->getData('template');
@@ -197,7 +233,6 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     }
 
     /**
-     *
      * @return string
      */
     public function  __toString()
@@ -215,14 +250,14 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         if (strstr($key, '/')) {
             $_data = $this->_data;
             foreach (explode('/', $key) as $key) {
-                if (!is_array($_data) || !isset($_data[$key])) {
+                if (!is_array($_data) || !array_key_exists($key, $_data)) {
                     return false;
                 }
                 $_data = $_data[$key];
             }
             return true;
         }
-        return isset($this->_data[$key]);
+        return array_key_exists($key, $this->_data);
     }
 
     /**
@@ -239,17 +274,18 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
         if (strstr($key, '/')) {
             $_data = $this->_data;
             foreach (explode('/', $key) as $key) {
-                if (!is_array($_data) || !isset($_data[$key])) {
+                if (!is_array($_data) || !array_key_exists($key, $_data)) {
                     return $default;
                 }
                 $_data = $_data[$key];
             }
             return $_data;
         }
-        return isset($this->_data[$key]) ? $this->_data[$key] : $default;
+        return array_key_exists($key, $this->_data) ? $this->_data[$key] : $default;
     }
 
     /**
+     * Fill the data array with default values of the box
      *
      * @return Axis_Core_Box_Abstract
      */
@@ -270,24 +306,108 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
     }
 
     /**
-     * @return bool
+     * Retrieve box output from the cache
+     *
+     * @return mixed
      */
-    public function init()
+    protected function _getCachedOutput()
     {
-        return true;
+        if (0 === $this->_getCacheLifetime()) {
+            return false;
+        }
+        return Axis::cache()->load($this->_getCacheKey());
     }
 
     /**
-     * @return bool
+     * Saves output to the cache
+     *
+     * @return void
      */
-    protected function _beforeRender()
+    protected function _setCachedOutput($data)
     {
-        return true;
+        if (0 === $this->_getCacheLifetime()) {
+            return false;
+        }
+        Axis::cache()->save(
+            $data,
+            $this->_getCacheKey(),
+            $this->_getCacheTags(),
+            $this->_getCacheLifetime()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    protected function _getCacheTags()
+    {
+        if ($this->hasData('cache_tags')) {
+            $tags = $this->getData('cache_tags');
+            if (!is_array($tags)) {
+                $tags = (array)$tags;
+            }
+        } else {
+            $tags = array();
+        }
+
+        $tags[] = 'boxes';
+        return $tags;
+    }
+
+    /**
+     * Returns cache lifetime in seconds
+     * 0     - cache is disabled
+     * null  - infinite cache lifetime
+     * false - use cache tag lifetime or default lifetime
+     *
+     * @return int Time in seconds
+     */
+    protected function _getCacheLifetime()
+    {
+        if (!$this->hasData('cache_lifetime')) {
+            return false;
+        }
+        return $this->getData('cache_lifetime');
+    }
+
+    /**
+     * Returns additional data that affects box output.
+     * This should be one-dimensional array.
+     *
+     * @return array
+     */
+    protected function _getCacheKeyParams()
+    {
+        return array();
+    }
+
+    /**
+     * @return string
+     */
+    protected function _getCacheKey()
+    {
+        $keyInfo = array_merge(
+            array(
+                'class'           => get_class($this),
+                'template'        => $this->getTemplate(),
+                'disable_wrapper' => $this->disable_wrapper,
+                'tab_container'   => $this->tab_container,
+                'title'           => $this->title,
+                'class'           => $this->class,
+                'url'             => $this->url,
+                'locale'          => Axis_Locale::getLocale()->toString(),
+                'site_id'         => Axis::getSiteId()
+            ),
+            $this->_getCacheKeyParams()
+        );
+
+        $keyInfo = implode(',', $keyInfo);
+        return md5($keyInfo);
     }
 
     /**
      * Retrieve the default configuration values of box.
-     * Used at the beckend box edit interface
+     * Used at the backend box edit interface
      *
      * @return array
      */

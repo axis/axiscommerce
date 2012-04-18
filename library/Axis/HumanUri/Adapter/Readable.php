@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_HumanUri
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -133,8 +133,19 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
 
     public function getKeywords()
     {
+        if (!Axis_Area::isFrontend()) {
+            return array();
+        }
+
         $path = urldecode($this->getRequest()->getPathInfo());
         $keywords = explode('/', trim($path, '/'));
+
+        $route = Zend_Controller_Front::getInstance()
+            ->getRouter()
+            ->getCurrentRoute();
+        if ($route->hasLocaleInUrl()) {
+            array_shift($keywords); //remove locale from array
+        }
         array_shift($keywords); //remove root catalog from array
         return $keywords;
     }
@@ -182,6 +193,6 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
             }
         }
 
-        return str_replace(array(' ', '"'), array('+', '%22'), $url);
+        return str_replace(array(' ', '"'), array('+', '%22'), rtrim($url, '/'));
     }
 }

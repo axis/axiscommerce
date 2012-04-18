@@ -19,7 +19,7 @@
  * 
  * @category    Axis
  * @package     Axis_PaymentPaypal
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 $router->addRoute('payment_paypal', new Axis_Controller_Router_Route_Front(

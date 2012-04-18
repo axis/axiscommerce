@@ -4,7 +4,7 @@
         <?php
             if (count($this->checkout['address_list'])) :
                 $this->addressOptions = array(
-                    0 => 'New Address'
+                    0 => $this->translate('checkout')->__('New Address')
                 );
                 foreach ($this->checkout['address_list'] as $address) :
                     $this->addressOptions[$address->id] = trim($this->address($address, ', '), ', ');

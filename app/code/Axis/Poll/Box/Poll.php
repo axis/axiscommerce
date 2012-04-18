@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Poll
  * @subpackage  Axis_Poll_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -39,6 +39,11 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
 
     private $_questionId;
     private $_showResult = false;
+
+    protected function _construct()
+    {
+        $this->setData('cache_lifetime', 0);
+    }
 
     protected function _beforeRender()
     {
@@ -78,6 +83,5 @@ class Axis_Poll_Box_Poll extends Axis_Account_Box_Abstract
             'status'      => $this->_showResult,
             'total_count' => $totalVoteCount
         ));
-        return true;
     }
 }

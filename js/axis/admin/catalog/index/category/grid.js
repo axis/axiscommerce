@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -290,11 +290,20 @@ Ext.onReady(function() {
         tbar: {
             enableOverflow: true,
             items: [{
+                xtype: 'splitbutton',
                 handler: function() {
                     Category.add();
                 },
                 icon: Axis.skinUrl + '/images/icons/add.png',
-                text: 'Add'.l()
+                text: 'Add'.l(),
+                menu: new Ext.menu.Menu({
+                    items: [{
+                        text: 'Add root category'.l(),
+                        handler: function() {
+                            Category.addRoot();
+                        }
+                    }]
+                })
             }, {
                 handler: function() {
                     CategoryGrid.remove();

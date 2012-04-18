@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Db
  * @subpackage  Axis_Db_Table
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -502,7 +502,8 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
      *          field       => table_column
      *          value       => column_value
      *          operator    => =|>|<|IN|LIKE    [optional]
-     *          table       => table_correlation[optional]
+     *          table       => table_correlation[optional],
+     *          clause      => where|having     [optional]
      *      )
      *  )
      * </pre>
@@ -517,11 +518,15 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
             if (!isset($filter['table'])) {
                 $filter['table'] = null;
             }
+            if (!isset($filter['clause'])) {
+                $filter['clause'] = 'where';
+            }
             $this->addFilter(
                 $filter['field'],
                 $filter['value'],
                 $filter['operator'],
-                $filter['table']
+                $filter['table'],
+                $filter['clause'] === 'having'
             );
         }
 
@@ -545,9 +550,11 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
      *                              If array is passed, operator will be automatically setted to 'IN'
      * @param string $operator      [optional] Mysql operator to compare value
      * @param string $table         [optional] Table correlation name
+     * @param string $having        [optional] If true - having will be used instead of where
      * @return Axis_Db_Table_Select
      */
-    public function addFilter($column, $value, $operator = '=', $table = null)
+    public function addFilter(
+        $column, $value, $operator = '=', $table = null, $having = false)
     {
         $dot = '.';
         if (null === $table) {
@@ -596,8 +603,13 @@ class Axis_Db_Table_Select extends Zend_Db_Table_Select
             }
         }
 
-        return $this->where(
-            "{$table}{$dot}{$column} {$operator} {$bind}", $value
+        $column = $this->getAdapter()->quoteColumnAs(
+            "{$table}{$dot}{$column}", null
         );
+        $clause = 'where';
+        if ($having) {
+            $clause = 'having';
+        }
+        return $this->{$clause}("{$column} {$operator} {$bind}", $value);
     }
 }

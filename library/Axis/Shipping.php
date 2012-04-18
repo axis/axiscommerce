@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Shipping
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -55,6 +55,9 @@ class Axis_Shipping
         foreach($modules as $code => $path) {
             list($namespace, $moduleName) = explode('_', $code);
             if (substr($moduleName, 0, strlen($prefix)) != $prefix) {
+                continue;
+            }
+            if (!is_dir($path . '/Model')) {
                 continue;
             }
             $dir = opendir($path . '/Model');

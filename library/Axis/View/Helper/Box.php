@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_View
  * @subpackage  Axis_View_Helper
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -34,7 +34,7 @@
 class Axis_View_Helper_Box
 {
     /**
-     * Return the singleton instance of box object
+     * Retrieve the box object
      *
      * @param string $block
      * @param array $config
@@ -43,13 +43,6 @@ class Axis_View_Helper_Box
      */
     public function box($block, $config = array())
     {
-        $block = Axis::getClass($block, 'Box');
-
-        if (Zend_Registry::isRegistered($block)) {
-            return Zend_Registry::get($block)
-                ->refresh() // reset previously entered data
-                ->setFromArray($config);
-        }
-        return Axis::single($block, $config);
+        return Axis::model(Axis::getClass($block, 'Box'), $config);
     }
 }

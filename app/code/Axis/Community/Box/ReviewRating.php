@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Community
  * @subpackage  Axis_Community_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -37,20 +37,18 @@ class Axis_Community_Box_ReviewRating extends Axis_Core_Box_Abstract
     protected $_class = 'box-review-rating-product';
     protected $_disableWrapper = true;
 
-    public function init()
+    public function _construct()
     {
         $this->review_count = array();
-        $this->ratings = array();
-        return true;
+        $this->ratings      = array();
+
+        $this->setData('cache_tags', array('community', 'community_review'));
     }
 
     protected function _beforeRender()
     {
         if (!$this->hasData('product_id')) {
-            return true;
-        }
-        if (!is_array($this->review_count)) {
-            return true;
+            return false;
         }
         /* if review already loaded */
         if (in_array($this->product_id, array_keys($this->review_count))) {
@@ -75,8 +73,16 @@ class Axis_Community_Box_ReviewRating extends Axis_Core_Box_Abstract
         $this->ratings += $modelCommunityReview->cache()
             ->getAverageProductRating(
                 $productIds,
-                $this->getView()->config('community/review/merge_average')
+                Axis::config('community/review/merge_average')
             );
-        return true;
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        return array(
+            $this->product_id,
+            $this->small_stars,
+            Axis::config('community/review/merge_average')
+        );
     }
 }

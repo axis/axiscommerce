@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Catalog
  * @subpackage  Axis_Catalog_Box
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -33,31 +33,27 @@
  */
 class Axis_Core_Box_Breadcrumbs extends Axis_Core_Box_Abstract
 {
-    public function init()
+    protected $_disableWrapper = true;
+
+    protected function _construct()
+    {
+        // disable cache, because this block
+        // already did all hard logic inside current action
+        $this->setData('cache_lifetime', 0);
+    }
+
+    protected function _beforeRender()
     {
         $breadcrumbs = Zend_Controller_Action_HelperBroker::getStaticHelper('breadcrumbs')
             ->getContainer();
         $this->setData('breadcrumbs', $breadcrumbs);
-        return true;
     }
-    
-    public function render() 
-    {
-        if (!$this->_enabled) {
-            return '';
-        }
-        $breadcrumbs = $this->getData('breadcrumbs');
-        return $this->getView()->navigation()->breadcrumbs($breadcrumbs)
-            ->setLinkLast($this->link_last)
-            ->render()
-            ;
-    }
-    
+
     public function getConfigurationFields()
     {
         return array(
             'link_last' => array(
-                'fieldLabel'   => Axis::translate('core')->__(
+                'fieldLabel' => Axis::translate('core')->__(
                     'Show last item as link'
                 ),
                 'initialValue' => 0,
@@ -68,4 +64,19 @@ class Axis_Core_Box_Breadcrumbs extends Axis_Core_Box_Abstract
             )
         );
     }
+
+//    protected function _getCacheKeyParams()
+//    {
+//        $request = Zend_Controller_Front::getInstance()->getRequest();
+//        $hurl    = Axis_HumanUri::getInstance();
+//        return array(
+//            $request->getModuleName()
+//                . $request->getControllerName()
+//                . $request->getActionName(),
+//            $hurl->getParamValue('cat'),
+//            $hurl->getParamValue('manufacturer'),
+//            $hurl->getParamValue('product'),
+//            $request->getParam('product')
+//        );
+//    }
 }

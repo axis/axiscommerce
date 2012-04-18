@@ -20,7 +20,7 @@
  * @category    Axis
  * @package     Axis_Contacts
  * @subpackage  Axis_Contacts_Controller
- * @copyright   Copyright 2008-2011 Axis
+ * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
@@ -83,7 +83,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                             )
                         ));
                         $mail->send();
-                    } catch (Zend_Mail_Transport_Exception $e) {
+                    } catch (Zend_Mail_Exception $e) {
                     }
                 }
 
@@ -93,7 +93,7 @@ class Axis_Contacts_IndexController extends Axis_Core_Controller_Front
                     )
                 );
                 $this->_redirect(
-                    $this->getRequest()->getServer('HTTP_REFERER')
+                    $this->_getBackUrl()
                 );
             } else {
                 $form->populate($data);
