@@ -243,7 +243,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
                 array_push($container, $path);
             }
             
-            $str .= "{$tabs}->" . ( $isOption ? 'option' : 'container') 
+            $str .= "{$tabs}->" . ( $isOption ? 'option' : 'section') 
                  . "('" . $path . "'" . $title . $value . ")\n"; 
             
             if (!empty($proporties)) {

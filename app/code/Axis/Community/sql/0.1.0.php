@@ -129,9 +129,9 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
         }
         
         Axis::single('core/config_builder')
-            ->container('community', 'Community')
+            ->section('community', 'Community')
             ->setTranslation('Axis_Community')
-            ->container('review', 'Reviews')
+            ->section('review', 'Reviews')
                 ->option('enabled', 'Enabled', 1)
                     ->setType('radio')
                     ->setModel('core/option_boolean')
@@ -162,7 +162,7 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
                 ->option('perPageDefault', 'Default reviews count per page', '10')
             ->section('/review')
             /*
-            ->container('image', 'Images')
+            ->section('image', 'Images')
                 ->option('enabled', 'Enabled', 1)
                     ->setType('radio')
                     ->setDescription('Community images module status')
@@ -181,7 +181,7 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
                 ->option('max_size', 'Maximum image size', '1')
                     ->setDescription('Maximum image size, allowed to upload (Mb)')
             ->section('/image')
-            ->container('video', 'Videos')
+            ->section('video', 'Videos')
                 ->option('enabled', 'Enabled', 1)
                     ->setType('radio')
                     ->setDescription('Community video module status')

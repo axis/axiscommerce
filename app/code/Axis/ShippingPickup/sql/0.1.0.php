@@ -31,9 +31,9 @@ class Axis_ShippingPickup_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstra
     public function up()
     {
         Axis::single('core/config_builder')
-            ->container('shipping', 'Shipping Methods')
+            ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
-                ->container('Pickup_Standard', 'Pickup Standard')
+                ->section('Pickup_Standard', 'Pickup Standard')
                     ->setTranslation('Axis_ShippingPickup')
                     ->option('enabled', 'Enabled')
                         ->setType('radio')

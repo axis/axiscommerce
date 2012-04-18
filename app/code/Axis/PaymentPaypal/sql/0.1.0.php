@@ -46,9 +46,9 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
         ");
 
         Axis::single('core/config_builder')
-            ->container('payment', 'Payment Methods')
+            ->section('payment', 'Payment Methods')
                 ->setTranslation('Axis_Admin')
-                ->container('Paypal_Standard', 'PayPal Standard')
+                ->section('Paypal_Standard', 'PayPal Standard')
                     ->setTranslation('Axis_PaymentPaypal')
                     ->option('title', 'Title', 'PayPal Standard')
                     ->option('name', 'Paypal business name', 'Axis Paypal Standard Payment')
@@ -92,7 +92,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
                         ->setTranslation('Axis_Admin')
                 ->section('/Paypal_Standard')
             
-                ->container('Paypal_Direct', 'Paypal Direct')
+                ->section('Paypal_Direct', 'Paypal Direct')
                     ->setTranslation('Axis_PaymentPaypal')
                     ->option('title', 'Title', 'PayPal Direct')
                         ->setDescription('Title')
@@ -153,7 +153,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
                         ->setTranslation('Axis_Admin')
                 ->section('/Paypal_Direct')
             
-                ->container('Paypal_Express', 'Paypal Express')
+                ->section('Paypal_Express', 'Paypal Express')
                     ->setTranslation('Axis_PaymentPaypal')
                     ->option('title', 'Title', 'PayPal Express')
                         ->setDescription('Title')
@@ -185,7 +185,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
                         ->setTranslation('Axis_Admin')
                 ->section('/Paypal_Express')
             
-                ->container('payflow', 'PayPal Payflow Api')
+                ->section('payflow', 'PayPal Payflow Api')
                     ->setTranslation('Axis_PaymentPaypal')
                     ->option('pfuser', 'PAYFLOW: User')
                         ->setDescription('If you set up one or more additional users on the account, this value is the ID of the user authorized to process transactions. Otherwise it should be the same value as VENDOR. This value is case-sensitive.')
@@ -201,7 +201,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
                         ->setModel('core/option_crypt')
                 ->section('/payflow')
             
-                ->container('nvp', 'PayPal NVP Api')
+                ->section('nvp', 'PayPal NVP Api')
                     ->setTranslation('Axis_PaymentPaypal')
                     ->option('apiusername', 'API Signature -- Username')
                         ->setDescription('The API Username from your PayPal API Signature settings under *API Access*. This value typically looks like an email address and is case-sensitive.')

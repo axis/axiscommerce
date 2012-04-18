@@ -52,9 +52,9 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
         ");
 
         Axis::single('core/config_builder')
-            ->container('payment', 'Payment Methods')
+            ->section('payment', 'Payment Methods')
                 ->setTranslation('Axis_Admin')
-                ->container('AuthorizenetAim_Standard', 'Authorize.Net Aim')
+                ->section('AuthorizenetAim_Standard', 'Authorize.Net Aim')
                     ->setTranslation('Axis_PaymentAuthorizenetAim')
                     ->option('enabled', 'Enabled')
                         ->setType('radio')

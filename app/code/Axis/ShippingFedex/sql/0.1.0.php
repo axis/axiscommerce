@@ -33,9 +33,9 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
         $installer = $this->getInstaller();
 
         Axis::single('core/config_builder')
-            ->container('shipping', 'Shipping Methods')
+            ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
-                ->container('Fedex_Standard', 'Fedex')
+                ->section('Fedex_Standard', 'Fedex')
                     ->setTranslation('Axis_ShippingFedex')
                     ->option('enabled', 'Enabled')
                         ->setType('radio')

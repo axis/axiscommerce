@@ -31,9 +31,9 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         Axis::single('core/config_builder')
-            ->container('shipping', 'Shipping Methods')
+            ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
-                ->container('Ups_Standard', 'Ups Standard')
+                ->section('Ups_Standard', 'Ups Standard')
                     ->setTranslation('Axis_ShippingUps')
                     ->option('enabled', 'Enabled')
                         ->setType('radio')

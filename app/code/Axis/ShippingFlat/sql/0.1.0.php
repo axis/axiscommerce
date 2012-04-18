@@ -31,9 +31,9 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         Axis::single('core/config_builder')
-            ->container('shipping', 'Shipping Methods')
+            ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
-                ->container('Flat_Standard', 'Flat Rate Standard')
+                ->section('Flat_Standard', 'Flat Rate Standard')
                     ->setTranslation('Axis_ShippingFlat')
                     ->option('enabled', 'Enabled', 1)
                         ->setType('radio')

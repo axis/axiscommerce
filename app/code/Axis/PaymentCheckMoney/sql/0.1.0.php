@@ -31,9 +31,9 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
     public function up()
     {
         Axis::single('core/config_builder')
-            ->container('payment', 'Payment Methods')
+            ->section('payment', 'Payment Methods')
                 ->setTranslation('Axis_Admin')
-                ->container('CheckMoney_Standard', 'Check & Money Order')
+                ->section('CheckMoney_Standard', 'Check & Money Order')
                     ->setTranslation('Axis_PaymentCheckMoney')
                     ->option('enabled', 'Enabled')
                         ->setType('radio')
