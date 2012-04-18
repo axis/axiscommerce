@@ -38,16 +38,8 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
 
-            ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/PerWeightUnit_Standard', 'Shipping Methods/Per Weight Unit', null, null, array('translation_module' => 'Axis_ShippingPerWeightUnit'))
-            ->add('shipping/PerWeightUnit_Standard/enabled', 'Shipping Methods/Per Weight Unit/Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
-            ->add('shipping/PerWeightUnit_Standard/geozone', 'Allowed Shipping Zone', 1, 'select', 'Shipping method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/PerWeightUnit_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/PerWeightUnit_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/PerWeightUnit_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/PerWeightUnit_Standard/handling', 'Handling Fee', '0')
-            ->add('shipping/PerWeightUnit_Standard/price', 'Shipping Cost per Unit', '1', 'text', 'NOTE: When using this Shipping Module be sure to check the Tare settings in the Shipping/Packaging and set the Largest Weight high enough to handle the price, such as 5000.00 and the adjust the settings on Small and Large packages which will add to the price as well.The shipping cost will be used to determin shipping charges based on: Product Quantity * Units (products_weight) * Cost per Unit - in an order that uses this shipping method.')
-            ->add('shipping/PerWeightUnit_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'))
+            ->add('payment/AuthorizenetAim_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('payment/AuthorizenetAim_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
              
              
             ->transform()
