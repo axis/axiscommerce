@@ -30,14 +30,21 @@ class Axis_Account_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('account/address_form/company_value', 'Company Default Value')
-            ->add('account/address_form/phone_value', 'Phone Default Value')
-            ->add('account/address_form/fax_value', 'Fax Default Value')
-            ->add('account/address_form/street_address_value', 'Street Address Default Value')
-            ->add('account/address_form/city_value', 'City Default Value')
-            ->add('account/address_form/zone_id_value', 'State(Region) Default Value', 12, 'text', 'You can get the id of desired region at [admin]/location/zone')
-            ->add('account/address_form/postcode_value', 'Postcode Default Value', 90064)
-            ->add('account/address_form/country_id_value', 'Country Default Value', 223, 'select', array('model' => 'location/option_country'));
+        Axis::single('core/config_builder')
+            ->section('account')
+                ->section('address_form')
+                    ->option('company_value', 'Company Default Value')
+                    ->option('phone_value', 'Phone Default Value')
+                    ->option('fax_value', 'Fax Default Value')
+                    ->option('street_address_value', 'Street Address Default Value')
+                    ->option('city_value', 'City Default Value')
+                    ->option('zone_id_value', 'State(Region) Default Value', 12)
+                        ->setDescription('You can get the id of desired region at [admin]/location/zone')
+                    ->option('postcode_value', 'Postcode Default Value', 90064)
+                    ->option('country_id_value', 'Country Default Value', 223)
+                        ->setType('select')
+                        ->setModel('location/option_country')
+            ->section('/')
+        ;
     }
 }

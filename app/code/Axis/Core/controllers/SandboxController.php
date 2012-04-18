@@ -39,22 +39,15 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
             
-            ->add('image', 'Images', null, null, array('translation_module' => 'Axis_Catalog'))
-            ->add('image/main/cachePath', 'Images/General/Cache path', '/media/cache', 'text', 'Image cache path, relative to AXIS_ROOT')
-            ->add('image/product/cache', 'Images/Product Images/Cache', 1, 'radio', 'Enable image cache', array('model'=> 'core/option_boolean'))
-            ->add('image/product/widthLarge', 'Large width', 0)
-            ->add('image/product/heightLarge', 'Large height', 0)
-            ->add('image/product/widthMedium', 'Product Info width', 250)
-            ->add('image/product/heightMedium', 'Product Info height', 250)
-            ->add('image/product/widthSmall', 'Small width', 150)
-            ->add('image/product/heightSmall', 'Small height', 150)
-            ->add('image/product/widthThumbnail', 'Thumbnail image width', 40)
-            ->add('image/product/heightThumbnail', 'Thumbnail image height', 40)
-            ->add('image/watermark/enabled', 'Images/Watermark/Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('image/watermark/image', 'Image path', 'catalog/watermark.png', 'text', 'Path relative to the skin images folder: catalog/watermark.png')
-            ->add('image/watermark/position', 'Watermark Position', Axis_Catalog_Model_Option_Watermark_Position::getDeafult(), 'select', array('model' => 'catalog/option_watermark_position'))
-            ->add('image/watermark/opacity', 'Opacity', 50, 'text', 'Values [0 - 100]')
-            ->add('image/watermark/repeat', 'Repeat', 0, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('account/address_form/company_value', 'Company Default Value')
+            ->add('account/address_form/phone_value', 'Phone Default Value')
+            ->add('account/address_form/fax_value', 'Fax Default Value')
+            ->add('account/address_form/street_address_value', 'Street Address Default Value')
+            ->add('account/address_form/city_value', 'City Default Value')
+            ->add('account/address_form/zone_id_value', 'State(Region) Default Value', 12, 'text', 'You can get the id of desired region at [admin]/location/zone')
+            ->add('account/address_form/postcode_value', 'Postcode Default Value', 90064)
+            ->add('account/address_form/country_id_value', 'Country Default Value', 223, 'select', array('model' => 'location/option_country'))
+            
                         
             ->transform()
 ;

@@ -30,7 +30,15 @@ class Axis_Checkout_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('checkout/cart/redirect', 'Checkout/Shopping Cart/Redirect Location', Axis_Checkout_Model_Option_Cart_Redirect::getDeafult(), 'select', 'Customer will be redirected to selected page after adding item to cart', array('model' => 'checkout/option_cart_redirect'));
+        Axis::single('core/config_builder')
+            ->section('checkout')
+                ->section('cart', 'Shopping Cart')
+                    ->option('redirect', 'Redirect Location')
+                        ->setValue(Axis_Checkout_Model_Option_Cart_Redirect::getDeafult())
+                        ->setType('select')
+                        ->setDescription('Customer will be redirected to selected page after adding item to cart')
+                        ->setModel('checkout/option_cart_redirect')
+
+            ->section('/');
     }
 }
