@@ -62,7 +62,7 @@ class Axis_Tag_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('tag', 'Tag')
                 ->setTranslation('Axis_Tag')
                 ->section('main', 'General')
@@ -94,7 +94,8 @@ class Axis_Tag_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('tag_product')}`;
         ");
 
-        Axis::single('core/config_builder')->remove('tag');
+        $this->getConfigBuilder()
+            ->remove('tag');
 
         Axis::single('core/page')
             ->remove('tag/*/*')

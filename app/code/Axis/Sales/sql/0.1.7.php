@@ -233,7 +233,7 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
             }
         }
         
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('sales', 'Sales')
                 ->setTranslation('Axis_Sales')
                 ->section('order', 'Order')

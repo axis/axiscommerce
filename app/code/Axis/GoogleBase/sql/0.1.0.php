@@ -30,7 +30,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('gbase', 'Google Base')
                 ->setTranslation('Axis_GoogleBase')
                 ->section('main', 'General')
@@ -73,6 +73,7 @@ class Axis_GoogleBase_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('gbase');
+        $this->getConfigBuilder()
+            ->remove('gbase');
     }
 }

@@ -30,7 +30,7 @@ class Axis_PaymentCashOnDelivery_Upgrade_0_1_0 extends Axis_Core_Model_Migration
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('payment', 'Payment Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('CashOnDelivery_Standard', 'Cash On Delivery')
@@ -68,6 +68,6 @@ class Axis_PaymentCashOnDelivery_Upgrade_0_1_0 extends Axis_Core_Model_Migration
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('payment/CashOnDelivery_Standard');
+        $this->getConfigBuilder()->remove('payment/CashOnDelivery_Standard');
     }
 }

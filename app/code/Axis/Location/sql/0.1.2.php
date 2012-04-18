@@ -546,7 +546,7 @@ class Axis_Location_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             'address_summary'   => '{{firstname}} {{lastname}}'
         ));
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('locale', 'Locale')
                 ->setTranslation('Axis_Locale')
                 ->section('main', 'General')

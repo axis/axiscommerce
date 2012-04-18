@@ -30,7 +30,7 @@ class Axis_PaymentFreeOrder_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abst
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('payment', 'Payment Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('FreeOrder_Standard', 'Free Order')
@@ -65,6 +65,7 @@ class Axis_PaymentFreeOrder_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abst
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('payment/FreeOrder_Standard');
+        $this->getConfigBuilder()
+            ->remove('payment/FreeOrder_Standard');
     }
 }

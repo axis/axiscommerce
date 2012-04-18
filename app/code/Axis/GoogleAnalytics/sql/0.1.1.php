@@ -30,7 +30,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->remove('analytics/main/usedPageName')
             ->remove('analytics/main/affiliation')
             ->remove('analytics/attributes')
@@ -40,7 +40,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
 
     public function down()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('analytics')
                 ->section('main')
                     ->option('usedPageName', 'USE PAGENAME', true)

@@ -128,7 +128,7 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             }
         }
         
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('community', 'Community')
             ->setTranslation('Axis_Community')
             ->section('review', 'Reviews')
@@ -249,7 +249,7 @@ class Axis_Community_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('community_review_rating_title')}`;
         ");
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->remove('community')
             ->remove('nickname');
         //Axis::single('core/template_box')->remove('Axis_Community_ReviewProduct');

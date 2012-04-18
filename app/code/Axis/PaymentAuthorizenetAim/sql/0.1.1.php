@@ -30,7 +30,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_1 extends Axis_Core_Model_Migratio
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('payment')
                 ->section('AuthorizenetAim_Standard')
                     ->option('minOrderTotal', 'Minimum order total amount')

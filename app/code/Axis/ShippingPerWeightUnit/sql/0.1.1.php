@@ -30,7 +30,7 @@
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('shipping')
                 ->section('PerWeightUnit_Standard')
                     ->option('minOrderTotal', 'Minimum order total amount')

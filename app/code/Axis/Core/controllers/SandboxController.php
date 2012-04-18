@@ -35,26 +35,6 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $installer = Axis::single('install/installer');
-        $installer->run("
-        
-        ALTER TABLE `{$installer->getTable('sales_order_product_attribute')}`
-            MODIFY COLUMN `product_option_value` TEXT NOT NULL default '';
-
-        ");
-        
-
-        Axis::single('core/config_field')
-            
-                        
-;
-         
-Axis::single('core/config_builder')
-//    ->remove('core3')
-//        ->remove('mail3')
-//    ->remove('design3')
-//    ->section('/')
-    ;
         
         Zend_Debug::dump(Axis_Payment::getMethodNames());
         Zend_Debug::dump(Axis::config('payment/CreditCard_Standard/shippings'));

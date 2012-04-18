@@ -32,7 +32,7 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
     {
         $installer = $this->getInstaller();
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('Fedex_Standard', 'Fedex')
@@ -95,7 +95,7 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
 
     public function down()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->remove('shipping/Fedex_Standard')
 //            ->remove('shipping/Fedex_Express')
 //            ->remove('shipping/Fedex_Ground')

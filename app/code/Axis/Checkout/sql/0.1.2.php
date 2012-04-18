@@ -87,7 +87,7 @@ class Axis_Checkout_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstract
             ->add('checkout/wizard/*')
             ->add('checkout/index/success');
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('orderTotal', 'Order Total Modules')
                 ->setTranslation('Axis_Checkout')
                 ->section('subtotal', 'Shipping')

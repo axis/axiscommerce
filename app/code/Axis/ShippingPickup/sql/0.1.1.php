@@ -30,7 +30,7 @@ class Axis_ShippingPickup_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstra
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('shipping')
                 ->section('Pickup_Standard')
                     ->option('minOrderTotal', 'Minimum order total amount')

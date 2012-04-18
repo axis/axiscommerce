@@ -51,7 +51,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
 
         ");
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('payment', 'Payment Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('AuthorizenetAim_Standard', 'Authorize.Net Aim')
@@ -110,6 +110,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('payment/AuthorizenetAim_Standard');
+        $this->getConfigBuilder()
+            ->remove('payment/AuthorizenetAim_Standard');
     }
 }

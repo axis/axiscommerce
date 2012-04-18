@@ -40,6 +40,12 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
     protected $_installer = null;
     
     /**
+     * 
+     * @var Axis_Core_Model_Config_Builder
+     */
+    protected $_configBuilder = null;
+    
+    /**
      *
      * @var string 
      */
@@ -80,6 +86,19 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
         }
         
         return $this->_installer;
+    }
+    
+    /**
+     *
+     * @return Axis_Core_Model_Config_Builder 
+     */
+    public function getConfigBuilder()
+    {
+        if (null === $this->_configBuilder) {
+            $this->_configBuilder = Axis::single('core/config_builder');
+        }
+        
+        return $this->_configBuilder;
     }
 
     /**

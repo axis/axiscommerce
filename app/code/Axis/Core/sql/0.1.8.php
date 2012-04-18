@@ -30,7 +30,7 @@ class Axis_Core_Upgrade_0_1_8 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('core')
                 ->section('session', 'Session')
                     ->option('remoteAddressValidation', 'Remote Address (IP) Validation', false)
@@ -45,6 +45,7 @@ class Axis_Core_Upgrade_0_1_8 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('core/session');
+        $this->getConfigBuilder()
+            ->remove('core/session');
     }
 }

@@ -353,7 +353,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
             ))->save();
         }
         
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('catalog', 'Catalog')
                 ->setTranslation('Axis_Catalog')
                 ->section('main', 'General')

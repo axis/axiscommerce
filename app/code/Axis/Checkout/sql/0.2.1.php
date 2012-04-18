@@ -30,7 +30,7 @@ class Axis_Checkout_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('checkout')
                 ->section('onestep_ajax', 'Onestep Ajax Requests')
                     ->option('billing_address', 'Reload when Billing Address was Changed', true)

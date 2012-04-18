@@ -49,7 +49,7 @@ class Axis_ShippingTable_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
         ");
         
         
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('Table_Standard', 'Table Standard')
@@ -101,6 +101,7 @@ class Axis_ShippingTable_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
             DROP TABLE IF EXISTS `{$installer->getTable('shippingtable_rate')}`;
         ");
 
-        Axis::single('core/config_builder')->remove('shipping/Table_Standard');
+        $this->getConfigBuilder()
+            ->remove('shipping/Table_Standard');
     }
 }

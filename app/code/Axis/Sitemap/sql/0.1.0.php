@@ -58,7 +58,7 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('sitemap', 'Sitemap')
                 ->setTranslation('Axis_Sitemap')
                 ->section('main', 'General')
@@ -129,7 +129,8 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('sitemap_file_engine')}`;
         ");
 
-        Axis::single('core/config_builder')->remove('sitemap');
+        $this->getConfigBuilder()
+            ->remove('sitemap');
 
         Axis::single('core/page')->remove('sitemap/*/*')
             ->remove('sitemap/index/*')

@@ -51,7 +51,7 @@ class Axis_Sitemap_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('sitemap_file_engine')}`;
         ");
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->remove('sitemap/main/startTime')
             ->remove('sitemap/main/googlePingUrl')
             ->remove('sitemap/main/yahooPingUrl')

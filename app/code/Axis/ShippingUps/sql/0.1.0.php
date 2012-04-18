@@ -30,7 +30,7 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('Ups_Standard', 'Ups Standard')
@@ -119,6 +119,7 @@ class Axis_ShippingUps_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('shipping/Ups_Standard');
+        $this->getConfigBuilder()
+            ->remove('shipping/Ups_Standard');
     }
 }

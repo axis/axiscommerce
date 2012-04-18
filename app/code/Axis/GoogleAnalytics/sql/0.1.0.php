@@ -30,7 +30,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstr
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('analytics', 'Google analytics')
                 ->setTranslation('Axis_GoogleAnalytics')
                 ->section('main', 'General')
@@ -71,7 +71,8 @@ class Axis_GoogleAnalytics_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstr
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('analytics');
+        $this->getConfigBuilder()
+            ->remove('analytics');
         //Axis::single('core/template_box')->remove('Axis_GoogleAnalytics_Ga');
     }
 }

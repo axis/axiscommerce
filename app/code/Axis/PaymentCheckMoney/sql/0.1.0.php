@@ -30,7 +30,7 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('payment', 'Payment Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('CheckMoney_Standard', 'Check & Money Order')
@@ -74,6 +74,7 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('payment/CheckMoney_Standard');
+        $this->getConfigBuilder()
+            ->remove('payment/CheckMoney_Standard');
     }
 }

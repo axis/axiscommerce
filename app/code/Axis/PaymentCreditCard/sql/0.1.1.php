@@ -30,7 +30,7 @@ class Axis_PaymentCreditCard_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abs
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('payment', 'Payment Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('CreditCard_Standard', 'Save Credit Card')
@@ -88,6 +88,7 @@ class Axis_PaymentCreditCard_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abs
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('payment/CreditCard_Standard');
+        $this->getConfigBuilder()
+            ->remove('payment/CreditCard_Standard');
     }
 }

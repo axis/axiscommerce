@@ -30,7 +30,7 @@ class Axis_Account_Upgrade_0_2_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('account')
                 ->section('address_form')
                     ->option('company_value', 'Company Default Value')

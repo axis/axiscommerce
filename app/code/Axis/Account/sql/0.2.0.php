@@ -33,7 +33,7 @@ class Axis_Account_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
         $required = Axis_Core_Model_Option_Config_Field_Status::REQUIRED;
         $optional = Axis_Core_Model_Option_Config_Field_Status::OPTIONAL;
         
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('account', 'Account')
                 ->section('address_form', 'Address Form')
                     ->option('company_status', 'Company Status', $optional)

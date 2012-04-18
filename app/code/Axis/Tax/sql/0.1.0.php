@@ -72,7 +72,7 @@ class Axis_Tax_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('tax', 'Tax')
                 ->setTranslation('Axis_Tax')
                 ->section('main', 'General')

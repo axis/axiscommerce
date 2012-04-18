@@ -30,7 +30,7 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
                 ->section('Flat_Standard', 'Flat Rate Standard')
@@ -77,6 +77,8 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function down()
     {
-        Axis::single('core/config_builder')->remove('shipping/Flat_Standard');
+        $this->getConfigBuilder()
+            ->remove('shipping/Flat_Standard')
+        ;
     }
 }

@@ -30,7 +30,7 @@ class Axis_PaymentPaypal_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstrac
 
     public function up()
     {
-        Axis::single('core/config_builder')
+        $this->getConfigBuilder()
             ->section('payment')
                 ->section('Paypal_Standard')
                     ->option('minOrderTotal', 'Minimum order total amount')
