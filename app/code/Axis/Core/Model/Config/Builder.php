@@ -31,22 +31,40 @@
  * @subpackage  Axis_Core_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Config_Builder extends Axis_Db_Table
+class Axis_Core_Model_Config_Builder
 {
+    /**
+     *
+     * @var array
+     */
     protected $_rowField = array();
     
+    /**
+     *
+     * @var array
+     */
     protected $_defaultsRowField = array();
     
+    /**
+     *
+     * @var mixed
+     */
     protected $_rawValue = null;
 
+    /**
+     *
+     * @var array
+     */
     protected $_path = array();
     
+    /**
+     *
+     * @var bool
+     */
     protected $_isContainer = false;
 
-    public function __construct($config = array()) 
+    public function __construct() 
     {
-        parent::__construct($config);
-        
         $this->_defaultsRowField = array(
             'type'               => 'text',
             'description'        => '',
@@ -55,66 +73,122 @@ class Axis_Core_Model_Config_Builder extends Axis_Db_Table
         );
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setDefaultType($value) 
     {
         $this->_defaultsRowField['type'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param mixed $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setDefaultDescription($value) 
     {
         $this->_defaultsRowField['description'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setDefaultModel($value) 
     {
         $this->_defaultsRowField['model'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setDefaultTranslation($value) 
     {
         $this->_defaultsRowField['translation_module'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setTitle($value) 
     {
         $this->_rowField['title'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setType($value) 
     {
         $this->_rowField['type'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setModel($value) 
     {
         $this->_rowField['model'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setDescription($value) 
     {
         $this->_rowField['description'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setTranslation($value) 
     {
         $this->_rowField['translation_module'] = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function setValue($value) 
     {
         $this->_rawValue = $value;
         return $this;
     }
     
+    /**
+     *
+     * @param string $path
+     * @param string $title
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function section($path = null, $title = null) 
     {
         $this->_savePrevious();
@@ -136,6 +210,13 @@ class Axis_Core_Model_Config_Builder extends Axis_Db_Table
         return $this;
     }
     
+    /**
+     *
+     * @param string $path
+     * @param string $title
+     * @param mixed $value
+     * @return \Axis_Core_Model_Config_Builder 
+     */
     public function option($path, $title = null, $value = null) 
     {
         $this->_savePrevious();
@@ -217,7 +298,7 @@ class Axis_Core_Model_Config_Builder extends Axis_Db_Table
      * Removes config field, and all of it childrens
      * Provide fluent interface
      * @param string $path
-     * @return bool
+     * @return \Axis_Core_Model_Config_Builder
      */
     public function remove($path)
     {
