@@ -30,8 +30,11 @@ class Axis_Core_Upgrade_0_2_7 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('design/header/logoSrc', 'Design/Header/Logo Image Src', 'logo.gif')
-            ->add('design/header/logoAlt', 'Logo Image Alt', 'Axiscommerce');
+        Axis::single('core/config_builder')
+            ->section('design')
+                ->section('header', 'Header')
+                    ->option('logoSrc', 'Logo Image Src', 'logo.gif')
+                    ->option('logoAlt', 'Logo Image Alt', 'Axiscommerce')
+            ->section('/');
     }
 }

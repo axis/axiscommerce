@@ -39,14 +39,8 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
             
-            ->add('account/address_form/company_value', 'Company Default Value')
-            ->add('account/address_form/phone_value', 'Phone Default Value')
-            ->add('account/address_form/fax_value', 'Fax Default Value')
-            ->add('account/address_form/street_address_value', 'Street Address Default Value')
-            ->add('account/address_form/city_value', 'City Default Value')
-            ->add('account/address_form/zone_id_value', 'State(Region) Default Value', 12, 'text', 'You can get the id of desired region at [admin]/location/zone')
-            ->add('account/address_form/postcode_value', 'Postcode Default Value', 90064)
-            ->add('account/address_form/country_id_value', 'Country Default Value', 223, 'select', array('model' => 'location/option_country'))
+            ->add('design/header/logoSrc', 'Design/Header/Logo Image Src', 'logo.gif')
+            ->add('design/header/logoAlt', 'Logo Image Alt', 'Axiscommerce')
             
                         
             ->transform()
