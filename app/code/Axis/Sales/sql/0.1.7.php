@@ -232,13 +232,23 @@ class Axis_Sales_Upgrade_0_1_7 extends Axis_Core_Model_Migration_Abstract
                 ))->save();
             }
         }
+        
+        Axis::single('core/config_builder')
+            ->section('sales', 'Sales')
+                ->setTranslation('Axis_Sales')
+                ->section('order', 'Order')
+                    ->option('defaultStatusId', 'Default Order Status', 1)
+                        ->setType('select')
+                        ->setDescription('Default Order Status')
+                        ->setModel('sales/option_order_status')
+                    ->option('order_number_pattern_prefix', 'Prefix for Custom Order Number')
+                    ->option('order_number_pattern', 'Pattern for Custom Order Number', '100000000')
+                        ->setDescription('Please notice: Changing code pattern for existing orders in database can cause problems.')
+                    ->option('email', 'Order notifications reciever', 'email1')
+                        ->setType('select')
+                        ->setDescription('All notifications about new orders will be sended to this email')
+                        ->setModel('core/option_mail_boxes')
 
-        Axis::single('core/config_field')
-            ->add('sales', 'Sales', null, null, array('translation_module' => 'Axis_Sales'))
-            ->add('sales/order/defaultStatusId', 'Sales/Order/Default Order Status', 1, 'select', 'Default Order Status', array('model' => 'sales/option_order_status'))
-            ->add('sales/order/order_number_pattern_prefix', 'Prefix for Custom Order Number', '')
-            ->add('sales/order/order_number_pattern', 'Pattern for Custom Order Number', '100000000', 'text', 'Please notice: Changing code pattern for existing orders in database can cause problems.')
-            ->add('sales/order/email', 'Order notifications reciever', 'email1', 'select', 'All notifications about new orders will be sended to this email', array('model' => 'core/option_mail_boxes'));
-
+            ->section('/');
     }
 }

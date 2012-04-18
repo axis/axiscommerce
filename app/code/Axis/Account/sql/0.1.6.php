@@ -223,8 +223,14 @@ class Axis_Account_Upgrade_0_1_6 extends Axis_Core_Model_Migration_Abstract
             ->add('account/wishlist/*')
             ->add('account/address-book/*');
 
-        Axis::single('core/config_field')
-            ->add('account', 'Account', null, null, array('translation_module' => 'Axis_Account'))
-            ->add('account/main/defaultCustomerGroup', 'Account/General/Default Customer Group', 1, 'select', "Default Customer Group (default:'General')", array('model' => 'account/option_customer_group'));
+        Axis::single('core/config_builder')
+            ->section('account')
+                ->section('main', 'General')
+                    ->option('defaultCustomerGroup', 'Default Customer Group', 1)
+                        ->setType('select')
+                        ->setDescription("Default Customer Group (default:'General')")
+                        ->setModel('account/option_customer_group')
+
+            ->section('/');
     }
 }

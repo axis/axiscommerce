@@ -38,9 +38,19 @@ class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
         Axis::single('core/config_field')->remove('locale/main/language');
 
-        Axis::single('core/config_field')
-            ->add('locale/main/language_admin', 'Locale/General/Default backend language', $languageId, 'select', 'Default backend language', array('model' => 'locale/option_language'))
-            ->add('locale/main/language_front', 'Locale/General/Default frontend language', $languageId, 'select', 'Default frontend language', array('model' => 'locale/option_language'));
+        Axis::single('core/config_builder')
+            ->section('locale')
+                ->section('main')
+                    ->option('language_admin', 'Default backend language', $languageId)
+                        ->setType('select')
+                        ->setDescription('Default backend language')
+                        ->setModel('locale/option_language')
+                    ->option('language_front', 'Default frontend language', $languageId)
+                        ->setType('select')
+                        ->setDescription('Default frontend language')
+                        ->setModel('locale/option_language')
+
+            ->section('/');       
     }
 
     public function down()
@@ -51,7 +61,14 @@ class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             ->remove('locale/main/language_admin')
             ->remove('locale/main/language_front');
 
-        Axis::single('core/config_field')
-            ->add('locale/main/language', 'Locale/General/Default language', $languageId, 'select', 'Default language', array('model' => 'locale/option_language'));
+        Axis::single('core/config_builder')
+            ->section('locale')
+                ->section('main')
+                    ->option('language', 'Default language', $languageId)
+                        ->setType('select')
+                        ->setDescription('Default language')
+                        ->setModel('locale/option_language')
+
+            ->section('/');
     }
 }

@@ -39,12 +39,8 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
             
-            ->add('locale', 'Locale', null, null, array('translation_module' => 'Axis_Locale'))
-            ->add('locale/main/language', 'Locale/General/Default language',  '1', 'select', 'Default site language', array('model' => 'locale/option_language'))
-            ->add('locale/main/locale', 'Default locale', 'en_US', 'select', 'Default site locale', array('sort_order' => 8, 'model' => 'locale/option_zendLocale'))
-            ->add('locale/main/timezone', 'Timezone', 'Europe/London', 'select', 'Timezone' , array('sort_order' => 9, 'model' => 'locale/option_zendTimezone'))
-            ->add('locale/main/baseCurrency', 'Base currency', 'USD', 'select', 'Currency will be used for all online payment transactions', array('model' => 'locale/option_currency'))
-            ->add('locale/main/currency', 'Default display currency', 'USD', 'select', 'Default currency', array('model' => 'locale/option_currency_default'))
+            ->add('core/session/remoteAddressValidation', 'Core/Session/Remote Address (IP) Validation', 0, 'radio', '', array('model'=> 'core/option_boolean'))
+            ->add('core/session/httpUserAgentValidation', 'Core/Session/User Agent (Browser) Validation', 0, 'radio', '', array('model'=> 'core/option_boolean'))
                         
             ->transform()
 ;
