@@ -38,8 +38,10 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
 
-            ->add('shipping/Fedex_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/Fedex_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+         
+            ->add('tag', 'Tag', null, null, array('translation_module' => 'Axis_Tag'))
+            ->add('tag/main/customer_status', 'Tag/General/Default customer tag status', Axis_Tag_Model_Option_Status::APPROVED, 'select', 'Default tag status added by registered customer', array('model' => 'tag/option_status'))
+            ->add('tag/main/guest_status', 'Default guest tag status', Axis_Tag_Model_Option_Status::PENDING, 'select', 'Default tag status added by guest', array('model' => 'tag/option_status'))
              
             ->transform()
 ;
