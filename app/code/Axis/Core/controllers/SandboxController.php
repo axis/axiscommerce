@@ -38,15 +38,8 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
 
-             ->add('analytics/main/usedPageName', 'USE PAGENAME',1 , 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('analytics/main/affiliation', 'Optional partner or store affilation', '' )
-            ->add('analytics/attributes/brackets', 'Google analytics/Products attributes/PRODUCTS ATTRIBUTES BRACKETS', '[]')
-            ->add('analytics/attributes/delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
-            ->add('analytics/conversion/used', 'Google analytics/Conversion option/Enabled', 1, 'radio', 'Enabled currency convertion', array('model'=> 'core/option_boolean'))
-            ->add('analytics/conversion/id', 'Id', '"')
-            ->add('analytics/conversion/language', 'Language(en_EN)', 'en_EN')
-            ->add('analytics/tracking/used', 'Google analytics/Tracking options/Enabled', 1, 'radio', 'Enabled tracking', array('model'=> 'core/option_boolean'))
-            ->add('analytics/tracking/linksPrefix', 'Prefix')
+             ->add('payment/FreeOrder_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('payment/FreeOrder_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
              
             ->transform()
 ;

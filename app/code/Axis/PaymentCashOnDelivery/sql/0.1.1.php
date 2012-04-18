@@ -30,8 +30,14 @@ class Axis_PaymentCashOnDelivery_Upgrade_0_1_1 extends Axis_Core_Model_Migration
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('payment/CashOnDelivery_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/CashOnDelivery_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'));
+        Axis::single('core/config_builder')
+            ->section('payment')
+                ->section('CashOnDelivery_Standard')
+                    ->option('minOrderTotal', 'Minimum order total amount')
+                        ->setTranslation('Axis_Admin')
+                    ->option('maxOrderTotal', 'Maximum order total amount')
+                        ->setTranslation('Axis_Admin')
+
+            ->section('/');
     }
 }
