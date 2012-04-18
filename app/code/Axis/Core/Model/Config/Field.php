@@ -199,7 +199,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         $container = array(); 
         foreach ($this->_datarowset as $option) {
             $tab = str_repeat(' ', 4);
-            $tabs = str_repeat($tab, $option['lvl']);
+            $tabs = str_repeat($tab, $option['lvl'] + 2);
             
             $isOption = (bool)($option['lvl'] == 3);
             
@@ -237,7 +237,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
             if (!$isOption) {
                 if (count($container) >= $option['lvl']) {
                     $k =  array_pop($container);
-                    $tabsk = str_repeat($tab, 1 + min(array(count($container), $option['lvl'])));
+                    $tabsk = str_repeat($tab, 3 + min(array(count($container), $option['lvl'])));
                     $str .=  "{$tabsk}->section('/{$k}')\n\n" ;
                 }
                 array_push($container, $path);
