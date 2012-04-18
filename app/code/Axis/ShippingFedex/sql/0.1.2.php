@@ -30,7 +30,14 @@ class Axis_ShippingFedex_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('shipping/Fedex_Standard/showErrors', 'Display messages from service provider', 1, 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Admin'));
+        Axis::single('core/config_builder')
+            ->section('shipping')
+                ->section('Fedex_Standard')
+                    ->option('showErrors', 'Display messages from service provider', true)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                        ->setTranslation('Axis_Admin')
+
+            ->section('/');
     }
 }
