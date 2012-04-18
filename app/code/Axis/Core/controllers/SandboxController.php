@@ -38,11 +38,14 @@ class SandboxController extends Axis_Core_Controller_Front
         
          Axis::single('core/config_field')
 
-           ->add('log', 'Log', null, null, array('translation_module' => 'Axis_Log'))
-            ->add('log/main/enabled', 'Log/General/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('log/main/php', 'Php log', '/var/logs/php.log', 'text', 'Path relative to AXIS_ROOT')
-            ->add('log/main/payment', 'Payment log', '/var/logs/payment.log', 'text', 'Path relative to AXIS_ROOT')
-            ->add('log/main/shipping', 'Shipping log', '/var/logs/shipping.log', 'text', 'Path relative to AXIS_ROOT')
+           ->add('payment/Paypal_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('payment/Paypal_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+
+            ->add('payment/Paypal_Direct/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('payment/Paypal_Direct/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+
+            ->add('payment/Paypal_Express/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('payment/Paypal_Express/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
              
              
             ->transform()
