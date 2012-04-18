@@ -30,8 +30,16 @@ class Axis_ShippingItem_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('shipping/Item_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/Item_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'));
+        Axis::single('core/config_builder')
+            ->section('shipping')
+                ->setTranslation('Axis_Admin')
+                ->section('Item_Standard')
+                    ->setTranslation('Axis_Admin')
+                    ->option('minOrderTotal', 'Minimum order total amount')
+                        ->setTranslation('Axis_Admin')
+                    ->option('maxOrderTotal', 'Maximum order total amount')
+                        ->setTranslation('Axis_Admin')
+
+            ->section('/');
     }
 }
