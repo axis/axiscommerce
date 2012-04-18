@@ -30,19 +30,43 @@ class Axis_GoogleAnalytics_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstr
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('analytics', 'Google analytics', null, null, array('translation_module' => 'Axis_GoogleAnalytics'))
-            ->add('analytics/main/uacct', 'Google analytics/General/GOOGLE_ANALYTICS_UACCT', '', 'text', '', array('model' => 'core/option_crypt'))
-            ->add('analytics/main/used', 'Enabled', 0, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('analytics/main/usedPageName', 'USE PAGENAME', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('analytics/main/affiliation', 'Optional partner or store affilation', '' )
-            ->add('analytics/attributes/brackets', 'Google analytics/Products attributes/PRODUCTS ATTRIBUTES BRACKETS', '[]')
-            ->add('analytics/attributes/delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
-            ->add('analytics/conversion/used', 'Google analytics/Conversion option/Enabled', 1, 'radio', 'Enabled currency convertion', array('model'=> 'core/option_boolean'))
-            ->add('analytics/conversion/id', 'Id', '"')
-            ->add('analytics/conversion/language', 'Language(en_EN)', 'en_EN')
-            ->add('analytics/tracking/used', 'Google analytics/Tracking options/Enabled', 1, 'radio', 'Enabled tracking', array('model'=> 'core/option_boolean'))
-            ->add('analytics/tracking/linksPrefix', 'Prefix');
+        Axis::single('core/config_builder')
+            ->section('analytics', 'Google analytics')
+                ->setTranslation('Axis_GoogleAnalytics')
+                ->section('main', 'General')
+                    ->option('uacct', 'GOOGLE_ANALYTICS_UACCT')
+                        ->setModel('core/option_crypt')
+                    ->option('used', 'Enabled')
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                    ->option('usedPageName', 'USE PAGENAME', 1)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                    ->option('affiliation', 'Optional partner or store affilation')
+                ->section('/main')
+
+                ->section('attributes', 'Products attributes')
+                    ->option('brackets', 'PRODUCTS ATTRIBUTES BRACKETS', '[]')
+                    ->option('delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
+                ->section('/attributes')
+
+                ->section('conversion', 'Conversion option')
+                    ->option('used', 'Enabled', 1)
+                        ->setType('radio')
+                        ->setDescription('Enabled currency convertion')
+                        ->setModel('core/option_boolean')
+                    ->option('id', 'Id', '"')
+                    ->option('language', 'Language(en_EN)', 'en_EN')
+                ->section('/conversion')
+
+                ->section('tracking', 'Tracking options')
+                    ->option('used', 'Enabled', 1)
+                        ->setType('radio')
+                        ->setDescription('Enabled tracking')
+                        ->setModel('core/option_boolean')
+                    ->option('linksPrefix', 'Prefix')
+
+            ->section('/');
     }
 
     public function down()

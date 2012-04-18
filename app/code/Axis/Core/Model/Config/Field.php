@@ -253,7 +253,7 @@ class Axis_Core_Model_Config_Field extends Axis_Db_Table
         Zend_Debug::dump(
             "\nAxis::single('core/config_builder')\n" 
                 . $str 
-                . "\n{$tab}->section('/');\n"
+                . "\n" . str_repeat($tab, 3) . "->section('/');\n"
         );
         $this->_datarowset = array();
         return $this;
