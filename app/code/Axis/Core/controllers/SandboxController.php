@@ -36,11 +36,12 @@ class SandboxController extends Axis_Core_Controller_Front
     public function indexAction()
     {   
         
-         Axis::single('core/config_field')
 
-             ->add('payment/FreeOrder_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/FreeOrder_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-             
+        Axis::single('core/config_field')
+
+            ->add('shipping/PerWeightUnit_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('shipping/PerWeightUnit_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            
             ->transform()
 ;
          
