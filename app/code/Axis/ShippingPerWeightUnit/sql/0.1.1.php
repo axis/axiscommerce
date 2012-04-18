@@ -23,7 +23,7 @@
  * @license     GNU Public License V3.0
  */
 
-class Axis_ShippingPerWeightUnit_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
+    class Axis_ShippingPerWeightUnit_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.1';
     protected $_info = 'Filters by max and min order totals added';

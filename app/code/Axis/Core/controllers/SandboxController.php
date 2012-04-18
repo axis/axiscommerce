@@ -39,8 +39,7 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
 
-            ->add('shipping/PerWeightUnit_Standard/minOrderTotal', 'Minimum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/PerWeightUnit_Standard/maxOrderTotal', 'Maximum order total amount', '', 'text', array('translation_module' => 'Axis_Admin'))
+            ->add('payment/Paypal_Express/sortOrder', 'Sort Order', '1', 'text', array('translation_module' => 'Axis_Core'))
             
             ->transform()
 ;
