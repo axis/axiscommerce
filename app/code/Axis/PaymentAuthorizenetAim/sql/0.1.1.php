@@ -31,11 +31,12 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_1 extends Axis_Core_Model_Migratio
     public function up()
     {
         Axis::single('core/config_builder')
-            ->section('payment', 'Min/Max order total amount')
-                ->setTranslation('Axis_Admin')
-                ->section('AuthorizenetAim_Standard', 'Min/Max order total amount')
+            ->section('payment')
+                ->section('AuthorizenetAim_Standard')
                     ->option('minOrderTotal', 'Minimum order total amount')
+                        ->setTranslation('Axis_Admin')
                     ->option('maxOrderTotal', 'Maximum order total amount')
+                        ->setTranslation('Axis_Admin')
 
             ->section('/');
     }
