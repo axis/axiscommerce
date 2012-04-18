@@ -47,20 +47,48 @@ class Axis_ShippingTable_Upgrade_0_1_2 extends Axis_Core_Model_Migration_Abstrac
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
         ");
+        
+        
+        Axis::single('core/config_builder')
+            ->section('shipping', 'Shipping Methods')
+                ->setTranslation('Axis_Admin')
+                ->section('Table_Standard', 'Table Standard')
+                    ->setTranslation('Axis_ShippingTable')
+                    ->option('enabled', 'Enabled')
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                        ->setTranslation('Axis_Core')
+                    ->option('geozone', 'Allowed Shipping Zone', '1')
+                        ->setType('select')
+                        ->setDescription('Shipping method will be available only for selected zone')
+                        ->setModel('location/option_geozone')
+                        ->setTranslation('Axis_Admin')
+                    ->option('taxBasis', 'Tax Basis')
+                        ->setType('select')
+                        ->setDescription('Address that will be used for tax calculation')
+                        ->setModel('tax/option_basis')
+                        ->setTranslation('Axis_Tax')
+                    ->option('taxClass', 'Tax Class')
+                        ->setType('select')
+                        ->setDescription('Tax class that will be used for tax calculation')
+                        ->setModel('tax/option_class')
+                        ->setTranslation('Axis_Tax')
+                    ->option('sortOrder', 'Sort Order')
+                        ->setTranslation('Axis_Core')
+                    ->option('handling', 'Handling Fee')
+                    ->option('type', 'Table Method', Axis_ShippingTable_Model_Option_Standard_Service::PER_PRICE)
+                        ->setType('select')
+                        ->setDescription('The shipping cost is based on the order total or the total weight of the items ordered or the total number of items orderd.')
+                        ->setModel('shippingTable/option_standard_service')
+                    ->option('payments', 'Disallowed Payments')
+                        ->setType('multiple')
+                        ->setDescription('Selected payment methods will be not available with this shipping method')
+                        ->setModel('checkout/option_payment')
+                        ->setTranslation('Axis_Admin')
+                    ->option('formDesc', 'Checkout Description', 'Table Rate')
 
+            ->section('/');
 
-        Axis::single('core/config_field')
-            ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/Table_Standard', 'Shipping Methods/Table Standard', null, null, array('translation_module' => 'Axis_ShippingTable'))
-            ->add('shipping/Table_Standard/enabled', 'Shipping Methods/Table Standard/Enabled', '0', 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
-            ->add('shipping/Table_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Table_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Table_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Table_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Table_Standard/handling', 'Handling Fee', '0')
-            ->add('shipping/Table_Standard/type', 'Table Method', Axis_ShippingTable_Model_Option_Standard_Service::PER_PRICE, 'select', 'The shipping cost is based on the order total or the total weight of the items ordered or the total number of items orderd.', array('model' => 'shippingTable/option_standard_service'))
-            ->add('shipping/Table_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Table_Standard/formDesc', 'Checkout Description', 'Table Rate');
     }
 
     public function down()

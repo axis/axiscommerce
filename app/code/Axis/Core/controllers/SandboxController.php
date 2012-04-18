@@ -39,7 +39,17 @@ class SandboxController extends Axis_Core_Controller_Front
 
         Axis::single('core/config_field')
 
-            ->add('payment/Paypal_Express/sortOrder', 'Sort Order', '1', 'text', array('translation_module' => 'Axis_Core'))
+                ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
+            ->add('shipping/Table_Standard', 'Shipping Methods/Table Standard', null, null, array('translation_module' => 'Axis_ShippingTable'))
+            ->add('shipping/Table_Standard/enabled', 'Shipping Methods/Table Standard/Enabled', '0', 'radio', '', array('model'=> 'core/option_boolean', 'translation_module' => 'Axis_Core'))
+            ->add('shipping/Table_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'location/option_geozone', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Table_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Table_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
+            ->add('shipping/Table_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
+            ->add('shipping/Table_Standard/handling', 'Handling Fee', '0')
+            ->add('shipping/Table_Standard/type', 'Table Method', Axis_ShippingTable_Model_Option_Standard_Service::PER_PRICE, 'select', 'The shipping cost is based on the order total or the total weight of the items ordered or the total number of items orderd.', array('model' => 'shippingTable/option_standard_service'))
+            ->add('shipping/Table_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'))
+            ->add('shipping/Table_Standard/formDesc', 'Checkout Description', 'Table Rate')
             
             ->transform()
 ;
