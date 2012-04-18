@@ -78,12 +78,21 @@ class Axis_Log_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('core/config_field')
-            ->add('log', 'Log', null, null, array('translation_module' => 'Axis_Log'))
-            ->add('log/main/enabled', 'Log/General/Enabled', 1, 'radio', '', array('model'=> 'core/option_boolean'))
-            ->add('log/main/php', 'Php log', '/var/logs/php.log', 'text', 'Path relative to AXIS_ROOT')
-            ->add('log/main/payment', 'Payment log', '/var/logs/payment.log', 'text', 'Path relative to AXIS_ROOT')
-            ->add('log/main/shipping', 'Shipping log', '/var/logs/shipping.log', 'text', 'Path relative to AXIS_ROOT');
+        Axis::single('core/config_builder')
+            ->section('log', 'Log')
+                ->setTranslation('Axis_Log')
+                ->section('main', 'General')
+                    ->option('enabled', 'Enabled', 1)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                    ->option('php', 'Php log', '/var/logs/php.log')
+                        ->setDescription('Path relative to AXIS_ROOT')
+                    ->option('payment', 'Payment log', '/var/logs/payment.log')
+                        ->setDescription('Path relative to AXIS_ROOT')
+                    ->option('shipping', 'Shipping log', '/var/logs/shipping.log')
+                        ->setDescription('Path relative to AXIS_ROOT')
+
+            ->section('/');
 
         Axis::single('core/page')
             ->add('account/*/*');
