@@ -41,7 +41,7 @@ abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_A
     public function encode($value)
     {
         $value = array_intersect(array_keys($this->toArray()), (array) $value);
-        return implode(self::SEPARATOR, (array)$value);
+        return implode(self::SEPARATOR, $value);
     }
     
     /**
@@ -51,10 +51,24 @@ abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_A
      */
     public function decode($value)
     {
-        return array_filter(explode(self::SEPARATOR, $value));
-//        return array_intersect(
-//            array_keys($this->toArray()), explode(self::SEPARATOR, $value)
-//        );
+        $value = str_replace(' ', '', $value);
+        $value = explode(self::SEPARATOR, $value);
+        return array_filter($value, array($this, "_filter"));
+    }
+    
+    /**
+     *
+     * @param string $value
+     * @return bool 
+     */
+    protected function _filter($value) 
+    {
+        //@todo use return array_key_exists($value, $this->toArray());
+        //  create bug
+        if ($this->_isLoaded) {
+            return array_key_exists($value, $this->toArray());
+        }
+        return '' !== $value && null !== $value;
     }
     
 //    /**
