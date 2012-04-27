@@ -394,7 +394,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
                 $this->getStorage()->delivery = $billingAddress;
             }
         // }
-            
+
         $config = Axis::config('checkout/default_values');
         try {
             $this->setShippingMethod($config->shipping_method);
@@ -461,6 +461,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
 
         $method = Axis_Shipping::getMethod($data['method']);
         if (!$method instanceof Axis_Method_Shipping_Model_Abstract
+            || !$method->isEnabled()
             || !$method->isAllowed($this->getShippingRequest())) {
 
             throw new Axis_Exception(

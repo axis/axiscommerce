@@ -101,7 +101,11 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
 //                $product['price'] * $order->currency_rate;
 //            $product['final_price'] =
 //                $product['final_price'] * $order->currency_rate;
-            $product['tax_rate'] = $product['tax'] * 100 / $product['final_price'];
+
+            $product['tax_rate'] = 0;
+            if ($product['final_price'] > 0) {
+                $product['tax_rate'] = $product['tax'] * 100 / $product['final_price'];
+            }
         }
         $data['products'] = array_values($products);
 
@@ -154,10 +158,10 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         $order = $order->toArray();
         $orderStatusText = Axis::model('sales/option_order_status_text');
         $order['status_name'] = $orderStatusText[$order['order_status_id']];
-        
+
         $sites = Axis::model('core/option_site');
         $order['site_name'] = $sites[$order['site_id']];
-        
+
         // convert price with rates that was available
         // during order was created (not current rates)
 //        $order['order_total'] = $order['order_total'] * $order['currency_rate'];
@@ -506,6 +510,10 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
             );
 
             $descriptionRow = $product->getDescription();
+            $taxRate = 0;
+            if ($finalPrice > 0) {
+                $taxRate = $productTax * 100 / $finalPrice;
+            }
             $data[] = array(
                 'attributes'    => $attributesOptions,
                 'backorder'     => $stock->backorder,
@@ -517,7 +525,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
                 'price'         => $product->price,
                 'quantity'      => $quantity,
                 'sku'           => $product->sku,
-                'tax_rate'      => $productTax * 100 / $finalPrice,
+                'tax_rate'      => $taxRate,
                 'variation_id'  => $variationId
             );
         }
