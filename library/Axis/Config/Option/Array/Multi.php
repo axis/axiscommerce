@@ -52,61 +52,9 @@ abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_A
     public function decode($value)
     {
         $value = str_replace(' ', '', $value);
-        $value = explode(self::SEPARATOR, $value);
-        return array_filter($value, array($this, "_filter"));
-    }
-    
-    /**
-     *
-     * @param string $value
-     * @return bool 
-     */
-    protected function _filter($value) 
-    {
-        //@todo use return array_key_exists($value, $this->toArray());
-        //  create bug
-        if ($this->_isLoaded) {
-            return array_key_exists($value, $this->toArray());
+        if (empty($value)) {
+            return array();
         }
-        return '' !== $value && null !== $value;
+        return explode(self::SEPARATOR, $value);
     }
-    
-//    /**
-//     *
-//     * @param mixed $offset
-//     * @return bool 
-//     */
-//    public function offsetExists($offset) 
-//    {
-//        return isset($this->_collection[$offset]);
-////        
-////        foreach($this->decode($offset) as $key) {
-////            if (!array_key_exists($key, $this->_collection)) {
-////                return false;
-////            }
-////        }
-////        return true;
-//    }
-//        
-//    /**
-//     * Required by the ArrayAccess implementation
-//     * 
-//     * @param mixed $offset
-//     * @return mixed 
-//     */
-//    public function offsetGet($offset) 
-//    {
-//        return isset($this->_collection[$offset]) ? $this->_collection[$offset] : null;
-//        
-////        $return = array();
-////        foreach($this->decode($offset) as $key) {
-////            if (array_key_exists($key, $this->_collection)) {
-////                $return[$key] = $this->_collection[$key];
-////            }
-////        }
-//////        if (count($return) === count($this->_collection)) {
-//////            return 'All';
-//////        }
-////        return $this->encode($return);
-//    }
 }
