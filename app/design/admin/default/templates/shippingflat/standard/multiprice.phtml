@@ -13,13 +13,19 @@
 <?php 
 $value = $this->value;
 $i = 1;
-foreach ($value as $subcode => $item) : ?>
+$_subcode = $_title = $_price = $_minOrderTotal = $_maxOrderTotal = '';
+foreach ($value as $subcode => $item) :
+    $_title = $item['title'];
+    $_price = $item['price'];
+    $_minOrderTotal = isset($item['minOrderTotal']) ? $item['minOrderTotal'] : '';
+    $_maxOrderTotal = isset($item['maxOrderTotal']) ? $item['maxOrderTotal'] : '';
+?>
 <div id="wraper-<?php echo $i;?>">
     Subcode      : <?php echo $this->formText('value[' . $i . '][subcode]', $subcode, array('size' => '10'));?>
-    Title        : <?php echo $this->formText('value[' . $i . '][title]', $item['title'], array('size' => '10'))?> 
-    Price        : <?php echo $this->formText('value[' . $i . '][price]', $item['price'], array('size' => '10'))?>
-    Min Subtotal : <?php echo $this->formText('value[' . $i . '][minOrderTotal]', isset($item['minOrderTotal']) ? $item['minOrderTotal'] : '', array('size' => '10'))?>
-    Max Subtotal : <?php echo $this->formText('value[' . $i . '][maxOrderTotal]', isset($item['maxOrderTotal']) ? $item['maxOrderTotal'] : '', array('size' => '10'))?>
+    Title        : <?php echo $this->formText('value[' . $i . '][title]', $_title, array('size' => '10'))?> 
+    Price        : <?php echo $this->formText('value[' . $i . '][price]', $_price, array('size' => '10'))?>
+    Min Subtotal : <?php echo $this->formText('value[' . $i . '][minOrderTotal]', $_minOrderTotal, array('size' => '10'))?>
+    Max Subtotal : <?php echo $this->formText('value[' . $i . '][maxOrderTotal]', $_maxOrderTotal, array('size' => '10'))?>
     <?php echo $this->formButton('shippingmultirate-template-remove', 'Remove', array('onclick' => 'removeRate(' . $i . ');'))?>
 </div>
 <?php 
@@ -27,11 +33,11 @@ $i++;
 endforeach; ?>
 <div id="shippingmultirate-template" style="display:none" >
     <div id="wraper-{template_id}">
-        Subcode      : <?php echo $this->formText('{template}[subcode]', $subcode, array('size' => '10'));?>
-        Title        : <?php echo $this->formText('{template}[title]', $item['title'], array('size' => '10'))?> 
-        Price        : <?php echo $this->formText('{template}[price]', $item['price'], array('size' => '10'))?>
-        Min Subtotal : <?php echo $this->formText('{template}[minOrderTotal]', isset($item['minOrderTotal']) ? $item['minOrderTotal'] : '', array('size' => '10'))?>
-        Max Subtotal : <?php echo $this->formText('{template}[maxOrderTotal]', isset($item['maxOrderTotal']) ? $item['maxOrderTotal'] : '', array('size' => '10'))?>
+        Subcode      : <?php echo $this->formText('{template}[subcode]', $_subcode, array('size' => '10'));?>
+        Title        : <?php echo $this->formText('{template}[title]', $_title, array('size' => '10'))?> 
+        Price        : <?php echo $this->formText('{template}[price]', $_price, array('size' => '10'))?>
+        Min Subtotal : <?php echo $this->formText('{template}[minOrderTotal]', $_minOrderTotal, array('size' => '10'))?>
+        Max Subtotal : <?php echo $this->formText('{template}[maxOrderTotal]', $_maxOrderTotal, array('size' => '10'))?>
         <?php echo $this->formButton('shippingmultirate-template-remove', 'Remove', array('onclick' => 'removeRate({template_id});'))?>
     </div>
 </div>

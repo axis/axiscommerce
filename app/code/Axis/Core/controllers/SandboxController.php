@@ -35,23 +35,26 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {   
-        $installer = Axis::single('install/installer');
-        $installer->run("
+//        $o = new Axis_Location_Model_Option_Address_Country();
+////        Axis_FirePhp::log(array_keys($o->toArray()));
+//        Zend_Debug::dump($o->decode('0,1,, ,2,3,x,101111'));
+////        
+////        $c = Axis::config('account/address_form/country_id_allow');
+////        Zend_Debug::dump($c->toArray());
+////        Zend_Debug::dump($c);
+//        
+//        Zend_Debug::dump(Axis_Payment::getMethodNames());
+        $c = Axis::config('shipping/Flat_Standard/multiPrice');
         
-        ALTER TABLE `{$installer->getTable('sales_order_product_attribute')}`
-            MODIFY COLUMN `product_option_value` TEXT NOT NULL default '';
-
-        ");
-        
-        
-        Zend_Debug::dump(Axis_Payment::getMethodNames());
-        Zend_Debug::dump(Axis::config('payment/CreditCard_Standard/shippings'));
+        Zend_Debug::dump($c);
+//        Zend_Debug::dump($c->toArray());
+        Zend_Debug::dump('####################################################');
 //        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());
         
         
 //        die;
-        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
-        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice')->toArray());
+//        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
+//        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice')->toArray());
         
         
 //        $routeAdmin = new Axis_Controller_Router_Route_Admin(

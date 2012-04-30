@@ -79,12 +79,11 @@ class ErrorController extends Axis_Core_Controller_Front
 //                        "<a href=\"file://$2\">$1$2</a>",
 //                        $exception->getTraceAsString()
 //                    );
-
-                    $this->view->error = $exception->getMessage() .
+                    $this->view->error = str_replace(AXIS_ROOT . '/', '/', $exception->getMessage() .
                         "\n<strong>" . Axis::translate('core')->__('Trace') . ":</strong>\n"
                         . $this->view->escape($exception->getTraceAsString())
 //                        . $traceAsString
-                    ;
+                    );
                 }
 
                 break;
