@@ -79,9 +79,8 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
             $this->addElement('hidden', 'department_id', array(
                 'value' => key($departments)
             ));
-            $this->getElement('department_id')->options = $departments;
         } else {
-            # do some if don't have anything in $departments
+            // do some if don't have anything in $departments
         }
         $this->addElement('textarea', 'message', array(
             'required' => true,
