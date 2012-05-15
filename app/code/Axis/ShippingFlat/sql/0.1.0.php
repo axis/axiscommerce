@@ -38,7 +38,7 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             ->add('shipping/Flat_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'tax/option_basis', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Flat_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'tax/option_class', 'translation_module' => 'Axis_Tax'))
             ->add('shipping/Flat_Standard/sortOrder', 'Sort Order', '0', 'text', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Flat_Standard/multiPrice', 'Multi Price', '25', 'multiprice', '', array('model' => 'shippingFlat/option_standard_multiPrice'))
+            ->add('shipping/Flat_Standard/multiPrice', 'Multi Price', '{"standard":{"title":"","price":"25","minOrderTotal":"","maxOrderTotal":"99.9999"},"discount":{"title":"","price":"15","minOrderTotal":"100","maxOrderTotal":""}}', 'multiprice', '', array('model' => 'shippingFlat/option_standard_multiPrice'))
             ->add('shipping/Flat_Standard/type', 'Type', Axis_ShippingFlat_Model_Option_Standard_Service::PER_ORDER, 'select', 'The shipping cost is based on:', array('model' => 'shippingFlat/option_standard_service'))
             ->add('shipping/Flat_Standard/formDesc', 'Checkout Description', 'Flat Rate')
             ->add('shipping/Flat_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'checkout/option_payment', 'translation_module' => 'Axis_Admin'));
