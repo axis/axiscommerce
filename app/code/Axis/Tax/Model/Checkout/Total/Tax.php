@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Checkout
- * @subpackage  Axis_Checkout_Model
+ * @package     Axis_Tax
+ * @subpackage  Axis_Tax_Model
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,11 +27,11 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Checkout
- * @subpackage  Axis_Checkout_Model
+ * @package     Axis_Tax
+ * @subpackage  Axis_Tax_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Checkout_Model_Total_Tax extends Axis_Checkout_Model_Total_Abstract
+class Axis_Tax_Model_Checkout_Total_Tax extends Axis_Checkout_Model_Total_Abstract
 {
     protected $_code = 'tax';
     protected $_title = 'Tax';
@@ -68,9 +68,9 @@ class Axis_Checkout_Model_Total_Tax extends Axis_Checkout_Model_Total_Abstract
         );
 
         $total->addCollect(array(
-            'code'  => $this->getCode(),
-            'title' => $this->getTitle(),
-            'total' => $tax,
+            'code'      => $this->getCode(),
+            'title'     => $this->getTitle(),
+            'total'     => $tax,
             'sortOrder' => $this->_config->sortOrder
         ));
     }

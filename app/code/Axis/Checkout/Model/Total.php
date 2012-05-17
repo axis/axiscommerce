@@ -151,70 +151,38 @@ class Axis_Checkout_Model_Total
     }
 
     /**
-     * Return list of order totals
-     *
-     * @return array
-     */
-    protected function _getMethodNames()
-    {
-        if ($methods = Axis::cache()->load('order_total_methods')) {
-            return $methods;
-        }
-        $dirPath = realpath(
-            Axis::config()->system->path . '/app/code/Axis/Checkout/Model/Total'
-        );
-        $methods = array();
-        $skip = array('Abstract');
-        $dp = opendir($dirPath);
-        while ($fname = readdir($dp)) {
-            if (!is_file("{$dirPath}/{$fname}")) {
-                continue;
-            }
-            list($name, $ext) = explode('.', $fname, 2);
-            if (in_array($name, $skip) || $ext != 'php') {
-                continue;
-            }
-            $methods[] = $name;
-        }
-        closedir($dp);
-        Axis::cache()->save($methods, 'order_total_methods', array('modules'));
-        return $methods;
-    }
-
-    /**
-     * Retrieve Axis_Checkout_Model_Total_ methods list
+     * Retrieve enabled total models
      *
      * @return array
      */
     protected function _getMethods()
     {
-        foreach ($this->_getMethodNames() as $name) {
-            if (!isset($this->_methods[$name])) {
-                $this->getMethod($name);
+        foreach (Axis::config('orderTotal') as $code => $config) {
+            if (!$config->enabled) {
+                continue;
+            }
+            if (!isset($this->_methods[$config->model])) {
+                $this->getMethod($config->model);
             }
         }
         return $this->_methods;
     }
 
     /**
-     * Retrieve method by name. Method is saved to $_methods
+     * Retrieve model by code or model alias. Model is saved to $_methods
      *
-     * @param string $code
+     * @param string $model Total code or alias to the model
      * @return Axis_Checkout_Model_Total_Abstract
      */
-    public function getMethod($code)
+    public function getMethod($model)
     {
-        if(false === function_exists('camelize')) {
-            function camelize($str) {
-                $str = ltrim(str_replace(" ", "", ucwords(str_replace("_", " ", $str))));
-                return (string)(strtolower(substr($str, 0, 1)) . substr($str, 1));
-            }
+        if (!strstr($model, '/')) { // code is received
+            $model = Axis::config("orderTotal/{$model}/model");
         }
-        if (!isset($this->_methods[$code])) {
-            $className = 'Axis_Checkout_Model_Total_' . ucfirst(camelize($code));
-            $this->_methods[$code] = new $className();
+        if (!isset($this->_methods[$model])) {
+            $this->_methods[$model] = Axis::model($model);
         }
-        return $this->_methods[$code];
+        return $this->_methods[$model];
     }
 
     public function setRecollect($flag)
