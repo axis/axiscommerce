@@ -240,6 +240,9 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
         $checkout = $this->_getCheckout();
         try {
             $checkout->setPaymentMethod($this->_getParam('payment', array()));
+            $checkout->getTotal()->setRecollect(true);
+            $grandTotal = $checkout->getTotal()->getTotal();
+            $checkout->addPaymentRequestData('price', $grandTotal);
         } catch (Exception $e) {
             $message = $e->getMessage();
             if (!empty($message)) {
@@ -252,13 +255,17 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
             $checkout->getShippingRequest()
         );
         $this->view->checkout = array(
-            'shipping_methods' => $shippingMethods
+            'shipping_methods' => $shippingMethods,
+            'products' => $checkout->getCart()->getProducts(),
+            'totals'   => $checkout->getTotal()->getCollects(),
+            'total'    => $grandTotal
         );
 
         return $this->_helper->json->sendSuccess(array(
             'sections' => $this->_renderSections(
                 array(
-                    'shipping-method'
+                    'shipping-method',
+                    'shopping-cart'
                 )
             )
         ));
