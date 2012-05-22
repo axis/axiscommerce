@@ -32,18 +32,20 @@
 abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_Abstract implements Axis_Config_Option_Encodable_Interface
 {
     const SEPARATOR = ',';
-    
+
     /**
      *
-     * @param  array $value
+     * @param  mixed $value array or string
      * @return string
      */
     public function encode($value)
     {
-        $value = array_intersect(array_keys($this->toArray()), (array) $value);
+        if (!is_array($value)) {
+            return $value;
+        }
         return implode(self::SEPARATOR, $value);
     }
-    
+
     /**
      *
      * @param  string $value

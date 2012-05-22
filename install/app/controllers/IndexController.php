@@ -273,29 +273,29 @@ class IndexController extends Zend_Controller_Action
         $this->_session->user_email     = $params['email'];
         $this->_session->user_password  = $params['password'];
 
-        $this->_session->modules = array_keys(
-            Axis_Install_Model_Module::getModules()
-        );
+//        $this->_session->modules = array_keys(
+//            Axis_Install_Model_Module::getModules()
+//        );
         $this->_install();
 
         // $this->_redirect('index/step-modules');
     }
 
-    public function stepModulesAction()
-    {
-        $this->_install->setStep(Axis_Install_Model_Wizard::STEP_MODULES);
-        $this->view->pageTitle = 'Installation Mode';
-        $this->view->modules = Axis_Install_Model_Module::getModules();
-        $this->render('step-modules');
-    }
+//    public function stepModulesAction()
+//    {
+//        $this->_install->setStep(Axis_Install_Model_Wizard::STEP_MODULES);
+//        $this->view->pageTitle = 'Installation Mode';
+//        $this->view->modules = Axis_Install_Model_Module::getModules();
+//        $this->render('step-modules');
+//    }
 
-    public function saveModulesAction()
-    {
-        $this->_session->modules = array_keys(
-            array_filter($this->_getParam('modules'))
-        );
-        $this->_install();
-    }
+//    public function saveModulesAction()
+//    {
+//        $this->_session->modules = array_keys(
+//            array_filter($this->_getParam('modules'))
+//        );
+//        $this->_install();
+//    }
 
     public function stepFinishAction()
     {
