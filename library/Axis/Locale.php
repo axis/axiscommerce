@@ -405,10 +405,16 @@ class Axis_Locale
         $options = array();
         $zones = Zend_Locale::getTranslationList('WindowsToTimezone', self::getLocale());
 
-        asort($zones);
+        ksort($zones);
         foreach ($zones as $code => $name) {
             $name = trim($name);
-            $options[$code] = empty($name) ? $code : $name . ' (' . $code . ')';
+
+            $windowTimezone = explode('/', $code);
+            $label = $windowTimezone[1];
+            if (!empty($name)) {
+                $label .= ' (' . $name . ')';
+            }
+            $options[$windowTimezone[0]][$code] = $label;
         }
         return $options;
     }
