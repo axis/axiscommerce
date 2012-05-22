@@ -13,7 +13,8 @@ SetEnv APPLICATION_ENV development
     RewriteRule ^.*$ - [NC,L]
 
     ## Remove trailing slash
-    RewriteRule ^(.+[^/])/$ http://%{HTTP_HOST}/$1 [R=301,L]
+#    RewriteRule ^(.+)/$ $1 [R=301,L]
+#    RewriteRule ^(.+[^/])/$ http://%{HTTP_HOST}/$1 [R=301,L]
 
     ## To redirect all users to the site WITH the 'www.' prefix
 #   RewriteCond %{HTTP_HOST} ^example\.com$ [NC]
