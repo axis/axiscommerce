@@ -38,7 +38,7 @@ class Axis_ShippingTable_Model_Observer
             'sales' => array(
                 'pages' => array(
                     'shipping-table' => array(
-                        'label'         => 'Shipping Table Method',
+                        'label'         => 'Table Rate',
                         'order'         => 20,
                         'translator'    => 'Axis_ShippingTable',
                         'module'        => 'Axis_ShippingTable',

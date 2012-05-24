@@ -35,7 +35,7 @@ class Axis_ShippingTable_Admin_RateController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('admin')->__("Shipping Table");
+        $this->view->pageTitle = Axis::translate('shippingTable')->__("Table Rate");
         $this->render();
     }
     

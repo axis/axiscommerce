@@ -25,19 +25,16 @@ var RateController = function (){
         Ext.onReady(function () {
             // 00
             // /\
-            Ext.StoreMgr.lookup('core/site').load({
-                callback: function(){
-                    Ext.StoreMgr.lookup('location/country').load({
-                        callback: function(){
-                            Ext.StoreMgr.lookup('location/zone').load({
-                                callback: function(){
-                                    Ext.StoreMgr.lookup('shippingTable/rate').load();
-                                }
-                            });
-                        }
-                    });
-                }
+            Ext.StoreMgr.lookup('core/site').on('load', function(){
+                Ext.StoreMgr.lookup('location/country').load();
             });
+            Ext.StoreMgr.lookup('location/country').on('load', function(){
+                Ext.StoreMgr.lookup('location/zone').load();
+            });
+            Ext.StoreMgr.lookup('location/zone').on('load', function(){
+                Ext.StoreMgr.lookup('shippingTable/rate').load();
+            });
+            Ext.StoreMgr.lookup('core/site').load();
             
             new Axis.Panel({
                 items: [

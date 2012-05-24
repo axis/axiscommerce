@@ -48,7 +48,7 @@ Ext.onReady(function () {
             direction: 'DESC'
         },
         proxy: new Ext.data.HttpProxy({
-            method: 'get',
+            method: 'post',
             url: Axis.getUrl('shipping-table/rate/list')
         })
     });
@@ -66,7 +66,7 @@ Ext.onReady(function () {
         storeId: 'core/site',
 //        autoLoad: true,
         proxy: new Ext.data.HttpProxy({
-            method: 'get',
+            method: 'post',
             url: Axis.getUrl('core/site/list')
         }),
         reader: new Ext.data.JsonReader({
@@ -103,7 +103,7 @@ Ext.onReady(function () {
         },
         pruneModifiedRecords: true,
         proxy: new Ext.data.HttpProxy({
-            method: 'get',
+            method: 'post',
             url: Axis.getUrl('location/country/list')
         })
     });
@@ -134,7 +134,7 @@ Ext.onReady(function () {
         },
         pruneModifiedRecords: true,
         proxy: new Ext.data.HttpProxy({
-            method: 'get',
+            method: 'post',
             url: Axis.getUrl('location/zone/list')
         })
     });
