@@ -58,6 +58,7 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
                     ->option('sortOrder', 'Sort Order')
                         ->setTranslation('Axis_Core')
                     ->option('multiPrice', 'Multi Price')
+                        ->setValue('{"standard":{"title":"","price":"25","minOrderTotal":"","maxOrderTotal":"99.9999"},"discount":{"title":"","price":"15","minOrderTotal":"100","maxOrderTotal":""}}')
                         ->setType('multiprice')
                         ->setModel('shippingFlat/option_standard_multiPrice')
                     ->option('type', 'Type', 'Per Order')

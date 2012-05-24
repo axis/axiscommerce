@@ -26,6 +26,28 @@ Ext.onReady(function () {
     var storeLocationCountry = Ext.StoreMgr.lookup('location/country');
     var storeLocationZone    = Ext.StoreMgr.lookup('location/zone');
     
+    //@todo clone store
+    var storeCoreSiteForEditor = new Ext.data.Store({
+        recordType: storeCoreSite.recordType
+    });
+    storeCoreSite.on('load', function(){
+        storeCoreSiteForEditor.add(storeCoreSite.getRange());
+    });
+    
+    var storeLocationCountryForEditor = new Ext.data.Store({
+        recordType: storeLocationCountry.recordType
+    });
+    storeLocationCountry.on('load', function(){
+        storeLocationCountryForEditor.add(storeLocationCountry.getRange());
+    });
+    
+    var storeLocationZoneForEditor = new Ext.data.Store({
+        recordType: storeLocationZone.recordType
+    });
+    storeLocationZone.on('load', function(){
+        storeLocationZoneForEditor.add(storeLocationZone.getRange());
+    });
+    
     var columnModel = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
@@ -36,7 +58,7 @@ Ext.onReady(function () {
             dataIndex: 'id'
         }, {
             header: "Site".l(),
-            id : 'name',
+            id : 'site',
             dataIndex: 'site_id',
             renderer: function(value) {
                 var row = storeCoreSite.getById(value);
@@ -46,7 +68,7 @@ Ext.onReady(function () {
                 editable: false,
                 typeAhead: true,
                 triggerAction: 'all',
-                store: storeCoreSite,
+                store: storeCoreSiteForEditor,
                 displayField: 'name',
                 valueField: 'id',
                 mode: 'local',
@@ -72,7 +94,7 @@ Ext.onReady(function () {
                 editable: false,
                 typeAhead: true,
                 triggerAction: 'all',
-                store: storeLocationCountry,
+                store: storeLocationCountryForEditor,
                 displayField: 'name',
                 valueField: 'id',
                 mode: 'local',
@@ -97,7 +119,7 @@ Ext.onReady(function () {
                 editable: false,
                 typeAhead: true,
                 triggerAction: 'all',
-                store: storeLocationZone,
+                store: storeLocationZoneForEditor,
                 displayField: 'name',
                 valueField: 'id',
                 mode: 'local',
@@ -108,7 +130,7 @@ Ext.onReady(function () {
                 store: storeLocationZone
             }
         }, {
-            header: "Postcode".l(),
+            header: "Zip".l(),
             width: 80,
             dataIndex: 'zip',
             editor: new Ext.form.TextField({
@@ -133,7 +155,7 @@ Ext.onReady(function () {
     
     new Axis.grid.EditorGridPanel({
         id: 'gridShippingTableRate',
-//        autoExpandColumn: 'name',
+        autoExpandColumn: 'site',
         ds: store,
         cm: columnModel,
         plugins: [new Axis.grid.Filter()],

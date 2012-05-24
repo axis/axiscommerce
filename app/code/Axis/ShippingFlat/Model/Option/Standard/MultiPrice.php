@@ -62,6 +62,10 @@ class Axis_ShippingFlat_Model_Option_Standard_MultiPrice implements Axis_Config_
      */
     public function decode($value)
     {
-        return json_decode($value, true);
+        $value = json_decode($value, true);
+        if (!is_array($value)) {
+            $value = array();
+        }
+        return $value;
     }
 }

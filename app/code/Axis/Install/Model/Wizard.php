@@ -449,10 +449,9 @@ class Axis_Install_Model_Wizard
             $this->_installLocale();
         }
 
-        foreach ($this->_session->modules as $code) {
-            if (!strstr($code, '_')) {
-                continue;
-            }
+        $moduleCodes = $modelModule->getListFromFilesystem('Axis');
+        foreach ($moduleCodes as $code) {
+        // foreach ($this->_session->modules as $code) {
             $this->log("Module {$code}:");
             $moduleRow = $modelModule->getByCode($code);
             if ($moduleRow->isInstalled()) {

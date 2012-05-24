@@ -6,17 +6,18 @@
         <li>
             <div class="input-box">
                 <label for="default-locale"><?php echo Axis::translate('install')->__('Locale')?>:</label><br/>
-                <?php echo $this->formSelect('default[locale]', 'en_US', null, Axis_Locale::getInstallLocaleList()) ?>
+                <?php echo $this->formSelect('default[locale]', Axis_Locale::getLocale(), null, Axis_Locale::getInstallLocaleList()) ?>
             </div>
         </li>
         <li>
             <div class="input-box">
                 <label for="default-timezone"><?php echo Axis::translate('install')->__('Timezone')?>:</label><br/>
-                <?php echo $this->formSelect('default[timezone]', 'Eastern Standard Time', null, Axis_Locale::getTimeZoneList()) ?>
+                <?php echo $this->formSelect('default[timezone]', Axis_Locale::getTimezone(), null, Axis_Locale::getTimeZoneList()) ?>
             </div>
             <div class="input-box">
                 <label for="default-currency"><?php echo Axis::translate('install')->__('Currency')?>:</label><br/>
-                <?php echo $this->formSelect('default[currency]', 'USD',  null, Axis_Locale::getCurrencyList()) ?>
+                <?php $currency = new Zend_Currency(); ?>
+                <?php echo $this->formSelect('default[currency]', $currency->getShortName(),  null, Axis_Locale::getCurrencyList()) ?>
             </div>
         </li>
     </ul>

@@ -32,18 +32,20 @@
 abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_Abstract implements Axis_Config_Option_Encodable_Interface
 {
     const SEPARATOR = ',';
-    
+
     /**
      *
-     * @param  array $value
+     * @param  mixed $value array or string
      * @return string
      */
     public function encode($value)
     {
-        $value = array_intersect(array_keys($this->toArray()), (array) $value);
-        return implode(self::SEPARATOR, (array)$value);
+        if (!is_array($value)) {
+            return $value;
+        }
+        return implode(self::SEPARATOR, $value);
     }
-    
+
     /**
      *
      * @param  string $value
@@ -51,48 +53,10 @@ abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_A
      */
     public function decode($value)
     {
-        return array_filter(explode(self::SEPARATOR, $value));
-//        return array_intersect(
-//            array_keys($this->toArray()), explode(self::SEPARATOR, $value)
-//        );
+        $value = str_replace(' ', '', $value);
+        if (empty($value)) {
+            return array();
+        }
+        return explode(self::SEPARATOR, $value);
     }
-    
-//    /**
-//     *
-//     * @param mixed $offset
-//     * @return bool 
-//     */
-//    public function offsetExists($offset) 
-//    {
-//        return isset($this->_collection[$offset]);
-////        
-////        foreach($this->decode($offset) as $key) {
-////            if (!array_key_exists($key, $this->_collection)) {
-////                return false;
-////            }
-////        }
-////        return true;
-//    }
-//        
-//    /**
-//     * Required by the ArrayAccess implementation
-//     * 
-//     * @param mixed $offset
-//     * @return mixed 
-//     */
-//    public function offsetGet($offset) 
-//    {
-//        return isset($this->_collection[$offset]) ? $this->_collection[$offset] : null;
-//        
-////        $return = array();
-////        foreach($this->decode($offset) as $key) {
-////            if (array_key_exists($key, $this->_collection)) {
-////                $return[$key] = $this->_collection[$key];
-////            }
-////        }
-//////        if (count($return) === count($this->_collection)) {
-//////            return 'All';
-//////        }
-////        return $this->encode($return);
-//    }
 }
