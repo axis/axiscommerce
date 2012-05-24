@@ -5,6 +5,5 @@
 "Import","import"
 "Table Method","Table Yöntem"
 "Table Standard","Table Standart"
-"File will be written to AXIS_ROOT/var/export folder","SITE_ROOT/var/export klasor de dosya yazma izni olmalı"
 "File at AXIS_ROOT/var/export folder, with shipping rates","SITE_ROOT/var/export folder, nakliye oranları dosyası"
 "The shipping cost is based on the order total or the total weight of the items ordered or the total number of items orderd.","Nakliye maliyeti, toplam sipariş ve sipariş öğeleri veya siralanabilir öğelerin toplam sayısı, toplam ağırlığına dayanmaktadır."
