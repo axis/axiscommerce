@@ -255,7 +255,7 @@ class Axis_Core_Model_Config_Builder
         if ($this->_isContainer) {
             
             $rowData = array_merge($rowData, array(
-                'type'  => new Zend_Db_Expr('NULL'),
+                'type'  => '',
                 'model' => '',
             ));
         }

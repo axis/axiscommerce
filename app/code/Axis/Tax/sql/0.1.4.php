@@ -30,9 +30,14 @@ class Axis_Tax_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('orderTotal', 'Order Total Modules', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('orderTotal/tax/model', 'Order Total Modules/Tax/Model', 'tax/checkout_total_tax')
-            ->add('orderTotal/shipping_tax/model', 'Order Total Modules/ShippingTax/Model', 'tax/checkout_total_shippingTax');
+        $this->getConfigBuilder()
+            ->section('orderTotal', 'Order Total Modules')
+                ->setTranslation('Axis_Checkout')
+                ->section('tax', 'Tax')
+                    ->option('model', 'Model', 'tax/checkout_total_tax')
+                ->section('/tax')
+                ->section('shipping_tax', 'ShippingTax')
+                    ->option('model', 'Model', 'tax/checkout_total_shippingTax')
+            ->section('/');
     }
 }

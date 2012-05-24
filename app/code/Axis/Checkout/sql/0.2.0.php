@@ -31,7 +31,7 @@ class Axis_Checkout_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
     public function up()
     {
         $this->getConfigBuilder()
-            ->section('checkout')
+            ->section('checkout', 'Checkout')
                 ->section('address_form', 'Address Form')
                     ->option('custom_fields_display_mode', 'Display Mode for Custom Fields')
                         ->setValue(Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode::getDeafult())

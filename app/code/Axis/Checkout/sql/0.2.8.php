@@ -30,9 +30,14 @@ class Axis_Checkout_Upgrade_0_2_8 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('orderTotal', 'Order Total Modules', null, null, array('translation_module' => 'Axis_Checkout'))
-            ->add('orderTotal/subtotal/model', 'Order Total Modules/Subtotal/Model', 'checkout/total_subtotal')
-            ->add('orderTotal/shipping/model', 'Order Total Modules/Shipping/Model', 'checkout/total_shipping');
+        $this->getConfigBuilder()
+            ->section('orderTotal', 'Order Total Modules')
+                ->setTranslation('Axis_Checkout')
+                ->section('subtotal', 'Subtotal')
+                    ->option('model', 'Model', 'checkout/total_subtotal')
+                ->section('/subtotal')
+                ->section('shipping', 'Shipping')
+                    ->option('model', 'Model', 'checkout/total_shipping')
+            ->section('/');
     }
 }
