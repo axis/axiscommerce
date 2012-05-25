@@ -49,13 +49,16 @@ var RateController = function (){
         add: function() {
             var grid = Ext.getCmp('gridShippingTableRate');
             var store = Ext.StoreMgr.lookup('shippingTable/rate');
+            var storeSite = Ext.StoreMgr.lookup('core/site');
             grid.stopEditing();
             var emptyRow = new store.recordType({
+                site_id: storeSite.getAt(1).get('id'),
                 country_id: 0,
-                zone_id: 0
+                zone_id: 0,
+                zip: '*'
             });
             grid.getStore().insert(0, emptyRow);
-            grid.startEditing(0, 0);
+            grid.startEditing(0, 6);
         },
         save: function(){
             var store = Ext.StoreMgr.lookup('shippingTable/rate');
