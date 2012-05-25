@@ -41,7 +41,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
 
     protected $_selectClass = 'Axis_Discount_Model_Discount_Select';
 
-    
+
     protected function _getAppliedAttributes($rule, $attributes)
     {
         $result = array();
@@ -68,7 +68,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 }
             }
         }
-               
+
         return count($result) ? $result : false;
     }
 
@@ -80,7 +80,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
     public function getRulesByProduct($productId, $variationId = false)
     {
         $product = Axis::single('catalog/product')->find($productId)->current();
-        
+
         $categories = Axis::single('catalog/product_category')->select('category_id')
             ->where('product_id = ?', $productId)
             ->fetchCol()
@@ -121,9 +121,9 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         $baseVariationAttributes = isset($attributes[0]) ? $attributes[0] : array();
         ////////////////////////////////////////////////////////////////////////
         $data = array();
-        
+
         foreach ($variations as $variation) {
-            
+
             // $variation->getPrice()
             $price = $this->_price(
                 $product->price,
@@ -131,21 +131,21 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                 $variation['price_type']
             );
             $collection->addPriceFilter($price);
-            
+
             // $variation->getAttributes()
-            $variationAttributes = isset($attributes[$variation['id']]) ? 
+            $variationAttributes = isset($attributes[$variation['id']]) ?
                 $attributes[$variation['id']] : array();
             $variationAttributes = $baseVariationAttributes + $variationAttributes;
-            
+
             $rules = $collection->load();
             foreach ($rules as $ruleId => $rule) {
-                               
+
                 if (!$appliedAttributes = $this->_getAppliedAttributes(
                         $rule, $variationAttributes)) {
 
                     continue;
                 }
-                
+
                 $rawRule = array(
                     'name'        => $rule['name'],
                     'type'        => $rule['type'],
@@ -153,20 +153,20 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
                     'priority'    => $rule['priority'],
                     'is_combined' => $rule['is_combined']
                 );
-                
+
                 if ($appliedAttributes && is_array($appliedAttributes)) {
 
                     $rawRule['attribute'] = $appliedAttributes;
                 }
-                
+
                 $data[$product->id][$variation['id']][$ruleId] = $rawRule;
             }
         }
-        
+
         if (false === $variationId) {
             return isset($data[$productId]) ? $data[$productId] : array();
         }
-        
+
         return isset($data[$productId][$variationId]) ?
             $data[$productId][$variationId] : array();
     }
@@ -252,33 +252,37 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
         }
         ////////////////////////////////////////////////////////////////////////
         $data = array();
-        
+
         $collection = new Axis_Discount_Model_Discount_Collection();
         $collection->addIsActiveFilter();
-        
+
         $products = Axis::model('catalog/product')->find($productIds);
         foreach ($products as $product) {
+            if (empty($categories[$product->id])) {
+                continue;
+            }
+
             $collection
-                ->addProductIdFilter(   $product->id)
-                ->addManufactureFilter( $product->manufacturer_id)
-                ->addCategoryFilter(    $categories[$product->id])
-                ->addPriceFilter(       $product->price)
-            ;
+                ->addProductIdFilter($product->id)
+                ->addManufactureFilter($product->manufacturer_id)
+                ->addCategoryFilter($categories[$product->id])
+                ->addPriceFilter($product->price);
+
             $baseVariationAttributes = isset($attributes[$product->id][0]) ? $attributes[$product->id][0] : array();
-            
+
             $rules = $collection->load();
             foreach ($rules as $ruleId => $rule) {
-                               
+
                 if (!$this->_getAppliedAttributes(
                         $rule, $baseVariationAttributes)) {
 
                     continue;
                 }
-                
+
                 $data[$product->id][$ruleId] = $rule;
             }
         }
-        
+
         return $data;
     }
 
@@ -352,7 +356,7 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
      *
      * @param int $productId
      * @return assoc array
-     */   
+     */
     public function getSpecialPrice($productId)
     {
         $collection = new Axis_Discount_Model_Discount_Collection();
@@ -360,15 +364,15 @@ class Axis_Discount_Model_Discount extends Axis_Db_Table
             ->addSpecialFilter()
             ->addProductIdFilter($productId)
             ->load()
-        ; 
+        ;
         $rule = current($rules);
-        
+
         if (!$rule) {
             return array();
         }
 
         $row = $this->find($rule['id'])->current();
-        
+
         return array(
             'price'         => $row->amount, //always "to"
             'from_date_exp' => $row->from_date,

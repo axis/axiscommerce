@@ -40,7 +40,12 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
 
     protected $_translatorModule = 'account';
 
-    protected $_fieldConfig = array();
+    protected $_fieldConfig = array(
+        'firstname_sort_order' => -20,
+        'firstname_status'     => 'required',
+        'lastname_sort_order'  => -19,
+        'lastname_status'      => 'required'
+    );
 
     protected $_eventPrefix = 'checkout_form_address';
 
@@ -123,14 +128,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
     public function init()
     {
         $configOptions = Axis::config('account/address_form')->toArray();
-        $this->_fieldConfig = array_merge(array(
-                'firstname_sort_order'  => -20,
-                'firstname_status'      => 'required',
-                'lastname_sort_order'   => -19,
-                'lastname_status'       => 'required'
-            ),
-            $configOptions
-        );
+        $this->_fieldConfig = array_merge($this->_fieldConfig, $configOptions);
 
         $form = $this;
         if ($subform = $this->getAttrib('subform')) {
@@ -140,7 +138,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
             $this->addSubForm($form, $subform);
         }
 
-        $countries = Axis_Collect_Country::collect();
+        $countries = Axis::model('location/option_country')->toArray();
         if (isset($countries['0'])
             && 'ALL WORLD COUNTRY' === $countries['0']) {
 
@@ -157,7 +155,7 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         $countryIds     = array_keys($countries);
         $defaultCountry = current($countryIds);
 
-        $zones = Axis_Collect_Zone::collect();
+        $zones = Axis::model('location/option_zone')->toArray();
         $this->_zones = $zones;
 
         if ('billing_address' == $subform
@@ -276,7 +274,8 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
         $rows = Axis::model('account/customer_field')->getFields();
         $displayMode = Axis::config('checkout/address_form/custom_fields_display_mode');
         foreach ($rows as $row) {
-            if (!$row['required'] && 'required' == $displayMode) {
+            if (!$row['required'] 
+                && Axis_Checkout_Model_Option_Form_Address_CustomFieldsDisplayMode::REQUIRED == $displayMode) {
                 continue;
             }
 
@@ -302,11 +301,15 @@ class Axis_Checkout_Model_Form_Address extends Axis_Form
                     );
             }
             if (!empty($row['validator'])) {
-                $field->addValidator($row['validator']);
                 if ('Date' == $row['validator']) {
+                    $field->addValidator(
+                        $row['validator'], false, array('format' => 'yyyy-MM-dd')
+                    );
                     $field->setAttrib(
                         'class', $field->getAttrib('class') . ' input-date'
                     );
+                } else {
+                    $field->addValidator($row['validator']);
                 }
             }
             if (!empty($row['axis_validator'])) {

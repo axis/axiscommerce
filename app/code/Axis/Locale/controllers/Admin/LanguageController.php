@@ -36,6 +36,7 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('locale')->__('Languages');
+        $this->view->zendLocales = Axis::model('locale/option_ZendLocale')->toArray();
         $this->render();
     }
 
@@ -133,6 +134,6 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
             Axis_Locale::setLocale($locale);
         }
         
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 }

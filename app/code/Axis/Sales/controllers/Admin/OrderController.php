@@ -87,7 +87,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
             ->sendSuccess()
         ;
     }
-    
+
     public function loadAction()
     {
         $orderId = $this->_getParam('orderId');
@@ -97,18 +97,22 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
 
         $products = $order->getProducts();
         foreach($products as &$product) {
-            $product['price'] =
-                $product['price'] * $order->currency_rate;
-            $product['final_price'] =
-                $product['final_price'] * $order->currency_rate;
-            $product['tax_rate'] = $product['tax'] * 100 / $product['final_price'];
+//            $product['price'] =
+//                $product['price'] * $order->currency_rate;
+//            $product['final_price'] =
+//                $product['final_price'] * $order->currency_rate;
+
+            $product['tax_rate'] = 0;
+            if ($product['final_price'] > 0) {
+                $product['tax_rate'] = $product['tax'] * 100 / $product['final_price'];
+            }
         }
         $data['products'] = array_values($products);
 
         $totals = $order->getTotals();
-        foreach ($totals as &$total) {
-            $total['value'] = $total['value'] * $order->currency_rate;
-        }
+//        foreach ($totals as &$total) {
+//            $total['value'] = $total['value'] * $order->currency_rate;
+//        }
         $this->view->totals = $data['totals'] = $totals;
 
 
@@ -152,19 +156,20 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         );
 
         $order = $order->toArray();
-        $order['status_name'] =
-            Axis_Collect_OrderStatusText::getName($order['order_status_id']);
-        $order['site_name'] =
-            Axis_Collect_Site::getName($order['site_id']);
+        $orderStatusText = Axis::model('sales/option_order_status_text');
+        $order['status_name'] = $orderStatusText[$order['order_status_id']];
+
+        $sites = Axis::model('core/option_site');
+        $order['site_name'] = $sites[$order['site_id']];
+
         // convert price with rates that was available
         // during order was created (not current rates)
-        $order['order_total'] = $order['order_total'] * $order['currency_rate'];
+//        $order['order_total'] = $order['order_total'] * $order['currency_rate'];
         $data['order'] = $order;
 
         return $this->_helper->json
             ->setData($data)
-            ->sendSuccess()
-        ;
+            ->sendSuccess();
     }
 
     public function saveAction()
@@ -246,7 +251,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
                 'password' => $password
             ));
         }
-        
+
         ////////////////////////////////////////////////////////////////////////
         //prepare order data
         $params['order']['currency_rate'] = Axis::single('locale/currency')
@@ -279,6 +284,11 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
             $orderRow = Axis::single('sales/order')
                 ->createRow($params['order']);
         } else {
+            // Unset updated currency rate.
+            // It cannot be changed in already placed order.
+            if ($params['order']['currency'] === $orderRow->currency) {
+                unset($params['order']['currency_rate']);
+            }
             $orderRow->setFromArray($params['order']);
         }
         $orderRow->save();
@@ -500,6 +510,10 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
             );
 
             $descriptionRow = $product->getDescription();
+            $taxRate = 0;
+            if ($finalPrice > 0) {
+                $taxRate = $productTax * 100 / $finalPrice;
+            }
             $data[] = array(
                 'attributes'    => $attributesOptions,
                 'backorder'     => $stock->backorder,
@@ -511,7 +525,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
                 'price'         => $product->price,
                 'quantity'      => $quantity,
                 'sku'           => $product->sku,
-                'tax_rate'      => $productTax * 100 / $finalPrice,
+                'tax_rate'      => $taxRate,
                 'variation_id'  => $variationId
             );
         }

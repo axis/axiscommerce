@@ -44,7 +44,7 @@ class Axis_Account_Model_Form_Customer extends Zend_Form
             'label'    => 'Site'
         ));
         $this->getElement('site_id')
-            ->setMultiOptions(Axis_Collect_Site::collect());
+            ->setMultiOptions(Axis::model('core/option_site')->toArray());
         $this->addElement('text', 'email', array(
             'required' => true,
             'label'    => 'Email'

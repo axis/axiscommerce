@@ -1,25 +1,25 @@
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
- 
+
 /*CUSTOM FUNCTIONS*/
 function in_array(search, values)
 {
@@ -41,20 +41,20 @@ function key_by_value(search, values)
 
 function str_replace(search, replace, subject) {
     // http://kevin.vanzonneveld.net
- 
+
     var s = subject;
     var ra = r instanceof Array, sa = s instanceof Array;
     var f = [].concat(search);
     var r = [].concat(replace);
     var i = (s = [].concat(s)).length;
     var j = 0;
-    
+
     while (j = 0, i--) {
         if (s[i]) {
             while (s[i] = (s[i]+'').split(f[j]).join(ra ? r[j] || "" : r[0]), ++j in f){};
         }
     }
- 
+
     return sa ? s : s[0];
 }
 
@@ -174,7 +174,7 @@ function deepObjCopy (dupeObj) {
     if (typeof(dupeObj) == 'object') {
         if (typeof(dupeObj.length) != 'undefined')
             var retObj = new Array();
-        for (var objInd in dupeObj) {   
+        for (var objInd in dupeObj) {
             if (typeof(dupeObj[objInd]) == 'object') {
                 retObj[objInd] = deepObjCopy(dupeObj[objInd]);
             } else if (typeof(dupeObj[objInd]) == 'string') {
@@ -209,7 +209,7 @@ function formatCurrency(price, format) {
     return format.pattern.replace("%s", r).replace(/^\s\s*/, "").replace(/\s\s*$/, "");
 }
 
-//==============================================================================                
+//==============================================================================
 if (!Product) {
     var Product = {};
 }
@@ -236,7 +236,7 @@ Product.Attributes = {
     settings: {
         'container': '.col-main .product-info'
     },
-    
+
     init: function (prices, options) {
         this.basePrice = prices.finalPrice;
         this.currentPrice = this.basePrice;
@@ -266,7 +266,7 @@ Product.Attributes = {
 
         var currency = this.currencyChar;
         price = price * this.currencyRate;
-        
+
         if (this.format.position != 'Left') {
             this.format.pattern =
                 attribute + ' ' + prefix + ' ' + "%s" + '' + currency;
@@ -296,7 +296,7 @@ Product.Attributes = {
                 } else {
                     return round(price - amount*price/100, 2);
                 }
-                
+
             default:
                 return round(price, 2);
         }
@@ -313,19 +313,19 @@ Product.Attributes = {
             discountRules[this.Variations.currentVariationId]
         );
         discountPrice += this.Modifiers.getPrice(discountPrice);
-        
+
         if (this.currentPrice != discountPrice) {
-            
-            $('.price-box').html(
+
+            $('.price-box', this.settings.container).html(
                 this.settings.oldPriceTemplate +
                 this.settings.specialPriceTemplate +
                 this.settings.savePriceTemplate
             );
 
         } else {
-            $('.price-box').html(this.settings.regularPriceTemplate);
+            $('.price-box', this.settings.container).html(this.settings.regularPriceTemplate);
         }
-        
+
         $('.price-box .old-price .price', this.settings.container)
             .html(this.toCurrency(this.currentPrice)
         );
@@ -346,7 +346,7 @@ Product.Attributes = {
     },
     applyDiscountRule: function (price, rules) {
         var first = true;
-        
+
         for (var discountId in rules) {
             rule = rules[discountId];
             if (rule.attribute && Count(rule.attribute)) {
@@ -437,7 +437,7 @@ Product.Attributes.Modifiers = {
 
             var match = self._analize(oldOption);
 
-            
+
             if (rule.difference == 0 /*|| (rule.type == 'to'
             && Product.Attributes.newPrice(Product.Attributes.currentPrice, rule.amount, 'to', true) < this.currentToPrice
             && this.currentToPriceOptionId != rule.optionId)*/) {
@@ -465,9 +465,9 @@ Product.Attributes.Modifiers = {
             var optionId  = /^modifier-\d+-(\d+)$/.exec(el.id)[1];
             var rule = self.pricesRules[optionId];
             var prefix = rule.difference > 0 ? '+' : '-';
-            
+
             match = self._analize(oldOption);
-            
+
             if (rule.difference == 0) {
                 $('#' + el.id + '-text').html(match);
             } else {
@@ -536,7 +536,7 @@ Product.Attributes.Modifiers = {
         switch(el.tagName) {
             case 'SELECT':
                 var modifierId = /^modifier-\d+-(\d+).*$/.exec($(':selected', el).attr('id'))[1];
-                
+
                 //var modifierId = $(el).children()[$(el).get(0).selectedIndex].id;
             break;
             case 'INPUT':
@@ -629,16 +629,16 @@ Product.Attributes.Modifiers = {
             modifierId = stack[option].modifierId;
             optionId = stack[option].optionId;
             rule = this.pricesRules[str_replace('option', '', modifierId)];
-            if (!modifierId || !optionId 
+            if (!modifierId || !optionId
                 || rule.type == 'to' /*to to kostul`*/) {
-                
+
                 continue;
             }
             price = Product.Attributes.newPrice(price, rule.amount, rule.type, true);
         }
         return round(price - basePrice, 2);
     },//end Product.Attributes.Modifiers.getPrice()
-    //get attributes ids 
+    //get attributes ids
     getAttributeIds : function() {
         var attributeIds = [];
         var len = this.changeStack.length;
@@ -676,7 +676,7 @@ Product.Attributes.Variations = {
         $('.product-variations-list .sub-price').change(function() {
             self.onChange(this);
         });
-        
+
     },
     _variationExists: function (optionId, valueId) {
         var filters = this._getFilters();

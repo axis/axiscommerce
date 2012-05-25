@@ -39,7 +39,7 @@ class Axis_Csv_Model_Profile extends Axis_Db_Table
 
     public function getList()
     {
-        return $this->select()->from($this->_name)
+        return $this->select('*')
             ->joinLeft('csv_profile_filter',
                 'cp.id = cpf.profile_id',
                 array(
@@ -114,10 +114,9 @@ class Axis_Csv_Model_Profile extends Axis_Db_Table
             return array();
         }
 
-        $select = Axis::single('catalog/product')->select()
+        $select = Axis::single('catalog/product')->select('*')
             ->setIntegrityCheck(false)
             ->distinct()
-            ->from('catalog_product')
             ->where('cp.id > ' . $minId)
             ->order('cp.id ASC')
             ->limit($limit);
@@ -131,7 +130,7 @@ class Axis_Csv_Model_Profile extends Axis_Db_Table
                     ->where('cps.in_stock = ?', intval($filters['stock']));
             }
             if (isset($filters['site']) && $filters['site'] != 'all' && trim($filters['site'], ' ,') != '') {
-                $site_count = count(Axis_Collect_Site::collect());
+                $site_count = count(Axis::model('core/option_site'));
                 $filter_sites = explode(',', trim($filters['site'], ' ,'));
                 $filters_site_count = count($filter_sites);
                 if ($site_count != $filters_site_count) {

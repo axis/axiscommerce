@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Box
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Account
  * @subpackage  Axis_Account_Box
@@ -51,18 +51,23 @@ class Axis_Account_Box_Navigation extends Axis_Account_Box_Abstract
             'title'     => $title,
             'css_class' => $cssClass
         ));
-        
+
         return $this;
     }
 
-    public function init()
+    protected function _beforeRender()
     {
         if ($this->identity = Axis::getCustomerId()) {
             Axis::dispatch('account_box_navigation_prepare', $this);
-            
             ksort($this->_items);
             $this->items = $this->_items;
         }
-        return true;
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        return array(
+            Axis::model('account/customer')->getGroupId()
+        );
     }
 }

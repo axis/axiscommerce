@@ -36,10 +36,14 @@ class Axis_Admin_Box_Greeting extends Axis_Admin_Box_Abstract
     protected $_title = '';
     protected $_disableWrapper = true;
 
-    public function init()
+    protected function _construct()
+    {
+        $this->setData('cache_lifetime', 300);
+    }
+
+    protected function _beforeRender()
     {
         $date = new Axis_Date();
-        $todayDate = $date->toString();
         $date = $date->addDay(-1)->toString('YYYY-MM-dd');
 
         $mailCount = Axis::single('contacts/message')
@@ -47,11 +51,9 @@ class Axis_Admin_Box_Greeting extends Axis_Admin_Box_Abstract
             ->where('created_at > ?', $date)
             ->count();
 
-
         $orderTotal = (float) Axis::single('sales/order')->select('SUM(order_total)')
             ->where('date_purchased_on > ?', $date)
-            ->fetchOne()
-            ;
+            ->fetchOne();
 
         $orderTotal = Axis::single('locale/currency')
             ->getCurrency(Axis::config()->locale->main->currency)
@@ -65,12 +67,17 @@ class Axis_Admin_Box_Greeting extends Axis_Admin_Box_Abstract
         $userId = Zend_Auth::getInstance()->getIdentity();
 
         $this->setFromArray(array(
-            'today_date'  => $todayDate,
             'mail_count'  => $mailCount,
             'order_total' => $orderTotal,
             'order_count' => $orderCount,
             'user_info'   => Axis::single('admin/user')->find($userId)->current()
         ));
-        return true;
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        return array(
+            Zend_Auth::getInstance()->getIdentity()
+        );
     }
 }

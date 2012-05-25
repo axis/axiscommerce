@@ -10,16 +10,14 @@
         {{headLink}}
         <script type="text/javascript">
         var Axis = {
-            baseUrl     : "<?php echo $this->baseUrl ?>",
-            secureUrl   : "<?php echo Axis::config('core/backend/ssl') ? $this->secureUrl : $this->baseUrl ?>",
-            adminUrl    : '<?php echo $this->adminUrl ?>',
-            skinUrl     : '<?php echo $this->skinUrl() ?>',
-            locale      : '<?php echo Axis_Locale::getLocale()->toString() ?>',
-            language    : '<?php echo Axis_Locale::getLanguageId() ?>',
-            languages   : <?php echo Zend_Json_Encoder::encode(Axis_Collect_Language::collect()) ?>,
-            locales     : <?php echo Zend_Json_Encoder::encode(
-                Axis::single('locale/language')->select()->fetchAssoc()
-            ) ?>
+            baseUrl   : "<?php echo $this->baseUrl ?>",
+            secureUrl : "<?php echo Axis::config('core/backend/ssl') ? $this->secureUrl : $this->baseUrl ?>",
+            adminUrl  : '<?php echo $this->adminUrl ?>',
+            skinUrl   : '<?php echo $this->skinUrl() ?>',
+            locale    : '<?php echo Axis_Locale::getLocale()->toString() ?>',
+            language  : '<?php echo Axis_Locale::getLanguageId() ?>',
+            languages : <?php echo Zend_Json_Encoder::encode($this->languages) ?>,
+            locales   : <?php echo Zend_Json_Encoder::encode($this->locales) ?>
         };
         </script>
         {{headScript}}

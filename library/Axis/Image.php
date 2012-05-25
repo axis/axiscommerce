@@ -178,32 +178,32 @@ class Axis_Image
         }
 
         switch($verticalAlign) {
-            case 'middle':
+            case Axis_Catalog_Model_Option_Watermark_Position::MIDDLE:
                 $positionY = $this->_imageSrcHeight / 2 - $watermarkSrcHeight / 2;
                 break;
-            case 'bottom':
+            case Axis_Catalog_Model_Option_Watermark_Position::BOTTOM:
                 $positionY = $this->_imageSrcHeight - $watermarkSrcHeight;
                 break;
-            case 'top':
+            case Axis_Catalog_Model_Option_Watermark_Position::TOP:
             default:
                 $positionY = 0;
                 break;
         }
 
         switch($horizontalAlign) {
-            case 'center':
+            case Axis_Catalog_Model_Option_Watermark_Position::CENTER:
                 $positionX = $this->_imageSrcWidth / 2 - $watermarkSrcWidth / 2;
                 break;
-            case 'right':
+            case Axis_Catalog_Model_Option_Watermark_Position::RIGHT:
                 $positionX = $this->_imageSrcWidth - $watermarkSrcWidth;
                 break;
-            case 'left':
+            case Axis_Catalog_Model_Option_Watermark_Position::LEFT:
             default:
                 $positionX = 0;
                 break;
         }
 
-        if ($position == 'stretch') {
+        if (Axis_Catalog_Model_Option_Watermark_Position::STRETCH === $position) {
             $dstX = $dstY = 0;
             $newWidth       = $this->_imageSrcWidth;
             $newHeight      = $this->_imageSrcHeight;

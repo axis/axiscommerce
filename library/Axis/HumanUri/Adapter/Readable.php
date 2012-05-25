@@ -133,6 +133,10 @@ class Axis_HumanUri_Adapter_Readable extends Axis_HumanUri_Adapter_Abstract
 
     public function getKeywords()
     {
+        if (!Axis_Area::isFrontend()) {
+            return array();
+        }
+
         $path = urldecode($this->getRequest()->getPathInfo());
         $keywords = explode('/', trim($path, '/'));
 

@@ -41,6 +41,8 @@ class Axis_Sales_Model_Observer
     public function notifyAdminNewOrder(Axis_Sales_Model_Order_Row $order)
     {
         try {
+            $mailBoxes = Axis::model('core/option_mail_boxes');
+            
             $mail = new Axis_Mail();
             $mail->setLocale(Axis::config('locale/main/language_admin'));
             $mail->setConfig(array(
@@ -49,9 +51,7 @@ class Axis_Sales_Model_Observer
                 'data'    => array(
                     'order' => $order
                 ),
-                'to' => Axis_Collect_MailBoxes::getName(
-                    Axis::config('sales/order/email')
-                )
+                'to' => $mailBoxes[Axis::config('sales/order/email')]
             ));
             $mail->send();
             return true;

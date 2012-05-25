@@ -38,7 +38,7 @@
 "Image","Resim"
 "Invalid data recieved","Geçersiz veri"
 "Invalid parameter recieved. ProductId is required","Geçersiz parametre. Ürün Kodu gerekli"
-"Item(s)","Öge(ler)"
+"%s Item(s)","%s Öge(ler)"
 "Keywords","Anahtar kelime"
 "Language sensivity","Dile duyarlı"
 "List","Liste"

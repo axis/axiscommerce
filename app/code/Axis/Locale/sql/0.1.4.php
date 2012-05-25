@@ -36,22 +36,36 @@ class Axis_Locale_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstract
             $languageId = 1;
         }
 
-        Axis::single('core/config_field')->remove('locale/main/language');
+        $this->getConfigBuilder()
+            ->remove('locale/main/language')
+            ->section('locale')
+                ->section('main')
+                    ->option('language_admin', 'Default backend language', $languageId)
+                        ->setType('select')
+                        ->setDescription('Default backend language')
+                        ->setModel('locale/option_language')
+                    ->option('language_front', 'Default frontend language', $languageId)
+                        ->setType('select')
+                        ->setDescription('Default frontend language')
+                        ->setModel('locale/option_language')
 
-        Axis::single('core/config_field')
-            ->add('locale/main/language_admin', 'Locale/General/Default backend language', $languageId, 'select', 'Default backend language', array('model' => 'Language'))
-            ->add('locale/main/language_front', 'Locale/General/Default frontend language', $languageId, 'select', 'Default frontend language', array('model' => 'Language'));
+            ->section('/');       
     }
 
     public function down()
     {
         $languageId = Axis::config('locale/main/language_front');
 
-        Axis::single('core/config_field')
+        $this->getConfigBuilder()
             ->remove('locale/main/language_admin')
-            ->remove('locale/main/language_front');
+            ->remove('locale/main/language_front')
+            ->section('locale')
+                ->section('main')
+                    ->option('language', 'Default language', $languageId)
+                        ->setType('select')
+                        ->setDescription('Default language')
+                        ->setModel('locale/option_language')
 
-        Axis::single('core/config_field')
-            ->add('locale/main/language', 'Locale/General/Default language', $languageId, 'select', 'Default language', array('model' => 'Language'));
+            ->section('/');
     }
 }

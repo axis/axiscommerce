@@ -34,33 +34,5 @@
  */
 abstract class Axis_Admin_Box_Abstract extends Axis_Core_Box_Abstract
 {
-    public function render()
-    {
-        if (!$this->_enabled || !$this->_beforeRender()) {
 
-            return '';
-        }
-        $this->getView()->box = $this;
-
-        $path = 'box/box.phtml';
-        if ($this->disable_wrapper) {
-            $path = 'box/' . $this->getTemplate();
-        }
-        return $this->getView()->render($path);
-    }
-
-    public function getTemplate()
-    {
-        $template = $this->getData('template');
-        if (empty($template)) {
-            if (false === function_exists('lcfirst') ) {
-                function lcfirst($str) {
-                    return (string)(strtolower(substr($str, 0, 1)) . substr($str, 1));
-                }
-            }
-            $template = lcfirst($this->getData('box_name')) . '.phtml';
-            $this->template = $template;
-        }
-        return $template;
-    }
 }

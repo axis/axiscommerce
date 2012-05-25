@@ -3,22 +3,6 @@
     <name>default</name>
     <default_layout>layout_3columns</default_layout>
     <box multiple="1">
-        <class>Axis_Core_Template</class>
-        <block>beforeBodyEnd</block>
-        <sort_order>10</sort_order>
-        <config>{"template":"core/box/tabScript.phtml"}</config>
-        <status>1</status>
-        <page multiple="1">
-            <module>*</module>
-            <controller>*</controller>
-            <action>*</action>
-            <show>1</show>
-            <block></block>
-            <template></template>
-            <tab_container></tab_container>
-        </page>
-    </box>
-    <box multiple="1">
         <class>Axis_Locale_Currency</class>
         <block>left</block>
         <sort_order>10</sort_order>
@@ -697,6 +681,22 @@
             <tab_container></tab_container>
         </page>
     </box>
+    <box multiple="1">
+        <class>Axis_Catalog_Related</class>
+        <block>content</block>
+        <sort_order>110</sort_order>
+        <config>{"template":"catalog\/box\/highlight\/listing.phtml","tab_container":"product-info"}</config>
+        <status>1</status>
+        <page multiple="1">
+            <module>catalog</module>
+            <controller>index</controller>
+            <action>product</action>
+            <show>1</show>
+            <block></block>
+            <template></template>
+            <tab_container></tab_container>
+        </page>
+    </box>
     <layout multiple="1">
         <layout>layout_2columns-left</layout>
         <page>
@@ -959,7 +959,7 @@
     <cms_block multiple="1">
         <content multiple="1">
             <language_id>1</language_id>
-            <content><![CDATA[<div class="col3-set">
+            <content><![CDATA[<div class="col3-set" style="padding: 0 7px !important;">
   <div class="col-1">
     <p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Sed euismod odio consectetur augue elementum dictum non ac orci. Pellentesque nunc nunc, facilisis eu tincidunt et, aliquam a elit. Sed vitae lacus augue, a accumsan nisi. Donec sit amet nisi et eros laoreet pretium nec id nunc.</p>
   </div>

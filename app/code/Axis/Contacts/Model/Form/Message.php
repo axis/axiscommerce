@@ -69,12 +69,18 @@ class Axis_Contacts_Model_Form_Message extends Axis_Form
             'class'    => 'input-text required'
         ));
 
-        $departments = Axis_Collect_Department::collect();
-        if (count($departments)) {
+        $departments = Axis::model('contacts/option_department')->toArray();
+        if (count($departments) > 1) {
             $this->addElement('select', 'department_id', array(
                'label' => 'Department'
             ));
             $this->getElement('department_id')->options = $departments;
+        } elseif (count($departments) == 1) {
+            $this->addElement('hidden', 'department_id', array(
+                'value' => key($departments)
+            ));
+        } else {
+            // do some if don't have anything in $departments
         }
         $this->addElement('textarea', 'message', array(
             'required' => true,

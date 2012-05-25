@@ -45,28 +45,6 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
     protected $_defaultGatewayUrl = 'https://gateway.fedex.com/GatewayDC';
     //protected $_gatewayUrl = 'https://gateway.fedex.com/web-services';
 
-    /**
-     * @var array
-     */
-    private $_codes = array(
-        'PRIORITYOVERNIGHT'                => 'Priority Overnight',
-        'STANDARDOVERNIGHT'                => 'Standard Overnight',
-        'FIRSTOVERNIGHT'                   => 'First Overnight',
-        'FEDEX2DAY'                        => '2Day',
-        'FEDEXEXPRESSSAVER'                => 'Express Saver',
-        'INTERNATIONALPRIORITY'            => 'International Priority',
-        'INTERNATIONALECONOMY'             => 'International Economy',
-        'INTERNATIONALFIRST'               => 'International First',
-        'FEDEX1DAYFREIGHT'                 => '1 Day Freight',
-        'FEDEX2DAYFREIGHT'                 => '2 Day Freight',
-        'FEDEX3DAYFREIGHT'                 => '3 Day Freight',
-        'FEDEXGROUND'                      => 'Ground',
-        'GROUNDHOMEDELIVERY'               => 'Home Delivery',
-        'INTERNATIONALPRIORITY FREIGHT'    => 'Intl Priority Freight',
-        'INTERNATIONALECONOMY FREIGHT'     => 'Intl Economy Freight',
-        'EUROPEFIRSTINTERNATIONALPRIORITY' => 'Europe First Priority'
-    );
-
     public function getAllowedTypes($request)
     {
         $this->_setRequest($request);
@@ -91,11 +69,11 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         $r->originPostalCode = Axis::config()->core->store->zip;
 
         $r->origStateOrProvinceCode = Axis::single('location/zone')->getCode(
-            Axis::config()->core->store->zone
+            Axis::config('core/store/zone')
         );
 
         $r->originCountryCode = Axis::single('location/country')->find(
-            Axis::config()->core->store->country
+            Axis::config('core/store/country')
         )->current()->iso_code_2;
 
         // Set Destination information
@@ -198,7 +176,7 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
          *  - KGS
          *  LBS is required for a U.S. FedEx Express rate quote.orig
          */
-        $xml->addChild('Weight', $r->weight);
+        $xml->addChild('Weight', number_format($r->weight, 3));
 //      $xml->addChild('ListRate', 'true');
         /**
          *  Optional.
@@ -413,7 +391,7 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         } 
 
         $allowedMethods = $this->_config->allowedTypes->toArray();
-        
+        $services = Axis::model('ShippingFedex/Option_Standard_Service');
         foreach ($xml->Entry as $entry) {
             if (!in_array((string)$entry->Service, $allowedMethods)) {
                 continue;
@@ -422,8 +400,8 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
                 (float)$entry->EstimatedCharges->DiscountedCharges->NetCharge
             );
             $methods[] = array(
-                'id' => $this->_code . '_' . (string)$entry->Service,
-                'title' => $this->getTranslator()->__($this->_codes[(string)$entry->Service]),
+                'id'    => $this->_code . '_' . (string)$entry->Service,
+                'title' => $this->getTranslator()->__($services[(string)$entry->Service]),
                 'price' => $cost + $this->_config->handling
             );
         }

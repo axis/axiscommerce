@@ -212,7 +212,7 @@ Ext.onReady(function(){
             data[i] = selections[i]['id'];
         }
         Ext.Ajax.request({
-            url: Axis.getUrl('catalog/manufacturer/delete'),
+            url: Axis.getUrl('catalog/manufacturer/remove'),
             method: 'post',
             params: {
                 data: Ext.encode(data)

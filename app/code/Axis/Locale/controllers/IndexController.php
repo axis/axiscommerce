@@ -36,7 +36,7 @@ class Axis_Locale_IndexController extends Axis_Core_Controller_Front
     public function changeAction()
     {
         $locale = $this->_getParam('lang');
-        $redirectUrl = $lastUrl = $this->getRequest()->getServer('HTTP_REFERER');
+        $redirectUrl = $lastUrl = $this->_getBackUrl();
         if ($locale) {
             $langUrl = Axis_Locale::getLanguageUrl();
             if (0 === strpos($redirectUrl, $this->view->secureUrl)) {

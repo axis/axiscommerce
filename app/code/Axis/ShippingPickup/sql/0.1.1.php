@@ -30,10 +30,14 @@ class Axis_ShippingPickup_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstra
 
     public function up()
     {
-        $installer = $this->getInstaller();
+        $this->getConfigBuilder()
+            ->section('shipping')
+                ->section('Pickup_Standard')
+                    ->option('minOrderTotal', 'Minimum order total amount')
+                        ->setTranslation('Axis_Admin')
+                    ->option('maxOrderTotal', 'Maximum order total amount')
+                        ->setTranslation('Axis_Admin')
 
-        Axis::single('core/config_field')
-            ->add('shipping/Pickup_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/Pickup_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'));
+            ->section('/');
     }
 }

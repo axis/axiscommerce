@@ -63,13 +63,31 @@ class Axis_Locale_Upgrade_0_1_3 extends Axis_Core_Model_Migration_Abstract
         Axis::single('core/cache')
             ->add('locales', 1, 864000); //10 days
 
-        Axis::single('core/config_field')
-            ->add('locale', 'Locale', null, null, array('translation_module' => 'Axis_Locale'))
-            ->add('locale/main/language', 'Locale/General/Default language',  '1', 'select', 'Default site language', array('model' => 'Language'))
-            ->add('locale/main/locale', 'Default locale', 'en_US', 'select', 'Default site locale', array('sort_order' => 8, 'model' => 'ZendLocale'))
-            ->add('locale/main/timezone', 'Timezone', 'Europe/London', 'select', 'Timezone' , array('sort_order' => 9, 'model' => 'ZendTimezone'))
-            ->add('locale/main/baseCurrency', 'Base currency', 'USD', 'select', 'Currency will be used for all online payment transactions', array('model' => 'Currency'))
-            ->add('locale/main/currency', 'Default display currency', 'USD', 'handler', 'Default currency', array('model' => 'BaseCurrency'))
-            ;
+        $this->getConfigBuilder()
+            ->section('locale', 'Locale')
+                ->setTranslation('Axis_Locale')
+                ->section('main', 'General')
+                    ->option('language', 'Default language', 1)
+                        ->setType('select')
+                        ->setDescription('Default site language')
+                        ->setModel('locale/option_language')
+                    ->option('locale', 'Default locale', 'en_US')
+                        ->setType('select')
+                        ->setDescription('Default site locale')
+                        ->setModel('locale/option_zendLocale')
+                    ->option('timezone', 'Timezone', 'Europe/London')
+                        ->setType('select')
+                        ->setDescription('Timezone')
+                        ->setModel('locale/option_zendTimezone')
+                    ->option('baseCurrency', 'Base currency', 'USD')
+                        ->setType('select')
+                        ->setDescription('Currency will be used for all online payment transactions')
+                        ->setModel('locale/option_currency')
+                    ->option('currency', 'Default display currency', 'USD')
+                        ->setType('select')
+                        ->setDescription('Default currency')
+                        ->setModel('locale/option_currency_default')
+
+            ->section('/');
     }
 }

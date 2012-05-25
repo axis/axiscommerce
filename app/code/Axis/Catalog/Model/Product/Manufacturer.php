@@ -95,7 +95,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
 //        $url = preg_replace('/[^a-zA-Z0-9]/', '-', $url);
         if (Axis::single('catalog/hurl')->hasDuplicate(
                 $url,
-                array_keys(Axis_Collect_Site::collect()),
+                array_keys(Axis::model('core/option_site')->toArray()),
                 (int)$row->id
             )) {
 
@@ -111,7 +111,7 @@ class Axis_Catalog_Model_Product_Manufacturer extends Axis_Db_Table
         //after save
         //add relation site
         $model = Axis::model('catalog/hurl');
-        foreach (Axis_Collect_Site::collect() as $siteId => $siteName) {
+        foreach (Axis::model('core/option_site') as $siteId => $siteName) {
             $model->save(array(
                 'site_id'  => $siteId,
                 'key_id'   => $row->id,

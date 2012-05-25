@@ -1,5 +1,4 @@
 "The shipping cost is based on the order total or the total weight of the items ordered or the total number of items orderd.","O custo de envio é baseado sobre o total do pedido ou o peso total dos itens encomendados ou o número total de itens pedido."
-"File will be written to AXIS_ROOT/var/export folder","Arquivo será gravado para a pasta AXIS_ROOT/var/export"
 "Table Rate","Tabela de Taxas"
 "File at AXIS_ROOT/var/export folder, with shipping rates","Arquivo em AXIS_ROOT/var/export pasta, com taxas de remessa"
 "Checkout Description","Finalizar Pedido Descrição"

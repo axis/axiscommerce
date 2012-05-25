@@ -117,7 +117,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     $errorMessage .= "Unknown error ($level)";
                     break;
             }
-
+            
             $errorMessage .= ": {$message}  in {$file} on line {$line}";
             throw new Exception($errorMessage);
         }
@@ -303,6 +303,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // include routes files
         $routeFiles = Axis::app()->getRoutes();
         foreach ($routeFiles as $routeFile) {
+            if (!is_readable($routeFile)) {
+                continue;
+            }
             include_once($routeFile);
         }
 

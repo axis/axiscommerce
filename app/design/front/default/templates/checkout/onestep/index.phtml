@@ -1,4 +1,9 @@
-<?php $this->headScript()->appendFile('js/axis/checkout/onestep.js'); ?>
+<?php
+    $this->headScript()->appendFile('js/axis/checkout/onestep.js')
+        ->appendFile('js/jquery/datepicker/ui.datepicker.js');
+
+    $this->headLink()->appendStylesheet('js/jquery/datepicker/ui.datepicker.css');
+?>
 
 <div class="page-title">
     <h1 class="title">
@@ -47,6 +52,10 @@ Onestep.init({
         request_error: '<?php echo $this->translate('core')->__('An error has been occured during request processing. Try again') ?>'
     }
 
+});
+
+$(document).ready(function($){
+    $('.input-date').datepicker({ dateFormat: 'yy-mm-dd'});
 });
 </script>
 

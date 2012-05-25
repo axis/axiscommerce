@@ -32,8 +32,6 @@
  */
 class Axis_Config extends Zend_Config
 {
-    const MULTI_SEPARATOR = ',';
-
     /**
      * @param  array   $array
      * @param  boolean $allowModifications
@@ -87,50 +85,56 @@ class Axis_Config extends Zend_Config
             $siteId = Axis::getSiteId();
         }
 
-        $rows = Axis::single('core/config_field')->getFieldsByKey($key, $siteId);
+        $hasCache = (bool) Zend_Registry::isRegistered('cache') ?
+            Axis::cache() instanceof Zend_Cache_Core : false;
 
-        if (!sizeof($rows)) {
+        if (!$hasCache
+            || !$dataset = Axis::cache()->load("config_{$key}_site_{$siteId}")) {
+
+            $dataset = Axis::single('core/config_field')
+                ->select(array('path', 'model'))
+                ->joinInner(
+                    'core_config_value',
+                    'ccv.config_field_id = ccf.id',
+                    'value'
+                )
+                ->where('ccf.path LIKE ?', $key . '/%')
+                ->where('ccv.site_id IN(?)', array(0, $siteId))
+                ->fetchAssoc()
+                ;
+
+            if ($hasCache) {
+                Axis::cache()->save(
+                    $dataset, "config_{$key}_site_{$siteId}", array('config')
+                );
+            }
+        }
+
+        if (!sizeof($dataset)) {
             $this->_data[$key] = $default;
             return;
         }
-
+        
         $values = array();
-        foreach ($rows as $path => $row) {
+        foreach ($dataset as $path => $data) {
             $parts = explode('/', $path);
-            switch ($row['config_type']) {
-                case 'string':
-                    $value = $row['value'];
-                    break;
-                case 'select':
-                    $value = $row['value'];
-                    break;
-                case 'bool':
-                    $value = (bool) $row['value'];
-                    break;
-                case 'handler':
-                    $class = 'Axis_Config_Handler_' . ucfirst($row['model']);
-                    if ($row['model']) {
-                        $value = call_user_func(array($class, 'getConfig'), $row['value']);
-                    } else {
-                        $value = $row['value'];
-                    }
-                    break;
-                case 'multiple':
-                    if (!isset($row['value'])) {
-                        $value = array();
-                    } else {
-                        $value = explode(self::MULTI_SEPARATOR, $row['value']);
-                    }
-                    break;
-                default:
-                    $value = $row['value'];
-                    break;
+            
+            $value = $data['value'];
+            
+            if (!empty($data['model'])) {
+                $class = Axis::getClass($data['model']);
+                if (class_exists($class) 
+                    && in_array('Axis_Config_Option_Encodable_Interface', class_implements($class))) {
+
+                    $value = Axis::single($data['model'])->decode($value);
+                }
             }
             $values[$parts[0]][$parts[1]][$parts[2]] = $value;
         }
+        
         foreach ($values as $key => $value) {
             if (is_array($value)) {
-                $this->_data[$key] = new Axis_Config($value, $this->_allowModifications);
+                $this->_data[$key] = new self($value, $this->_allowModifications);
             } else {
                 $this->_data[$key] = $value;
             }

@@ -28,6 +28,12 @@
   */
 @include_once 'Zend/Application.php';
 
+if (!class_exists('Zend_Application')) {
+    echo 'Please, copy Zend Framework to the "library" folder: '
+        . realpath('library');
+    exit();
+}
+
 /**
  *
  * @uses        Zend_Application
@@ -150,6 +156,6 @@ class Axis_Application extends Zend_Application
      */
     public function getVersion()
     {
-        return '0.8.6';
+        return '0.8.7';
     }
 }

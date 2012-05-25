@@ -57,13 +57,20 @@ class Axis_Shipping
             if (substr($moduleName, 0, strlen($prefix)) != $prefix) {
                 continue;
             }
+            if (!is_dir($path . '/Model')) {
+                continue;
+            }
             $dir = opendir($path . '/Model');
-            while ($fname = readdir($dir)) {
-                if (!is_file("{$path}/Model/{$fname}")) {
+            while ($filename = readdir($dir)) {
+                if (!is_file("{$path}/Model/{$filename}")) {
                     continue;
                 }
-                list($methodName, $ext) = explode('.', $fname, 2);
-                if ($ext != 'php') {
+                list($methodName, $ext) = explode('.', $filename, 2);
+                if ($ext != 'php' || $methodName == 'Abstract') {
+                    continue;
+                }
+                $className = $code . '_Model_' . $methodName;
+                if (!in_array('Axis_Method_Shipping_Model_Abstract', class_parents($className))) {
                     continue;
                 }
                 $methods[$code . '/' . $methodName] = substr($moduleName, strlen($prefix)) . '_' . $methodName;

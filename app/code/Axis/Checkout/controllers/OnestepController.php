@@ -240,6 +240,9 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
         $checkout = $this->_getCheckout();
         try {
             $checkout->setPaymentMethod($this->_getParam('payment', array()));
+            $checkout->getTotal()->setRecollect(true);
+            $grandTotal = $checkout->getTotal()->getTotal();
+            $checkout->addPaymentRequestData('price', $grandTotal);
         } catch (Exception $e) {
             $message = $e->getMessage();
             if (!empty($message)) {
@@ -252,13 +255,17 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
             $checkout->getShippingRequest()
         );
         $this->view->checkout = array(
-            'shipping_methods' => $shippingMethods
+            'shipping_methods' => $shippingMethods,
+            'products' => $checkout->getCart()->getProducts(),
+            'totals'   => $checkout->getTotal()->getCollects(),
+            'total'    => $grandTotal
         );
 
         return $this->_helper->json->sendSuccess(array(
             'sections' => $this->_renderSections(
                 array(
-                    'shipping-method'
+                    'shipping-method',
+                    'shopping-cart'
                 )
             )
         ));
@@ -272,10 +279,17 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
     {
         $this->_helper->layout->disableLayout();
 
-        $checkout   = $this->_getCheckout();
-        $cart       = Axis::single('checkout/cart');
+        $checkout = $this->_getCheckout();
+        $cart     = Axis::single('checkout/cart');
         foreach ($this->_getParam('quantity') as $itemId => $quantity) {
             $cart->updateItem($itemId, $quantity);
+        }
+
+        $products = $checkout->getCart()->getProducts();
+        if (!count($products)) {
+            return $this->_helper->json->sendSuccess(array(
+                'redirect' => $this->view->href('checkout/cart', true)
+            ));
         }
 
         $shippingMethods = Axis_Shipping::getAllowedMethods(
@@ -285,18 +299,12 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
             $checkout->getPaymentRequest()
         );
         $this->view->checkout = array(
-            'shipping_methods'  => $shippingMethods,
-            'payment_methods'   => $paymentMethods,
-            'products'  => $checkout->getCart()->getProducts(),
-            'totals'    => $checkout->getTotal()->getCollects(),
-            'total'     => $checkout->getTotal()->getTotal()
+            'shipping_methods' => $shippingMethods,
+            'payment_methods'  => $paymentMethods,
+            'products'         => $products,
+            'totals'           => $checkout->getTotal()->getCollects(),
+            'total'            => $checkout->getTotal()->getTotal()
         );
-
-        if (!count($this->view->checkout['products'])) {
-            return $this->_helper->json->sendSuccess(array(
-                'redirect' => $this->view->href('checkout/cart', true)
-            ));
-        }
 
         return $this->_helper->json->sendSuccess(array(
             'sections' => $this->_renderSections(

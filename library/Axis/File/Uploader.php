@@ -29,6 +29,8 @@
  * @package     Axis_File
  * @author      Axis Core Team <core@axiscommerce.com>
  */
+
+//@todo use Zend_File_Transfer 
 class Axis_File_Uploader
 {
     /**

@@ -23,15 +23,21 @@
  * @license     GNU Public License V3.0
  */
 
-class Axis_ShippingPerWeightUnit_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
+    class Axis_ShippingPerWeightUnit_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstract
 {
     protected $_version = '0.1.1';
     protected $_info = 'Filters by max and min order totals added';
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('shipping/PerWeightUnit_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/PerWeightUnit_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'));
+        $this->getConfigBuilder()
+            ->section('shipping')
+                ->section('PerWeightUnit_Standard')
+                    ->option('minOrderTotal', 'Minimum order total amount')
+                        ->setTranslation('Axis_Admin')
+                    ->option('maxOrderTotal', 'Maximum order total amount')
+                        ->setTranslation('Axis_Admin')
+
+            ->section('/');
     }
 }

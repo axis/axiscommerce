@@ -30,7 +30,7 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
 
     public function up()
     {
-        Axis::single('core/config_field')
+        $this->getConfigBuilder()
             ->remove('analytics/main/usedPageName')
             ->remove('analytics/main/affiliation')
             ->remove('analytics/attributes')
@@ -40,16 +40,36 @@ class Axis_GoogleAnalytics_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abstr
 
     public function down()
     {
-        Axis::single('core/config_field')
-            ->add('analytics/main/usedPageName', 'USE PAGENAME',1 , 'bool')
-            ->add('analytics/main/affiliation', 'Optional partner or store affilation', '' )
-            ->add('analytics/attributes/brackets', 'Google analytics/Products attributes/PRODUCTS ATTRIBUTES BRACKETS', '[]')
-            ->add('analytics/attributes/delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
-            ->add('analytics/conversion/used', 'Google analytics/Conversion option/Enabled', 1, 'bool', 'Enabled currency convertion')
-            ->add('analytics/conversion/id', 'Id', '"')
-            ->add('analytics/conversion/language', 'Language(en_EN)', 'en_EN')
-            ->add('analytics/tracking/used', 'Google analytics/Tracking options/Enabled', 1, 'bool', 'Enabled tracking')
-            ->add('analytics/tracking/linksPrefix', 'Prefix')
-        ;
+        $this->getConfigBuilder()
+            ->section('analytics')
+                ->section('main')
+                    ->option('usedPageName', 'USE PAGENAME', true)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                    ->option('affiliation', 'Optional partner or store affilation')
+                ->section('/main')
+
+                ->section('attributes', 'Products attributes')
+                    ->option('brackets', 'PRODUCTS ATTRIBUTES BRACKETS', '[]')
+                    ->option('delimiter', 'PRODUCTS ATTRIBUTES DELIMITER', ';')
+                ->section('/attributes')
+
+                ->section('conversion', 'Conversion option')
+                    ->option('used', 'Enabled', true)
+                        ->setType('radio')
+                        ->setDescription('Enabled currency convertion')
+                        ->setModel('core/option_boolean')
+                    ->option('id', 'Id', '"')
+                    ->option('language', 'Language(en_EN)', 'en_EN')
+                ->section('/conversion')
+
+                ->section('tracking', 'Tracking options')
+                    ->option('used', 'Enabled', true)
+                        ->setType('radio')
+                        ->setDescription('Enabled tracking')
+                        ->setModel('core/option_boolean')
+                    ->option('linksPrefix', 'Prefix')
+
+            ->section('/');
     }
 }

@@ -1,0 +1,27 @@
+<div class="right">
+    <div id="welcome">
+        <span class="greeting">
+            <?php echo $this->translate('admin')->__('Welcome')?>,
+            <?php echo $this->escape($this->box->getData('user_info')->firstname
+                . '  '
+                . $this->box->getData('user_info')->lastname) ?></span>
+        &nbsp;|&nbsp;
+        <a href="<?php echo $this->href('auth/logout');?>">
+            <?php echo $this->translate('account')->__('Logout') ?></a>
+    </div>
+    <div id="news">
+        <span><?php echo $this->translate('admin')->__(
+            "%d new orders today, total %s",
+            $this->box->order_count,
+            $this->box->order_total
+        ) ?></span>
+        <a href="<?php echo $this->href('sales/order');?>"
+            ><?php echo $this->translate('account')->__('View') ?></a>&nbsp;|&nbsp;
+        <span><?php echo $this->translate('admin')->__(
+            "%d new requests today",
+            $this->box->mail_count
+        ) ?></span>
+        <a href="<?php echo $this->href('contacts/index');?>"
+            ><?php echo $this->translate('account')->__('View') ?></a>
+    </div>
+</div>

@@ -30,23 +30,44 @@ class Axis_PaymentCashOnDelivery_Upgrade_0_1_0 extends Axis_Core_Model_Migration
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('payment/CashOnDelivery_Standard', 'Payment Methods/Cash On Delivery', null, null, array('translation_module' => 'Axis_PaymentCashOnDelivery'))
-            ->add('payment/CashOnDelivery_Standard/enabled', 'Payment Methods/Cash On Delivery/Enabled', 1, 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('payment/CashOnDelivery_Standard/title', 'Title', 'Cash On Delivery')
-            ->add('payment/CashOnDelivery_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/CashOnDelivery_Standard/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('payment/CashOnDelivery_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('config_options' => '{"1":"pending"}', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/CashOnDelivery_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Shipping', 'translation_module' => 'Axis_Admin'))
-            //->add('payment/CashOnDelivery_Standard/costs', 'Costs for inland shipping', '0', 'string', 'Costs')
-            //->add('payment/CashOnDelivery_Standard/costsForeign', 'Costs for shipping to foreign countries', '', 'string', 'Costs')
-            ;
+        $this->getConfigBuilder()
+            ->section('payment', 'Payment Methods')
+                ->setTranslation('Axis_Admin')
+                ->section('CashOnDelivery_Standard', 'Cash On Delivery')
+                    ->setTranslation('Axis_PaymentCashOnDelivery')
+                    ->option('enabled', 'Enabled', true)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                        ->setTranslation('Axis_Core')
+                    ->option('title', 'Title', 'Cash On Delivery')
+                    ->option('geozone', 'Allowed Payment Zone', 1)
+                        ->setType('select')
+                        ->setDescription('Payment method will be available only for selected zone')
+                        ->setModel('location/option_geozone')
+                        ->setTranslation('Axis_Admin')
+                    ->option('sortOrder', 'Sort Order', 1)
+                        ->setTranslation('Axis_Core')
+                    ->option('orderStatusId', 'Order Status on payment complete', 1)
+//                        @todo ->setValue(Axis_Sales_Model_Option_Order_Status::PENDING)
+                        ->setType('select')
+                        ->setDescription('Set the status of orders made with this payment module to this value')
+                        ->setModel('sales/option_order_status')
+                        ->setTranslation('Axis_Admin')
+                    ->option('shippings', 'Disallowed Shippings')
+                        ->setType('multiple')
+                        ->setDescription('Selected shipping methods will be not available with this payment method')
+                        ->setModel('checkout/option_shipping')
+                        ->setTranslation('Axis_Admin')
+//                    ->option('costs', 'Costs for inland shipping')
+//                        ->setDescription('Costs')
+//                    ->option('costsForeign', 'Costs for shipping to foreign countries')
+//                        ->setDescription('Costs')
+
+            ->section('/');
     }
 
     public function down()
     {
-        Axis::single('core/config_value')->remove('payment/CashOnDelivery_Standard');
-        Axis::single('core/config_field')->remove('payment/CashOnDelivery_Standard');
+        $this->getConfigBuilder()->remove('payment/CashOnDelivery_Standard');
     }
 }
