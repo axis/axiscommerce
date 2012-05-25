@@ -33,7 +33,7 @@ class Axis_Account_Upgrade_0_2_1 extends Axis_Core_Model_Migration_Abstract
         $this->getConfigBuilder()
             ->section('account')
                 ->section('address_form')
-                    ->option('country_id_allow', 'Allowed Countries')
+                    ->option('country_id_allow', 'Allowed Countries', 0)
                         ->setType('multiple')
                         ->setModel('location/option_address_country')
 
