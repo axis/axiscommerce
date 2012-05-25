@@ -101,7 +101,6 @@ Ext.onReady(function () {
                 allowBlank: false
             }),
             filter: {
-                editable: false,
                 store: storeLocationCountry
             }
         }, {
@@ -123,10 +122,18 @@ Ext.onReady(function () {
                 displayField: 'name',
                 valueField: 'id',
                 mode: 'local',
-                allowBlank: false
+                allowBlank: false,
+                listeners:  {
+                    expand: function(combo) {
+                        var r = combo.gridEditor.record;
+                        storeLocationZoneForEditor.filterBy(function(rec){
+                            return rec.get('country_id') == r.get('country_id') 
+                                || rec.get('zone_id') == 0;
+                        });
+                    }
+                }
             }),
             filter: {
-                editable: false,
                 store: storeLocationZone
             }
         }, {
@@ -158,6 +165,7 @@ Ext.onReady(function () {
         autoExpandColumn: 'site',
         ds: store,
         cm: columnModel,
+        pruneModifiedRecords: true,
         plugins: [new Axis.grid.Filter()],
         tbar: [{
             text: 'Add'.l(),

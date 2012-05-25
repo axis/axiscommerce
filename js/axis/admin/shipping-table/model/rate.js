@@ -98,8 +98,8 @@ Ext.onReady(function () {
         }, column),
         remoteSort: true,
         sortInfo: {
-            field: 'id',
-            direction: 'DESC'
+            field: 'name',
+            direction: 'ASC'
         },
         pruneModifiedRecords: true,
         proxy: new Ext.data.HttpProxy({
@@ -129,8 +129,8 @@ Ext.onReady(function () {
         }, column),
         remoteSort: true,
         sortInfo: {
-            field: 'id',
-            direction: 'DESC'
+            field: 'name',
+            direction: 'ASC'
         },
         pruneModifiedRecords: true,
         proxy: new Ext.data.HttpProxy({
