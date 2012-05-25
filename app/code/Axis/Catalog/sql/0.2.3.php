@@ -352,7 +352,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
                 'description'   => 'Root Category'
             ))->save();
         }
-        
+
         $this->getConfigBuilder()
             ->section('catalog', 'Catalog')
                 ->setTranslation('Axis_Catalog')
@@ -386,7 +386,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
                         ->setType('select')
                         ->setModel('catalog/option_lightzoom_stagePosition')
                     ->option('zoomStageOffsetX', 'Zoomer offset-x', 10)
-                    ->option('zoomStageOffsetY', 'Zoomer offset-y')
+                    ->option('zoomStageOffsetY', 'Zoomer offset-y', 0)
                     ->option('zoomLensOpacity', 'Lens opacity', 0.7)
                     ->option('zoomCursor', 'Lens cursor')
                         ->setValue(Axis_Catalog_Model_Option_Lightzoom_Cursor::getDeafult())
@@ -419,7 +419,7 @@ class Axis_Catalog_Upgrade_0_2_3 extends Axis_Core_Model_Migration_Abstract
                         ->setModel('catalog/option_lightzoom_domEvent_imageTrigger')
                 ->section('/lightzoom')
             ->section('/catalog')
-            
+
             ->section('image', 'Images')
                 ->setTranslation('Axis_Catalog')
                 ->section('main', 'General')

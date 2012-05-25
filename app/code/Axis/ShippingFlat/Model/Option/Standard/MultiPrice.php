@@ -51,6 +51,8 @@ class Axis_ShippingFlat_Model_Option_Standard_MultiPrice implements Axis_Config_
                 );
             }
             $value = $temp;
+        } else {
+            return $value;
         }
         return json_encode($value);
     }
