@@ -67,7 +67,7 @@ class Axis_PaymentCreditCard_Upgrade_0_1_1 extends Axis_Core_Model_Migration_Abs
                     ->option('maxOrderTotal', 'Maximum order total amount')
                         ->setTranslation('Axis_Admin')
                     ->option('creditCard', 'Accepted Credit Cards')
-                        ->setValue(Zend_Validate_CreditCard::VISA)
+                        ->setValue('VISA,MASTERCARD,AMERICAN_EXPRESS')
                         ->setType('multiple')
                         ->setDescription('Credits cards allowed to use with this payment method')
                         ->setModel('sales/option_order_creditCard_type')

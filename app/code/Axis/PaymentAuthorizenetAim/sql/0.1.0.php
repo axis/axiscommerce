@@ -67,7 +67,7 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_0 extends Axis_Core_Model_Migratio
                         ->setModel('checkout/option_shipping')
                         ->setTranslation('Axis_Admin')
                     ->option('creditCard', 'Accepted Credit Cards')
-                        ->setValue(Zend_Validate_CreditCard::VISA)
+                        ->setValue('VISA,MASTERCARD,AMERICAN_EXPRESS')
                         ->setType('multiple')
                         ->setDescription('Credits cards allowed to use with this payment method')
                         ->setModel('sales/option_order_creditCard_type')
