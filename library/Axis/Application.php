@@ -156,6 +156,6 @@ class Axis_Application extends Zend_Application
      */
     public function getVersion()
     {
-        return '0.8.8 dev';
+        return '0.8.7.1';
     }
 }
