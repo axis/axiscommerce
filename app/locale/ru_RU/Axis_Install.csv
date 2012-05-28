@@ -28,7 +28,7 @@
 "Config file is not writable at %s","Нет прав на запись файла конфигурации %s"
 "Please enable JavaScript in your browser.","Пожалуйста включите JavaScript в вашем броузере"
 "Language","Язык"
-"Copyright &copy; 2010, Axis, Inc. All Rights Reserved","Copyright &copy; 2010, Axis, Inc. Все права защищены"
+"Copyright © %s, Axis, Inc. All Rights Reserved","Copyright © %s, Axis, Inc. Все права защищены"
 "Database connection","Подключение к базе данных"
 "Database Server","Сервер базы данных"
 "The address of the database server in the form of a hostname or IP address","Адрес сервера базы данных в форме имени хоста или IP адреса"
