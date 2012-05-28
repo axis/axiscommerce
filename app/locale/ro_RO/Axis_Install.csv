@@ -28,7 +28,7 @@
 "Config file is not writable at %s","Fișierul de configurare nu ar permisiuni de scriere la %s"
 "Please enable JavaScript in your browser.","Vă rugăm sa activați JavaScript din browserul dumneavoastă"
 "Language","Limba"
-"Copyright &copy; 2010, Axis, Inc. All Rights Reserved","Copyright &copy; 2010, Axis, Inc. Toate drepturile rezervate"
+"Copyright © %s, Axis, Inc. All Rights Reserved","Copyright © %s, Axis, Inc. Toate drepturile rezervate"
 "Database connection","Conexiune bază de date"
 "Database Server","Server bază de date"
 "The address of the database server in the form of a hostname or IP address","Adresa bazei de date trebuie să fie sub forma unui hostname sau a unei adrese IP"

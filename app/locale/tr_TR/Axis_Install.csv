@@ -28,7 +28,7 @@
 "Config file is not writable at %s","%s yapýlandýrma dosyasý yazýlamýyor"
 "Please enable JavaScript in your browser.","Lütfen tarayýcýnýzda JavaScript'i etkinleþtirin."
 "Language","Dil"
-"Copyright &copy; 2010, Axis, Inc. All Rights Reserved","Copyright &copy; 2010, Axis, Inc. All Rights Reserved"
+"Copyright © %s, Axis, Inc. All Rights Reserved","Copyright © %s, Axis, Inc. All Rights Reserved"
 "Database connection","veritabaný baðlantýsý"
 "Database Server","veritabaný sunucusu"
 "The address of the database server in the form of a hostname or IP address","Veritabaný sunucusu ana bilgisayar adý yada IP adresi"
