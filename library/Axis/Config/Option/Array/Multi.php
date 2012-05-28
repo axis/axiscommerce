@@ -53,7 +53,6 @@ abstract class Axis_Config_Option_Array_Multi extends Axis_Config_Option_Array_A
      */
     public function decode($value)
     {
-        $value = str_replace(' ', '', $value);
         if (!strlen($value)) {
             return array();
         }
