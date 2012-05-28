@@ -71,15 +71,16 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         }
 
         $row = $select->fetchRow();
-        
-        $handling = is_numeric($this->_config->handling) ?$this->_config->handling : 0;
-        $this->_types = array(
-            array(
-                'id'    => $this->_code,
-                'title' => $this->getTitle(),
-                'price' => $row['price'] + $handling
-            )
-        );
+        if ($row) {
+            $handling = is_numeric($this->_config->handling) ?$this->_config->handling : 0;
+            $this->_types = array(
+                array(
+                    'id'    => $this->_code,
+                    'title' => $this->getTitle(),
+                    'price' => $row['price'] + $handling
+                )
+            );
+        }
 
         return $this->_types;
     }
