@@ -20,19 +20,19 @@
  * @license     GNU Public License V3.0
  */
 Ext.onReady(function () {
-    
+
     var column = Ext.data.Record.create([
         {name: 'id',         type: 'int'},
         {name: 'site_id',    type: 'int'},
         {name: 'country_id', type: 'int'},
         {name: 'zone_id',    type: 'int'},
         {name: 'zip'},
-        {name: 'value',      type: 'int'},
-        {name: 'price',      type: 'int'}
+        {name: 'value',      type: 'float'},
+        {name: 'price',      type: 'float'}
     ]);
     new Ext.data.Store({
         storeId : 'shippingTable/rate',
-//        autoLoad: true, 
+//        autoLoad: true,
         baseParams: {
             limit: 25
         },
@@ -52,8 +52,8 @@ Ext.onReady(function () {
             url: Axis.getUrl('shipping-table/rate/list')
         })
     });
-    
-    // @todo move to core/model/site.js    
+
+    // @todo move to core/model/site.js
     var column = Ext.data.Record.create([
        {name: 'id', type: 'int'},
        {name: 'base'},
@@ -61,7 +61,7 @@ Ext.onReady(function () {
        {name: 'secure'}
 //       ,{name: 'root_category'}
     ]);
-    
+
     new Ext.data.Store({
         storeId: 'core/site',
 //        autoLoad: true,
@@ -75,7 +75,7 @@ Ext.onReady(function () {
         }, column),
         pruneModifiedRecords: true
     })
-    
+
     // @todo move to location/model/country.js
     var column = Ext.data.Record.create([
         {name: 'id',                type: 'int'},
@@ -88,7 +88,7 @@ Ext.onReady(function () {
         storeId: 'location/country',
 //        autoLoad: true,
         baseParams: {
-            start: 0, 
+            start: 0,
             limit: 250
         },
         reader: new Ext.data.JsonReader({
@@ -107,7 +107,7 @@ Ext.onReady(function () {
             url: Axis.getUrl('location/country/list')
         })
     });
-    
+
     // @todo move to location/model/zone.js
     var column = Ext.data.Record.create([
         {name: 'id',         type: 'int'},
@@ -119,7 +119,7 @@ Ext.onReady(function () {
         storeId: 'location/zone',
 //        autoLoad: true,
         baseParams: {
-            start: 0, 
+            start: 0,
             limit: 250
         },
         reader: new Ext.data.JsonReader({
