@@ -34,10 +34,10 @@
  */
 class Axis_ShippingFedex_Model_Option_Standard_Pickup extends Axis_Config_Option_Array_Abstract
 {
-    const REGULAR_PICKUP          = 'REGULARPICKUP';
-    const REQUEST_COURIER         = 'REQUESTCOURIER';
-    const DROP_BOX                = 'DROPBOX';
-    const BUSINESS_SERVICE_CENTER = 'BUSINESSSERVICECENTER';
+    const REGULAR_PICKUP          = 'REGULAR_PICKUP';
+    const REQUEST_COURIER         = 'REQUEST_COURIER';
+    const DROP_BOX                = 'DROP_BOX';
+    const BUSINESS_SERVICE_CENTER = 'BUSINESS_SERVICE_CENTER';
     const STATION                 = 'STATION';
     
     /**

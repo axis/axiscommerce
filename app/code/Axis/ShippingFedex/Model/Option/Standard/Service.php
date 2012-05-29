@@ -34,25 +34,25 @@
  */
 class Axis_ShippingFedex_Model_Option_Standard_Service extends Axis_Config_Option_Array_Multi
 {
-    const EUROPE_FIRST_INTERNATIONAL_PRIORITY = 'EUROPEFIRSTINTERNATIONALPRIORITY';
-    const FEDEX_1_DAY_FREIGHT                 = 'FEDEX1DAYFREIGHT';
-    const FEDEX_2_DAY_FREIGHT                 = 'FEDEX2DAYFREIGHT';
-    const FEDEX_2_DAY                         = 'FEDEX2DAY';
-    const FEDEX_3_DAY_FREIGHT                 = 'FEDEX3DAYFREIGHT';
-    const FEDEX_EXPRESS_SAVER                 = 'FEDEXEXPRESSSAVER';
-    const FEDEX_GROUND                        = 'FEDEXGROUND';
-    const FIRST_OVERNIGHT                     = 'FIRSTOVERNIGHT';
-    const GROUND_HOME_DELIVERY                = 'GROUNDHOMEDELIVERY';
-    const INTERNATIONAL_ECONOMY               = 'INTERNATIONALECONOMY';
-    const INTERNATIONAL_ECONOMY_FREIGHT       = 'INTERNATIONALECONOMY FREIGHT';
-    const INTERNATIONAL_FIRST                 = 'INTERNATIONALFIRST';
+    const EUROPE_FIRST_INTERNATIONAL_PRIORITY = 'EUROPE_FIRST_INTERNATIONAL_PRIORITY';
+    const FEDEX_1_DAY_FREIGHT                 = 'FEDEX_1_DAY_FREIGHT';
+    const FEDEX_2_DAY_FREIGHT                 = 'FEDEX_2_DAY_FREIGHT';
+    const FEDEX_2_DAY                         = 'FEDEX_2_DAY';
+    const FEDEX_3_DAY_FREIGHT                 = 'FEDEX_3_DAY_FREIGHT';
+    const FEDEX_EXPRESS_SAVER                 = 'FEDEX_EXPRESS_SAVER';
+    const FEDEX_GROUND                        = 'FEDEX_GROUND';
+    const FIRST_OVERNIGHT                     = 'FIRST_OVERNIGHT';
+    const GROUND_HOME_DELIVERY                = 'GROUND_HOME_DELIVERY';
+    const INTERNATIONAL_ECONOMY               = 'INTERNATIONAL_ECONOMY';
+    const INTERNATIONAL_ECONOMY_FREIGHT       = 'INTERNATIONAL_ECONOMY_FREIGHT';
+    const INTERNATIONAL_FIRST                 = 'INTERNATIONAL_FIRST';
     const INTERNATIONAL_GROUND                = 'INTERNATIONAL_GROUND';
-    const INTERNATIONAL_PRIORITY              = 'INTERNATIONALPRIORITY';
-    const INTERNATIONAL_PRIORITY_FREIGHT      = 'INTERNATIONALPRIORITY FREIGHT';
-    const PRIORITY_OVERNIGHT                  = 'PRIORITYOVERNIGHT';
+    const INTERNATIONAL_PRIORITY              = 'INTERNATIONAL_PRIORITY';
+    const INTERNATIONAL_PRIORITY_FREIGHT      = 'INTERNATIONAL_PRIORITY_FREIGHT';
+    const PRIORITY_OVERNIGHT                  = 'PRIORITY_OVERNIGHT';
     const SMART_POST                          = 'SMART_POST';
-    const STANDARD_OVERNIGHT                  = 'STANDARDOVERNIGHT';
-    const FEDEX_FREIGHT                       = 'FEDEXFREIGHT';
+    const STANDARD_OVERNIGHT                  = 'STANDARD_OVERNIGHT';
+    const FEDEX_FREIGHT                       = 'FEDEX_FREIGHT';
     const FEDEX_NATIONAL_FREIGHT              = 'FEDEX_NATIONAL_FREIGHT';
 
     /**
