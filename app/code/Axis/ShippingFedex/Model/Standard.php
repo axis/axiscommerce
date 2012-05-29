@@ -175,6 +175,7 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
     {
         $rates = array();
         if (!is_object($response)) {
+            $this->log('Unable to retrieve quotes');
             return $rates;
         }
         
@@ -188,10 +189,10 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             return $rates;
         }
         
-        $_rates = $response -> RateReplyDetails;
-        if (!is_array($_rates)) {
-            $_rates = array($_rates);
-        }
+        $_rates = $response->RateReplyDetails;
+//        if (!is_array($_rates)) {
+//            $_rates = array($_rates);
+//        }
 
         $allowedServiceType = $this->_config->allowedTypes->toArray();
         $serviceLabels = Axis::model('ShippingFedex/Option_Standard_Service');
