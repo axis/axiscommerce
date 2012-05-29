@@ -87,7 +87,7 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
                     ->option('residenceDelivery', 'Residential Delivery', false)
                         ->setType('radio')
                         ->setModel('core/option_boolean')
-                    ->option('gateway', 'Fedex Gateway Url', 'https://gateway.fedex.com/GatewayDC')
+                    ->option('gateway', 'Fedex Gateway Url', 'https://gateway.fedex.com:443/GatewayDC')
                     ->option('handling', 'Handling Fee')
 
             ->section('/');
