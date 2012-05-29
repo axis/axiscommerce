@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_ShippingFedex
  * @subpackage  Axis_ShippingFedex_Model
@@ -54,13 +54,13 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
     protected function _setRequest($request)
     {
         $r = new Axis_Object();
-        
+
         $r->key      = $this->_config->key;
         $r->password = $this->_config->password;
-        
+
         $r->accountNumber = $this->_config->account;
-        $r->meterNumber   = $this->_config->meterNumber; 
-        
+        $r->meterNumber   = $this->_config->meterNumber;
+
         $r->dropoffType = $this->_config->dropoff;
         $r->packaging   = $this->_config->package;
         $r->measure     = $this->_config->measure;
@@ -71,33 +71,33 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         $r->origStateOrProvinceCode = Axis::single('location/zone')->getCode(
             Axis::config('core/store/zone')
         );
-        
+
         $r->originCountryCode = Axis::single('location/country')->find(
             Axis::config('core/store/country')
         )->current()->iso_code_2;
 
         // Set Destination information
         $r->destPostalCode = substr(
-            str_replace(' ', '', $request['postcode']), 
-            0, 
+            str_replace(' ', '', $request['postcode']),
+            0,
             $request['country']['iso_code_2'] == 'US' ? 5 : 6
         );
-        
+
         $r->destCountryCode = $request['country']['iso_code_2'];
 
         $r->weight = (float)$request['weight'];
         $r->value = Axis::single('locale/currency')->to($request['price'], 'USD');
         $r->currencyCode = 'USD';//$request['currency'];
-        
+
         $this->_request = $r;
-        
+
         return $this->_request;
     }
 
     protected function _getQuotes()
     {
         $r = $this->_request;
-        
+
         $request = array(
             'WebAuthenticationDetail' => array(
                 'UserCredential' => array(
@@ -110,9 +110,9 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
                 'MeterNumber'   => $r->meterNumber
             ),
             'Version' => array(
-                'ServiceId'    => 'crs', 
-                'Major'        => '10', 
-                'Intermediate' => '0', 
+                'ServiceId'    => 'crs',
+                'Major'        => '10',
+                'Intermediate' => '0',
                 'Minor'        => '0'
             ),
 //            "ReturnTransitAndCommit" => true,
@@ -160,12 +160,12 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             )
         );
         $pathToWsdl = Axis::config('system/path') . "/app/code/Axis/ShippingFedex/etc/RateService_v10.wsdl";
-        
+
         $client = new SoapClient($pathToWsdl);
 //        production : https://gateway.fedex.com:443/GatewayDC
 //        test       : https://wsbeta.fedex.com:443/web-services
         $client->__setLocation($this->_config->gateway);
-	
+
         $response = $client->getRates($request);
 
         return $this->_parseResponse($response);
@@ -178,17 +178,17 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             $this->log('Unable to retrieve quotes');
             return $rates;
         }
-        
-        if ($response->HighestSeverity == 'FAILURE' 
+
+        if ($response->HighestSeverity == 'FAILURE'
             || $response->HighestSeverity == 'ERROR') {
-            
+
             $this->log((string)$response->Notifications->Message);
             return $rates;
         }
         if (!isset($response->RateReplyDetails)) {
             return $rates;
         }
-        
+
         $_rates = $response->RateReplyDetails;
 //        if (!is_array($_rates)) {
 //            $_rates = array($_rates);
@@ -196,19 +196,18 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
 
         $allowedServiceType = $this->_config->allowedTypes->toArray();
         $serviceLabels = Axis::model('ShippingFedex/Option_Standard_Service');
-        
+
         $handling = $this->_config->handling;
         foreach ($_rates as $rate) {
             $serviceType = (string)$rate->ServiceType;
             if (!in_array($serviceType, $allowedServiceType)) {
                 continue;
             }
-            $amount = Axis::single('locale/currency')->from(
-                (float)$rate->RatedShipmentDetails[0]
-                                ->ShipmentRateDetail->TotalNetCharge->Amount
-            ) ;
+            $amount = (float)$rate->RatedShipmentDetails[0]
+                ->ShipmentRateDetail->TotalNetCharge->Amount;
+            $amount = Axis::single('locale/currency')->from($amount, 'USD') ;
             $title = $this->getTranslator()->__($serviceLabels[$serviceType]);
-            
+
             $rates[] = array(
                 'id'    => $this->_code . '_' . $serviceType,
                 'title' => $title,
