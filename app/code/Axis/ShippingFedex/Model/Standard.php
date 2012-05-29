@@ -40,8 +40,6 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
 
     protected $_description = 'Fedex Express shipping method';
 
-    protected $_defaultGatewayUrl = 'https://gateway.fedex.com:443/GatewayDC';
-// test https://wsbeta.fedex.com:443/web-services
     public function getAllowedTypes($request)
     {
         $this->_setRequest($request);
@@ -56,17 +54,16 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
     protected function _setRequest($request)
     {
         $r = new Axis_Object();
-        $r->service = implode(',', $this->_config->allowedTypes->toArray());
         
-        $r->key = 'FzwoXkfuIpL7J9Rg';//$this->_config->key;
-        $r->password = 'B8g1a0Q5Gp3XZXjSdA1wOR08Z';//$this->_config->password;
+        $r->key      = $this->_config->key;
+        $r->password = $this->_config->password;
         
-        $r->accountNumber = '510087569';//$this->_config->account;
-        $r->meterNumber = '118558968';//$this->_config->meter_number; 
+        $r->accountNumber = $this->_config->account;
+        $r->meterNumber   = $this->_config->meterNumber; 
         
         $r->dropoffType = $this->_config->dropoff;
-        $r->packaging = $this->_config->package;
-        $r->measure = $this->_config->measure;
+        $r->packaging   = $this->_config->package;
+        $r->measure     = $this->_config->measure;
 
         // Set Origin detail
         $r->originPostalCode = Axis::config()->core->store->zip;
@@ -80,18 +77,15 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         )->current()->iso_code_2;
 
         // Set Destination information
-        if ($request['country']['iso_code_2'] == 'US') {
-            $r->destPostalCode = substr(
-                str_replace(' ', '', $request['postcode']), 0, 5
-            );
-        } else {
-            $r->destPostalCode = substr(
-                str_replace(' ', '', $request['postcode']), 0, 6
-            );
-        }
+        $r->destPostalCode = substr(
+            str_replace(' ', '', $request['postcode']), 
+            0, 
+            $request['country']['iso_code_2'] == 'US' ? 5 : 6
+        );
+        
         $r->destCountryCode = $request['country']['iso_code_2'];
 
-        $r->weight = $request['weight'];
+        $r->weight = (float)$request['weight'];
         $r->value = Axis::single('locale/currency')->to($request['price'], 'USD');
         $r->currencyCode = 'USD';//$request['currency'];
         
@@ -115,34 +109,34 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
                 'AccountNumber' => $r->accountNumber,
                 'MeterNumber'   => $r->meterNumber
             ),
-            'TransactionDetail' => array(
-                "CustomerTransactionId" => " *** Rate Available Services Request v10 using PHP ***"
+            'Version' => array(
+                'ServiceId'    => 'crs', 
+                'Major'        => '10', 
+                'Intermediate' => '0', 
+                'Minor'        => '0'
             ),
-            'Version' => array('ServiceId' => 'crs', 'Major' => '10', 'Intermediate' => '0', 'Minor' => '0'),
-            "ReturnTransitAndCommit" => true,
+//            "ReturnTransitAndCommit" => true,
             'RequestedShipment' => array(
-                'DropoffType'   => 'REGULAR_PICKUP',//$r->dropoffType,
+                'DropoffType'   => $r->dropoffType,
                 'ShipTimestamp' => date('c'),
 //                'ServiceType'   => 'STANDARD_OVERNIGHT',
-                'PackagingType' => 'YOUR_PACKAGING',//$r->packaging,
+                'PackagingType' => $r->packaging,
                 'TotalInsuredValue' => array(
                     'Ammount'  => $r->value,
                     'Currency' => $r->currencyCode
                 ),
                 'Shipper' => array(
                     'Address' => array(
-                            'PostalCode' => $r->originPostalCode,
-                            'CountryCode' => $r->originCountryCode
+                        'PostalCode'  => $r->originPostalCode,
+                        'CountryCode' => $r->originCountryCode
                     )
                 ),
                 'Recipient' => array(
-                        'Address' => array(
-                                'PostalCode' => 'V7C4V4',
-                                'CountryCode' => 'CA',
-//                                'PostalCode' => $r->destPostalCode,
-//                                'CountryCode' => $r->destCountryCode,
-                                'Residential' => (bool)$this->_config->residenceDelivery
-                        )
+                    'Address' => array(
+                        'PostalCode'  => $r->destPostalCode,
+                        'CountryCode' => $r->destCountryCode,
+                        'Residential' => (bool)$this->_config->residenceDelivery
+                    )
                 ),
                 'ShippingChargesPayment' => array(
                     'PaymentType' => 'SENDER',
@@ -156,19 +150,21 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
                 'PackageDetail'    => 'INDIVIDUAL_PACKAGES',
                 'RequestedPackageLineItems' =>  array(
                     array(
-                        'GroupPackageCount'=>1,
+                        'GroupPackageCount' => 1,
                         'Weight' => array(
-                            'Value' => (float)$r->weight,
+                            'Value' => $r->weight,
                             'Units' => 'LB'
                         )
                     )
                 )
             )
         );
-        $path_to_wsdl = Axis::config('system/path') . "/app/code/Axis/ShippingFedex/etc/RateService_v10.wsdl";
+        $pathToWsdl = Axis::config('system/path') . "/app/code/Axis/ShippingFedex/etc/RateService_v10.wsdl";
         
-        $client = new SoapClient($path_to_wsdl, array('trace' => 1)); 
-        $client->__setLocation('https://wsbeta.fedex.com:443/web-services/rate');
+        $client = new SoapClient($pathToWsdl);
+//        production : https://gateway.fedex.com:443/GatewayDC
+//        test       : https://wsbeta.fedex.com:443/web-services
+        $client->__setLocation($this->_config->gateway);
 	
         $response = $client->getRates($request);
 
@@ -182,7 +178,8 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
             return $rates;
         }
         
-        if ($response->HighestSeverity == 'FAILURE' || $response->HighestSeverity == 'ERROR') {
+        if ($response->HighestSeverity == 'FAILURE' 
+            || $response->HighestSeverity == 'ERROR') {
             
             $this->log((string)$response->Notifications->Message);
             return $rates;
@@ -197,22 +194,23 @@ class Axis_ShippingFedex_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         }
 
         $allowedServiceType = $this->_config->allowedTypes->toArray();
-        $services = Axis::model('ShippingFedex/Option_Standard_Service');
+        $serviceLabels = Axis::model('ShippingFedex/Option_Standard_Service');
         
         $handling = $this->_config->handling;
         foreach ($_rates as $rate) {
-            $service = (string)$rate->ServiceType;
-            if (!in_array($service, $allowedServiceType)) {
+            $serviceType = (string)$rate->ServiceType;
+            if (!in_array($serviceType, $allowedServiceType)) {
                 continue;
             }
             $amount = Axis::single('locale/currency')->from(
                 (float)$rate->RatedShipmentDetails[0]
                                 ->ShipmentRateDetail->TotalNetCharge->Amount
             ) ;
+            $title = $this->getTranslator()->__($serviceLabels[$serviceType]);
             
             $rates[] = array(
-                'id'    => $this->_code . '_' . $service,
-                'title' => $service,//$this->getTranslator()->__($services[$service]),
+                'id'    => $this->_code . '_' . $serviceType,
+                'title' => $title,
                 'price' => $amount + $handling
             );
         }

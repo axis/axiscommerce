@@ -30,8 +30,6 @@ class Axis_ShippingFedex_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstrac
 
     public function up()
     {
-        $installer = $this->getInstaller();
-
         $this->getConfigBuilder()
             ->section('shipping', 'Shipping Methods')
                 ->setTranslation('Axis_Admin')
