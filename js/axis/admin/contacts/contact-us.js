@@ -83,17 +83,20 @@ var Contact = {
         var mail    = selected.data['email'];
         var subject = selected.data['subject'];
         var message = selected.data['message'];
-        var custom  = selected.data['custom_info'];
+        var custom  = '';
+        Ext.iterate(Ext.decode(selected.data['custom_info']), function(field, value){
+            custom += field + ' : ' + value + ';';
+        });
         var datetime = selected.data['datetime'];
         formMail.getForm().findField('email').setValue(mail);
-        formMail.getForm().findField('subject').setValue('re: '+subject);
+        formMail.getForm().findField('subject').setValue('re: ' + subject);
         formMail.getForm().findField('department_id').setValue(Contact.getSelectedDepartamentId());
         var template = new Ext.Template.from('tpl-message');
         Contact.window.items.first().body.update(template.applyTemplate({
             'from'      : mail,
             'subject'   : Axis.escape(subject),
             'message'   : Axis.escape(message),
-            'custom'    : Axis.escape(custom).replace(/\n/, '<br />'),
+            'custom'    : Axis.escape(custom),
             'datetime'  : datetime
         }));
 
