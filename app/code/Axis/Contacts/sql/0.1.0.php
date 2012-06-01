@@ -42,7 +42,11 @@ class Axis_Contacts_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
           PRIMARY KEY  (`id`)
         ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
-        INSERT INTO `{$installer->getTable('contacts_department')}` (`id`, `name`, `email`) VALUES (1, 'Support', 'test@axiscommerce.com'),(2, 'General', 'test@axiscommerce.com'),(3, 'Shopping', 'test@axiscommerce.com'),(4, 'Developers', 'test@axiscommerce.com');
+        INSERT INTO `{$installer->getTable('contacts_department')}` (`id`, `name`, `email`) VALUES
+            (1, 'Support', 'test@axiscommerce.com'),
+            (2, 'General', 'test@axiscommerce.com'),
+            (3, 'Shopping', 'test@axiscommerce.com'),
+            (4, 'Developers', 'test@axiscommerce.com');
 
         -- DROP TABLE IF EXISTS `{$installer->getTable('contacts_message')}`;
         CREATE TABLE  `{$installer->getTable('contacts_message')}` (
