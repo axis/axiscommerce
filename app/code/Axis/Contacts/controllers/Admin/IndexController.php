@@ -36,7 +36,6 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
     public function indexAction()
     {
         $this->view->pageTitle = Axis::translate('contacts')->__('Incoming Box');
-        $this->view->departments = Axis::model('contacts/option_department')->toArray();
         $this->render();
     }
 
@@ -66,14 +65,14 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
     {
         $id     = $this->_getParam('id');
         $status = $this->_getParam('message_status');
-        
+
         $row = Axis::single('contacts/message')->find($id)->current();
         $row->message_status = $status;
         $row->save();
 
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function removeAction()
     {
         $data = Zend_Json::decode($this->_getParam('data'));
@@ -97,7 +96,7 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
         );
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function sendAction()
     {
         $data = $this->_getAllParams();

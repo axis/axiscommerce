@@ -35,19 +35,18 @@ class Axis_Contacts_Admin_DepartmentController extends Axis_Admin_Controller_Bac
 {
     public function listAction()
     {
-        $rowset = Axis::single('contacts/department')->fetchAll();
-
-        $data = array();
-        foreach ($rowset as $row) {
-            $data[] = array(
-                'text' => $row->name,
-                'id'   => $row->id,
-                'leaf' => true
-            );
-        }
+        $select = Axis::single('contacts/department')->select('*')
+            ->join('contacts_department_name',
+                'cd.id = cdn.department_id  AND cdn.language_id = :languageId',
+                'cdn.name'
+            )->bind(array(
+                'languageId' => Axis_Locale::getLanguageId()
+            ));
 
         return $this->_helper->json
-            ->sendRaw($data);
+            ->setData($select->fetchAll())
+            ->sendSuccess()
+        ;
     }
 
     public function loadAction()
@@ -55,29 +54,46 @@ class Axis_Contacts_Admin_DepartmentController extends Axis_Admin_Controller_Bac
         $data = array();
         $id = $this->_getParam('id');
         $row = Axis::single('contacts/department')->find($id)->current();
-            
+
         if ($row) {
             $data = $row->toArray();
+
+            $names = Axis::single('contacts/department_name')->select(
+                    array('language_id', 'name')
+                )->where('department_id = ?', $row->id)
+                ->fetchPairs();
+            foreach ($names as $languageId => $name) {
+                $data['name']['language_' . $languageId] = $name;
+            }
+
         }
 
         return $this->_helper->json
             ->setData($data)
             ->sendSuccess();
     }
-    
+
     public function saveAction()
     {
         $_row = array(
-            'name'  => $this->_getParam('name'),
+            'id' => $this->_getParam('id'),
             'email' => $this->_getParam('email')
         );
-        $id = $this->_getParam('id');
         $model = Axis::single('contacts/department');
-        $row = $model->find($id)->current();
-        if (!$row) {
-            $row = $model->createRow();
+        $row = $model->getRow($_row);
+
+        $row->save();
+
+        $modelName = Axis::single('contacts/department_name');
+        $names = $this->_getParam('name');
+        foreach (Axis::model('locale/option_language') as $languageId => $lname) {
+
+            $modelName->getRow(array(
+                'department_id' => $row->id,
+                'language_id'   => $languageId,
+                'name'          => isset($names[$languageId]) ? $names[$languageId] : ''
+            ))->save();
         }
-        $row->setFromArray($_row)->save();
         Axis::message()->addSuccess(
             Axis::translate('contacts')->__(
                'Department was saved succesfully'
@@ -86,7 +102,7 @@ class Axis_Contacts_Admin_DepartmentController extends Axis_Admin_Controller_Bac
 
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function removeAction()
     {
         $id = $this->_getParam('id', 0);

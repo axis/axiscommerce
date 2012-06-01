@@ -31,17 +31,8 @@
  * @subpackage  Axis_Contacts_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Contacts_Model_Option_Department extends Axis_Config_Option_Array_Abstract
+class Axis_Contacts_Model_Department_Name extends Axis_Db_Table
 {
-    /**
-     *
-     * @return array
-     */
-    protected function _loadCollection()
-    {
-        return Axis::single('contacts/department_name')
-                ->select(array('department_id', 'name'))
-                ->where('language_id = ?', Axis_Locale::getLanguageId())
-                ->fetchPairs();
-    }
+    protected $_name = 'contacts_department_name';
+    protected $_primary = array('department_id', 'language_id');
 }
