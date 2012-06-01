@@ -101,14 +101,22 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
     {
         $data = $this->_getAllParams();
 
-        $from = Axis::model('contacts/department')
-            ->find($data['department_id'])
-            ->current()
-            ->email;
-
         $row = Axis::model('account/customer')->select()
             ->where('email = ?', $data['email'])
             ->fetchRow();
+
+        $department = Axis::model('contacts/department')->select('*')
+            ->where('id = ?', $data['department_id'])
+            ->join('contacts_department_name',
+                'cd.id = cdn.department_id  AND cdn.language_id = :languageId',
+                'name'
+            )->bind(array(
+                'languageId' => Axis::model('locale/language')->getIdByLocale(
+                    $row->locale
+                )
+            ))
+            ->fetchRow();
+            ;
 
         //@todo if null need firstname = full name from custom_info fields
         $firstname = $row ? $row->firstname : null;
@@ -130,7 +138,9 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
                 ),
                 'to'      => $data['email'],
                 'from'    => array(
-                    'email' => $from
+                    'email' => $department->email,
+                    'name'  => $department->name
+
                 )
             ));
             $mail->send();
