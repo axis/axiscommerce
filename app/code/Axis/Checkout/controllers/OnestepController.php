@@ -47,6 +47,7 @@ class Axis_Checkout_OnestepController extends Axis_Checkout_Controller_Checkout
         $this->setTitle($title, $title, false);
 
         $checkout = $this->_getCheckout()->applyDefaults();
+        $checkout->getTotal()->setRecollect(true);
 
         $formBillingAddress = $checkout->getAddressForm('billing');
         if (!Axis::getCustomerId()) {
