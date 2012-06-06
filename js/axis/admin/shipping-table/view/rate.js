@@ -20,12 +20,12 @@
  * @license     GNU Public License V3.0
  */
 Ext.onReady(function () {
-    
+
     var store                = Ext.StoreMgr.lookup('shippingTable/rate');
     var storeCoreSite        = Ext.StoreMgr.lookup('core/site');
     var storeLocationCountry = Ext.StoreMgr.lookup('location/country');
     var storeLocationZone    = Ext.StoreMgr.lookup('location/zone');
-    
+
     //@todo clone store
     var storeCoreSiteForEditor = new Ext.data.Store({
         recordType: storeCoreSite.recordType
@@ -33,21 +33,21 @@ Ext.onReady(function () {
     storeCoreSite.on('load', function(){
         storeCoreSiteForEditor.add(storeCoreSite.getRange());
     });
-    
+
     var storeLocationCountryForEditor = new Ext.data.Store({
         recordType: storeLocationCountry.recordType
     });
     storeLocationCountry.on('load', function(){
         storeLocationCountryForEditor.add(storeLocationCountry.getRange());
     });
-    
+
     var storeLocationZoneForEditor = new Ext.data.Store({
         recordType: storeLocationZone.recordType
     });
     storeLocationZone.on('load', function(){
         storeLocationZoneForEditor.add(storeLocationZone.getRange());
     });
-    
+
     var columnModel = new Ext.grid.ColumnModel({
         defaults: {
             sortable: true
@@ -85,7 +85,7 @@ Ext.onReady(function () {
             renderer: function(value, metaData, record) {
                 var row = storeLocationCountry.getById(value);
                 var rowZone = storeLocationZone.getById(record.get('zone_id'));
-                if (value !== rowZone.get('country_id')) {
+                if (rowZone && value !== rowZone.get('country_id')) {
                     record.set('zone_id', 0);
                 }
                 return row ? row.get('name') : value;
@@ -127,7 +127,7 @@ Ext.onReady(function () {
                     expand: function(combo) {
                         var r = combo.gridEditor.record;
                         storeLocationZoneForEditor.filterBy(function(rec){
-                            return rec.get('country_id') == r.get('country_id') 
+                            return rec.get('country_id') == r.get('country_id')
                                 || rec.get('zone_id') == 0;
                         });
                     }
@@ -159,7 +159,7 @@ Ext.onReady(function () {
             })
         }]
     });
-    
+
     new Axis.grid.EditorGridPanel({
         id: 'gridShippingTableRate',
         autoExpandColumn: 'site',
@@ -201,12 +201,12 @@ Ext.onReady(function () {
             handler : function() {
                 store.reload();
             }
-        }], 
+        }],
         bbar: new Axis.PagingToolbar({
             store: store
         })
     });
-    
+
     var importForm = new Ext.FormPanel({
         url: Axis.getUrl('shipping-table/rate/import'),
         fileUpload: true,
@@ -224,7 +224,7 @@ Ext.onReady(function () {
             store: storeCoreSite,
             displayField: 'name',
             valueField: 'id',
-            hiddenName: 'site_id', 
+            hiddenName: 'site_id',
             name: 'site_id',
 //            mode: 'local',
             allowBlank: false
@@ -235,7 +235,7 @@ Ext.onReady(function () {
             allowBlank: false
         }]
     });
-    
+
     var importWin = new Ext.Window({
         layout: 'fit',
         width: 300,
@@ -266,5 +266,5 @@ Ext.onReady(function () {
         }],
         items: importForm
     });
-    
+
 });
