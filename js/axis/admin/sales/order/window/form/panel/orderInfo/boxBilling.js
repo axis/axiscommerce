@@ -47,7 +47,7 @@ Ext.onReady(function(){
         remoteSort: true,
         pruneModifiedRecords: true
     });
-    
+
     var storeZones = new Ext.data.Store({
 //        storeId: 'storeZones',
         autoLoad: true,
@@ -87,18 +87,6 @@ Ext.onReady(function(){
         plugins: inlineField,
         lazyRender: true,
         listeners: {
-            select: function(combo, value) {
-                var zonesCombo = Ext.getCmp('combo-zone-billing');
-                zonesCombo.clearValue();
-                zonesCombo.store.filterBy(function(record) {
-                    return record.get('country_id') === parseInt(combo.getValue())
-                });
-            },
-            beforerender: function(element) {
-                storeZones.filterBy(function(record) {
-                    return record.get('country_id') === parseInt(element.getValue())
-                });
-            },
             beforeselect: function(combo, record, index) {
                 cmpBillingAddress.boxChanged();
                 Ext.StoreMgr.lookup('storeShippingMethod').reloadList({
@@ -129,15 +117,25 @@ Ext.onReady(function(){
         flex: 1,
         plugins: inlineField,
         listeners: {
-            beforeselect: function(combo, record, index) {
+            change: function(combo, newValue, oldValue){
+                combo.getStore().clearFilter();
                 cmpBillingAddress.boxChanged();
+            },
+            beforeselect: function(combo, record, index) {
                 Ext.StoreMgr.lookup('storeShippingMethod').reloadList({
                     billing_zone_id: combo.getStore().getAt(index).get('id')
+                });
+            },
+            expand : function(combo){
+                var countryId = Ext.getCmp('combo-country-billing').getValue();
+                combo.getStore().clearFilter();
+                combo.getStore().filterBy(function(record) {
+                    return record.get('country_id') === parseInt(countryId);
                 });
             }
         }
     });
-    
+
     var tplShortAddress = '{firstname} {lastname} {street_address} {city} {postcode}' +
         ' <tpl for="country">{name}</tpl>' +
         ' <tpl for="zone">{name}</tpl>'
@@ -243,11 +241,11 @@ Ext.onReady(function(){
                 form.findField('order[billing_suburb]').setValue(
                     record.get('suburb')
                 );
-                
+
                 form.findField('order[billing_city]').setValue(
                     record.get('city')
                 );
-               
+
                 cmpBillingCountry.setValue(record.get('country').id);
                 cmpBillingCountry.fireEvent(
                     'select', cmpBillingCountry, record.get('country').id
@@ -261,7 +259,7 @@ Ext.onReady(function(){
                 form.findField('order[billing_phone]').setValue(
                     record.get('phone')
                 );
-                    
+
                 form.findField('order[billing_fax]').setValue(
                     record.get('fax')
                 );
@@ -287,7 +285,7 @@ Ext.onReady(function(){
             name: 'order[billing_address_type]', // 0 == new address, 1 == old address
             initialValue: 0,
             xtype: 'hidden'}, {
-            
+
             xtype: 'compositefield',
             defaults: {
 //                allowBlank: false,

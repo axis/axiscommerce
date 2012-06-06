@@ -69,8 +69,11 @@ Ext.onReady(function() {
             {name: 'order[billing_postcode]',           type: 'string',  mapping: 'address.billing.postcode'},
             {name: 'order[billing_state]',              type: 'int',     mapping: 'address.billing.zone_id',
                 convert: function (v, record) {
-                    if (undefined !== record.address.billing.zone_id) {
+                    if (null !== record.address.billing.zone_id) {
                         return record.address.billing.zone_id;
+                    }
+                    if (null !== record.address.billing.zone_code) {
+                        return record.address.billing.zone_code;
                     }
                     return null;
                 }
@@ -95,8 +98,11 @@ Ext.onReady(function() {
             {name: 'order[delivery_postcode]',           type: 'string', mapping: 'address.delivery.postcode'},
             {name: 'order[delivery_state]',              type: 'int',    mapping: 'address.delivery.zone_id',
                 convert: function (v, record) {
-                    if (undefined !== record.address.delivery.zone_id) {
+                    if (null !== record.address.delivery.zone_id) {
                         return record.address.delivery.zone_id;
+                    }
+                    if (null !== record.address.delivery.zone_code) {
+                        return record.address.delivery.zone_code;
                     }
                     return null;
                 }

@@ -179,8 +179,8 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         $params['products'] = Zend_Json::decode($params['products']);
         ////////////////////////////////////////////////////////////////////////
         //add new customer
-        $newBillingAddress = $params['order']['billing_address_type'] == 0;
-        $newDeliveryAddress = $params['order']['delivery_address_type'] == 0;
+        $isNewBillingAddress = $params['order']['billing_address_type'] == 0;
+        $isNewDeliveryAddress = $params['order']['delivery_address_type'] == 0;
         $event = false;
         if (-2 == $params['order']['customer_id']) {
             $customerRawData = array_merge($params['customer'], array(
@@ -195,7 +195,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
             $customer->setDetails($customerRawData);
 
             $params['order']['customer_id'] = $customer->id;
-            $newBillingAddress = $newDeliveryAddress = true;
+            $isNewBillingAddress = $isNewDeliveryAddress = true;
         }
         if ($params['order']['customer_id'] < 0) {
             $params['order']['customer_id']  = 0;
@@ -204,7 +204,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         // save new customer addresses
         $customerRow = null;
         if ($params['order']['customer_id']
-            && ($newBillingAddress || $newDeliveryAddress)) {
+            && ($isNewBillingAddress || $isNewDeliveryAddress)) {
 
             $customerRow = Axis::single('account/customer')
                 ->find($params['order']['customer_id'])
@@ -212,7 +212,7 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         }
         if ($customerRow instanceof Axis_Db_Table_Row) {
             $o = $params['order'];
-            if ($newBillingAddress) {
+            if ($isNewBillingAddress) {
                 $address = array(
                     'firstname'         => $o['billing_firstname'],
                     'lastname'          => $o['billing_lastname'],
@@ -223,12 +223,16 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
                     'suburb'            => $o['billing_suburb'],
                     'city'              => $o['billing_city'],
                     'postcode'          => $o['billing_postcode'],
-                    'zone_id'           => $o['billing_state'],
                     'country_id'        => $o['billing_country']
                 );
+                if (!is_numeric($o['billing_state'])){
+                    $address['state'] = $o['billing_state'];
+                } else {
+                    $address['zone_id'] = $o['billing_state'];
+                }
                 $customerRow->setAddress($address);
             }
-            if ($newDeliveryAddress) {
+            if ($isNewDeliveryAddress) {
                 $address = array(
                     'firstname'         => $o['delivery_firstname'],
                     'lastname'          => $o['delivery_lastname'],
@@ -239,9 +243,13 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
                     'suburb'            => $o['delivery_suburb'],
                     'city'              => $o['delivery_city'],
                     'postcode'          => $o['delivery_postcode'],
-                    'zone_id'           => $o['delivery_state'],
                     'country_id'        => $o['delivery_country']
                 );
+                if (!is_numeric($o['delivery_state'])){
+                    $address['state'] = $o['delivery_state'];
+                } else {
+                    $address['zone_id'] = $o['delivery_state'];
+                }
                 $customerRow->setAddress($address);
             }
         }
@@ -257,15 +265,23 @@ class Axis_Sales_Admin_OrderController extends Axis_Admin_Controller_Back
         $params['order']['currency_rate'] = Axis::single('locale/currency')
             ->getRateByCode($params['order']['currency']);
 
-        $params['order']['delivery_country'] = Axis::single('location/country')
-            ->getName($params['order']['delivery_country']);
-        $params['order']['delivery_state'] = Axis::single('location/zone')
-            ->getName($params['order']['delivery_state']);
-
         $params['order']['billing_country'] = Axis::single('location/country')
             ->getName($params['order']['billing_country']);
-        $params['order']['billing_state'] = Axis::single('location/zone')
-            ->getName($params['order']['billing_state']);
+
+        if (is_numeric($params['order']['billing_state'])
+            && ($name = Axis::single('location/zone')->getName($params['order']['billing_state']))) {
+
+            $params['order']['billing_state'] = $name;
+        }
+
+        $params['order']['delivery_country'] = Axis::single('location/country')
+            ->getName($params['order']['delivery_country']);
+
+        if (is_numeric($params['order']['delivery_state'])
+            && ($name = Axis::single('location/zone')->getName($params['order']['delivery_state']))) {
+
+            $params['order']['delivery_state'] = $name;
+        }
 
         if (empty($params['order']['order_status_id'])) {
             $params['order']['order_status_id'] = 0;
