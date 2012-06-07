@@ -44,30 +44,30 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
     /**
      *
      * @param array $data
-     * @return type 
+     * @return type
      */
-    public function create(array $data) 
+    public function create(array $data)
     {
         $row = $this->createRow($data);
-        
+
         if (empty($row->password)) {
             $row->password = $this->generatePassword();
         }
         $password = $row->password;
         $row->password = md5($password);
-        
+
         $row->modified_at = Axis_Date::now()->toSQLString();
-        
+
         if (empty($row->created_at)) {
             $row->created_at = $row->modified_at;
         }
-        
+
         if (empty($row->locale)) {
             $row->locale = Axis_Locale::getLocale()->toString();
         }
-        
+
         $row->save();
-        
+
         return array($row, $password);
     }
 

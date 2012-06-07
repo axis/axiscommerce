@@ -125,9 +125,7 @@ abstract class Axis_Method_Payment_Model_Abstract extends Axis_Method_Abstract
     public function getStorage()
     {
         if (null === $this->_storage) {
-            $this->_storage = new Zend_Session_Namespace(
-                $this->_code . '-Checkout'
-            );
+            $this->_storage = Axis::session($this->_code . '-Checkout');
             $this->_storage->setExpirationSeconds(600);
             $this->_storage->setExpirationHops(5);
         }
