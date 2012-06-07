@@ -70,7 +70,7 @@ class Axis_Account_AuthController extends Axis_Core_Controller_Front
             }
             return;
         }
-
+        
         $this->_redirect($this->_hasSnapshot() ?
             $this->_getSnapshot() : $this->_getBackUrl());
     }

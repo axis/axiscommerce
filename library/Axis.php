@@ -225,8 +225,9 @@ class Axis
      * @static
      * @return Zend_Session_Namespace
      */
-    public static function session($namespace = 'nsMain')
+    public static function session($namespace = 'Core')
     {
+        $namespace = 'Axis_' . $namespace;
         if (!Zend_Registry::isRegistered($namespace)) {
             Zend_Registry::set($namespace, new Zend_Session_Namespace($namespace));
         }
