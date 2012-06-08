@@ -113,6 +113,8 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
                     }
 
                     $value = implode(', ', $value);
+                } elseif ('Axis_Core_Model_Option_Crypt' === $class) {
+                    $value = str_repeat('*', strlen($value));
                 }
             }
 
