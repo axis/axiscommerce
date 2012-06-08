@@ -1,16 +1,30 @@
-<form method="post" action="<?php echo $this->href('core/config_value/save');?>" id="form-edit"
-      onsubmit="Config.save(); return false;">
+<form method="post" action="<?php echo $this->href('core/config_value/save');?>"
+      id="form-edit" onsubmit="Config.save(); return false;">
 <?php
     echo $this->formHidden('siteId', $this->siteId);
     echo $this->formHidden('path', $this->row->path);
 ?>
 <h3 class="config-title"> <?php echo $this->row->title;?> </h3>
 <dl class="general-form">
+    <dt>
+        <label>
+            <?php echo $this->translate('admin')->__('Path');?>:
+        </label>
+    </dt>
+    <dd><?php echo $this->row->path;?></dd>
     <?php if (!empty($this->row->description)) : ?>
-        <dt><label><?php echo $this->translate('admin')->__('Description');?>: </label></dt>
+        <dt>
+            <label>
+                <?php echo $this->translate('admin')->__('Description');?>:
+            </label>
+        </dt>
         <dd><?php echo $this->row->description;?></dd>
     <?php endif; ?>
-    <dt><label for="value"><?php echo $this->translate('admin')->__('Value');?>:</label></dt>
+    <dt>
+        <label for="value">
+            <?php echo $this->translate('admin')->__('Value');?>:
+        </label>
+    </dt>
     <dd><?php
     $value = $this->value;
     $type  = $this->row->type;
@@ -33,6 +47,11 @@
         case 'textarea':
             echo $this->formTextarea(
                 'value', $value, array('rows' => 8, 'cols' => 45)
+            );
+            break;
+        case 'password':
+            echo $this->formPassword(
+                'value', $value, array('size' => '50', 'renderPassword' => true)
             );
             break;
         default:

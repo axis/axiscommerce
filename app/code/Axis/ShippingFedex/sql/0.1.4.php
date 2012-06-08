@@ -33,13 +33,14 @@ class Axis_ShippingFedex_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstrac
         $this->getConfigBuilder()
             ->section('shipping')
                 ->section('Fedex_Standard')
+                    ->setDefaultType('password')
                     ->setDefaultModel('core/option_crypt')
                     ->option('account', 'Account Number')
                     ->option('meterNumber', 'Meter Number')
                     ->option('key', 'Key')
                     ->option('password', 'Password')
             ->section('/');
-        
+
         //packaging
         $rowset = Axis::single('core/config_value')->select()
             ->where('path = ?', 'shipping/Fedex_Standard/package')
@@ -54,7 +55,7 @@ class Axis_ShippingFedex_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstrac
             'YOURPACKAGING'     => 'YOUR_PACKAGING'
         );
         foreach ($rowset as $row) {
-            $row->value = isset($replaces[$row->value]) ? 
+            $row->value = isset($replaces[$row->value]) ?
                 $replaces[$row->value] : 'YOUR_PACKAGING' ;
             $row->save();
         }
@@ -70,7 +71,7 @@ class Axis_ShippingFedex_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstrac
             'STATION'               => 'STATION'
         );
         foreach ($rowset as $row) {
-            $row->value = isset($replaces[$row->value]) ? 
+            $row->value = isset($replaces[$row->value]) ?
                 $replaces[$row->value] : 'REGULAR_PICKUP' ;
             $row->save();
         }
@@ -78,7 +79,7 @@ class Axis_ShippingFedex_Upgrade_0_1_4 extends Axis_Core_Model_Migration_Abstrac
         $rowset = Axis::single('core/config_value')->select()
             ->where('path = ?', 'shipping/Fedex_Standard/allowedTypes')
             ->fetchRowset();
-        
+
         $replaces = array(
             'EUROPEFIRSTINTERNATIONALPRIORITY'  => 'EUROPE_FIRST_INTERNATIONAL_PRIORITY',
             'FEDEX1DAYFREIGHT'                  => 'FEDEX_1_DAY_FREIGHT',
