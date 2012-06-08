@@ -32,7 +32,7 @@
  * @author      Axis Core Team <core@axiscommerce.com>
  */
 class Axis_Core_Model_Option_Boolean extends Axis_Config_Option_Array_Abstract
-implements Axis_Config_Option_Encodable_Interface
+    implements Axis_Config_Option_Encodable_Interface
 {
     /**
      *
@@ -41,17 +41,17 @@ implements Axis_Config_Option_Encodable_Interface
     protected function _loadCollection()
     {
         return array(
-            1 => Axis::translate('admin')->__('Yes'), 
+            1 => Axis::translate('admin')->__('Yes'),
             0 => Axis::translate('admin')->__('No')
         );
     }
-    
-    public function encode($value) 
+
+    public function encode($value)
     {
         return $value ? 1 : 0;
     }
-    
-    public function decode($value) 
+
+    public function decode($value)
     {
         return (bool) $value;
     }
