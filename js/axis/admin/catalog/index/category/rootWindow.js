@@ -80,7 +80,7 @@ Ext.onReady(function() {
         ),
         defaults: {
             allowBlank: false,
-            anchor: '100%',
+            anchor: '100%'
         },
         items: [{
             editable: false,
