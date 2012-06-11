@@ -19,40 +19,35 @@
  *
  * @category    Axis
  * @package     Axis_Core
- * @subpackage  Axis_Core_Model
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
 
-/**
- *
- * @category    Axis
- * @package     Axis_Core
- * @subpackage  Axis_Core_Model
- * @author      Axis Core Team <core@axiscommerce.com>
- */
-class Axis_Core_Model_Option_Boolean extends Axis_Config_Option_Array_Abstract
-    implements Axis_Config_Option_Encodable_Interface
+class Axis_Core_Upgrade_0_3_0 extends Axis_Core_Model_Migration_Abstract
 {
-    /**
-     *
-     * @return array
-     */
-    protected function _loadCollection()
-    {
-        return array(
-            1 => Axis::translate('admin')->__('Yes'),
-            0 => Axis::translate('admin')->__('No')
-        );
-    }
+    protected $_version = '0.3.0';
+    protected $_info = '';
 
-    public function encode($value)
+    public function up()
     {
-        return $value ? 1 : 0;
-    }
+        $model = Axis::single('core/config_field');
 
-    public function decode($value)
-    {
-        return (bool) $value;
+        $rowset = $model->select()
+            ->where('type = ?', 'bool')
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $row->type = 'radio';
+            $row->model = 'core/option_boolean';
+            $row->save();
+        }
+
+        $rowset = $model->select()
+            ->where('model = ?', 'core/option_crypt')
+            ->where('type <> ?', 'password')
+            ->fetchRowset();
+        foreach ($rowset as $row) {
+            $row->type = 'password';
+            $row->save();
+        }
     }
 }

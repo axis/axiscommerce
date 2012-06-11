@@ -34,13 +34,13 @@
  */
 class Axis_ShippingFedex_Model_Option_Standard_Package extends Axis_Config_Option_Array_Abstract
 {
-    const FEDEX_ENVELOPE = 'FEDEXENVELOPE';
-    const FEDEX_PAK      = 'FEDEXPAK';
-    const FEDEX_BOX      = 'FEDEXBOX';
-    const FEDEX_TUBE     = 'FEDEXTUBE';
-    const FEDEX_10KG_BOX = 'FEDEX10KGBOX';
-    const FEDEX_25KG_BOX = 'FEDEX25KGBOX';
-    const YOUR_PACKAGING = 'YOURPACKAGING';
+    const FEDEX_ENVELOPE = 'FEDEX_ENVELOPE';
+    const FEDEX_PAK      = 'FEDEX_PAK';
+    const FEDEX_BOX      = 'FEDEX_BOX';
+    const FEDEX_TUBE     = 'FEDEX_TUBE';
+    const FEDEX_10KG_BOX = 'FEDEX_10KG_BOX';
+    const FEDEX_25KG_BOX = 'FEDEX_25KG_BOX';
+    const YOUR_PACKAGING = 'YOUR_PACKAGING';
     
     /**
      *

@@ -83,17 +83,20 @@ var Contact = {
         var mail    = selected.data['email'];
         var subject = selected.data['subject'];
         var message = selected.data['message'];
-        var custom  = selected.data['custom_info'];
+        var custom  = '';
+        Ext.iterate(Ext.decode(selected.data['custom_info']), function(field, value){
+            custom += field + ' : ' + value + ';';
+        });
         var datetime = selected.data['datetime'];
         formMail.getForm().findField('email').setValue(mail);
-        formMail.getForm().findField('subject').setValue('re: '+subject);
+        formMail.getForm().findField('subject').setValue('re: ' + subject);
         formMail.getForm().findField('department_id').setValue(Contact.getSelectedDepartamentId());
         var template = new Ext.Template.from('tpl-message');
         Contact.window.items.first().body.update(template.applyTemplate({
             'from'      : mail,
             'subject'   : Axis.escape(subject),
             'message'   : Axis.escape(message),
-            'custom'    : Axis.escape(custom).replace(/\n/, '<br />'),
+            'custom'    : Axis.escape(custom),
             'datetime'  : datetime
         }));
 
@@ -160,7 +163,7 @@ var Department = {
                  id: Dep.id
              },
              callback: function() {
-                 Department.tree.getNodeById(Dep.id).parentNode.reload();
+                 Department.tree.getStore().reload();
                  Dep.id = 0;
              }
          });
@@ -174,14 +177,14 @@ var Department = {
             },
             success:  function() {
                 winDepart.hide();
-                Department.tree.getRootNode().reload();
+                Department.tree.getStore().reload();
             }
          });
      },
 
      addDepartment: function () {
          formDepart.getForm().clear();
-         Dep.id = 0;
+         Dep.id = null;
          winDepart.show();
      },
 
@@ -262,27 +265,27 @@ Ext.onReady(function() {
             renderer: function(v) {
                 return Ext.util.Format.date(v) + ' ' + Ext.util.Format.date(v, 'H:i:s');
             }
-        }, {
-            header: "Department".l(),
-            dataIndex: 'department_id',
-            width: 170,
-            renderer: function(v) {
-                var i = 0;
-                while (departaments[i]) {
-                    if (v == departaments[i][0]) {
-                        return departaments[i][1];
-                    }
-                    i++;
-                }
-                return v;
-            },
-            filter: {
-                editable: false,
-                store: new Ext.data.ArrayStore({
-                    data: departaments,
-                    fields: ['id', 'name']
-                })
-            }
+//        }, {
+//            header: "Department".l(),
+//            dataIndex: 'department_id',
+//            width: 170,
+//            renderer: function(v) {
+////                var i = 0;
+////                while (departaments[i]) {
+////                    if (v == departaments[i][0]) {
+////                        return departaments[i][1];
+////                    }
+////                    i++;
+////                }
+//                return v;
+//            },
+//            filter: {
+//                editable: false,
+//                store: new Ext.data.ArrayStore({
+//                    data: departaments,
+//                    fields: ['id', 'name']
+//                })
+//            }
         }, {
             header: "Site".l(),
             dataIndex: 'site_id',
@@ -403,7 +406,12 @@ Ext.onReady(function() {
         }, ['id', 'name']),
         autoLoad: true
     });
-
+    var record =  ['email'];
+    for (var id in Axis.locales) {
+        record.push(
+            {name: 'name[' + id + ']', mapping: 'name.language_' + id}
+        );
+    }
     formDepart = new Ext.form.FormPanel({
         labelWidth: 80,
         name : 'fdepart',
@@ -414,9 +422,10 @@ Ext.onReady(function() {
         border: false,
         autoHeight: true,
         reader: new Ext.data.JsonReader({
-                root: 'data'
+                root: 'data',
+                idProperty: 'id'
             },
-            ['name', 'email']
+            record
         ),
         items: [new Ext.form.ComboBox({
             allowBlank: false,
@@ -432,7 +441,8 @@ Ext.onReady(function() {
             allowBlank: false,
             fieldLabel: 'Name'.l(),
             name: 'name',
-            xtype: 'textfield'
+            tplName: 'name[{language_id}]',//contacts_department_name
+            xtype: 'langset'
         }]
     });
 
@@ -483,28 +493,38 @@ Ext.onReady(function() {
         }]
     });
 
-    var root = new Ext.tree.AsyncTreeNode({
-        text: 'All'.l(),
-        draggable: false,
-        id: '0'
+    var dsDepartment = new Ext.data.Store({
+        autoLoad: true,
+        proxy: new Ext.data.HttpProxy({
+            url: Axis.getUrl('contacts/department/list'),
+            method: 'post'
+        }),
+        reader: new Ext.data.JsonReader({
+            root: 'data',
+            id: 'id'
+        }, Ext.data.Record.create([
+            {name: 'id', type: 'int'},
+            {name: 'name', type: 'string'}
+        ]))
     });
 
-    Department.tree = new Ext.tree.TreePanel({
-        root : root,
-        loader: new Ext.tree.TreeLoader({
-            dataUrl: Axis.getUrl('contacts/department/list')
-        }),
-        autoScroll:true,
-        width: 230,
-        autoScroll: true,
+    var cmDepartment = new Ext.grid.ColumnModel({
+        columns: [{
+            header: "Name".l(),
+            id: 'name',
+            dataIndex: 'name'
+        }]
+    });
+
+    Department.tree = new Axis.grid.GridPanel({
+        autoExpandColumn: 'name',
+        ds: dsDepartment,
+        cm: cmDepartment,
         region: 'west',
-        collapsible: true,
-        collapseMode: 'mini',
-        header: false,
-        split: true,
+        width: 250,
         tbar: [{
             text: 'Add'.l(),
-            tooltip: {text: 'Add new Department ', title: 'Add '},
+            tooltip: {text: 'Add new Department'.l(), title: 'Add'.l()},
             cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/add.png',
             handler: Department.addDepartment
@@ -518,15 +538,25 @@ Ext.onReady(function() {
             cls: 'x-btn-text-icon',
             icon: Axis.skinUrl + '/images/icons/delete.png',
             handler: Department.deleteDepartment
+        }, '->', {
+            icon: Axis.skinUrl + '/images/icons/refresh.png',
+            cls: 'x-btn-icon',
+            handler: function(){
+                Department.tree.getStore().reload();
+            }
         }]
     });
 
-    Department.tree.on('click', function (node, e) {
-        Dep.id = node.id;
+    Department.tree.on('rowclick', function(grid, index, e) {
+        Dep.id = grid.getStore().getAt(index).get('id');
         ds.baseParams['departmentId'] = Dep.id;
         ds.load();
     });
-    root.expand();
+
+    Department.tree.on('rowdblclick', function(grid, index, e) {
+        Dep.id = grid.getStore().getAt(index).get('id');
+        Department.editDepartment();
+    });
 
     new Axis.Panel({
         items: [

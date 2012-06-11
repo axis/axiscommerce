@@ -33,15 +33,9 @@
  */
 class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstract
 {
-    /**
-     * @var int
-     */
-    private $_customerId;
-
     public function init()
     {
         parent::init();
-        $this->_customerId = Axis::getCustomerId();
         $this->_helper->breadcrumbs(array(
             'label'      => Axis::translate('account')->__('Address Book'),
             'controller' => 'address-book',
@@ -54,15 +48,15 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
     {
         $this->setTitle(Axis::translate('account')->__('Address Book'), null, false);
 
-        $this->view->defaultBillingAddresId = false;
-        $this->view->defaultShippingAddresId = false;
+        $this->view->defaultBillingAddressId = false;
+        $this->view->defaultShippingAddressId = false;
         if ($customer = Axis::getCustomer()) {
-            $this->view->defaultBillingAddresId = $customer->default_billing_address_id;
-            $this->view->defaultShippingAddresId = $customer->default_shipping_address_id;
+            $this->view->defaultBillingAddressId = $customer->default_billing_address_id;
+            $this->view->defaultShippingAddressId = $customer->default_shipping_address_id;
         }
 
         $this->view->addressList = Axis::single('account/customer_address')
-            ->getSortListByCustomerId($this->_customerId);
+            ->getSortListByCustomerId(Axis::getCustomerId());
         $this->render();
     }
 
@@ -74,7 +68,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         $form = Axis::model('account/form_address');
 
         if ($form->isValid($params)) {
-            $params['customer_id'] = $this->_customerId;
+            $params['customer_id'] = Axis::getCustomerId();
             Axis::getCustomer()->setAddress($params);
 
             if ($this->getRequest()->isXmlHttpRequest()) {
@@ -99,7 +93,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         $id = $this->_getParam('id');
         Axis::single('account/customer_address')->delete(array(
             $this->db->quoteInto('id = ?', $id),
-            $this->db->quoteInto('customer_id = ?', $this->_customerId)
+            $this->db->quoteInto('customer_id = ?', Axis::getCustomerId())
         ));
         $this->_redirect('account/address-book');
     }
@@ -133,7 +127,7 @@ class Axis_Account_AddressBookController extends Axis_Account_Controller_Abstrac
         $addressId = $this->_getParam('id');
         $address = Axis::single('account/customer_address')->select()
             ->where('id = ?', $addressId)
-            ->where('customer_id = ?', $this->_customerId)
+            ->where('customer_id = ?', Axis::getCustomerId())
             ->fetchRow();
 
         if (!$address instanceof  Axis_Db_Table_Row) {

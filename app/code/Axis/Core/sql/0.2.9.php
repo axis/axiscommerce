@@ -52,20 +52,20 @@ class Axis_Core_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
             'core/company/zone'             => 'core/option_company_zone'
         );
         $rowset = $model->select()->fetchRowset();
-        
+
         foreach ($rowset as $row) {
-            
+
             if (isset($models[$row->model])) {
                 $row->model = $models[$row->model];
                 $row->save();
             }
-            
+
             if (isset($paths[$row->path])) {
                 $row->model = $paths[$row->path];
                 $row->save();
             }
         }
-        
+
         Axis::model('admin/acl_rule')
             ->rename('admin/axis/core/config-field',      'admin/axis/core/config_field')
             ->rename('admin/axis/core/config-field/list', 'admin/axis/core/config_field/list')
@@ -78,55 +78,57 @@ class Axis_Core_Upgrade_0_2_9 extends Axis_Core_Model_Migration_Abstract
             ->rename('admin/axis/core/config-value/copy-global', 'admin/axis/core/config_value/copy-global')
             ->rename('admin/axis/core/config-value/use-global',  'admin/axis/core/config_value/use-global')
         ;
-        
+
         $rowset = Axis::model('admin/acl_rule')->select()
             ->where('resource_id LIKE ? ', "admin/axis/core/config-field%")
             ->fetchRowset()
             ;
-        
+
         foreach ($rowset as $row) {
             $row->delete();
         }
-        
+
         $installer = $this->getInstaller();
-        
+
         $columns = $model->info('cols');
         if (in_array('model_assigned_with', $columns)) {
             $installer->run("
-                ALTER TABLE `{$installer->getTable('core_config_field')}` 
+                ALTER TABLE `{$installer->getTable('core_config_field')}`
                     DROP COLUMN `model_assigned_with`;
             ");
         }
-        
+
         if (in_array('config_options', $columns)) {
             $installer->run("
-                ALTER TABLE `{$installer->getTable('core_config_field')}` 
+                ALTER TABLE `{$installer->getTable('core_config_field')}`
                     DROP COLUMN `config_options`;
             ");
         }
         if (in_array('config_type', $columns)) {
             $installer->run("
-                ALTER TABLE `{$installer->getTable('core_config_field')}` 
+                ALTER TABLE `{$installer->getTable('core_config_field')}`
                     CHANGE COLUMN `config_type` `type` VARCHAR(128);
             ");
         }
-            
+
         $rowset = $model->select()
-            ->where('type = ?', 'radio')
+            ->where('type = ?', 'bool')
             ->fetchRowset();
         foreach ($rowset as $row) {
+            $row->type = 'radio';
             $row->model = 'core/option_boolean';
             $row->save();
         }
-        
+
         $rowset = $model->select()
             ->where('model = ?', 'Crypt')
             ->fetchRowset();
         foreach ($rowset as $row) {
-            $row->type = 'text';
+            $row->type = 'password';
             $row->model = 'core/option_crypt';
             $row->save();
         }
+
         $rowset = $model->select()
             ->where('type = ?', 'text')
             ->fetchRowset();

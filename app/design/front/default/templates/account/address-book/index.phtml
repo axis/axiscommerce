@@ -21,14 +21,14 @@ foreach ($this->addressList as $address) : ?>
     <div class="col-<?php echo $column ?>">
         <div class="address">
             <h5 class="address-title">
-                <?php if ($address->id == $this->defaultBillingAddresId) : ?>
+                <?php if ($address->id == $this->defaultBillingAddressId) : ?>
                     <?php echo $this->translate('account')->__('Default Billing Address')?>
                 <?php endif; ?>
-                <?php if ($address->id == $this->defaultShippingAddresId) : ?>
+                <?php if ($address->id == $this->defaultShippingAddressId) : ?>
                     <?php echo $this->translate('account')->__('Default Shipping Address')?>
                 <?php endif; ?>
-                <?php if ($address->id != $this->defaultBillingAddresId &&
-                          $address->id != $this->defaultShippingAddresId) : ?>
+                <?php if ($address->id != $this->defaultBillingAddressId &&
+                          $address->id != $this->defaultShippingAddressId) : ?>
                       <?php echo $this->translate('account')->__('Address')?> <?php echo $i+1; ?>
                 <?php endif; ?>
             </h5>

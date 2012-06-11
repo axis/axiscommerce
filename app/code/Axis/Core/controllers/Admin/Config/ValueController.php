@@ -46,7 +46,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $start   = $this->_getParam('start', 0);
         $order   = $this->_getParam('sort', 'path') . ' '
                  . $this->_getParam('dir', 'ASC');
-        
+
         $model  = Axis::model('core/config_field');
         $select = $model->select('id')
             ->calcFoundRows()
@@ -90,11 +90,38 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
             if (isset($data[$row->id])) {
                 continue;
             }
-           
+
+            $value = $row->value;
+            if (!empty($row->model)) {
+                $class = Axis::getClass($row->model);
+                if (class_exists($class)
+                    && in_array('Axis_Config_Option_Array_Abstract', class_parents($class))) {
+
+                    $_model = Axis::single($row->model);
+
+                    if (in_array('Axis_Config_Option_Encodable_Interface', class_implements($class))) {
+                        $value = $_model->decode($value);
+                    }
+
+                    if (!is_array($value)) {
+                        $value = array($value);
+                    }
+
+                    foreach ($value as  &$_value) {
+                        $_value = isset($_model[$_value]) ?
+                            $_model[$_value] : $_value;
+                    }
+
+                    $value = implode(', ', $value);
+                } elseif ('Axis_Core_Model_Option_Crypt' === $class) {
+                    $value = str_repeat('*', strlen($value));
+                }
+            }
+
             $translator = Axis::translate($row->getTranslationModule());
             $data[$row->id] = array_merge($row->toArray(), array(
                 'title' => $translator->__($row->title),
-                'value' => $row->value,
+                'value' => $value,
                 'from'  => $row->site_id ? 'site' : 'global'
             ));
         }
@@ -111,7 +138,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $this->_helper->layout->disableLayout();
         $siteId = $this->_getParam('siteId');
         $path = $this->_getParam('path');
-        
+
         $this->view->siteId = $siteId;
         $this->view->configPath = $path;
 
@@ -122,22 +149,22 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $translator = Axis::translate($row->getTranslationModule());
         $row->description = $translator->__($row->description);
         $row->title = $translator->__($row->title);
-       
+
         $value = Axis::config($path);
         if ($value instanceof Axis_Config) {
             $value = $value->toArray();
         }
         if (!empty($row->model)) {
             $class = Axis::getClass($row->model);
-            if (class_exists($class) 
+            if (class_exists($class)
                 && in_array('Axis_Config_Option_Array_Abstract', class_parents($class))) {
 
                 $this->view->options = Axis::model($row->model)->toArray();
             }
         }
         $this->view->value = $value;
-        
-        $this->view->row = $row;       
+
+        $this->view->row = $row;
         $this->render();
     }
 
@@ -170,7 +197,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         }
         if (!empty($rowField->model)) {
             $class = Axis::getClass($rowField->model);
-            if (class_exists($class) 
+            if (class_exists($class)
                 && in_array('Axis_Config_Option_Encodable_Interface', class_implements($class))) {
 
                 $value = Axis::model($rowField->model)->encode($value);

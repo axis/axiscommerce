@@ -18,8 +18,8 @@
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category    Axis
- * @package     Axis_Core
- * @subpackage  Axis_Core_Model
+ * @package     Axis_Contacts
+ * @subpackage  Axis_Contacts_Model
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
@@ -27,32 +27,12 @@
 /**
  *
  * @category    Axis
- * @package     Axis_Core
- * @subpackage  Axis_Core_Model
+ * @package     Axis_Contacts
+ * @subpackage  Axis_Contacts_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Core_Model_Option_Boolean extends Axis_Config_Option_Array_Abstract
-    implements Axis_Config_Option_Encodable_Interface
+class Axis_Contacts_Model_Department_Name extends Axis_Db_Table
 {
-    /**
-     *
-     * @return array
-     */
-    protected function _loadCollection()
-    {
-        return array(
-            1 => Axis::translate('admin')->__('Yes'),
-            0 => Axis::translate('admin')->__('No')
-        );
-    }
-
-    public function encode($value)
-    {
-        return $value ? 1 : 0;
-    }
-
-    public function decode($value)
-    {
-        return (bool) $value;
-    }
+    protected $_name = 'contacts_department_name';
+    protected $_primary = array('department_id', 'language_id');
 }

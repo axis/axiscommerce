@@ -47,7 +47,7 @@ Ext.onReady(function(){
         remoteSort: true,
         pruneModifiedRecords: true
     });
-    
+
     var storeZones = new Ext.data.Store({
 //        storeId: 'storeZones',
         autoLoad: true,
@@ -70,6 +70,7 @@ Ext.onReady(function(){
     });
 
     var cmpDeliveryCountry = new Ext.form.ComboBox({
+        id: 'combo-country-delivery',
         emptyText: 'Country ',
         name: 'order[delivery_country]',
         hiddenName: 'order[delivery_country]',
@@ -85,18 +86,6 @@ Ext.onReady(function(){
         plugins: inlineField,
         lazyRender: true,
         listeners: {
-            select: function(combo, value) {
-                var zonesCombo = Ext.getCmp('combo-zone-delivery');
-                zonesCombo.clearValue();
-                zonesCombo.store.filterBy(function(record) {
-                    return record.get('country_id') === parseInt(combo.getValue())
-                });
-            },
-            beforerender: function(element) {
-                storeZones.filterBy(function(record) {
-                    return record.get('country_id') === parseInt(element.getValue())
-                });
-            },
             beforeselect: function(combo, record, index) {
                 cmpDeliveryAddress.boxChanged();
                 Ext.StoreMgr.lookup('storeShippingMethod').reloadList({
@@ -133,10 +122,20 @@ Ext.onReady(function(){
         plugins: inlineField,
         lazyRender: true,
         listeners: {
-            beforeselect: function(combo, record, index) {
+            change: function(combo, newValue, oldValue){
+                combo.getStore().clearFilter();
                 cmpDeliveryAddress.boxChanged();
+            },
+            beforeselect: function(combo, record, index) {
                 Ext.StoreMgr.lookup('storeShippingMethod').reloadList({
                     delivery_zone_id: combo.getStore().getAt(index).get('id')
+                });
+            },
+            expand : function(combo){
+                var countryId = Ext.getCmp('combo-country-delivery').getValue();
+                combo.getStore().clearFilter();
+                combo.getStore().filterBy(function(record) {
+                    return record.get('country_id') === parseInt(countryId);
                 });
             }
         }
@@ -221,7 +220,7 @@ Ext.onReady(function(){
                 form.findField('order[delivery_fax]').setValue(
                     record.get('fax')
                 );
-                    
+
                 Ext.StoreMgr.lookup('storeShippingMethod').reloadList();
             }
         },
@@ -335,5 +334,5 @@ Ext.onReady(function(){
             ]
         }]
     };
-    
+
 }, this);

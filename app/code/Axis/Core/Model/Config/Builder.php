@@ -38,13 +38,13 @@ class Axis_Core_Model_Config_Builder
      * @var array
      */
     protected $_rowField = array();
-    
+
     /**
      *
      * @var array
      */
     protected $_defaultsRowField = array();
-    
+
     /**
      *
      * @var mixed
@@ -56,14 +56,23 @@ class Axis_Core_Model_Config_Builder
      * @var array
      */
     protected $_path = array();
-    
+
     /**
      *
      * @var bool
      */
     protected $_isContainer = false;
 
-    public function __construct() 
+    public function __construct()
+    {
+        $this->flushDefaults();
+    }
+
+    /**
+     *
+     * @return \Axis_Core_Model_Config_Builder
+     */
+    public function flushDefaults()
     {
         $this->_defaultsRowField = array(
             'type'               => 'text',
@@ -71,125 +80,126 @@ class Axis_Core_Model_Config_Builder
             'model'              => '',
             'translation_module' => new Zend_Db_Expr('NULL')
         );
+        return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setDefaultType($value) 
+    public function setDefaultType($value)
     {
         $this->_defaultsRowField['type'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param mixed $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setDefaultDescription($value) 
+    public function setDefaultDescription($value)
     {
         $this->_defaultsRowField['description'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setDefaultModel($value) 
+    public function setDefaultModel($value)
     {
         $this->_defaultsRowField['model'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setDefaultTranslation($value) 
+    public function setDefaultTranslation($value)
     {
         $this->_defaultsRowField['translation_module'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setTitle($value) 
+    public function setTitle($value)
     {
         $this->_rowField['title'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setType($value) 
+    public function setType($value)
     {
         $this->_rowField['type'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setModel($value) 
+    public function setModel($value)
     {
         $this->_rowField['model'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setDescription($value) 
+    public function setDescription($value)
     {
         $this->_rowField['description'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setTranslation($value) 
+    public function setTranslation($value)
     {
         $this->_rowField['translation_module'] = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function setValue($value) 
+    public function setValue($value)
     {
         $this->_rawValue = $value;
         return $this;
     }
-    
+
     /**
      *
      * @param string $path
      * @param string $title
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function section($path = null, $title = null) 
+    public function section($path = null, $title = null)
     {
         $this->_savePrevious();
         if ('/' === $path) {
@@ -209,15 +219,15 @@ class Axis_Core_Model_Config_Builder
         }
         return $this;
     }
-    
+
     /**
      *
      * @param string $path
      * @param string $title
      * @param mixed $value
-     * @return \Axis_Core_Model_Config_Builder 
+     * @return \Axis_Core_Model_Config_Builder
      */
-    public function option($path, $title = null, $value = null) 
+    public function option($path, $title = null, $value = null)
     {
         $this->_savePrevious();
         $this->_rawValue = null;
@@ -236,13 +246,13 @@ class Axis_Core_Model_Config_Builder
         }
         return $this;
     }
-    
-    protected function _savePrevious() 
+
+    protected function _savePrevious()
     {
         $rowData = $this->_rowField;
         $this->_rowField = array();
         if (empty($rowData)) {
-          return;  
+          return;
         }
         $modelField = Axis::single('core/config_field');
         $rowField = $modelField->select()
@@ -253,7 +263,7 @@ class Axis_Core_Model_Config_Builder
             $rowField = $modelField->createRow();
         }
         if ($this->_isContainer) {
-            
+
             $rowData = array_merge($rowData, array(
                 'type'  => '',
                 'model' => '',
@@ -261,7 +271,7 @@ class Axis_Core_Model_Config_Builder
         }
         $rowField->setFromArray($rowData);
         $rowField->save();
-        
+
         if ($this->_isContainer) {
             return;
         }
@@ -280,10 +290,10 @@ class Axis_Core_Model_Config_Builder
         }
         if (null !== $this->_rawValue) {
             $value = $this->_rawValue;
-            
+
             if (!empty($rowData['model'])) {
                 $class = Axis::getClass($rowData['model']);
-                if (class_exists($class) 
+                if (class_exists($class)
                     && in_array('Axis_Config_Option_Encodable_Interface', class_implements($class))) {
 
                     $value = Axis::model($rowData['model'])->encode($value);
@@ -293,7 +303,7 @@ class Axis_Core_Model_Config_Builder
         }
         $rowValue->save();
     }
-    
+
     /**
      * Removes config field, and all of it childrens
      * Provide fluent interface
