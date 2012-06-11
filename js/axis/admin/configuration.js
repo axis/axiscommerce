@@ -40,15 +40,11 @@ Ext.onReady(function() {
             return data;
         },
 
-        edit: function(row) {
-            if (!row.id) {
-                return;
-            }
-
+        edit: function(path) {
             Ext.Ajax.request({
                 url: Axis.getUrl('core/config_value/load'),
                 params: {
-                    path: row.id,
+                    path: path,
                     siteId: Config.siteId
                 },
                 success: function(response, request) {
@@ -62,19 +58,16 @@ Ext.onReady(function() {
             });
         },
 
-        onTreeClick: function(node, e) {
-            if (typeof(node) == undefined) {
-                return;
-            }
+        reloadValueGridStore: function(path) {
 
             delete ds.baseParams['filter[tree][field]'];
             delete ds.baseParams['filter[tree][operator]'];
             delete ds.baseParams['filter[tree][value]'];
 
-            if (node.id != tree.root.id) {
+            if (path != tree.root.id) {
                 ds.baseParams['filter[tree][field]']    = 'path';
                 ds.baseParams['filter[tree][operator]'] = 'STRICT_LIKE';
-                ds.baseParams['filter[tree][value]']    = node.id + '/%';
+                ds.baseParams['filter[tree][value]']    = path + '/%';
             }
 
             if (ds.lastOptions && ds.lastOptions.params) {
@@ -213,12 +206,17 @@ Ext.onReady(function() {
     });
     tree.setRootNode(rootNode);
 
-    tree.on('click', Config.onTreeClick);
+    tree.on('click', function(node, e) {
+        if (!node|| !node.id) {
+            return;
+        }
+        window.location.hash = node.id;
+        Config.reloadValueGridStore(node.id);
+    });
     rootNode.expand();
 
     // Configuration grid
     var ds = new Ext.data.Store({
-        autoLoad: true,
         baseParams: {
             limit: 25
         },
@@ -302,7 +300,12 @@ Ext.onReady(function() {
     disableButtons();
 
     grid.on('rowdblclick', function(grid, index) {
-        Config.edit(grid.getStore().getAt(index));
+        var row = grid.getStore().getAt(index);
+        if (row && row.id) {
+            window.location.hash = row.id;
+            Config.edit(row.id);
+        }
+
     });
 
     grid.getSelectionModel().on('selectionchange', function(evt, rowIndex, record) {
@@ -317,6 +320,38 @@ Ext.onReady(function() {
             enableButtons();
         }
     };
+
+    var historyPath = window.location.hash.replace('#', '').split('/');
+
+    if (historyPath[1] || historyPath[0]) {
+        ds.baseParams['filter[tree][field]']    = 'path';
+        ds.baseParams['filter[tree][operator]'] = 'STRICT_LIKE';
+        ds.baseParams['filter[tree][value]']    = historyPath.slice(0, 2).join('/') + '/%';
+    }
+    ds.load();
+    
+    tree.getLoader().on('load', function(){
+        if (!historyPath[0]) {
+            return;
+        }
+        var n = tree.getNodeById(historyPath[0]);
+        if (n) {
+            n.select();
+            n.expand();
+        }
+        if (!historyPath[1]) {
+            return;
+        }
+        var hash = historyPath.slice(0, 2).join('/');
+        n = tree.getNodeById(hash);
+        if (n){
+            n.select();
+        }
+    });
+
+    if (historyPath[2]) {
+        Config.edit(historyPath.join('/'));
+    }
 
     new Axis.Panel({
         items: [
