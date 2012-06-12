@@ -117,7 +117,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     $errorMessage .= "Unknown error ($level)";
                     break;
             }
-            
+
             $errorMessage .= ": {$message}  in {$file} on line {$line}";
             throw new Exception($errorMessage);
         }
@@ -241,9 +241,34 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initCache()
     {
         $this->bootstrap('DbAdapter');
-        //create default cache
-        $cache = Axis_Core_Model_Cache::getCache();
-        //create database metacache
+
+        $cacheDir = Axis::config()->system->path . '/var/cache';
+        if (!is_readable($cacheDir)) {
+            mkdir($cacheDir, 0777);
+        } elseif(!is_writable($cacheDir)) {
+            chmod($cacheDir, 0777);
+        }
+        if (!is_writable($cacheDir)) {
+            echo "Cache directory should be writable. Run 'chmod -R 0777 {$cacheDir}'";
+            die;
+        }
+        $cache = Zend_Cache::factory(
+            'Core', 'Axis_Cache_Backend_File',
+            array(
+                'lifetime'                => Axis::config('core/cache/default_lifetime'),
+                'automatic_serialization' => true
+            ),
+            array(
+                'cache_dir'               => $cacheDir,
+                'hashed_directory_level'  => 1,
+                'file_name_prefix'        => 'axis_cache',
+                'hashed_directory_umask'  => 0777
+            ),
+            false,
+            true
+        );
+        Zend_Registry::set('cache', $cache);
+
         Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
 
 //        /**
