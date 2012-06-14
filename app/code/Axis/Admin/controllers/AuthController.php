@@ -50,7 +50,7 @@ class Axis_Admin_AuthController extends Axis_Admin_Controller_Back
         $username = $this->_getParam('username');
         $password = $this->_getParam('password');
         $auth = Zend_Auth::getInstance();
-        $authAdapter = new Axis_Auth_AdminAdapter($username, $password);
+        $authAdapter = new Axis_Auth_Adapter_Backend($username, $password);
 
         $result = $auth->authenticate($authAdapter);
 

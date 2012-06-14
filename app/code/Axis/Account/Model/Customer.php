@@ -102,7 +102,7 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
         }
 
         $auth = Zend_Auth::getInstance();
-        $authAdapter = new Axis_Auth_FrontAdapter($email, $password);
+        $authAdapter = new Axis_Auth_Adapter_Frontend($email, $password);
         $result = $auth->authenticate($authAdapter);
 
         if (!$result->isValid()) {

@@ -115,7 +115,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table
         $zones     = Axis::model('location/option_zone');
         $countries = Axis::model('location/option_country');
         $company   = Axis::config('core/company', $siteId)->toArray();
-        
+
         //@todo Use Axis_Object
         return array(
             'email'     => $mailBoxes[$company['administratorEmail']],
@@ -126,7 +126,7 @@ class Axis_Core_Model_Site extends Axis_Db_Table
             'phone'     => $company['phone'],
             'postcode'  => $company['zip'],
             'site'      => $company['site'],
-            
+
             'zone'                    => $zones[$company['country']][$company['zone']],
             'street_address'          => $company['street'],
             'customer_relation_email' => $mailBoxes[$company['customerRelationEmail']],
