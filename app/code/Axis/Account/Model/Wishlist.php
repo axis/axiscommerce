@@ -94,8 +94,14 @@ class Axis_Account_Model_Wishlist extends Axis_Db_Table
             ->where('cp.id IN (?)', $productIds)
             ->fetchProducts($productIds);
 
+        if (!count($products)) {
+            return array();
+        }
+
         foreach ($wishlist as &$item) {
-            $item['product'] = $products[$item['product_id']];
+            if (isset($products[$item['product_id']])) {
+                $item['product'] = $products[$item['product_id']];
+            }
         }
         return $wishlist;
     }
