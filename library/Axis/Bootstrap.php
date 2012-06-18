@@ -170,6 +170,8 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     protected function _initSession()
     {
+        $this->bootstrap('DbAdapter');
+
         $cacheDir = AXIS_ROOT . '/var/sessions';
         if (!is_readable($cacheDir)) {
             mkdir($cacheDir, 0777);
@@ -177,8 +179,14 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             chmod($cacheDir, 0777);
         }
 
+        $lifetime = 60 * 15; // 15 min
+        if ('development' === APPLICATION_ENV) {
+            $lifetime = 60 * 60 * 24 * 10; // 10 days
+        }
+
         Zend_Session::setOptions(array(
-            'cookie_lifetime' => 864000, // 10 days
+            'cookie_secure'   => true,
+            'cookie_lifetime' => $lifetime,
             'name'            => 'axisid',
             'strict'          => 'off',
             'save_path'       => $cacheDir,
@@ -196,22 +204,19 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             }
             exit();
         }
-        return Axis::session();
-    }
 
-    protected function _initSessionValidators()
-    {
-        $this->bootstrap('DbAdapter');
-        $sessionConfig = Axis::config('core/session');
-        if (!$sessionConfig instanceof Axis_Config) {
-            return;
+        // add sessions validators
+        $config = Axis::config('core/session');
+        if (!$config instanceof Axis_Config) {
+            return Axis::session();
         }
-        if ($sessionConfig->remoteAddressValidation) {
+        if ($config->remoteAddressValidation) {
             Zend_Session::registerValidator(new Axis_Session_Validator_RemoteAddress());
         }
-        if ($sessionConfig->httpUserAgentValidation) {
+        if ($config->httpUserAgentValidation) {
             Zend_Session::registerValidator(new Zend_Session_Validator_HttpUserAgent());
         }
+        return Axis::session();
     }
 
     protected function _initDbAdapter()
