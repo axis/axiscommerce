@@ -168,6 +168,30 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return Axis::config();
     }
 
+    protected function _initDbAdapter()
+    {
+        $this->bootstrap('Config');
+        $config = $this->getResource('Config');
+        $db = Zend_Db::factory('Pdo_Mysql', array(
+            'host'           => $config->db->host,
+            'username'       => $config->db->username,
+            'password'       => $config->db->password,
+            'dbname'         => $config->db->dbname,
+            'charset'        => 'UTF8'
+//            'driver_options' => array(
+//                //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
+//                1002 => 'SET NAMES UTF8'
+//            )
+        ));
+
+        //Set default adapter for childrens Zend_Db_Table_Abstract
+        Zend_Db_Table_Abstract::setDefaultAdapter($db);
+        //Axis_Config::setDefaultDbAdapter($db);
+
+        Zend_Registry::set('db', $db);
+        return Axis::db();
+    }
+
     protected function _initSession()
     {
         $this->bootstrap('DbAdapter');
@@ -211,41 +235,21 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             return Axis::session();
         }
         if ($config->remoteAddressValidation) {
-            Zend_Session::registerValidator(new Axis_Session_Validator_RemoteAddress());
+            Zend_Session::registerValidator(
+                new Axis_Session_Validator_RemoteAddress()
+            );
         }
         if ($config->httpUserAgentValidation) {
-            Zend_Session::registerValidator(new Zend_Session_Validator_HttpUserAgent());
+            Zend_Session::registerValidator(
+                new Zend_Session_Validator_HttpUserAgent()
+            );
         }
         return Axis::session();
     }
 
-    protected function _initDbAdapter()
-    {
-        $this->bootstrap('Config');
-        $config = $this->getResource('Config');
-        $db = Zend_Db::factory('Pdo_Mysql', array(
-            'host'           => $config->db->host,
-            'username'       => $config->db->username,
-            'password'       => $config->db->password,
-            'dbname'         => $config->db->dbname,
-            'charset'        => 'UTF8'
-//            'driver_options' => array(
-//                //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'
-//                1002 => 'SET NAMES UTF8'
-//            )
-        ));
-
-        //Set default adapter for childrens Zend_Db_Table_Abstract
-        Zend_Db_Table_Abstract::setDefaultAdapter($db);
-        //Axis_Config::setDefaultDbAdapter($db);
-
-        Zend_Registry::set('db', $db);
-        return Axis::db();
-    }
-
     protected function _initCache()
     {
-        $this->bootstrap('DbAdapter');
+        $this->bootstrap('Session');
 
         $cacheDir = Axis::config()->system->path . '/var/cache';
         if (!is_readable($cacheDir)) {
