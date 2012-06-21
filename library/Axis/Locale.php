@@ -33,7 +33,6 @@ class Axis_Locale
 {
     const DEFAULT_LOCALE    = 'en_US';
     const DEFAULT_CURRENCY  = 'USD';
-    const DEFAULT_TIMEZONE  = 'America/Los_Angeles';
 
     /**
      * Set locale and language if possible
@@ -114,8 +113,6 @@ class Axis_Locale
                 }
             }
         }
-
-        self::setTimezone();
     }
 
     /**
@@ -149,6 +146,8 @@ class Axis_Locale
     {
         if (!Zend_Registry::isRegistered('Zend_Locale')) {
 
+            // never run
+            die;
             if (Axis_Area::isFrontend()
                 && Axis_Controller_Router_Route_Front::hasLocaleInUrl()) {
 
@@ -266,46 +265,6 @@ class Axis_Locale
         }
 
         return '/' . $locale;
-    }
-
-    /**
-     * get default store timezone
-     *
-     * @static
-     * @return  string  example : "Australia/Hobart"
-     */
-    public static function getDefaultTimezone()
-    {
-        return Axis::config('locale/main/timezone');
-    }
-
-    /**
-     * get timezone
-     *
-     * @static
-     * @return string
-     */
-    public static function getTimezone()
-    {
-        return date_default_timezone_get();
-    }
-
-    /**
-     * set timezone
-     *
-     * @static
-     * @param mixed void|string
-     * @return bool
-     */
-    public static function setTimezone($timezone = null)
-    {
-        if (null === $timezone) {
-            $timezone = Axis::config('locale/main/timezone');
-        }
-        if (@date_default_timezone_set($timezone)) {
-            return true;
-        }
-        return @date_default_timezone_set(self::DEFAULT_TIMEZONE);
     }
 
     /**

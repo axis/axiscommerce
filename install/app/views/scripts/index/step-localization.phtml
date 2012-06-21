@@ -12,7 +12,7 @@
         <li>
             <div class="input-box">
                 <label for="default-timezone"><?php echo Axis::translate('install')->__('Timezone')?>:</label><br/>
-                <?php echo $this->formSelect('default[timezone]', Axis_Locale::getTimezone(), null, Axis_Locale::getTimeZoneList()) ?>
+                <?php echo $this->formSelect('default[timezone]', Axis_Timezone::getTimezone(), null, Axis_Locale::getTimeZoneList()) ?>
             </div>
             <div class="input-box">
                 <label for="default-currency"><?php echo Axis::translate('install')->__('Currency')?>:</label><br/>
