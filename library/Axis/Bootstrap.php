@@ -209,7 +209,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         Zend_Session::setOptions(array(
-            'cookie_secure'   => true,
             'cookie_lifetime' => $lifetime,
             'name'            => 'axisid',
             'strict'          => 'off',
