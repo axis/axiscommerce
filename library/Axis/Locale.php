@@ -65,7 +65,7 @@ class Axis_Locale
             if ($currentLocale->isLocale($locale)) {
                 $currentLocale->setLocale($locale);
             }
-            $session->current_locale = $locale;
+            $session->locale = $locale;
             return;
         }
 
@@ -159,9 +159,9 @@ class Axis_Locale
 
                 self::setLocale(Axis::session()->locale);
             } elseif (Axis_Area::isInstaller()
-                && isset(Axis::session('install')->current_locale)) {
+                && isset(Axis::session('install')->locale)) {
 
-                self::setLocale(Axis::session('install')->current_locale);
+                self::setLocale(Axis::session('install')->locale);
             } elseif (Axis_Area::isInstaller()) {
 
                 self::setLocale(self::DEFAULT_LOCALE);

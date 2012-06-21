@@ -309,9 +309,9 @@ class IndexController extends Zend_Controller_Action
         $this->view->permitInstallation = $this->_session->permit_installation;
         $this->view->frontend = $this->_session->store_baseUrl;
         $this->view->backend = $this->view->frontend . '/' . $this->_session->store_adminUrl;
-        $locale = $this->_session->current_locale;
+        $locale = $this->_session->locale;
         $this->_session->unsetAll();
-        $this->_session->current_locale = $locale;
+        $this->_session->locale = $locale;
         $this->render('step-finish');
     }
 
