@@ -345,47 +345,49 @@ class Axis_Install_Model_Wizard
      *
      * @return Axis_Install_Model_Wizard Provides fluent interface
      */
-    private function _installLocale()
+    private function _installLocalization()
     {
-        $mConfigValue = Axis::model('core/config_value');
+        $modelConfigValue = Axis::model('core/config_value');
 
-        $mConfigValue->update(array(
-            'value' => current($this->_session->locale['timezone'])
+        $localization = $this->_session->localization;
+
+        $modelConfigValue->update(array(
+            'value' => current($localization['timezone'])
         ), "path = 'locale/main/timezone'");
 
-        $mConfigValue->update(array(
-            'value' => current($this->_session->locale['locale'])
+        $modelConfigValue->update(array(
+            'value' => current($localization['locale'])
         ), "path = 'locale/main/locale'");
 
-        $mConfigValue->update(array(
-            'value' => current($this->_session->locale['currency'])
+        $modelConfigValue->update(array(
+            'value' => current($localization['currency'])
         ), "path = 'locale/main/currency'");
 
-        $mConfigValue->update(array(
-            'value' => current($this->_session->locale['currency'])
+        $modelConfigValue->update(array(
+            'value' => current($localization['currency'])
         ), "path = 'locale/main/baseCurrency'");
 
         /* setting languages and currencies available on frontend */
-        $mLanguage = Axis::model('locale/language');
-        foreach ($this->_session->locale['locale'] as $locale) {
+        $modelLanguage = Axis::model('locale/language');
+        foreach ($localization['locale'] as $locale) {
             $code = current(explode('_', $locale));
             $language = Zend_Locale::getTranslation($code, 'language', $locale);
             if (!$language) {
                 $language = Zend_Locale::getTranslation($code, 'language', 'en_US');
             }
-            $mLanguage->insert(array(
+            $modelLanguage->insert(array(
                 'code'      => $code,
                 'language'  => ucfirst($language),
                 'locale'    => $locale
             ));
         }
 
-        reset($this->_session->locale['locale']);
+        reset($localization['locale']);
 
         $mCurrency = Axis::single('locale/currency');
-        foreach ($this->_session->locale['currency'] as $currency) {
+        foreach ($localization['currency'] as $currency) {
             $title = Zend_Locale::getTranslation(
-                $currency, 'NameToCurrency', current($this->_session->locale['locale'])
+                $currency, 'NameToCurrency', current($localization['locale'])
             );
             if (!$title) {
                 $title = Zend_Locale::getTranslation($currency, 'NameToCurrency', 'en_US');
@@ -394,7 +396,7 @@ class Axis_Install_Model_Wizard
                 'code'                  => $currency,
                 'currency_precision'    => 2,
                 'display'               => 2,
-                'format'                => current($this->_session->locale['locale']),
+                'format'                => current($localization['locale']),
                 'position'              => 8,
                 'title'                 => $title ? ucfirst($title) : $currency,
                 'rate'                  => 1
@@ -446,7 +448,7 @@ class Axis_Install_Model_Wizard
             $modelModule->getByCode('Axis_Core')->install();
             $this->_installStore();
             $modelModule->getByCode('Axis_Locale')->install();
-            $this->_installLocale();
+            $this->_installLocalization();
         }
 
         $moduleCodes = $modelModule->getListFromFilesystem('Axis');

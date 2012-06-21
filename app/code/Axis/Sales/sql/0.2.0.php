@@ -39,7 +39,7 @@ class Axis_Sales_Upgrade_0_2_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis_Core_Model_Cache::getCache()->clean();
+        Axis::cache()->clean();
     }
 
     public function down()

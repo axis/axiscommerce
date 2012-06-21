@@ -133,11 +133,11 @@ class Axis_Core_Model_Cache extends Axis_Db_Table
     public function clean($tags = null)
     {
         if (null === $tags) {
-            return self::getCache()->clean();
+            return Axis::cache()->clean();
         }
         if (!is_array($tags)) {
             $tags = array($tags);
         }
-        return self::getCache()->clean('matchingAnyTag', $tags);
+        return Axis::cache()->clean('matchingAnyTag', $tags);
     }
 }

@@ -147,32 +147,34 @@ class IndexController extends Zend_Controller_Action
 
     public function saveLocalizationAction()
     {
-        $default_locale = $this->_getParam('default');
-        $additional_locales = $this->_getParam('locale');
-        $additional_currencies = $this->_getParam('currency');
+        $defaultLocale        = $this->_getParam('default');
+        $additionalLocales    = $this->_getParam('locale');
+        $additionalCurrencies = $this->_getParam('currency');
 
-        $this->_session->locale = array();
-        $this->_session->locale['locale'] = array();
-        $this->_session->locale['timezone'] = array();
-        $this->_session->locale['currency'] = array();
+        $localization = array(
+            'locale'   => array(
+                $defaultLocale['locale']   => $defaultLocale['locale']
+            ),
+            'timezone' => array(
+                $defaultLocale['timezone'] => $defaultLocale['timezone']
+            ),
+            'currency' => array(
+                $defaultLocale['currency'] => $defaultLocale['currency']
+            )
+        );
 
-        $this->_session->locale['locale'][$default_locale['locale']] =
-            $default_locale['locale'];
-        $this->_session->locale['timezone'][$default_locale['timezone']] =
-            $default_locale['timezone'];
-        $this->_session->locale['currency'][$default_locale['currency']] =
-            $default_locale['currency'];
-
-        if (is_array($additional_locales)) {
-            foreach ($additional_locales as $locale) {
-                $this->_session->locale['locale'][$locale] = $locale;
+        if (is_array($additionalLocales)) {
+            foreach ($additionalLocales as $locale) {
+                $localization['locale'][$locale] = $locale;
             }
         }
-        if (is_array($additional_currencies)) {
-            foreach ($additional_currencies as $currency) {
-                $this->_session->locale['currency'][$currency] = $currency;
+        if (is_array($additionalCurrencies)) {
+            foreach ($additionalCurrencies as $currency) {
+                $localization['currency'][$currency] = $currency;
             }
         }
+        $this->_session->localization = $localization;
+
         $this->_redirect('index/step-configuration');
     }
 
