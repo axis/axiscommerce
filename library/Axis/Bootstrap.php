@@ -360,7 +360,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('FrontController');
 
         //set default timezone affect on date() and Axis_Date
-        Axis_Timezone::setTimezone(Axis::config('locale/main/timezone'));
+        Axis_Locale_Model_Timezone::setTimezone(
+            Axis::config('locale/main/timezone')
+        );
 
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 20);

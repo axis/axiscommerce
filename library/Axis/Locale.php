@@ -355,30 +355,6 @@ class Axis_Locale
     }
 
     /**
-     *
-     * @static
-     * @return array
-     */
-    public static function getTimeZoneList()
-    {
-        $options = array();
-        $zones = Zend_Locale::getTranslationList('WindowsToTimezone', self::getLocale());
-
-        ksort($zones);
-        foreach ($zones as $code => $name) {
-            $name = trim($name);
-
-            $windowTimezone = explode('/', $code);
-            $label = $windowTimezone[1];
-            if (!empty($name)) {
-                $label .= ' (' . $name . ')';
-            }
-            $options[$windowTimezone[0]][$code] = $label;
-        }
-        return $options;
-    }
-
-    /**
      * @static
      * @return array
      */

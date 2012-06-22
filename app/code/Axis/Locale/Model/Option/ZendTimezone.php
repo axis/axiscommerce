@@ -45,11 +45,16 @@ class Axis_Locale_Model_Option_ZendTimezone extends Axis_Config_Option_Array_Abs
             $zones  = $locale->getTranslationList('WindowsToTimezone', Axis_Locale::DEFAULT_LOCALE);
         }
 
-        asort($zones);
+        ksort($zones);
         foreach ($zones as $code => $name) {
             $name = trim($name);
-            $options[$code] =  empty($name) ? $code : $name . ' (' . $code . ')';
+            list($region, $label) = explode('/', $code);
+            if (!empty($name)) {
+                $label .= ' (' . $name . ')';
+            }
+            $options[$region][$code] = $label;
         }
+
         return $options;
     }
 }

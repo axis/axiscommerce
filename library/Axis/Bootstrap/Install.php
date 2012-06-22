@@ -102,13 +102,13 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
 
     protected function _initLocale()
     {
-        $timezone = Axis_Timezone::DEFAULT_TIMEZONE;
+        $timezone = Axis_Locale_Model_Timezone::DEFAULT_TIMEZONE;
 
         if (is_array($session->localization)) {
             $timezone = current($session->localization['timezone']);
         }
         
-        Axis_Timezone::setTimezone($timezone);
+        Axis_Locale_Model_Timezone::setTimezone($timezone);
 
         $session = Axis::session('install');
         $locale  = Axis_Locale::DEFAULT_LOCALE;
