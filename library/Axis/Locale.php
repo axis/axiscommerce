@@ -35,6 +35,59 @@ class Axis_Locale
     const DEFAULT_CURRENCY  = 'USD';
 
     /**
+     *
+     * @return Zend_Locale
+     */
+    public static function getLocale2() //@todo getLocale
+    {
+        if (!Zend_Registry::isRegistered('Zend_Locale')) {
+            $instance = new Zend_Locale();
+            Zend_Locale::setCache(Axis::cache());
+            Zend_Registry::set('Zend_Locale', $instance);
+        }
+
+        return Zend_Registry::get('Zend_Locale');
+    }
+
+    /**
+     *
+     * @return Zend_Session_Namespace
+     */
+    public static function getSessionStorage()
+    {
+        if (Axis_Area::isInstaller()) {
+            $session = Axis::session('install');
+        } else {
+            $session = Axis::session();
+        }
+        return $session;
+    }
+
+    /**
+     *
+     * @param string $locale
+     * @return boolean
+     */
+    public static function setLocale2($locale = 'auto')
+    {
+        $storage = self::getLocale2();
+        if ($locale === $storage->toString()) {
+            return true;
+        }
+
+        if (!$storage->isLocale($locale)) {
+            return false;
+        }
+
+        $session = self::getSessionStorage();
+
+        $storage->setLocale($locale);
+        $session->locale = $locale;
+
+        return true;
+    }
+
+    /**
      * Set locale and language if possible
      *
      * @static
@@ -352,15 +405,6 @@ class Axis_Locale
         ksort($locales);
 
         return $locales;
-    }
-
-    /**
-     * @static
-     * @return array
-     */
-    public static function getCurrencyList()
-    {
-        return Zend_Locale::getTranslationList('NameToCurrency', self::getLocale());
     }
 
     /**
