@@ -31,17 +31,16 @@
  */
 class Axis_Locale
 {
-    const DEFAULT_LOCALE    = 'en_US';
-    const DEFAULT_CURRENCY  = 'USD';
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      *
      * @return Zend_Locale
      */
-    public static function getLocale2() //@todo getLocale
+    public static function getLocale()
     {
         if (!Zend_Registry::isRegistered('Zend_Locale')) {
-            $instance = new Zend_Locale();
+            $instance = new Zend_Locale(self::DEFAULT_LOCALE);
             Zend_Locale::setCache(Axis::cache());
             Zend_Registry::set('Zend_Locale', $instance);
         }
@@ -64,108 +63,52 @@ class Axis_Locale
     }
 
     /**
+     * Set locale and language
      *
      * @param string $locale
      * @return boolean
      */
-    public static function setLocale2($locale = 'auto')
+    public static function setLocale($locale)
     {
-        $storage = self::getLocale2();
-        if ($locale === $storage->toString()) {
+        $instance = self::getLocale();
+
+        if ($locale === $instance->toString()) {
             return true;
         }
 
-        if (!$storage->isLocale($locale)) {
+        if (!$instance->isLocale($locale)) {
             return false;
         }
 
         $session = self::getSessionStorage();
 
-        $storage->setLocale($locale);
+        $instance->setLocale($locale);
         $session->locale = $locale;
+
+        self::_initLanguageIdFromLocale();
 
         return true;
     }
 
-    /**
-     * Set locale and language if possible
-     *
-     * @static
-     * @param string (locale or language) $locale
-     */
-    public static function setLocale($locale = 'auto')
+    public static function _initLanguageIdFromLocale()
     {
-        if (Zend_Registry::isRegistered('Zend_Locale')) {
-            $currentLocale = Zend_Registry::get('Zend_Locale');
-            if ($locale === $currentLocale->toString()) {
-                return;
-            }
-        }
-
-        if (Axis_Area::isInstaller()) {
-
-            $session = Axis::session('install');
-
-            if (Zend_Registry::isRegistered('Zend_Locale')) {
-                $currentLocale = Zend_Registry::get('Zend_Locale');
-            } else {
-                $currentLocale = new Zend_Locale();
-                Zend_Locale::setCache(Axis::cache());
-                Zend_Registry::set('Zend_Locale', $currentLocale);
-            }
-
-            if ($currentLocale->isLocale($locale)) {
-                $currentLocale->setLocale($locale);
-            }
-            $session->locale = $locale;
-            return;
-        }
-
-        $session = Axis::session();
-
-        if (!strstr($locale, '_')) {
-            $locale = self::_getLocaleFromLanguageCode($locale);
-        }
-
-        if (Zend_Registry::isRegistered('Zend_Locale')) {
-            $currentLocale = Zend_Registry::get('Zend_Locale');
-            $currentLocale->setLocale($locale);
-        } else {
-            try {
-                $currentLocale = new Zend_Locale($locale);
-            } catch (Zend_Locale_Exception $e) {
-                $currentLocale = new Zend_Locale(self::DEFAULT_LOCALE);
-            }
-            Zend_Locale::setCache(Axis::cache());
-            Zend_Registry::set('Zend_Locale', $currentLocale);
-        }
-
-        $availableLanguages = Axis::single('locale/language')
+        $languages = Axis::single('locale/language')
             ->select(array('locale', 'id'))
             ->fetchPairs();
 
-        if (Axis_Area::isBackend()) {
-
-            $session->locale = $locale;
-            $defaultLanguage = Axis::config('locale/main/language_admin');
-            if (array_search($defaultLanguage, $availableLanguages)) {
-                $session->language = $defaultLanguage;
-            } else {
-                $session->language = current($availableLanguages);
-            }
+        $locale = self::getLocale()->toString();
+        if (isset($languages[$locale])) {
+            $language = $languages[$locale];
         } else {
-            $localeCode = $currentLocale->toString();
-            if (isset($availableLanguages[$localeCode])) {
-                $session->language = $availableLanguages[$localeCode];
-            } else {
-                $defaultLanguage = Axis::config('locale/main/language_front');
-                if (array_search($defaultLanguage, $availableLanguages)) {
-                    $session->language = $defaultLanguage;
-                } else {
-                    $session->language = current($availableLanguages);
-                }
-            }
+            $language = Axis::config('locale/main/language_' . Axis_Area::getArea());
         }
+
+        if (!array_search($language, $languages)) {
+            $language = current($languages);
+        }
+
+        $session = self::getSessionStorage();
+        $session->language = $language;
     }
 
     /**
@@ -187,42 +130,6 @@ class Axis_Locale
         }
 
         return self::DEFAULT_LOCALE;
-    }
-
-    /**
-     * Retrieve locale object
-     *
-     * @static
-     * @return Zend_Locale
-     */
-    public static function getLocale()
-    {
-        if (!Zend_Registry::isRegistered('Zend_Locale')) {
-
-            // never run
-            die;
-            if (Axis_Area::isFrontend()
-                && Axis_Controller_Router_Route_Front::hasLocaleInUrl()) {
-
-                self::setLocale(Axis_Controller_Router_Route_Front::getCurrentLocale());
-
-            } elseif (Axis_Area::isBackend()
-                && isset(Axis::session()->locale)) {
-
-                self::setLocale(Axis::session()->locale);
-            } elseif (Axis_Area::isInstaller()
-                && isset(Axis::session('install')->locale)) {
-
-                self::setLocale(Axis::session('install')->locale);
-            } elseif (Axis_Area::isInstaller()) {
-
-                self::setLocale(self::DEFAULT_LOCALE);
-            } else {
-
-                self::setLocale(Axis::config('locale/main/locale'));
-            }
-        }
-        return Zend_Registry::get('Zend_Locale');
     }
 
     /**
@@ -248,7 +155,7 @@ class Axis_Locale
         if (!$installedOnly) {
             return array_keys(Zend_Locale::getLocaleList());
         }
-        return Axis::single('locale/language')->getLocaleList();
+        return Axis::single('locale/option_locale')->toArray();
     }
 
     /**
@@ -283,14 +190,6 @@ class Axis_Locale
      */
     public static function getLanguageId()
     {
-        if (!isset(Axis::session()->language)) {
-            if (Axis_Area::isBackend()) {
-
-                Axis::session()->language = Axis::config('locale/main/language_admin');
-            } else {
-                Axis::session()->language = Axis::config('locale/main/language_front');
-            }
-        }
         return Axis::session()->language;
     }
 

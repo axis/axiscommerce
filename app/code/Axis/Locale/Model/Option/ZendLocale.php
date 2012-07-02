@@ -32,7 +32,7 @@
 class Axis_Locale_Model_Option_ZendLocale extends Axis_Config_Option_Array_Abstract
 {
     /**
-     * 
+     *
      * @return array
      */
     protected function _loadCollection()
@@ -40,16 +40,16 @@ class Axis_Locale_Model_Option_ZendLocale extends Axis_Config_Option_Array_Abstr
         $options = array();
         $locale  = Axis_Locale::getLocale();
 
-        $locales    = $locale->getLocaleList(); // error  here
-        
-        $languages  = $locale->getTranslationList('language', $locale);
-        $countries  = $locale->getTranslationList('territory', $locale, 2);
+        $locales    = Zend_Locale::getLocaleList();
+
+        $languages  = Zend_Locale::getTranslationList('language', $locale);
+        $countries  = Zend_Locale::getTranslationList('territory', $locale, 2);
 
         if (!$languages || !$countries) {
-            $languages  = $locale->getTranslationList(
+            $languages  = Zend_Locale::getTranslationList(
                 'language', Axis_Locale::DEFAULT_LOCALE
             );
-            $countries  = $locale->getTranslationList(
+            $countries  = Zend_Locale::getTranslationList(
                 'territory', Axis_Locale::DEFAULT_LOCALE, 2
             );
         }
@@ -58,13 +58,13 @@ class Axis_Locale_Model_Option_ZendLocale extends Axis_Config_Option_Array_Abstr
             if (!strstr($code, '_')) {
                 continue;
             }
-            list($languageCode, $countryCode) = explode('_', $code);
-            if (!isset($languages[$languageCode]) || !isset($countries[$countryCode])) {
+            list($language, $region) = explode('_', $code);
+            if (!isset($languages[$language]) || !isset($countries[$region])) {
 
                 continue;
             }
-            $options[$code] = ucfirst($languages[$languageCode]) . ' ('
-                . $countries[$countryCode] . ')';
+            $options[$code] = ucfirst($languages[$language]) . ' ('
+                . $countries[$region] . ')';
         }
         return $options;
     }
