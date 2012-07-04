@@ -155,7 +155,7 @@
                 <p class="locale">
                     <?php echo $this->translate('admin')->__('Interface locale') ?>:
                     <?php $currentLocaleCode = Axis_Locale::getLocale()->toString();
-                    echo $this->formSelect('interface_locale', $currentLocaleCode, null, Axis_Locale::getAdminLocales());
+                    echo $this->formSelect('interface_locale', $currentLocaleCode, null, Axis::model('locale/option_filesystem_locale')->toArray());
                     ?>
                 </p>
                 <p class="bugs"><?php echo $this->translate('core')->__("Report any %s you've found", "<a href='http://github.com/axis/axiscommerce/issues' onclick='window.open(this.href); return false;' title='" . $this->translate('core')->__('Report') . "'>" . $this->translate('core')->__('Bugs or Issues') . "</a>") ?></p>

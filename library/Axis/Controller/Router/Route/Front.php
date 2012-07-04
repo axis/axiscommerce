@@ -93,41 +93,28 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
         $path      = trim($path, $this->_urlDelimiter);
         $pathParts = explode($this->_urlDelimiter, $path, 2);
 
+        $locale = isset($this->_defaults['locale']) ?
+            $this->_defaults['locale'] : self::$_defaultLocale;
+
         if (!empty($pathParts[0]) && strlen($pathParts[0]) > 1) {
             foreach (self::$_locales as $_locale) {
-                // preventing duplicate urls:
-                // site.com/uk and site.com/uk_UA - only one will work after next check
                 list($_language) = explode('_', $_locale);
                 if ($_language == $pathParts[0]) {
                     self::$_hasLocaleInUrl = true;
+                    $path = (sizeof($pathParts) > 1) ? $pathParts[1] : '';
+                    $locale = $_locale;
                     break;
                 }
             }
         }
 
-        if (self::$_hasLocaleInUrl) {
-            $path = (sizeof($pathParts) > 1) ? $pathParts[1] : '';
-            $currentLocale = $pathParts[0];
-            // de => de_At
-            foreach (self::$_locales as $_locale) {
-                if (0 === strpos($_locale, $currentLocale)) {
-                    $currentLocale = $_locale;
-                    break;
-                }
-            }
-        } elseif(isset($this->_defaults['locale'])) {
-            $currentLocale = $this->_defaults['locale'];
-        } else {
-            $currentLocale = self::$_defaultLocale;
-        }
-
-        self::$_currentLocale = $currentLocale;
+        self::$_currentLocale = $locale;
 
         $params = parent::match($path, $partial);
 
         if ($params) {
             Axis_Area::frontend();
-            $params = array_merge($params, array('locale' => $currentLocale));
+            $params = array_merge($params, array('locale' => $locale));
         }
 
         return $params;

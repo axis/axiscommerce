@@ -37,12 +37,14 @@ class Axis_Locale_Model_Option_ZendTimezone extends Axis_Config_Option_Array_Abs
      */
     protected function _loadCollection()
     {
-        $options= array();
-        $locale = Axis_Locale::getLocale();
-        $zones  = $locale->getTranslationList('WindowsToTimezone', $locale);
+        $options = array();
+        $locale  = Axis_Locale::getLocale();
+        $zones   = $locale->getTranslationList('WindowsToTimezone', $locale);
 
         if (!$zones) {
-            $zones  = $locale->getTranslationList('WindowsToTimezone', Axis_Locale::DEFAULT_LOCALE);
+            $zones = $locale->getTranslationList(
+                'WindowsToTimezone', Axis_Locale::DEFAULT_LOCALE
+            );
         }
 
         ksort($zones);

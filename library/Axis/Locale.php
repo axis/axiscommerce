@@ -112,27 +112,6 @@ class Axis_Locale
     }
 
     /**
-     * Retrieve first suitable locale with language
-     *
-     * @static
-     * @param string $code Language ISO code
-     * @return string Locale ISO code
-     */
-    private static function _getLocaleFromLanguageCode($code)
-    {
-        if (!empty($code)) {
-            $localeList = self::getLocaleList(true);
-            foreach ($localeList as $locale) {
-                if (strpos($locale, $code) === 0) {
-                    return $locale;
-                }
-            }
-        }
-
-        return self::DEFAULT_LOCALE;
-    }
-
-    /**
      * Retrieve default locale from config
      *
      * @static
@@ -144,45 +123,6 @@ class Axis_Locale
     }
 
     /**
-     * Returns a list of all known locales, or all installed locales
-     *
-     * @param $installedOnly bool
-     * @static
-     * @return array
-     */
-    public static function getLocaleList($installedOnly = false)
-    {
-        if (!$installedOnly) {
-            return array_keys(Zend_Locale::getLocaleList());
-        }
-        return Axis::single('locale/option_locale')->toArray();
-    }
-
-    /**
-     * @static
-     * @return array
-     */
-    public static function getInstallLocaleList()
-    {
-        $options = array();
-
-        $locales = Zend_Locale::getLocaleList();
-        $languages = Zend_Locale::getTranslationList('language', self::getLocale());
-        $countries = Zend_Locale::getTranslationList('territory', self::getLocale(), 2);
-
-        foreach ($locales as $code => $is_active) {
-            if (strstr($code, '_')) {
-                $data = explode('_', $code);
-                if (!isset($languages[$data[0]]) || !isset($countries[$data[1]])) {
-                    continue;
-                }
-                $options[$code] = ucfirst($languages[$data[0]]) . ' (' . $countries[$data[1]] . ')';
-            }
-        }
-        return $options;
-    }
-
-    /**
      * Retrieve languageId from session;
      *
      * @static
@@ -190,7 +130,7 @@ class Axis_Locale
      */
     public static function getLanguageId()
     {
-        return Axis::session()->language;
+        return self::getSessionStorage()->language;
     }
 
     /**
@@ -220,90 +160,25 @@ class Axis_Locale
     }
 
     /**
-     * Retrieve the list of available admin intrerface tranlations
+     * Retrieve first suitable locale with language
      *
      * @static
-     * @return array
+     * @param string $language Language ISO code
+     * @return string Locale ISO code
      */
-    public static function getAdminLocales()
+    private static function _getLocaleFromLanguageCode($language)
     {
-        if (!$locales = Axis::cache()->load('locales_list')) {
-            $path = Axis::config()->system->path . '/app/locale';
-
-            try {
-                $locales_dir = new DirectoryIterator($path);
-            } catch (Exception $e) {
-                throw new Axis_Exception("Directory $path not readable");
+        if (!empty($language)) {
+            $locales = Axis::single('locale/option_locale')->toArray();
+            foreach ($locales as $locale) {
+                list($_language) = explode('_', $locale);
+                if ($_language === $language) {
+                    return $locale;
+                }
             }
-
-            $locale = Axis_Locale::getLocale();
-            $locales = array();
-
-            foreach ($locales_dir as $localeDir) {
-                $localeCode = $localeDir->getFilename();
-                if ($localeCode[0] == '.' || !strstr($localeCode, '_')) {
-                    continue;
-                }
-                list($language, $country) = explode('_', $localeCode, 2);
-
-                $language = $locale->getTranslation($language, 'language', $localeCode);
-                $country = $locale->getTranslation($country, 'country', $localeCode);
-                if (!$language) {
-                    $language = $locale->getTranslation(
-                        $language, 'language', Axis_Locale::DEFAULT_LOCALE
-                    );
-                }
-                if (!$country) {
-                    $country = $locale->getTranslation(
-                        $country, 'country', Axis_Locale::DEFAULT_LOCALE
-                    );
-                }
-                $locales[$localeCode] = ucfirst($language) . ' (' . $country . ')';
-            }
-            ksort($locales);
-            Axis::cache()->save($locales, 'locales_list', array('locales'));
-        }
-        return $locales;
-    }
-
-    /**
-     * Retrieve array of available translations
-     *
-     * @return array
-     */
-    public static function getAvailableLocales()
-    {
-        $path = AXIS_ROOT . '/app/locale/';
-
-        try {
-            $localeDir = new DirectoryIterator($path);
-        } catch (Exception $e) {
-            throw new Axis_Exception("Directory $path not readable");
         }
 
-        $currentLocale = self::getLocale();
-        $locales = array();
-
-        foreach ($localeDir as $locale) {
-            if ($locale->isDot() || !$locale->isDir()) {
-                continue;
-            }
-            $localeName = $locale->getFilename();
-            list($language, $country) = explode('_', $localeName, 2);
-
-            $language = $currentLocale->getTranslation($language, 'language', $localeName);
-            $country = $currentLocale->getTranslation($country, 'country', $localeName);
-            if (!$language) {
-                $language = $currentLocale->getTranslation($language, 'language', 'en_US');
-            }
-            if (!$country) {
-                $country = $currentLocale->getTranslation($country, 'country', 'en_US');
-            }
-            $locales[$localeName] = ucfirst($language) . ' (' . $country . ')';
-        }
-        ksort($locales);
-
-        return $locales;
+        return self::DEFAULT_LOCALE;
     }
 
     /**

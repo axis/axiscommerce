@@ -27,9 +27,9 @@
                         <?php echo $this->formSelect('interface_locale',
                             Axis_Locale::getLocale()->toString(),
                             array(
-                                'onchange'=> "window.location.href = baseUrl + '/index/change-locale/new_locale/' + this.value"
+                                'onchange' => "window.location.href = baseUrl + '/index/change-locale/new_locale/' + this.value"
                             ),
-                            Axis_Locale::getAvailableLocales()
+                            Axis::model('locale/option_filesystem_locale')->toArray()
                         ); ?>
                     </p>
                 </div>

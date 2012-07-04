@@ -327,7 +327,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // pre router config
         $defaultLocale = Axis_Locale::getDefaultLocale();
-        $locales = Axis_Locale::getLocaleList(true);
+        $locales = Axis::single('locale/option_locale')->toArray();
 
         Axis_Controller_Router_Route_Front::setDefaultLocale($defaultLocale);
         Axis_Controller_Router_Route_Front::setLocales($locales);

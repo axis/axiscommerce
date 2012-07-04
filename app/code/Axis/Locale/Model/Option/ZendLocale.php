@@ -37,35 +37,35 @@ class Axis_Locale_Model_Option_ZendLocale extends Axis_Config_Option_Array_Abstr
      */
     protected function _loadCollection()
     {
-        $options = array();
-        $locale  = Axis_Locale::getLocale();
+        $options     = array();
+        $locale      = Axis_Locale::getLocale();
+        $locales     = Zend_Locale::getLocaleList();
+        $languages   = Zend_Locale::getTranslationList('language', $locale);
+        $territories = Zend_Locale::getTranslationList('territory', $locale, 2);
 
-        $locales    = Zend_Locale::getLocaleList();
-
-        $languages  = Zend_Locale::getTranslationList('language', $locale);
-        $countries  = Zend_Locale::getTranslationList('territory', $locale, 2);
-
-        if (!$languages || !$countries) {
+        if (!$languages || !$territories) {
             $languages  = Zend_Locale::getTranslationList(
                 'language', Axis_Locale::DEFAULT_LOCALE
             );
-            $countries  = Zend_Locale::getTranslationList(
+            $territories  = Zend_Locale::getTranslationList(
                 'territory', Axis_Locale::DEFAULT_LOCALE, 2
             );
         }
 
-        foreach ($locales as $code => $isActive) {
+        foreach (array_keys($locales) as $code) {
             if (!strstr($code, '_')) {
                 continue;
             }
-            list($language, $region) = explode('_', $code);
-            if (!isset($languages[$language]) || !isset($countries[$region])) {
+            list($language, $territory) = explode('_', $code);
+            if (!isset($languages[$language])
+                || !isset($territories[$territory])) {
 
                 continue;
             }
             $options[$code] = ucfirst($languages[$language]) . ' ('
-                . $countries[$region] . ')';
+                . $territories[$territory] . ')';
         }
+        asort($options);
         return $options;
     }
 }
