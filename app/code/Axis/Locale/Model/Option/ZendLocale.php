@@ -38,7 +38,7 @@ class Axis_Locale_Model_Option_ZendLocale extends Axis_Config_Option_Array_Abstr
     protected function _loadCollection()
     {
         $options     = array();
-        $locale      = Axis_Locale::getLocale();
+        $locale      = Axis::locale();
         $locales     = Zend_Locale::getLocaleList();
         $languages   = Zend_Locale::getTranslationList('language', $locale);
         $territories = Zend_Locale::getTranslationList('territory', $locale, 2);

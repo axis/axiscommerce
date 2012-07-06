@@ -43,7 +43,7 @@ class Axis_Date extends Zend_Date
     public function __construct($date = null, $part = null, $locale = null)
     {
         if (null === $locale) {
-            $locale = Axis_Locale::getLocale();
+            $locale = Axis::locale();
         }
         // supress notice about PCRE without UTF8 support
         @parent::__construct($date, $part, $locale);

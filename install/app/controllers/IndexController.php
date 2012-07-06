@@ -52,7 +52,7 @@ class IndexController extends Zend_Controller_Action
         $this->initView();
         $layout = Zend_Layout::getMvcInstance();
 
-        $this->_session = Axis::session('install');
+        $this->_session = Axis::session();
 
         $this->view->baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $this->view->addHelperPath('app/views/helpers', 'Axis_View_Helper');

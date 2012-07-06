@@ -48,8 +48,25 @@ class Axis_Controller_Plugin_Locale extends Zend_Controller_Plugin_Abstract
         } elseif (isset(Axis::session()->locale)) {
             $locale = Axis::session()->locale;
         } else {
-            $locale = Axis_Locale::getDefaultLocale();
+            $locale = Axis::config('locale/main/locale');
         }
         Axis_Locale::setLocale($locale);
+
+        // init language
+        $languages = Axis::single('locale/language')
+            ->select(array('locale', 'id'))
+            ->fetchPairs();
+
+        if (isset($languages[$locale])) {
+            $language = $languages[$locale];
+        } else {
+            $language = Axis::config('locale/main/language_' . Axis_Area::getArea());
+        }
+
+        if (!array_search($language, $languages)) {
+            $language = current($languages);
+        }
+
+        Axis::session()->language = $language;
     }
 }

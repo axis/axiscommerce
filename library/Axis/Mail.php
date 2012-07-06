@@ -275,7 +275,7 @@ class Axis_Mail extends Zend_Mail
      */
     public function setLocale($locale)
     {
-        $this->_locale = Axis_Locale::getLocale()->toString();
+        $this->_locale = Axis::locale()->toString();
         Axis_Locale::setLocale($locale);
     }
 }

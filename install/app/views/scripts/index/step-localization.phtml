@@ -6,7 +6,7 @@
         <li>
             <div class="input-box">
                 <label for="default-locale"><?php echo Axis::translate('install')->__('Locale')?>:</label><br/>
-                <?php echo $this->formSelect('default[locale]', Axis_Locale::getLocale(), null, Axis::model('locale/option_zendLocale')->toArray()) ?>
+                <?php echo $this->formSelect('default[locale]', Axis::locale()->toString(), null, Axis::model('locale/option_zendLocale')->toArray()) ?>
             </div>
         </li>
         <li>

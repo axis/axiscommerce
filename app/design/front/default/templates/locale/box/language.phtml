@@ -19,7 +19,7 @@
         <label for="lang" class="label"><?php echo $this->translate('locale')->__('Language') ?></label>
     <?php echo $this->formSelect(
         'lang',
-        Axis_Locale::getLocale()->toString(),
+        Axis::locale()->toString(),
         array(
             'onchange' => "document.getElementById('locale-form').submit();"
         ),

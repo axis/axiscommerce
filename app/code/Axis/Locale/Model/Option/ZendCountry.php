@@ -37,12 +37,12 @@ class Axis_Locale_Model_Option_ZendCountry extends Axis_Config_Option_Array_Abst
      */
     protected function _loadCollection()
     {
-        $locale = Axis_Locale::getLocale();
+        $locale = Axis::locale();
 
-        $countries = $locale->getTranslationList('territory', $locale, 2);
+        $countries = Zend_Locale::getTranslationList('territory', $locale, 2);
 
         if (!$countries) {
-            $countries = $locale->getTranslationList(
+            $countries = Zend_Locale::getTranslationList(
                 'territory', Axis_Locale::DEFAULT_LOCALE, 2
             );
         }

@@ -128,7 +128,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
                 $currency = new Zend_Currency(
                     $options['currency'],
                     $options['format'] === null ?
-                        Axis_Locale::getLocale() : $options['format']
+                        Axis::locale() : $options['format']
                 );
             } catch (Zend_Currency_Exception $e) {
                 Axis::message()->addError(

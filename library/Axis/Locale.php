@@ -34,35 +34,6 @@ class Axis_Locale
     const DEFAULT_LOCALE = 'en_US';
 
     /**
-     *
-     * @return Zend_Locale
-     */
-    public static function getLocale()
-    {
-        if (!Zend_Registry::isRegistered('Zend_Locale')) {
-            $instance = new Zend_Locale(self::DEFAULT_LOCALE);
-            Zend_Locale::setCache(Axis::cache());
-            Zend_Registry::set('Zend_Locale', $instance);
-        }
-
-        return Zend_Registry::get('Zend_Locale');
-    }
-
-    /**
-     *
-     * @return Zend_Session_Namespace
-     */
-    public static function getSessionStorage()
-    {
-        if (Axis_Area::isInstaller()) {
-            $session = Axis::session('install');
-        } else {
-            $session = Axis::session();
-        }
-        return $session;
-    }
-
-    /**
      * Set locale and language
      *
      * @param string $locale
@@ -70,7 +41,10 @@ class Axis_Locale
      */
     public static function setLocale($locale)
     {
-        $instance = self::getLocale();
+        /**
+         *  @var Zend_Locale $instance
+         */
+        $instance = Axis::locale();
 
         if ($locale === $instance->toString()) {
             return true;
@@ -80,46 +54,21 @@ class Axis_Locale
             return false;
         }
 
-        $session = self::getSessionStorage();
+        if (Axis_Area::isFrontend()) {
+            $locales = Axis::single('locale/option_locale')->toArray();
+        } else {
+            $locales = array_keys(
+                Axis::single('locale/option_filesystem_locale')->toArray()
+            );
+        }
+        if (!in_array($locale, $locales)) {
+            return false;
+        }
 
         $instance->setLocale($locale);
-        $session->locale = $locale;
-
-        self::_initLanguageIdFromLocale();
+        Axis::session()->locale = $locale;
 
         return true;
-    }
-
-    public static function _initLanguageIdFromLocale()
-    {
-        $languages = Axis::single('locale/language')
-            ->select(array('locale', 'id'))
-            ->fetchPairs();
-
-        $locale = self::getLocale()->toString();
-        if (isset($languages[$locale])) {
-            $language = $languages[$locale];
-        } else {
-            $language = Axis::config('locale/main/language_' . Axis_Area::getArea());
-        }
-
-        if (!array_search($language, $languages)) {
-            $language = current($languages);
-        }
-
-        $session = self::getSessionStorage();
-        $session->language = $language;
-    }
-
-    /**
-     * Retrieve default locale from config
-     *
-     * @static
-     * @return string Locale ISO code
-     */
-    public static function getDefaultLocale()
-    {
-        return Axis::config('locale/main/locale');
     }
 
     /**
@@ -130,55 +79,34 @@ class Axis_Locale
      */
     public static function getLanguageId()
     {
-        return self::getSessionStorage()->language;
+        return Axis::session()->language;
     }
 
     /**
      * Retrieve part of url, responsible for locale
      *
+     * @deprecated
      * @static
      * @param string $locale Locale ISO code
      * @return string Part of url ('/uk')
      */
     public static function getLanguageUrl($locale = null)
     {
-        if (null !== $locale) {
-            list($language) = explode('_', $locale);
-        } else {
-            $language = self::getLocale()->getLanguage();
-            $locale   = self::getLocale()->toString();
+        if (null === $locale) {
+            $locale = Axis::locale()->toString();
         }
 
-        if ($locale == self::getDefaultLocale()) {
+        $locales = Axis::single('locale/option_locale')->toArray();
+        if (!in_array($locale, $locales)) {
+            throw new Axis_Exception("Locale {$locale} not exist");
+        }
+
+        if ($locale == Axis::config('locale/main/locale')) {
             return '';
         }
-        if ($locale == self::_getLocaleFromLanguageCode($language)) {
-            return '/' . $language;
-        }
+        list($language) = explode('_', $locale);
 
-        return '/' . $locale;
-    }
-
-    /**
-     * Retrieve first suitable locale with language
-     *
-     * @static
-     * @param string $language Language ISO code
-     * @return string Locale ISO code
-     */
-    private static function _getLocaleFromLanguageCode($language)
-    {
-        if (!empty($language)) {
-            $locales = Axis::single('locale/option_locale')->toArray();
-            foreach ($locales as $locale) {
-                list($_language) = explode('_', $locale);
-                if ($_language === $language) {
-                    return $locale;
-                }
-            }
-        }
-
-        return self::DEFAULT_LOCALE;
+        return '/' . $language;
     }
 
     /**

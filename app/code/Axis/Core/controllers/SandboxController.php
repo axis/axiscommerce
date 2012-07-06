@@ -35,10 +35,7 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {
-        Zend_Debug::dump(Axis::model('locale/option_filesystem_locale')->toArray());
-
-        Zend_Debug::dump($this->_getAllParams());
-
+        Zend_Debug::dump(Axis_Locale::getLanguageId());
 
         Zend_Debug::dump('####################################################');
 //        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());

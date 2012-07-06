@@ -41,7 +41,7 @@ class Axis_Locale_Model_Option_Filesystem_Locale extends Axis_Config_Option_Arra
 
         if (!$options = Axis::cache()->load('locales_list')) {
 
-            $path = Axis::config()->system->path . '/app/locale/';
+            $path = AXIS_ROOT . '/app/locale/';
             try {
                 $dir = new DirectoryIterator($path);
             } catch (Exception $e) {

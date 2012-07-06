@@ -63,7 +63,7 @@ class Axis_Account_Model_Customer extends Axis_Db_Table
         }
 
         if (empty($row->locale)) {
-            $row->locale = Axis_Locale::getLocale()->toString();
+            $row->locale = Axis::locale()->toString();
         }
 
         $row->save();

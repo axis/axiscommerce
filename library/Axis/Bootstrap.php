@@ -326,7 +326,7 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $router = new Axis_Controller_Router_Rewrite();
 
         // pre router config
-        $defaultLocale = Axis_Locale::getDefaultLocale();
+        $defaultLocale = Axis::config('locale/main/locale');
         $locales = Axis::single('locale/option_locale')->toArray();
 
         Axis_Controller_Router_Route_Front::setDefaultLocale($defaultLocale);
@@ -364,8 +364,14 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             Axis::config('locale/main/timezone')
         );
 
+        Zend_Locale::setCache(Axis::cache());
+        $locale = new Zend_Locale(Axis_Locale::DEFAULT_LOCALE);
+        Zend_Registry::set('Zend_Locale', $locale);
+
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 20);
+
+        return $locale;
     }
 
     protected function _initView()

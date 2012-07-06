@@ -64,15 +64,12 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
             'strict'          => 'off',
             'save_path'       => $cacheDir
         ));
-        return Axis::session('install');
+        return Axis::session();
     }
 
+    // @todo cache install
     protected function _initCache()
     {
-        $frontendOptions = array(
-            'lifetime'                  => 864000,
-            'automatic_serialization'   => true
-        );
         $cacheDir = AXIS_ROOT . '/var/cache';
         if (!is_readable($cacheDir)) {
             mkdir($cacheDir, 0777);
@@ -80,19 +77,21 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
             chmod($cacheDir, 0777);
         }
         if (!is_writable($cacheDir)) {
-            echo "Cache directory should be writable. Run 'chmod -R 0777 AXIS_ROOT/var'";
-            exit();
+            echo "Cache directory should be writable. Run 'chmod -R 0777 {$cacheDir}'";
+            die;
         }
-        $backendOptions = array(
-            'cache_dir'                 => $cacheDir,
-            'hashed_directory_level'    => 1,
-            'file_name_prefix'          => 'axis_cache',
-            'hashed_directory_umask'    => 0777
-        );
         Zend_Registry::set('cache', Zend_Cache::factory(
             'Core', 'Zend_Cache_Backend_File',
-            $frontendOptions,
-            $backendOptions,
+            array(
+                'lifetime'                => 864000,
+                'automatic_serialization' => true
+            ),
+            array(
+                'cache_dir'               => $cacheDir,
+                'hashed_directory_level'  => 1,
+                'file_name_prefix'        => 'axis_cache',
+                'hashed_directory_umask'  => 0777
+            ),
             false,
             true
         ));
@@ -102,7 +101,7 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
 
     protected function _initLocale()
     {
-        $session = Axis::session('install');
+        $session = Axis::session();
 
         $timezone = Axis_Locale_Model_Timezone::DEFAULT_TIMEZONE;
         if (is_array($session->localization)) {
@@ -114,6 +113,10 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
         if ($session->locale) {
             $locale = $session->locale;
         }
+
+        Zend_Locale::setCache(Axis::cache());
+        Zend_Registry::set('Zend_Locale', new Zend_Locale($locale));
+
         Axis_Locale::setLocale($locale);
     }
 

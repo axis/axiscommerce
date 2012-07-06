@@ -37,18 +37,18 @@ class Axis_Locale_Model_Option_ZendTimezone extends Axis_Config_Option_Array_Abs
      */
     protected function _loadCollection()
     {
-        $options = array();
-        $locale  = Axis_Locale::getLocale();
-        $zones   = $locale->getTranslationList('WindowsToTimezone', $locale);
+        $options   = array();
+        $locale    = Axis::locale();
+        $timezones = Zend_Locale::getTranslationList('WindowsToTimezone', $locale);
 
-        if (!$zones) {
-            $zones = $locale->getTranslationList(
+        if (!$timezones) {
+            $timezones = Zend_Locale::getTranslationList(
                 'WindowsToTimezone', Axis_Locale::DEFAULT_LOCALE
             );
         }
 
-        ksort($zones);
-        foreach ($zones as $code => $name) {
+        ksort($timezones);
+        foreach ($timezones as $code => $name) {
             $name = trim($name);
             list($region, $label) = explode('/', $code);
             if (!empty($name)) {
