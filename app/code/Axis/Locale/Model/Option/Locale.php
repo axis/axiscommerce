@@ -19,7 +19,7 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @subpackage  Axis_Locale_Box
+ * @subpackage  Axis_Locale_Model
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
@@ -28,28 +28,19 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @subpackage  Axis_Locale_Box
+ * @subpackage  Axis_Locale_Model
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Box_Language extends Axis_Core_Box_Abstract
+class Axis_Locale_Model_Option_Locale extends Axis_Config_Option_Array_Abstract
 {
-    protected $_title = 'Language';
-    protected $_class = 'box-language';
-
-    protected function _construct()
+    /**
+     *
+     * @return array
+     */
+    protected function _loadCollection()
     {
-        $this->setData('cache_tags', 'locales');
-    }
-
-    protected function _beforeRender()
-    {
-        $languages = Axis::single('locale/language')
-            ->select(array('locale', 'language'))
-            ->fetchPairs();
-        
-        if (count($languages) <= 1) {
-            return false;
-        }
-        $this->languages = $languages;
+        return Axis::single('locale/language')
+                ->select(array('id', 'locale'))
+                ->fetchPairs();
     }
 }

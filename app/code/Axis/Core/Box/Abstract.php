@@ -395,7 +395,7 @@ abstract class Axis_Core_Box_Abstract extends Axis_Object
                 'title'           => $this->title,
                 'class'           => $this->class,
                 'url'             => $this->url,
-                'locale'          => Axis_Locale::getLocale()->toString(),
+                'locale'          => Axis::locale()->toString(),
                 'site_id'         => Axis::getSiteId()
             ),
             $this->_getCacheKeyParams()

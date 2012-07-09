@@ -32,17 +32,17 @@
 class Axis_Locale_Model_Option_ZendCurrency extends Axis_Config_Option_Array_Abstract
 {
     /**
-     * 
+     *
      * @return array
      */
     protected function _loadCollection()
     {
-        $locale = Axis_Locale::getLocale();
+        $locale = Axis::locale();
 
-        $currencies = $locale->getTranslationList('NameToCurrency', $locale);
+        $currencies = Zend_Locale::getTranslationList('NameToCurrency', $locale);
 
         if (!$currencies) {
-            $currencies = $locale->getTranslationList(
+            $currencies = Zend_Locale::getTranslationList(
                 'NameToCurrency', Axis_Locale::DEFAULT_LOCALE
             );
         }

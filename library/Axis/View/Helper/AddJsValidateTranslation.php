@@ -35,17 +35,20 @@ class Axis_View_Helper_AddJsValidateTranslation
 {
     public function addJsValidateTranslation()
     {
-        if (file_exists('js/jquery/jquery-validation-1.9.01/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js')) {
+        $locale = Axis::locale();
+        $prefix = 'js/jquery/jquery-validation-1.9.0/localization/';
+
+        if (file_exists($prefix . 'messages_' . $locale->toString() . '.js')) {
             $this->view->headScript()->appendFile(
-                'js/jquery/jquery-validation-1.9.0/localization/messages_' . Axis_Locale::getLocale()->toString() . '.js'
+                $prefix . '/messages_' . $locale->toString() . '.js'
             );
-        } elseif (file_exists('js/jquery/jquery-validation-1.9.0/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
+        } elseif (file_exists($prefix . 'messages_' . $locale->getLanguage() . '.js')) {
             $this->view->headScript()->appendFile(
-                'js/jquery/jquery-validation-1.9.0/localization/messages_' . Axis_Locale::getLocale()->getLanguage() . '.js'
+                $prefix . 'messages_' . $locale->getLanguage() . '.js'
             );
-        } elseif (file_exists('js/jquery/jquery-validation-1.9.0/localization/messages_' . strtolower(Axis_Locale::getLocale()->getRegion()) . '.js')) {
+        } elseif (file_exists($prefix . 'messages_' . strtolower($locale->getRegion()) . '.js')) {
             $this->view->headScript()->appendFile(
-                'js/jquery/jquery-validation-1.9.0/localization/messages_' . strtolower(Axis_Locale::getLocale()->getRegion()) . '.js'
+                $prefix . 'messages_' . strtolower($locale->getRegion()) . '.js'
             );
         }
     }

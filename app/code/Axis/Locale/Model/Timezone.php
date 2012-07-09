@@ -19,7 +19,6 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @subpackage  Axis_Locale_Box
  * @copyright   Copyright 2008-2012 Axis
  * @license     GNU Public License V3.0
  */
@@ -28,28 +27,37 @@
  *
  * @category    Axis
  * @package     Axis_Locale
- * @subpackage  Axis_Locale_Box
  * @author      Axis Core Team <core@axiscommerce.com>
  */
-class Axis_Locale_Box_Language extends Axis_Core_Box_Abstract
+class Axis_Locale_Model_Timezone
 {
-    protected $_title = 'Language';
-    protected $_class = 'box-language';
+    const DEFAULT_TIMEZONE  = 'America/Los_Angeles';
 
-    protected function _construct()
+    /**
+     *
+     * @return string
+     */
+    public static function getTimezone()
     {
-        $this->setData('cache_tags', 'locales');
+        return @date_default_timezone_get();
     }
 
-    protected function _beforeRender()
+    /**
+     *
+     * @param string $timezone
+     * @return boolean
+     * @throws Axis_Exception
+     */
+    public static function setTimezone($timezone)
     {
-        $languages = Axis::single('locale/language')
-            ->select(array('locale', 'language'))
-            ->fetchPairs();
-        
-        if (count($languages) <= 1) {
-            return false;
+        if (function_exists('timezone_open') && !@timezone_open($timezone)) {
+            throw new Axis_Exception("timezone ($timezone) is not a known timezone");
         }
-        $this->languages = $languages;
+
+        if (!@date_default_timezone_set($timezone)) {
+            @date_default_timezone_set(self::DEFAULT_TIMEZONE);
+            throw new Axis_Exception("timezone ($timezone) is not set correct");
+        }
+        return true;
     }
 }

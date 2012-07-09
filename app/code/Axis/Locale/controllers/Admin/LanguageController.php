@@ -1,22 +1,22 @@
 <?php
 /**
  * Axis
- * 
+ *
  * This file is part of Axis.
- * 
+ *
  * Axis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Axis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Locale
  * @subpackage  Axis_Locale_Admin_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Locale
  * @subpackage  Axis_Locale_Admin_Controller
@@ -67,7 +67,7 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
         $language = $this->_getParam('language');
         $locale   = $this->_getParam('locale_code');
         $id       = $this->_getParam('id');
-        
+
         if (!strstr($locale, '_')) {
             Axis::message()->addError(
                 Axis::translate('locale')->__(
@@ -76,19 +76,19 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
             return $this->_helper->json->sendFailure();
         }
         $code = current(explode('_', $locale));
-        
+
         if (is_numeric($id)) {
             $row = Axis::single('locale/language')->find($id)->current();
         } else {
             $row = Axis::single('locale/language')->createRow();
         }
-        
+
         $row->setFromArray(array(
             'code'     => $code,
             'language' => $language,
             'locale'   => $locale
         ));
-        
+
         $row->save();
 
         Axis::message()->addSuccess(
@@ -97,11 +97,11 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
         ));
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function removeAction()
     {
         $data = Zend_Json::decode($this->_getParam('data'));
-        
+
         if (!count($data)) {
             Axis::message()->addError(
                 Axis::translate('locale')->__(
@@ -112,7 +112,7 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
         Axis::single('locale/language')->delete(
             $this->db->quoteInto('id IN(?)', $data)
         );
-        
+
         Axis::dispatch('locale_language_delete', $data);
 
         Axis::message()->addSuccess(
@@ -121,19 +121,19 @@ class Axis_Locale_Admin_LanguageController extends Axis_Admin_Controller_Back
         ));
         return $this->_helper->json->sendSuccess();
     }
-    
+
     /**
      * Change the locale
-     * 
+     *
      */
     public function changeAction()
     {
         $locale = $this->_getParam('new_locale');
-        
+
         if ($locale) {
             Axis_Locale::setLocale($locale);
         }
-        
+
         $this->_redirect($this->_getBackUrl());
     }
 }

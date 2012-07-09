@@ -65,7 +65,7 @@ class Axis_Install_Model_Wizard
 
     private function __construct()
     {
-        $this->_session = Axis::session('install');
+        $this->_session = Axis::session();
         if (!isset($this->_session->step)) {
             $this->_session->step = self::STEP_REQUIREMENTS;
         }

@@ -33,6 +33,8 @@
  */
 class Axis_Locale_Model_Currency extends Axis_Db_Table
 {
+    const DEFAULT_CURRENCY  = 'USD';
+
     protected $_name = 'locale_currency';
 
     /**
@@ -126,7 +128,7 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
                 $currency = new Zend_Currency(
                     $options['currency'],
                     $options['format'] === null ?
-                        Axis_Locale::getLocale() : $options['format']
+                        Axis::locale() : $options['format']
                 );
             } catch (Zend_Currency_Exception $e) {
                 Axis::message()->addError(
@@ -168,8 +170,8 @@ class Axis_Locale_Model_Currency extends Axis_Db_Table
 
             $this->_currentCurrencyCode = Axis::config()->locale->main->currency;
 
-        } elseif ($this->isExists(Axis_Locale::DEFAULT_CURRENCY)) {
-            $this->_currentCurrencyCode = Axis_Locale::DEFAULT_CURRENCY;
+        } elseif ($this->isExists(self::DEFAULT_CURRENCY)) {
+            $this->_currentCurrencyCode = self::DEFAULT_CURRENCY;
         } else {
             $this->_currentCurrencyCode = $this->select('code')
                 ->order('id')

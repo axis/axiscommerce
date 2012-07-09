@@ -43,7 +43,7 @@ class Axis_Date extends Zend_Date
     public function __construct($date = null, $part = null, $locale = null)
     {
         if (null === $locale) {
-            $locale = Axis_Locale::getLocale();
+            $locale = Axis::locale();
         }
         // supress notice about PCRE without UTF8 support
         @parent::__construct($date, $part, $locale);
@@ -86,31 +86,12 @@ class Axis_Date extends Zend_Date
     }
 
     /**
-     * set timezone
-     *
-     * @param null | string
-     * @return Zend_Date_DateObject  Provides fluent interface
-     */
-    public function setTimezone($timezone = null)
-    {
-        if (null === $timezone) {
-            $timezone = Axis_Locale::getDefaultTimezone();
-        }
-        try {
-            return parent::setTimezone($timezone);
-        } catch(Zend_Date_Exception $e) {
-            return parent::setTimezone(Axis_Locale::DEFAULT_TIMEZONE);
-        }
-    }
-
-    /**
      * @param  string              $format  OPTIONAL Rule for formatting output. If null the default date format is used
      * @param  string|Zend_Locale  $locale  OPTIONAL Locale for parsing input
      * @return string
      */
     public function toPhpString($format = null, $locale = null)
     {
-        self::setTimezone(Axis_Locale::getDefaultTimezone());
         return $this->toString($format, 'php', $locale);
     }
 
@@ -122,7 +103,6 @@ class Axis_Date extends Zend_Date
      */
     public function toSQLString($locale = null)
     {
-        self::setTimezone(Axis_Locale::getDefaultTimezone());
         return $this->toString('yyyy-MM-dd HH:mm:ss', 'iso', $locale);
     }
 

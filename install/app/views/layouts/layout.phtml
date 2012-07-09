@@ -25,11 +25,11 @@
                     <p class="locale">
                         <label for="interface_locale"><?php echo Axis::translate('install')->__('Language') ?>:</label>
                         <?php echo $this->formSelect('interface_locale',
-                            Axis_Locale::getLocale()->toString(),
+                            Axis::locale()->toString(),
                             array(
-                                'onchange'=> "window.location.href = baseUrl + '/index/change-locale/new_locale/' + this.value"
+                                'onchange' => "window.location.href = baseUrl + '/index/change-locale/new_locale/' + this.value"
                             ),
-                            Axis_Locale::getAvailableLocales()
+                            Axis::model('locale/option_filesystem_locale')->toArray()
                         ); ?>
                     </p>
                 </div>

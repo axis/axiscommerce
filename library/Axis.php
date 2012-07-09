@@ -284,4 +284,15 @@ class Axis
         $module = str_replace(' ', '_', ucwords(str_replace('_', ' ', $module)));
         return Axis_Translate::getInstance($module);
     }
+
+    /**
+     * Retrieve locale object
+     *
+     * @static
+     * @return Zend_Locale
+     */
+    public static function locale()
+    {
+        return Zend_Registry::get('Zend_Locale');
+    }
 }

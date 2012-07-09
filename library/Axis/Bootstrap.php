@@ -34,7 +34,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
     protected function _initEnviroment()
     {
-        date_default_timezone_set('UTC');
         error_reporting(E_ALL | E_STRICT);
         /**
          * Custom error handler E_ALL to Exception
@@ -327,8 +326,8 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $router = new Axis_Controller_Router_Rewrite();
 
         // pre router config
-        $defaultLocale = Axis_Locale::getDefaultLocale();
-        $locales = Axis_Locale::getLocaleList(true);
+        $defaultLocale = Axis::config('locale/main/locale');
+        $locales = Axis::single('locale/option_locale')->toArray();
 
         Axis_Controller_Router_Route_Front::setDefaultLocale($defaultLocale);
         Axis_Controller_Router_Route_Front::setLocales($locales);
@@ -361,7 +360,11 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('FrontController');
 
         //set default timezone affect on date() and Axis_Date
-        Axis_Locale::setTimezone(Axis_Locale::getDefaultTimezone());
+        Axis_Locale_Model_Timezone::setTimezone(
+            Axis::config('locale/main/timezone')
+        );
+
+        Zend_Locale::setCache(Axis::cache());
 
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 20);
