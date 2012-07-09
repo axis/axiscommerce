@@ -41,16 +41,30 @@ class Axis_Locale
      */
     public static function setLocale($locale)
     {
-        /**
-         *  @var Zend_Locale $instance
-         */
         $instance = Axis::locale();
 
         if ($locale === $instance->toString()) {
             return true;
         }
 
-        if (!$instance->isLocale($locale)) {
+        if (!self::isValid($locale)) {
+            return false;
+        }
+
+        $instance->setLocale($locale);
+        Axis::session()->locale = $locale;
+
+        return true;
+    }
+
+    /**
+     *
+     * @param string $locale
+     * @return boolean
+     */
+    public static function isValid($locale)
+    {
+        if (!Zend_Locale::isLocale($locale)) {
             return false;
         }
 
@@ -64,10 +78,6 @@ class Axis_Locale
         if (!in_array($locale, $locales)) {
             return false;
         }
-
-        $instance->setLocale($locale);
-        Axis::session()->locale = $locale;
-
         return true;
     }
 
@@ -96,9 +106,13 @@ class Axis_Locale
             $locale = Axis::locale()->toString();
         }
 
+        if (!Zend_Locale::isLocale($locale)) {
+            return '';
+        }
+
         $locales = Axis::single('locale/option_locale')->toArray();
         if (!in_array($locale, $locales)) {
-            throw new Axis_Exception("Locale {$locale} not exist");
+            return '';
         }
 
         if ($locale == Axis::config('locale/main/locale')) {
@@ -106,6 +120,14 @@ class Axis_Locale
         }
         list($language) = explode('_', $locale);
 
+        foreach ($locales as $_locale) {
+            if (strpos($_locale, $language) === 0) {
+                break;
+            }
+        }
+        if ($locale !== $_locale) {
+            return '/' . $locale;
+        }
         return '/' . $language;
     }
 

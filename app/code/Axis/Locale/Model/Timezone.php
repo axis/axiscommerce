@@ -55,7 +55,7 @@ class Axis_Locale_Model_Timezone
         }
 
         if (!@date_default_timezone_set($timezone)) {
-//            @date_default_timezone_set(self::DEFAULT_TIMEZONE);
+            @date_default_timezone_set(self::DEFAULT_TIMEZONE);
             throw new Axis_Exception("timezone ($timezone) is not set correct");
         }
         return true;

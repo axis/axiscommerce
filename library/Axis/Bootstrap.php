@@ -365,13 +365,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         );
 
         Zend_Locale::setCache(Axis::cache());
-        $locale = new Zend_Locale(Axis_Locale::DEFAULT_LOCALE);
-        Zend_Registry::set('Zend_Locale', $locale);
 
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 20);
-
-        return $locale;
     }
 
     protected function _initView()

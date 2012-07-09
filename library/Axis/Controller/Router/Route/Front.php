@@ -98,8 +98,12 @@ class Axis_Controller_Router_Route_Front extends Zend_Controller_Router_Route
 
         if (!empty($pathParts[0]) && strlen($pathParts[0]) > 1) {
             foreach (self::$_locales as $_locale) {
-                list($_language) = explode('_', $_locale);
-                if ($_language == $pathParts[0]) {
+                // preventing duplicate urls:
+                // site.com/uk and site.com/uk_UA - only one will work after next check
+                $_languageUrl = trim(
+                    Axis_Locale::getLanguageUrl($_locale), $this->_urlDelimiter
+                );
+                if ($_languageUrl == $pathParts[0]) {
                     self::$_hasLocaleInUrl = true;
                     $path = (sizeof($pathParts) > 1) ? $pathParts[1] : '';
                     $locale = $_locale;

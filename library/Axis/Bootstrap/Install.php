@@ -110,14 +110,14 @@ class Axis_Bootstrap_Install extends Axis_Bootstrap
         Axis_Locale_Model_Timezone::setTimezone($timezone);
 
         $locale  = Axis_Locale::DEFAULT_LOCALE;
-        if ($session->locale) {
+        if (Axis_Locale::isValid($session->locale)) {
             $locale = $session->locale;
         }
 
         Zend_Locale::setCache(Axis::cache());
         Zend_Registry::set('Zend_Locale', new Zend_Locale($locale));
 
-        Axis_Locale::setLocale($locale);
+        return Axis::locale();
     }
 
     protected function _initArea()
