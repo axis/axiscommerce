@@ -206,6 +206,8 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $row->value = $value;
         $row->save();
 
+        Axis::dispatch('config_option_value_row_save_success', $row);
+
         Axis::message()->addSuccess(
             Axis::translate('admin')->__(
                 'Configuration option was saved successfully'

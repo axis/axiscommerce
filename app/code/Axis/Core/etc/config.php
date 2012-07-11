@@ -35,6 +35,13 @@ $config = array(
                     'model'  => 'core/observer',
                     'method' => 'prepareAdminNavigationBox'
                 )
+            ),
+            'config_option_value_row_save_success' => array(
+                'flush_cache' => array(
+                    'type'   => 'model',
+                    'model'  => 'core/observer',
+                    'method' => 'flushConfigOptionCache'
+                )
             )
         )
     )
