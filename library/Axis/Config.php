@@ -33,6 +33,8 @@
 class Axis_Config extends Zend_Config
 {
     /**
+     * Overriden because of self keyword using
+     *
      * @param  array   $array
      * @param  boolean $allowModifications
      * @return void
@@ -62,16 +64,20 @@ class Axis_Config extends Zend_Config
      */
     public function get($path, $siteId = null, $default = null)
     {
-        $sections = explode('/', $path);
-        $section  = array_shift($sections);
-        if (!array_key_exists($section, $this->_data)) {
+        $sections   = explode('/', $path);
+        $section    = array_shift($sections);
+        $sectionKey = $section;
+        if (null !== $siteId) {
+            $sectionKey .= $siteId;
+        }
+        if (!array_key_exists($sectionKey, $this->_data)) {
             $values = $this->_loadSectionDataset($section, $siteId);
             if (!empty($values)) {
-                $this->_data[$section] = new self($values, $this->_allowModifications);
+                $this->_data[$sectionKey] = new self($values, $this->_allowModifications);
             }
         }
         $value = $this;
-        array_unshift($sections, $section);
+        array_unshift($sections, $sectionKey);
         foreach ($sections as $section) {
             if ($value instanceof Axis_Config) {
                 $value = isset($value->_data[$section]) ?
@@ -121,7 +127,7 @@ class Axis_Config extends Zend_Config
             $parts = explode('/', $path);
 
             $value = $data['value'];
-            
+
             if (!empty($data['model'])) {
                 $class = Axis::getClass($data['model']);
                 if (class_exists($class)

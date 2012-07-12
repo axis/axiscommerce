@@ -142,7 +142,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $this->view->siteId = $siteId;
         $this->view->configPath = $path;
 
-        $row = Axis::single('core/config_field')->select()
+        $row = Axis::model('core/config_field')->select()
             ->where('path = ?', $path)
             ->fetchRow();
 
@@ -150,7 +150,7 @@ class Admin_Config_ValueController extends Axis_Admin_Controller_Back
         $row->description = $translator->__($row->description);
         $row->title = $translator->__($row->title);
 
-        $value = Axis::config($path);
+        $value = Axis::config($path, $siteId);
         if ($value instanceof Axis_Config) {
             $value = $value->toArray();
         }
