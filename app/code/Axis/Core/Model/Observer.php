@@ -112,4 +112,19 @@ class Axis_Core_Model_Observer
             )
         ));
     }
+
+    public function flushConfigOptionCache(Axis_Db_Table_Row $row)
+    {
+        list($path) = explode('/', $row->path);
+        if (0 == $row->site_id) {
+            $sites = array_keys(Axis::model('core/option_site')->toArray());
+        } else {
+            $sites = array($row->site_id);
+        }
+        $cache = Axis::cache();
+        foreach ($sites as $siteId) {
+            $cacheId = "config_{$path}_site_{$siteId}";
+            $cache->remove($cacheId);
+        }
+    }
 }

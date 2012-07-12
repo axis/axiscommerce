@@ -33,6 +33,8 @@
 class Axis_Config extends Zend_Config
 {
     /**
+     * Overriden because of self keyword using
+     *
      * @param  array   $array
      * @param  boolean $allowModifications
      * @return void
@@ -53,33 +55,45 @@ class Axis_Config extends Zend_Config
         $this->_count = count($this->_data);
     }
 
-    public function get($name, $siteId = null, $default = null)
+    /**
+     *
+     * @param string $path
+     * @param int $siteId
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get($path, $siteId = null, $default = null)
     {
-        if (strstr($name, '/')) {
-            $sections = explode('/', $name);
-        } else {
-            $sections = array($name);
+        $sections   = explode('/', $path);
+        $section    = array_shift($sections);
+        $sectionKey = $section;
+        if (null !== $siteId) {
+            $sectionKey .= $siteId;
         }
-
-        $section = array_shift($sections);
-        if (!array_key_exists($section, $this->_data)) {
-            $this->_load($section, $siteId, $default);
-        }
-
-        $result = isset($this->_data[$section]) ? $this->_data[$section] : $default;
-
-        foreach ($sections as $section) {
-            if (!$result instanceof Axis_Config) {
-                $result = $default;
-                break;
+        if (!array_key_exists($sectionKey, $this->_data)) {
+            $values = $this->_loadSectionDataset($section, $siteId);
+            if (!empty($values)) {
+                $this->_data[$sectionKey] = new self($values, $this->_allowModifications);
             }
-            $result = isset($result->_data[$section]) ? $result->_data[$section] : $default;
         }
-
-        return $result;
+        $value = $this;
+        array_unshift($sections, $sectionKey);
+        foreach ($sections as $section) {
+            if ($value instanceof Axis_Config) {
+                $value = isset($value->_data[$section]) ?
+                    $value->_data[$section] : $default;
+            }
+        }
+        return $value;
     }
 
-    private function _load($key, $siteId, $default)
+    /**
+     *
+     * @param string $section
+     * @param int $siteId
+     * @return array
+     */
+    private function _loadSectionDataset($section, $siteId)
     {
         if (null === $siteId) {
             $siteId = Axis::getSiteId();
@@ -88,8 +102,8 @@ class Axis_Config extends Zend_Config
         $hasCache = (bool) Zend_Registry::isRegistered('cache') ?
             Axis::cache() instanceof Zend_Cache_Core : false;
 
-        if (!$hasCache
-            || !$dataset = Axis::cache()->load("config_{$key}_site_{$siteId}")) {
+        $cacheId = "config_{$section}_site_{$siteId}";
+        if (!$hasCache || !$dataset = Axis::cache()->load($cacheId)) {
 
             $dataset = Axis::single('core/config_field')
                 ->select(array('path', 'model'))
@@ -98,47 +112,33 @@ class Axis_Config extends Zend_Config
                     'ccv.config_field_id = ccf.id',
                     'value'
                 )
-                ->where('ccf.path LIKE ?', $key . '/%')
+                ->where('ccf.path LIKE ?', $section . '/%')
                 ->where('ccv.site_id IN(?)', array(0, $siteId))
                 ->fetchAssoc()
                 ;
 
             if ($hasCache) {
-                Axis::cache()->save(
-                    $dataset, "config_{$key}_site_{$siteId}", array('config')
-                );
+                Axis::cache()->save($dataset, $cacheId, array('config'));
             }
         }
 
-        if (!sizeof($dataset)) {
-            $this->_data[$key] = $default;
-            return;
-        }
-        
         $values = array();
         foreach ($dataset as $path => $data) {
             $parts = explode('/', $path);
-            
+
             $value = $data['value'];
-            
+
             if (!empty($data['model'])) {
                 $class = Axis::getClass($data['model']);
-                if (class_exists($class) 
+                if (class_exists($class)
                     && in_array('Axis_Config_Option_Encodable_Interface', class_implements($class))) {
 
                     $value = Axis::single($data['model'])->decode($value);
                 }
             }
-            $values[$parts[0]][$parts[1]][$parts[2]] = $value;
+            $values[$parts[1]][$parts[2]] = $value;
         }
-        
-        foreach ($values as $key => $value) {
-            if (is_array($value)) {
-                $this->_data[$key] = new self($value, $this->_allowModifications);
-            } else {
-                $this->_data[$key] = $value;
-            }
-        }
-    }
 
+        return $values;
+    }
 }

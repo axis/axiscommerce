@@ -195,13 +195,13 @@ class Axis
      */
     public static function config($name = null, $siteId = null, $default = null)
     {
-        if (!Zend_Registry::isRegistered('config')) {
-            throw new Axis_Exception(
-                Axis::translate('core')->__(
-                    'Config is not initialized'
-                )
-            );
-        }
+//        if (!Zend_Registry::isRegistered('config')) {
+//            throw new Axis_Exception(
+//                Axis::translate('core')->__(
+//                    'Config is not initialized'
+//                )
+//            );
+//        }
         if (null !== $name) {
             return Zend_Registry::get('config')->get($name, $siteId, $default);
         }
