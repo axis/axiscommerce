@@ -36,6 +36,13 @@ class SandboxController extends Axis_Core_Controller_Front
     public function indexAction()
     {
 
+        $lucene = Axis::model('search/lucene');
+        $index = $lucene->getIndex();
+//        Zend_Debug::dump($index);
+        Axis_FirePhp::timeStamp(1);
+        $index->optimize();
+        Axis_FirePhp::timeStamp(2);
+
         Zend_Debug::dump('####################################################');
 //        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());
 
@@ -101,8 +108,6 @@ class SandboxController extends Axis_Core_Controller_Front
                 )
                 ;
         $rowset = $select->fetchRowset();
-//        $s = Axis::model('search/indexer')->make()
-            ;
 
         Zend_Debug::dump($rowset->toArray());
 
