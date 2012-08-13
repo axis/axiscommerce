@@ -51,24 +51,25 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
         }
 
         $paging   = array();
-        $queryStr = trim($this->_getParam('q', ''));
+        $query = trim($this->_getParam('q', ''));
         $this->setTitle(
             Axis::translate('search')->__(
-                "Search results for '%s'", $queryStr
+                "Search results for '%s'", $query
         ));
-        $this->view->query = $queryStr;
+        $this->view->query = $query;
         $paging['page'] = $page = (int) $this->_getParam('page', 1);
 
-        if (empty($queryStr)) {
+        if (empty($query)) {
             $this->render();
             return;
         }
 
         try {
-            $lucene = Axis::single('search/lucene');
-            $result = array();
-            $query  = $lucene->createFuzzyQuery($queryStr);
-            $result = $lucene->findFuzzy($query);
+            $lucene = Axis::single('search/lucene')
+                ->addQuery($query)
+                ->addSiteFilter(Axis::getSiteId())
+                ->addLocaleFilter(Axis::locale()->toString())
+            ;
         } catch (Exception $e) {
             Axis::message()->addError($e->getMessage());
             $this->view->results = array();
@@ -77,10 +78,10 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
         }
 
         Axis::single('search/log')->logging(array(
-            'num_results' => count($result),
-            'query'       => $queryStr,
+            'num_results' => $lucene->count(),
+            'query'       => $query,
         ));
-        if (!count($result)) { // if nothing found
+        if (!$lucene->count()) { // if nothing found
             $this->view->results = array();
             $this->render();
             return;
@@ -90,7 +91,7 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
         $perPageArray = explode(',', Axis::config('catalog/listing/perPage'));
         foreach ($perPageArray as $perPage) {
             $url = $this->view->url(array(
-                'limit' => $perPage, 'page' => null, 'q' => $queryStr
+                'limit' => $perPage, 'page' => null, 'q' => $query
             ));
             $paging['perPage'][$url] = $perPage;
         }
@@ -107,10 +108,10 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
 
         $paging['limit'] = $limit;
         $paging['page']  = $page = (int) $this->_getParam('page', 1);
-        $paging['count'] = count($result);
+        $paging['count'] = $lucene->count();//count($result);
 
         $this->setCanonicalUrl($this->view->url(array(
-            'q'     => $queryStr,
+            'q'     => $query,
             'page'  => $page,
             'limit' => $limit
         )), 'search_result', true);
@@ -123,18 +124,17 @@ class Axis_Search_IndexController extends Axis_Core_Controller_Front
 
         $this->view->paging = $paging;
 
+        $result = $lucene->toArray();
+        //@todo ->limitPage($page, $limit)->toArray();
         $founded = array();
         for ($i = ($page - 1) * $limit, $n = $i + $limit;
              isset($result[$i])  &&  $i < $n;
              $i++)
         {
-            $founded[] = $lucene->getDocumentData($result[$i], $query);
-        }
-        foreach ($founded as &$found) {
-            $found['url'] = urlencode($found['url']);
+            $founded[] = $result[$i];
         }
         Axis::dispatch('search_use', array(
-            'query'       => $queryStr,
+            'query'       => $query,
             'result'      => $founded,
             'customer_id' => Axis::getCustomerId()
         ));
