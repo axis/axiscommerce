@@ -260,7 +260,7 @@ class Axis_Catalog_IndexController extends Axis_Core_Controller_Front
         $refCategory = false;
         if ($referer = $this->getRequest()->getServer('HTTP_REFERER')) {
             preg_match(
-                '/' . $this->view->catalogUrl . '\/(.[^\/]+)\//',
+                '/' . $this->view->catalogUrl . '\/(.[^\/]+)/',
                 $referer,
                 $categoryUrl
             );
