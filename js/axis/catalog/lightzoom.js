@@ -107,6 +107,10 @@
                 $('.close', lightbox.container).click(function(){
                     lightbox.hide();
                 });
+                $('.popup', lightbox.container).click(function(e){
+                    e.preventDefault();
+                    lightbox.popup();
+                });
                 $('.lightbox-mask').click(function(){
                     lightbox.hide();
                 });
@@ -338,13 +342,16 @@
                     '<div class="lightbox-panel">'+
                         '<h4></h4>'+
                         '<p class="paging"></p>'+
-                        '<a href="javascript:void(0)" class="close">'+settings.lightbox_label_close+'</a>'+
+                        '<div class="controls">'+
+                            '<a href="javascript:void(0)" class="popup" title="'+settings.lightbox_label_popup+'">'+settings.lightbox_label_popup+'</a>'+
+                            '<a href="javascript:void(0)" class="close" title="'+settings.lightbox_label_close+'">'+settings.lightbox_label_close+'</a>'+
+                        '</div>'+
                     '</div>'+
                     '<div class="lightbox-controls">'+
-                        '<a href="javascript:void(0)" class="begin">'+settings.lightbox_label_begin+'</a>'+
-                        '<a href="javascript:void(0)" class="prev">'+settings.lightbox_label_prev+'</a>'+
-                        '<a href="javascript:void(0)" class="next">'+settings.lightbox_label_next+'</a>'+
-                        '<a href="javascript:void(0)" class="end">'+settings.lightbox_label_end+'</a>'+
+                        '<a href="javascript:void(0)" class="begin" title="'+settings.lightbox_label_begin+'">'+settings.lightbox_label_begin+'</a>'+
+                        '<a href="javascript:void(0)" class="prev" title="'+settings.lightbox_label_prev+'">'+settings.lightbox_label_prev+'</a>'+
+                        '<a href="javascript:void(0)" class="next" title="'+settings.lightbox_label_next+'">'+settings.lightbox_label_next+'</a>'+
+                        '<a href="javascript:void(0)" class="end" title="'+settings.lightbox_label_end+'">'+settings.lightbox_label_end+'</a>'+
                     '</div>';
 
                 this.pageSize = BrowserWindow.getPageSize();
@@ -394,6 +401,11 @@
                     })
                 };
 
+                this.popup = function(){
+                    var src = this.image.attr('src');
+                    window.open(src, 'lightzoompopup_' + src.replace(/[^a-z]/g, '_'));
+                };
+
                 this.set = function(image){
                     var self = this;
                     this.image.fadeOut(settings.lightbox_fade_speed, function(){
@@ -410,19 +422,68 @@
                 this.process = function(image, scope){
                     var self         = scope || this,
                         scrollOffset = BrowserWindow.getScrollOffset(),
-                        top          = scrollOffset.top + self.viewportSize.height / 2 - image['image'].height / 2 - 100,
-                        left         = self.viewportSize.width / 2 - image['image'].width / 2;
+                        viewportSize = {
+                            width : $(window).width(), // width, excluding scrollbar width
+                            height: $(window).height()
+                        };
 
-                    top  = top < scrollOffset.top ? scrollOffset.top : top;
-                    left = left < 0 ? 0 : left;
+                    // preventing the oversized image
+                    var lightbox = self.image.parent().parent(),
+                        offsetX  = parseInt(lightbox.css('padding-left'))
+                                    + parseInt(lightbox.css('padding-right')),
+                        offsetY  = parseInt(lightbox.css('padding-top'))
+                                    + parseInt(lightbox.css('padding-bottom'))
+                                    + 37 // control panel. It's hidden first time with height = 0;
+                                    + 15,
+                        width    = image['image'].width,
+                        height   = image['image'].height,
+                        ratio    = width / height,
+                        topGap   = 15,
+                        sideGap  = 0,
+                        heightMode = false;
+
+                    // fix width
+                    if ((width + offsetX) >= viewportSize.width) {
+                        sideGap = topGap * 2;
+                        offsetX += sideGap;
+                        width  = viewportSize.width - offsetX;
+                        height = parseInt(width / ratio);
+                    }
+
+                    // fix height
+                    if ((height + offsetY) >= viewportSize.height) {
+                        heightMode = true;
+                        offsetY += topGap;
+                        height = viewportSize.height - offsetY;
+                        width  = parseInt(height * ratio);
+                    }
+
+                    var top  = scrollOffset.top + viewportSize.height / 2
+                                - (height + offsetY) / 2 - 100,
+                        left = viewportSize.width / 2 - (width + offsetX) / 2;
+
+                    top  = top < scrollOffset.top ? (scrollOffset.top + topGap) : top;
+                    left = left <= 0 ? sideGap / 2 : left
 
                     self.image.parent().animate({
-                        'width' : image['image'].width,
-                        'height': image['image'].height
+                        'width' : width,
+                        'height': height
                     }, {
                         queue: false,
                         duration: settings.lightbox_resize_speed,
                         complete: function() {
+                            var prop  = 'width',
+                                value = width;
+                            if (heightMode) {
+                                prop  = 'height';
+                                value = height;
+                            }
+                            self.image.css({
+                                width : 'auto',
+                                height: 'auto'
+                            });
+                            self.image.css(prop, value);
+
                             self.image.attr('src', image.src);
                             self.image.attr('alt', image.title);
                             self.image.fadeIn(settings.lightbox_fade_speed);
@@ -441,6 +502,8 @@
 
                 this.updateWindow = function(){
                     $('.begin,.end,.prev,.next', this.container).removeClass('disabled');
+
+                    $('.popup', this.container).attr('href', this.image.attr('src'));
 
                     if (collection.size <= 1) {
                         $('.begin,.end,.prev,.next', this.container).addClass('disabled');
@@ -473,24 +536,24 @@
 
                 this.setObserveKeyboard = function(flag){
                     if (flag) {
-                        $(document).keydown(function(e){
+                        $(document).keyup(function(e) {
                             var keyCode = e.keyCode;
-                            if (keyCode == 27) {
+                            if (keyCode == 27) {        // esc
                                 lightbox.hide();
-                            } else if (keyCode == 37) {
+                            } else if (keyCode == 37) { // left arrow
                                 if (e.ctrlKey) {
                                     lightbox.begin();
                                 } else {
                                     lightbox.prev();
                                 }
-                            } else if (keyCode == 39) {
+                            } else if (keyCode == 39) { // right arrow
                                 if (e.ctrlKey) {
                                     lightbox.end();
                                 } else {
                                     lightbox.next();
                                 }
                             }
-                        })
+                        });
                     } else {
                         $(document).unbind('keydown');
                     }

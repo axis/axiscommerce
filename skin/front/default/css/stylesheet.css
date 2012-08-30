@@ -867,10 +867,16 @@ product-page-details { padding: 7px 12px 10px; }
 .lightbox-panel { padding: 10px 0; }
 .lightbox-panel h4 { font-size: .8em; font-weight: bold; color: #777; }
 .lightbox-panel .paging { font-size: .8em; margin: 0; font-weight: bold; color: #aaa; }
-.lightbox-panel .close { position: absolute; bottom: 11px; right: 10px;
-    padding: 2px 6px; background: #eee; text-decoration: none; font-size: .9em;
-    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; }
+.lightbox-panel .controls { position: absolute; bottom: 11px; right: 10px; }
+.lightbox-panel .controls a { text-decoration: none; font-size: .9em;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-left: 5px;
+    float: left; }
+.lightbox-panel .close { padding: 2px 6px; background: #eee; }
 .lightbox-panel .close:hover { background: #ccc; text-decoration: none; }
+.lightbox-panel .popup { height: 22px; width: 22px;
+    background: url(../images/lightbox_popup.gif) no-repeat 4px 3px;
+    text-indent: -9999px; overflow: hidden; }
+.lightbox-panel .popup:hover { background-position: 4px -29px; }
 
 .lightbox-controls { text-align: right; font-size: .9em;
     font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; }
