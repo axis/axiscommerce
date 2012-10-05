@@ -105,18 +105,23 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
             ->where('email = ?', $data['email'])
             ->fetchRow();
 
+        if ($row) {
+            $languageId = Axis::model('locale/language')->getIdByLocale(
+                $row->locale
+            );
+        } else {
+            $languageId = Axis::config('locale/main/language_front');
+        }
+
         $department = Axis::model('contacts/department')->select('*')
             ->where('id = ?', $data['department_id'])
             ->join('contacts_department_name',
                 'cd.id = cdn.department_id  AND cdn.language_id = :languageId',
                 'name'
             )->bind(array(
-                'languageId' => Axis::model('locale/language')->getIdByLocale(
-                    $row->locale
-                )
+                'languageId' => $languageId
             ))
             ->fetchRow();
-            ;
 
         //@todo if null need firstname = full name from custom_info fields
         $firstname = $row ? $row->firstname : null;
