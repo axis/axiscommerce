@@ -50,20 +50,20 @@ class Axis_Admin_AuthController extends Axis_Admin_Controller_Back
         $username = $this->_getParam('username');
         $password = $this->_getParam('password');
         $auth = Zend_Auth::getInstance();
-        $authAdapter = new Axis_Auth_AdminAdapter($username, $password);
+        $authAdapter = new Axis_Auth_Adapter_Backend($username, $password);
 
         $result = $auth->authenticate($authAdapter);
 
         if (!$result->isValid()) {
             Axis::dispatch('admin_user_login_failed', array('username' => $username));
-            $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+            $this->_redirect($this->_getBackUrl());
         } else {
             Zend_Session::regenerateId();
             Axis::dispatch('admin_user_login_success', array('username' => $username));
             Axis::session()->roleId = Axis::single('admin/user')->select('role_id')
                 ->where('id = ?', $result->getIdentity())
                 ->fetchOne();
-            $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+            $this->_redirect($this->_getBackUrl());
         }
     }
 

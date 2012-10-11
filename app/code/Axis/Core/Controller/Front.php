@@ -42,7 +42,8 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
             'route' => 'core'
         ));
         // fix to remove duplicate favicon, canonical when forwarding request
-        $this->view->headLink()->getContainer()->exchangeArray(array());
+        // this is not an option, because we should allow to add resources from the bootstrap in future
+        // $this->view->headLink()->getContainer()->exchangeArray(array());
     }
 
     /**
@@ -92,8 +93,10 @@ class Axis_Core_Controller_Front extends Axis_Controller_Action
     protected function _redirect(
         $url, array $options = array(), $addLanguage = true)
     {
-        $httpReferer = $this->getRequest()->getServer('HTTP_REFERER');
-        if (($httpReferer && $url == $httpReferer) || !$addLanguage) {
+        if (0 === strpos($url, 'http://')
+            || 0 === strpos($url, 'https://')
+            || !$addLanguage) {
+
             parent::_redirect($url, $options);
             return;
         }

@@ -256,7 +256,9 @@ class Axis_Sitemap_Admin_FileController extends Axis_Admin_Controller_Back
                 continue;
             }
             $pathinfo = pathinfo($file);
-            if ('xml' !== $pathinfo['extension']) {
+            if (!isset($pathinfo['extension'])
+                || 'xml' !== $pathinfo['extension']) {
+
                 continue;
             }
             $data[] = array('filename' => $file);

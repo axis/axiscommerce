@@ -61,7 +61,7 @@ class Axis_Cms_Admin_CategoryController extends Axis_Admin_Controller_Back
         }
 
         $data = array();
-        foreach (Axis_Collect_Site::collect() as $siteId => $siteName) {
+        foreach (Axis::model('core/option_site') as $siteId => $siteName) {
             $data[] = array(
                 'leaf'     => false,
                 'id'       => "_" . $siteId, // preventing duplicate ids. siteId == $cat['id]
@@ -91,7 +91,7 @@ class Axis_Cms_Admin_CategoryController extends Axis_Admin_Controller_Back
             ->where('ccc.cms_category_id = ?', $row->id)
             ->fetchAssoc();
 
-        foreach(Axis_Collect_Language::collect() as $languageId => $lName) {
+        foreach(Axis::model('locale/option_language') as $languageId => $_n) {
             $data['content']['lang' . '_' . $languageId] =
                 isset($content[$languageId]) ? $content[$languageId] : array();
         }

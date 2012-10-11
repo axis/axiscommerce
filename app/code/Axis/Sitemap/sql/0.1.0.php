@@ -58,24 +58,58 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis::single('core/config_field')
-            ->add('sitemap', 'Sitemap', null, null, array('translation_module' => 'Axis_Sitemap'))
-            ->add('sitemap/main/enabled', 'Sitemap/General/Enabled', '0', 'bool', 'Enabled')
-            ->add('sitemap/main/startTime', 'Start Time', '', 'string', 'Start Time')
-            ->add('sitemap/main/frequency', 'Frequency', 'daily', 'select', 'Frequency', array('config_options' => 'always,hourly,daily,weekly,monthly,yearly,never'))
+        $this->getConfigBuilder()
+            ->section('sitemap', 'Sitemap')
+                ->setTranslation('Axis_Sitemap')
+                ->section('main', 'General')
+                    ->option('enabled', 'Enabled', false)
+                        ->setType('radio')
+                        ->setDescription('Enabled')
+                        ->setModel('core/option_boolean')
+                    ->option('startTime', 'Start Time')
+                        ->setDescription('Start Time')
+                    ->option('frequency', 'Frequency')
+                        ->setValue(Axis_Sitemap_Model_Option_Frequency::DAILY)
+                        ->setType('select')
+                        ->setDescription('Frequency')
+                        ->setModel('sitemap/option_frequency')
+                    ->option('googlePingUrl', 'Google Ping Url', 'http://www.google.com/webmasters/sitemaps/ping?sitemap=')
+                    ->option('yahooPingUrl', 'Yahoo Ping Url', 'http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=')
+                    ->option('askPingUrl', 'Ask Ping Url', 'http://submissions.ask.com/ping?sitemap=')
+                    ->option('msnPingUrl', 'Msn Ping Url', 'http://www.moreover.com/ping?u=')
+                ->section('/main')
+                ->section('categories', 'Categories Options')
+                    ->option('priority', 'Priority', '0.8')
+                        ->setDescription('The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
+                    ->option('frequency', 'Frequency')
+                        ->setValue(Axis_Sitemap_Model_Option_Frequency::DAILY)
+                        ->setType('select')
+                        ->setDescription('Frequency')
+                        ->setModel('sitemap/option_frequency')
+                ->section('/categories')
+                ->section('products', 'Products Options')
+                    ->option('priority', 'Priority', '0.8')
+                        ->setDescription('The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
+                    ->option('frequency', 'Frequency')
+                        ->setValue(Axis_Sitemap_Model_Option_Frequency::DAILY)
+                        ->setType('select')
+                        ->setDescription('Frequency')
+                        ->setModel('sitemap/option_frequency')
+                ->section('/products')
+                ->section('cms', 'CMS Pages Options')
+                    ->option('priority', 'Priority', '0.5')
+                        ->setDescription('The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
+                    ->option('frequency', 'Frequency')
+                        ->setValue(Axis_Sitemap_Model_Option_Frequency::DAILY)
+                        ->setType('select')
+                        ->setDescription('Frequency')
+                        ->setModel('sitemap/option_frequency')
+                    ->option('showPages', 'Show pages', true)
+                        ->setType('radio')
+                        ->setDescription('Show pages on sitemap page')
+                        ->setModel('core/option_boolean')
 
-            ->add('sitemap/main/googlePingUrl', 'Google Ping Url', 'http://www.google.com/webmasters/sitemaps/ping?sitemap=')
-            ->add('sitemap/main/yahooPingUrl', 'Yahoo Ping Url', 'http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=')
-            ->add('sitemap/main/askPingUrl', 'Ask Ping Url', 'http://submissions.ask.com/ping?sitemap=')
-            ->add('sitemap/main/msnPingUrl', 'Msn Ping Url', 'http://www.moreover.com/ping?u=')
-
-            ->add('sitemap/categories/priority', 'Sitemap/Categories Options/Priority', '0.8', 'string', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
-            ->add('sitemap/categories/frequency', 'Frequency', 'daily', 'select', 'Frequency', array('config_options' => 'always,hourly,daily,weekly,monthly,yearly,never'))
-            ->add('sitemap/products/priority', 'Sitemap/Products Options/Priority', '0.8', 'string', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
-            ->add('sitemap/products/frequency', 'Frequency', 'daily', 'select', 'Frequency', array('config_options' => 'always,hourly,daily,weekly,monthly,yearly,never'))
-            ->add('sitemap/cms/priority', 'Sitemap/CMS Pages Options/Priority', '0.5', 'string', 'The priority of this URL relative to other URLs on your site.Valid values range from 0.0 to 1.0')
-            ->add('sitemap/cms/frequency', 'Frequency', 'daily', 'select', 'Frequency', array('config_options' => 'always,hourly,daily,weekly,monthly,yearly,never'))
-            ->add('sitemap/cms/showPages', 'Show pages', '1', 'bool', 'Show pages on sitemap page');
+            ->section('/');
 
         Axis::single('core/page')
             ->add('sitemap/*/*')
@@ -95,8 +129,8 @@ class Axis_Sitemap_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
             DROP TABLE IF EXISTS `{$installer->getTable('sitemap_file_engine')}`;
         ");
 
-        Axis::single('core/config_field')->remove('sitemap');
-        Axis::single('core/config_value')->remove('sitemap');
+        $this->getConfigBuilder()
+            ->remove('sitemap');
 
         Axis::single('core/page')->remove('sitemap/*/*')
             ->remove('sitemap/index/*')

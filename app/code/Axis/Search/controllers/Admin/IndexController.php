@@ -75,41 +75,43 @@ class Axis_Search_Admin_IndexController extends Axis_Admin_Controller_Back
 
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function updateIndexAction()
     {
-        $indexer = Axis::model('search/indexer');
+        $indexer = Axis::model('search/lucene')
+            ->setLog('/var/logs/indexing.log')
+        ;
         $session = Axis::session('search_index');
 
         if ($this->_getParam('reset_session', false)) {
-            
-            $indexer->removeAllIndexesFromFilesystem();
+
+            $indexer->removeIndex();
             $session->page = 1;
             $session->processed = 0;
             $session->completeProduct = false;
         }
         $rowCount = $this->_getParam('limit', 50);
-        
+
         if (!$session->completeProduct) {
             $select = Axis::model('catalog/product')->select(array('id', 'sku'))
-                ->join('catalog_product_description', 
-                    'cpd.product_id = cp.id', 
+                ->join('catalog_product_description',
+                    'cpd.product_id = cp.id',
                     array('name', 'description')
                 )->joinRight('locale_language',
                     'll.id = cpd.language_id',
                     'locale'
-                )->joinLeft('catalog_product_image', 
+                )->joinLeft('catalog_product_image',
                     'cpi.id = cp.image_thumbnail',
                     array('image_thumbnail' => 'path')
-                )->joinLeft('catalog_product_image_title', 
+                )->joinLeft('catalog_product_image_title',
                     'cpit.image_id = cpi.id',
                     array('image_title' => 'title')
                 )->join('catalog_product_category', 'cp.id = cpc.product_id')
-                ->join('catalog_category', 
-                    'cc.id = cpc.category_id', 
+                ->join('catalog_category',
+                    'cc.id = cpc.category_id',
                     'site_id'
-                )->joinLeft('catalog_hurl', 
-                    "ch.key_id = cp.id AND ch.key_type='p'", 
+                )->joinLeft('catalog_hurl',
+                    "ch.key_id = cp.id AND ch.key_type='p'",
                     'key_word'
                 )
                 ->order('cc.site_id')
@@ -118,13 +120,19 @@ class Axis_Search_Admin_IndexController extends Axis_Admin_Controller_Back
                 ->calcFoundRows()
                 ->limitPage($session->page, $rowCount)
                 ;
+            $rowset = $select->fetchRowset();
+            $count = $select->foundRows();
+
+            foreach ($rowset as $_row) {
+                $indexer->addProductDocument($_row);
+            }
         } else {
             $select = Axis::model('cms/page_content')->select('*')
                 ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
-                ->join('cms_category', 
+                ->join('cms_category',
                     'cc.id = cpc2.cms_category_id',
                     'site_id'
-                )->joinRight('locale_language', 
+                )->joinRight('locale_language',
                     'll.id = cpc.language_id',
                     'locale'
                 )
@@ -132,38 +140,18 @@ class Axis_Search_Admin_IndexController extends Axis_Admin_Controller_Back
                 ->order('cpc.language_id')
                 ->calcFoundRows()
                 ;
-        } 
-        $rowset = $select->fetchRowset();
-        $count  = $select->foundRows();
-        $index  = $path = null;
-        
-        foreach ($rowset as $_row) {
-            $_path = $indexer->getIndexPath(
-                $_row->site_id  . '/' . $_row->locale
-            );
-            //next index
-            if ($path !== $_path) {
-                //save prev index
-                if ($index) {
-                    $index->optimize();
-                    $index->commit();
-                }
-                $path = $_path;
-                $index = $indexer->getIndex($path);
+            $rowset = $select->fetchRowset();
+            $count = $select->foundRows();
+
+            foreach ($rowset as $_row) {
+                $indexer->addPageDocument($_row);
             }
-                
-            $index->addDocument(
-                $indexer->getDocument($_row)
-            );
-            
         }
-        if ($index) {
-            $index->optimize();
-            $index->commit();
-        }
+        $indexer->getIndex()->commit();
+
         $session->processed += $rowset->count();
         $session->page++;
-        
+
         Axis::message()->addSuccess(
             Axis::translate('search')->__(
                 "%d of %d items(s) was processed",
@@ -177,6 +165,9 @@ class Axis_Search_Admin_IndexController extends Axis_Admin_Controller_Back
             if ($session->completeProduct) {
                 $completed = true;
                 $session->unsetAll();
+                // @todo  add quene || cron
+                @set_time_limit(300);
+                $indexer->getIndex()->optimize();
             } else {
                 $session->page = 1;
                 $session->processed = 0;

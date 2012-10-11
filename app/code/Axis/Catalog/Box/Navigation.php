@@ -35,10 +35,14 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
 {
     protected $_title = 'Categories';
     protected $_class = 'box-category';
-
     protected $_activeCategories = null;
 
-    public function init()
+    protected function _construct()
+    {
+        $this->setData('cache_tags', array('catalog', 'catalog_category'));
+    }
+
+    protected function _beforeRender()
     {
         $categories = Axis::single('catalog/category')->select('*')
             ->addName(Axis_Locale::getLanguageId())
@@ -95,6 +99,17 @@ class Axis_Catalog_Box_Navigation extends Axis_Core_Box_Abstract
             $_container = $page;
         }
         $this->setData('menu', $container);
-        return true;
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        $categoryId = null;
+        if (Zend_Registry::isRegistered('catalog/current_category')) {
+            $category   = Zend_Registry::get('catalog/current_category');
+            $categoryId = $category->id;
+        }
+        return array(
+            $categoryId
+        );
     }
 }

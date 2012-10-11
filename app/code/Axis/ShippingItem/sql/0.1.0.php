@@ -30,21 +30,47 @@ class Axis_ShippingItem_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/Item_Standard', 'Shipping Methods/Item Standard', null, null, array('translation_module' => 'Axis_ShippingItem'))
-            ->add('shipping/Item_Standard/enabled', 'Shipping Methods/Item Standard/Enabled', '0', 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Item_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Item_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'TaxBasis', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Item_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'TaxClass', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Item_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Item_Standard/price', 'Shipping Price', '1', 'string', 'Shipping price (per item)')
-            ->add('shipping/Item_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Payment', 'translation_module' => 'Axis_Admin'));
+        $this->getConfigBuilder()
+            ->section('shipping', 'Shipping Methods')
+                ->setTranslation('Axis_Admin')
+                ->section('Item_Standard', 'Item Standard')
+                    ->setTranslation('Axis_ShippingItem')
+                    ->option('enabled', 'Enabled', false)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                        ->setTranslation('Axis_Core')
+                    ->option('geozone', 'Allowed Shipping Zone', 1)
+                        ->setType('select')
+                        ->setDescription('Shipping method will be available only for selected zone')
+                        ->setModel('location/option_geozone')
+                        ->setTranslation('Axis_Admin')
+                    ->option('taxBasis', 'Tax Basis')
+                        ->setValue(Axis_Tax_Model_Option_Basis::SHIPPING)
+                        ->setType('select')
+                        ->setDescription('Address that will be used for tax calculation')
+                        ->setModel('tax/option_basis')
+                        ->setTranslation('Axis_Tax')
+                    ->option('taxClass', 'Tax Class')
+                        ->setType('select')
+                        ->setDescription('Tax class that will be used for tax calculation')
+                        ->setModel('tax/option_class')
+                        ->setTranslation('Axis_Tax')
+                    ->option('sortOrder', 'Sort Order')
+                        ->setTranslation('Axis_Core')
+                    ->option('price', 'Shipping Price', 1)
+                        ->setDescription('Shipping price (per item)')
+                    ->option('payments', 'Disallowed Payments')
+                        ->setType('multiple')
+                        ->setDescription('Selected payment methods will be not available with this shipping method')
+                        ->setModel('checkout/option_payment')
+                        ->setTranslation('Axis_Admin')
+
+            ->section('/');
     }
 
     public function down()
     {
-        Axis::single('core/config_value')->remove('shipping/Item_Standard');
-        Axis::single('core/config_field')->remove('shipping/Item_Standard');
+        $this->getConfigBuilder()
+            ->remove('shipping/Item_Standard');
     }
 }

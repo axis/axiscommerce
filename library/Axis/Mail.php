@@ -125,10 +125,9 @@ class Axis_Mail extends Zend_Mail
 
             $type = isset($config['type']) ? $config['type'] : $mailTemplate->type;
 
-            if (is_array($from)) {
-                if (!isset($from['email'])) {
-                    $from['email'] = Axis_Collect_MailBoxes::getName($mailTemplate->from);
-                }
+            if (is_array($from) && !isset($from['email'])) {
+                $mailBoxes = Axis::model('core/option_mail_boxes');
+                $from['email'] = $mailBoxes[$mailTemplate->from];
             }
         }
 
@@ -148,9 +147,8 @@ class Axis_Mail extends Zend_Mail
                 $from['name'] = $siteName;
             }
             if (empty($from['email'])) {
-                $from['email'] = Axis_Collect_MailBoxes::getName(
-                    Axis::config('mail/main/mtcFrom')
-                );
+                $mailBoxes = Axis::model('core/option_mail_boxes');
+                $from['email'] = $mailBoxes[Axis::config('mail/main/mtcFrom')];
             }
             $this->setFrom($from['email'], $from['name']);
             $this->view->from = $from['email'];
@@ -214,7 +212,7 @@ class Axis_Mail extends Zend_Mail
         if (null === self::$_defaultTransport) {
             $config = Axis::config();
             switch ($config->mail->main->transport) {
-                case 'smtp':
+                case Axis_Core_Model_Option_Mail_Transport::SMTP:
                     $options = array(
                         'port' => intval($config->mail->smtp->port)
                     );
@@ -222,7 +220,7 @@ class Axis_Mail extends Zend_Mail
                         $options['auth']     = 'login';
                         $options['username'] = $config->mail->smtp->user;
                         $options['password'] = $config->mail->smtp->password;
-                        if ('none' != $config->mail->smtp->secure) {
+                        if (Axis_Core_Model_Option_Mail_Secure::NONE != $config->mail->smtp->secure) {
                             $options['ssl'] = $config->mail->smtp->secure;
                         }
                     }
@@ -233,7 +231,7 @@ class Axis_Mail extends Zend_Mail
                     //$transport->EOL = "\r\n";    // gmail is fussy about this
                     break;
 
-                case 'sendmail':
+                case Axis_Core_Model_Option_Mail_Transport::SENDMAIL:
                 default:
                     $transport = new Zend_Mail_Transport_Sendmail();
                     break;
@@ -277,7 +275,7 @@ class Axis_Mail extends Zend_Mail
      */
     public function setLocale($locale)
     {
-        $this->_locale = Axis_Locale::getLocale()->toString();
+        $this->_locale = Axis::locale()->toString();
         Axis_Locale::setLocale($locale);
     }
 }

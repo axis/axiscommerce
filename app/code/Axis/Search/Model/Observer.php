@@ -39,7 +39,7 @@ class Axis_Search_Model_Observer
     public function updateSearchIndexOnProductSave(array $data)
     {
         $product = $data['product'];
-        $indexer = Axis::model('search/indexer');
+        $lucene = Axis::model('search/lucene');
 
         $select = Axis::model('catalog/product')->select(array('id', 'sku'))
             ->join('catalog_product_description',
@@ -68,64 +68,25 @@ class Axis_Search_Model_Observer
             ->where('cp.id = ?', $product->id)
             ;
         $rowset = $select->fetchRowset();
-        $index  = $path = null;
-
+        $index = $lucene->getIndex();
         foreach ($rowset as $row) {
-            $_path = $indexer->getIndexPath(
-                $row->site_id  . '/' . $row->locale
-            );
-            //next index
-            if ($path !== $_path) {
-                //save prev index
-                if ($index) {
-                    $index->optimize();
-                    $index->commit();
-                }
-                $path = $_path;
-                $index = $indexer->getIndex($path);
-            }
             $hits = $index->find("sku:$row->sku");
             if (count($hits)) {
                 $index->delete(current($hits));
             }
         }
-        if ($index) {
-            $index->optimize();
-            $index->commit();
-        }
-
-        $index  = $path = null;
         $rowset = $select->addFilterByAvailability()
             ->fetchRowset();
-
         foreach ($rowset as $row) {
-            $_path = $indexer->getIndexPath(
-                $row->site_id  . '/' . $row->locale
-            );
-            //next index
-            if ($path !== $_path) {
-                //save prev index
-                if ($index) {
-                    $index->optimize();
-                    $index->commit();
-                }
-                $path = $_path;
-                $index = $indexer->getIndex($path);
-            }
-            $index->addDocument(
-                $indexer->getDocument($row)
-            );
+            $lucene->addProductDocument($row);
         }
-        if ($index) {
-            $index->optimize();
-            $index->commit();
-        }
+        $index->commit();// @todo  add quene || cron optimize
     }
 
     public function updateSearchIndexOnCmsPageAddSuccess(array $data)
     {
         $pageId = $data['page_id'];
-        $indexer = Axis::model('search/indexer');
+        $indexer = Axis::model('search/lucene');
         $rowset = Axis::model('cms/page_content')->select('*')
             ->join('cms_page', 'cp.id = cpc.cms_page_id', 'is_active')
             ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
@@ -140,35 +101,17 @@ class Axis_Search_Model_Observer
             ->order('cpc.language_id')
             ->fetchRowset();
 
-        $index  = $path = null;
+        $index = $indexer->getIndex();
         foreach ($rowset as $row) {
-            $_path = $indexer->getIndexPath(
-                $row->site_id  . '/' . $row->locale
-            );
-            //next index
-            if ($path !== $_path) {
-                //save prev index
-                if ($index) {
-                    $index->optimize();
-                    $index->commit();
-                }
-                $path = $_path;
-                $index = $indexer->getIndex($path);
-            }
             $hits = $index->find("url:$row->link");
             if (count($hits)) {
                 $index->delete(current($hits));
             }
             if ($row->is_active) {
-                $index->addDocument(
-                    $indexer->getDocument($row)
-                );
+                $indexer->addPageDocument($row);
             }
         }
-        if ($index) {
-            $index->optimize();
-            $index->commit();
-        }
+        $index->commit(); // @todo  add quene || cron
     }
 
     public function prepareAdminNavigationBox(Axis_Admin_Box_Navigation $box)

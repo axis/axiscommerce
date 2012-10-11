@@ -72,14 +72,14 @@ class Axis_Core_Model_Observer
             ),
             'admin' => array(
                 'pages' => array(
-                    'core/config-value' => array(
+                    'core/config_value' => array(
                         'label'         => 'Configuration',
                         'order'         => 10,
                         'module'        => 'Axis_Core',
-                        'controller'    => 'config-value',
+                        'controller'    => 'config_value',
                         'action'        => 'index',
                         'route'         => 'admin/axis/core',
-                        'resource'      => 'admin/axis/core/config-value/index'
+                        'resource'      => 'admin/axis/core/config_value/index'
                     ),
                     'core/site' => array(
                         'label'         => 'Site',
@@ -111,5 +111,20 @@ class Axis_Core_Model_Observer
                 )
             )
         ));
+    }
+
+    public function flushConfigOptionCache(Axis_Db_Table_Row $row)
+    {
+        list($path) = explode('/', $row->path);
+        if (0 == $row->site_id) {
+            $sites = array_keys(Axis::model('core/option_site')->toArray());
+        } else {
+            $sites = array($row->site_id);
+        }
+        $cache = Axis::cache();
+        foreach ($sites as $siteId) {
+            $cacheId = "config_{$path}_site_{$siteId}";
+            $cache->remove($cacheId);
+        }
     }
 }

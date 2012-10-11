@@ -44,7 +44,7 @@ class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
     public function listAction()
     {
         $data = Axis::single('poll/question')->getQuestionsBack();
-        
+
         return $this->_helper->json
             ->setData($data)
             ->sendSuccess();
@@ -61,7 +61,7 @@ class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
         );
 
         $question = Axis::single('poll/question')->getQuestionById($id);
-        
+
         foreach ($question as $lngQuestion) {
             $data['status'] = $lngQuestion['status'];
             $data['type'] = $lngQuestion['type'];
@@ -88,7 +88,7 @@ class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
         $modelLabel  = Axis::model('poll/question_description');
         $modelSite   = Axis::model('poll/question_site');
         $modelAnswer = Axis::single('poll/answer');
-        $languageIds = array_keys(Axis_Collect_Language::collect());
+        $languageIds = array_keys(Axis::model('locale/option_language')->toArray());
 
         $row = $model->save($_row);
 
@@ -122,9 +122,10 @@ class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
                     'Define at least two answers.'
             ));
         }
-        $modelAnswer->delete(
-            $this->db->quoteInto('question_id = ?', $row->id)
-        );
+        $modelAnswer->delete(array(
+            $this->db->quoteInto('id NOT IN (?)', array_keys($answers)),
+            $this->db->quoteInto('question_id = ?', $row->id),
+        ));
         foreach ($answers as $answerId => $_dataset) {
             foreach ($_dataset as $languageId => $answer) {
                 $_row = array(
@@ -136,7 +137,7 @@ class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
                 if (0 < $answerId) {
                     $_row['id'] = $answerId;
                 }
-                $rowAnswer = $modelAnswer->createRow($_row);
+                $rowAnswer = $modelAnswer->getRow($_row);
                 $rowAnswer->save();
                 $answerId = $rowAnswer->id;
             }
@@ -169,7 +170,7 @@ class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
         }
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function removeAction()
     {
         $data = Zend_Json::decode($this->_getParam('data'));
@@ -202,7 +203,7 @@ class Axis_Poll_Admin_IndexController extends Axis_Admin_Controller_Back
 
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function getResultAction()
     {
         $questionId = $this->_getParam('id', false);

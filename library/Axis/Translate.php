@@ -189,7 +189,7 @@ class Axis_Translate extends Zend_Translate
      */
     public function getLocale()
     {
-        return Axis_Locale::getLocale()->toString();
+        return Axis::locale()->toString();
     }
 
     /**

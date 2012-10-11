@@ -31,7 +31,7 @@ var Box = {
 
     load: function(id) {
         Box.Window.form.getForm().load({
-            url: Axis.getUrl('core/theme_block/load/'),
+            url: Axis.getUrl('core/theme_block/load'),
             params: {
                 id: id
             },

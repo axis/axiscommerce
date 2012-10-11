@@ -30,23 +30,69 @@ class Axis_ShippingFlat_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abstract
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('shipping', 'Shipping Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('shipping/Flat_Standard', 'Shipping Methods/Flat Rate Standard', null, null, array('translation_module' => 'Axis_ShippingFlat'))
-            ->add('shipping/Flat_Standard/enabled', 'Shipping Methods/Flat Rate Standard/Enabled', 1, 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Flat_Standard/geozone', 'Allowed Shipping Zone', '1', 'select', 'Shipping method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('shipping/Flat_Standard/taxBasis', 'Tax Basis', '', 'select', 'Address that will be used for tax calculation', array('model' => 'TaxBasis', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Flat_Standard/taxClass', 'Tax Class', '', 'select', 'Tax class that will be used for tax calculation', array('model' => 'TaxClass', 'translation_module' => 'Axis_Tax'))
-            ->add('shipping/Flat_Standard/sortOrder', 'Sort Order', '0', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('shipping/Flat_Standard/multiPrice', 'Multi Price', '25', 'handler', '', array('model' => 'ShippingFlatRateMultiPrice'))
-            ->add('shipping/Flat_Standard/type', 'Type', 'Per Order', 'select', 'The shipping cost is based on:', array('config_options' => 'Per Order,Per Item'))
-            ->add('shipping/Flat_Standard/formDesc', 'Checkout Description', 'Flat Rate')
-            ->add('shipping/Flat_Standard/payments', 'Disallowed Payments', '0', 'multiple', 'Selected payment methods will be not available with this shipping method', array('model' => 'Payment', 'translation_module' => 'Axis_Admin'));
+        $this->getConfigBuilder()
+            ->section('shipping', 'Shipping Methods')
+                ->setTranslation('Axis_Admin')
+                ->section('Flat_Standard', 'Flat Rate Standard')
+                    ->setTranslation('Axis_ShippingFlat')
+                    ->option('enabled', 'Enabled', true)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                        ->setTranslation('Axis_Core')
+                    ->option('geozone', 'Allowed Shipping Zone', 1)
+                        ->setType('select')
+                        ->setDescription('Shipping method will be available only for selected zone')
+                        ->setModel('location/option_geozone')
+                        ->setTranslation('Axis_Admin')
+                    ->option('taxBasis', 'Tax Basis')
+                        ->setValue(Axis_Tax_Model_Option_Basis::SHIPPING)
+                        ->setType('select')
+                        ->setDescription('Address that will be used for tax calculation')
+                        ->setModel('tax/option_basis')
+                        ->setTranslation('Axis_Tax')
+                    ->option('taxClass', 'Tax Class')
+                        ->setType('select')
+                        ->setDescription('Tax class that will be used for tax calculation')
+                        ->setModel('tax/option_class')
+                        ->setTranslation('Axis_Tax')
+                    ->option('sortOrder', 'Sort Order')
+                        ->setTranslation('Axis_Core')
+                    ->option('multiPrice', 'Multi Price')
+                        ->setValue(array(
+                            array(
+                                'subcode'       => 'standard',
+                                'title'         => '',
+                                'price'         => 25,
+                                'minOrderTotal' => '',
+                                'maxOrderTotal' => 99.9999
+                            ),
+                            array(
+                                'subcode'       => 'discount',
+                                'title'         => '',
+                                'price'         => 15,
+                                'minOrderTotal' => 100,
+                                'maxOrderTotal' => ''
+                            )
+                        ))
+                        ->setType('multiprice')
+                        ->setModel('shippingFlat/option_standard_multiPrice')
+                    ->option('type', 'Type', 'Per Order')
+                        ->setType('select')
+                        ->setDescription('The shipping cost is based on:')
+                        ->setModel('shippingFlat/option_standard_service')
+                    ->option('formDesc', 'Checkout Description', 'Flat Rate')
+                    ->option('payments', 'Disallowed Payments')
+                        ->setType('multiple')
+                        ->setDescription('Selected payment methods will be not available with this shipping method')
+                        ->setModel('checkout/option_payment')
+                        ->setTranslation('Axis_Admin')
+
+            ->section('/');
     }
 
     public function down()
     {
-        Axis::single('core/config_value')->remove('shipping/Flat_Standard');
-        Axis::single('core/config_field')->remove('shipping/Flat_Standard');
+        $this->getConfigBuilder()
+            ->remove('shipping/Flat_Standard');
     }
 }

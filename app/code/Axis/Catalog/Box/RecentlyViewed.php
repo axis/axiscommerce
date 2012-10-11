@@ -36,6 +36,12 @@ class Axis_Catalog_Box_RecentlyViewed extends Axis_Catalog_Box_Product_Listing
     protected $_title = 'Recently Viewed';
     protected $_class = 'box-recently-viewed';
 
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setData('cache_lifetime', 0);
+    }
+
     protected function _beforeRender()
     {
         $visitor = Axis::model('log/visitor')->getVisitor();
@@ -83,6 +89,5 @@ class Axis_Catalog_Box_RecentlyViewed extends Axis_Catalog_Box_Product_Listing
         }
 
         $this->products = $products;
-        return $this->hasProducts();
     }
 }

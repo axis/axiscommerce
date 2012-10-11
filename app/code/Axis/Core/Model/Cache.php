@@ -41,54 +41,6 @@ class Axis_Core_Model_Cache extends Axis_Db_Table
     private $_lifetime = array();
 
     /**
-     * Returns an instance of Zend_Cache_Core
-     *
-     * @static
-     * @return Zend_Cache_Core Provides a fluent interface
-     */
-    public static function getCache()
-    {
-        if (!Zend_Registry::isRegistered('cache')
-            || !(Zend_Registry::get('cache') instanceof Zend_Cache_Core))
-        {
-            $defaultLifetime = Axis::model('core/config_value')
-                ->select('value')
-                ->where("path = 'core/cache/default_lifetime'")
-                ->where('site_id IN (0, ?)', Axis::getSiteId())
-                ->fetchOne();
-
-            $frontendOptions = array(
-                'lifetime'                => $defaultLifetime,
-                'automatic_serialization' => true
-            );
-            $cacheDir = Axis::config()->system->path . '/var/cache';
-            if (!is_readable($cacheDir)) {
-                mkdir($cacheDir, 0777);
-            } elseif(!is_writable($cacheDir)) {
-                chmod($cacheDir, 0777);
-            }
-            if (!is_writable($cacheDir)) {
-                echo "Cache directory should be writable. Run 'chmod -R 0777 path/to/var'";
-                exit();
-            }
-            $backendOptions = array(
-                'cache_dir'                 => $cacheDir,
-                'hashed_directory_level'    => 1,
-                'file_name_prefix'          => 'axis_cache',
-                'hashed_directory_umask'    => 0777
-            );
-            Zend_Registry::set('cache', Zend_Cache::factory(
-                'Core', 'Axis_Cache_Backend_File',
-                $frontendOptions,
-                $backendOptions,
-                false,
-                true
-            ));
-        }
-        return Zend_Registry::get('cache');
-    }
-
-    /**
      * Retrieve array of cache tags with their lifetimes
      *
      * @return array
@@ -181,11 +133,11 @@ class Axis_Core_Model_Cache extends Axis_Db_Table
     public function clean($tags = null)
     {
         if (null === $tags) {
-            return self::getCache()->clean();
+            return Axis::cache()->clean();
         }
         if (!is_array($tags)) {
             $tags = array($tags);
         }
-        return self::getCache()->clean('matchingAnyTag', $tags);
+        return Axis::cache()->clean('matchingAnyTag', $tags);
     }
 }

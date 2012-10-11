@@ -22,6 +22,7 @@ $this->headScript()
     ->appendFile('js/axis/admin/catalog/index/category.js')
     ->appendFile('js/axis/admin/catalog/index/category/grid.js')
     ->appendFile('js/axis/admin/catalog/index/category/window.js')
+    ->appendFile('js/axis/admin/catalog/index/category/rootWindow.js')
     ->appendFile('js/axis/admin/catalog/index/product.js')
     ->appendFile('js/axis/admin/catalog/index/product/grid.js')
     ->appendFile('js/axis/admin/catalog/index/panel.js')
@@ -37,7 +38,8 @@ $this->headScript()
     ->appendFile('js/axis/admin/catalog/index/product/tabs/property.js')
     ->appendFile('js/axis/admin/catalog/index/product/tabs/attribute.js')
     ->appendFile('js/axis/admin/catalog/index/product/tabs/variation.js')
-    ->appendFile('js/axis/admin/catalog/index/product/tabs/category.js');
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/category.js')
+    ->appendFile('js/axis/admin/catalog/index/product/tabs/related.js');
 
 $this->headScript()
     ->offsetSetFile(10000, 'js/axis/admin/catalog/index/product/window.js');
@@ -61,10 +63,11 @@ $this->setButtons(array(
 
 <script type="text/javascript">
 
+//todo extjs model
 var manufacturers = [
 <?php
 $json = "{'id': null, 'name': 'None'.l()},\n";
-foreach (Axis_Collect_Manufacturer::collect() as $id => $name) :
+foreach ($this->manufacturers as $id => $name) :
     $name = addslashes($name);
     $json .= "{'id': $id, 'name': '$name'},\n";
 endforeach;
@@ -72,10 +75,11 @@ echo substr($json, 0, -2);
 ?>
 ];
 
+//todo extjs model
 var taxClasses = [
 <?php
 $json = "{'id': null, 'name': 'None'.l()},\n";
-foreach (Axis_Collect_TaxClass::collect() as $id => $name) :
+foreach ($this->taxs as $id => $name) :
     $name = addslashes($name);
     $json .= "{'id': $id, 'name': '$name'},\n";
 endforeach;

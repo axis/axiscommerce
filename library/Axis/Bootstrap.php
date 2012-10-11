@@ -34,7 +34,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
     protected function _initEnviroment()
     {
-        date_default_timezone_set('UTC');
         error_reporting(E_ALL | E_STRICT);
         /**
          * Custom error handler E_ALL to Exception
@@ -168,52 +167,6 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return Axis::config();
     }
 
-    protected function _initSession()
-    {
-        $cacheDir = AXIS_ROOT . '/var/sessions';
-        if (!is_readable($cacheDir)) {
-            mkdir($cacheDir, 0777);
-        } elseif (!is_writable($cacheDir)) {
-            chmod($cacheDir, 0777);
-        }
-
-        Zend_Session::setOptions(array(
-            'cookie_lifetime' => 864000, // 10 days
-            'name'            => 'axisid',
-            'strict'          => 'off',
-            'save_path'       => $cacheDir,
-            'cookie_httponly' => true
-        ));
-
-        try {
-            Zend_Session::start();
-        } catch (Zend_Session_Exception $e) {
-            Zend_Session::destroy(); // ZF doesn't allow to start session after destroying
-            if (!headers_sent()) {
-                $host  = $_SERVER['HTTP_HOST'];
-                $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-                header("Location: http://$host$uri/");
-            }
-            exit();
-        }
-        return Axis::session();
-    }
-
-    protected function _initSessionValidators()
-    {
-        $this->bootstrap('DbAdapter');
-        $sessionConfig = Axis::config('core/session');
-        if (!$sessionConfig instanceof Axis_Config) {
-            return;
-        }
-        if ($sessionConfig->remoteAddressValidation) {
-            Zend_Session::registerValidator(new Axis_Session_Validator_RemoteAddress());
-        }
-        if ($sessionConfig->httpUserAgentValidation) {
-            Zend_Session::registerValidator(new Zend_Session_Validator_HttpUserAgent());
-        }
-    }
-
     protected function _initDbAdapter()
     {
         $this->bootstrap('Config');
@@ -238,12 +191,91 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return Axis::db();
     }
 
-    protected function _initCache()
+    protected function _initSession()
     {
         $this->bootstrap('DbAdapter');
-        //create default cache
-        $cache = Axis_Core_Model_Cache::getCache();
-        //create database metacache
+
+        $cacheDir = AXIS_ROOT . '/var/sessions';
+        if (!is_readable($cacheDir)) {
+            mkdir($cacheDir, 0777);
+        } elseif (!is_writable($cacheDir)) {
+            chmod($cacheDir, 0777);
+        }
+
+        $lifetime = 60 * 15; // 15 min
+        if ('development' === APPLICATION_ENV) {
+            $lifetime = 60 * 60 * 24 * 10; // 10 days
+        }
+
+        Zend_Session::setOptions(array(
+            'cookie_lifetime' => $lifetime,
+            'name'            => 'axisid',
+            'strict'          => 'off',
+            'save_path'       => $cacheDir,
+            'cookie_httponly' => true
+        ));
+
+        try {
+            Zend_Session::start();
+        } catch (Zend_Session_Exception $e) {
+            Zend_Session::destroy(); // ZF doesn't allow to start session after destroying
+            if (!headers_sent()) {
+                $host  = $_SERVER['HTTP_HOST'];
+                $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+                header("Location: http://$host$uri/");
+            }
+            exit();
+        }
+
+        // add sessions validators
+        $config = Axis::config('core/session');
+        if (!$config instanceof Axis_Config) {
+            return Axis::session();
+        }
+        if ($config->remoteAddressValidation) {
+            Zend_Session::registerValidator(
+                new Axis_Session_Validator_RemoteAddress()
+            );
+        }
+        if ($config->httpUserAgentValidation) {
+            Zend_Session::registerValidator(
+                new Zend_Session_Validator_HttpUserAgent()
+            );
+        }
+        return Axis::session();
+    }
+
+    protected function _initCache()
+    {
+        $this->bootstrap('Session');
+
+        $cacheDir = Axis::config()->system->path . '/var/cache';
+        if (!is_readable($cacheDir)) {
+            mkdir($cacheDir, 0777);
+        } elseif(!is_writable($cacheDir)) {
+            chmod($cacheDir, 0777);
+        }
+        if (!is_writable($cacheDir)) {
+            echo "Cache directory should be writable. Run 'chmod -R 0777 {$cacheDir}'";
+            die;
+        }
+        $cache = Zend_Cache::factory(
+            'Core', 'Axis_Cache_Backend_File',
+            array(
+                'lifetime'                => Axis::config('core/cache/default_lifetime'),
+                'automatic_serialization' => true
+            ),
+            array(
+                'cache_dir'               => $cacheDir,
+                'hashed_directory_level'  => 1,
+                'file_name_prefix'        => 'axis_cache',
+                'hashed_directory_umask'  => 0777
+            ),
+            false,
+            true
+        );
+        Zend_Registry::set('cache', $cache);
+
         Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
 
 //        /**
@@ -294,8 +326,8 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $router = new Axis_Controller_Router_Rewrite();
 
         // pre router config
-        $defaultLocale = Axis_Locale::getDefaultLocale();
-        $locales = Axis_Locale::getLocaleList(true);
+        $defaultLocale = Axis::config('locale/main/locale');
+        $locales = Axis::single('locale/option_locale')->toArray();
 
         Axis_Controller_Router_Route_Front::setDefaultLocale($defaultLocale);
         Axis_Controller_Router_Route_Front::setLocales($locales);
@@ -303,6 +335,9 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // include routes files
         $routeFiles = Axis::app()->getRoutes();
         foreach ($routeFiles as $routeFile) {
+            if (!is_readable($routeFile)) {
+                continue;
+            }
             include_once($routeFile);
         }
 
@@ -325,7 +360,11 @@ class Axis_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('FrontController');
 
         //set default timezone affect on date() and Axis_Date
-        Axis_Locale::setTimezone(Axis_Locale::getDefaultTimezone());
+        Axis_Locale_Model_Timezone::setTimezone(
+            Axis::config('locale/main/timezone')
+        );
+
+        Zend_Locale::setCache(Axis::cache());
 
         $front = $this->getResource('FrontController');
         $front->registerPlugin(new Axis_Controller_Plugin_Locale(), 20);

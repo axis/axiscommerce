@@ -37,7 +37,7 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
     protected $_class = 'box-filter';
     public $hurl;
 
-    public function init()
+    protected function _beforeRender()
     {
         $this->hurl = Axis_HumanUri::getInstance();
 
@@ -68,11 +68,6 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         }
 
         return false;
-    }
-
-    protected function _beforeRender()
-    {
-        return $this->hasData('filters');
     }
 
     /**
@@ -302,6 +297,15 @@ class Axis_Catalog_Box_Filters extends Axis_Core_Box_Abstract
         return array(
             'roundTo' => $roundTo,
             'groups'  => $priceGroups
+        );
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        $this->hurl = Axis_HumanUri::getInstance();
+        $filters    = $this->_getActiveFilters();
+        return array(
+            serialize($filters)
         );
     }
 }

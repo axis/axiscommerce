@@ -81,7 +81,9 @@ abstract class Axis_Method_Shipping_Model_Abstract extends Axis_Method_Abstract
         if ($this->_config->showErrors) {
             Axis::message()->addError($this->_code . ': ' . $message);
         }
-        $this->_logger->info($this->_code . ' ' . $message);
+        if ($this->_logger instanceof Zend_Log) {
+            $this->_logger->info($this->_code . ' ' . $message);
+        }
     }
 
     /**

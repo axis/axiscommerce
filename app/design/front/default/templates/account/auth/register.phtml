@@ -1,5 +1,10 @@
 <?php echo $this->title($this->pageTitle) ?>
 
+<?php
+    $this->headScript()->appendFile('js/jquery/datepicker/ui.datepicker.js');
+    $this->headLink()->appendStylesheet('js/jquery/datepicker/ui.datepicker.css');
+?>
+
 <div class="register-box">
 <?php echo $this->formSignup->render($this) ?>
 </div>
@@ -19,5 +24,9 @@ $("#form-signup").validate({
             equalTo: "<?php echo $this->translate('core')->__('Please repeat the same password') ?>"
         }
     }
+});
+
+$(document).ready(function($){
+    $('.input-date').datepicker({ dateFormat: 'yy-mm-dd'});
 });
 </script>

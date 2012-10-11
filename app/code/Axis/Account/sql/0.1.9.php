@@ -39,7 +39,7 @@ class Axis_Account_Upgrade_0_1_9 extends Axis_Core_Model_Migration_Abstract
 
         ");
 
-        Axis_Core_Model_Cache::getCache()->clean();
+        Axis::cache()->clean();
     }
 
     public function down()

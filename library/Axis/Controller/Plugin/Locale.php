@@ -41,15 +41,35 @@ class Axis_Controller_Plugin_Locale extends Zend_Controller_Plugin_Abstract
     public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
     {
         if (Axis_Area::isFrontend()
-            && null !== $request->getParam('locale')//_hasParam('locale')
-            /*&& Axis_Controller_Router_Route_Front::hasLocaleInUrl()*/) {
+            && null !== $request->getParam('locale')) {
 
             $locale = $request->getParam('locale');
         } elseif (isset(Axis::session()->locale)) {
             $locale = Axis::session()->locale;
         } else {
-            $locale = Axis_Locale::getDefaultLocale();
+            $locale = Axis::config('locale/main/locale');
         }
-        Axis_Locale::setLocale($locale);
+
+        if (!Axis_Locale::isValid($locale)) {
+            $locale = Axis_Locale::DEFAULT_LOCALE;
+        }
+        Zend_Registry::set('Zend_Locale', new Zend_Locale($locale));
+
+        //
+        $languages = Axis::single('locale/language')
+            ->select(array('locale', 'id'))
+            ->fetchPairs();
+
+        if (isset($languages[$locale])) {
+            $language = $languages[$locale];
+        } else {
+            $language = Axis::config('locale/main/language_' . Axis_Area::getArea());
+        }
+
+        if (!array_search($language, $languages)) {
+            $language = current($languages);
+        }
+
+        Axis::session()->language = $language;
     }
 }

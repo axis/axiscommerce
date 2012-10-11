@@ -107,7 +107,7 @@ class Admin_ModuleController extends Axis_Admin_Controller_Back
             $row->save();
         }
 
-        Axis_Core_Model_Cache::getCache()->clean(
+        Axis::cache()->clean(
             Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG,
             array('modules', 'config')
         );
@@ -128,7 +128,7 @@ class Admin_ModuleController extends Axis_Admin_Controller_Back
             $module->install();
         }
 
-        Axis_Core_Model_Cache::getCache()->clean(
+        Axis::cache()->clean(
             Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG,
             array('modules', 'config')
         );
@@ -142,7 +142,7 @@ class Admin_ModuleController extends Axis_Admin_Controller_Back
         $module = Axis::single('core/module')->getByCode($code);
         $module->uninstall();
 
-        Axis_Core_Model_Cache::getCache()->clean(
+        Axis::cache()->clean(
             Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG,
             array('modules', 'config')
         );
@@ -162,7 +162,7 @@ class Admin_ModuleController extends Axis_Admin_Controller_Back
             $module->upgradeAll();
         }
 
-        Axis_Core_Model_Cache::getCache()->clean(
+        Axis::cache()->clean(
             Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG,
             array('modules', 'config')
         );

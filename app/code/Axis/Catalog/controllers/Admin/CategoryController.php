@@ -181,7 +181,7 @@ class Axis_Catalog_Admin_CategoryController extends Axis_Admin_Controller_Back
         $metaKeyword         = $this->_getParam('meta_keyword');
 
         $mCategoryDescription = Axis::model('catalog/category_description');
-        foreach (array_keys(Axis_Collect_Language::collect()) as $languageId) {
+        foreach (Axis::model('locale/option_language') as $languageId => $_n) {
             if (!isset($categoryName[$languageId])) {
                 continue;
             }
@@ -296,5 +296,34 @@ class Axis_Catalog_Admin_CategoryController extends Axis_Admin_Controller_Back
         }
 
         return $this->getResponse()->appendBody(Zend_Json::encode($data));
+    }
+
+    public function saveRootAction()
+    {
+        $site = Axis::model('core/site')
+            ->find($this->_getParam('site_id'))
+            ->current();
+
+        if ($site) {
+            $mCategory = Axis::model('catalog/category');
+            // it's not safe if there are another categories linked to this site
+            $hasCategory = (bool) $mCategory->select()
+                ->where('site_id = ?', $site->id)
+                ->fetchOne();
+
+            if ($hasCategory) {
+                Axis::message()->addNotice(
+                    Axis::translate('core')->__(
+                        "Root category wasn't changed. Some categories already linked with the site %s. Unlink them from the site first",
+                        $site->name
+                    )
+                );
+                return $this->_helper->json->sendFailure();
+            }
+
+            $mCategory->addNewRootCategory($site);
+        }
+
+        return $this->_helper->json->sendSuccess();
     }
 }

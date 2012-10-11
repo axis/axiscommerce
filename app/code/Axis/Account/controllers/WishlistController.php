@@ -68,7 +68,7 @@ class Axis_Account_WishlistController extends Axis_Account_Controller_Abstract
                 'Selected product is already in your wishlist'
             )
         );
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect($this->_getBackUrl());
     }
 
     public function removeAction()

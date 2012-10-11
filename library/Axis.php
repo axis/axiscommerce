@@ -195,32 +195,17 @@ class Axis
      */
     public static function config($name = null, $siteId = null, $default = null)
     {
-        if (!Zend_Registry::isRegistered('config')) {
-            throw new Axis_Exception(
-                Axis::translate('core')->__(
-                    'Config is not initialized'
-                )
-            );
-        }
+//        if (!Zend_Registry::isRegistered('config')) {
+//            throw new Axis_Exception(
+//                Axis::translate('core')->__(
+//                    'Config is not initialized'
+//                )
+//            );
+//        }
         if (null !== $name) {
             return Zend_Registry::get('config')->get($name, $siteId, $default);
         }
         return Zend_Registry::get('config');
-    }
-
-    /**
-     * Create and return table object (Axis_Db_Table)
-     *
-     * @static
-     * @param string table name
-     * @param array() arguments
-     * @return Axis_Db_Table object
-     */
-    public static function table($tableName, $arguments = array())
-    {
-        return new Axis_Db_Table(array_merge(
-            $arguments, array('name' => $tableName)
-        ));
     }
 
     /**
@@ -240,8 +225,9 @@ class Axis
      * @static
      * @return Zend_Session_Namespace
      */
-    public static function session($namespace = 'nsMain')
+    public static function session($namespace = 'Core')
     {
+        $namespace = 'Axis_' . $namespace;
         if (!Zend_Registry::isRegistered($namespace)) {
             Zend_Registry::set($namespace, new Zend_Session_Namespace($namespace));
         }
@@ -297,5 +283,16 @@ class Axis
         }
         $module = str_replace(' ', '_', ucwords(str_replace('_', ' ', $module)));
         return Axis_Translate::getInstance($module);
+    }
+
+    /**
+     * Retrieve locale object
+     *
+     * @static
+     * @return Zend_Locale
+     */
+    public static function locale()
+    {
+        return Zend_Registry::get('Zend_Locale');
     }
 }

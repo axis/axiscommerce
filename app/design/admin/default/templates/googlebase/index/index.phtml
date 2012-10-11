@@ -23,7 +23,7 @@ $this->setButtons(array(
     )
 ));
 
-echo $this->formSelect('language', null, null, Axis_Collect_Language::collect());
+echo $this->formSelect('language', null, null, $this->languages);
 echo $this->formSelect('gCountry', null, null, $this->gCountries);
 echo $this->formSelect('targetCountry', null, null, $this->gCountries);
 echo $this->formSelect('currency', null, null, $this->currencies);

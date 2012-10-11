@@ -118,9 +118,9 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
 
     public function confirmAction()
     {
-        $noError = true; 
+        $noError = true;
         $params  = $this->_getAllParams();
-        
+
         if (empty($params['password']) || empty($params['password_confirm'])) {
             Axis::message()->addError(Axis::translate('account')->__(
                 'Password is the required field'
@@ -140,9 +140,9 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             ));
             $noError = false;
         }
-        
+
         if ($noError) {
-            
+
             $email = $modelForgotPass->getEmailByHash($params['hash']);
             $row = Axis::single('account/customer')->select()
                 ->where('email = ?', $email)
@@ -150,10 +150,14 @@ class Axis_Account_ForgotController extends Axis_Core_Controller_Front
             $row->password = md5($params['password']);
             $row->save();
 
+            Axis::message()->addSuccess(Axis::translate('admin')->__(
+                'Password successfully changed'
+            ));
+
             $modelForgotPass->delete(
                 $this->db->quoteInto('hash = ?', $params['hash'])
             );
         }
-        $this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+        $this->_redirect('account/auth');
     }
 }

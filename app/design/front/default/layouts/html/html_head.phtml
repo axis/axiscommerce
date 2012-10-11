@@ -1,5 +1,5 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo $this->meta()->getTitle() ?></title>
+<title><?php echo $this->escape($this->meta()->getTitle()) ?></title>
 <meta name="description" content="<?php echo $this->escape($this->meta()->getDescription()) ?>" />
 <meta name="keywords" content="<?php echo $this->escape($this->meta()->getKeywords()) ?>" />
 <meta name="robots" content="<?php echo $this->escape($this->meta()->getRobots()) ?>" />
@@ -14,6 +14,11 @@ var Axis = {
 };
 </script>
 {{headScript}}
+<script type="text/javascript">
+$(document).ready(function($){
+    $(document).axisTabs();
+});
+</script>
 
 <?php
 $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->skinUrl('favicon.ico'), 'type' => 'image/x-icon'))
@@ -23,8 +28,8 @@ $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->skinUrl('favico
     ->offsetSetStylesheet(-90, 'custom.css');
 
 $this->headLink()
-    ->offsetSetStylesheet(-85, 'ie.css', 'all', 'IE');
-    //->appendStylesheet('ielte7.css', 'all', 'lte IE7');
+    ->offsetSetStylesheet(-85, 'ie.css', 'all', 'lt IE 9');
+    //->appendStylesheet('ielte7.css', 'all', 'lte IE 7');
 
 $this->headScript()
     ->setProxy('axis_core')
@@ -36,7 +41,8 @@ $this->headScript()
     ->appendFile('js/axis/catalog/lightzoom.js')
     ->appendFile('js/axis/community/ratings.js')
     ->appendFile('js/axis/core/messageStack.js')
-    ->appendFile('js/axis/core/axisWindow.js');
+    ->appendFile('js/axis/core/axisWindow.js')
+    ->appendFile('js/axis/core/axisTabs.js');
 
 $this->addJsValidateTranslation();
 

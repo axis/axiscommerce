@@ -36,6 +36,12 @@ class Axis_Catalog_Box_Featured extends Axis_Catalog_Box_Product_Listing
     protected $_title = 'Featured';
     protected $_class = 'box-featured';
 
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setData('cache_lifetime', 10800); // 3 hours
+    }
+
     protected function _beforeRender()
     {
         $select = Axis::model('catalog/product')->select('id')
@@ -57,6 +63,14 @@ class Axis_Catalog_Box_Featured extends Axis_Catalog_Box_Product_Listing
         }
 
         $this->products = $list['data'];
-        return $this->hasProducts();
+    }
+
+    protected function _getCacheKeyParams()
+    {
+        $keyInfo = parent::_getCacheKeyParams();
+        if ($catId = Axis_HumanUri::getInstance()->getParamValue('cat')) {
+            $keyInfo[] = $catId;
+        }
+        return $keyInfo;
     }
 }

@@ -34,31 +34,32 @@
 abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Migration_Interface
 {
     /**
-     * 
+     *
      * @var Axis_Install_Model_Installer
      */
-    protected $_installer;
-    
+    protected $_installer = null;
+
     /**
      *
-     * @var string 
+     * @var Axis_Core_Model_Config_Builder
+     */
+    protected $_configBuilder = null;
+
+    /**
+     *
+     * @var string
      */
     protected $_info = '';
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     protected $_version;
 
-    public function  __construct()
-    {
-        $this->_installer = Axis::single('install/installer');
-    }
-    
     /**
      *
-     * @return string 
+     * @return string
      */
     public function getVersion()
     {
@@ -67,37 +68,54 @@ abstract class Axis_Core_Model_Migration_Abstract implements Axis_Core_Model_Mig
 
     /**
      *
-     * @return string 
+     * @return string
      */
     public function getInfo()
     {
         return $this->_info;
     }
-    
+
     /**
      *
-     * @return Axis_Install_Model_Installer 
+     * @return Axis_Install_Model_Installer
      */
     public function getInstaller()
     {
+        if (null === $this->_installer) {
+            $this->_installer = Axis::single('install/installer');
+        }
+
         return $this->_installer;
     }
 
     /**
      *
-     * @return void 
+     * @return Axis_Core_Model_Config_Builder
      */
-    public function up() 
+    public function getConfigBuilder()
     {
-        
+        if (null === $this->_configBuilder) {
+            $this->_configBuilder = Axis::single('core/config_builder');
+        }
+
+        return $this->_configBuilder->flushDefaults();
     }
-    
+
     /**
      *
-     * @return void 
+     * @return void
      */
-    public function down() 
+    public function up()
     {
-        
+
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function down()
+    {
+
     }
 }

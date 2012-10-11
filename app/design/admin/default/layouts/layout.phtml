@@ -10,16 +10,14 @@
         {{headLink}}
         <script type="text/javascript">
         var Axis = {
-            baseUrl     : "<?php echo $this->baseUrl ?>",
-            secureUrl   : "<?php echo Axis::config('core/backend/ssl') ? $this->secureUrl : $this->baseUrl ?>",
-            adminUrl    : '<?php echo $this->adminUrl ?>',
-            skinUrl     : '<?php echo $this->skinUrl() ?>',
-            locale      : '<?php echo Axis_Locale::getLocale()->toString() ?>',
-            language    : '<?php echo Axis_Locale::getLanguageId() ?>',
-            languages   : <?php echo Zend_Json_Encoder::encode(Axis_Collect_Language::collect()) ?>,
-            locales     : <?php echo Zend_Json_Encoder::encode(
-                Axis::single('locale/language')->select()->fetchAssoc()
-            ) ?>
+            baseUrl   : "<?php echo $this->baseUrl ?>",
+            secureUrl : "<?php echo Axis::config('core/backend/ssl') ? $this->secureUrl : $this->baseUrl ?>",
+            adminUrl  : '<?php echo $this->adminUrl ?>',
+            skinUrl   : '<?php echo $this->skinUrl() ?>',
+            locale    : '<?php echo Axis::locale()->toString() ?>',
+            language  : '<?php echo Axis_Locale::getLanguageId() ?>',
+            languages : <?php echo Zend_Json_Encoder::encode($this->languages) ?>,
+            locales   : <?php echo Zend_Json_Encoder::encode($this->locales) ?>
         };
         </script>
         {{headScript}}
@@ -90,7 +88,7 @@
             ->offsetSetFile(-16, 'js/ext-axis/src/widgets/DelayedLoader.js')
             ->offsetSetFile(-14, 'js/ext-axis/src/widgets/grid/Filter.js');
 
-        $locale = Axis_Locale::getLocale()->toString();
+        $locale = Axis::locale()->toString();
 
         $this->headScript()->offsetSetFile(-75, 'js/axis/admin/translation/'. $locale .'/core.js');
 
@@ -100,9 +98,9 @@
             $this->headScript()->appendFile(
                 'js/ext-3.4.0/src/locale/ext-lang-' . $locale . '.js'
             );
-        } elseif (file_exists('js/ext-3.4.0/src/locale/ext-lang-' . Axis_Locale::getLocale()->getLanguage() . '.js')) {
+        } elseif (file_exists('js/ext-3.4.0/src/locale/ext-lang-' . Axis::locale()->getLanguage() . '.js')) {
             $this->headScript()->appendFile(
-                'js/ext-3.4.0/src/locale/ext-lang-' . Axis_Locale::getLocale()->getLanguage() . '.js'
+                'js/ext-3.4.0/src/locale/ext-lang-' . Axis::locale()->getLanguage() . '.js'
             );
         }
         ?>
@@ -156,8 +154,8 @@
                 <p class="legality">Copyright &copy; <?php echo Axis_Date::now()->toPhpString('Y') ?> Axis |</p>
                 <p class="locale">
                     <?php echo $this->translate('admin')->__('Interface locale') ?>:
-                    <?php $currentLocaleCode = Axis_Locale::getLocale()->toString();
-                    echo $this->formSelect('interface_locale', $currentLocaleCode, null, Axis_Locale::getAdminLocales());
+                    <?php $currentLocaleCode = Axis::locale()->toString();
+                    echo $this->formSelect('interface_locale', $currentLocaleCode, null, Axis::model('locale/option_filesystem_locale')->toArray());
                     ?>
                 </p>
                 <p class="bugs"><?php echo $this->translate('core')->__("Report any %s you've found", "<a href='http://github.com/axis/axiscommerce/issues' onclick='window.open(this.href); return false;' title='" . $this->translate('core')->__('Report') . "'>" . $this->translate('core')->__('Bugs or Issues') . "</a>") ?></p>

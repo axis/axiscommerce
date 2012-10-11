@@ -30,24 +30,51 @@ class Axis_PaymentCheckMoney_Upgrade_0_1_0 extends Axis_Core_Model_Migration_Abs
 
     public function up()
     {
-        Axis::single('core/config_field')
-            ->add('payment', 'Payment Methods', null, null, array('translation_module' => 'Axis_Admin'))
-            ->add('payment/CheckMoney_Standard', 'Payment Methods/Check & Money Order', null, null, array('translation_module' => 'Axis_PaymentCheckMoney'))
-            ->add('payment/CheckMoney_Standard/enabled', 'Payment Methods/Check & Money Order/Enabled', '0', 'bool', array('translation_module' => 'Axis_Core'))
-            ->add('payment/CheckMoney_Standard/title', 'Title', 'Check & Money Order', 'string', 'Title')
-            ->add('payment/CheckMoney_Standard/geozone', 'Allowed Payment Zone', '1', 'select', 'Payment method will be available only for selected zone', array('model' => 'Geozone', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/CheckMoney_Standard/sortOrder', 'Sort Order', '1', 'string', array('translation_module' => 'Axis_Core'))
-            ->add('payment/CheckMoney_Standard/orderStatusId', 'Order Status on payment complete', '1', 'select', 'Set the status of orders made with this payment module to this value', array('config_options' => '{"1":"pending"}', 'translation_module' => 'Axis_Admin'))
-            ->add('payment/CheckMoney_Standard/minOrderTotal', 'Minimum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/CheckMoney_Standard/maxOrderTotal', 'Maximum order total amount', '', 'string', array('translation_module' => 'Axis_Admin'))
-            ->add('payment/CheckMoney_Standard/payTo', 'Make check payable to', 'The Axis Store Company', 'string', 'Who should payments be made payable to?')
-            ->add('payment/CheckMoney_Standard/sendCheckTo', 'Send your check to', 'Store Name <br />Address <br />Country <br />Phone', 'text', ' This is the Store Name, Address and Phone used on printable documents and displayed online')
-            ->add('payment/CheckMoney_Standard/shippings', 'Disallowed Shippings', '0', 'multiple', 'Selected shipping methods will be not available with this payment method', array('model' => 'Shipping', 'translation_module' => 'Axis_Admin'));
+        $this->getConfigBuilder()
+            ->section('payment', 'Payment Methods')
+                ->setTranslation('Axis_Admin')
+                ->section('CheckMoney_Standard', 'Check & Money Order')
+                    ->setTranslation('Axis_PaymentCheckMoney')
+                    ->option('enabled', 'Enabled', false)
+                        ->setType('radio')
+                        ->setModel('core/option_boolean')
+                        ->setTranslation('Axis_Core')
+                    ->option('title', 'Title', 'Check & Money Order')
+                        ->setDescription('Title')
+                    ->option('geozone', 'Allowed Payment Zone', 1)
+                        ->setType('select')
+                        ->setDescription('Payment method will be available only for selected zone')
+                        ->setModel('location/option_geozone')
+                        ->setTranslation('Axis_Admin')
+                    ->option('sortOrder', 'Sort Order', 1)
+                        ->setTranslation('Axis_Core')
+                    ->option('orderStatusId', 'Order Status on payment complete', 1)
+//                        @todo->setValue(Axis_Sales_Model_Option_Order_Status::PENDING)
+                        ->setType('select')
+                        ->setDescription('Set the status of orders made with this payment module to this value')
+                        ->setModel('sales/option_order_status')
+                        ->setTranslation('Axis_Admin')
+                    ->option('minOrderTotal', 'Minimum order total amount')
+                        ->setTranslation('Axis_Admin')
+                    ->option('maxOrderTotal', 'Maximum order total amount')
+                        ->setTranslation('Axis_Admin')
+                    ->option('payTo', 'Make check payable to', 'The Axis Store Company')
+                        ->setDescription('Who should payments be made payable to?')
+                    ->option('sendCheckTo', 'Send your check to', 'Store Name <br />Address <br />Country <br />Phone')
+                        ->setType('textarea')
+                        ->setDescription(' This is the Store Name, Address and Phone used on printable documents and displayed online')
+                    ->option('shippings', 'Disallowed Shippings')
+                        ->setType('multiple')
+                        ->setDescription('Selected shipping methods will be not available with this payment method')
+                        ->setModel('checkout/option_shipping')
+                        ->setTranslation('Axis_Admin')
+
+            ->section('/');
     }
 
     public function down()
     {
-        Axis::single('core/config_value')->remove('payment/CheckMoney_Standard');
-        Axis::single('core/config_field')->remove('payment/CheckMoney_Standard');
+        $this->getConfigBuilder()
+            ->remove('payment/CheckMoney_Standard');
     }
 }

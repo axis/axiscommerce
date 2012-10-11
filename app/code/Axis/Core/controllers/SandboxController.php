@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Axis.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Controller
@@ -25,7 +25,7 @@
  */
 
 /**
- * 
+ *
  * @category    Axis
  * @package     Axis_Core
  * @subpackage  Axis_Core_Controller
@@ -35,6 +35,23 @@ class SandboxController extends Axis_Core_Controller_Front
 {
     public function indexAction()
     {
+
+        $lucene = Axis::model('search/lucene');
+        $index = $lucene->getIndex();
+//        Zend_Debug::dump($index);
+        Axis_FirePhp::timeStamp(1);
+        $index->optimize();
+        Axis_FirePhp::timeStamp(2);
+
+        Zend_Debug::dump('####################################################');
+//        Zend_Debug::dump(Axis::config('account/address_form/country_id_allow')->toArray());
+
+
+//        die;
+//        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice'));
+//        Zend_Debug::dump(Axis::config('shipping/Flat_Standard/multiPrice')->toArray());
+
+
 //        $routeAdmin = new Axis_Controller_Router_Route_Admin(
 //            'admin/:controller/:action/*',
 //            array(
@@ -51,7 +68,7 @@ class SandboxController extends Axis_Core_Controller_Front
 //                'action' => 'index'
 //            )
 //        );
-//        
+//
 //        $urls = array(
 //            'admin',
 //            'admin/',
@@ -65,9 +82,9 @@ class SandboxController extends Axis_Core_Controller_Front
 //            Zend_Debug::dump($routeAccount->match($url), $url );
 //            echo '--------------------------';
 //        }
-        
+
         $row = Axis::model('account/customer')->find(1)->current();
-        $row->password  = 1; 
+        $row->password  = 1;
         $_row = array();
         Zend_Debug::dump(!isset($_row['name']));
         Zend_Debug::dump(empty($_row['name']));
@@ -79,23 +96,21 @@ class SandboxController extends Axis_Core_Controller_Front
         Zend_Debug::dump(empty($_row['name']));
         $_row['name'] = 'xxx';
         Zend_Debug::dump(empty($_row['name']));
-        
+
         $select = Axis::model('cms/page_content')->select('*')
                 ->join('cms_page_category', 'cpc2.cms_page_id = cpc.cms_page_id')
-                ->join('cms_category', 
+                ->join('cms_category',
                     'cc.id = cpc2.cms_category_id',
                     'site_id'
-                )->joinLeft('locale_language', 
+                )->joinLeft('locale_language',
                     'll.id = cpc.language_id',
                     'locale'
                 )
                 ;
         $rowset = $select->fetchRowset();
-//        $s = Axis::model('search/indexer')->make()
-            ;
-            
+
         Zend_Debug::dump($rowset->toArray());
-        
+
 //        Zend_Debug::dump();
         $this->view->meta()->setTitle('片　视 频　地');
         Axis_FirePhp::timeStamp('333');
@@ -132,7 +147,7 @@ class SandboxController extends Axis_Core_Controller_Front
         Axis_FirePhp::timeStamp('++++++++++++++++++++++++++++++++++++++++++++');
 
 //        Axis_FirePhp::log("SELECT `cp`.*, `cpc`.`link`, group_concat(`cc`.`name` separator ', ') AS `category_name` FROM `prefix_cms_page` AS `cp` LEFT JOIN `prefix_cms_page_content` AS `cpc` ON cp.id = cpc.cms_page_id AND cpc.language_id = 1 LEFT JOIN `prefix_cms_page_category` AS `cptc` ON cptc.cms_page_id = cp.id LEFT JOIN `prefix_cms_category` AS `cc` ON cc.id = cptc.cms_category_id GROUP BY `cp`.`id`");
-        
+
 //        $o = new Axis_Object() ;
 //
 //        $o->value1->a = 1;
@@ -144,7 +159,7 @@ class SandboxController extends Axis_Core_Controller_Front
 //
 //        Zend_Debug::dump($o);
 //        die;
-        
+
         $this->_prefix = '';
         $where = $where2 = ':where';
         $query = "
@@ -196,7 +211,7 @@ class SandboxController extends Axis_Core_Controller_Front
 //                ;
 //        $row = Axis::single('catalog/product')->fetchRow($myselect);
 //        Zend_Debug::dump($row);
-            
+
 //        Zend_Debug::dump($a);
 //        Axis::single('discount/discount')->setSpecialPrice(
 //            1, 99, time(), time() + 60*60*60
@@ -218,7 +233,7 @@ class SandboxController extends Axis_Core_Controller_Front
 //            camelize('shipping_tax')
 //
 //            );
-        
+
     //        $matches = array();
 //        $str = '#10 /usr/share/php/libzend-framework-php/Zend/Controller/Dispatcher/Standard.php(289): Zend_Controller_Action->dispatch(\'indexAction\')
 //#11 /usr/share/php/libzend-framework-php/Zend/Controller/Front.php(954):';

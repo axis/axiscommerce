@@ -146,6 +146,8 @@ class Axis_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
         $this->_initVars();
         $this->_initScriptPaths();
         $this->_initDefaults();
+
+        Axis::dispatch('axis_view_renderer_initview_after', $this);
     }
 
     protected function _initVars()

@@ -65,14 +65,14 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
     {
         $id     = $this->_getParam('id');
         $status = $this->_getParam('message_status');
-        
+
         $row = Axis::single('contacts/message')->find($id)->current();
         $row->message_status = $status;
         $row->save();
 
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function removeAction()
     {
         $data = Zend_Json::decode($this->_getParam('data'));
@@ -96,18 +96,31 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
         );
         return $this->_helper->json->sendSuccess();
     }
-    
+
     public function sendAction()
     {
         $data = $this->_getAllParams();
 
-        $from = Axis::model('contacts/department')
-            ->find($data['department_id'])
-            ->current()
-            ->email;
-
         $row = Axis::model('account/customer')->select()
             ->where('email = ?', $data['email'])
+            ->fetchRow();
+
+        if ($row) {
+            $languageId = Axis::model('locale/language')->getIdByLocale(
+                $row->locale
+            );
+        } else {
+            $languageId = Axis::config('locale/main/language_front');
+        }
+
+        $department = Axis::model('contacts/department')->select('*')
+            ->where('id = ?', $data['department_id'])
+            ->join('contacts_department_name',
+                'cd.id = cdn.department_id  AND cdn.language_id = :languageId',
+                'name'
+            )->bind(array(
+                'languageId' => $languageId
+            ))
             ->fetchRow();
 
         //@todo if null need firstname = full name from custom_info fields
@@ -130,7 +143,9 @@ class Axis_Contacts_Admin_IndexController extends Axis_Admin_Controller_Back
                 ),
                 'to'      => $data['email'],
                 'from'    => array(
-                    'email' => $from
+                    'email' => $department->email,
+                    'name'  => $department->name
+
                 )
             ));
             $mail->send();

@@ -52,7 +52,7 @@ class IndexController extends Zend_Controller_Action
         $this->initView();
         $layout = Zend_Layout::getMvcInstance();
 
-        $this->_session = Axis::session('install');
+        $this->_session = Axis::session();
 
         $this->view->baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $this->view->addHelperPath('app/views/helpers', 'Axis_View_Helper');
@@ -68,9 +68,9 @@ class IndexController extends Zend_Controller_Action
 
     public function preDispatch()
     {
-        if ('development' === APPLICATION_ENV) { //@todo remove in release
-            return;
-        }
+//        if ('development' === APPLICATION_ENV) { //@todo remove in release
+//            return;
+//        }
         if (Axis_Application::isInstalled()
             && !isset($this->_session->permit_installation)) {
 
@@ -147,32 +147,34 @@ class IndexController extends Zend_Controller_Action
 
     public function saveLocalizationAction()
     {
-        $default_locale = $this->_getParam('default');
-        $additional_locales = $this->_getParam('locale');
-        $additional_currencies = $this->_getParam('currency');
+        $defaultLocale        = $this->_getParam('default');
+        $additionalLocales    = $this->_getParam('locale');
+        $additionalCurrencies = $this->_getParam('currency');
 
-        $this->_session->locale = array();
-        $this->_session->locale['locale'] = array();
-        $this->_session->locale['timezone'] = array();
-        $this->_session->locale['currency'] = array();
+        $localization = array(
+            'locale'   => array(
+                $defaultLocale['locale']   => $defaultLocale['locale']
+            ),
+            'timezone' => array(
+                $defaultLocale['timezone'] => $defaultLocale['timezone']
+            ),
+            'currency' => array(
+                $defaultLocale['currency'] => $defaultLocale['currency']
+            )
+        );
 
-        $this->_session->locale['locale'][$default_locale['locale']] =
-            $default_locale['locale'];
-        $this->_session->locale['timezone'][$default_locale['timezone']] =
-            $default_locale['timezone'];
-        $this->_session->locale['currency'][$default_locale['currency']] =
-            $default_locale['currency'];
-
-        if (is_array($additional_locales)) {
-            foreach ($additional_locales as $locale) {
-                $this->_session->locale['locale'][$locale] = $locale;
+        if (is_array($additionalLocales)) {
+            foreach ($additionalLocales as $locale) {
+                $localization['locale'][$locale] = $locale;
             }
         }
-        if (is_array($additional_currencies)) {
-            foreach ($additional_currencies as $currency) {
-                $this->_session->locale['currency'][$currency] = $currency;
+        if (is_array($additionalCurrencies)) {
+            foreach ($additionalCurrencies as $currency) {
+                $localization['currency'][$currency] = $currency;
             }
         }
+        $this->_session->localization = $localization;
+
         $this->_redirect('index/step-configuration');
     }
 
@@ -273,29 +275,29 @@ class IndexController extends Zend_Controller_Action
         $this->_session->user_email     = $params['email'];
         $this->_session->user_password  = $params['password'];
 
-        $this->_session->modules = array_keys(
-            Axis_Install_Model_Module::getModules()
-        );
+//        $this->_session->modules = array_keys(
+//            Axis_Install_Model_Module::getModules()
+//        );
         $this->_install();
 
         // $this->_redirect('index/step-modules');
     }
 
-    public function stepModulesAction()
-    {
-        $this->_install->setStep(Axis_Install_Model_Wizard::STEP_MODULES);
-        $this->view->pageTitle = 'Installation Mode';
-        $this->view->modules = Axis_Install_Model_Module::getModules();
-        $this->render('step-modules');
-    }
+//    public function stepModulesAction()
+//    {
+//        $this->_install->setStep(Axis_Install_Model_Wizard::STEP_MODULES);
+//        $this->view->pageTitle = 'Installation Mode';
+//        $this->view->modules = Axis_Install_Model_Module::getModules();
+//        $this->render('step-modules');
+//    }
 
-    public function saveModulesAction()
-    {
-        $this->_session->modules = array_keys(
-            array_filter($this->_getParam('modules'))
-        );
-        $this->_install();
-    }
+//    public function saveModulesAction()
+//    {
+//        $this->_session->modules = array_keys(
+//            array_filter($this->_getParam('modules'))
+//        );
+//        $this->_install();
+//    }
 
     public function stepFinishAction()
     {
@@ -307,9 +309,9 @@ class IndexController extends Zend_Controller_Action
         $this->view->permitInstallation = $this->_session->permit_installation;
         $this->view->frontend = $this->_session->store_baseUrl;
         $this->view->backend = $this->view->frontend . '/' . $this->_session->store_adminUrl;
-        $locale = $this->_session->current_locale;
+        $locale = $this->_session->locale;
         $this->_session->unsetAll();
-        $this->_session->current_locale = $locale;
+        $this->_session->locale = $locale;
         $this->render('step-finish');
     }
 
@@ -376,42 +378,42 @@ class IndexController extends Zend_Controller_Action
         return $this->_session->store_path . '/app/etc/config.php';
     }
 
-    public function dropAction()
-    {
-        Axis::single('core/cache')->clean();
+//    public function dropAction()
+//    {
+//        Axis::single('core/cache')->clean();
 
-        /**
-         * @var Axis_Install_Model_Installer
-         */
-        $installer = Axis::single('install/installer');
+//        /**
+//         * @var Axis_Install_Model_Installer
+//         */
+//        $installer = Axis::single('install/installer');
 
-        $installer->run("
-            SET SQL_MODE='';
-            SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-            SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
-        ");
+//        $installer->run("
+//            SET SQL_MODE='';
+//            SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+//            SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
+//        ");
 
-        $tables = Axis::db()->fetchAll('show tables');
-        foreach ($tables as $table) {
-            $tableName = current($table);
-            $installer->run("DROP TABLE `{$tableName}`;");
-        }
+//        $tables = Axis::db()->fetchAll('show tables');
+//        foreach ($tables as $table) {
+//            $tableName = current($table);
+//            $installer->run("DROP TABLE `{$tableName}`;");
+//        }
 
-        Axis::single('install/installer')->run("
-            SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'');
-            SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0);
-        ");
+//        Axis::single('install/installer')->run("
+//            SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'');
+//            SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0);
+//        ");
 
-        unlink(AXIS_ROOT . '/app/etc/config.php');
+//        unlink(AXIS_ROOT . '/app/etc/config.php');
 
-        if (!headers_sent()) {
-            $host  = $_SERVER['HTTP_HOST'];
-            $uri   = rtrim(
-                dirname(str_replace('/install', '', $_SERVER['PHP_SELF'])),
-                '/\\'
-            );
-            header("Location: http://$host$uri/");
-        }
-        exit();
-    }
+//        if (!headers_sent()) {
+//            $host  = $_SERVER['HTTP_HOST'];
+//            $uri   = rtrim(
+//                dirname(str_replace('/install', '', $_SERVER['PHP_SELF'])),
+//                '/\\'
+//            );
+//            header("Location: http://$host$uri/");
+//        }
+//        exit();
+//    }
 }

@@ -100,7 +100,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
     public function getStorage()
     {
         if (!$this->_storage instanceof Zend_Session_Namespace) {
-            $this->_storage = new Zend_Session_Namespace('Checkout');
+            $this->_storage = Axis::session('Checkout');
         }
         return $this->_storage;
     }
@@ -461,6 +461,7 @@ class Axis_Checkout_Model_Checkout extends Axis_Object
 
         $method = Axis_Shipping::getMethod($data['method']);
         if (!$method instanceof Axis_Method_Shipping_Model_Abstract
+            || !$method->isEnabled()
             || !$method->isAllowed($this->getShippingRequest())) {
 
             throw new Axis_Exception(

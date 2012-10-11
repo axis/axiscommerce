@@ -35,7 +35,11 @@ class Axis_Locale_Admin_CurrencyController extends Axis_Admin_Controller_Back
 {
     public function indexAction()
     {
-        $this->view->pageTitle = Axis::translate('locale')->__('Currency List');
+        $this->view->pageTitle         = Axis::translate('locale')->__('Currency List');
+        $this->view->currencyDisplays  = Axis::model('locale/option_currency_display')->toArray();
+        $this->view->currencyPositions = Axis::model('locale/option_currency_position')->toArray();
+        $this->view->zendLocales       = Axis::model('locale/option_ZendLocale')->toArray();
+        $this->view->zendCurrencies    = Axis::model('locale/option_ZendCurrency')->toArray();
         $this->render();
     }
     

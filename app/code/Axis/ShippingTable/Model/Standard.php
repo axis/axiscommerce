@@ -40,19 +40,19 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
     public function getAllowedTypes($request)
     {
         switch ($this->_config->type) {
-            case 'Per Weight':
+            case Axis_ShippingTable_Model_Option_Standard_Service::PER_WEIGHT:
                 $value = $request['weight'];
                 break;
-            case 'Per Item':
+            case Axis_ShippingTable_Model_Option_Standard_Service::PER_ITEM:
                 $value = $request['qty'];
                 break;
-            case 'Per Price':
+            case Axis_ShippingTable_Model_Option_Standard_Service::PER_PRICE:
             default:
                 $value = $request['price'];
                 break;
         }
 
-        $select = Axis::table('shippingtable_rate')->select();
+        $select = Axis::model('shippingTable/rate')->select();
         $select->where('value <= ? ', $value)
             ->where('site_id = ? OR site_id = 0', Axis::getSiteId())
             ->where('country_id = ? OR country_id = 0', $request['country']['id'])
@@ -71,15 +71,16 @@ class Axis_ShippingTable_Model_Standard extends Axis_Method_Shipping_Model_Abstr
         }
 
         $row = $select->fetchRow();
-
-        $this->_types = array(
-            array(
-                'id'    => $this->_code,
-                'title' => $this->getTitle(),
-                'price' => $row['price'] + (is_numeric($this->_config->handling) ?
-                    $this->_config->handling : 0)
-            )
-        );
+        if ($row) {
+            $handling = is_numeric($this->_config->handling) ?$this->_config->handling : 0;
+            $this->_types = array(
+                array(
+                    'id'    => $this->_code,
+                    'title' => $this->getTitle(),
+                    'price' => $row['price'] + $handling
+                )
+            );
+        }
 
         return $this->_types;
     }

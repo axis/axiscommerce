@@ -66,13 +66,13 @@ class Admin_CacheController extends Axis_Admin_Controller_Back
 
     public function removeAction()
     {
-        $model = Axis_Core_Model_Cache::getCache();
+        $cache = Axis::cache();
 
         if ($this->_hasParam('data')) {
             $tags = Zend_Json::decode($this->_getParam('data'));
-            $success = $model->clean('matchingAnyTag', $tags);
+            $success = $cache->clean('matchingAnyTag', $tags);
         } else {
-            $success = $model->clean();
+            $success = $cache->clean();
         }
         if (!$success) {
             return $this->_helper->json->sendFailure();

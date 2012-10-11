@@ -28,7 +28,7 @@
 "Config file is not writable at %s","Не вистачає прав на запис конфігураційного файла %s"
 "Please enable JavaScript in your browser.","Увімкніть JavaScript у браузері."
 "Language","Мова"
-"Copyright &copy; 2010, Axis, Inc. All Rights Reserved","Copyright &copy; 2010, Axis, Inc. Всі права захищено"
+"Copyright © %s, Axis, Inc. All Rights Reserved","Copyright © %s, Axis, Inc. Всі права захищено"
 "Database connection","З'єднання із базою даних"
 "Database Server","Сервер бази даних"
 "The address of the database server in the form of a hostname or IP address","Адреса сервера у вигляді назви або ip-адреси"

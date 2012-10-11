@@ -31,7 +31,7 @@
 "Config file is not writable at %s","Arquivo de configuração não é gravável no %s"
 "Please enable JavaScript in your browser.","Por favor ative o JavaScript no seu navegador."
 "Language","Idioma"
-"Copyright &copy; 2010, Axis, Inc. All Rights Reserved","Direitos Autorais &copy; 2010, Axis, Inc. Todos os Direitos Reservados"
+"Copyright © %s, Axis, Inc. All Rights Reserved","Direitos Autorais © %s, Axis, Inc. Todos os Direitos Reservados"
 "Database connection","Conexão de banco de dados"
 "Database Server","Servidor de Banco de Dados"
 "The address of the database server in the form of a hostname or IP address","O endereço do servidor de banco de dados na forma de um nome ou endereço IP"

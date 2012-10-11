@@ -38,7 +38,11 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
         $request = $this->getRequest();
 
         if(Axis_Area::isFrontend()) {
-            if (!Axis::getCustomerId()
+            $auth = Zend_Auth::getInstance();
+            $storage = new Zend_Auth_Storage_Session('Axis_Auth_Frontend');
+            $auth->setStorage($storage);
+
+            if (!$auth->hasIdentity()
                     && $this->getActionController() instanceof Axis_Account_Controller_Abstract) {
 
                 $request->setModuleName('Axis_Account')
@@ -54,7 +58,8 @@ class Axis_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_A
         }
 
         $auth = Zend_Auth::getInstance();
-        $auth->setStorage(new Zend_Auth_Storage_Session('admin'));
+        $storage = new Zend_Auth_Storage_Session('Axis_Auth_Backend');
+        $auth->setStorage($storage);
 
         if (in_array($request->getControllerName(), array('auth', 'forgot'))
             && 'Axis_Admin' === $request->getModuleName()) {

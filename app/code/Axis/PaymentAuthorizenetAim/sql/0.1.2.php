@@ -30,8 +30,16 @@ class Axis_PaymentAuthorizenetAim_Upgrade_0_1_2 extends Axis_Core_Model_Migratio
 
     public function up()
     {
-        Axis::single('core/config_field')
+        $this->getConfigBuilder()
             ->remove('payment/AuthorizenetAim_Standard/authorizationType')
-            ->add('payment/AuthorizenetAim_Standard/authorizationType','Authorization Type', '1', 'select', 'Do you want submitted credit card transactions to be authorized only, or authorized and captured?', array('config_options' => '{"0":"Authorize","1":"Authorize Capture"}'));
+            ->section('payment')
+                ->section('AuthorizenetAim_Standard')
+                    ->option('authorizationType','Authorization Type', '1')
+                        ->setValue(Axis_PaymentAuthorizenetAim_Model_Option_Standard_AuthorizationType::AUTHORIZE)
+                        ->setType('select')
+                        ->setDescription('Do you want submitted credit card transactions to be authorized only, or authorized and captured?')
+                        ->setModel('paymentAuthorizenetAim/option_standard_authorizationType')
+            ->section('/')
+        ;
     }
 }
