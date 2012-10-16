@@ -41,7 +41,7 @@ class Axis_Catalog_Model_Option_Watermark_Position extends Axis_Config_Option_Ar
     const CENTER = 'center';
     const RIGHT  = 'right';
     
-//    const STRETCH = 'stretch';
+    const STRETCH = 'stretch';
 
     /**
      *
@@ -56,6 +56,7 @@ class Axis_Catalog_Model_Option_Watermark_Position extends Axis_Config_Option_Ar
                 $options[$h . '_' . $w] = ucfirst($h) . ' ' . ucfirst($w);
             }
         }
+        $options[self::STRETCH] = ucfirst(self::STRETCH);
         
         return $options;
     }
