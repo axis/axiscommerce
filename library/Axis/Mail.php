@@ -271,10 +271,19 @@ class Axis_Mail extends Zend_Mail
      * Set the locale to be used for email template and subject
      * Locale will be automatically switched back after calling the send method
      *
-     * @param string $locale Locale code
+     * @param mixed $locale Locale code of language id
      */
     public function setLocale($locale)
     {
+        if (is_numeric($locale)) { // language_id
+            $languageToLocale = Axis::single('locale/option_locale')->toArray();
+            if (array_key_exists($locale, $languageToLocale)) {
+                $locale = $languageToLocale[$locale];
+            } else {
+                $locale = Axis::config('locale/main/locale');
+            }
+        }
+
         $this->_locale = Axis::locale()->toString();
         Axis_Locale::setLocale($locale);
     }
