@@ -285,11 +285,19 @@ Ext.onReady(function(){
             selectionModel,
             expander,
         {
+            header: 'Id'.l(),
+            dataIndex: 'id',
+            menuDisabled: true
+        }, {
             header: 'Name'.l(),
             dataIndex: 'name',
             width: 300,
             menuDisabled: true,
             table: 'cpd'
+        }, {
+            header: 'SKU'.l(),
+            dataIndex: 'sku',
+            menuDisabled: true
         }, {
             align: 'right',
             header: 'Price'.l(),
