@@ -136,10 +136,18 @@ Ext.onReady(function(){
 
     var cm = new Ext.grid.ColumnModel([
         expander, {
+            header: 'Id'.l(),
+            dataIndex: 'id',
+            menuDisabled: true
+        }, {
             header: 'Name'.l(),
             dataIndex: 'name',
             id: 'name',
             width: 300,
+            menuDisabled: true
+        }, {
+            header: 'SKU'.l(),
+            dataIndex: 'sku',
             menuDisabled: true
         }, {
             align: 'right',
