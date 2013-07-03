@@ -285,16 +285,28 @@ Ext.onReady(function(){
             selectionModel,
             expander,
         {
+            align: 'right',
+            header: 'Id'.l(),
+            dataIndex: 'id',
+            menuDisabled: true,
+            width: 80
+        }, {
             header: 'Name'.l(),
             dataIndex: 'name',
-            width: 300,
+            id: 'name',
             menuDisabled: true,
             table: 'cpd'
+        }, {
+            header: 'SKU'.l(),
+            dataIndex: 'sku',
+            menuDisabled: true,
+            width: 110
         }, {
             align: 'right',
             header: 'Price'.l(),
             dataIndex: 'price',
-            menuDisabled: true
+            menuDisabled: true,
+            width: 80
         }, {
             align: 'right',
             header: 'Quantity'.l(),
@@ -306,7 +318,8 @@ Ext.onReady(function(){
                 allowNegative: false,
                 maxValue: 100000
             }),
-            filterable: false
+            filterable: false,
+            width: 80
         }, {
             align: 'right',
             header: 'Available'.l(),
@@ -315,7 +328,8 @@ Ext.onReady(function(){
             sortName: 'quantity',
             filter: {
                 name: 'quantity'
-            }
+            },
+            width: 80
         }]
     });
 
@@ -325,6 +339,7 @@ Ext.onReady(function(){
     });
 
     var gridAddProducts = new Axis.grid.EditorGridPanel({
+        autoExpandColumn: 'name',
         cm: cm,
         sm: selectionModel,
         ds: storeProducts,
@@ -335,7 +350,6 @@ Ext.onReady(function(){
         ],
         border: false,
         viewConfig: {
-            forceFit: true,
             emptyText: 'No records found'.l()
         },
         bbar: pagginator
