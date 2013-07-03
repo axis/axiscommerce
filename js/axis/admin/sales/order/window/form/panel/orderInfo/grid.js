@@ -137,23 +137,24 @@ Ext.onReady(function(){
     var cm = new Ext.grid.ColumnModel([
         expander, {
             header: 'Id'.l(),
-            dataIndex: 'id',
-            menuDisabled: true
+            dataIndex: 'product_id',
+            menuDisabled: true,
+            width: 60
         }, {
             header: 'Name'.l(),
             dataIndex: 'name',
             id: 'name',
-            width: 300,
             menuDisabled: true
         }, {
             header: 'SKU'.l(),
             dataIndex: 'sku',
-            menuDisabled: true
+            menuDisabled: true,
+            width: 130
         }, {
             align: 'right',
             header: 'Price'.l(),
             dataIndex: 'final_price',
-            width: 90,
+            width: 60,
             menuDisabled: true,
             editor: new Ext.form.NumberField({
                 allowBlank: false,
@@ -190,7 +191,7 @@ Ext.onReady(function(){
         }, {
             align: 'right',
             header: 'Subtotal'.l(),
-            width: 100,
+            width: 80,
             dataIndex: 'product_subtotal',
             menuDisabled: true
         }
