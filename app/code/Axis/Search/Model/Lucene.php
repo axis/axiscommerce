@@ -109,7 +109,7 @@ class Axis_Search_Model_Lucene implements IteratorAggregate, Countable
      */
     public function setPath($path = '')
     {
-        $this->_path = AXIS_ROOT . '/var/index/' . $path;
+        $this->_path = AXIS_ROOT . '/var/index' . $path;
         return $this;
     }
 

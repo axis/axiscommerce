@@ -114,6 +114,7 @@ class Axis_Search_Admin_IndexController extends Axis_Admin_Controller_Back
                     "ch.key_id = cp.id AND ch.key_type='p'",
                     'key_word'
                 )
+                ->addFilterByAvailability()
                 ->order('cc.site_id')
                 ->order('cpd.language_id')
                 ->group(array('cc.site_id', 'cpd.language_id', 'cp.id'))
